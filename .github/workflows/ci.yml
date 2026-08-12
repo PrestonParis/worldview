@@ -21,5 +21,8 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Generate Next.js route types
+        run: npx next typegen
+
       - name: Typecheck
         run: npx tsc --noEmit
