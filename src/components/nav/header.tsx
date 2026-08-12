@@ -10,7 +10,7 @@ interface PillRect {
   width: number;
 }
 
-export function Header() {
+export function Header({ email }: { email: string | null }) {
   const pathname = usePathname();
   const navRef = useRef<HTMLDivElement>(null);
   const linkRefs = useRef<Map<string, HTMLAnchorElement>>(new Map());
@@ -75,6 +75,20 @@ export function Header() {
         >
           Manage Data
         </Link>
+
+        {email ? (
+          <div className="flex shrink-0 items-center gap-2">
+            <span className="hidden text-sm text-slate-500 sm:inline dark:text-slate-400">{email}</span>
+            <form action="/auth/signout" method="post">
+              <button
+                type="submit"
+                className="rounded-md px-2.5 py-1.5 text-sm text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
+              >
+                Sign out
+              </button>
+            </form>
+          </div>
+        ) : null}
       </div>
     </header>
   );

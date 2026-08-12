@@ -53,6 +53,15 @@ npm run dev
 - Local Supabase Studio: [http://localhost:54323](http://localhost:54323) (only in `env:docker` mode)
 - Neo4j Browser: [http://localhost:7474](http://localhost:7474) (`neo4j` / `worldview-dev`)
 
+### 6. Sign in
+
+Every page except `/login` requires a session (`src/proxy.ts` — Next 16 renamed
+`middleware.ts` to `proxy.ts`; the ingest API is exempt, it has its own bearer-token
+auth). It's invite-only — there's no sign-up page. To create your own account, invite
+yourself from the Supabase Dashboard → Auth → Users → Invite, using whichever project
+`.env.local` currently points at (`npm run env:status`). Signing in sends a magic link
+to that email.
+
 ## Adding data
 
 Two ways in, both validated against the same Zod schemas:
