@@ -31,6 +31,8 @@ export function EntityForm({
       type: "person",
       name: "",
       description: "",
+      imageUrl: "",
+      highlights: "",
       metadata: "",
       ...defaultValues,
     },
@@ -68,6 +70,26 @@ export function EntityForm({
 
       <Field label="Description" htmlFor="description" error={errors.description?.message}>
         <textarea id="description" rows={2} className={inputClass} {...register("description")} />
+      </Field>
+
+      <Field label="Profile image URL" htmlFor="imageUrl" error={errors.imageUrl?.message}>
+        <input
+          id="imageUrl"
+          type="url"
+          className={inputClass}
+          placeholder="https://…"
+          {...register("imageUrl")}
+        />
+      </Field>
+
+      <Field label="Highlights (one per line)" htmlFor="highlights" error={errors.highlights?.message}>
+        <textarea
+          id="highlights"
+          rows={3}
+          className={inputClass}
+          placeholder={"Led the 2024 transition team\nFormer chief strategist"}
+          {...register("highlights")}
+        />
       </Field>
 
       <Field label="Metadata (JSON, optional)" htmlFor="metadata" error={errors.metadata?.message}>

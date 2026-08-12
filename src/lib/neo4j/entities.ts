@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
-import type { Node } from "neo4j-driver";
+import neo4j, { type Node } from "neo4j-driver";
 import { getDriver } from "./client";
 import type { Entity, EntityInput, EntityType } from "../validation/entity";
 
@@ -10,6 +10,8 @@ function toEntity(node: Node): Entity {
     type: p.type as EntityType,
     name: String(p.name),
     description: (p.description as string) ?? "",
+    imageUrl: (p.imageUrl as string) ?? "",
+    highlights: (p.highlights as string) ?? "",
     metadata: (p.metadata as string) ?? "",
     createdAt: String(p.createdAt),
     updatedAt: String(p.updatedAt),
@@ -26,6 +28,29 @@ export async function listEntities(filter?: {
         ? "MATCH (e:Entity {type: $type}) RETURN e ORDER BY e.name"
         : "MATCH (e:Entity) RETURN e ORDER BY e.name",
       filter?.type ? { type: filter.type } : {},
+    );
+    return result.records.map((r) => toEntity(r.get("e")));
+  } finally {
+    await session.close();
+  }
+}
+
+export async function countEntities(): Promise<number> {
+  const session = getDriver().session();
+  try {
+    const result = await session.run("MATCH (e:Entity) RETURN count(e) AS c");
+    return result.records[0].get("c").toNumber();
+  } finally {
+    await session.close();
+  }
+}
+
+export async function listRecentEntities(limit: number): Promise<Entity[]> {
+  const session = getDriver().session();
+  try {
+    const result = await session.run(
+      "MATCH (e:Entity) RETURN e ORDER BY e.createdAt DESC LIMIT $limit",
+      { limit: neo4j.int(limit) },
     );
     return result.records.map((r) => toEntity(r.get("e")));
   } finally {
@@ -57,6 +82,8 @@ export async function createEntity(input: EntityInput): Promise<Entity> {
          type: $type,
          name: $name,
          description: $description,
+         imageUrl: $imageUrl,
+         highlights: $highlights,
          metadata: $metadata,
          createdAt: datetime(),
          updatedAt: datetime()
@@ -67,6 +94,8 @@ export async function createEntity(input: EntityInput): Promise<Entity> {
         type: input.type,
         name: input.name,
         description: input.description ?? "",
+        imageUrl: input.imageUrl ?? "",
+        highlights: input.highlights ?? "",
         metadata: input.metadata ?? "",
       },
     );
@@ -87,6 +116,8 @@ export async function updateEntity(
        SET e.type = $type,
            e.name = $name,
            e.description = $description,
+           e.imageUrl = $imageUrl,
+           e.highlights = $highlights,
            e.metadata = $metadata,
            e.updatedAt = datetime()
        RETURN e`,
@@ -95,6 +126,8 @@ export async function updateEntity(
         type: input.type,
         name: input.name,
         description: input.description ?? "",
+        imageUrl: input.imageUrl ?? "",
+        highlights: input.highlights ?? "",
         metadata: input.metadata ?? "",
       },
     );

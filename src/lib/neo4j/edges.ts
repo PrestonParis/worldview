@@ -23,6 +23,16 @@ function toEdge(
   };
 }
 
+export async function countEdges(): Promise<number> {
+  const session = getDriver().session();
+  try {
+    const result = await session.run("MATCH ()-[r:RELATED_TO]->() RETURN count(r) AS c");
+    return result.records[0].get("c").toNumber();
+  } finally {
+    await session.close();
+  }
+}
+
 export async function listEdges(): Promise<Edge[]> {
   const session = getDriver().session();
   try {

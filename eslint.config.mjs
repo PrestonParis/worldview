@@ -12,6 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // copied at install/dev/build time by scripts/copy-maplibre-worker.mjs
+    "public/maplibre/**",
+    // local Supabase CLI runtime state (supabase start), not app code
+    "supabase/.temp/**",
+    "supabase/.branches/**",
   ]),
 ]);
 

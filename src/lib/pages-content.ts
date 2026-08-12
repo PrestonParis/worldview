@@ -124,15 +124,4 @@ export const pagesContent: Record<string, PageContent> = {
       "Gerrymandering viewer",
     ],
   },
-  geopolitics: {
-    slug: "geopolitics",
-    title: "Geopolitics",
-    tagline: "Territory, alliances, and dependency beyond U.S. borders.",
-    features: [
-      "War / geopolitics studio",
-      "Alliance / treaty graph",
-      "Sanctions explorer",
-      "Trade dependency map",
-    ],
-  },
 };
