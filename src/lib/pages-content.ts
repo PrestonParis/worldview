@@ -1,0 +1,138 @@
+export interface PageContent {
+  slug: string;
+  title: string;
+  tagline: string;
+  features: string[];
+}
+
+export const pagesContent: Record<string, PageContent> = {
+  people: {
+    slug: "people",
+    title: "People & Power",
+    tagline: "Who's connected to whom, and how they got there.",
+    features: [
+      "Relationship graph",
+      "Organization graph",
+      "Administration personnel map",
+      "Endorsement graph",
+      "Political dynasty / family graph",
+      "Career timeline",
+    ],
+  },
+  statements: {
+    slug: "statements",
+    title: "Statements & Rhetoric",
+    tagline: "What people said, when, and how the language shifted.",
+    features: [
+      "Statement & position history",
+      "Quote provenance",
+      "Political terminology explorer",
+      "Rhetoric / language evolution tracker",
+      "Phrase origin tracker",
+      "Narrative tracker",
+    ],
+  },
+  "fact-check": {
+    slug: "fact-check",
+    title: "Fact-Check & Authority",
+    tagline: "Is it true, and could they actually do it.",
+    features: [
+      "Claim / fact-check workbench",
+      "Argument mapper",
+      "“What changed?” politics engine",
+      "“Can they actually do that?” tool",
+      "Executive power explorer",
+      "Policy dependency graph",
+    ],
+  },
+  news: {
+    slug: "news",
+    title: "News & Timelines",
+    tagline: "What actually happened, and how the story moved.",
+    features: [
+      "Political news organizer",
+      "News difference engine",
+      "Story evolution tracker",
+      "Primary source finder",
+      "Political event timeline",
+      "Scandal / investigation timeline",
+    ],
+  },
+  studio: {
+    slug: "studio",
+    title: "Creator Studio",
+    tagline: "Raw footage and transcripts, turned into usable material.",
+    features: [
+      "Speech / transcript analyzer",
+      "Debate analyzer",
+      "Interview question analyzer",
+      "Political clip library",
+      "B-roll finder",
+      "Political visual generator",
+    ],
+  },
+  legislation: {
+    slug: "legislation",
+    title: "Legislation & Courts",
+    tagline: "Bills, votes, promises, and the cases that test them.",
+    features: [
+      "Bill explorer",
+      "Amendment diff",
+      "Voting record explorer",
+      "Campaign promise tracker",
+      "Court case explorer",
+      "Supreme Court precedent graph",
+    ],
+  },
+  money: {
+    slug: "money",
+    title: "Money & Influence",
+    tagline: "Where the money and the people move together.",
+    features: [
+      "Donor network graph",
+      "Money flow visualizer",
+      "Industry support explorer",
+      "Geographic donor map",
+      "Lobbying network",
+      "Revolving door tracker",
+    ],
+  },
+  alignment: {
+    slug: "alignment",
+    title: "Alignment & Coalitions",
+    tagline: "Who actually agrees with whom, by vote, speech, or platform.",
+    features: [
+      "Coalition / voting bloc detector",
+      "Politician similarity engine",
+      "“Who agrees with whom?” matrix",
+      "Coalition calculator",
+      "Issue coalition graph",
+      "Ideology mapper",
+      "Platform comparator",
+    ],
+  },
+  elections: {
+    slug: "elections",
+    title: "Elections & Maps",
+    tagline: "Races, results, and the geography underneath them.",
+    features: [
+      "Election explorer",
+      "Election scenario simulator",
+      "County / precinct political explorer",
+      "Electoral swing map",
+      "District explorer",
+      "Gerrymandering viewer",
+    ],
+  },
+  geopolitics: {
+    slug: "geopolitics",
+    title: "Geopolitics",
+    tagline: "Territory, alliances, and dependency beyond U.S. borders.",
+    features: [
+      "War / geopolitics studio",
+      "Alliance / treaty graph",
+      "Sanctions explorer",
+      "Trade dependency map",
+    ],
+  },
+};
