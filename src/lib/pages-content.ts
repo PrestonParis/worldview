@@ -26,9 +26,7 @@ export const pagesContent: Record<string, PageContent> = {
     features: [
       "Statement & position history",
       "Quote & phrase provenance",
-      "Political terminology explorer",
-      "Rhetoric / language evolution tracker",
-      "Narrative tracker",
+      "Rhetoric & narrative tracker",
     ],
   },
   "fact-check": {
@@ -50,24 +48,8 @@ export const pagesContent: Record<string, PageContent> = {
     tagline: "What actually happened, and how the story moved.",
     features: [
       "Political news organizer",
-      "News difference engine",
       "Story evolution tracker",
       "Primary source finder",
-      "Political event timeline",
-      "Scandal / investigation timeline",
-    ],
-  },
-  studio: {
-    slug: "studio",
-    title: "Creator Studio",
-    tagline: "Raw footage and transcripts, turned into usable material.",
-    features: [
-      "Speech / transcript analyzer",
-      "Debate analyzer",
-      "Interview question analyzer",
-      "Political clip library",
-      "B-roll finder",
-      "Political visual generator",
     ],
   },
   legislation: {
@@ -102,8 +84,7 @@ export const pagesContent: Record<string, PageContent> = {
     tagline: "Who actually agrees with whom, by vote, speech, or platform.",
     features: [
       "Coalition / voting bloc detector",
-      "Politician similarity engine",
-      "“Who agrees with whom?” matrix",
+      "Agreeability measurement",
       "Coalition calculator",
       "Issue coalition graph",
       "Ideology mapper",

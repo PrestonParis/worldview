@@ -15,6 +15,7 @@ import { getEntity, listEntities } from "@/lib/neo4j/entities";
 import { listEdgesForEntity } from "@/lib/neo4j/edges";
 import { parseHighlights } from "@/lib/validation/entity";
 import { entityColorFor } from "@/lib/entity-colors";
+import { isDonorEdge, individualEntityTypes } from "@/lib/graph/money";
 import { buttonVariants } from "@/components/ui/button";
 
 function initialsOf(name: string): string {
@@ -38,9 +39,6 @@ function metadataOf(raw?: string): Record<string, unknown> {
   }
 }
 
-const donorLabel = /(donat|contribut|campaign financ|funded|funding)/i;
-const peopleTypes = new Set(["politician", "pundit", "journalist"]);
-
 export default async function EntityProfilePage({
   params,
 }: PageProps<"/data/entities/[id]">) {
@@ -56,9 +54,9 @@ export default async function EntityProfilePage({
   const highlights = parseHighlights(entity.highlights);
   const metadata = metadataOf(entity.metadata);
   const entitiesById = new Map(entities.map((item) => [item.id, item]));
-  const donors = connections.filter((edge) => donorLabel.test(edge.label));
-  const relationships = connections.filter((edge) => !donorLabel.test(edge.label));
-  const isPerson = peopleTypes.has(entity.type);
+  const donors = connections.filter((edge) => isDonorEdge(edge.label));
+  const relationships = connections.filter((edge) => !isDonorEdge(edge.label));
+  const isPerson = individualEntityTypes.has(entity.type);
   const socialLinks = [
     { label: "Website", href: entity.websiteUrl || String(metadata.website || ""), icon: Globe2 },
     { label: "X / Twitter", href: entity.xUrl, icon: AtSign },

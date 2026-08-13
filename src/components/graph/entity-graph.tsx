@@ -82,6 +82,12 @@ export function EntityGraph({
         edges={flowEdges}
         nodeTypes={nodeTypes}
         fitView
+        // The graph can have 1,000+ nodes — fitting them all on first paint
+        // zooms out so far that no label is readable. Floor the initial fit
+        // at 100% zoom so it opens on a legible neighborhood instead; pan
+        // and zoom out from there to see more. Skipped for the small
+        // homepage preview, which is meant to show its whole (tiny) subset.
+        fitViewOptions={interactive ? { minZoom: 1 } : undefined}
         minZoom={0.1}
         colorMode="system"
         // The graph can have 1,000+ nodes/edges — without this, React Flow

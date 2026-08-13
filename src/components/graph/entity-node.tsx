@@ -18,7 +18,7 @@ export const EntityNode = memo(function EntityNode({ data }: NodeProps) {
 
   return (
     <div
-      className="cursor-pointer rounded-full border-2 px-4 py-2 text-sm font-medium shadow-sm"
+      className="cursor-pointer rounded-full border-2 px-6 py-3 text-base font-semibold whitespace-nowrap shadow-sm"
       style={{ background: colors.bg, borderColor: colors.border, color: colors.text }}
     >
       <Handle type="target" position={Position.Top} className="!opacity-0" />

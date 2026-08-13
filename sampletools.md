@@ -230,30 +230,7 @@ That solves an actual creator problem: *“What actually happened today?”*
 
 ---
 
-# 6. News Difference Engine
-
-Even better:
-
-Select two stories:
-
-**Fox News** ↔ **New York Times**
-
-And see:
-
-**Facts both mention**
-**Facts only A mentions**
-**Facts only B mentions**
-**Different characterization**
-**Different headline framing**
-**Different quoted sources**
-
-Not “which source is biased?”
-
-Instead:
-
-> **How does the information presented differ?**
-
-Much more defensible.
+*(#6, News Difference Engine, cut — tools that do this already exist; not worth building.)*
 
 ---
 
@@ -339,65 +316,9 @@ Politics is filled with quote mutations.
 
 ---
 
-# 10. Speech / Transcript Analyzer
-
-Upload a speech/debate/interview.
-
-Automatically extract:
-
-**Topics**
-**Claims**
-**Statistics**
-**Attacks**
-**Promises**
-**Named people**
-**Named organizations**
-**Policies**
-**Historical references**
-
-Then:
-
-> “Show every factual claim that could be checked.”
-
-That sends them directly into the fact-check tool.
-
-This is where WebWidgets-style interoperability becomes powerful.
-
----
-
-# 11. Debate Analyzer
-
-Take a presidential debate.
-
-Produce:
-
-**Speaking time**
-**Interruptions**
-**Questions answered directly**
-**Topics discussed**
-**Claims**
-**Attacks**
-**Names mentioned**
-**Policy proposals**
-**Fact-check candidates**
-
-You could produce a literal debate timeline.
-
----
-
-# 12. Interview Question Analyzer
-
-For journalists/creators.
-
-Across 30 interviews with Candidate X:
-
-> What questions does everybody ask?
-
-And:
-
-> What has nobody asked?
-
-Could expose interesting gaps.
+*(#10 Speech/Transcript Analyzer, #11 Debate Analyzer, and #12 Interview Question
+Analyzer — cut. This whole category (speech/video/transcript analysis) belongs in
+WebWidgets, not Worldview.)*
 
 ---
 
@@ -525,23 +446,31 @@ You can discover **actual voting coalitions**.
 
 ---
 
-# 18. Politician Similarity Engine
+# 18. Agreeability Measurement
 
-Select any politician.
+*(Formerly two separate entries — Politician Similarity Engine and the
+“Who Agrees With Whom?” Matrix (#51) — merged; same underlying question
+entered from two directions.)*
+
+Select any politician (or several).
 
 > Who votes most similarly?
-
-Then separately:
-
 > Who speaks most similarly?
-
-> Who shares their donors?
-
-> Who shares their endorsements?
-
-> Who shares their policy platform?
+> Who shares their donors, endorsements, or policy platform?
 
 Those could produce completely different answers.
+
+Or flip it around — rows = people, columns = issues:
+
+```text
+             Trump  Vance  Paul  Cruz
+Ukraine        ❌      ❌     ❌    ✅
+Tariffs        ✅      ✅     ❌    ✅
+Abortion       ✅      ✅     ✅    ✅
+NATO           ~       ❌     ~     ✅
+```
+
+Then cluster automatically.
 
 ---
 
@@ -950,51 +879,8 @@ Could visually reveal dependencies.
 
 ---
 
-# 40. Political Event Timeline
-
-Pick anything:
-
-**January 6**
-**Iraq War**
-**COVID response**
-**Trump indictments**
-**Ukraine war**
-
-And construct a sourced chronology.
-
-Every event gets:
-
-**time**
-**location**
-**people**
-**claim**
-**source**
-**media**
-
-Could be an incredibly powerful visual storytelling object.
-
----
-
-# 41. Scandal / Investigation Timeline
-
-This sounds tabloid-ish, but implemented neutrally it's useful.
-
-Structure:
-
-**allegation**
-→ **investigation**
-→ **filing**
-→ **testimony**
-→ **indictment**
-→ **trial**
-→ **verdict**
-→ **appeal**
-
-And explicitly distinguish:
-
-> allegation
-> established fact
-> judicial finding
+*(#40 Political Event Timeline and #41 Scandal/Investigation Timeline — cut. Just
+history-recording, not a distinct capability.)*
 
 ---
 
@@ -1204,20 +1090,7 @@ That would be extremely interesting.
 
 ---
 
-# 51. “Who Agrees With Whom?” Matrix
-
-Rows = people
-Columns = issues.
-
-```text
-             Trump  Vance  Paul  Cruz
-Ukraine        ❌      ❌     ❌    ✅
-Tariffs        ✅      ✅     ❌    ✅
-Abortion       ✅      ✅     ✅    ✅
-NATO           ~       ❌     ~     ✅
-```
-
-Then cluster automatically.
+*(#51, “Who Agrees With Whom?” Matrix, merged into #18 — Agreeability Measurement.)*
 
 ---
 
@@ -1237,27 +1110,14 @@ Click to expand actual source statements.
 
 ---
 
-# 53. Political Terminology Explorer
-
-Type:
-
-**nationalism**
-
-Get:
-
-**academic definition**
-**historical usages**
-**American political usage**
-**European usage**
-**supporter usage**
-**critic usage**
-**related ideologies**
-
-Could be enormously useful given how politically contested vocabulary is.
+*(#53, Political Terminology Explorer, cut — that's just a Google search.)*
 
 ---
 
-# 54. Rhetoric / Language Evolution Tracker
+# 54. Rhetoric & Narrative Tracker
+
+*(Absorbs #56, Narrative Tracker — a term/phrase and an abstract narrative move
+through politics the same way; one tool, two grains of resolution.)*
 
 Graph frequency of terms:
 
@@ -1279,17 +1139,7 @@ time
 
 That could make amazing content.
 
----
-
-*(#55, Phrase Origin Tracker, merged into #9 — Quote & Phrase Provenance.)*
-
----
-
-# 56. Narrative Tracker
-
-More abstract than news tracking.
-
-Examples:
+Or track something more abstract than a single term — a narrative:
 
 > “Biden is too old.”
 
@@ -1297,88 +1147,28 @@ Examples:
 
 > “The economy is booming.”
 
-Track:
+Same tracking either way:
 
 * first major appearance
 * who amplified it
 * media adoption
 * political adoption
 * frequency
-* counter-narrative
-
-That would be very ambitious but incredibly interesting.
+* counter-narrative (for narratives specifically)
 
 ---
 
-# 57. Political Clip Library
-
-Automatically catalog video clips.
-
-Every clip:
-
-**speaker**
-**date**
-**topic**
-**quote**
-**location**
-**source**
-**transcript**
-
-Search:
-
-> `Trump immigration 2015-2016`
-
-And immediately get usable footage.
-
-For a political creator this could become one of the most valuable tools in the entire suite.
+*(#55, Phrase Origin Tracker, merged into #9 — Quote & Phrase Provenance.)*
 
 ---
 
-# 58. B-Roll Finder
-
-Closely related but creator-specific.
-
-Story:
-
-> Federal Reserve rate cut
-
-Tool suggests:
-
-* Powell footage
-* Federal Reserve building
-* stock ticker
-* dollar bills
-* home construction
-* mortgage footage
-
-You could connect this directly to an editing workflow.
+*(#56, Narrative Tracker, merged into #54 — Rhetoric & Narrative Tracker.)*
 
 ---
 
-# 59. Political Visual Generator
-
-Not generative imagery necessarily—**data graphics**.
-
-Select:
-
-> Trump → immigration → 2015–2026
-
-Automatically produce:
-
-* timeline
-* quote cards
-* line charts
-* maps
-* relationship graphs
-* source cards
-
-Basically:
-
-**research → visualization**
-
-in one click.
-
-This might be the killer feature for your use case.
+*(#57 Political Clip Library, #58 B-Roll Finder, and #59 Political Visual
+Generator — cut, along with #10–#12 above, and the Creator Studio page they
+made up. That whole category belongs in WebWidgets, not Worldview.)*
 
 ---
 
@@ -1477,12 +1267,14 @@ I'd put these at the top:
 4. **Fact-Check / Claim Workbench**
 5. **Donor & Money Network**
 6. **Election Workspace**
-7. **Speech / Transcript Analyzer**
-8. **Political Timeline Builder**
-9. **Policy / Authority (“Can they do that?”) Explorer**
-10. **Clip + Primary Source Finder**
-11. **Candidate / Policy Comparator**
-12. **Geopolitical Map Studio**
+7. **Political Timeline Builder**
+8. **Policy / Authority (“Can they do that?”) Explorer**
+9. **Primary Source Finder**
+10. **Candidate / Policy Comparator**
+11. **Geopolitical Map Studio**
 
-Those twelve reinforce one another to an unusual degree. The news organizer discovers a statement → statement gets fact-checked → politician opens in entity graph → donors appear → election workspace opens → clips and visualizations become assets for the actual video.
+*(Trimmed from the original twelve: Speech/Transcript Analyzer and clip-finding
+are cut — WebWidgets territory, not this list's concern.)*
+
+Those eleven reinforce one another to an unusual degree. The news organizer discovers a statement → statement gets fact-checked → politician opens in entity graph → donors appear → election workspace opens → sources and visualizations become assets for the actual video.
 
