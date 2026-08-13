@@ -25,10 +25,9 @@ export const pagesContent: Record<string, PageContent> = {
     tagline: "What people said, when, and how the language shifted.",
     features: [
       "Statement & position history",
-      "Quote provenance",
+      "Quote & phrase provenance",
       "Political terminology explorer",
       "Rhetoric / language evolution tracker",
-      "Phrase origin tracker",
       "Narrative tracker",
     ],
   },
@@ -122,6 +121,17 @@ export const pagesContent: Record<string, PageContent> = {
       "Electoral swing map",
       "District explorer",
       "Gerrymandering viewer",
+    ],
+  },
+  geography: {
+    slug: "geography",
+    title: "Geography",
+    tagline: "Borders, alliances, and the resources and routes underneath them.",
+    features: [
+      "War / geopolitics studio",
+      "Alliance / treaty graph",
+      "Sanctions explorer",
+      "Trade dependency map",
     ],
   },
 };

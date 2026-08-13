@@ -21,7 +21,7 @@ export const typeColors: Record<string, TypeColor> = {
   money: { bg: "#F0FDF4", border: "#22C55E", text: "#15803D" }, // green
   alignment: { bg: "#F0FDFA", border: "#14B8A6", text: "#0F766E" }, // teal
   elections: { bg: "#FEFCE8", border: "#EAB308", text: "#A16207" }, // yellow
-  geopolitics: { bg: "#ECFEFF", border: "#06B6D4", text: "#0E7490" }, // cyan
+  geography: { bg: "#ECFEFF", border: "#06B6D4", text: "#0E7490" }, // cyan
 };
 
 export function typeColorFor(slug: string): TypeColor {

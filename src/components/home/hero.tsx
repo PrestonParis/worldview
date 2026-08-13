@@ -17,7 +17,7 @@ export function Hero() {
         Worldview
       </h1>
       <p className="mt-2 max-w-xl text-base text-slate-500 dark:text-slate-400">
-        Research politics through people, claims, money, and power.
+        An overhead view of US Politics
       </p>
 
       <div className="mt-6 w-full max-w-xl">

@@ -313,19 +313,27 @@ Political research wastes enormous amounts of time finding the *original thing*.
 
 ---
 
-# 9. Quote Provenance Tool
+# 9. Quote & Phrase Provenance
 
-Paste:
+Paste a full quote, or type a short phrase or term:
 
 > “When people show you who they are, believe them.”
 
+or:
+
+> “Make America Great Again”
+
 Tool answers:
 
-**Original speaker**
+**Original speaker / coiner**
 **Earliest verified occurrence**
 **Common misattributions**
 **Full context**
-**How quote changed over time**
+**How it changed over time**
+**Diffusion — who picked it up next, and how it spread through political networks**
+
+(Merged with the former #55, Phrase Origin Tracker — same tool, one traces a
+sentence, the other a single word or slogan.)
 
 Politics is filled with quote mutations.
 
@@ -1273,15 +1281,7 @@ That could make amazing content.
 
 ---
 
-# 55. Phrase Origin Tracker
-
-> Who started saying “Make America Great Again”?
-
-Or:
-
-> When did “woke” become common in Republican speeches?
-
-Track earliest usage and diffusion through political networks.
+*(#55, Phrase Origin Tracker, merged into #9 — Quote & Phrase Provenance.)*
 
 ---
 

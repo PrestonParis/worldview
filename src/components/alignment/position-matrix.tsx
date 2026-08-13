@@ -1,6 +1,7 @@
 import { listClaims } from "@/lib/db/claims";
 import { listEntities } from "@/lib/neo4j/entities";
 import { EmptyStateFeatures } from "@/components/empty-state";
+import { PageDescription } from "@/components/page-description";
 import { PositionMatrixView } from "./position-matrix-view";
 import type { PageContent } from "@/lib/pages-content";
 
@@ -13,6 +14,7 @@ export async function PositionMatrix({ content }: { content: PageContent }) {
     <div>
       <h1 className="text-2xl font-semibold tracking-tight">{content.title}</h1>
       <p className="mt-1 text-slate-500 dark:text-slate-400">{content.tagline}</p>
+      <PageDescription content={content} />
 
       <div className="mt-6">
         {!hasTopics ? (

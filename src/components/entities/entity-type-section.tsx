@@ -70,7 +70,7 @@ export function EntityTypeSection({
                   >
                     <div className="flex items-start justify-between gap-2">
                       <Link
-                        href={`/data/entities/${e.id}/edit`}
+                        href={`/data/entities/${e.id}`}
                         className="font-medium text-slate-900 hover:underline dark:text-slate-100"
                       >
                         {e.name}

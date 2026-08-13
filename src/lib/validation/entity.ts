@@ -15,7 +15,14 @@ export const entitySchema = z.object({
   type: z.enum(entityTypes),
   name: z.string().min(1, "Name is required").max(200),
   description: z.string().max(2000).optional().or(z.literal("")),
+  biography: z.string().max(12000).optional().or(z.literal("")),
   imageUrl: z.url("Enter a valid URL").optional().or(z.literal("")),
+  websiteUrl: z.url("Enter a valid URL").optional().or(z.literal("")),
+  xUrl: z.url("Enter a valid URL").optional().or(z.literal("")),
+  facebookUrl: z.url("Enter a valid URL").optional().or(z.literal("")),
+  instagramUrl: z.url("Enter a valid URL").optional().or(z.literal("")),
+  youtubeUrl: z.url("Enter a valid URL").optional().or(z.literal("")),
+  linkedinUrl: z.url("Enter a valid URL").optional().or(z.literal("")),
   // One highlight per line — kept as raw text like `metadata`, split with
   // `parseHighlights` wherever it's displayed as a list.
   highlights: z.string().max(2000).optional().or(z.literal("")),

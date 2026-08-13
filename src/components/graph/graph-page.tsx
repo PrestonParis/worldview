@@ -3,6 +3,7 @@ import { listEdges } from "@/lib/neo4j/edges";
 import { computeForceLayout } from "@/lib/graph/layout";
 import { entityColors } from "@/lib/entity-colors";
 import { EmptyStateFeatures } from "@/components/empty-state";
+import { PageDescription } from "@/components/page-description";
 import { GraphView } from "./graph-view";
 import type { PageContent } from "@/lib/pages-content";
 
@@ -19,6 +20,7 @@ export async function GraphPage({ content }: { content: PageContent }) {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">{content.title}</h1>
           <p className="mt-1 text-slate-500 dark:text-slate-400">{content.tagline}</p>
+          <PageDescription content={content} />
         </div>
         <div className="flex shrink-0 gap-3 text-xs">
           {Object.entries(entityColors).map(([type, c]) => (

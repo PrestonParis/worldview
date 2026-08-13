@@ -15,7 +15,7 @@ export const toolPages: NavPage[] = [
   { label: "Money & Influence", navLabel: "Money", href: "/money", bundles: "Donor networks, money flow, lobbying, revolving door" },
   { label: "Alignment & Coalitions", navLabel: "Alignment", href: "/alignment", bundles: "Similarity, coalitions, ideology, platform comparison" },
   { label: "Elections & Maps", navLabel: "Elections", href: "/elections", bundles: "Elections, simulators, county/district maps" },
-  { label: "Geopolitics", navLabel: "Geopolitics", href: "/geopolitics", bundles: "War studio, alliances, sanctions, trade dependency" },
+  { label: "Geography", navLabel: "Geography", href: "/geography", bundles: "War studio, alliances, sanctions, trade dependency" },
 ];
 
 export const dataAdminPage: NavPage = {
