@@ -6,14 +6,12 @@ import {
   ReactFlow,
   Background,
   Controls,
-  MiniMap,
   MarkerType,
   type Node,
   type Edge as FlowEdge,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { EntityNode, type EntityNodeData } from "./entity-node";
-import { entityColors } from "@/lib/entity-colors";
 import type { Entity } from "@/lib/validation/entity";
 import type { Edge } from "@/lib/validation/edge";
 import type { PositionedNode } from "@/lib/graph/layout";
@@ -24,10 +22,13 @@ export function EntityGraph({
   entities,
   edges,
   positions,
+  interactive = true,
 }: {
   entities: Entity[];
   edges: Edge[];
   positions: PositionedNode[];
+  /** Set false for small homepage-style previews: no zoom controls, no panning/zooming/dragging. */
+  interactive?: boolean;
 }) {
   const router = useRouter();
 
@@ -64,16 +65,16 @@ export function EntityGraph({
         nodeTypes={nodeTypes}
         fitView
         minZoom={0.1}
+        colorMode="system"
         onNodeClick={(_, node) => router.push(`/data/entities/${node.id}`)}
+        panOnDrag={interactive}
+        zoomOnScroll={interactive}
+        zoomOnPinch={interactive}
+        zoomOnDoubleClick={interactive}
+        nodesDraggable={interactive}
       >
         <Background gap={24} color="#E2E8F0" />
-        <Controls showInteractive={false} />
-        <MiniMap
-          pannable
-          zoomable
-          nodeColor={(n) => entityColors[(n.data as EntityNodeData).type]?.border ?? "#94A3B8"}
-          maskColor="rgba(241, 245, 249, 0.6)"
-        />
+        {interactive ? <Controls showInteractive={false} /> : null}
       </ReactFlow>
     </div>
   );

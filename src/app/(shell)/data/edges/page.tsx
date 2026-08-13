@@ -6,17 +6,20 @@ import { AddPanel } from "@/components/forms/add-panel";
 import { DeleteButton } from "@/components/forms/delete-button";
 import { deleteEdgeAction } from "@/lib/actions/edges";
 
-export default async function EdgesPage() {
-  const [edges, entities, sources] = await Promise.all([
+export default async function EdgesPage({
+  searchParams,
+}: PageProps<"/data/edges">) {
+  const [edges, entities, sources, params] = await Promise.all([
     listEdges(),
     listEntities(),
     listSources(),
+    searchParams,
   ]);
   const nameOf = (id: string) => entities.find((e) => e.id === id)?.name ?? "Unknown";
 
   return (
     <div className="flex flex-col gap-6">
-      <AddPanel label="+ Add relationship">
+      <AddPanel label="+ Add relationship" defaultOpen={params.add === "1"}>
         <EdgeForm entities={entities} sources={sources} />
       </AddPanel>
 

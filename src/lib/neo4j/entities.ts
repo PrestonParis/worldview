@@ -45,6 +45,19 @@ export async function countEntities(): Promise<number> {
   }
 }
 
+export async function countEntitiesCreatedSince(since: Date): Promise<number> {
+  const session = getDriver().session();
+  try {
+    const result = await session.run(
+      "MATCH (e:Entity) WHERE e.createdAt >= datetime($since) RETURN count(e) AS c",
+      { since: since.toISOString() },
+    );
+    return result.records[0].get("c").toNumber();
+  } finally {
+    await session.close();
+  }
+}
+
 export async function listRecentEntities(limit: number): Promise<Entity[]> {
   const session = getDriver().session();
   try {

@@ -1,4 +1,4 @@
-import { eq, count } from "drizzle-orm";
+import { eq, count, gte } from "drizzle-orm";
 import { db } from "./client";
 import { claims } from "./schema";
 import type { Claim, ClaimInput } from "../validation/claim";
@@ -29,6 +29,14 @@ export async function listClaims(): Promise<Claim[]> {
 
 export async function countClaims(): Promise<number> {
   const [row] = await db.select({ value: count() }).from(claims);
+  return row.value;
+}
+
+export async function countClaimsCreatedSince(since: Date): Promise<number> {
+  const [row] = await db
+    .select({ value: count() })
+    .from(claims)
+    .where(gte(claims.createdAt, since));
   return row.value;
 }
 

@@ -1,4 +1,4 @@
-import { eq, count } from "drizzle-orm";
+import { eq, count, gte } from "drizzle-orm";
 import { db } from "./client";
 import { sources } from "./schema";
 import type { Source, SourceInput } from "../validation/source";
@@ -26,6 +26,14 @@ export async function listSources(): Promise<Source[]> {
 
 export async function countSources(): Promise<number> {
   const [row] = await db.select({ value: count() }).from(sources);
+  return row.value;
+}
+
+export async function countSourcesCreatedSince(since: Date): Promise<number> {
+  const [row] = await db
+    .select({ value: count() })
+    .from(sources)
+    .where(gte(sources.createdAt, since));
   return row.value;
 }
 

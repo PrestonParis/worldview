@@ -33,6 +33,19 @@ export async function countEdges(): Promise<number> {
   }
 }
 
+export async function countEdgesCreatedSince(since: Date): Promise<number> {
+  const session = getDriver().session();
+  try {
+    const result = await session.run(
+      "MATCH ()-[r:RELATED_TO]->() WHERE r.createdAt >= datetime($since) RETURN count(r) AS c",
+      { since: since.toISOString() },
+    );
+    return result.records[0].get("c").toNumber();
+  } finally {
+    await session.close();
+  }
+}
+
 export async function listEdges(): Promise<Edge[]> {
   const session = getDriver().session();
   try {

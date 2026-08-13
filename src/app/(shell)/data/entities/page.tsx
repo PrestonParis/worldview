@@ -4,14 +4,21 @@ import { EntityForm } from "@/components/forms/entity-form";
 import { AddPanel } from "@/components/forms/add-panel";
 import { DeleteButton } from "@/components/forms/delete-button";
 import { deleteEntityAction } from "@/lib/actions/entities";
+import { entityTypes, type EntityType } from "@/lib/validation/entity";
 
-export default async function EntitiesPage() {
-  const entities = await listEntities();
+export default async function EntitiesPage({
+  searchParams,
+}: PageProps<"/data/entities">) {
+  const [entities, params] = await Promise.all([listEntities(), searchParams]);
+  const requestedType = Array.isArray(params.type) ? params.type[0] : params.type;
+  const defaultType = entityTypes.includes(requestedType as EntityType)
+    ? (requestedType as EntityType)
+    : undefined;
 
   return (
     <div className="flex flex-col gap-6">
-      <AddPanel label="+ Add entity">
-        <EntityForm />
+      <AddPanel label="+ Add entity" defaultOpen={params.add === "1"}>
+        <EntityForm defaultValues={defaultType ? { type: defaultType } : undefined} />
       </AddPanel>
 
       <ul className="flex flex-col divide-y divide-slate-200 dark:divide-slate-800">
@@ -39,7 +46,7 @@ export default async function EntitiesPage() {
         ))}
         {entities.length === 0 ? (
           <p className="py-6 text-sm text-slate-500 dark:text-slate-400">
-            No entities yet — add the first person, organization, bill, or country above.
+            No entities yet — add the first person, organization, election, or company above.
           </p>
         ) : null}
       </ul>

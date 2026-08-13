@@ -5,12 +5,14 @@ import { AddPanel } from "@/components/forms/add-panel";
 import { DeleteButton } from "@/components/forms/delete-button";
 import { deleteSourceAction } from "@/lib/actions/sources";
 
-export default async function SourcesPage() {
-  const sources = await listSources();
+export default async function SourcesPage({
+  searchParams,
+}: PageProps<"/data/sources">) {
+  const [sources, params] = await Promise.all([listSources(), searchParams]);
 
   return (
     <div className="flex flex-col gap-6">
-      <AddPanel label="+ Add source">
+      <AddPanel label="+ Add source" defaultOpen={params.add === "1"}>
         <SourceForm />
       </AddPanel>
 

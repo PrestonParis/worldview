@@ -7,17 +7,20 @@ import { AddPanel } from "@/components/forms/add-panel";
 import { DeleteButton } from "@/components/forms/delete-button";
 import { deleteClaimAction } from "@/lib/actions/claims";
 
-export default async function ClaimsPage() {
-  const [claims, entities, sources] = await Promise.all([
+export default async function ClaimsPage({
+  searchParams,
+}: PageProps<"/data/claims">) {
+  const [claims, entities, sources, params] = await Promise.all([
     listClaims(),
     listEntities(),
     listSources(),
+    searchParams,
   ]);
   const nameOf = (id: string) => entities.find((e) => e.id === id)?.name ?? "Unknown";
 
   return (
     <div className="flex flex-col gap-6">
-      <AddPanel label="+ Add claim">
+      <AddPanel label="+ Add claim" defaultOpen={params.add === "1"}>
         <ClaimForm entities={entities} sources={sources} claims={claims} />
       </AddPanel>
 

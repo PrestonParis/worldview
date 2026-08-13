@@ -1,9 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useLayoutEffect, useRef, useState } from "react";
-import { toolPages, dataAdminPage } from "@/lib/nav";
+import { Search, X } from "lucide-react";
+import { toolPages } from "@/lib/nav";
+import { GlobalSearch } from "@/components/search/global-search";
+import { NewMenu } from "@/components/nav/new-menu";
 
 interface PillRect {
   left: number;
@@ -15,6 +19,7 @@ export function Header({ email }: { email: string | null }) {
   const navRef = useRef<HTMLDivElement>(null);
   const linkRefs = useRef<Map<string, HTMLAnchorElement>>(new Map());
   const [pill, setPill] = useState<PillRect | null>(null);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   useLayoutEffect(() => {
     const activeLink = linkRefs.current.get(pathname);
@@ -32,11 +37,13 @@ export function Header({ email }: { email: string | null }) {
   return (
     <header className="header-enter sticky top-0 z-20 border-b border-slate-200 bg-white/90 backdrop-blur dark:border-slate-800 dark:bg-slate-950/90">
       <div className="flex h-14 items-center gap-6 px-6">
-        <Link
-          href="/"
-          className="shrink-0 text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100"
-        >
-          Worldview
+        <Link href="/" className="flex shrink-0 items-center gap-2">
+          <span className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-md bg-white ring-1 ring-slate-200">
+            <Image src="/logo.png" alt="" width={28} height={28} className="h-full w-full object-cover" />
+          </span>
+          <span className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">
+            Worldview
+          </span>
         </Link>
 
         <div ref={navRef} className="relative flex flex-1 items-center gap-1 overflow-x-auto">
@@ -69,12 +76,23 @@ export function Header({ email }: { email: string | null }) {
           })}
         </div>
 
-        <Link
-          href={dataAdminPage.href}
-          className="shrink-0 rounded-md bg-slate-900 px-3.5 py-1.5 text-sm font-medium text-white transition-colors hover:bg-slate-700 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white"
-        >
-          Manage Data
-        </Link>
+        <div className="relative shrink-0">
+          <button
+            type="button"
+            onClick={() => setSearchOpen((o) => !o)}
+            aria-label="Search"
+            className="flex h-8 w-8 items-center justify-center rounded-md text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
+          >
+            {searchOpen ? <X size={16} /> : <Search size={16} />}
+          </button>
+          {searchOpen ? (
+            <div className="absolute top-full right-0 z-30 mt-2 w-80">
+              <GlobalSearch placeholder="Search Worldview…" autoFocus />
+            </div>
+          ) : null}
+        </div>
+
+        <NewMenu />
 
         {email ? (
           <div className="flex shrink-0 items-center gap-2">
@@ -88,7 +106,14 @@ export function Header({ email }: { email: string | null }) {
               </button>
             </form>
           </div>
-        ) : null}
+        ) : (
+          <Link
+            href="/login"
+            className="shrink-0 rounded-md px-2.5 py-1.5 text-sm text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
+          >
+            Sign in
+          </Link>
+        )}
       </div>
     </header>
   );

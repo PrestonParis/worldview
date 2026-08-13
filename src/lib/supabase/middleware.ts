@@ -1,11 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-// Paths that don't require a signed-in session — either the sign-in flow
-// itself, or a surface with its own separate auth (the ingest API's bearer
-// token, checked in src/lib/ingest/auth.ts).
-const SESSION_EXEMPT_PREFIXES = ["/login", "/auth", "/api/ingest"];
-
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
 
@@ -28,20 +23,11 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  // Do not add logic between createServerClient and getUser() — it needs
-  // to run on every request for token refresh to work correctly.
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  const isExempt = SESSION_EXEMPT_PREFIXES.some((p) => request.nextUrl.pathname.startsWith(p));
-
-  if (!user && !isExempt) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/login";
-    url.searchParams.set("next", request.nextUrl.pathname);
-    return NextResponse.redirect(url);
-  }
+  // Worldview doesn't require sign-in to browse. This just refreshes an
+  // existing session's cookies (do not add logic between createServerClient
+  // and getUser() — it needs to run on every request for token refresh to
+  // work correctly) so signed-in contributors don't get logged out mid-visit.
+  await supabase.auth.getUser();
 
   return supabaseResponse;
 }

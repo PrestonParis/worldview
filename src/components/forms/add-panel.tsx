@@ -8,11 +8,13 @@ type WithOnDone = { onDone?: () => void };
 export function AddPanel({
   label,
   children,
+  defaultOpen = false,
 }: {
   label: string;
   children: ReactElement<WithOnDone>;
+  defaultOpen?: boolean;
 }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
 
   if (!open) {
     return (
