@@ -145,7 +145,11 @@ export function GlobalSearch({
                   <ul>
                     {items.map((item) => {
                       const flatIndex = flat.findIndex((f) => f.group === key && f.id === item.id);
-                      const color = typeColorFor(item.type === "person" ? "people" : key);
+                      const color = typeColorFor(
+                        ["politician", "pundit", "journalist"].includes(item.type ?? "")
+                          ? "people"
+                          : key,
+                      );
                       return (
                         <li key={item.id}>
                           <button

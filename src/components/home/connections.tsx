@@ -1,6 +1,6 @@
 import type { Edge } from "@/lib/validation/edge";
 import type { Entity } from "@/lib/validation/entity";
-import { entityColors } from "@/lib/entity-colors";
+import { entityColorFor } from "@/lib/entity-colors";
 
 export function Connections({
   edges,
@@ -28,13 +28,13 @@ export function Connections({
             >
               <span
                 className="h-2 w-2 shrink-0 rounded-full border-2"
-                style={{ background: entityColors[source.type].bg, borderColor: entityColors[source.type].border }}
+                style={{ background: entityColorFor(source.type).bg, borderColor: entityColorFor(source.type).border }}
               />
               <span className="font-medium text-slate-800 dark:text-slate-200">{source.name}</span>
               <span className="text-slate-400">{edge.label}</span>
               <span
                 className="h-2 w-2 shrink-0 rounded-full border-2"
-                style={{ background: entityColors[target.type].bg, borderColor: entityColors[target.type].border }}
+                style={{ background: entityColorFor(target.type).bg, borderColor: entityColorFor(target.type).border }}
               />
               <span className="font-medium text-slate-800 dark:text-slate-200">{target.name}</span>
             </li>

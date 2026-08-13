@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import {
   ReactFlow,
@@ -32,6 +32,20 @@ export function EntityGraph({
 }) {
   const router = useRouter();
 
+  // ReactFlow's colorMode="system" reads the OS theme via matchMedia, which
+  // isn't available during server rendering — it renders "light" on the
+  // server and may render "dark" on the client's very first paint,
+  // producing a hydration mismatch. useSyncExternalStore is the sanctioned
+  // way to let a value differ between the server and client render passes:
+  // the snapshot never changes after mount (no subscription needed), it
+  // just reports false for the server render and true once actually
+  // running in the browser.
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
+
   const nodes = useMemo<Node<EntityNodeData>[]>(() => {
     const positionById = new Map(positions.map((p) => [p.id, p]));
     return entities.map((e) => ({
@@ -57,6 +71,10 @@ export function EntityGraph({
     [edges],
   );
 
+  if (!mounted) {
+    return <div className="h-full w-full animate-pulse bg-slate-50 dark:bg-slate-900" />;
+  }
+
   return (
     <div className="h-full w-full">
       <ReactFlow
@@ -66,8 +84,13 @@ export function EntityGraph({
         fitView
         minZoom={0.1}
         colorMode="system"
+        // The graph can have 1,000+ nodes/edges — without this, React Flow
+        // keeps every one of them in the DOM at all times regardless of
+        // whether it's on-screen, which is what makes pan/zoom feel laggy.
+        onlyRenderVisibleElements
         onNodeClick={(_, node) => router.push(`/data/entities/${node.id}`)}
         panOnDrag={interactive}
+        panOnScroll={interactive}
         zoomOnScroll={interactive}
         zoomOnPinch={interactive}
         zoomOnDoubleClick={interactive}

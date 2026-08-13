@@ -1,9 +1,10 @@
 import { z } from "zod";
 
 export const entityTypes = [
-  "person",
+  "politician",
+  "pundit",
+  "journalist",
   "organization",
-  "election",
   "company",
 ] as const;
 

@@ -18,7 +18,8 @@
     "env:status": "grep NEXT_PUBLIC_SUPABASE_URL .env.local | sed 's/NEXT_PUBLIC_SUPABASE_URL=/Supabase target: /'",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "db:migrate-people-categories": "node scripts/migrate-people-categories.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.7.1",

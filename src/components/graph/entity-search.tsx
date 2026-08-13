@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
-import { entityColors } from "@/lib/entity-colors";
+import { entityColorFor } from "@/lib/entity-colors";
 import type { Entity } from "@/lib/validation/entity";
 
 const MAX_RESULTS = 8;
@@ -95,8 +95,8 @@ export function EntitySearch({
                     <span
                       className="h-2.5 w-2.5 shrink-0 rounded-full border-2"
                       style={{
-                        background: entityColors[entity.type].bg,
-                        borderColor: entityColors[entity.type].border,
+                        background: entityColorFor(entity.type).bg,
+                        borderColor: entityColorFor(entity.type).border,
                       }}
                     />
                     <span className="truncate text-slate-800 dark:text-slate-200">{entity.name}</span>

@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { SearchInput } from "@/components/search/search-input";
-import { entityColors } from "@/lib/entity-colors";
+import { entityColorFor } from "@/lib/entity-colors";
 import type { Entity } from "@/lib/validation/entity";
 import type { Claim } from "@/lib/validation/claim";
 import type { Source } from "@/lib/validation/source";
@@ -63,8 +63,8 @@ export function ClaimListView({
                 <span
                   className="absolute top-1.5 -left-[27px] h-2.5 w-2.5 rounded-full border-2"
                   style={{
-                    background: speaker ? entityColors[speaker.type].bg : "#fff",
-                    borderColor: speaker ? entityColors[speaker.type].border : "#94A3B8",
+                    background: speaker ? entityColorFor(speaker.type).bg : "#fff",
+                    borderColor: speaker ? entityColorFor(speaker.type).border : "#94A3B8",
                   }}
                 />
                 <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">

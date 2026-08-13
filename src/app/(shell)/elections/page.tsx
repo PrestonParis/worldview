@@ -1,14 +1,19 @@
-import { EntitySectionsPage } from "@/components/entities/entity-sections-page";
+import { EmptyStateFeatures } from "@/components/empty-state";
 import { pagesContent } from "@/lib/pages-content";
 
-export const dynamic = "force-dynamic";
-
 export default function Page() {
+  const content = pagesContent["elections"];
+
   return (
-    <EntitySectionsPage
-      content={pagesContent["elections"]}
-      sections={[{ type: "election", heading: "Elections" }]}
-      emptyMessage="No elections yet — add one as an entity (type: election) in"
-    />
+    <div>
+      <h1 className="text-2xl font-semibold tracking-tight">{content.title}</h1>
+      <p className="mt-1 text-slate-500 dark:text-slate-400">{content.tagline}</p>
+      <div className="mt-6">
+        <EmptyStateFeatures
+          content={content}
+          message="Election tools are separate from the People & Power entity directory."
+        />
+      </div>
+    </div>
   );
 }

@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { SearchInput } from "@/components/search/search-input";
-import { entityColors } from "@/lib/entity-colors";
+import { entityColorFor } from "@/lib/entity-colors";
 import type { Entity } from "@/lib/validation/entity";
 import type { Edge } from "@/lib/validation/edge";
 
@@ -103,8 +103,8 @@ export function EntityTypeSection({
                               <span
                                 className="h-1.5 w-1.5 shrink-0 rounded-full border"
                                 style={{
-                                  background: other ? entityColors[other.type].bg : "#fff",
-                                  borderColor: other ? entityColors[other.type].border : "#94A3B8",
+                                  background: other ? entityColorFor(other.type).bg : "#fff",
+                                  borderColor: other ? entityColorFor(other.type).border : "#94A3B8",
                                 }}
                               />
                               {direction} {edge.label} {direction} {other?.name ?? "Unknown"}

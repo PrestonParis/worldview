@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getEntity } from "@/lib/neo4j/entities";
 import { parseHighlights } from "@/lib/validation/entity";
-import { entityColors } from "@/lib/entity-colors";
+import { entityColorFor } from "@/lib/entity-colors";
 import { buttonVariants } from "@/components/ui/button";
 
 function initialsOf(name: string): string {
@@ -24,7 +24,7 @@ export default async function EntityProfilePage({
   const entity = await getEntity(id);
   if (!entity) notFound();
 
-  const colors = entityColors[entity.type];
+  const colors = entityColorFor(entity.type);
   const highlights = parseHighlights(entity.highlights);
 
   return (

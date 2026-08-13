@@ -1,5 +1,6 @@
+import { memo } from "react";
 import { Handle, Position, type NodeProps } from "@xyflow/react";
-import { entityColors } from "@/lib/entity-colors";
+import { entityColorFor } from "@/lib/entity-colors";
 import type { EntityType } from "@/lib/validation/entity";
 
 export interface EntityNodeData {
@@ -8,9 +9,12 @@ export interface EntityNodeData {
   [key: string]: unknown;
 }
 
-export function EntityNode({ data }: NodeProps) {
+// Memoized because the graph can render 1,000+ of these — without it, any
+// store update (selection, viewport, etc.) re-renders every node instead of
+// just the ones whose own props actually changed.
+export const EntityNode = memo(function EntityNode({ data }: NodeProps) {
   const { label, type } = data as EntityNodeData;
-  const colors = entityColors[type];
+  const colors = entityColorFor(type);
 
   return (
     <div
@@ -22,4 +26,4 @@ export function EntityNode({ data }: NodeProps) {
       <Handle type="source" position={Position.Bottom} className="!opacity-0" />
     </div>
   );
-}
+});

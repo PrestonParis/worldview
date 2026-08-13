@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { entityColors } from "@/lib/entity-colors";
+import { entityColorFor } from "@/lib/entity-colors";
 import type { Entity } from "@/lib/validation/entity";
 import type { Edge } from "@/lib/validation/edge";
 import type { Claim } from "@/lib/validation/claim";
@@ -35,8 +35,8 @@ export function RecentActivity({
                 <span
                   className="h-2.5 w-2.5 shrink-0 rounded-full border-2"
                   style={{
-                    background: entityColors[e.type].bg,
-                    borderColor: entityColors[e.type].border,
+                    background: entityColorFor(e.type).bg,
+                    borderColor: entityColorFor(e.type).border,
                   }}
                 />
                 <div className="min-w-0 flex-1">

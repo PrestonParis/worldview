@@ -28,7 +28,7 @@ export function EntityForm({
   } = useForm<EntityInput>({
     resolver: zodResolver(entitySchema),
     defaultValues: {
-      type: "person",
+      type: "politician",
       name: "",
       description: "",
       imageUrl: "",
@@ -58,7 +58,7 @@ export function EntityForm({
         <select id="type" className={inputClass} {...register("type")}>
           {entityTypes.map((t) => (
             <option key={t} value={t}>
-              {t}
+              {t.charAt(0).toUpperCase() + t.slice(1)}
             </option>
           ))}
         </select>
