@@ -118,7 +118,7 @@ function commitPolygonLayer(
 // map.dragPan.disable()/enable() bookkeeping. The text editor's textarea is
 // the one deliberate exception, switched to pointer-events:auto itself.
 export function AnnotationCanvas() {
-  const { map } = useMapInstance();
+  const { map, setStage } = useMapInstance();
   useMapCamera(map);
   const [size, setSize] = useState({ width: 0, height: 0 });
   const [draft, setDraft] = useState<Draft | null>(null);
@@ -175,6 +175,16 @@ export function AnnotationCanvas() {
     observer.observe(container);
     return () => observer.disconnect();
   }, [map]);
+
+  // Publishes the Konva stage into MapContext once it's actually mounted
+  // (which only happens once map + a nonzero size are both ready, per the
+  // guard below) — export tooling reads it from there instead of a second
+  // ref threaded through props. Re-fires on every size change since that's
+  // the signal a fresh Stage instance is likely mounted/settled.
+  useEffect(() => {
+    setStage(stageRef.current);
+    return () => setStage(null);
+  }, [size.width, size.height, setStage]);
 
   // Leaving select mode drops the current selection so stale handles don't
   // linger while a drawing tool is active.

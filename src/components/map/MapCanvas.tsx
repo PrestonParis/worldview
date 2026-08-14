@@ -71,6 +71,11 @@ export function MapCanvas() {
         center,
         zoom,
         attributionControl: { compact: true },
+        // Needed to read the canvas back out for image export (see
+        // src/lib/map/exportImage.ts) — WebGL's drawing buffer is cleared
+        // after compositing by default, so getCanvas() isn't reliably
+        // readable without this. Small memory/perf cost, accepted for it.
+        canvasContextAttributes: { preserveDrawingBuffer: true },
       });
       mapRef.current = map;
       setMap(map);
