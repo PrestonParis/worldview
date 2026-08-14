@@ -109,6 +109,15 @@ Two distinct sub-capabilities worth keeping separate when this is actually plann
 ## Status
 
 - [x] Phase 1 — Export
-- [ ] Phase 2 — Persistence
+- [x] Phase 2 — Persistence. Built as designed: `map_projects` table
+      (`src/lib/db/schema.ts`), CRUD in `src/lib/db/mapProjects.ts`, auth-scoped
+      server actions in `src/lib/actions/mapProjects.ts` (every action re-derives
+      the owner from the session server-side, never trusts a client-supplied id),
+      a `projectSlice` for the current graphic's id/name, `setMapView`/`setLayers`
+      wholesale-replace actions for loading a saved one, and `GraphicsBar.tsx`
+      (name, save status, autosave ~1.5s after the last edit, My Graphics
+      open/rename/delete). "New graphic" resets to defaults via
+      `createDefaultMapView`/`createDefaultLayers`, exported from the two slices
+      so the reset uses the exact same values the store initializes with.
 - [ ] Phase 3 — Editor gaps (undo/redo, layer reorder/rename, icon/highlight tools)
 - [ ] Phase 4 — Real-time updating graphics

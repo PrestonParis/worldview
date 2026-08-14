@@ -18,10 +18,14 @@ export interface LayersSlice {
   reorderLayers: (orderedIds: string[]) => void;
   duplicateLayer: (id: string) => void;
   setActiveLayer: (id: string | null) => void;
+  // Wholesale replace, for loading a saved graphic.
+  setLayers: (layers: Layer[]) => void;
 }
 
-export const createLayersSlice: StateCreator<LayersSlice> = (set, get) => ({
-  layers: [
+// A fresh array/object each call, for the same reason createDefaultMapView
+// is a function and not a shared constant — see there.
+export function createDefaultLayers(): Layer[] {
+  return [
     {
       id: "map-base",
       name: "Map",
@@ -32,7 +36,11 @@ export const createLayersSlice: StateCreator<LayersSlice> = (set, get) => ({
       order: 0,
       parentGroupId: null,
     },
-  ],
+  ];
+}
+
+export const createLayersSlice: StateCreator<LayersSlice> = (set, get) => ({
+  layers: createDefaultLayers(),
   activeLayerId: null,
   addLayer: (layer) => set((s) => ({ layers: [...s.layers, layer] })),
   removeLayer: (id) =>
@@ -76,4 +84,5 @@ export const createLayersSlice: StateCreator<LayersSlice> = (set, get) => ({
     set((s) => ({ layers: [...s.layers, copy] }));
   },
   setActiveLayer: (id) => set({ activeLayerId: id }),
+  setLayers: (layers) => set({ layers, activeLayerId: null }),
 });

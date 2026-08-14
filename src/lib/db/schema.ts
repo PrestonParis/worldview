@@ -5,6 +5,8 @@ import {
   text,
   timestamp,
   integer,
+  jsonb,
+  index,
   pgEnum,
   type AnyPgColumn,
 } from "drizzle-orm/pg-core";
@@ -70,3 +72,26 @@ export const claimsRelations = relations(claims, ({ one }) => ({
     references: [sources.id],
   }),
 }));
+
+export const mapProjects = pgTable(
+  "map_projects",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    // Supabase auth.users.id — a different schema Drizzle doesn't model, so
+    // no FK constraint, just an indexed plain uuid (same convention as the
+    // Neo4j entity references elsewhere in this file).
+    ownerId: uuid("owner_id").notNull(),
+    name: text("name").notNull().default("Untitled graphic"),
+    // MapViewState and Layer[] from src/lib/types.ts — the editor's own
+    // state, serialized as-is rather than re-declared as SQL columns.
+    mapView: jsonb("map_view").notNull(),
+    layers: jsonb("layers").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [index("map_projects_owner_id_idx").on(table.ownerId)],
+);

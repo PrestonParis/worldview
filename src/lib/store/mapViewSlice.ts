@@ -11,21 +11,16 @@ export interface MapViewSlice {
   toggleNeighbors: () => void;
   toggleFeature: (key: GeoFeatureKey) => void;
   selectCountry: (countryId: string | null) => void;
+  // Wholesale replace, for loading a saved graphic — everything above is
+  // for one field at a time during live editing.
+  setMapView: (view: MapViewState) => void;
 }
 
-const defaultFeatureToggles: Record<GeoFeatureKey, boolean> = {
-  seas: true,
-  mountains: false,
-  rivers: false,
-  lakes: false,
-  deserts: false,
-  islands: false,
-  forests: false,
-  cities: true,
-};
-
-export const createMapViewSlice: StateCreator<MapViewSlice> = (set) => ({
-  mapView: {
+// A fresh object each call — this gets assigned into store state (and
+// reused whenever "New graphic" resets it), so a shared mutable reference
+// across calls would let one graphic's edits leak into another's.
+export function createDefaultMapView(): MapViewState {
+  return {
     center: [0, 20],
     zoom: 2,
     bearing: 0,
@@ -33,9 +28,22 @@ export const createMapViewSlice: StateCreator<MapViewSlice> = (set) => ({
     style: "political",
     showLabels: true,
     showNeighbors: true,
-    featureToggles: defaultFeatureToggles,
+    featureToggles: {
+      seas: true,
+      mountains: false,
+      rivers: false,
+      lakes: false,
+      deserts: false,
+      islands: false,
+      forests: false,
+      cities: true,
+    },
     selectedCountryId: null,
-  },
+  };
+}
+
+export const createMapViewSlice: StateCreator<MapViewSlice> = (set) => ({
+  mapView: createDefaultMapView(),
   setCenter: (center) =>
     set((s) => ({ mapView: { ...s.mapView, center } })),
   setZoom: (zoom) => set((s) => ({ mapView: { ...s.mapView, zoom } })),
@@ -62,4 +70,5 @@ export const createMapViewSlice: StateCreator<MapViewSlice> = (set) => ({
     })),
   selectCountry: (countryId) =>
     set((s) => ({ mapView: { ...s.mapView, selectedCountryId: countryId } })),
+  setMapView: (view) => set({ mapView: view }),
 });
