@@ -49,7 +49,7 @@ Safe to re-run; only applies what's changed. `npm run db:studio` opens Drizzle S
 npm run dev
 ```
 
-- App: [http://localhost:3000](http://localhost:3000)
+- App: [http://localhost:3001](http://localhost:3001) (not 3000 — kept free for other local projects)
 - Local Supabase Studio: [http://localhost:54323](http://localhost:54323) (only in `env:docker` mode)
 - Neo4j Browser: [http://localhost:7474](http://localhost:7474) (`neo4j` / `worldview-dev`)
 
