@@ -8,14 +8,25 @@ import type Konva from "konva";
 import { useAppStore } from "@/lib/store/useAppStore";
 import { useMapInstance } from "@/lib/map/MapContext";
 import { useMapCamera } from "@/lib/map/useMapCamera";
-import { createShapeLayer, createMultiPointLayer, createTextLayer } from "@/lib/shapes";
-import type { DrawableToolId, Layer, LonLat } from "@/lib/types";
+import {
+  createShapeLayer,
+  createMultiPointLayer,
+  createTextLayer,
+  createIconLayer,
+} from "@/lib/shapes";
+import type { DrawableToolId, IconKind, Layer, LonLat } from "@/lib/types";
 import type { ToolOptions } from "@/lib/store/toolSlice";
 import { ShapeLayerView } from "./shapes/ShapeLayerView";
 import { SelectionHandles } from "./SelectionHandles";
 import { TextEditorOverlay } from "./TextEditorOverlay";
 
-const DRAWABLE_TOOLS: ReadonlySet<string> = new Set(["arrow", "line", "rectangle", "circle"]);
+const DRAWABLE_TOOLS: ReadonlySet<string> = new Set([
+  "arrow",
+  "line",
+  "rectangle",
+  "circle",
+  "highlight",
+]);
 
 function isDrawableTool(tool: string): tool is DrawableToolId {
   return DRAWABLE_TOOLS.has(tool);
@@ -48,7 +59,9 @@ function isAnnotationLayer(layer: Layer): boolean {
     layer.type === "circle" ||
     layer.type === "polygon" ||
     layer.type === "freehand" ||
-    layer.type === "text"
+    layer.type === "text" ||
+    layer.type === "icon" ||
+    layer.type === "highlight"
   );
 }
 
@@ -63,8 +76,10 @@ function moveGeometry(layer: Layer, dLng: number, dLat: number): Partial<Layer> 
     case "freehand":
       return { points: layer.points.map(translate) };
     case "circle":
+    case "highlight":
       return { center: translate(layer.center) };
     case "text":
+    case "icon":
       return { point: translate(layer.point) };
     default:
       return {};
@@ -82,7 +97,7 @@ function handleGeometry(layer: Layer, index: number, newGeo: LonLat): Partial<La
     points[index] = newGeo;
     return { points };
   }
-  if (layer.type === "circle") {
+  if (layer.type === "circle" || layer.type === "highlight") {
     if (index === 0) return { center: newGeo };
     const radiusMeters = turf.distance(layer.center, newGeo, { units: "meters" });
     return { radiusMeters: Math.max(radiusMeters, 1) };
@@ -198,7 +213,12 @@ export function AnnotationCanvas() {
       if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA")) {
         return;
       }
-      if (e.key === "Escape") {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "z") {
+        e.preventDefault();
+        const temporal = useAppStore.temporal.getState();
+        if (e.shiftKey) temporal.redo();
+        else temporal.undo();
+      } else if (e.key === "Escape") {
         const d = draftRef.current;
         if (d?.kind === "polygon" || d?.kind === "freehand") {
           setDraft(null);
@@ -286,10 +306,26 @@ export function AnnotationCanvas() {
       }
 
       if (tool === "text") {
-        console.log("TEXT TOOL MOUSEDOWN", e.lngLat);
         e.preventDefault();
         setTextEditor({ layerId: null, anchor: [e.lngLat.lng, e.lngLat.lat], initialValue: "" });
-        console.log("setTextEditor called");
+        return;
+      }
+
+      if (tool === "icon") {
+        e.preventDefault();
+        const options = toolOptionsRef.current;
+        const countOfType = layersRef.current.filter((l) => l.type === "icon").length;
+        const order = Math.max(0, ...layersRef.current.map((l) => l.order)) + 1;
+        const kind = typeof options.iconKind === "string" ? (options.iconKind as IconKind) : "flag";
+        const layer = createIconLayer(
+          [e.lngLat.lng, e.lngLat.lat],
+          kind,
+          options,
+          order,
+          countOfType + 1
+        );
+        addLayer(layer);
+        setActiveLayer(layer.id);
         return;
       }
 

@@ -34,6 +34,9 @@ export const createToolSlice: StateCreator<ToolSlice> = (set) => ({
     outline: true,
     shadow: false,
     rotation: 0,
+    iconKind: "flag",
+    size: 28,
+    opacity: 0.55,
   },
   setActiveTool: (tool) => set({ activeTool: tool }),
   setToolOption: (key, value) =>

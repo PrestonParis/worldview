@@ -2,6 +2,9 @@ import * as turf from "@turf/turf";
 import type {
   ArrowStyle,
   DrawableToolId,
+  HighlightStyle,
+  IconKind,
+  IconStyle,
   Layer,
   LayerBase,
   LonLat,
@@ -43,18 +46,35 @@ function textStyle(options: ToolOptions): TextStyle {
   };
 }
 
-const TYPE_LABEL: Record<DrawableToolId | MultiPointToolId | "text", string> = {
+function iconStyle(options: ToolOptions): IconStyle {
+  return {
+    color: options.color,
+    size: typeof options.size === "number" ? options.size : 28,
+    opacity: 1,
+  };
+}
+
+function highlightStyle(options: ToolOptions): HighlightStyle {
+  return {
+    color: options.color,
+    opacity: typeof options.opacity === "number" ? options.opacity : 0.55,
+  };
+}
+
+const TYPE_LABEL: Record<DrawableToolId | MultiPointToolId | "text" | "icon", string> = {
   arrow: "Arrow",
   line: "Line",
   rectangle: "Rectangle",
   circle: "Circle",
+  highlight: "Highlight",
   polygon: "Polygon",
   freehand: "Freehand",
   text: "Text",
+  icon: "Icon",
 };
 
 function makeBase(
-  type: DrawableToolId | MultiPointToolId | "text",
+  type: DrawableToolId | MultiPointToolId | "text" | "icon",
   order: number,
   nameSuffix: number
 ): LayerBase {
@@ -108,7 +128,29 @@ export function createShapeLayer({
         style: baseStyle(options),
       };
     }
+    case "highlight": {
+      const [center, edge] = points;
+      const radiusMeters = turf.distance(center, edge, { units: "meters" });
+      return {
+        ...base,
+        type: "highlight",
+        center,
+        radiusMeters: Math.max(radiusMeters, 1),
+        style: highlightStyle(options),
+      };
+    }
   }
+}
+
+export function createIconLayer(
+  point: LonLat,
+  icon: IconKind,
+  options: ToolOptions,
+  order: number,
+  nameSuffix: number
+): Layer {
+  const base = makeBase("icon", order, nameSuffix);
+  return { ...base, type: "icon", point, icon, style: iconStyle(options) };
 }
 
 export function createMultiPointLayer(

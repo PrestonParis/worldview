@@ -12,10 +12,12 @@ const HANDLE_STROKE = "#3b82f6";
 // Renders small draggable control points for the selected shape — the
 // endpoints for arrow/line/rectangle/polygon (a drag naturally IS the
 // resize/reshape gesture for a points-based shape), or center+edge for
-// circle (index 0 moves it, index 1 changes the radius). Freehand and text
-// don't get handles: freehand can have hundreds of points (whole-shape
-// move via body-drag only), and text doesn't have a resize gesture (size
-// is a tool-options field). Hit-tested by AnnotationCanvas via
+// circle/highlight (index 0 moves it, index 1 changes the radius; the two
+// share this block since a highlight is a circle geometrically, just
+// rendered as a glow). Freehand, text, and icon don't get handles:
+// freehand can have hundreds of points (whole-shape move via body-drag
+// only), and text/icon don't have a resize gesture (size is a
+// tool-options field). Hit-tested by AnnotationCanvas via
 // `handle:${layerId}:${index}` ids, same pattern as the shape bodies
 // themselves (`layer:${layerId}`).
 export function SelectionHandles({ layer, map }: { layer: Layer; map: MapLibreMap }) {
@@ -46,7 +48,7 @@ export function SelectionHandles({ layer, map }: { layer: Layer; map: MapLibreMa
     );
   }
 
-  if (layer.type === "circle") {
+  if (layer.type === "circle" || layer.type === "highlight") {
     const center = map.project(layer.center);
     const edgeGeo = turf.destination(layer.center, layer.radiusMeters, 90, {
       units: "meters",

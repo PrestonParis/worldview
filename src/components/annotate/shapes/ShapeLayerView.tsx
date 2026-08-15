@@ -9,6 +9,8 @@ import { CircleShape } from "./CircleShape";
 import { PolygonShape } from "./PolygonShape";
 import { FreehandShape } from "./FreehandShape";
 import { TextShape } from "./TextShape";
+import { IconShape } from "./IconShape";
+import { HighlightShape } from "./HighlightShape";
 
 export function ShapeLayerView({ layer, map }: { layer: Layer; map: MapLibreMap }) {
   switch (layer.type) {
@@ -26,6 +28,10 @@ export function ShapeLayerView({ layer, map }: { layer: Layer; map: MapLibreMap 
       return <FreehandShape layer={layer} map={map} />;
     case "text":
       return <TextShape layer={layer} map={map} />;
+    case "icon":
+      return <IconShape layer={layer} map={map} />;
+    case "highlight":
+      return <HighlightShape layer={layer} map={map} />;
     default:
       return null;
   }

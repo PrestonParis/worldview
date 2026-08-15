@@ -119,5 +119,19 @@ Two distinct sub-capabilities worth keeping separate when this is actually plann
       open/rename/delete). "New graphic" resets to defaults via
       `createDefaultMapView`/`createDefaultLayers`, exported from the two slices
       so the reset uses the exact same values the store initializes with.
-- [ ] Phase 3 — Editor gaps (undo/redo, layer reorder/rename, icon/highlight tools)
+- [x] Phase 3 — Editor gaps. Undo/redo via `zundo` (`temporal(...)` wrapping
+      `useAppStore`, tracking only the `layers` slice — map pan/zoom, active
+      tool, and project bookkeeping stay outside history on purpose),
+      Ctrl/Cmd+Z and Ctrl/Cmd+Shift+Z shortcuts plus Undo/Redo buttons in
+      `LayersPanel`. Layer list gets `moveLayer` (bring forward/send
+      backward, pinned so the locked base "Map" layer always stays furthest
+      back) and inline double-click rename. "Icon" (flag/pin/star, hand-
+      drawn with Konva primitives — no path-data dependency) and
+      "Highlight" (a soft radial-glow circle, sharing circle's exact
+      center+radius geometry/handles/drag-to-draw gesture) are real tools
+      now instead of no-ops, each with its own `ToolOptionsPanel` style
+      controls. Known limitation: undo history isn't debounced, so
+      dragging a style slider (thickness, size, intensity, rotation)
+      records one step per intermediate value rather than one step for the
+      whole drag — still correct, just more granular than ideal.
 - [ ] Phase 4 — Real-time updating graphics

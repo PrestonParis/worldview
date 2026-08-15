@@ -1,7 +1,7 @@
 "use client";
 
 import { useAppStore } from "@/lib/store/useAppStore";
-import type { ArrowStyle, TextStyle } from "@/lib/types";
+import type { ArrowStyle, HighlightStyle, IconKind, IconStyle, TextStyle } from "@/lib/types";
 import { TEXT_FONT_OPTIONS } from "@/lib/fonts";
 
 const SHAPE_TOOLS: ReadonlySet<string> = new Set([
@@ -28,6 +28,8 @@ export function ToolOptionsPanel() {
   const activeLayerId = useAppStore((s) => s.activeLayerId);
   const updateLayerStyle = useAppStore((s) => s.updateLayerStyle);
 
+  const updateLayerGeometry = useAppStore((s) => s.updateLayerGeometry);
+
   const activeLayer = layers.find((l) => l.id === activeLayerId) ?? null;
   const editingLayer =
     activeTool === "select" && activeLayer && "style" in activeLayer ? activeLayer : null;
@@ -35,12 +37,20 @@ export function ToolOptionsPanel() {
   const mode = editingLayer
     ? editingLayer.type === "text"
       ? "text"
-      : "shape"
+      : editingLayer.type === "icon"
+        ? "icon"
+        : editingLayer.type === "highlight"
+          ? "highlight"
+          : "shape"
     : activeTool === "text"
       ? "text"
-      : SHAPE_TOOLS.has(activeTool)
-        ? "shape"
-        : null;
+      : activeTool === "icon"
+        ? "icon"
+        : activeTool === "highlight"
+          ? "highlight"
+          : SHAPE_TOOLS.has(activeTool)
+            ? "shape"
+            : null;
 
   if (!mode) return null;
 
@@ -60,10 +70,47 @@ export function ToolOptionsPanel() {
     }
   }
 
+  function setIcon<K extends keyof IconStyle>(key: K, value: IconStyle[K]) {
+    if (editingLayer) {
+      updateLayerStyle(editingLayer.id, { [key]: value });
+    } else {
+      setToolOption(key as string, value);
+    }
+  }
+
+  function setIconKind(kind: IconKind) {
+    if (editingLayer && editingLayer.type === "icon") {
+      updateLayerGeometry(editingLayer.id, { icon: kind });
+    } else {
+      setToolOption("iconKind", kind);
+    }
+  }
+
+  function setHighlight<K extends keyof HighlightStyle>(key: K, value: HighlightStyle[K]) {
+    if (editingLayer) {
+      updateLayerStyle(editingLayer.id, { [key]: value });
+    } else {
+      setToolOption(key as string, value);
+    }
+  }
+
+  const iconKind =
+    editingLayer && editingLayer.type === "icon"
+      ? editingLayer.icon
+      : (typeof toolOptions.iconKind === "string" ? (toolOptions.iconKind as IconKind) : "flag");
+
   return (
     <div className="absolute bottom-3 left-3 z-10 w-56 rounded-md border border-neutral-700 bg-neutral-950/90 p-3 text-sm text-neutral-200 shadow-lg backdrop-blur">
       <p className="mb-2 text-xs uppercase tracking-wide text-neutral-500">
-        {editingLayer ? "Selected shape" : mode === "text" ? "New text style" : "New shape style"}
+        {editingLayer
+          ? "Selected shape"
+          : mode === "text"
+            ? "New text style"
+            : mode === "icon"
+              ? "New icon style"
+              : mode === "highlight"
+                ? "New highlight style"
+                : "New shape style"}
       </p>
       {mode === "shape" ? (
         <ShapeOptions
@@ -74,10 +121,22 @@ export function ToolOptionsPanel() {
           isArrow={editingLayer ? editingLayer.type === "arrow" : activeTool === "arrow"}
           set={setShape}
         />
-      ) : (
+      ) : mode === "text" ? (
         <TextOptions
           style={editingLayer ? (editingLayer.style as TextStyle) : (toolOptions as unknown as TextStyle)}
           set={setText}
+        />
+      ) : mode === "icon" ? (
+        <IconOptions
+          iconKind={iconKind}
+          setKind={setIconKind}
+          style={editingLayer ? (editingLayer.style as IconStyle) : (toolOptions as unknown as IconStyle)}
+          set={setIcon}
+        />
+      ) : (
+        <HighlightOptions
+          style={editingLayer ? (editingLayer.style as HighlightStyle) : (toolOptions as unknown as HighlightStyle)}
+          set={setHighlight}
         />
       )}
     </div>
@@ -267,6 +326,105 @@ function TextOptions({
           max={180}
           value={style.rotation}
           onChange={(e) => set("rotation", Number(e.target.value))}
+        />
+      </label>
+    </div>
+  );
+}
+
+const ICON_KIND_OPTIONS: { id: IconKind; label: string }[] = [
+  { id: "flag", label: "Flag" },
+  { id: "pin", label: "Pin" },
+  { id: "star", label: "Star" },
+];
+
+function IconOptions({
+  iconKind,
+  setKind,
+  style,
+  set,
+}: {
+  iconKind: IconKind;
+  setKind: (kind: IconKind) => void;
+  style: IconStyle;
+  set: <K extends keyof IconStyle>(key: K, value: IconStyle[K]) => void;
+}) {
+  return (
+    <div className="space-y-2.5">
+      <div className="flex gap-1.5">
+        {ICON_KIND_OPTIONS.map((o) => (
+          <button
+            key={o.id}
+            type="button"
+            onClick={() => setKind(o.id)}
+            className={`flex-1 rounded border px-2 py-1 text-xs ${
+              iconKind === o.id
+                ? "border-neutral-100 bg-neutral-100 text-neutral-900"
+                : "border-neutral-700 text-neutral-300"
+            }`}
+          >
+            {o.label}
+          </button>
+        ))}
+      </div>
+
+      <label className="flex items-center justify-between">
+        <span>Color</span>
+        <input
+          type="color"
+          value={style.color}
+          onChange={(e) => set("color", e.target.value)}
+          className="h-6 w-10 cursor-pointer rounded border border-neutral-700 bg-transparent"
+        />
+      </label>
+
+      <label className="flex flex-col gap-1">
+        <span className="flex items-center justify-between">
+          <span>Size</span>
+          <span className="text-neutral-500">{style.size}px</span>
+        </span>
+        <input
+          type="range"
+          min={16}
+          max={64}
+          value={style.size}
+          onChange={(e) => set("size", Number(e.target.value))}
+        />
+      </label>
+    </div>
+  );
+}
+
+function HighlightOptions({
+  style,
+  set,
+}: {
+  style: HighlightStyle;
+  set: <K extends keyof HighlightStyle>(key: K, value: HighlightStyle[K]) => void;
+}) {
+  return (
+    <div className="space-y-2.5">
+      <label className="flex items-center justify-between">
+        <span>Color</span>
+        <input
+          type="color"
+          value={style.color}
+          onChange={(e) => set("color", e.target.value)}
+          className="h-6 w-10 cursor-pointer rounded border border-neutral-700 bg-transparent"
+        />
+      </label>
+
+      <label className="flex flex-col gap-1">
+        <span className="flex items-center justify-between">
+          <span>Intensity</span>
+          <span className="text-neutral-500">{Math.round(style.opacity * 100)}%</span>
+        </span>
+        <input
+          type="range"
+          min={20}
+          max={100}
+          value={Math.round(style.opacity * 100)}
+          onChange={(e) => set("opacity", Number(e.target.value) / 100)}
         />
       </label>
     </div>

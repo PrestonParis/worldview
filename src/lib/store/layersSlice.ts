@@ -16,6 +16,11 @@ export interface LayersSlice {
   updateLayerGeometry: (id: string, geometry: Partial<Layer>) => void;
   updateLayerStyle: (id: string, style: Partial<ShapeStyle | ArrowStyle | TextStyle>) => void;
   reorderLayers: (orderedIds: string[]) => void;
+  // Swaps a layer with its immediate neighbor in stacking order ("forward"
+  // = toward the front/rendered-last, "backward" = toward the back). A
+  // no-op if the layer is already at that end, or if the swap would cross
+  // the locked base "map" layer, which always stays furthest back.
+  moveLayer: (id: string, direction: "forward" | "backward") => void;
   duplicateLayer: (id: string) => void;
   setActiveLayer: (id: string | null) => void;
   // Wholesale replace, for loading a saved graphic.
@@ -72,6 +77,27 @@ export const createLayersSlice: StateCreator<LayersSlice> = (set, get) => ({
         })
         .filter((l): l is Layer => l !== null),
     })),
+  moveLayer: (id, direction) =>
+    set((s) => {
+      // Ascending: index 0 = furthest back, last index = frontmost.
+      const sorted = [...s.layers].sort((a, b) => a.order - b.order);
+      const index = sorted.findIndex((l) => l.id === id);
+      if (index === -1) return {};
+      const targetIndex = direction === "forward" ? index + 1 : index - 1;
+      if (targetIndex < 0 || targetIndex >= sorted.length) return {};
+      const current = sorted[index];
+      const target = sorted[targetIndex];
+      if (current.type === "map" || target.type === "map") return {};
+      const swapped = sorted.slice();
+      swapped[index] = target;
+      swapped[targetIndex] = current;
+      // Renumber `order` to match array position — self-healing, so order
+      // values never drift or collide across repeated moves.
+      const orderById = new Map(swapped.map((l, i) => [l.id, i]));
+      return {
+        layers: s.layers.map((l) => ({ ...l, order: orderById.get(l.id) ?? l.order })),
+      };
+    }),
   duplicateLayer: (id) => {
     const layer = get().layers.find((l) => l.id === id);
     if (!layer) return;
