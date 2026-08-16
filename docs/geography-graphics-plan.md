@@ -92,19 +92,105 @@ real backend table, not browser-local storage:
   country, a marker at a capital/event location) — implement minimally rather than
   leave fake affordances in the UI.
 
-## Phase 4 — Real-time updating graphics (down the line, not yet planned in detail)
+## Phase 4 — Real-time updating graphics (planned in detail, not yet built)
 
-Two distinct sub-capabilities worth keeping separate when this is actually planned:
+Two distinct sub-capabilities, confirmed still worth keeping separate: which
+broadcast tool captures the output and what "live" should actually drive were
+both explicitly open questions in this doc, and the answer for both, on
+revisiting, was "design the general capability, don't commit to a specific
+vendor or dataset yet." So this phase is split into 4a (buildable now, with
+data that already exists) and 4b (the generic hook for later data sources).
 
-- **Data-bound layers**: a layer's appearance driven by live Worldview data instead
-  of manual styling — the first real connection between Geography and the rest of
-  the app's data model, which currently doesn't exist at all.
-- **Live broadcast output**: the graphic updating on-air without a human
-  re-exporting. Likely shape: a stripped "presentation" route (no editor chrome)
-  captured as a browser source by broadcast software, subscribed to data changes
-  (polling, or Supabase Realtime since that's already the stack). Needs its own
-  planning pass when it's actually time — depends on details not worth guessing now
-  (which broadcast software, what "live" actually needs to mean).
+### 4a — Live broadcast output (make an open graphic sync itself)
+
+Today, `map_projects` (Phase 2) already holds everything a rendered graphic
+needs — `mapView` + `layers` — updated by autosave while editing. What's
+missing is a second surface that displays a project read-only and stays in
+sync as the editor changes it, so a producer can adjust a graphic mid-show
+and have the broadcast output update without re-exporting a PNG.
+
+- **New route `src/app/geography/present/[id]/page.tsx`** — same
+  `<MapWorkspace />` the editor uses, but the page around it omits
+  `ToolRail`/`LayersPanel` (editing chrome) and `MapWorkspace` itself skips
+  `GraphicsBar`/`ExportPanel` in this mode (a `readOnly` prop, or a
+  parallel `PresentationWorkspace` composing the same `MapCanvas` +
+  `AnnotationCanvas`) — no `Header`, no page description, no draw
+  interactivity needed (OBS's browser source is visual-only unless
+  "Interact" mode is explicitly invoked). No new rendering code: the same
+  `ShapeLayerView`/`MapCanvas` pipeline the editor already uses.
+- **Loading + sync**: on mount, fetch the project by id and populate the
+  store (`setMapView`/`setLayers`, same actions `GraphicsBar` already uses
+  to open a saved graphic), then open a Supabase Realtime channel
+  (`supabase.channel(...).on('postgres_changes', { event: 'UPDATE', schema:
+  'public', table: 'map_projects', filter: \`id=eq.${id}\` }, ...)`) and
+  call the same setters on every push. `@supabase/supabase-js` (already a
+  dependency) supports this directly from the browser client
+  (`src/lib/supabase/client.ts`) — no new package.
+- **Access model — the open question this doc flagged**: OBS can't sign in,
+  so the presentation route has to be reachable without auth. Recommended:
+  treat the project's UUID as an unlisted-link capability, the same trust
+  model as a Google Doc/Figma "anyone with the link can view" — the id is
+  unguessable, and the public read path selects only `name`, `mapView`,
+  `layers` (never `ownerId`, so a presentation link can't be used to learn
+  which account owns a graphic). Concretely: a new `getPublicMapProject`
+  DB function + Realtime enabled for `map_projects` (today it's in neither
+  the `supabase_realtime` publication nor has RLS policies — both need
+  adding; all *writes* stay exactly as they are, through the existing
+  owner-scoped server actions, so this only ever opens up reads). Worth
+  re-confirming this trust model with you specifically before building it,
+  since it's a real access-control decision, not just an implementation
+  detail.
+- **Editor affordance**: once a graphic is saved, `GraphicsBar` gets a
+  "Copy presentation link" action (`/geography/present/{id}`) — the thing
+  you'd paste into an OBS browser source.
+- Explicitly not addressed yet, to decide when this gets built rather than
+  guessed now: whether the presentation route needs a transparent
+  background (for compositing over other video) versus solid, and
+  reconnect behavior if a laptop sleeps mid-show (Realtime should resync
+  to current state on reconnect, not stay stale — worth an explicit test,
+  not just an assumption).
+
+### 4b — Data-bound layer values (the generic hook, no data source chosen yet)
+
+Deliberately stops short of wiring up any specific Worldview dataset
+(elections, news, money) — per the decision to design the capability
+first. The minimal generic primitive:
+
+- **`liveValues`**: a small named key→value map scoped to one graphic,
+  stored as a new `jsonb` column directly on `map_projects` (not a
+  separate table) — piggybacking on the exact same row and Realtime
+  channel 4a already subscribes to, rather than standing up a second
+  subscription.
+- **Binding, not a new field type**: a bindable field (starting with just
+  two — a text layer's `text`, and a shape/highlight's `style.color`, the
+  two most broadcast-relevant) gains a second mode alongside its current
+  static value: `{ mode: "static", value } | { mode: "bound", key }`. A
+  bound field resolves its live value from `liveValues[key]` at render
+  time instead of reading the static value. Everything else about the
+  layer (geometry, other style fields) stays exactly as static/manual as
+  it is today.
+- **Editing surface**: a small "Live values" list (new panel, or folded
+  into `GraphicsBar`) where the producer types a key's current value and
+  it saves through the same `updateMapProjectAction` autosave already
+  uses — so it inherits owner-scoping (only the signed-in owner can push
+  live-value updates, which matches "the producer controls the graphic,"
+  not a multi-editor model).
+- Wiring an actual external feed (live election results, a news ticker,
+  whatever the show actually wants) is its own future phase once a
+  specific source is chosen — this just makes the layers capable of being
+  driven by *something*, manually or otherwise, without hardcoding which.
+
+### Verification, once either half is actually built
+
+- Two browser tabs (or a real OBS browser source + the editor): edit the
+  graphic, confirm the presentation view updates within ~1s with no
+  manual refresh.
+- Kill and restore the network connection mid-session; confirm Realtime
+  reconnects and resyncs to current state rather than freezing on stale
+  data.
+- Confirm the public read path's response never includes `ownerId` or
+  any other account-identifying field, from the network tab, not just
+  the code.
 
 ## Status
 
@@ -134,4 +220,9 @@ Two distinct sub-capabilities worth keeping separate when this is actually plann
       dragging a style slider (thickness, size, intensity, rotation)
       records one step per intermediate value rather than one step for the
       whole drag — still correct, just more granular than ideal.
-- [ ] Phase 4 — Real-time updating graphics
+- [ ] Phase 4 — Real-time updating graphics. Planned in detail above (4a:
+      live broadcast sync via a public read-only presentation route +
+      Supabase Realtime on `map_projects`; 4b: a generic bindable-value
+      hook, no specific data source chosen yet). Not built — next step is
+      building 4a, and confirming the unlisted-link access model for the
+      presentation route before it ships.
