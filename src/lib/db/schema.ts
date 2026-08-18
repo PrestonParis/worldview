@@ -7,6 +7,7 @@ import {
   integer,
   jsonb,
   index,
+  uniqueIndex,
   pgEnum,
   type AnyPgColumn,
 } from "drizzle-orm/pg-core";
@@ -71,6 +72,75 @@ export const claimsRelations = relations(claims, ({ one }) => ({
     fields: [claims.sourceId],
     references: [sources.id],
   }),
+}));
+
+export const billStatusEnum = pgEnum("bill_status", [
+  "introduced",
+  "in_committee",
+  "passed_chamber",
+  "passed_both_chambers",
+  "enacted",
+  "vetoed",
+  "failed",
+]);
+
+export const votePositionEnum = pgEnum("vote_position", [
+  "yea",
+  "nay",
+  "present",
+  "absent",
+]);
+
+export const bills = pgTable(
+  "bills",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    billNumber: text("bill_number").notNull(),
+    title: text("title").notNull(),
+    summary: text("summary"),
+    status: billStatusEnum("status").notNull().default("introduced"),
+    // Free text, like claims.venue — legislatures vary (House/Senate,
+    // unicameral assemblies, etc.), not worth a fixed enum.
+    chamber: text("chamber"),
+    introducedDate: timestamp("introduced_date", { withTimezone: true }).notNull(),
+    // References a `politician`-type Entity node in Neo4j. Not a foreign
+    // key — entities live in a different store, same convention as
+    // claims.speakerEntityId.
+    sponsorEntityId: uuid("sponsor_entity_id").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [index("bills_sponsor_entity_id_idx").on(table.sponsorEntityId)],
+);
+
+export const votes = pgTable(
+  "votes",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    billId: uuid("bill_id")
+      .notNull()
+      .references(() => bills.id, { onDelete: "cascade" }),
+    // Same convention — references a politician Entity in Neo4j.
+    voterEntityId: uuid("voter_entity_id").notNull(),
+    position: votePositionEnum("position").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    index("votes_bill_id_idx").on(table.billId),
+    index("votes_voter_entity_id_idx").on(table.voterEntityId),
+    uniqueIndex("votes_bill_voter_unique").on(table.billId, table.voterEntityId),
+  ],
+);
+
+export const billsRelations = relations(bills, ({ many }) => ({ votes: many(votes) }));
+export const votesRelations = relations(votes, ({ one }) => ({
+  bill: one(bills, { fields: [votes.billId], references: [bills.id] }),
 }));
 
 export const mapProjects = pgTable(

@@ -6,6 +6,7 @@ import {
 import { countEdges, countEdgesCreatedSince, listEdges } from "@/lib/neo4j/edges";
 import { countClaims, countClaimsCreatedSince, listRecentClaims } from "@/lib/db/claims";
 import { countSources, countSourcesCreatedSince } from "@/lib/db/sources";
+import { countBills, countBillsCreatedSince } from "@/lib/db/bills";
 import { computeForceLayout } from "@/lib/graph/layout";
 import { daysAgo } from "@/lib/dates";
 import { Hero } from "@/components/home/hero";
@@ -26,10 +27,12 @@ export default async function Home() {
     edgeCount,
     claimCount,
     sourceCount,
+    billCount,
     entityDelta,
     edgeDelta,
     claimDelta,
     sourceDelta,
+    billDelta,
     allEntities,
     allEdges,
     recentClaims,
@@ -38,10 +41,12 @@ export default async function Home() {
     countEdges(),
     countClaims(),
     countSources(),
+    countBills(),
     countEntitiesCreatedSince(weekAgo),
     countEdgesCreatedSince(weekAgo),
     countClaimsCreatedSince(weekAgo),
     countSourcesCreatedSince(weekAgo),
+    countBillsCreatedSince(weekAgo),
     listEntities(),
     listEdges(),
     listRecentClaims(5),
@@ -63,6 +68,7 @@ export default async function Home() {
     { label: "Relationships", value: edgeCount, delta: edgeDelta, href: "/data/edges" },
     { label: "Claims", value: claimCount, delta: claimDelta, href: "/data/claims" },
     { label: "Sources", value: sourceCount, delta: sourceDelta, href: "/data/sources" },
+    { label: "Bills", value: billCount, delta: billDelta, href: "/data/bills" },
   ];
 
   return (

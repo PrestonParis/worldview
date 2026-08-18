@@ -8,6 +8,7 @@ const tabs = [
   { href: "/data/edges", label: "Relationships" },
   { href: "/data/claims", label: "Claims" },
   { href: "/data/sources", label: "Sources" },
+  { href: "/data/bills", label: "Bills" },
 ];
 
 export default function DataLayout({ children }: LayoutProps<"/data">) {
@@ -15,8 +16,8 @@ export default function DataLayout({ children }: LayoutProps<"/data">) {
     <div className="max-w-3xl">
       <h1 className="text-2xl font-semibold tracking-tight">Manage Data</h1>
       <p className="mt-1 text-slate-500 dark:text-slate-400">
-        The four primitives every page draws from. Entities and relationships live in
-        Neo4j; claims and sources live in Postgres.
+        The five primitives every page draws from. Entities and relationships live in
+        Neo4j; claims, sources, and bills (with their votes) live in Postgres.
       </p>
 
       <nav className="mt-6 flex gap-1 border-b border-slate-200 dark:border-slate-800">

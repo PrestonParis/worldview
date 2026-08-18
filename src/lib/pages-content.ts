@@ -57,9 +57,7 @@ export const pagesContent: Record<string, PageContent> = {
     title: "Legislation & Courts",
     tagline: "Bills, votes, promises, and the cases that test them.",
     features: [
-      "Bill explorer",
       "Amendment diff",
-      "Voting record explorer",
       "Campaign promise tracker",
       "Court case explorer",
       "Supreme Court precedent graph",
