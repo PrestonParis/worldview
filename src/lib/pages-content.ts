@@ -67,8 +67,6 @@ export const pagesContent: Record<string, PageContent> = {
     title: "Money & Influence",
     tagline: "Where the money and the people move together.",
     features: [
-      "Donor network graph",
-      "Money flow visualizer",
       "Industry support explorer",
       "Geographic donor map",
       "Lobbying network",

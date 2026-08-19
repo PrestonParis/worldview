@@ -79,6 +79,38 @@ export const claims = pgTable("claims", {
     .defaultNow(),
 });
 
+export const contributions = pgTable(
+  "contributions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    // Both reference Entity nodes in Neo4j by id — same non-FK convention
+    // as bills.sponsorEntityId / claims.speakerEntityId.
+    donorEntityId: uuid("donor_entity_id").notNull(),
+    recipientEntityId: uuid("recipient_entity_id").notNull(),
+    // Whole currency units (e.g. dollars), not cents — political donation
+    // data is reported in whole units in practice, avoiding both float
+    // precision issues and numeric-as-string plumbing for a scale where
+    // exact-cent precision isn't meaningful.
+    amount: integer("amount").notNull(),
+    currency: text("currency").notNull().default("USD"),
+    date: timestamp("date", { withTimezone: true }).notNull(),
+    sourceRecordId: uuid("source_record_id").references(() => sources.id, {
+      onDelete: "set null",
+    }),
+    notes: text("notes"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    index("contributions_donor_entity_id_idx").on(table.donorEntityId),
+    index("contributions_recipient_entity_id_idx").on(table.recipientEntityId),
+  ],
+);
+
 export const sourcesRelations = relations(sources, ({ many }) => ({
   claims: many(claims),
 }));
