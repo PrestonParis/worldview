@@ -1,9 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import Link from "next/link";
 import { SearchInput } from "@/components/search/search-input";
 import { entityColorFor } from "@/lib/entity-colors";
+import { claimVerdicts } from "@/lib/validation/claim";
+import { VerdictPill, formatVerdict } from "./verdict-pill";
+import { VerdictEditor } from "./verdict-editor";
 import type { Entity } from "@/lib/validation/entity";
 import type { Claim } from "@/lib/validation/claim";
 import type { Source } from "@/lib/validation/source";
@@ -30,6 +33,8 @@ export function ClaimListView({
   searchPlaceholder: string;
 }) {
   const [query, setQuery] = useState("");
+  const [verdictFilter, setVerdictFilter] = useState("");
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const entityById = useMemo(() => new Map(entities.map((e) => [e.id, e])), [entities]);
   const claimById = useMemo(() => new Map(claims.map((c) => [c.id, c])), [claims]);
@@ -37,8 +42,13 @@ export function ClaimListView({
 
   const visible = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return claims;
     return claims.filter((c) => {
+      if (mode === "workbench" && verdictFilter) {
+        const matchesFilter =
+          verdictFilter === "__unverified" ? c.verdict === "" : c.verdict === verdictFilter;
+        if (!matchesFilter) return false;
+      }
+      if (!q) return true;
       const speaker = entityById.get(c.speakerEntityId)?.name ?? "";
       return (
         c.quote.toLowerCase().includes(q) ||
@@ -46,11 +56,28 @@ export function ClaimListView({
         speaker.toLowerCase().includes(q)
       );
     });
-  }, [claims, entityById, query]);
+  }, [claims, entityById, mode, query, verdictFilter]);
 
   return (
     <div>
-      <SearchInput value={query} onChange={setQuery} placeholder={searchPlaceholder} />
+      <div className="flex flex-wrap items-center gap-3">
+        <SearchInput value={query} onChange={setQuery} placeholder={searchPlaceholder} />
+        {mode === "workbench" ? (
+          <select
+            value={verdictFilter}
+            onChange={(e) => setVerdictFilter(e.target.value)}
+            className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300"
+          >
+            <option value="">All verdicts</option>
+            <option value="__unverified">Unverified</option>
+            {claimVerdicts.map((v) => (
+              <option key={v} value={v}>
+                {formatVerdict(v)}
+              </option>
+            ))}
+          </select>
+        ) : null}
+      </div>
 
       {visible.length === 0 ? (
         <p className="mt-6 text-sm text-slate-400">No claims match &ldquo;{query}&rdquo;.</p>
@@ -84,6 +111,7 @@ export function ClaimListView({
                   {c.topic ? (
                     <span className="rounded-full bg-slate-100 px-2 py-0.5 dark:bg-slate-800">{c.topic}</span>
                   ) : null}
+                  <VerdictPill verdict={c.verdict} />
                 </div>
                 <blockquote className="mt-1.5 text-slate-800 dark:text-slate-200">
                   &ldquo;{c.quote}&rdquo;
@@ -109,6 +137,7 @@ export function ClaimListView({
                 <th className="py-2 pr-4 font-medium">Position</th>
                 <th className="py-2 pr-4 font-medium">Confidence</th>
                 <th className="py-2 pr-4 font-medium">Contradicts</th>
+                <th className="py-2 pr-4 font-medium">Verdict</th>
               </tr>
             </thead>
             <tbody>
@@ -116,51 +145,74 @@ export function ClaimListView({
                 const speaker = entityById.get(c.speakerEntityId);
                 const contradicts = c.contradictsClaimId ? claimById.get(c.contradictsClaimId) : null;
                 const source = c.sourceId ? sourceById.get(c.sourceId) : null;
+                const isExpanded = expandedId === c.id;
                 return (
-                  <tr key={c.id} className="border-b border-slate-100 align-top dark:border-slate-900">
-                    <td className="py-2.5 pr-4 whitespace-nowrap tabular-nums text-slate-500 dark:text-slate-400">
-                      {formatDate(c.date)}
-                    </td>
-                    <td className="py-2.5 pr-4 whitespace-nowrap text-slate-700 dark:text-slate-300">
-                      {speaker?.name ?? "Unknown"}
-                    </td>
-                    <td className="py-2.5 pr-4 text-slate-800 dark:text-slate-200">
-                      &ldquo;{c.quote}&rdquo;
-                      {source ? (
-                        <span className="ml-1 text-xs text-slate-400">
-                          (
-                          {source.url ? (
-                            <a href={source.url} target="_blank" rel="noreferrer" className="underline">
-                              {source.title}
-                            </a>
-                          ) : (
-                            source.title
-                          )}
-                          )
-                        </span>
-                      ) : null}
-                    </td>
-                    <td className="py-2.5 pr-4 whitespace-nowrap text-slate-600 dark:text-slate-400">
-                      {c.positionClassification || "—"}
-                    </td>
-                    <td className="py-2.5 pr-4 tabular-nums text-slate-600 dark:text-slate-400">
-                      {c.confidence != null ? `${c.confidence}%` : "—"}
-                    </td>
-                    <td className="py-2.5 pr-4">
-                      {contradicts ? (
-                        <Link
-                          href={`/data/claims/${contradicts.id}/edit`}
-                          className="text-xs text-red-600 underline decoration-dotted dark:text-red-400"
-                          title={contradicts.quote}
+                  <Fragment key={c.id}>
+                    <tr className="border-b border-slate-100 align-top dark:border-slate-900">
+                      <td className="py-2.5 pr-4 whitespace-nowrap tabular-nums text-slate-500 dark:text-slate-400">
+                        {formatDate(c.date)}
+                      </td>
+                      <td className="py-2.5 pr-4 whitespace-nowrap text-slate-700 dark:text-slate-300">
+                        {speaker?.name ?? "Unknown"}
+                      </td>
+                      <td className="py-2.5 pr-4 text-slate-800 dark:text-slate-200">
+                        &ldquo;{c.quote}&rdquo;
+                        {source ? (
+                          <span className="ml-1 text-xs text-slate-400">
+                            (
+                            {source.url ? (
+                              <a href={source.url} target="_blank" rel="noreferrer" className="underline">
+                                {source.title}
+                              </a>
+                            ) : (
+                              source.title
+                            )}
+                            )
+                          </span>
+                        ) : null}
+                      </td>
+                      <td className="py-2.5 pr-4 whitespace-nowrap text-slate-600 dark:text-slate-400">
+                        {c.positionClassification || "—"}
+                      </td>
+                      <td className="py-2.5 pr-4 tabular-nums text-slate-600 dark:text-slate-400">
+                        {c.confidence != null ? `${c.confidence}%` : "—"}
+                      </td>
+                      <td className="py-2.5 pr-4">
+                        {contradicts ? (
+                          <Link
+                            href={`/data/claims/${contradicts.id}/edit`}
+                            className="text-xs text-red-600 underline decoration-dotted dark:text-red-400"
+                            title={contradicts.quote}
+                          >
+                            &ldquo;{contradicts.quote.slice(0, 40)}
+                            {contradicts.quote.length > 40 ? "…" : ""}&rdquo;
+                          </Link>
+                        ) : (
+                          <span className="text-xs text-slate-400">—</span>
+                        )}
+                      </td>
+                      <td className="py-2.5 pr-4">
+                        <button
+                          type="button"
+                          onClick={() => setExpandedId(isExpanded ? null : c.id)}
                         >
-                          &ldquo;{contradicts.quote.slice(0, 40)}
-                          {contradicts.quote.length > 40 ? "…" : ""}&rdquo;
-                        </Link>
-                      ) : (
-                        <span className="text-xs text-slate-400">—</span>
-                      )}
-                    </td>
-                  </tr>
+                          <VerdictPill verdict={c.verdict} />
+                        </button>
+                      </td>
+                    </tr>
+                    {isExpanded ? (
+                      <tr className="border-b border-slate-100 dark:border-slate-900">
+                        <td colSpan={7} className="pb-3">
+                          <VerdictEditor
+                            claimId={c.id}
+                            verdict={c.verdict}
+                            verdictNotes={c.verdictNotes}
+                            onDone={() => setExpandedId(null)}
+                          />
+                        </td>
+                      </tr>
+                    ) : null}
+                  </Fragment>
                 );
               })}
             </tbody>

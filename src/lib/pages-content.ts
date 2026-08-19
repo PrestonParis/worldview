@@ -34,7 +34,6 @@ export const pagesContent: Record<string, PageContent> = {
     title: "Fact-Check & Authority",
     tagline: "Is it true, and could they actually do it.",
     features: [
-      "Claim / fact-check workbench",
       "Argument mapper",
       "“What changed?” politics engine",
       "“Can they actually do that?” tool",

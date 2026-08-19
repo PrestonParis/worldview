@@ -24,6 +24,28 @@ export type ClaimInput = z.infer<typeof claimSchema>;
 export interface Claim extends Omit<ClaimInput, "confidence"> {
   id: string;
   confidence: number | null;
+  // Fact-check verdict — read here, but written only through
+  // setClaimVerdictAction (see verdictSchema below), not the general
+  // claim form/claimSchema.
+  verdict: string;
+  verdictNotes: string;
+  verifiedAt: string;
   createdAt: string;
   updatedAt: string;
 }
+
+export const claimVerdicts = [
+  "true",
+  "mostly_true",
+  "mixed",
+  "mostly_false",
+  "false",
+  "unsubstantiated",
+] as const;
+
+export const verdictSchema = z.object({
+  verdict: z.enum(claimVerdicts).optional().or(z.literal("")),
+  verdictNotes: z.string().max(2000).optional().or(z.literal("")),
+});
+
+export type VerdictInput = z.infer<typeof verdictSchema>;
