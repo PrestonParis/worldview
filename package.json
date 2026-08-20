@@ -19,7 +19,8 @@
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "db:migrate-people-categories": "node scripts/migrate-people-categories.mjs"
+    "db:migrate-people-categories": "node scripts/migrate-people-categories.mjs",
+    "import:fec-donors": "node scripts/import-fec-donors.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.7.1",
@@ -57,6 +58,7 @@
     "drizzle-kit": "^0.31.10",
     "eslint": "^9",
     "eslint-config-next": "16.3.0",
+    "js-yaml": "^5.3.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

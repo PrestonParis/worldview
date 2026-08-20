@@ -98,6 +98,10 @@ export const contributions = pgTable(
       onDelete: "set null",
     }),
     notes: text("notes"),
+    // Idempotency key for imported rows (e.g. FEC's schedule_a `sub_id`) —
+    // null for anything entered by hand through /data/contributions, which
+    // never sets it. Lets an import script re-run safely via ON CONFLICT.
+    externalId: text("external_id"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
@@ -108,6 +112,7 @@ export const contributions = pgTable(
   (table) => [
     index("contributions_donor_entity_id_idx").on(table.donorEntityId),
     index("contributions_recipient_entity_id_idx").on(table.recipientEntityId),
+    uniqueIndex("contributions_external_id_idx").on(table.externalId),
   ],
 );
 

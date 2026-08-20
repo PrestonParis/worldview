@@ -19,6 +19,11 @@ export type ContributionInput = z.infer<typeof contributionSchema>;
 export interface Contribution extends Omit<ContributionInput, "amount"> {
   id: string;
   amount: number;
+  // Idempotency key for imported rows (e.g. FEC's schedule_a `sub_id`) —
+  // "" for anything entered by hand; never set through this app's own
+  // create/update form (see contributionSchema — it's deliberately absent
+  // there, written only by import scripts via a direct SQL insert).
+  externalId: string;
   createdAt: string;
   updatedAt: string;
 }

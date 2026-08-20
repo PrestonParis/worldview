@@ -13,6 +13,7 @@ function toContribution(row: typeof contributions.$inferSelect): Contribution {
     date: row.date.toISOString(),
     sourceRecordId: row.sourceRecordId ?? "",
     notes: row.notes ?? "",
+    externalId: row.externalId ?? "",
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   };
