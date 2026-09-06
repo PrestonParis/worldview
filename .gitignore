@@ -37,6 +37,12 @@ yarn-error.log*
 # vercel
 .vercel
 
+# database backups — local dumps written by scripts/export-db.mjs, plus the
+# reconstruct script's FEC response cache. The one committed directory under
+# backups/ is the recovered pre-wipe Postgres snapshot (see its manifest).
+/backups/*
+!/backups/2026-09-06T21-05-25/
+
 # claude code — machine-local settings, not shared
 .claude/settings.local.json
 

@@ -1,0 +1,5 @@
+{
+  "note": "Pre-wipe Postgres snapshot recovered from a Claude session scratchpad. Written by scratch-db-ukraine-wipe.cjs before it deleted claims/sources on 2026-09-06. Postgres only — no Neo4j snapshot was ever taken.",
+  "capturedAt": "2026-09-06T21:05:25",
+  "tables": { "claims": 9, "sources": 42, "contributions": 199 }
+}

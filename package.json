@@ -19,8 +19,12 @@
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
+    "db:seed": "node scripts/seed.mjs",
+    "db:export": "node scripts/export-db.mjs",
+    "db:restore-postgres": "node scripts/restore-postgres-backup.mjs",
     "db:migrate-people-categories": "node scripts/migrate-people-categories.mjs",
-    "import:fec-donors": "node scripts/import-fec-donors.mjs"
+    "import:fec-donors": "node scripts/import-fec-donors.mjs",
+    "reconstruct:fec-graph": "node scripts/reconstruct-fec-graph.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.7.1",
