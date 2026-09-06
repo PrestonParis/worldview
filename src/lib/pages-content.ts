@@ -19,38 +19,6 @@ export const pagesContent: Record<string, PageContent> = {
       "Career timeline",
     ],
   },
-  statements: {
-    slug: "statements",
-    title: "Statements & Rhetoric",
-    tagline: "What people said, when, and how the language shifted.",
-    features: [
-      "Statement & position history",
-      "Quote & phrase provenance",
-      "Rhetoric & narrative tracker",
-    ],
-  },
-  "fact-check": {
-    slug: "fact-check",
-    title: "Fact-Check & Authority",
-    tagline: "Is it true, and could they actually do it.",
-    features: [
-      "Argument mapper",
-      "“What changed?” politics engine",
-      "“Can they actually do that?” tool",
-      "Executive power explorer",
-      "Policy dependency graph",
-    ],
-  },
-  news: {
-    slug: "news",
-    title: "News & Timelines",
-    tagline: "What actually happened, and how the story moved.",
-    features: [
-      "Political news organizer",
-      "Story evolution tracker",
-      "Primary source finder",
-    ],
-  },
   legislation: {
     slug: "legislation",
     title: "Legislation & Courts",
@@ -71,19 +39,6 @@ export const pagesContent: Record<string, PageContent> = {
       "Geographic donor map",
       "Lobbying network",
       "Revolving door tracker",
-    ],
-  },
-  alignment: {
-    slug: "alignment",
-    title: "Alignment & Coalitions",
-    tagline: "Who actually agrees with whom, by vote, speech, or platform.",
-    features: [
-      "Coalition / voting bloc detector",
-      "Agreeability measurement",
-      "Coalition calculator",
-      "Issue coalition graph",
-      "Ideology mapper",
-      "Platform comparator",
     ],
   },
   elections: {

@@ -38,15 +38,6 @@ export const sources = pgTable("sources", {
     .defaultNow(),
 });
 
-export const claimVerdictEnum = pgEnum("claim_verdict", [
-  "true",
-  "mostly_true",
-  "mixed",
-  "mostly_false",
-  "false",
-  "unsubstantiated",
-]);
-
 export const claims = pgTable("claims", {
   id: uuid("id").primaryKey().defaultRandom(),
   // References an Entity node in Neo4j by id. Not a foreign key —
@@ -64,13 +55,6 @@ export const claims = pgTable("claims", {
   sourceId: uuid("source_id").references(() => sources.id, {
     onDelete: "set null",
   }),
-  // Fact-check verdict — deliberately separate from positionClassification
-  // (the speaker's stance on a topic, used by /alignment) and set only
-  // through the /fact-check workbench's dedicated action, not the general
-  // claim form. NULL verdict means not yet reviewed.
-  verdict: claimVerdictEnum("verdict"),
-  verdictNotes: text("verdict_notes"),
-  verifiedAt: timestamp("verified_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),

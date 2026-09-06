@@ -13,13 +13,9 @@ export interface TypeColor {
 
 export const typeColors: Record<string, TypeColor> = {
   people: { bg: "#EFF6FF", border: "#3B82F6", text: "#1D4ED8" }, // blue
-  statements: { bg: "#FAF5FF", border: "#A855F7", text: "#7E22CE" }, // purple
-  "fact-check": { bg: "#FEF2F2", border: "#EF4444", text: "#B91C1C" }, // red
-  news: { bg: "#FFF7ED", border: "#F97316", text: "#C2410C" }, // orange
   studio: { bg: "#FDF2F8", border: "#EC4899", text: "#BE185D" }, // pink
   legislation: { bg: "#EEF2FF", border: "#6366F1", text: "#4338CA" }, // indigo
   money: { bg: "#F0FDF4", border: "#22C55E", text: "#15803D" }, // green
-  alignment: { bg: "#F0FDFA", border: "#14B8A6", text: "#0F766E" }, // teal
   elections: { bg: "#FEFCE8", border: "#EAB308", text: "#A16207" }, // yellow
   geography: { bg: "#ECFEFF", border: "#06B6D4", text: "#0E7490" }, // cyan
 };

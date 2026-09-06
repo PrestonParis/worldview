@@ -4,7 +4,7 @@ import { toolPages } from "@/lib/nav";
 import { pagesContent } from "@/lib/pages-content";
 import { typeColorFor } from "@/lib/type-colors";
 
-const PROMOTED_SLUGS = ["people", "statements", "news", "fact-check"];
+const CATEGORY_SLUGS = ["people", "legislation", "money", "elections", "geography"];
 
 function NodeGraphIcon() {
   return (
@@ -26,38 +26,7 @@ function NodeGraphIcon() {
   );
 }
 
-function TimelineIcon() {
-  return (
-    <svg viewBox="0 0 64 40" className="h-10 w-16" aria-hidden>
-      <line x1="6" y1="20" x2="58" y2="20" stroke="currentColor" strokeWidth="1.5" opacity="0.5" />
-      <g fill="currentColor">
-        <circle cx="14" cy="20" r="3" />
-        <circle cx="30" cy="20" r="4.5" />
-        <circle cx="46" cy="20" r="3" />
-      </g>
-      <rect x="26" y="8" width="8" height="6" rx="1.5" fill="currentColor" opacity="0.35" />
-    </svg>
-  );
-}
-
-function ConvergingHeadlinesIcon() {
-  return (
-    <svg viewBox="0 0 64 40" className="h-10 w-16" aria-hidden>
-      <g stroke="currentColor" strokeWidth="1.5" opacity="0.6">
-        <line x1="6" y1="8" x2="30" y2="20" />
-        <line x1="6" y1="20" x2="30" y2="20" />
-        <line x1="6" y1="32" x2="30" y2="20" />
-      </g>
-      <rect x="4" y="6" width="14" height="3.5" rx="1" fill="currentColor" opacity="0.8" />
-      <rect x="4" y="18.5" width="18" height="3.5" rx="1" fill="currentColor" opacity="0.8" />
-      <rect x="4" y="30" width="12" height="3.5" rx="1" fill="currentColor" opacity="0.8" />
-      <circle cx="46" cy="20" r="8" fill="none" stroke="currentColor" strokeWidth="1.5" />
-      <circle cx="46" cy="20" r="2.5" fill="currentColor" />
-    </svg>
-  );
-}
-
-function ClaimVerdictIcon() {
+function DocsIcon() {
   return (
     <svg viewBox="0 0 64 40" className="h-10 w-16" aria-hidden>
       <g stroke="currentColor" strokeWidth="1.5" fill="none">
@@ -72,16 +41,60 @@ function ClaimVerdictIcon() {
   );
 }
 
+function MoneyFlowIcon() {
+  return (
+    <svg viewBox="0 0 64 40" className="h-10 w-16" aria-hidden>
+      <path d="M8 30c12 0 12-20 24-20s12 20 24 20" stroke="currentColor" strokeWidth="1.5" fill="none" opacity="0.6" />
+      <g fill="currentColor">
+        <circle cx="8" cy="30" r="3.5" />
+        <circle cx="56" cy="30" r="3.5" />
+      </g>
+      <circle cx="32" cy="20" r="6.5" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <line x1="32" y1="15.5" x2="32" y2="24.5" stroke="currentColor" strokeWidth="1.5" />
+    </svg>
+  );
+}
+
+function GlobeIcon() {
+  return (
+    <svg viewBox="0 0 64 40" className="h-10 w-16" aria-hidden>
+      <g stroke="currentColor" strokeWidth="1.5" fill="none">
+        <circle cx="32" cy="20" r="13" />
+        <ellipse cx="32" cy="20" rx="5.5" ry="13" />
+        <line x1="19" y1="20" x2="45" y2="20" />
+        <line x1="21.5" y1="12" x2="42.5" y2="12" opacity="0.7" />
+        <line x1="21.5" y1="28" x2="42.5" y2="28" opacity="0.7" />
+      </g>
+    </svg>
+  );
+}
+
+function BallotIcon() {
+  return (
+    <svg viewBox="0 0 64 40" className="h-10 w-16" aria-hidden>
+      <g stroke="currentColor" strokeWidth="1.5" fill="none">
+        <rect x="18" y="6" width="28" height="24" rx="2" opacity="0.8" />
+        <path d="M23 15l3 3 6-7" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+        <line x1="23" y1="24" x2="41" y2="24" opacity="0.6" />
+      </g>
+      <rect x="10" y="30" width="44" height="5" rx="1.5" fill="currentColor" opacity="0.85" />
+      <rect x="29" y="27" width="6" height="6" fill="currentColor" />
+    </svg>
+  );
+}
+
 const ICONS: Record<string, () => ReactElement> = {
   people: NodeGraphIcon,
-  statements: TimelineIcon,
-  news: ConvergingHeadlinesIcon,
-  "fact-check": ClaimVerdictIcon,
+  legislation: DocsIcon,
+  money: MoneyFlowIcon,
+  elections: BallotIcon,
+  geography: GlobeIcon,
 };
 
 export function ToolModules() {
-  const promoted = PROMOTED_SLUGS.map((slug) => toolPages.find((p) => p.href === `/${slug}`)!);
-  const rest = toolPages.filter((p) => !PROMOTED_SLUGS.includes(p.href.slice(1)));
+  const categories = CATEGORY_SLUGS.map((slug) =>
+    toolPages.find((p) => p.href === `/${slug}`),
+  ).filter((p): p is (typeof toolPages)[number] => Boolean(p));
 
   return (
     <section>
@@ -90,11 +103,11 @@ export function ToolModules() {
       </h2>
 
       <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
-        {promoted.map((page) => {
+        {categories.map((page) => {
           const slug = page.href.slice(1);
           const content = pagesContent[slug];
           const color = typeColorFor(slug);
-          const Icon = ICONS[slug];
+          const Icon = ICONS[slug] ?? NodeGraphIcon;
           return (
             <Link
               key={page.href}
@@ -111,21 +124,6 @@ export function ToolModules() {
             </Link>
           );
         })}
-      </div>
-
-      <div className="mt-4 flex flex-wrap gap-2">
-        <p className="mr-1 self-center text-xs font-semibold tracking-wider text-slate-400 uppercase">
-          More tools
-        </p>
-        {rest.map((page) => (
-          <Link
-            key={page.href}
-            href={page.href}
-            className="rounded-full border border-slate-200 px-3.5 py-1.5 text-sm text-slate-600 transition-colors hover:border-slate-400 hover:text-slate-900 dark:border-slate-700 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:text-slate-100"
-          >
-            {page.navLabel}
-          </Link>
-        ))}
       </div>
     </section>
   );

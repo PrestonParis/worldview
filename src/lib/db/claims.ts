@@ -1,7 +1,7 @@
 import { eq, count, gte } from "drizzle-orm";
 import { db } from "./client";
 import { claims } from "./schema";
-import type { Claim, ClaimInput, VerdictInput } from "../validation/claim";
+import type { Claim, ClaimInput } from "../validation/claim";
 
 function toClaim(row: typeof claims.$inferSelect): Claim {
   return {
@@ -15,9 +15,6 @@ function toClaim(row: typeof claims.$inferSelect): Claim {
     confidence: row.confidence,
     contradictsClaimId: row.contradictsClaimId ?? "",
     sourceId: row.sourceId ?? "",
-    verdict: row.verdict ?? "",
-    verdictNotes: row.verdictNotes ?? "",
-    verifiedAt: row.verifiedAt ? row.verifiedAt.toISOString() : "",
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   };
@@ -104,21 +101,4 @@ export async function updateClaim(
 
 export async function deleteClaim(id: string): Promise<void> {
   await db.delete(claims).where(eq(claims.id, id));
-}
-
-export async function setClaimVerdict(
-  id: string,
-  input: VerdictInput,
-): Promise<Claim | null> {
-  const [row] = await db
-    .update(claims)
-    .set({
-      verdict: input.verdict || null,
-      verdictNotes: input.verdictNotes || null,
-      verifiedAt: input.verdict ? new Date() : null,
-      updatedAt: new Date(),
-    })
-    .where(eq(claims.id, id))
-    .returning();
-  return row ? toClaim(row) : null;
 }

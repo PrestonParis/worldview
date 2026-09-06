@@ -5,9 +5,9 @@ const EXAMPLE_SEARCHES = ["Trump", "Ukraine", "Byron Donalds", "Wisconsin", "Her
 
 const CHIPS = [
   { label: "Explore people", href: "/people" },
-  { label: "Track statements", href: "/statements" },
+  { label: "Read the legislation", href: "/legislation" },
   { label: "Follow the money", href: "/money" },
-  { label: "Check claims", href: "/fact-check" },
+  { label: "Map the geography", href: "/geography" },
 ];
 
 export function Hero() {
