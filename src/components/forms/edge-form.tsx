@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { edgeSchema, type EdgeInput } from "@/lib/validation/edge";
 import { createEdgeAction } from "@/lib/actions/edges";
+import { relationshipCategories, relationshipTypes } from "@/lib/relationships";
 import { Field, inputClass } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import type { Entity } from "@/lib/validation/entity";
@@ -26,13 +27,17 @@ export function EdgeForm({
     register,
     handleSubmit,
     reset,
+    getValues,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<EdgeInput>({
     resolver: zodResolver(edgeSchema),
     defaultValues: {
       sourceEntityId: "",
       targetEntityId: "",
+      relType: "",
       label: "",
+      role: "",
       validFrom: "",
       validTo: "",
       notes: "",
@@ -85,9 +90,40 @@ export function EdgeForm({
         </Field>
       </div>
 
-      <Field label="Relationship" htmlFor="label" error={errors.label?.message}>
-        <input id="label" className={inputClass} placeholder="e.g. endorsed, employed by, donated to" {...register("label")} />
+      <Field label="Relationship type" htmlFor="relType" error={errors.relType?.message}>
+        <select
+          id="relType"
+          className={inputClass}
+          {...register("relType", {
+            onChange: (e) => {
+              const rt = relationshipTypes.find((r) => r.slug === e.target.value);
+              if (rt && !getValues("label")) setValue("label", rt.verb, { shouldValidate: true });
+            },
+          })}
+        >
+          <option value="">Select…</option>
+          {relationshipCategories.map((cat) => (
+            <optgroup key={cat} label={cat[0].toUpperCase() + cat.slice(1)}>
+              {relationshipTypes
+                .filter((r) => r.category === cat)
+                .map((r) => (
+                  <option key={r.slug} value={r.slug}>
+                    {r.label}
+                  </option>
+                ))}
+            </optgroup>
+          ))}
+        </select>
       </Field>
+
+      <div className="grid grid-cols-2 gap-4">
+        <Field label="Label / detail" htmlFor="label" error={errors.label?.message}>
+          <input id="label" className={inputClass} placeholder="e.g. endorsed, donated to" {...register("label")} />
+        </Field>
+        <Field label="Role (optional)" htmlFor="role" error={errors.role?.message}>
+          <input id="role" className={inputClass} placeholder="e.g. Chief of Staff, parent" {...register("role")} />
+        </Field>
+      </div>
 
       <div className="grid grid-cols-2 gap-4">
         <Field label="Valid from" htmlFor="validFrom" error={errors.validFrom?.message}>

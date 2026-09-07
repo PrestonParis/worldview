@@ -6,6 +6,11 @@ export const edgeSchema = z
     sourceEntityId: z.uuid("Pick a source entity"),
     targetEntityId: z.uuid("Pick a target entity"),
     label: z.string().min(1, "Relationship label is required").max(120),
+    // Slug from src/lib/relationships.ts — the typed key filters and
+    // grouping use. `label` stays as the human detail.
+    relType: z.string().max(60).optional().or(z.literal("")),
+    // Optional specifics: "Chief of Staff", "parent", "guest ep. 412".
+    role: z.string().max(200).optional().or(z.literal("")),
     validFrom: z.string().optional().or(z.literal("")),
     validTo: z.string().optional().or(z.literal("")),
     notes: z.string().max(2000).optional().or(z.literal("")),
