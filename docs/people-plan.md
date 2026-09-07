@@ -288,7 +288,16 @@ env (`env:docker` / `env:cloud`), then `db:migrate-neo4j` pushes Docker → Aura
 
 ## Status
 
-Planned, not started. Build order: **Phase 1 → Phase 2 → enrichment track →
-Phase 3** is the committed core ("People is finished" = through here). Phases
-4–8 are the six named features and sit on the Phase 1–2 foundation; build in any
-order, each is a route + a query + a layout choice.
+**Phase 1 — mostly done** (commit "People Phase 1: scope the graph so /people
+is legible"). `src/lib/graph/scope.ts` + `graph-page.tsx` / `graph-view.tsx` /
+`entity-search.tsx`: overview shows the connected core (~160 nodes) instead of
+1,130; `?root` focuses an ego network with a hop selector and hub toggle;
+entity-type filter chips. **Remaining in Phase 1**: degree-based node sizing and
+click-a-node-to-re-root — both need `entity-graph.tsx`, which had unrelated
+in-flight edits when Phase 1 landed. The server-side Cypher `listEntityNeighborhood`
+(vs. the current in-memory scope) is a later optimisation.
+
+Build order from here: **Phase 2 → enrichment track → Phase 3** is the rest of
+the committed core ("People is finished" = through there). Phases 4–8 are the six
+named features and sit on the Phase 1–2 foundation; build in any order, each is a
+route + a query + a layout choice.
