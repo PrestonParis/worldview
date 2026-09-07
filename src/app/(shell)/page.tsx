@@ -4,7 +4,6 @@ import {
   listEntities,
 } from "@/lib/neo4j/entities";
 import { countEdges, countEdgesCreatedSince, listEdges } from "@/lib/neo4j/edges";
-import { countClaims, countClaimsCreatedSince, listRecentClaims } from "@/lib/db/claims";
 import { countSources, countSourcesCreatedSince } from "@/lib/db/sources";
 import { countBills, countBillsCreatedSince } from "@/lib/db/bills";
 import { countContributions, countContributionsCreatedSince } from "@/lib/db/contributions";
@@ -26,40 +25,34 @@ export default async function Home() {
   const [
     entityCount,
     edgeCount,
-    claimCount,
     sourceCount,
     billCount,
     contributionCount,
     entityDelta,
     edgeDelta,
-    claimDelta,
     sourceDelta,
     billDelta,
     contributionDelta,
     allEntities,
     allEdges,
-    recentClaims,
   ] = await Promise.all([
     countEntities(),
     countEdges(),
-    countClaims(),
     countSources(),
     countBills(),
     countContributions(),
     countEntitiesCreatedSince(weekAgo),
     countEdgesCreatedSince(weekAgo),
-    countClaimsCreatedSince(weekAgo),
     countSourcesCreatedSince(weekAgo),
     countBillsCreatedSince(weekAgo),
     countContributionsCreatedSince(weekAgo),
     listEntities(),
     listEdges(),
-    listRecentClaims(5),
   ]);
 
   const entityById = new Map(allEntities.map((e) => [e.id, e]));
   const sortedByCreated = [...allEntities].sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
-  const recentEntities = sortedByCreated.slice(0, 5);
+  const recentEntities = sortedByCreated.slice(0, 6);
   const graphEntities = sortedByCreated.slice(0, GRAPH_PREVIEW_SIZE);
   const graphEntityIds = new Set(graphEntities.map((e) => e.id));
   const graphEdges = allEdges.filter(
@@ -71,7 +64,6 @@ export default async function Home() {
   const stats = [
     { label: "Entities", value: entityCount, delta: entityDelta, href: "/data/entities" },
     { label: "Relationships", value: edgeCount, delta: edgeDelta, href: "/data/edges" },
-    { label: "Claims", value: claimCount, delta: claimDelta, href: "/data/claims" },
     { label: "Sources", value: sourceCount, delta: sourceDelta, href: "/data/sources" },
     { label: "Bills", value: billCount, delta: billDelta, href: "/data/bills" },
     {
@@ -93,12 +85,7 @@ export default async function Home() {
         graphPositions={graphPositions}
       />
 
-      <RecentActivity
-        entities={recentEntities}
-        edges={allEdges}
-        claims={recentClaims}
-        entityById={entityById}
-      />
+      <RecentActivity entities={recentEntities} edges={allEdges} />
 
       <Connections edges={recentEdges} entityById={entityById} />
 

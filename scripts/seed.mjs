@@ -1,12 +1,9 @@
-// Idempotent seed for both stores. Running it on an empty database yields
-// a small, coherent, non-broken app: a few real entities, a relationship,
-// a donor edge so the /money graph renders, and one sourced claim so the
-// homepage "Claim watch" and /legislation-style reads have something.
+// Idempotent seed for Neo4j. Running it on an empty graph yields a small,
+// coherent, non-broken app: a few real entities, a relationship, and a
+// donor edge so the /money graph renders.
 //
-// Every write is a MERGE (Neo4j) or ON CONFLICT DO NOTHING (Postgres)
-// keyed on a fixed UUID, so re-running never duplicates and never
-// overwrites hand-edited data. The Postgres fixture is only inserted when
-// the target table is empty, so seeding a restored database is a no-op.
+// Every write is a MERGE keyed on a fixed UUID, so re-running never
+// duplicates and never overwrites hand-edited data.
 //
 // The Donald Trump entity id here is the exact speaker_entity_id used by
 // the recovered claims in backups/ — keep it stable.
@@ -15,16 +12,12 @@
 
 process.loadEnvFile(".env.local");
 
-import { Client } from "pg";
 import neo4j from "neo4j-driver";
 
 const TRUMP_ID = "959fad0d-0edb-4c1e-9c56-c9a1696e443b";
 const ZELENSKYY_ID = "b1d9c0a2-4e3f-4a1b-8c7d-0e1f2a3b4c5d";
 const WHITEHOUSE_ID = "c2e8f1a3-5d4b-4c2a-9b8e-1f0a2b3c4d5e";
 const PAC_ID = "d3f7a2b4-6c5e-4d3b-8a9f-2e1b3c4d5e6f";
-
-const SEED_SOURCE_ID = "e4a8b3c5-7d6f-4e4c-9b0a-3f2c4d5e6f70";
-const SEED_CLAIM_ID = "f5b9c4d6-8e70-4f5d-8c1b-4a3d5e6f7081";
 
 const ENTITIES = [
   {
@@ -127,55 +120,9 @@ async function seedNeo4j() {
   }
 }
 
-async function seedPostgres() {
-  const pg = new Client({ connectionString: process.env.DATABASE_URL });
-  await pg.connect();
-  try {
-    const { rows } = await pg.query("select count(*)::int n from claims");
-    if (rows[0].n > 0) {
-      console.log(`  Postgres: claims table not empty (${rows[0].n}) — skipping fixture`);
-      return;
-    }
-    await pg.query(
-      `insert into sources (id, title, url, publisher, source_type, published_at, notes)
-       values ($1, $2, $3, $4, 'transcript', $5, $6)
-       on conflict do nothing`,
-      [
-        SEED_SOURCE_ID,
-        "Remarks by President Trump and President Zelenskyy of Ukraine",
-        "https://www.presidency.ucsb.edu/",
-        "The American Presidency Project",
-        "2019-09-25T00:00:00.000Z",
-        "Seed fixture source.",
-      ],
-    );
-    await pg.query(
-      `insert into claims
-         (id, speaker_entity_id, date, venue, quote, topic, position_classification, confidence, source_id)
-       values ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-       on conflict do nothing`,
-      [
-        SEED_CLAIM_ID,
-        TRUMP_ID,
-        "2019-09-25T00:00:00.000Z",
-        "UN General Assembly, bilateral meeting",
-        "There was no pressure whatsoever.",
-        "Trump–Zelenskyy telephone call",
-        "denial of pressure",
-        90,
-        SEED_SOURCE_ID,
-      ],
-    );
-    console.log("  Postgres: 1 source + 1 claim inserted");
-  } finally {
-    await pg.end();
-  }
-}
-
 async function main() {
   console.log("Seeding...");
   await seedNeo4j();
-  await seedPostgres();
   console.log("Done.");
 }
 
