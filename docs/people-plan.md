@@ -150,12 +150,12 @@ labels (`affiliated with` → `affiliation`, `serves in` / `serves as governor
 of` → `institutional`, `hosts*` / `co-hosts` → `media`, `donated to` →
 `corporate`). Idempotent; snapshot first.
 
-**Connect the isolated 372** — `scripts/enrich-media-affiliations.mjs` (new):
-for every isolated pundit/journalist, create/attach their primary outlet
-(`media` relType, `role` = "host" / "contributor" / "editor") and co-host
-edges between people on the same show. Seed data: a curated
-`data/media-affiliations.json` (outlet, show, people) or Wikidata `P108`
-(employer) / `P1327` (partner). Target: isolated share below 5%.
+**Connect the isolated 372** — `scripts/enrich-media-affiliations.mjs`
+parses the outlet/show already named in each isolated person's own
+`description` ("host of Democracy Now!") and wires them to an org node.
+First pass connected 48. The remaining ~320 name no outlet in their
+description — a Wikidata `P108` (employer) / `P1327` (partner) pass is
+the follow-up to get the isolated share below 5%.
 
 ## Phase 3 — The entity profile as the centre of gravity
 
@@ -288,16 +288,22 @@ env (`env:docker` / `env:cloud`), then `db:migrate-neo4j` pushes Docker → Aura
 
 ## Status
 
-**Phase 1 — mostly done** (commit "People Phase 1: scope the graph so /people
-is legible"). `src/lib/graph/scope.ts` + `graph-page.tsx` / `graph-view.tsx` /
+**Phase 1 — mostly done** ("People Phase 1: scope the graph so /people is
+legible"). `src/lib/graph/scope.ts` + `graph-page.tsx` / `graph-view.tsx` /
 `entity-search.tsx`: overview shows the connected core (~160 nodes) instead of
-1,130; `?root` focuses an ego network with a hop selector and hub toggle;
-entity-type filter chips. **Remaining in Phase 1**: degree-based node sizing and
-click-a-node-to-re-root — both need `entity-graph.tsx`, which had unrelated
-in-flight edits when Phase 1 landed. The server-side Cypher `listEntityNeighborhood`
-(vs. the current in-memory scope) is a later optimisation.
+the full graph; `?root` focuses an ego network with a hop selector and hub
+toggle; entity-type filter chips. **Remaining**: degree-based node sizing and
+click-a-node-to-re-root (both need `entity-graph.tsx`), and a server-side Cypher
+`listEntityNeighborhood` to replace the in-memory scope.
 
-Build order from here: **Phase 2 → enrichment track → Phase 3** is the rest of
-the committed core ("People is finished" = through there). Phases 4–8 are the six
+**Phase 2 — vocabulary done** ("People Phase 2: typed relationship vocabulary").
+`src/lib/relationships.ts`, `relType` + `role` on edges, grouped picker in the
+edge form, `backfill-relationships.mjs` typed all 1,275 edges. **Remaining**:
+surface the relType filter + category edge colours in `graph-view.tsx` /
+`entity-graph.tsx`; the Wikidata pass to connect the ~320 still-isolated
+pundits/journalists.
+
+Build order from here: **enrichment track → Phase 3** is the rest of the
+committed core ("People is finished" = through there). Phases 4–8 are the six
 named features and sit on the Phase 1–2 foundation; build in any order, each is a
 route + a query + a layout choice.
