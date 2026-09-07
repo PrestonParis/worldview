@@ -22,6 +22,7 @@
     "db:seed": "node scripts/seed.mjs",
     "db:export": "node scripts/export-db.mjs",
     "db:restore-postgres": "node scripts/restore-postgres-backup.mjs",
+    "db:migrate-neo4j": "node scripts/migrate-neo4j.mjs",
     "db:migrate-people-categories": "node scripts/migrate-people-categories.mjs",
     "import:fec-donors": "node scripts/import-fec-donors.mjs",
     "reconstruct:fec-graph": "node scripts/reconstruct-fec-graph.mjs"

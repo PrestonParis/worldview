@@ -14,29 +14,24 @@ at `/geography`.
 npm install
 ```
 
-### 2. Choose a Postgres/Auth target
-
-Two options, switch anytime:
+### 2. Choose an environment
 
 ```bash
-npm run env:docker   # local Postgres via Supabase CLI + Docker (no cloud account needed)
-npm run env:cloud     # the shared cloud Supabase project
+npm run env:docker   # fully local: Supabase CLI + Docker Neo4j
+npm run env:cloud    # cloud: Supabase project + Neo4j Aura
 ```
 
-This copies the right template into `.env.local`. `npm run env:status` shows which one's
-active.
+Each copies a template (`.env.local.docker` / `.env.cloud`) to `.env.local`.
+`npm run env:status` shows which is active. Both stores move together — Postgres/Auth
+and Neo4j are always either both local or both cloud, never split.
 
-### 3. Point at a Neo4j
+The full ~1,100-entity graph currently lives in the **local Docker Neo4j**; the cloud
+Aura instance is seeded from it. Keep them in sync with `npm run db:migrate-neo4j`
+(see [Backups](#backups-and-recovery)). Neo4j Aura Free instances **pause after 3 days
+idle and are deleted after 30 days idle** with no point-in-time restore, so run
+`npm run db:export` on a schedule if the cloud copy matters.
 
-`.env.local` carries `NEO4J_URI` / `NEO4J_USER` / `NEO4J_PASSWORD`. Either works:
-
-- **Local Docker** — `npm run infra:up` starts the container from
-  `infra/docker/docker-compose.yml` (`bolt://127.0.0.1:7687`, `neo4j` / `worldview-dev`).
-- **Neo4j Aura** — a cloud instance (`neo4j+s://…`). Aura Free instances **pause after
-  3 days idle and are deleted after 30 days idle**, and have no point-in-time restore —
-  run `npm run db:export` on a schedule if you rely on one (see [Backups](#backups-and-recovery)).
-
-### 4. Start infrastructure (Docker required for local Postgres/Neo4j)
+### 3. Start infrastructure (Docker required for local Postgres/Neo4j)
 
 ```bash
 npm run infra:up      # supabase start + the Neo4j container
@@ -45,7 +40,7 @@ npm run infra:up      # supabase start + the Neo4j container
 `npm run infra:down` stops both. `npm run infra:status` shows what's running. On
 `env:cloud` with an Aura URI, you don't need `infra:up` at all.
 
-### 5. Push the schema (Postgres side only — Neo4j has none to push)
+### 4. Push the schema (Postgres side only — Neo4j has none to push)
 
 ```bash
 npm run db:push
@@ -53,17 +48,16 @@ npm run db:push
 
 Safe to re-run; only applies what's changed. `npm run db:studio` opens Drizzle Studio.
 
-### 6. Seed (optional)
+### 5. Seed (optional)
 
 ```bash
-npm run db:seed       # idempotent — a few entities, an edge, one sourced claim
+npm run db:seed       # idempotent — a few entities and an edge (Neo4j only)
 ```
 
 Enough to make every page render without empty states. Safe on a populated database
-(MERGE / ON CONFLICT on fixed IDs; the Postgres fixture is skipped unless `claims` is
-empty).
+(MERGE on fixed IDs).
 
-### 7. Run it
+### 6. Run it
 
 ```bash
 npm run dev
@@ -73,7 +67,7 @@ npm run dev
 - Local Supabase Studio: [http://localhost:54323](http://localhost:54323) (only in `env:docker` mode)
 - Neo4j Browser: [http://localhost:7474](http://localhost:7474) (local Docker only)
 
-### 8. Sign in
+### 7. Sign in
 
 Every page except `/login` requires a session (`src/proxy.ts` — Next 16 renamed
 `middleware.ts` to `proxy.ts`; the ingest API is exempt, it has its own bearer-token
@@ -102,26 +96,30 @@ Three ways in, all validated against the same Zod schemas:
 
 ## Backups and recovery
 
-There was no graph backup the first time the stores were wiped. Now:
+Two incidents drove this: the cloud Postgres lost `claims` / `sources` to a bad
+script, and — separately — `.env.local` got repointed at an empty Neo4j Aura instance
+while the real graph sat untouched in the local Docker Neo4j. Neither store had a
+backup. Now:
 
 - **`npm run db:export`** — point-in-time dump of both stores to `backups/<timestamp>/`
   (one JSON file per Postgres table + `entities.json` / `edges.json` from Neo4j +
-  `manifest.json` with row counts). Run it before any destructive change and on a
-  schedule. `backups/` is gitignored except the one recovered pre-wipe snapshot; copy
-  dumps you want to keep somewhere durable.
+  `manifest.json`). Run it before any destructive change and on a schedule. `backups/`
+  is gitignored except the two committed recovery snapshots; copy anything else you
+  want to keep somewhere durable.
+- **`npm run db:migrate-neo4j`** — copies every entity and edge from one Neo4j to
+  another, preserving ids. Source = `SOURCE_NEO4J_URI` / `SOURCE_NEO4J_USER` /
+  `SOURCE_NEO4J_PASSWORD`; target = the normal `NEO4J_*`. `--dry-run` reports counts
+  and still writes a source snapshot to `backups/`; `--wipe-target` replaces the
+  target's contents. This is how the Docker graph was pushed to Aura.
 - **`npm run db:restore-postgres -- <dir>`** — replays `sources` / `claims` /
   `contributions` from a dump directory, idempotently (`ON CONFLICT DO NOTHING`).
-- **`npm run reconstruct:fec-graph`** — rebuilds the Neo4j entities/edges behind the
-  FEC `contributions` rows after a graph loss: re-derives donor and recipient names
-  from OpenFEC by matching each row's stored `sub_id`, then recreates those entities
-  with their **original UUIDs** so the contribution rows re-link with no Postgres
-  change. `--dry-run` reports the match rate first; responses are cached under
-  `backups/` so a rate-limit stall is resumable.
-- **`npm run db:seed`** — the floor: a known-good minimal fixture for a from-empty
-  database (see step 6).
-
-There is no generic Neo4j restore from a dump yet — `reconstruct:fec-graph` and
-`db:seed` are the current paths back.
+- **`npm run reconstruct:fec-graph`** — adds the `donated to` edges the `/money` graph
+  draws (the FEC importer only ever wrote the `contributions` table, never Neo4j
+  edges), and backfills any missing donor/recipient entities by re-deriving names from
+  OpenFEC via each row's stored `sub_id`. Existing entities are left untouched.
+  `--dry-run` reports the match rate; FEC responses are cached under `backups/`.
+- **`npm run db:seed`** — the floor: a known-good minimal Neo4j fixture for a
+  from-empty graph (see step 5).
 
 ## Project layout
 

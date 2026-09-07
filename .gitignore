@@ -37,11 +37,13 @@ yarn-error.log*
 # vercel
 .vercel
 
-# database backups — local dumps written by scripts/export-db.mjs, plus the
-# reconstruct script's FEC response cache. The one committed directory under
-# backups/ is the recovered pre-wipe Postgres snapshot (see its manifest).
+# database backups — local dumps written by scripts/export-db.mjs and
+# scripts/migrate-neo4j.mjs, plus the reconstruct script's FEC response
+# cache. Two snapshots are committed as the recovery record: the pre-wipe
+# Postgres backup and the full Neo4j graph (see each dir's manifest).
 /backups/*
 !/backups/2026-09-06T21-05-25/
+!/backups/2026-09-07T00-12-neo4j-full/
 
 # claude code — machine-local settings, not shared
 .claude/settings.local.json

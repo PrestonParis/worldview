@@ -1,18 +1,17 @@
-// Rebuilds the Neo4j entities and edges behind the FEC contribution data
-// after a graph-store loss. The `contributions` table survived (it lives
-// in Postgres) but every row's donor_entity_id / recipient_entity_id
-// points at an Entity node that no longer exists, and the donor/recipient
-// *names* were only ever stored in Neo4j.
+// Adds the "donated to" edges the /money graph draws, and backfills any
+// missing donor/recipient entities behind the FEC `contributions` rows.
 //
-// This re-derives those names from the live OpenFEC API — each surviving
-// contribution carries FEC's own `sub_id` as `external_id`, so we can
-// re-fetch the same Schedule A records, read `contributor_name` back off
-// them, and match recipients to pilot politicians via the same
-// congress-legislators crosswalk the original importer used. Entities are
-// then recreated in Neo4j with their ORIGINAL UUIDs (MERGE on id), so the
-// existing contribution rows re-link with no Postgres changes. One
-// "donated to" edge is synthesized per donor->recipient pair so the
-// /money graph has something to draw.
+// The contributions table (Postgres) stores donor_entity_id /
+// recipient_entity_id but the *names* only ever lived in Neo4j. This
+// re-derives them from the live OpenFEC API — each row carries FEC's
+// `sub_id` as `external_id`, so the same Schedule A records can be
+// re-fetched and `contributor_name` read back, with recipients matched to
+// pilot politicians via the congress-legislators crosswalk. Then, keyed on
+// the original UUIDs: entities that already exist (e.g. after
+// migrate-neo4j.mjs) are left untouched; only genuinely missing ones are
+// created. A "donated to" edge is MERGEd per donor->recipient pair
+// regardless — the import that created the contributions never wrote
+// Neo4j edges, so the money graph has none without this.
 //
 // Idempotent. Run with --dry-run first to see the match rate.
 //
@@ -301,25 +300,21 @@ async function main() {
       return;
     }
 
-    // 5. Recreate entities in Neo4j with their original UUIDs.
+    // 5. Fill in any entities that don't already exist, keyed on their
+    //    original UUIDs. Existing entities (e.g. from a full graph
+    //    migration) are left untouched — this only backfills gaps.
     let entitiesWritten = 0;
     for (const [id, p] of politicianById) {
       await session.run(
         `MERGE (e:Entity {id: $id})
-         ON CREATE SET e.type = 'politician', e.createdAt = datetime()
-         SET e.name = $name,
+         ON CREATE SET e.type = 'politician',
+             e.name = $name,
              e.description = $description,
-             e.biography = coalesce(e.biography, ''),
-             e.imageUrl = coalesce(e.imageUrl, ''),
-             e.websiteUrl = coalesce(e.websiteUrl, ''),
-             e.xUrl = coalesce(e.xUrl, ''),
-             e.facebookUrl = coalesce(e.facebookUrl, ''),
-             e.instagramUrl = coalesce(e.instagramUrl, ''),
-             e.youtubeUrl = coalesce(e.youtubeUrl, ''),
-             e.linkedinUrl = coalesce(e.linkedinUrl, ''),
-             e.highlights = coalesce(e.highlights, ''),
+             e.biography = '', e.imageUrl = '', e.websiteUrl = '',
+             e.xUrl = '', e.facebookUrl = '', e.instagramUrl = '',
+             e.youtubeUrl = '', e.linkedinUrl = '', e.highlights = '',
              e.metadata = $metadata,
-             e.updatedAt = datetime()`,
+             e.createdAt = datetime(), e.updatedAt = datetime()`,
         {
           id,
           name: p.name,
@@ -342,20 +337,14 @@ async function main() {
       const name = d?.name || `Unidentified FEC committee (${id.slice(0, 8)})`;
       await session.run(
         `MERGE (e:Entity {id: $id})
-         ON CREATE SET e.type = 'company', e.createdAt = datetime()
-         SET e.name = $name,
+         ON CREATE SET e.type = 'company',
+             e.name = $name,
              e.description = $description,
-             e.biography = coalesce(e.biography, ''),
-             e.imageUrl = coalesce(e.imageUrl, ''),
-             e.websiteUrl = coalesce(e.websiteUrl, ''),
-             e.xUrl = coalesce(e.xUrl, ''),
-             e.facebookUrl = coalesce(e.facebookUrl, ''),
-             e.instagramUrl = coalesce(e.instagramUrl, ''),
-             e.youtubeUrl = coalesce(e.youtubeUrl, ''),
-             e.linkedinUrl = coalesce(e.linkedinUrl, ''),
-             e.highlights = coalesce(e.highlights, ''),
+             e.biography = '', e.imageUrl = '', e.websiteUrl = '',
+             e.xUrl = '', e.facebookUrl = '', e.instagramUrl = '',
+             e.youtubeUrl = '', e.linkedinUrl = '', e.highlights = '',
              e.metadata = $metadata,
-             e.updatedAt = datetime()`,
+             e.createdAt = datetime(), e.updatedAt = datetime()`,
         {
           id,
           name,
@@ -395,7 +384,10 @@ async function main() {
       edgesWritten++;
     }
 
-    console.log(`\nWrote ${entitiesWritten} entities and ${edgesWritten} edges to Neo4j.`);
+    console.log(
+      `\nEnsured ${entitiesWritten} entities (existing ones left as-is) ` +
+        `and ${edgesWritten} "donated to" edges in Neo4j.`,
+    );
   } finally {
     await session.close();
     await driver.close();
