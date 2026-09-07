@@ -11,9 +11,12 @@ const MAX_RESULTS = 8;
 export function EntitySearch({
   entities,
   placeholder,
+  onSelect,
 }: {
   entities: Entity[];
   placeholder: string;
+  /** When set, called with the picked entity id instead of navigating to its profile. */
+  onSelect?: (id: string) => void;
 }) {
   const router = useRouter();
   const [query, setQuery] = useState("");
@@ -40,7 +43,8 @@ export function EntitySearch({
   function selectEntity(id: string) {
     setOpen(false);
     setQuery("");
-    router.push(`/data/entities/${id}`);
+    if (onSelect) onSelect(id);
+    else router.push(`/data/entities/${id}`);
   }
 
   return (
