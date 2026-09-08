@@ -301,8 +301,17 @@ click-a-node-to-re-root (both need `entity-graph.tsx`), and a server-side Cypher
 `src/lib/relationships.ts`, `relType` + `role` on edges, grouped picker in the
 edge form, `backfill-relationships.mjs` typed all 1,275 edges, and `graph-view.tsx`
 now filters by relationship category and colours edges by it (via the
-`EntityGraph` `edgeStyles` prop). **Remaining**: the Wikidata `P108` pass to
-connect the ~320 still-isolated pundits/journalists.
+`EntityGraph` `edgeStyles` prop). The isolated-node pass ran in two stages —
+`enrich-media-affiliations.mjs` (description text, 48) and
+`enrich-wikidata-affiliations.mjs` (Wikipedia REST → Wikidata SPARQL P108/P1830,
+129) — taking isolated pundits/journalists 372 → 195. The last ~195 are
+independent digital creators with no Wikidata employer; a curated dataset closes
+the rest.
+
+**Phase 4 — done** ("People Phase 4: Organization Graph (/people/orgs)").
+`src/lib/neo4j/graph.ts` (`listOrgDirectory`, `getOrgProfile`), a `/people/orgs`
+directory ranked by connection count, `/people/orgs/[id]` with the roster grouped
+by relationship category, linked from the `/people` header.
 
 **Enrichment track + Phase 3 — in progress by the app author**, not this thread:
 the congress-legislators member/term import (`scripts/backfill-members.mjs`,
@@ -311,6 +320,8 @@ the congress-legislators member/term import (`scripts/backfill-members.mjs`,
 built directly. This plan's `enrich-terms.mjs` / `/people/[id]` proposals are
 superseded by that work — coordinate rather than duplicate.
 
-Phases 4–8 (org graph, admin map, endorsements, dynasties, standalone career
-timeline) still stand and sit on the Phase 1–2 foundation; each is a route + a
-query + a layout choice.
+Phase 4 (org graph) shipped. Phases 5–8 (admin personnel map, endorsements,
+dynasties, standalone career timeline) still stand but each needs a data model +
+seed/import that doesn't exist yet (`appointed to` role metadata, `endorsed` with
+cycle, `family-of` with relation) — building the routes now would ship empty
+pages. Do the import alongside the route.
