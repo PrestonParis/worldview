@@ -9,7 +9,6 @@ import {
   ENTITY_TYPE_ORDER,
 } from "@/lib/graph/scope";
 import { relationshipCategories, relationshipCategoryOf } from "@/lib/relationships";
-import { entityColors } from "@/lib/entity-colors";
 import { EmptyStateFeatures } from "@/components/empty-state";
 import { PageDescription } from "@/components/page-description";
 import { GraphView } from "./graph-view";
@@ -25,7 +24,7 @@ export interface GraphPageParams {
 
 const MAX_DEPTH = 3;
 
-// Callers (page.tsx files) must also export `dynamic = "force-dynamic"` —
+// Callers (page.tsx files) must also export `dynamic = "force-dynamic"`;
 // Next only reads that config from route segment files, not from an
 // imported component like this one.
 export async function GraphPage({
@@ -80,32 +79,19 @@ export async function GraphPage({
           <p className="mt-1 text-slate-500 dark:text-slate-400">{content.tagline}</p>
           <PageDescription content={content} />
         </div>
-        <div className="flex shrink-0 flex-col items-end gap-2">
-          <div className="flex gap-3 text-sm">
-            <Link
-              href="/people/administration"
-              className="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
-            >
-              Administration →
-            </Link>
-            <Link
-              href="/people/orgs"
-              className="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
-            >
-              Organizations →
-            </Link>
-          </div>
-          <div className="flex flex-wrap justify-end gap-3 text-xs">
-            {Object.entries(entityColors).map(([type, c]) => (
-              <span key={type} className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
-                <span
-                  className="h-2.5 w-2.5 rounded-full border-2"
-                  style={{ background: c.bg, borderColor: c.border }}
-                />
-                {type.replace("_", " ")}
-              </span>
-            ))}
-          </div>
+        <div className="flex shrink-0 gap-3 text-sm">
+          <Link
+            href="/people/administration"
+            className="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
+          >
+            Administration →
+          </Link>
+          <Link
+            href="/people/orgs"
+            className="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
+          >
+            Organizations →
+          </Link>
         </div>
       </div>
 
@@ -113,12 +99,12 @@ export async function GraphPage({
         <div className="mt-6">
           <EmptyStateFeatures
             content={content}
-            message="This graph is empty — every page draws from the same shared entities and relationships. Add some in"
+            message="This graph is empty. Every page draws from the same shared entities and relationships. Add some in"
             cta={{ href: "/data/entities", label: "Manage Data" }}
           />
         </div>
       ) : (
-        <div className="mt-6 flex flex-1 flex-col">
+        <div className="mt-6 h-[72vh] min-h-[520px]">
           <GraphView
             entities={scoped.entities}
             edges={scoped.edges}

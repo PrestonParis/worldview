@@ -1,11 +1,11 @@
 // Pure client/server-safe helpers for narrowing the People graph to
 // something legible. The store holds ~1,100 entities and ~1,300 edges and
-// the shape is a hub-and-spoke star — four mega-nodes (the two chambers,
-// the two parties) absorb almost every edge — so rendering the whole thing
+// the shape is a hub-and-spoke star: four mega-nodes (the two chambers,
+// the two parties) absorb almost every edge, so rendering the whole thing
 // at once is unreadable. graph-page.tsx loads everything once and then
 // applies one of these to pick what actually gets drawn.
 
-import type { Entity } from "@/lib/validation/entity";
+import { entityTypes, type Entity } from "@/lib/validation/entity";
 import type { Edge } from "@/lib/validation/edge";
 import { relationshipCategoryOf } from "@/lib/relationships";
 
@@ -44,13 +44,9 @@ export const HUB_ENTITY_NAMES = new Set<string>([
   "Democratic Party",
 ]);
 
-export const ENTITY_TYPE_ORDER = [
-  "politician",
-  "pundit",
-  "journalist",
-  "organization",
-  "company",
-] as const;
+// Kept in sync with the schema's entity taxonomy so the filter chips and
+// the legend never drift.
+export const ENTITY_TYPE_ORDER = entityTypes;
 
 function degreeMap(edges: Edge[]): Map<string, number> {
   const deg = new Map<string, number>();
@@ -65,12 +61,12 @@ function edgesWithin(edges: Edge[], ids: Set<string>): Edge[] {
   return edges.filter((e) => ids.has(e.sourceEntityId) && ids.has(e.targetEntityId));
 }
 
-/** Degree of every entity over the full edge set — handed to the renderer for node sizing. */
+/** Degree of every entity over the full edge set; handed to the renderer for node sizing. */
 export function degreeById(edges: Edge[]): Record<string, number> {
   return Object.fromEntries(degreeMap(edges));
 }
 
-/** Distinct relationship labels with counts, most common first — drives the filter chips. */
+/** Distinct relationship labels with counts, most common first; drives the filter chips. */
 export function edgeLabelCounts(edges: Edge[]): { label: string; count: number }[] {
   const counts = new Map<string, number>();
   for (const e of edges) counts.set(e.label, (counts.get(e.label) ?? 0) + 1);
@@ -81,7 +77,7 @@ export function edgeLabelCounts(edges: Edge[]): { label: string; count: number }
 
 /**
  * The "connected core" starting view. Almost every politician is wired
- * only to their party and chamber (the hubs), which says nothing — so the
+ * only to their party and chamber (the hubs), which says nothing, so the
  * overview drops the hubs and keeps the sub-networks that are actually a
  * graph: the donor→politician money cluster, governor clusters, the media
  * host/founder clusters, etc. Whole connected components are taken
