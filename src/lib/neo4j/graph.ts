@@ -116,3 +116,68 @@ export async function getOrgProfile(orgId: string): Promise<OrgProfile | null> {
 
   return { entity: org, connectionsByCategory, total: connections.length };
 }
+
+export interface AdministrationRole {
+  person: Entity;
+  title: string;
+  priorSector: string | null;
+  department: Entity | null;
+}
+
+export interface Administration {
+  president: Entity;
+  office: Entity | null;
+  roles: AdministrationRole[];
+}
+
+function parsePriorSector(notes: string): string | null {
+  try {
+    const v = JSON.parse(notes || "{}");
+    return typeof v?.priorSector === "string" ? v.priorSector : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * The current administration, from the `appointed` edges out of the
+ * President node (written by scripts/import-administration.mjs). Returns
+ * null when none has been imported.
+ */
+export async function getAdministration(): Promise<Administration | null> {
+  const [entities, edges] = await Promise.all([listEntities(), listEdges()]);
+  const byId = new Map(entities.map((e) => [e.id, e]));
+
+  // The President is whoever has an outgoing `holds-office` edge to an
+  // entity named "President of the United States".
+  const officeEdge = edges.find(
+    (e) => e.relType === "holds-office" && byId.get(e.targetEntityId)?.name === "President of the United States",
+  );
+  if (!officeEdge) return null;
+  const president = byId.get(officeEdge.sourceEntityId);
+  if (!president) return null;
+  const office = byId.get(officeEdge.targetEntityId) ?? null;
+
+  const servesInByPerson = new Map<string, string>();
+  for (const e of edges) {
+    if (e.relType === "serves-in") servesInByPerson.set(e.sourceEntityId, e.targetEntityId);
+  }
+
+  const roles: AdministrationRole[] = edges
+    .filter((e) => e.relType === "appointed" && e.sourceEntityId === president.id)
+    .map((e) => {
+      const person = byId.get(e.targetEntityId);
+      if (!person) return null;
+      const deptId = servesInByPerson.get(person.id);
+      return {
+        person,
+        title: e.role || e.label,
+        priorSector: parsePriorSector(e.notes ?? ""),
+        department: deptId ? byId.get(deptId) ?? null : null,
+      };
+    })
+    .filter((r): r is AdministrationRole => r !== null)
+    .sort((a, b) => a.title.localeCompare(b.title));
+
+  return { president, office, roles };
+}

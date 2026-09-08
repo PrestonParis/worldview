@@ -1,0 +1,31 @@
+{
+  "note": "Curated snapshot of the U.S. executive branch, edited by hand. `person` is matched case-insensitively against existing politician entities; missing people are created. Re-run scripts/import-administration.mjs after editing.",
+  "term": "trump-47",
+  "termLabel": "Trump administration (2025–)",
+  "president": { "name": "Donald Trump", "office": "President of the United States" },
+  "positions": [
+    { "title": "Vice President", "person": "JD Vance", "department": "Executive Office of the President", "priorSector": "elected" },
+    { "title": "White House Chief of Staff", "person": "Susie Wiles", "department": "Executive Office of the President", "priorSector": "campaign" },
+    { "title": "Director of the Office of Management and Budget", "person": "Russell Vought", "department": "Office of Management and Budget", "priorSector": "think-tank" },
+    { "title": "U.S. Trade Representative", "person": "Jamieson Greer", "department": "Office of the U.S. Trade Representative", "priorSector": "government" },
+    { "title": "Secretary of State", "person": "Marco Rubio", "department": "Department of State", "priorSector": "elected" },
+    { "title": "Secretary of the Treasury", "person": "Scott Bessent", "department": "Department of the Treasury", "priorSector": "industry" },
+    { "title": "Secretary of Defense", "person": "Pete Hegseth", "department": "Department of Defense", "priorSector": "media" },
+    { "title": "Attorney General", "person": "Pam Bondi", "department": "Department of Justice", "priorSector": "government" },
+    { "title": "Secretary of the Interior", "person": "Doug Burgum", "department": "Department of the Interior", "priorSector": "elected" },
+    { "title": "Secretary of Agriculture", "person": "Brooke Rollins", "department": "Department of Agriculture", "priorSector": "think-tank" },
+    { "title": "Secretary of Commerce", "person": "Howard Lutnick", "department": "Department of Commerce", "priorSector": "industry" },
+    { "title": "Secretary of Labor", "person": "Lori Chavez-DeRemer", "department": "Department of Labor", "priorSector": "elected" },
+    { "title": "Secretary of Health and Human Services", "person": "Robert F. Kennedy Jr.", "department": "Department of Health and Human Services", "priorSector": "activist" },
+    { "title": "Secretary of Housing and Urban Development", "person": "Scott Turner", "department": "Department of Housing and Urban Development", "priorSector": "elected" },
+    { "title": "Secretary of Transportation", "person": "Sean Duffy", "department": "Department of Transportation", "priorSector": "media" },
+    { "title": "Secretary of Energy", "person": "Chris Wright", "department": "Department of Energy", "priorSector": "industry" },
+    { "title": "Secretary of Education", "person": "Linda McMahon", "department": "Department of Education", "priorSector": "industry" },
+    { "title": "Secretary of Veterans Affairs", "person": "Doug Collins", "department": "Department of Veterans Affairs", "priorSector": "elected" },
+    { "title": "Secretary of Homeland Security", "person": "Kristi Noem", "department": "Department of Homeland Security", "priorSector": "elected" },
+    { "title": "Administrator of the Environmental Protection Agency", "person": "Lee Zeldin", "department": "Environmental Protection Agency", "priorSector": "elected" },
+    { "title": "Administrator of the Small Business Administration", "person": "Kelly Loeffler", "department": "Small Business Administration", "priorSector": "elected" },
+    { "title": "Director of National Intelligence", "person": "Tulsi Gabbard", "department": "Office of the Director of National Intelligence", "priorSector": "elected" },
+    { "title": "Director of the Central Intelligence Agency", "person": "John Ratcliffe", "department": "Central Intelligence Agency", "priorSector": "government" }
+  ]
+}

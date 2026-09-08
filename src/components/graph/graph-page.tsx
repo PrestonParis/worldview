@@ -81,12 +81,20 @@ export async function GraphPage({
           <PageDescription content={content} />
         </div>
         <div className="flex shrink-0 flex-col items-end gap-2">
-          <Link
-            href="/people/orgs"
-            className="text-sm text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
-          >
-            Organizations →
-          </Link>
+          <div className="flex gap-3 text-sm">
+            <Link
+              href="/people/administration"
+              className="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
+            >
+              Administration →
+            </Link>
+            <Link
+              href="/people/orgs"
+              className="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
+            >
+              Organizations →
+            </Link>
+          </div>
           <div className="flex flex-wrap justify-end gap-3 text-xs">
             {Object.entries(entityColors).map(([type, c]) => (
               <span key={type} className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
