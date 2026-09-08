@@ -296,14 +296,21 @@ toggle; entity-type filter chips. **Remaining**: degree-based node sizing and
 click-a-node-to-re-root (both need `entity-graph.tsx`), and a server-side Cypher
 `listEntityNeighborhood` to replace the in-memory scope.
 
-**Phase 2 — vocabulary done** ("People Phase 2: typed relationship vocabulary").
+**Phase 2 — done** ("People Phase 2: typed relationship vocabulary" +
+"People Phase 2 UI: relationship filter + coloured edges").
 `src/lib/relationships.ts`, `relType` + `role` on edges, grouped picker in the
-edge form, `backfill-relationships.mjs` typed all 1,275 edges. **Remaining**:
-surface the relType filter + category edge colours in `graph-view.tsx` /
-`entity-graph.tsx`; the Wikidata pass to connect the ~320 still-isolated
-pundits/journalists.
+edge form, `backfill-relationships.mjs` typed all 1,275 edges, and `graph-view.tsx`
+now filters by relationship category and colours edges by it (via the
+`EntityGraph` `edgeStyles` prop). **Remaining**: the Wikidata `P108` pass to
+connect the ~320 still-isolated pundits/journalists.
 
-Build order from here: **enrichment track → Phase 3** is the rest of the
-committed core ("People is finished" = through there). Phases 4–8 are the six
-named features and sit on the Phase 1–2 foundation; build in any order, each is a
-route + a query + a layout choice.
+**Enrichment track + Phase 3 — in progress by the app author**, not this thread:
+the congress-legislators member/term import (`scripts/backfill-members.mjs`,
+`scripts/lib/members.mjs`) and the entity profile rework
+(`data/entities/[id]/page.tsx` gaining structured-money summaries) are being
+built directly. This plan's `enrich-terms.mjs` / `/people/[id]` proposals are
+superseded by that work — coordinate rather than duplicate.
+
+Phases 4–8 (org graph, admin map, endorsements, dynasties, standalone career
+timeline) still stand and sit on the Phase 1–2 foundation; each is a route + a
+query + a layout choice.
