@@ -313,6 +313,12 @@ the rest.
 directory ranked by connection count, `/people/orgs/[id]` with the roster grouped
 by relationship category, linked from the `/people` header.
 
+**Phase 5 — done** ("People Phase 5: Administration Personnel Map").
+`data/administration.json` (curated, 23 positions) + `scripts/import-administration.mjs`
+(departments as org nodes, `President --appointed--> appointee --serves in-->
+department` edges), `getAdministration()`, and `/people/administration` — the
+roster with a prior-sector breakdown. Linked from the `/people` header.
+
 **Enrichment track + Phase 3 — in progress by the app author**, not this thread:
 the congress-legislators member/term import (`scripts/backfill-members.mjs`,
 `scripts/lib/members.mjs`) and the entity profile rework
@@ -320,8 +326,9 @@ the congress-legislators member/term import (`scripts/backfill-members.mjs`,
 built directly. This plan's `enrich-terms.mjs` / `/people/[id]` proposals are
 superseded by that work — coordinate rather than duplicate.
 
-Phase 4 (org graph) shipped. Phases 5–8 (admin personnel map, endorsements,
-dynasties, standalone career timeline) still stand but each needs a data model +
-seed/import that doesn't exist yet (`appointed to` role metadata, `endorsed` with
-cycle, `family-of` with relation) — building the routes now would ship empty
-pages. Do the import alongside the route.
+Phases 4 and 5 shipped (each as route + curated import). Phases 6–8
+(endorsements, dynasties, standalone career timeline) follow the same shape —
+`scripts/import-endorsements.mjs` (+ `endorsed` edges with cycle metadata),
+`scripts/import-dynasties.mjs` (+ `family-of` with `relation`), and a
+`/people/[id]?compare=` timeline once dated term edges land from the member
+import.
