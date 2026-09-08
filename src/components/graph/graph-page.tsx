@@ -4,8 +4,10 @@ import { computeForceLayout } from "@/lib/graph/layout";
 import {
   neighborhoodSubgraph,
   overviewSubgraph,
+  filterByRelCategory,
   ENTITY_TYPE_ORDER,
 } from "@/lib/graph/scope";
+import { relationshipCategories, relationshipCategoryOf } from "@/lib/relationships";
 import { entityColors } from "@/lib/entity-colors";
 import { EmptyStateFeatures } from "@/components/empty-state";
 import { PageDescription } from "@/components/page-description";
@@ -17,6 +19,7 @@ export interface GraphPageParams {
   depth?: string;
   type?: string;
   hubs?: string;
+  rel?: string;
 }
 
 const MAX_DEPTH = 3;
@@ -39,18 +42,32 @@ export async function GraphPage({
       : undefined;
   const depth = Math.min(MAX_DEPTH, Math.max(1, Number(params.depth) || 1));
   const includeHubs = params.hubs === "1";
+  const relFilter =
+    params.rel && params.rel.length
+      ? new Set(params.rel.split(",").filter((r) => relationshipCategories.includes(r as never)))
+      : new Set<string>();
 
   const rootEntity = params.root
     ? allEntities.find((e) => e.id === params.root)
     : undefined;
 
-  const scoped = rootEntity
+  const base = rootEntity
     ? neighborhoodSubgraph(allEntities, allEdges, rootEntity.id, {
         depth,
         entityTypes: typeFilter,
         includeHubs,
       })
     : overviewSubgraph(allEntities, allEdges, { entityTypes: typeFilter });
+
+  const scoped = filterByRelCategory(base, relFilter, rootEntity?.id);
+
+  // Which relationship categories are present in the (pre-rel-filter)
+  // scope, for the filter chips.
+  const relCategoryCounts: Record<string, number> = {};
+  for (const e of base.edges) {
+    const cat = relationshipCategoryOf(e.relType ?? "");
+    if (cat) relCategoryCounts[cat] = (relCategoryCounts[cat] ?? 0) + 1;
+  }
 
   const positions = computeForceLayout(scoped.entities, scoped.edges);
 
@@ -94,6 +111,8 @@ export async function GraphPage({
             depth={depth}
             includeHubs={includeHubs}
             typeFilter={typeFilter ? [...typeFilter] : []}
+            relFilter={[...relFilter]}
+            relCategoryCounts={relCategoryCounts}
             totalEntityCount={allEntities.length}
             searchPlaceholder={`Search ${content.title}…`}
           />

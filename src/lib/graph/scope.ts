@@ -7,10 +7,31 @@
 
 import type { Entity } from "@/lib/validation/entity";
 import type { Edge } from "@/lib/validation/edge";
+import { relationshipCategoryOf } from "@/lib/relationships";
 
 export interface Subgraph {
   entities: Entity[];
   edges: Edge[];
+}
+
+/**
+ * Keep only edges whose relationship category is in `categories`, then drop
+ * any node that's now unconnected (except `keepId`, so a focused person
+ * doesn't vanish when none of their edges match).
+ */
+export function filterByRelCategory(
+  sub: Subgraph,
+  categories: Set<string>,
+  keepId?: string,
+): Subgraph {
+  if (categories.size === 0) return sub;
+  const edges = sub.edges.filter((e) => {
+    const cat = relationshipCategoryOf(e.relType ?? "");
+    return cat !== null && categories.has(cat);
+  });
+  const connected = new Set(edges.flatMap((e) => [e.sourceEntityId, e.targetEntityId]));
+  if (keepId) connected.add(keepId);
+  return { entities: sub.entities.filter((e) => connected.has(e.id)), edges };
 }
 
 // The nodes that turn the graph into a hairball. Matched by name because

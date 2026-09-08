@@ -1,11 +1,16 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { X } from "lucide-react";
 import { EntitySearch } from "./entity-search";
 import { EntityGraph } from "./entity-graph";
 import { ENTITY_TYPE_ORDER } from "@/lib/graph/scope";
+import {
+  relationshipCategories,
+  relationshipCategoryColors,
+  relationshipCategoryOf,
+} from "@/lib/relationships";
 import { entityColorFor } from "@/lib/entity-colors";
 import type { Entity } from "@/lib/validation/entity";
 import type { Edge } from "@/lib/validation/edge";
@@ -20,6 +25,8 @@ export function GraphView({
   depth,
   includeHubs,
   typeFilter,
+  relFilter,
+  relCategoryCounts,
   totalEntityCount,
   searchPlaceholder,
 }: {
@@ -31,12 +38,23 @@ export function GraphView({
   depth: number;
   includeHubs: boolean;
   typeFilter: string[];
+  relFilter: string[];
+  relCategoryCounts: Record<string, number>;
   totalEntityCount: number;
   searchPlaceholder: string;
 }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
+  const edgeStyles = useMemo(() => {
+    const map: Record<string, { stroke: string }> = {};
+    for (const e of edges) {
+      const cat = relationshipCategoryOf(e.relType ?? "");
+      if (cat) map[e.id] = { stroke: relationshipCategoryColors[cat] };
+    }
+    return map;
+  }, [edges]);
 
   const setParams = useCallback(
     (patch: Record<string, string | null>) => {
@@ -58,6 +76,15 @@ export function GraphView({
     else next.add(t);
     setParams({ type: next.size ? [...next].join(",") : null });
   };
+
+  const activeRels = new Set(relFilter);
+  const toggleRel = (cat: string) => {
+    const next = new Set(activeRels);
+    if (next.has(cat)) next.delete(cat);
+    else next.add(cat);
+    setParams({ rel: next.size ? [...next].join(",") : null });
+  };
+  const availableRels = relationshipCategories.filter((c) => relCategoryCounts[c] > 0);
 
   return (
     <div className="flex h-full flex-col">
@@ -92,6 +119,45 @@ export function GraphView({
           );
         })}
       </div>
+
+      {availableRels.length > 0 ? (
+        <div className="mt-2 flex flex-wrap items-center gap-1.5">
+          <span className="mr-0.5 text-xs text-slate-400">relationship:</span>
+          {availableRels.map((cat) => {
+            const active = activeRels.has(cat);
+            const color = relationshipCategoryColors[cat];
+            return (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => toggleRel(cat)}
+                title={`${relCategoryCounts[cat]} in view`}
+                className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium capitalize transition-colors ${
+                  active
+                    ? "border-transparent text-white"
+                    : "border-slate-200 text-slate-500 hover:border-slate-400 dark:border-slate-800 dark:text-slate-400"
+                }`}
+                style={active ? { background: color } : undefined}
+              >
+                <span
+                  className="h-2 w-2 rounded-full"
+                  style={{ background: color, outline: active ? "1px solid rgba(255,255,255,.6)" : "none" }}
+                />
+                {cat}
+              </button>
+            );
+          })}
+          {activeRels.size > 0 ? (
+            <button
+              type="button"
+              onClick={() => setParams({ rel: null })}
+              className="text-xs text-slate-400 underline underline-offset-2 hover:text-slate-600 dark:hover:text-slate-300"
+            >
+              reset
+            </button>
+          ) : null}
+        </div>
+      ) : null}
 
       <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500 dark:text-slate-400">
         {rootEntity ? (
@@ -147,7 +213,12 @@ export function GraphView({
       </div>
 
       <div className="mt-3 flex-1 overflow-hidden rounded-lg border border-slate-200 dark:border-slate-800">
-        <EntityGraph entities={entities} edges={edges} positions={positions} />
+        <EntityGraph
+          entities={entities}
+          edges={edges}
+          positions={positions}
+          edgeStyles={edgeStyles}
+        />
       </div>
     </div>
   );

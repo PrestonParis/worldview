@@ -15,6 +15,7 @@ export default async function Page({ searchParams }: PageProps<"/people">) {
         depth: first(params.depth),
         type: first(params.type),
         hubs: first(params.hubs),
+        rel: first(params.rel),
       }}
     />
   );
