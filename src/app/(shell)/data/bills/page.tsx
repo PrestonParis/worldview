@@ -15,7 +15,8 @@ export default async function BillsPage({
     listEntities(),
     searchParams,
   ]);
-  const nameOf = (id: string) => entities.find((e) => e.id === id)?.name ?? "Unknown";
+  const nameOf = (id: string | null) =>
+    id ? (entities.find((e) => e.id === id)?.name ?? "Unknown") : "No sponsor on record";
 
   return (
     <div className="flex flex-col gap-6">
@@ -51,7 +52,7 @@ export default async function BillsPage({
         ))}
         {bills.length === 0 ? (
           <p className="py-6 text-sm text-slate-500 dark:text-slate-400">
-            No bills yet — add the first one above.
+            No bills yet. Add the first one above.
           </p>
         ) : null}
       </ul>

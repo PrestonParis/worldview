@@ -117,7 +117,7 @@ export async function createEdge(input: EdgeInput): Promise<Edge> {
     const record = result.records[0];
     if (!record) {
       throw new Error(
-        "Couldn't create the relationship — check that both entities exist.",
+        "Couldn't create the relationship. Check that both entities exist.",
       );
     }
     return toEdge(record.get("r"), record.get("sourceId"), record.get("targetId"));

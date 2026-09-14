@@ -51,7 +51,7 @@ export default async function EdgesPage({
         ))}
         {edges.length === 0 ? (
           <p className="py-6 text-sm text-slate-500 dark:text-slate-400">
-            No relationships yet — connect two entities above.
+            No relationships yet. Connect two entities above.
           </p>
         ) : null}
       </ul>

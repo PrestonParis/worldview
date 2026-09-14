@@ -8,6 +8,15 @@
 // re-run — contributions carry FEC's own `sub_id` as an idempotency key
 // (external_id, unique), so re-running only inserts what's new.
 //
+// Each row also gets Phase 2 classification: `contribution_type` from FEC's
+// `entity_type`, `donor_state/city/zip` + `employer/occupation` from the
+// filing, and a heuristic `donor_industry` (src/lib/money/industries.ts).
+// `ON CONFLICT DO NOTHING` means a re-run does NOT re-stamp rows that
+// predate these fields — pass `--refresh` to overwrite the classification /
+// geography columns on existing rows from the fresh filing (leaves amount,
+// date, donor, recipient, and notes alone), or use
+// scripts/backfill-donor-fields.mjs for the offline-derivable subset.
+//
 // Usage: npm run import:fec-donors
 // Optional: set FEC_API_KEY in .env.local for a dedicated rate limit
 // (falls back to the shared DEMO_KEY, 1,000 req/hour, no signup needed).
@@ -18,12 +27,21 @@ import { randomUUID } from "node:crypto";
 import { Client } from "pg";
 import neo4j from "neo4j-driver";
 import { load as loadYaml } from "js-yaml";
+import {
+  classifyCommitteeName,
+  contributionTypeFromFec,
+} from "../src/lib/money/industries.ts";
 
 const FEC_API_KEY = process.env.FEC_API_KEY || "DEMO_KEY";
 const LEGISLATORS_URL =
   "https://raw.githubusercontent.com/unitedstates/congress-legislators/main/legislators-current.yaml";
 const CONTRIBUTIONS_PER_POLITICIAN = 25;
 const FEC_REQUEST_DELAY_MS = 250;
+// --refresh: for rows that already exist (matched on external_id), overwrite
+// the classification / geography columns from the freshly fetched filing.
+// Off by default so a routine re-run stays a pure "insert what's new" and
+// never touches a hand-corrected classification.
+const REFRESH = process.argv.includes("--refresh");
 
 // Edit this list to import donor data for different politicians. Matched
 // by last name against the legislators crosswalk, then by first+last name
@@ -82,7 +100,9 @@ async function main() {
   const unmatched = [];
   let totalInserted = 0;
   let totalSkipped = 0;
+  let totalRefreshed = 0;
   let entitiesCreated = 0;
+  let industryClassified = 0;
 
   try {
     console.log("Fetching congress-legislators crosswalk...");
@@ -231,12 +251,28 @@ async function main() {
           entitiesCreated++;
         }
 
+        const donorIndustry = classifyCommitteeName(donorName);
+        if (donorIndustry) industryClassified++;
+
+        const conflictClause = REFRESH
+          ? `on conflict (external_id) do update set
+               contribution_type = excluded.contribution_type,
+               donor_state = excluded.donor_state,
+               donor_city = excluded.donor_city,
+               donor_zip = excluded.donor_zip,
+               donor_industry = excluded.donor_industry,
+               employer = excluded.employer,
+               occupation = excluded.occupation,
+               updated_at = now()`
+          : `on conflict (external_id) do nothing`;
+
         const insertRes = await pg.query(
           `insert into contributions
-             (donor_entity_id, recipient_entity_id, amount, currency, date, source_record_id, notes, external_id)
-           values ($1, $2, $3, 'USD', $4, $5, $6, $7)
-           on conflict (external_id) do nothing
-           returning id`,
+             (donor_entity_id, recipient_entity_id, amount, currency, date, source_record_id, notes, external_id,
+              contribution_type, donor_state, donor_city, donor_zip, donor_industry, employer, occupation)
+           values ($1, $2, $3, 'USD', $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+           ${conflictClause}
+           returning id, (xmax = 0) as inserted`,
           [
             donorEntityId,
             entity.id,
@@ -245,17 +281,30 @@ async function main() {
             sourceId,
             `FEC entity type: ${c.entity_type_desc || c.entity_type || "committee"}`,
             String(c.sub_id),
+            contributionTypeFromFec(c.entity_type),
+            c.contributor_state || null,
+            c.contributor_city || null,
+            c.contributor_zip || null,
+            donorIndustry,
+            c.contributor_employer || null,
+            c.contributor_occupation || null,
           ],
         );
-        if (insertRes.rows.length > 0) totalInserted++;
-        else totalSkipped++;
+        const wroteRow = insertRes.rows[0];
+        if (!wroteRow) totalSkipped++;
+        else if (wroteRow.inserted) totalInserted++;
+        else totalRefreshed++;
       }
     }
 
     console.log("\n--- Summary ---");
     console.log(`Contributions inserted: ${totalInserted}`);
-    console.log(`Contributions skipped (already imported): ${totalSkipped}`);
+    if (REFRESH) console.log(`Contributions refreshed (existing rows updated): ${totalRefreshed}`);
+    else console.log(`Contributions skipped (already imported): ${totalSkipped}`);
     console.log(`Donor entities created: ${entitiesCreated}`);
+    console.log(
+      `Industry classified (of rows seen): ${industryClassified}/${totalInserted + totalSkipped + totalRefreshed}`,
+    );
     if (unmatched.length > 0) {
       console.log(`Unmatched (${unmatched.length}):`);
       for (const m of unmatched) console.log(`  - ${m}`);

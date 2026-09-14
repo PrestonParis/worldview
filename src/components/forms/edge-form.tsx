@@ -60,7 +60,7 @@ export function EdgeForm({
   if (entities.length < 2) {
     return (
       <p className="text-sm text-slate-500 dark:text-slate-400">
-        Add at least two entities first — a relationship needs both ends.
+        Add at least two entities first; a relationship needs both ends.
       </p>
     );
   }

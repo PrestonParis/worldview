@@ -13,9 +13,13 @@ import {
 } from "lucide-react";
 import { getEntity, listEntities } from "@/lib/neo4j/entities";
 import { listEdgesForEntity } from "@/lib/neo4j/edges";
+import { getEntityContributionSummary } from "@/lib/db/contributions";
+import { listLobbyingForEntity } from "@/lib/db/lobbying";
 import { parseHighlights } from "@/lib/validation/entity";
 import { entityColorFor } from "@/lib/entity-colors";
-import { isDonorEdge, individualEntityTypes } from "@/lib/graph/money";
+import { isDonorEdge, individualEntityTypes } from "@/lib/money";
+import { EntityMoneySummary } from "@/components/money/entity-money-summary";
+import { EntityLobbying } from "@/components/money/entity-lobbying";
 import { buttonVariants } from "@/components/ui/button";
 
 function initialsOf(name: string): string {
@@ -43,12 +47,17 @@ export default async function EntityProfilePage({
   params,
 }: PageProps<"/data/entities/[id]">) {
   const { id } = await params;
-  const [entity, entities, connections] = await Promise.all([
+  const [entity, entities, connections, moneySummary, lobbying] = await Promise.all([
     getEntity(id),
     listEntities(),
     listEdgesForEntity(id),
+    getEntityContributionSummary(id),
+    listLobbyingForEntity(id),
   ]);
   if (!entity) notFound();
+
+  const hasStructuredMoney =
+    moneySummary.raised.length > 0 || moneySummary.given.length > 0;
 
   const colors = entityColorFor(entity.type);
   const highlights = parseHighlights(entity.highlights);
@@ -170,27 +179,44 @@ export default async function EntityProfilePage({
               <Users className="h-5 w-5 text-slate-400" />
               <h2 className="text-lg font-semibold text-slate-950 dark:text-white">Donors & funding</h2>
             </div>
+            <EntityMoneySummary summary={moneySummary} entitiesById={entitiesById} />
+
             {donors.length > 0 ? (
-              <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                {donors.map((edge) => {
-                  const other = relatedEntity(edge);
-                  return (
-                    <Link
-                      key={edge.id}
-                      href={other ? `/data/entities/${other.id}` : "#"}
-                      className="rounded-xl border border-slate-200 p-4 transition hover:border-slate-400 hover:shadow-sm dark:border-slate-800 dark:hover:border-slate-600"
-                    >
-                      <p className="font-medium text-slate-900 dark:text-slate-100">{other?.name ?? "Unknown entity"}</p>
-                      <p className="mt-1 text-xs capitalize text-slate-500">{edge.label}</p>
-                      {edge.notes ? <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">{edge.notes}</p> : null}
-                    </Link>
-                  );
-                })}
-              </div>
-            ) : (
-              <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">No donor or funding relationships recorded.</p>
-            )}
+              <>
+                <h3 className="mt-6 text-xs font-medium tracking-wide text-slate-400 uppercase">
+                  Other funding relationships (unverified)
+                </h3>
+                <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                  {donors.map((edge) => {
+                    const other = relatedEntity(edge);
+                    return (
+                      <Link
+                        key={edge.id}
+                        href={other ? `/data/entities/${other.id}` : "#"}
+                        className="rounded-xl border border-slate-200 p-4 transition hover:border-slate-400 hover:shadow-sm dark:border-slate-800 dark:hover:border-slate-600"
+                      >
+                        <p className="font-medium text-slate-900 dark:text-slate-100">{other?.name ?? "Unknown entity"}</p>
+                        <p className="mt-1 text-xs capitalize text-slate-500">{edge.label}</p>
+                        {edge.notes ? <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">{edge.notes}</p> : null}
+                      </Link>
+                    );
+                  })}
+                </div>
+              </>
+            ) : null}
+
+            {!hasStructuredMoney && donors.length === 0 ? (
+              <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">
+                No donor or funding relationships recorded.
+              </p>
+            ) : null}
           </section>
+
+          <EntityLobbying
+            registrations={lobbying}
+            entityId={id}
+            entitiesById={entitiesById}
+          />
         </div>
 
         <aside className="space-y-6">

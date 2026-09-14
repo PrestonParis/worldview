@@ -1,0 +1,37 @@
+state,state_po,incumbent_name,incumbent_party,open_seat,notes
+Alabama,AL,Kay Ivey,Republican,false,
+Alaska,AK,Mike Dunleavy,Republican,true,term-limited
+Arizona,AZ,Katie Hobbs,Democratic,false,
+Arkansas,AR,Sarah Huckabee Sanders,Republican,false,
+California,CA,Gavin Newsom,Democratic,true,term-limited
+Colorado,CO,Jared Polis,Democratic,true,term-limited
+Connecticut,CT,Ned Lamont,Democratic,false,
+Florida,FL,Ron DeSantis,Republican,true,term-limited
+Georgia,GA,Brian Kemp,Republican,true,term-limited
+Hawaii,HI,Josh Green,Democratic,false,
+Idaho,ID,Brad Little,Republican,false,
+Illinois,IL,JB Pritzker,Democratic,false,
+Iowa,IA,Kim Reynolds,Republican,true,not seeking re-election
+Kansas,KS,Laura Kelly,Democratic,true,term-limited
+Maine,ME,Janet Mills,Democratic,true,term-limited
+Maryland,MD,Wes Moore,Democratic,false,
+Massachusetts,MA,Maura Healey,Democratic,false,
+Michigan,MI,Gretchen Whitmer,Democratic,true,term-limited
+Minnesota,MN,Tim Walz,Democratic,false,
+Nebraska,NE,Jim Pillen,Republican,false,
+Nevada,NV,Joe Lombardo,Republican,false,
+New Hampshire,NH,Kelly Ayotte,Republican,false,two-year term
+New Mexico,NM,Michelle Lujan Grisham,Democratic,true,term-limited
+New York,NY,Kathy Hochul,Democratic,false,
+Ohio,OH,Mike DeWine,Republican,true,term-limited
+Oklahoma,OK,Kevin Stitt,Republican,true,term-limited
+Oregon,OR,Tina Kotek,Democratic,false,
+Pennsylvania,PA,Josh Shapiro,Democratic,false,
+Rhode Island,RI,Dan McKee,Democratic,false,
+South Carolina,SC,Henry McMaster,Republican,true,term-limited
+South Dakota,SD,Larry Rhoden,Republican,false,succeeded Kristi Noem
+Tennessee,TN,Bill Lee,Republican,true,term-limited
+Texas,TX,Greg Abbott,Republican,false,
+Vermont,VT,Phil Scott,Republican,false,two-year term
+Wisconsin,WI,Tony Evers,Democratic,true,not seeking re-election
+Wyoming,WY,Mark Gordon,Republican,true,term-limited

@@ -4,10 +4,12 @@ import { useState } from "react";
 import Link from "next/link";
 import { LayoutGrid, Table2 } from "lucide-react";
 import { EntitySearch } from "./entity-search";
-import { EntityGraph } from "./entity-graph";
+import { EntityGraph, type EntityGraphEdgeStyle } from "./entity-graph";
 import { entityColorFor } from "@/lib/entity-colors";
+import { formatAmount } from "@/lib/money";
 import type { Entity } from "@/lib/validation/entity";
 import type { Edge } from "@/lib/validation/edge";
+import type { MoneyGraphRow } from "@/lib/money";
 import type { PositionedNode } from "@/lib/graph/layout";
 
 type ViewMode = "graph" | "table";
@@ -17,33 +19,56 @@ const VIEWS: { mode: ViewMode; label: string; icon: typeof LayoutGrid }[] = [
   { mode: "table", label: "Table", icon: Table2 },
 ];
 
+function shortDate(iso: string): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime()) ? "" : d.toLocaleDateString(undefined, { year: "numeric", month: "short" });
+}
+
+function EntityCell({ entity }: { entity: Entity | undefined }) {
+  if (!entity) return <span className="text-slate-400">Unknown</span>;
+  return (
+    <Link
+      href={`/data/entities/${entity.id}`}
+      className="inline-flex items-center gap-2 font-medium text-slate-800 hover:underline dark:text-slate-200"
+    >
+      <span
+        className="h-2 w-2 shrink-0 rounded-full border-2"
+        style={{
+          background: entityColorFor(entity.type).bg,
+          borderColor: entityColorFor(entity.type).border,
+        }}
+      />
+      {entity.name}
+    </Link>
+  );
+}
+
 export function MoneyGraphView({
   entities,
   edges,
+  edgeStyles,
+  rows,
   positions,
   searchPlaceholder,
 }: {
   entities: Entity[];
   edges: Edge[];
+  edgeStyles: Record<string, EntityGraphEdgeStyle>;
+  rows: MoneyGraphRow[];
   positions: PositionedNode[];
   searchPlaceholder: string;
 }) {
   const [view, setView] = useState<ViewMode>("graph");
   const entityById = new Map(entities.map((e) => [e.id, e]));
 
-  const rows = edges
-    .map((edge) => ({
-      edge,
-      source: entityById.get(edge.sourceEntityId),
-      target: entityById.get(edge.targetEntityId),
-    }))
-    .filter(
-      (row): row is { edge: Edge; source: Entity; target: Entity } =>
-        Boolean(row.source && row.target),
-    )
-    .sort(
-      (a, b) => a.source.name.localeCompare(b.source.name) || a.target.name.localeCompare(b.target.name),
-    );
+  const sortedRows = [...rows].sort(
+    (a, b) =>
+      (b.total ?? -1) - (a.total ?? -1) ||
+      (entityById.get(a.donorEntityId)?.name ?? "").localeCompare(
+        entityById.get(b.donorEntityId)?.name ?? "",
+      ),
+  );
 
   return (
     <div className="flex h-full flex-col">
@@ -68,9 +93,14 @@ export function MoneyGraphView({
         </div>
       </div>
 
-      <div className="mt-4 flex-1 overflow-hidden rounded-lg border border-slate-200 dark:border-slate-800">
+      <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+        Line weight tracks total contributed. <span className="text-emerald-600 dark:text-emerald-400">Solid green</span>{" "}
+        = FEC filings; dashed grey = hand-entered, unverified.
+      </p>
+
+      <div className="mt-3 flex-1 overflow-hidden rounded-lg border border-slate-200 dark:border-slate-800">
         {view === "graph" ? (
-          <EntityGraph entities={entities} edges={edges} positions={positions} />
+          <EntityGraph entities={entities} edges={edges} positions={positions} edgeStyles={edgeStyles} />
         ) : (
           <div className="h-full overflow-auto">
             <table className="w-full text-left text-sm">
@@ -78,56 +108,47 @@ export function MoneyGraphView({
                 <tr>
                   <th className="px-4 py-2.5 font-semibold">Donor</th>
                   <th className="px-4 py-2.5 font-semibold">Recipient</th>
-                  <th className="px-4 py-2.5 font-semibold">Relationship</th>
-                  <th className="px-4 py-2.5 font-semibold">Since</th>
-                  <th className="px-4 py-2.5 font-semibold">Notes</th>
+                  <th className="px-4 py-2.5 text-right font-semibold">Total</th>
+                  <th className="px-4 py-2.5 text-right font-semibold">Gifts</th>
+                  <th className="px-4 py-2.5 font-semibold">Period</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                {rows.map(({ edge, source, target }) => (
-                  <tr key={edge.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/60">
-                    <td className="px-4 py-2.5">
-                      <Link
-                        href={`/data/entities/${source.id}`}
-                        className="inline-flex items-center gap-2 font-medium text-slate-800 hover:underline dark:text-slate-200"
-                      >
-                        <span
-                          className="h-2 w-2 shrink-0 rounded-full border-2"
-                          style={{
-                            background: entityColorFor(source.type).bg,
-                            borderColor: entityColorFor(source.type).border,
-                          }}
-                        />
-                        {source.name}
-                      </Link>
-                    </td>
-                    <td className="px-4 py-2.5">
-                      <Link
-                        href={`/data/entities/${target.id}`}
-                        className="inline-flex items-center gap-2 font-medium text-slate-800 hover:underline dark:text-slate-200"
-                      >
-                        <span
-                          className="h-2 w-2 shrink-0 rounded-full border-2"
-                          style={{
-                            background: entityColorFor(target.type).bg,
-                            borderColor: entityColorFor(target.type).border,
-                          }}
-                        />
-                        {target.name}
-                      </Link>
-                    </td>
-                    <td className="px-4 py-2.5 text-slate-500 dark:text-slate-400">{edge.label}</td>
-                    <td className="px-4 py-2.5 text-slate-500 dark:text-slate-400">
-                      {edge.validFrom || "—"}
-                    </td>
-                    <td className="max-w-xs truncate px-4 py-2.5 text-slate-500 dark:text-slate-400">
-                      {edge.notes || "—"}
-                    </td>
-                  </tr>
-                ))}
+                {sortedRows.map((row, i) => {
+                  const period = [shortDate(row.firstDate), shortDate(row.lastDate)]
+                    .filter(Boolean)
+                    .filter((v, idx, arr) => arr.indexOf(v) === idx)
+                    .join(" – ");
+                  return (
+                    <tr
+                      key={`${row.kind}:${row.donorEntityId}:${row.recipientEntityId}:${row.currency}:${i}`}
+                      className="hover:bg-slate-50 dark:hover:bg-slate-900/60"
+                    >
+                      <td className="px-4 py-2.5">
+                        <EntityCell entity={entityById.get(row.donorEntityId)} />
+                      </td>
+                      <td className="px-4 py-2.5">
+                        <EntityCell entity={entityById.get(row.recipientEntityId)} />
+                      </td>
+                      <td className="px-4 py-2.5 text-right tabular-nums text-slate-800 dark:text-slate-200">
+                        {row.total != null ? (
+                          formatAmount(row.total, row.currency)
+                        ) : (
+                          <span className="text-xs text-slate-400" title={row.notes || undefined}>
+                            {row.label} · unverified
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-4 py-2.5 text-right tabular-nums text-slate-500 dark:text-slate-400">
+                        {row.count ?? "N/A"}
+                      </td>
+                      <td className="px-4 py-2.5 text-slate-500 dark:text-slate-400">{period || "N/A"}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
-            {rows.length === 0 ? (
+            {sortedRows.length === 0 ? (
               <p className="px-4 py-6 text-sm text-slate-400">No donor relationships recorded.</p>
             ) : null}
           </div>

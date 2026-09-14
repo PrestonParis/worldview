@@ -41,6 +41,7 @@ export function EntityForm({
       linkedinUrl: "",
       highlights: "",
       metadata: "",
+      bioguideId: "",
       ...defaultValues,
     },
   });
@@ -137,6 +138,19 @@ export function EntityForm({
           className={`${inputClass} font-mono text-xs`}
           placeholder='{"party": "R", "role": "commentator"}'
           {...register("metadata")}
+        />
+      </Field>
+
+      <Field
+        label="Bioguide ID (optional)"
+        htmlFor="bioguideId"
+        error={errors.bioguideId?.message}
+      >
+        <input
+          id="bioguideId"
+          className={`${inputClass} font-mono text-xs`}
+          placeholder="e.g. P000197, the Congress crosswalk key for a legislator"
+          {...register("bioguideId")}
         />
       </Field>
 

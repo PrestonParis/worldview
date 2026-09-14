@@ -64,7 +64,7 @@ export function ClaimForm({
   if (entities.length === 0) {
     return (
       <p className="text-sm text-slate-500 dark:text-slate-400">
-        Add at least one entity first — a claim needs a speaker.
+        Add at least one entity first. This claim needs a speaker.
       </p>
     );
   }

@@ -18,17 +18,26 @@ import type { PositionedNode } from "@/lib/graph/layout";
 
 const nodeTypes = { entity: EntityNode };
 
+export interface EntityGraphEdgeStyle {
+  stroke?: string;
+  strokeWidth?: number;
+  dashed?: boolean;
+}
+
 export function EntityGraph({
   entities,
   edges,
   positions,
   interactive = true,
+  edgeStyles,
 }: {
   entities: Entity[];
   edges: Edge[];
   positions: PositionedNode[];
   /** Set false for small homepage-style previews: no zoom controls, no panning/zooming/dragging. */
   interactive?: boolean;
+  /** Per-edge visual overrides, keyed by edge id. Absent → the default grey edge. */
+  edgeStyles?: Record<string, EntityGraphEdgeStyle>;
 }) {
   const router = useRouter();
 
@@ -58,17 +67,25 @@ export function EntityGraph({
 
   const flowEdges = useMemo<FlowEdge[]>(
     () =>
-      edges.map((edge) => ({
-        id: edge.id,
-        source: edge.sourceEntityId,
-        target: edge.targetEntityId,
-        label: edge.label,
-        labelStyle: { fontSize: 11, fill: "#64748B" },
-        labelBgStyle: { fill: "#FFFFFF", fillOpacity: 0.9 },
-        style: { stroke: "#94A3B8" },
-        markerEnd: { type: MarkerType.ArrowClosed, color: "#94A3B8" },
-      })),
-    [edges],
+      edges.map((edge) => {
+        const s = edgeStyles?.[edge.id];
+        const stroke = s?.stroke ?? "#94A3B8";
+        return {
+          id: edge.id,
+          source: edge.sourceEntityId,
+          target: edge.targetEntityId,
+          label: edge.label,
+          labelStyle: { fontSize: 11, fill: "#64748B" },
+          labelBgStyle: { fill: "#FFFFFF", fillOpacity: 0.9 },
+          style: {
+            stroke,
+            ...(s?.strokeWidth ? { strokeWidth: s.strokeWidth } : {}),
+            ...(s?.dashed ? { strokeDasharray: "5 4" } : {}),
+          },
+          markerEnd: { type: MarkerType.ArrowClosed, color: stroke },
+        };
+      }),
+    [edges, edgeStyles],
   );
 
   if (!mounted) {

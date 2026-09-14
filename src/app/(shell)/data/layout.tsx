@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { DataFreshness } from "@/components/legislation/data-freshness";
 
 // This section always reads live data (Neo4j + Postgres) — never prerender it statically.
 export const dynamic = "force-dynamic";
@@ -10,6 +11,8 @@ const tabs = [
   { href: "/data/sources", label: "Sources" },
   { href: "/data/bills", label: "Bills" },
   { href: "/data/contributions", label: "Contributions" },
+  { href: "/data/lobbying", label: "Lobbying" },
+  { href: "/data/elections", label: "Elections" },
 ];
 
 export default function DataLayout({ children }: LayoutProps<"/data">) {
@@ -17,10 +20,11 @@ export default function DataLayout({ children }: LayoutProps<"/data">) {
     <div className="max-w-3xl">
       <h1 className="text-2xl font-semibold tracking-tight">Manage Data</h1>
       <p className="mt-1 text-slate-500 dark:text-slate-400">
-        The six primitives every page draws from. Entities and relationships live in
-        Neo4j; claims, sources, bills (with their votes), and contributions live in
-        Postgres.
+        The primitives every page draws from. Entities and relationships live in
+        Neo4j; claims, sources, bills (with their votes), contributions, lobbying
+        filings, and elections (with their candidacies) live in Postgres.
       </p>
+      <DataFreshness sources={["congress-bills", "congress-votes"]} className="mt-3" />
 
       <nav className="mt-6 flex gap-1 border-b border-slate-200 dark:border-slate-800">
         {tabs.map((tab) => (

@@ -1,7 +1,8 @@
 import { listEntities } from "@/lib/neo4j/entities";
 import { listEdges } from "@/lib/neo4j/edges";
+import { listContributionFlows } from "@/lib/db/contributions";
 import { computeHierarchicalLayout } from "@/lib/graph/layout";
-import { isDonorEdge } from "@/lib/graph/money";
+import { buildMoneyGraph, isDonorEdge } from "@/lib/money";
 import { entityColors } from "@/lib/entity-colors";
 import { EmptyStateFeatures } from "@/components/empty-state";
 import { PageDescription } from "@/components/page-description";
@@ -12,15 +13,23 @@ import type { PageContent } from "@/lib/pages-content";
 // Next only reads that config from route segment files, not from an
 // imported component like this one.
 export async function MoneyGraphPage({ content }: { content: PageContent }) {
-  const [allEntities, allEdges] = await Promise.all([listEntities(), listEdges()]);
+  const [allEntities, allEdges, flows] = await Promise.all([
+    listEntities(),
+    listEdges(),
+    listContributionFlows(),
+  ]);
 
-  // The money graph only shows donor/funding relationships — the shared
-  // entity graph carries every relationship type, so it's filtered down
-  // here rather than at the query layer.
-  const donorEdges = allEdges.filter((e) => isDonorEdge(e.label));
-  const connectedIds = new Set(donorEdges.flatMap((e) => [e.sourceEntityId, e.targetEntityId]));
-  const entities = allEntities.filter((e) => connectedIds.has(e.id));
-  const positions = computeHierarchicalLayout(entities, donorEdges);
+  // Two layers: verified FEC flows from the `contributions` table, and
+  // hand-entered donor edges from the shared entity graph as an unverified
+  // overlay. `buildMoneyGraph` merges them and narrows entities to the ones
+  // actually connected.
+  const manualDonorEdges = allEdges.filter((e) => isDonorEdge(e.label));
+  const { entities, edges, edgeStyles, rows } = buildMoneyGraph({
+    entities: allEntities,
+    flows,
+    manualDonorEdges,
+  });
+  const positions = computeHierarchicalLayout(entities, edges);
 
   return (
     <div className="flex h-full flex-col">
@@ -47,7 +56,7 @@ export async function MoneyGraphPage({ content }: { content: PageContent }) {
         <div className="mt-6">
           <EmptyStateFeatures
             content={content}
-            message="This graph tracks donation and funding relationships specifically — add a relationship labeled “donated to” (or similar) between two entities in"
+            message="No money recorded yet. Run the FEC donor import (see the README) or add a relationship labeled “donated to” between two entities in"
             cta={{ href: "/data/entities", label: "Manage Data" }}
           />
         </div>
@@ -55,7 +64,9 @@ export async function MoneyGraphPage({ content }: { content: PageContent }) {
         <div className="mt-6 h-[75vh] min-h-[480px]">
           <MoneyGraphView
             entities={entities}
-            edges={donorEdges}
+            edges={edges}
+            edgeStyles={edgeStyles}
+            rows={rows}
             positions={positions}
             searchPlaceholder={`Search ${content.title}…`}
           />

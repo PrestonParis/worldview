@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { SearchInput } from "@/components/search/search-input";
+import { formatAmount } from "@/lib/money";
 import type { Contribution } from "@/lib/validation/contribution";
 import type { Entity } from "@/lib/validation/entity";
 import type { Source } from "@/lib/validation/source";
@@ -12,21 +13,6 @@ function formatDate(iso: string): string {
     month: "short",
     day: "numeric",
   });
-}
-
-function formatAmount(amount: number, currency: string | undefined): string {
-  const code = currency || "USD";
-  try {
-    return new Intl.NumberFormat(undefined, {
-      style: "currency",
-      currency: code,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  } catch {
-    // Intl throws on an unrecognized currency code (free text, not
-    // validated against ISO 4217) — fall back to a plain labeled number.
-    return `${amount.toLocaleString()} ${code}`;
-  }
 }
 
 export function ContributionsListView({
@@ -121,7 +107,7 @@ export function ContributionsListView({
                           <span className="text-xs text-slate-500 dark:text-slate-400">{source.title}</span>
                         )
                       ) : (
-                        <span className="text-xs text-slate-400">—</span>
+                        <span className="text-xs text-slate-400">N/A</span>
                       )}
                     </td>
                   </tr>

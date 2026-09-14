@@ -33,11 +33,13 @@ function Tally({ tally }: { tally?: VoteTally }) {
 export function BillListView({
   bills,
   tallies,
+  rollCallCounts = {},
   entities,
   searchPlaceholder,
 }: {
   bills: Bill[];
   tallies: Record<string, VoteTally>;
+  rollCallCounts?: Record<string, number>;
   entities: Entity[];
   searchPlaceholder: string;
 }) {
@@ -51,7 +53,7 @@ export function BillListView({
     return bills.filter((b) => {
       if (statusFilter && b.status !== statusFilter) return false;
       if (!q) return true;
-      const sponsor = entityById.get(b.sponsorEntityId)?.name ?? "";
+      const sponsor = (b.sponsorEntityId && entityById.get(b.sponsorEntityId)?.name) || "";
       return (
         b.title.toLowerCase().includes(q) ||
         b.billNumber.toLowerCase().includes(q) ||
@@ -83,7 +85,8 @@ export function BillListView({
       ) : (
         <ul className="mt-6 flex flex-col divide-y divide-slate-200 dark:divide-slate-800">
           {visible.map((b) => {
-            const sponsor = entityById.get(b.sponsorEntityId);
+            const sponsor = b.sponsorEntityId ? entityById.get(b.sponsorEntityId) : undefined;
+            const rollCalls = rollCallCounts[b.id] ?? 0;
             return (
               <li key={b.id}>
                 <Link
@@ -101,6 +104,7 @@ export function BillListView({
                     <p className="text-xs text-slate-500 dark:text-slate-400">
                       {sponsor?.name ?? "Unknown sponsor"}
                       {b.chamber ? ` · ${b.chamber}` : ""} · {formatDate(b.introducedDate)}
+                      {rollCalls > 0 ? ` · ${rollCalls} roll call${rollCalls === 1 ? "" : "s"}` : ""}
                     </p>
                   </div>
                   <Tally tally={tallies[b.id]} />

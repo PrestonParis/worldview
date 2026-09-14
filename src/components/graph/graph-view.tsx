@@ -202,7 +202,7 @@ export function GraphView({
           </>
         ) : (
           <span>
-            Showing the connected core — {entities.length} of {totalEntityCount}, with party
+            Showing the connected core: {entities.length} of {totalEntityCount}, with party
             and chamber hubs hidden. Search for anyone to focus on their neighbourhood; click
             a node to open its profile.
           </span>

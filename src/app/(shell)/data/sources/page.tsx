@@ -39,7 +39,7 @@ export default async function SourcesPage({
         ))}
         {sources.length === 0 ? (
           <p className="py-6 text-sm text-slate-500 dark:text-slate-400">
-            No sources yet — add the first article, filing, or transcript above.
+            No sources yet. Add the first article, filing, or transcript above.
           </p>
         ) : null}
       </ul>

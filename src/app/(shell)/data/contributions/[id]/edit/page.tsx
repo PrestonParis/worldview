@@ -28,6 +28,13 @@ export default async function EditContributionPage({
           date: contribution.date.slice(0, 10),
           sourceRecordId: contribution.sourceRecordId,
           notes: contribution.notes,
+          contributionType: contribution.contributionType,
+          donorIndustry: contribution.donorIndustry,
+          donorState: contribution.donorState,
+          donorCity: contribution.donorCity,
+          donorZip: contribution.donorZip,
+          employer: contribution.employer,
+          occupation: contribution.occupation,
         }}
         entities={entities}
         sources={sources}

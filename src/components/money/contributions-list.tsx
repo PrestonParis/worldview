@@ -21,7 +21,7 @@ export async function ContributionsList() {
       <h2 className="text-lg font-medium">Contributions</h2>
       {contributions.length === 0 ? (
         <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-          No contributions recorded yet — add donor, recipient, and amount in{" "}
+          No contributions recorded yet. Add donor, recipient, and amount in{" "}
           <Link href="/data/contributions" className="underline underline-offset-2">
             Manage Data
           </Link>

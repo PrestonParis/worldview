@@ -60,7 +60,7 @@ export function BillForm({
   if (politicians.length === 0) {
     return (
       <p className="text-sm text-slate-500 dark:text-slate-400">
-        Add at least one politician entity first — a bill needs a sponsor.
+        Add at least one politician entity first; a bill needs a sponsor.
       </p>
     );
   }

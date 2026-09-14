@@ -23,14 +23,23 @@ export async function POST(request: Request) {
       {
         ok: false,
         error:
-          "Request body must be an object with any of: entities, sources, edges, claims (each an array of items).",
+          "Request body must be an object with any of: entities, sources, edges, claims, elections, candidacies, electionResults, raceRatings (each an array of items).",
       },
       { status: 400 },
     );
   }
 
   const payload = body as IngestBatchPayload;
-  for (const key of ["entities", "sources", "edges", "claims"] as const) {
+  for (const key of [
+    "entities",
+    "sources",
+    "edges",
+    "claims",
+    "elections",
+    "candidacies",
+    "electionResults",
+    "raceRatings",
+  ] as const) {
     if (payload[key] !== undefined && !Array.isArray(payload[key])) {
       return NextResponse.json(
         { ok: false, error: `"${key}" must be an array when present.` },

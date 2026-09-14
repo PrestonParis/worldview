@@ -84,7 +84,7 @@ export default async function OrgDirectoryPage() {
       ) : null}
       {unconnected > 0 ? (
         <p className="mt-4 text-xs text-slate-400">
-          {unconnected} organization{unconnected === 1 ? "" : "s"} with no relationships yet — not shown.
+          {unconnected} organization{unconnected === 1 ? "" : "s"} with no relationships yet, not shown.
         </p>
       ) : null}
     </div>

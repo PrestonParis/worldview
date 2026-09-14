@@ -1,0 +1,31 @@
+# Starter race ratings for the 2026 cycle — REPLACE with a real transcription
+# from a public handicapper (Sabato's Crystal Ball is free:
+# https://centerforpolitics.org/crystalball/2026-senate/ ,  -house, -governor).
+# scripts/import-race-ratings.mjs reads this file; any 2026 race NOT listed
+# here is given "safe_<incumbent party>" from source "inferred" so the
+# chamber-control math still covers all 535 + 36 seats.
+#
+# office: senate | governor | house      state: 2-letter USPS (house: "TX-23")
+# rating: safe_d likely_d lean_d tossup lean_r likely_r safe_r safe_i
+# as_of : YYYY-MM-DD
+office,state,rating,source,as_of,notes
+senate,ME,tossup,starter-2026,2026-09-01,Collins (R) seeking re-election
+senate,NC,lean_r,starter-2026,2026-09-01,open — Tillis (R) retiring
+senate,GA,tossup,starter-2026,2026-09-01,Ossoff (D) seeking re-election
+senate,MI,lean_d,starter-2026,2026-09-01,open — Peters (D) retiring
+senate,TX,likely_r,starter-2026,2026-09-01,Cornyn (R) seeking re-election
+senate,OH:special,likely_r,starter-2026,2026-09-01,special — Husted (R) appointed
+senate,FL:special,safe_r,starter-2026,2026-09-01,special — Moody (R) appointed
+senate,NH,lean_d,starter-2026,2026-09-01,open — Shaheen (D) retiring
+senate,MN,lean_d,starter-2026,2026-09-01,Smith (D) seeking re-election
+senate,IA,likely_r,starter-2026,2026-09-01,Ernst (R) seeking re-election
+governor,GA,tossup,starter-2026,2026-09-01,open — Kemp (R) term-limited
+governor,AZ,tossup,starter-2026,2026-09-01,Hobbs (D) seeking re-election
+governor,NV,tossup,starter-2026,2026-09-01,Lombardo (R) seeking re-election
+governor,KS,lean_r,starter-2026,2026-09-01,open — Kelly (D) term-limited
+governor,MI,lean_d,starter-2026,2026-09-01,open — Whitmer (D) term-limited
+governor,PA,likely_d,starter-2026,2026-09-01,Shapiro (D) seeking re-election
+governor,ME,lean_d,starter-2026,2026-09-01,open — Mills (D) term-limited
+governor,WI,tossup,starter-2026,2026-09-01,open — Evers (D) not running
+governor,OH,likely_r,starter-2026,2026-09-01,open — DeWine (R) term-limited
+governor,FL,likely_r,starter-2026,2026-09-01,open — DeSantis (R) term-limited

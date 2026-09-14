@@ -47,7 +47,7 @@ export default async function ClaimsPage({
         ))}
         {claims.length === 0 ? (
           <p className="py-6 text-sm text-slate-500 dark:text-slate-400">
-            No claims yet — add the first quote above.
+            No claims yet. Add the first quote above.
           </p>
         ) : null}
       </ul>

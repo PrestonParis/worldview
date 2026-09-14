@@ -12,6 +12,8 @@ export const entityColors: Record<EntityType, EntityColor> = {
   journalist: { bg: "#ECFDF5", border: "#10B981", text: "#047857" },
   organization: { bg: "#FAF5FF", border: "#A855F7", text: "#7E22CE" },
   company: { bg: "#FEFCE8", border: "#EAB308", text: "#A16207" },
+  lobbyist: { bg: "#F0FDFA", border: "#14B8A6", text: "#0F766E" },
+  donor: { bg: "#FEF2F2", border: "#F43F5E", text: "#BE123C" },
 };
 
 const FALLBACK_COLOR: EntityColor = { bg: "#F1F5F9", border: "#94A3B8", text: "#475569" };

@@ -73,7 +73,7 @@ export function VotesEditor({
         {votes.map((v) => (
           <li key={v.id} className="flex items-center justify-between gap-4 py-2">
             <span className="text-sm text-slate-700 dark:text-slate-300">
-              {entityById.get(v.voterEntityId)?.name ?? "Unknown"} —{" "}
+              {entityById.get(v.voterEntityId)?.name ?? "Unknown"}:{" "}
               <span className="text-slate-500 dark:text-slate-400">{POSITION_LABEL[v.position]}</span>
             </span>
             <Button type="button" variant="danger" disabled={isPending} onClick={() => handleDelete(v.id)}>

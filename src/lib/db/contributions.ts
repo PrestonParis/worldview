@@ -1,7 +1,15 @@
-import { eq, count, gte, sum } from "drizzle-orm";
+import { eq, or, count, gte, sum, min, max, sql } from "drizzle-orm";
 import { db } from "./client";
 import { contributions } from "./schema";
 import type { Contribution, ContributionInput } from "../validation/contribution";
+import type {
+  ContributionFlow,
+  CounterpartyTotal,
+  CurrencyTotal,
+  EntityContributionSummary,
+  IndustryBreakdownRow,
+  StateBreakdownRow,
+} from "../money";
 
 function toContribution(row: typeof contributions.$inferSelect): Contribution {
   return {
@@ -13,6 +21,13 @@ function toContribution(row: typeof contributions.$inferSelect): Contribution {
     date: row.date.toISOString(),
     sourceRecordId: row.sourceRecordId ?? "",
     notes: row.notes ?? "",
+    contributionType: row.contributionType ?? "",
+    donorState: row.donorState ?? "",
+    donorCity: row.donorCity ?? "",
+    donorZip: row.donorZip ?? "",
+    donorIndustry: row.donorIndustry ?? "",
+    employer: row.employer ?? "",
+    occupation: row.occupation ?? "",
     externalId: row.externalId ?? "",
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
@@ -56,6 +71,198 @@ export async function listContributionTotalsByCurrency(): Promise<
   return rows.map((r) => ({ currency: r.currency, total: Number(r.total ?? 0) }));
 }
 
+// Every donor→recipient pair, aggregated per currency — the edge list the
+// /money graph draws from (replacing the hand-entered donor edges it used
+// to filter out of the shared entity graph).
+export async function listContributionFlows(): Promise<ContributionFlow[]> {
+  const rows = await db
+    .select({
+      donorEntityId: contributions.donorEntityId,
+      recipientEntityId: contributions.recipientEntityId,
+      currency: contributions.currency,
+      total: sum(contributions.amount),
+      count: count(),
+      firstDate: min(contributions.date),
+      lastDate: max(contributions.date),
+    })
+    .from(contributions)
+    .groupBy(
+      contributions.donorEntityId,
+      contributions.recipientEntityId,
+      contributions.currency,
+    );
+
+  const toIso = (v: string | Date | null): string =>
+    v == null ? "" : (v instanceof Date ? v : new Date(v)).toISOString();
+
+  return rows.map((r) => ({
+    donorEntityId: r.donorEntityId,
+    recipientEntityId: r.recipientEntityId,
+    currency: r.currency,
+    total: Number(r.total ?? 0),
+    count: Number(r.count ?? 0),
+    firstDate: toIso(r.firstDate),
+    lastDate: toIso(r.lastDate),
+  }));
+}
+
+// One row per (recipient, donor industry, donor, currency) — the single
+// query behind /money/industries. The client pivots it: sum by industry
+// for the sector bars, filter by recipient (or sum across all), and drill
+// into the donors within a sector. donor_industry is "" (not null) here
+// when unclassified. Bounded by recipients × industries × donors, which
+// stays small for the politician-scoped data this view is about.
+export async function listIndustryBreakdown(): Promise<IndustryBreakdownRow[]> {
+  const rows = await db
+    .select({
+      recipientEntityId: contributions.recipientEntityId,
+      industry: contributions.donorIndustry,
+      donorEntityId: contributions.donorEntityId,
+      currency: contributions.currency,
+      total: sum(contributions.amount),
+      count: count(),
+    })
+    .from(contributions)
+    .groupBy(
+      contributions.recipientEntityId,
+      contributions.donorIndustry,
+      contributions.donorEntityId,
+      contributions.currency,
+    );
+  return rows.map((r) => ({
+    recipientEntityId: r.recipientEntityId,
+    industry: r.industry ?? "",
+    donorEntityId: r.donorEntityId,
+    currency: r.currency,
+    total: Number(r.total ?? 0),
+    count: Number(r.count ?? 0),
+  }));
+}
+
+// One row per (recipient, donor state, donor, currency) — the query behind
+// /money/map. Same client-pivot approach as listIndustryBreakdown: the view
+// filters by recipient, sums per state for the choropleth, and drills into
+// the donors within a state. donor_state is "" when the filing had none.
+export async function listStateBreakdown(): Promise<StateBreakdownRow[]> {
+  const rows = await db
+    .select({
+      recipientEntityId: contributions.recipientEntityId,
+      state: contributions.donorState,
+      donorEntityId: contributions.donorEntityId,
+      currency: contributions.currency,
+      total: sum(contributions.amount),
+      count: count(),
+    })
+    .from(contributions)
+    .groupBy(
+      contributions.recipientEntityId,
+      contributions.donorState,
+      contributions.donorEntityId,
+      contributions.currency,
+    );
+  return rows.map((r) => ({
+    recipientEntityId: r.recipientEntityId,
+    state: (r.state ?? "").toUpperCase(),
+    donorEntityId: r.donorEntityId,
+    currency: r.currency,
+    total: Number(r.total ?? 0),
+    count: Number(r.count ?? 0),
+  }));
+}
+
+// Every contribution touching an entity, either direction — for the entity
+// profile page.
+export async function listContributionsForEntity(entityId: string): Promise<Contribution[]> {
+  const rows = await db.query.contributions.findMany({
+    where: or(
+      eq(contributions.donorEntityId, entityId),
+      eq(contributions.recipientEntityId, entityId),
+    ),
+    orderBy: (c, { desc }) => desc(c.date),
+  });
+  return rows.map(toContribution);
+}
+
+export async function getEntityContributionSummary(
+  entityId: string,
+): Promise<EntityContributionSummary> {
+  const amountDesc = sql`sum(${contributions.amount}) desc`;
+  const [raisedRows, givenRows, donorRows, recipientRows] = await Promise.all([
+    db
+      .select({ currency: contributions.currency, total: sum(contributions.amount), count: count() })
+      .from(contributions)
+      .where(eq(contributions.recipientEntityId, entityId))
+      .groupBy(contributions.currency),
+    db
+      .select({ currency: contributions.currency, total: sum(contributions.amount), count: count() })
+      .from(contributions)
+      .where(eq(contributions.donorEntityId, entityId))
+      .groupBy(contributions.currency),
+    db
+      .select({
+        entityId: contributions.donorEntityId,
+        currency: contributions.currency,
+        total: sum(contributions.amount),
+        count: count(),
+      })
+      .from(contributions)
+      .where(eq(contributions.recipientEntityId, entityId))
+      .groupBy(contributions.donorEntityId, contributions.currency)
+      .orderBy(amountDesc)
+      .limit(8),
+    db
+      .select({
+        entityId: contributions.recipientEntityId,
+        currency: contributions.currency,
+        total: sum(contributions.amount),
+        count: count(),
+      })
+      .from(contributions)
+      .where(eq(contributions.donorEntityId, entityId))
+      .groupBy(contributions.recipientEntityId, contributions.currency)
+      .orderBy(amountDesc)
+      .limit(8),
+  ]);
+
+  const currencyTotal = (r: { currency: string; total: unknown; count: unknown }): CurrencyTotal => ({
+    currency: r.currency,
+    total: Number(r.total ?? 0),
+    count: Number(r.count ?? 0),
+  });
+  const counterparty = (r: {
+    entityId: string;
+    currency: string;
+    total: unknown;
+    count: unknown;
+  }): CounterpartyTotal => ({
+    entityId: r.entityId,
+    currency: r.currency,
+    total: Number(r.total ?? 0),
+    count: Number(r.count ?? 0),
+  });
+
+  return {
+    raised: raisedRows.map(currencyTotal),
+    given: givenRows.map(currencyTotal),
+    topDonors: donorRows.map(counterparty),
+    topRecipients: recipientRows.map(counterparty),
+  };
+}
+
+// The Phase 2 classification / geography fields, normalized from the form's
+// "" sentinels to null. Shared by create + update.
+function classificationValues(input: ContributionInput) {
+  return {
+    contributionType: input.contributionType || null,
+    donorState: input.donorState || null,
+    donorCity: input.donorCity || null,
+    donorZip: input.donorZip || null,
+    donorIndustry: input.donorIndustry || null,
+    employer: input.employer || null,
+    occupation: input.occupation || null,
+  };
+}
+
 export async function createContribution(input: ContributionInput): Promise<Contribution> {
   const [row] = await db
     .insert(contributions)
@@ -67,6 +274,7 @@ export async function createContribution(input: ContributionInput): Promise<Cont
       date: new Date(input.date),
       sourceRecordId: input.sourceRecordId || null,
       notes: input.notes || null,
+      ...classificationValues(input),
     })
     .returning();
   return toContribution(row);
@@ -86,6 +294,7 @@ export async function updateContribution(
       date: new Date(input.date),
       sourceRecordId: input.sourceRecordId || null,
       notes: input.notes || null,
+      ...classificationValues(input),
       updatedAt: new Date(),
     })
     .where(eq(contributions.id, id))

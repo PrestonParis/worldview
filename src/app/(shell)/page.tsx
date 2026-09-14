@@ -6,7 +6,9 @@ import {
 import { countEdges, countEdgesCreatedSince, listEdges } from "@/lib/neo4j/edges";
 import { countSources, countSourcesCreatedSince } from "@/lib/db/sources";
 import { countBills, countBillsCreatedSince } from "@/lib/db/bills";
+import { countRollCalls, countRollCallsCreatedSince } from "@/lib/db/rollCalls";
 import { countContributions, countContributionsCreatedSince } from "@/lib/db/contributions";
+import { countElections, countElectionsCreatedSince } from "@/lib/db/elections";
 import { computeForceLayout } from "@/lib/graph/layout";
 import { daysAgo } from "@/lib/dates";
 import { Hero } from "@/components/home/hero";
@@ -27,12 +29,16 @@ export default async function Home() {
     edgeCount,
     sourceCount,
     billCount,
+    rollCallCount,
     contributionCount,
+    electionCount,
     entityDelta,
     edgeDelta,
     sourceDelta,
     billDelta,
+    rollCallDelta,
     contributionDelta,
+    electionDelta,
     allEntities,
     allEdges,
   ] = await Promise.all([
@@ -40,12 +46,16 @@ export default async function Home() {
     countEdges(),
     countSources(),
     countBills(),
+    countRollCalls(),
     countContributions(),
+    countElections(),
     countEntitiesCreatedSince(weekAgo),
     countEdgesCreatedSince(weekAgo),
     countSourcesCreatedSince(weekAgo),
     countBillsCreatedSince(weekAgo),
+    countRollCallsCreatedSince(weekAgo),
     countContributionsCreatedSince(weekAgo),
+    countElectionsCreatedSince(weekAgo),
     listEntities(),
     listEdges(),
   ]);
@@ -67,10 +77,22 @@ export default async function Home() {
     { label: "Sources", value: sourceCount, delta: sourceDelta, href: "/data/sources" },
     { label: "Bills", value: billCount, delta: billDelta, href: "/data/bills" },
     {
+      label: "Roll-call votes",
+      value: rollCallCount,
+      delta: rollCallDelta,
+      href: "/legislation",
+    },
+    {
       label: "Contributions",
       value: contributionCount,
       delta: contributionDelta,
       href: "/data/contributions",
+    },
+    {
+      label: "Elections",
+      value: electionCount,
+      delta: electionDelta,
+      href: "/data/elections",
     },
   ];
 

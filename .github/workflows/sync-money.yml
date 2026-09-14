@@ -1,0 +1,57 @@
+name: Sync money
+
+# Weekly top-up of FEC campaign-finance data for the current cycle:
+# candidate_finance totals + top PAC receipts. import-fec-cycle.mjs is
+# idempotent (upsert on external_id) and resumable (sync_runs.cursor).
+# Trigger by hand from the Actions tab for a one-off or a wider sweep.
+on:
+  schedule:
+    - cron: "0 9 * * 1" # Mondays 09:00 UTC (an hour after sync-legislation)
+  workflow_dispatch:
+    inputs:
+      states:
+        description: "Comma-separated state filter (blank = all 50)"
+        type: string
+        default: ""
+      office:
+        description: "Chambers to include"
+        type: string
+        default: "H,S"
+      refresh:
+        description: "Re-stamp classification/geo on existing contribution rows"
+        type: boolean
+        default: false
+
+concurrency:
+  group: sync-money
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24 # >=23.6 for unflagged .ts import in the scripts
+          cache: npm
+
+      - run: npm ci
+
+      - name: Write .env.local
+        run: |
+          {
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}"
+            echo "NEO4J_URI=${{ secrets.NEO4J_URI }}"
+            echo "NEO4J_USER=${{ secrets.NEO4J_USER }}"
+            echo "NEO4J_PASSWORD=${{ secrets.NEO4J_PASSWORD }}"
+            echo "FEC_API_KEY=${{ secrets.FEC_API_KEY }}"
+          } > .env.local
+
+      - name: Import FEC cycle (totals + top PAC receipts)
+        run: >
+          npm run import:fec-cycle --
+          --office=${{ inputs.office || 'H,S' }}
+          ${{ inputs.states && format('--states={0}', inputs.states) || '' }}
+          ${{ inputs.refresh && '--refresh' || '' }}

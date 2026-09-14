@@ -1,0 +1,48 @@
+name: Sync legislation
+
+# Weekly top-up of bills + roll-call votes from the Congress.gov API.
+# Both scripts are incremental (they resume from the last run's cursor in
+# `sync_runs`) and idempotent, so re-runs are cheap. Trigger by hand from
+# the Actions tab for a one-off.
+on:
+  schedule:
+    - cron: "0 8 * * 1" # Mondays 08:00 UTC
+  workflow_dispatch:
+    inputs:
+      full:
+        description: "Ignore saved cursors and re-sweep the whole Congress"
+        type: boolean
+        default: false
+
+concurrency:
+  group: sync-legislation
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24 # needs >=23.6 for unflagged .ts import in the scripts
+          cache: npm
+
+      - run: npm ci
+
+      - name: Write .env.local
+        run: |
+          {
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}"
+            echo "NEO4J_URI=${{ secrets.NEO4J_URI }}"
+            echo "NEO4J_USER=${{ secrets.NEO4J_USER }}"
+            echo "NEO4J_PASSWORD=${{ secrets.NEO4J_PASSWORD }}"
+            echo "CONGRESS_GOV_API_KEY=${{ secrets.CONGRESS_GOV_API_KEY }}"
+          } > .env.local
+
+      - name: Import bills
+        run: npm run import:congress-bills -- ${{ inputs.full && '--full' || '' }}
+
+      - name: Import roll-call votes
+        run: npm run import:congress-votes -- ${{ inputs.full && '--full' || '' }}

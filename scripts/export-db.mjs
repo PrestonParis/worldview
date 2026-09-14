@@ -19,7 +19,20 @@ import path from "node:path";
 import { Client } from "pg";
 import neo4j from "neo4j-driver";
 
-const PG_TABLES = ["sources", "claims", "contributions", "bills", "votes", "map_projects"];
+// NOTE: hand-maintained. Add new tables here as they're created (Elections
+// and Legislation tables are also missing — worth switching this to an
+// information_schema enumeration).
+const PG_TABLES = [
+  "sources",
+  "claims",
+  "contributions",
+  "candidate_finance",
+  "lobbying_registrations",
+  "lobbying_issues",
+  "bills",
+  "votes",
+  "map_projects",
+];
 
 function serialize(value) {
   if (value == null) return value;

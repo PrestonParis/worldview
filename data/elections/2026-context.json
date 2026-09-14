@@ -1,0 +1,8 @@
+{
+  "_comment": "Seats NOT on the 2026 ballot, by party — the baseline the cycle-control projection adds rated 2026 outcomes to. HAND-MAINTAINED: verify against the Senate/Governor rosters and update after the 2025 off-year and any special. Sources: unitedstates/congress-legislators for the Senate (class 1 + class 3), NGA for governors.",
+  "asOf": "2026-09-01",
+  "senateBaseline": { "D": 32, "R": 33, "I": 2 },
+  "governorBaseline": { "D": 8, "R": 6, "I": 0, "_note": "APPROX — 14-16 states not electing in 2026; refine from NGA." },
+  "houseBaseline": { "D": 0, "R": 0, "I": 0 },
+  "majorities": { "senate": 51, "house": 218, "governor": 26 }
+}

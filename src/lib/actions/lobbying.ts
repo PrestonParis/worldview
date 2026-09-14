@@ -1,0 +1,61 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
+import {
+  lobbyingRegistrationSchema,
+  type LobbyingRegistrationInput,
+} from "../validation/lobbying";
+import * as lobbyingDb from "../db/lobbying";
+import type { ActionResult } from "./entities";
+
+function revalidate() {
+  revalidatePath("/data");
+  revalidatePath("/money");
+  revalidatePath("/money/lobbying");
+}
+
+export async function createLobbyingRegistrationAction(
+  input: LobbyingRegistrationInput,
+): Promise<ActionResult<{ id: string }>> {
+  const parsed = lobbyingRegistrationSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+  }
+  try {
+    const reg = await lobbyingDb.createLobbyingRegistration(parsed.data);
+    revalidate();
+    return { ok: true, data: { id: reg.id } };
+  } catch (err) {
+    return { ok: false, error: (err as Error).message };
+  }
+}
+
+export async function updateLobbyingRegistrationAction(
+  id: string,
+  input: LobbyingRegistrationInput,
+): Promise<ActionResult<{ id: string }>> {
+  const parsed = lobbyingRegistrationSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+  }
+  try {
+    const reg = await lobbyingDb.updateLobbyingRegistration(id, parsed.data);
+    if (!reg) return { ok: false, error: "Registration not found" };
+    revalidate();
+    return { ok: true, data: { id: reg.id } };
+  } catch (err) {
+    return { ok: false, error: (err as Error).message };
+  }
+}
+
+export async function deleteLobbyingRegistrationAction(
+  id: string,
+): Promise<ActionResult<null>> {
+  try {
+    await lobbyingDb.deleteLobbyingRegistration(id);
+    revalidate();
+    return { ok: true, data: null };
+  } catch (err) {
+    return { ok: false, error: (err as Error).message };
+  }
+}

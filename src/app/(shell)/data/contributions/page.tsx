@@ -52,7 +52,7 @@ export default async function ContributionsPage({
         ))}
         {contributions.length === 0 ? (
           <p className="py-6 text-sm text-slate-500 dark:text-slate-400">
-            No contributions yet — add the first one above.
+            No contributions yet. Add the first one above.
           </p>
         ) : null}
       </ul>

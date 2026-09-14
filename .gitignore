@@ -48,6 +48,11 @@ yarn-error.log*
 # claude code — machine-local settings, not shared
 .claude/settings.local.json
 
+# election import cache — large MEDSL source files fetched on demand by
+# scripts/import-elections.mjs. The small topline files it uses by default
+# are committed under data/elections/ directly.
+/data/elections/cache/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

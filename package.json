@@ -2,6 +2,7 @@
   "name": "worldview",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "predev": "node scripts/copy-maplibre-worker.mjs",
     "dev": "next dev -p 3001",
@@ -9,6 +10,7 @@
     "build": "next build",
     "start": "next start -p 3001",
     "lint": "eslint",
+    "test": "vitest run",
     "postinstall": "node scripts/copy-maplibre-worker.mjs",
     "infra:up": "supabase start && docker compose -f infra/docker/docker-compose.yml up -d",
     "infra:down": "docker compose -f infra/docker/docker-compose.yml down && supabase stop",
@@ -25,7 +27,17 @@
     "db:migrate-neo4j": "node scripts/migrate-neo4j.mjs",
     "db:migrate-people-categories": "node scripts/migrate-people-categories.mjs",
     "import:fec-donors": "node scripts/import-fec-donors.mjs",
-    "reconstruct:fec-graph": "node scripts/reconstruct-fec-graph.mjs"
+    "import:lda-lobbying": "node scripts/import-lda-lobbying.mjs",
+    "import:congress-bills": "node scripts/import-congress-bills.mjs",
+    "import:congress-votes": "node scripts/import-congress-votes.mjs",
+    "import:elections": "node scripts/import-elections.mjs",
+    "import:county-results": "node scripts/import-county-results.mjs",
+    "backfill:members": "node scripts/backfill-members.mjs",
+    "backfill:donor-fields": "node scripts/backfill-donor-fields.mjs",
+    "reconstruct:fec-graph": "node scripts/reconstruct-fec-graph.mjs",
+    "db:apply": "drizzle-kit push --force",
+    "import:fec-cycle": "node scripts/import-fec-cycle.mjs",
+    "import:fec-totals": "node scripts/import-fec-cycle.mjs --totals-only"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.7.1",
@@ -65,6 +77,7 @@
     "eslint-config-next": "16.3.0",
     "js-yaml": "^5.3.0",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^3.2.7"
   }
 }

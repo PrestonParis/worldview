@@ -20,6 +20,7 @@ function toEntity(node: Node): Entity {
     linkedinUrl: (p.linkedinUrl as string) ?? "",
     highlights: (p.highlights as string) ?? "",
     metadata: (p.metadata as string) ?? "",
+    bioguideId: (p.bioguideId as string) ?? "",
     createdAt: String(p.createdAt),
     updatedAt: String(p.updatedAt),
   };
@@ -37,6 +38,25 @@ export async function listEntities(filter?: {
       filter?.type ? { type: filter.type } : {},
     );
     return result.records.map((r) => toEntity(r.get("e")));
+  } finally {
+    await session.close();
+  }
+}
+
+// bioguideId -> entity id, for the legislation importers to resolve
+// sponsors and voters in one round trip. Only politician entities carry a
+// bioguideId (see scripts/backfill-members.mjs).
+export async function listPoliticianBioguideMap(): Promise<Map<string, string>> {
+  const session = getDriver().session();
+  try {
+    const result = await session.run(
+      "MATCH (e:Entity {type: 'politician'}) WHERE e.bioguideId IS NOT NULL RETURN e.bioguideId AS bioguideId, e.id AS id",
+    );
+    const map = new Map<string, string>();
+    for (const record of result.records) {
+      map.set(String(record.get("bioguideId")), String(record.get("id")));
+    }
+    return map;
   } finally {
     await session.close();
   }
@@ -112,6 +132,7 @@ export async function createEntity(input: EntityInput): Promise<Entity> {
          linkedinUrl: $linkedinUrl,
          highlights: $highlights,
          metadata: $metadata,
+         bioguideId: $bioguideId,
          createdAt: datetime(),
          updatedAt: datetime()
        })
@@ -131,6 +152,9 @@ export async function createEntity(input: EntityInput): Promise<Entity> {
         linkedinUrl: input.linkedinUrl ?? "",
         highlights: input.highlights ?? "",
         metadata: input.metadata ?? "",
+        // null (not "") when blank — see the note in validation/entity.ts:
+        // the Neo4j uniqueness constraint would reject a second "".
+        bioguideId: input.bioguideId || null,
       },
     );
     return toEntity(result.records[0].get("e"));
@@ -160,6 +184,7 @@ export async function updateEntity(
            e.linkedinUrl = $linkedinUrl,
            e.highlights = $highlights,
            e.metadata = $metadata,
+           e.bioguideId = $bioguideId,
            e.updatedAt = datetime()
        RETURN e`,
       {
@@ -177,6 +202,9 @@ export async function updateEntity(
         linkedinUrl: input.linkedinUrl ?? "",
         highlights: input.highlights ?? "",
         metadata: input.metadata ?? "",
+        // null clears the property (Cypher SET x = null removes it) and
+        // keeps blanks out of the uniqueness constraint — see createEntity.
+        bioguideId: input.bioguideId || null,
       },
     );
     const record = result.records[0];

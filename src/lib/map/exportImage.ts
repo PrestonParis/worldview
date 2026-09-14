@@ -7,8 +7,8 @@ export interface ExportSize {
 }
 
 export const EXPORT_PRESETS: { id: string; label: string; size: ExportSize }[] = [
-  { id: "16:9", label: "1920×1080 (16:9 — broadcast)", size: { width: 1920, height: 1080 } },
-  { id: "9:16", label: "1080×1920 (9:16 — vertical/social)", size: { width: 1080, height: 1920 } },
+  { id: "16:9", label: "1920×1080 (16:9, broadcast)", size: { width: 1920, height: 1080 } },
+  { id: "9:16", label: "1080×1920 (9:16, vertical/social)", size: { width: 1080, height: 1920 } },
 ];
 
 function waitForIdle(map: MapLibreMap): Promise<void> {

@@ -24,7 +24,7 @@ export interface GraphPageParams {
 
 const MAX_DEPTH = 3;
 
-// Callers (page.tsx files) must also export `dynamic = "force-dynamic"`;
+// Callers (page.tsx files) must also export `dynamic = "force-dynamic"` —
 // Next only reads that config from route segment files, not from an
 // imported component like this one.
 export async function GraphPage({

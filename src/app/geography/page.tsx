@@ -8,7 +8,7 @@ import { MapWorkspace } from "@/components/map/MapWorkspace";
 import { pagesContent } from "@/lib/pages-content";
 
 export const metadata: Metadata = {
-  title: "Geography — Worldview",
+  title: "Geography · Worldview",
   description: "Map-based graphics editor for geographic and geopolitical content.",
 };
 
@@ -30,7 +30,7 @@ export default async function GeographyPage() {
         <summary className="flex w-fit cursor-pointer list-none items-center gap-2 text-sm text-neutral-300 transition-colors hover:text-neutral-100">
           <ChevronDown size={14} className="transition-transform group-open:rotate-180" />
           <span className="font-medium text-neutral-100">{content.title}</span>
-          <span className="text-neutral-500">— {content.tagline}</span>
+          <span className="text-neutral-500">· {content.tagline}</span>
         </summary>
         <ul className="mt-2 flex flex-wrap gap-2 pb-1">
           {content.features.map((feature) => (

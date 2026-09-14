@@ -46,7 +46,7 @@ export default async function EntitiesPage({
         ))}
         {entities.length === 0 ? (
           <p className="py-6 text-sm text-slate-500 dark:text-slate-400">
-            No entities yet — add the first politician, pundit, journalist, organization, or company above.
+            No entities yet. Add the first politician, pundit, journalist, organization, or company above.
           </p>
         ) : null}
       </ul>

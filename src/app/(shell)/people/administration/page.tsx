@@ -51,7 +51,7 @@ export default async function AdministrationPage() {
             <Link href={`/data/entities/${president.id}`} className="font-medium text-slate-700 hover:underline dark:text-slate-300">
               {president.name}
             </Link>{" "}
-            — {roles.length} appointees.
+            ({roles.length} appointees).
           </p>
         </div>
         <Link
