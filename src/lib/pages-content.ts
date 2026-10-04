@@ -6,6 +6,17 @@ export interface PageContent {
 }
 
 export const pagesContent: Record<string, PageContent> = {
+  "my-government": {
+    slug: "my-government",
+    title: "My Government",
+    tagline: "Every public office that represents your address, in one place.",
+    features: [
+      "Address-based district matching",
+      "Local, county, state, federal, and judicial offices",
+      "Votes, donors, promises, and scorecards",
+      "Source-backed coverage status",
+    ],
+  },
   people: {
     slug: "people",
     title: "People & Power",
@@ -51,6 +62,28 @@ export const pagesContent: Record<string, PageContent> = {
       "Electoral swing map",
       "District explorer",
       "Gerrymandering viewer",
+    ],
+  },
+  demographics: {
+    slug: "demographics",
+    title: "Demographics",
+    tagline: "How the United States is changing, projected year by year.",
+    features: [
+      "Sex composition",
+      "Race composition",
+      "Sexual orientation",
+      "Religious affiliation",
+    ],
+  },
+  quiz: {
+    slug: "quiz",
+    title: "Political Quiz",
+    tagline: "Where you stand, axis by axis and issue by issue.",
+    features: [
+      "17 political axes",
+      "25 issue policy profiles",
+      "55 ideological traditions ranked",
+      "Adaptive question selection",
     ],
   },
   geography: {

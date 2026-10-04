@@ -1,0 +1,46 @@
+import { describe, expect, it } from "vitest";
+import { demographicSeries } from "./forecast";
+
+describe("demographic forecasts", () => {
+  it("covers every year through 2050", () => {
+    for (const series of demographicSeries) {
+      expect(series.points.at(-1)?.year).toBe(2050);
+      for (let index = 1; index < series.points.length; index += 1) {
+        expect(series.points[index].year).toBe(series.points[index - 1].year + 1);
+      }
+    }
+  });
+
+  it("starts each series at its first comparable observation", () => {
+    const starts = Object.fromEntries(
+      demographicSeries.map((series) => [series.id, series.points[0].year]),
+    );
+
+    expect(starts).toEqual({ sex: 1820, race: 2000, orientation: 2012, religion: 2007 });
+  });
+
+  it("keeps every annual composition at 100 percent", () => {
+    for (const series of demographicSeries) {
+      for (const point of series.points) {
+        const total = Object.values(point.values).reduce((sum, value) => sum + value, 0);
+        expect(total).toBeCloseTo(100, 5);
+        expect(Object.values(point.values).every((value) => value >= 0 && value <= 100)).toBe(true);
+      }
+    }
+  });
+
+  it("keeps multiracial identity separate", () => {
+    const race = demographicSeries.find((series) => series.id === "race");
+    expect(race?.categories.some((category) => category.id === "nhMultiracial")).toBe(true);
+  });
+
+  it("uses the latest mutually exclusive Census race and ethnicity baseline", () => {
+    const race = demographicSeries.find((series) => series.id === "race");
+    const baseline = race?.points.find((point) => point.year === 2025);
+
+    expect(race?.observedThrough).toBe(2025);
+    expect(baseline?.values.nhWhite).toBeCloseTo(56.11, 1);
+    expect(baseline?.values.hispanic).toBeCloseTo(20.52, 1);
+    expect(race?.categories.some((category) => category.id === "white")).toBe(false);
+  });
+});

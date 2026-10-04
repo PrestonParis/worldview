@@ -1,0 +1,160 @@
+// Political quiz — question bank and ideology catalog types. Pure data; the
+// engine (later phase) consumes these. See docs/quiz-plan.md.
+
+export const axisIds = [
+  "federalism",
+  "executive",
+  "liberty",
+  "voting",
+  "ownership",
+  "regulation",
+  "redistribution",
+  "trade",
+  "engagement",
+  "force",
+  "social",
+  "religion",
+  "immigration",
+  "justice",
+  "identity",
+  "environment",
+  "technology",
+] as const;
+
+export type AxisId = (typeof axisIds)[number];
+
+export type AxisGroup = "governance" | "economy" | "foreign" | "society" | "tech";
+
+// How agreement relates to position (see docs/quiz-plan.md, Engine):
+// - directional: agreement rises steadily toward the pole on the side of
+//   `location`; `location` is the threshold where agreement turns positive,
+//   so a ±1 item is agreed with only at the extreme. Most policy statements.
+// - ideal: agreement peaks at `location` and falls off on both sides —
+//   compromise statements that both extremes reject.
+export type ItemModel = "directional" | "ideal";
+
+export interface AxisPole {
+  label: string;
+  description: string;
+}
+
+export interface Axis {
+  id: AxisId;
+  group: AxisGroup;
+  name: string;
+  // Positions run from -1 (negative pole) to +1 (positive pole). The sign
+  // carries no left/right meaning.
+  negative: AxisPole;
+  positive: AxisPole;
+}
+
+// Where an item sits on one axis. `location` is the position (-1…+1) of the
+// respondent who would agree with it most; `weight` (0…1) is how strongly it
+// informs that axis — 1 for the axis it was written for, less for side
+// loadings.
+export interface AxisLoading {
+  location: number;
+  weight: number;
+}
+
+export type Loadings = Partial<Record<AxisId, AxisLoading>>;
+
+// An agree/disagree statement, answered on a 7-point scale plus Skip.
+export interface Statement {
+  id: string; // stable forever; stored answers reference it
+  text: string;
+  model: ItemModel;
+  axes: Loadings;
+}
+
+export type IssueId =
+  | "abortion"
+  | "guns"
+  | "immigration"
+  | "healthcare"
+  | "taxes"
+  | "labor"
+  | "entitlements"
+  | "climate"
+  | "policing"
+  | "death-penalty"
+  | "drugs"
+  | "lgbtq"
+  | "affirmative-action"
+  | "education"
+  | "speech"
+  | "voting-rules"
+  | "judiciary"
+  | "israel"
+  | "ukraine"
+  | "china"
+  | "tariffs"
+  | "ai"
+  | "religious-liberty"
+  | "housing"
+  | "debt";
+
+export interface ChoiceOption {
+  id: string; // unique within its question
+  text: string;
+  // Plain-language stance this option contributes to the issue summary.
+  stance: string;
+  // Axis evidence. Options are scored as ideal points: the chosen option is
+  // most likely for respondents located nearest its locations.
+  axes: Loadings;
+  // In a multiple-selection question this option cannot be combined with
+  // any other option (for example, "None of these").
+  exclusive?: boolean;
+}
+
+export interface ChoiceQuestion {
+  id: string; // globally unique, `${issueId}.${slug}`
+  // The policy-profile attribute this question answers, e.g. "Gestational
+  // limit". Each module's results are one stance per attribute.
+  attribute: string;
+  prompt: string;
+  // Multiple-selection questions are submitted once, as a single compact
+  // policy battery. Unchecked options are not treated as opposition.
+  selection?: "single" | "multiple";
+  options: ChoiceOption[];
+}
+
+// Serializable branching condition over earlier choice answers.
+export type Condition =
+  | { q: string; in: string[] } // question q was answered with one of these option ids
+  | { all: Condition[] }
+  | { any: Condition[] };
+
+export interface FollowUp extends ChoiceQuestion {
+  // Omitted: asked whenever the screener was answered (not skipped).
+  when?: Condition;
+}
+
+export interface IssueModule {
+  id: IssueId;
+  name: string;
+  screener: ChoiceQuestion;
+  followUps: FollowUp[];
+}
+
+export type IdeologyFamily =
+  | "left"
+  | "liberal"
+  | "center"
+  | "conservative"
+  | "right"
+  | "libertarian"
+  | "populist"
+  | "other";
+
+export interface Ideology {
+  id: string;
+  name: string;
+  family: IdeologyFamily;
+  description: string;
+  // Reference position on every axis.
+  position: Record<AxisId, number>;
+  // The axes that define this ideology; omitted means all of them. Other axes
+  // carry a typical adherent's position and count less when matching.
+  core?: AxisId[];
+}

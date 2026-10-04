@@ -1,0 +1,33 @@
+name: Purge unclaimed quizzes
+
+# Political-quiz sessions that nobody claims are kept for 7 days
+# (docs/quiz-plan.md). The app already hides them after that; this deletes
+# the rows. Claimed quizzes are never touched.
+on:
+  schedule:
+    - cron: "30 6 * * *" # daily, 06:30 UTC
+  workflow_dispatch:
+
+concurrency:
+  group: purge-quizzes
+  cancel-in-progress: false
+
+jobs:
+  purge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - run: npm install --no-save pg
+
+      - name: Write .env.local
+        run: |
+          {
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}"
+          } > .env.local
+
+      - run: node scripts/purge-quizzes.mjs

@@ -40,8 +40,61 @@ body {
   animation: header-enter 400ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* Quiz results reveal, played once when the quiz is first finished. */
+@keyframes quiz-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes quiz-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.88);
+    filter: blur(10px);
+  }
+  60% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+@keyframes quiz-ring {
+  from {
+    stroke-dashoffset: 100;
+  }
+}
+
+.quiz-reveal-intro {
+  animation: quiz-rise 600ms ease-out both;
+}
+
+.quiz-reveal-name {
+  animation: quiz-pop 1000ms cubic-bezier(0.16, 1, 0.3, 1) 900ms both;
+}
+
+.quiz-reveal-rest {
+  animation: quiz-rise 700ms ease-out 1700ms both;
+}
+
+.quiz-reveal-ring {
+  animation: quiz-ring 1400ms cubic-bezier(0.16, 1, 0.3, 1) 1100ms both;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .header-enter {
+  .header-enter,
+  .quiz-reveal-intro,
+  .quiz-reveal-name,
+  .quiz-reveal-rest,
+  .quiz-reveal-ring {
     animation: none;
   }
   * {

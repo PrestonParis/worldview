@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ChevronDown } from "lucide-react";
 import { Header } from "@/components/nav/header";
-import { createClient } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/auth/session";
 import { ToolRail } from "@/components/layout/ToolRail";
 import { LayersPanel } from "@/components/layout/LayersPanel";
 import { MapWorkspace } from "@/components/map/MapWorkspace";
@@ -13,15 +13,12 @@ export const metadata: Metadata = {
 };
 
 export default async function GeographyPage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
   const content = pagesContent["geography"];
 
   return (
     <div className="flex h-screen flex-col bg-neutral-900">
-      <Header email={user?.email ?? null} />
+      <Header accountLabel={user ? (user.displayName ?? user.email ?? "Account") : null} />
 
       {/* Same "description dropdown" idea as the other major pages, styled
           to fit this page's dark full-bleed map studio instead of the

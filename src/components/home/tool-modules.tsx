@@ -4,7 +4,7 @@ import { toolPages } from "@/lib/nav";
 import { pagesContent } from "@/lib/pages-content";
 import { typeColorFor } from "@/lib/type-colors";
 
-const CATEGORY_SLUGS = ["people", "legislation", "money", "elections", "geography"];
+const CATEGORY_SLUGS = ["my-government", "people", "legislation", "money", "elections", "demographics", "quiz", "geography"];
 
 function NodeGraphIcon() {
   return (
@@ -83,11 +83,55 @@ function BallotIcon() {
   );
 }
 
+function DemographicsIcon() {
+  return (
+    <svg viewBox="0 0 64 40" className="h-10 w-16" aria-hidden>
+      <path d="M6 32h52" stroke="currentColor" strokeWidth="1.5" opacity="0.45" />
+      <path d="M8 28c9-1 11-7 19-8 8-2 12 3 18-2 5-4 8-9 11-10v20H8Z" fill="currentColor" opacity="0.18" />
+      <path d="M8 28c9-1 11-7 19-8 8-2 12 3 18-2 5-4 8-9 11-10" fill="none" stroke="currentColor" strokeWidth="1.75" />
+      <circle cx="27" cy="20" r="2.5" fill="currentColor" />
+      <circle cx="45" cy="18" r="2.5" fill="currentColor" />
+    </svg>
+  );
+}
+
+function QuizIcon() {
+  return (
+    <svg viewBox="0 0 64 40" className="h-10 w-16" aria-hidden>
+      <g stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+        <line x1="8" y1="10" x2="56" y2="10" opacity="0.45" />
+        <line x1="8" y1="20" x2="56" y2="20" opacity="0.45" />
+        <line x1="8" y1="30" x2="56" y2="30" opacity="0.45" />
+      </g>
+      <g fill="currentColor">
+        <circle cx="40" cy="10" r="3.5" />
+        <circle cx="19" cy="20" r="3.5" />
+        <circle cx="47" cy="30" r="3.5" />
+      </g>
+    </svg>
+  );
+}
+
+function GovernmentIcon() {
+  return (
+    <svg viewBox="0 0 64 40" className="h-10 w-16" aria-hidden>
+      <g fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M11 17h42L32 7 11 17Z" />
+        <path d="M15 34h34M13 37h38M18 18v16M27 18v16M37 18v16M46 18v16" opacity="0.9" />
+      </g>
+      <circle cx="32" cy="12" r="2" fill="currentColor" />
+    </svg>
+  );
+}
+
 const ICONS: Record<string, () => ReactElement> = {
+  "my-government": GovernmentIcon,
   people: NodeGraphIcon,
   legislation: DocsIcon,
   money: MoneyFlowIcon,
   elections: BallotIcon,
+  demographics: DemographicsIcon,
+  quiz: QuizIcon,
   geography: GlobeIcon,
 };
 
