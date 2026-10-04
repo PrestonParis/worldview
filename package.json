@@ -37,7 +37,20 @@
     "reconstruct:fec-graph": "node scripts/reconstruct-fec-graph.mjs",
     "db:apply": "drizzle-kit push --force",
     "import:fec-cycle": "node scripts/import-fec-cycle.mjs",
-    "import:fec-totals": "node scripts/import-fec-cycle.mjs --totals-only"
+    "import:fec-totals": "node scripts/import-fec-cycle.mjs --totals-only",
+    "db:apply-sql": "node scripts/apply-sql.mjs",
+    "import:committees": "node scripts/import-congress-committees.mjs",
+    "import:voteview": "node scripts/import-voteview.mjs",
+    "import:openstates": "node scripts/import-openstates-people.mjs",
+    "import:acs": "node scripts/import-acs.mjs",
+    "import:federal-register": "node scripts/import-federal-register.mjs",
+    "import:scdb": "node scripts/import-scdb.mjs",
+    "import:fec-ie": "node scripts/import-fec-independent-expenditures.mjs",
+    "import:usaspending": "node scripts/import-usaspending.mjs",
+    "import:fbi-crime": "node scripts/import-fbi-crime.mjs",
+    "import:cbp": "node scripts/import-cbp-encounters.mjs",
+    "import:eavs": "node scripts/import-eavs.mjs",
+    "import:all": "bash scripts/import-all.sh"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.7.1",
@@ -52,6 +65,7 @@
     "drizzle-orm": "^0.45.2",
     "drizzle-zod": "^0.8.3",
     "konva": "^10.3.0",
+    "js-yaml": "^5.3.0",
     "lucide-react": "^1.31.0",
     "maplibre-gl": "^6.2.0",
     "neo4j-driver": "^6.2.0",
@@ -75,7 +89,6 @@
     "drizzle-kit": "^0.31.10",
     "eslint": "^9",
     "eslint-config-next": "16.3.0",
-    "js-yaml": "^5.3.0",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^3.2.7"

@@ -14,7 +14,7 @@
 //   npm run import:race-ratings
 //   npm run import:race-ratings -- --year=2026 --dry-run
 
-process.loadEnvFile(".env.local");
+process.loadEnvFile(process.env.ENV_FILE || ".env.local");
 
 import fs from "node:fs";
 import { Client } from "pg";

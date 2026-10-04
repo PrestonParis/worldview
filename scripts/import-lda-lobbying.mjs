@@ -13,10 +13,15 @@
 // so a re-run only inserts filings that are new.
 //
 // Usage: npm run import:lda-lobbying [-- --years=2023,2024] [-- --dry-run]
+//   --all              sweep EVERY filing for the years (no client filter, no
+//                      per-client cap) — ~100k filings/year; set LDA_API_KEY
+//   --clients=A|B      override the pilot client list (pipe-separated)
+//   --min-amount=N     with --all, skip filings reporting < $N income+expenses
+//   ENV_FILE=.env.cloud targets cloud without swapping .env.local
 //   Optional: LDA_API_KEY in .env.local for a higher rate limit
 //   (anonymous works for this volume). Get one at lda.senate.gov/api/.
 
-process.loadEnvFile(".env.local");
+process.loadEnvFile(process.env.ENV_FILE || ".env.local");
 
 import { randomUUID } from "node:crypto";
 import { Client } from "pg";
@@ -27,6 +32,11 @@ const yearsArg = process.argv.find((a) => a.startsWith("--years="));
 const YEARS = yearsArg
   ? yearsArg.slice("--years=".length).split(",").map((y) => y.trim())
   : [String(new Date().getFullYear() - 1), String(new Date().getFullYear())];
+
+const ALL = process.argv.includes("--all");
+const clientsArg = process.argv.find((a) => a.startsWith("--clients="));
+const minArg = process.argv.find((a) => a.startsWith("--min-amount="));
+const MIN_AMOUNT = minArg ? Number(minArg.slice("--min-amount=".length)) : 0;
 
 const LDA_API_KEY = process.env.LDA_API_KEY || "";
 const LDA_BASE = "https://lda.senate.gov/api/v1";
@@ -98,18 +108,29 @@ async function main() {
   // Phase A — fetch every pilot client's filings up front (slow, LDA rate
   // limit), so the DB connection isn't held open and idle across it.
   const allFilings = [];
-  for (const clientName of PILOT_CLIENTS) {
+  const clients = ALL
+    ? [null]
+    : clientsArg
+      ? clientsArg.slice("--clients=".length).split("|").map((c) => c.trim()).filter(Boolean)
+      : PILOT_CLIENTS;
+  for (const clientName of clients) {
     for (const year of YEARS) {
-      let next = `${LDA_BASE}/filings/?client_name=${encodeURIComponent(clientName)}&filing_year=${year}&page_size=25`;
+      let next = clientName
+        ? `${LDA_BASE}/filings/?client_name=${encodeURIComponent(clientName)}&filing_year=${year}&page_size=25`
+        : `${LDA_BASE}/filings/?filing_year=${year}&page_size=25`;
       let n = 0;
       try {
         while (next) {
           const u = new URL(next);
           const data = await ldaFetch("/filings/", Object.fromEntries(u.searchParams));
-          for (const f of data.results || []) allFilings.push(f);
+          for (const f of data.results || []) {
+            const amount = Number(f.income || 0) + Number(f.expenses || 0);
+            if (!ALL || amount >= MIN_AMOUNT) allFilings.push(f);
+          }
           n += (data.results || []).length;
           next = data.next;
-          if (n >= 100) break; // pilot cap per client-year
+          if (ALL && n % 2500 < 25) console.log(`    ${year}: ${n} filings fetched`);
+          if (!ALL && n >= 100) break; // pilot cap per client-year
         }
       } catch (err) {
         problems.push(`${clientName} ${year}: ${err.message}`);

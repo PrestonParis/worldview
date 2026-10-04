@@ -21,7 +21,7 @@
 // Optional: set FEC_API_KEY in .env.local for a dedicated rate limit
 // (falls back to the shared DEMO_KEY, 1,000 req/hour, no signup needed).
 
-process.loadEnvFile(".env.local");
+process.loadEnvFile(process.env.ENV_FILE || ".env.local");
 
 import { randomUUID } from "node:crypto";
 import { Client } from "pg";

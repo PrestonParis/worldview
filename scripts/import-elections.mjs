@@ -30,7 +30,7 @@
 //   --all-candidates    import every candidate regardless of vote share
 //   --dry-run           parse + match + report, write nothing
 
-process.loadEnvFile(".env.local");
+process.loadEnvFile(process.env.ENV_FILE || ".env.local");
 
 import fs from "node:fs";
 import path from "node:path";

@@ -10,7 +10,7 @@
 //
 // Usage: node scripts/import-administration.mjs [--dry-run]
 
-process.loadEnvFile(".env.local");
+process.loadEnvFile(process.env.ENV_FILE || ".env.local");
 
 import fs from "node:fs";
 import { randomUUID } from "node:crypto";

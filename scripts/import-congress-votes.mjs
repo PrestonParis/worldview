@@ -13,7 +13,7 @@
 //
 // Needs CONGRESS_GOV_API_KEY in .env.local.
 
-process.loadEnvFile(".env.local");
+process.loadEnvFile(process.env.ENV_FILE || ".env.local");
 
 import { Client } from "pg";
 import neo4j from "neo4j-driver";
@@ -33,7 +33,8 @@ const API_BASE = "https://api.congress.gov/v3";
 const PAGE_SIZE = 250;
 const DELAY_MS = 200;
 
-const apiKey = process.env.CONGRESS_GOV_API_KEY;
+// Any api.data.gov key works for Congress.gov, so the FEC key doubles as one.
+const apiKey = process.env.CONGRESS_GOV_API_KEY || process.env.FEC_API_KEY;
 if (!apiKey) {
   console.error("CONGRESS_GOV_API_KEY is not set in .env.local");
   process.exit(1);

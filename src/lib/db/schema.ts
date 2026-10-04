@@ -7,6 +7,8 @@ import {
   integer,
   bigint,
   boolean,
+  doublePrecision,
+  date,
   jsonb,
   index,
   uniqueIndex,
@@ -826,3 +828,221 @@ export const mapProjects = pgTable(
   },
   (table) => [index("map_projects_owner_id_idx").on(table.ownerId)],
 );
+
+// ---------------------------------------------------------------------------
+// Bulk public-data imports (scripts/import-*.mjs). Entity references are
+// plain uuids into Neo4j, resolved through the crosswalk ids that
+// scripts/backfill-members.mjs stamps on politician entities.
+// ---------------------------------------------------------------------------
+
+// Voteview DW-NOMINATE scores, one row per member per Congress per chamber.
+// dim1 is the economic left(-1)/right(+1) axis.
+export const memberIdeology = pgTable(
+  "member_ideology",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    congress: integer("congress").notNull(),
+    chamber: text("chamber").notNull(), // "House" | "Senate" | "President"
+    icpsr: integer("icpsr").notNull(),
+    bioguideId: text("bioguide_id"),
+    entityId: uuid("entity_id"),
+    bioname: text("bioname"),
+    partyCode: integer("party_code"),
+    stateAbbrev: text("state_abbrev"),
+    districtCode: integer("district_code"),
+    nominateDim1: doublePrecision("nominate_dim1"),
+    nominateDim2: doublePrecision("nominate_dim2"),
+    nokkenPooleDim1: doublePrecision("nokken_poole_dim1"),
+    nokkenPooleDim2: doublePrecision("nokken_poole_dim2"),
+    numberOfVotes: integer("number_of_votes"),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("member_ideology_key_idx").on(table.congress, table.chamber, table.icpsr),
+    index("member_ideology_entity_idx").on(table.entityId),
+    index("member_ideology_bioguide_idx").on(table.bioguideId),
+  ],
+);
+
+// One generic long table for statistical series keyed by geography + period:
+// ACS demographics, crime, border encounters, federal spending, election
+// administration. `source` + `metric` name the series; `geoLevel` is
+// nation | state | county | cd | agency | ...; `geoid` is FIPS / GEOID or a
+// source-native code.
+export const areaStats = pgTable(
+  "area_stats",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    source: text("source").notNull(),
+    metric: text("metric").notNull(),
+    geoLevel: text("geo_level").notNull(),
+    geoid: text("geoid").notNull(),
+    geoName: text("geo_name"),
+    period: text("period").notNull(), // "2023", "2025-08", "FY2024"
+    periodStart: date("period_start"),
+    value: doublePrecision("value"),
+    unit: text("unit"),
+    metadata: jsonb("metadata"),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("area_stats_key_idx").on(
+      table.source,
+      table.metric,
+      table.geoLevel,
+      table.geoid,
+      table.period,
+    ),
+    index("area_stats_lookup_idx").on(table.metric, table.geoLevel, table.period),
+    index("area_stats_geoid_idx").on(table.geoid),
+  ],
+);
+
+// Federal Register presidential documents and significant rules.
+export const executiveDocuments = pgTable(
+  "executive_documents",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    documentNumber: text("document_number").notNull(),
+    docType: text("doc_type").notNull(), // "Presidential Document" | "Rule" | "Proposed Rule"
+    subtype: text("subtype"), // "executive_order" | "proclamation" | "memorandum" | ...
+    eoNumber: integer("eo_number"),
+    title: text("title").notNull(),
+    abstract: text("abstract"),
+    president: text("president"),
+    signingDate: date("signing_date"),
+    publicationDate: date("publication_date"),
+    citation: text("citation"),
+    significant: boolean("significant"),
+    agencies: jsonb("agencies"),
+    htmlUrl: text("html_url"),
+    pdfUrl: text("pdf_url"),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("executive_documents_number_idx").on(table.documentNumber),
+    index("executive_documents_subtype_idx").on(table.subtype, table.signingDate),
+  ],
+);
+
+// FEC Schedule E — independent expenditures for/against a candidate.
+export const independentExpenditures = pgTable(
+  "independent_expenditures",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    externalId: text("external_id").notNull(), // FEC sub_id
+    cycle: integer("cycle").notNull(),
+    committeeId: text("committee_id"),
+    committeeName: text("committee_name"),
+    spenderEntityId: uuid("spender_entity_id"),
+    candidateId: text("candidate_id"),
+    candidateName: text("candidate_name"),
+    candidateEntityId: uuid("candidate_entity_id"),
+    candidateOffice: text("candidate_office"),
+    candidateState: text("candidate_state"),
+    candidateDistrict: text("candidate_district"),
+    candidateParty: text("candidate_party"),
+    supportOppose: text("support_oppose"), // "S" | "O"
+    amount: doublePrecision("amount").notNull(),
+    expenditureDate: date("expenditure_date"),
+    purpose: text("purpose"),
+    payeeName: text("payee_name"),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("independent_expenditures_external_idx").on(table.externalId),
+    index("independent_expenditures_candidate_idx").on(table.candidateEntityId),
+    index("independent_expenditures_committee_idx").on(table.committeeId),
+  ],
+);
+
+// Supreme Court Database (WashU / Penn State), case-level, 1946 onward.
+export const courtCases = pgTable(
+  "court_cases",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    scdbCaseId: text("scdb_case_id").notNull(),
+    court: text("court").notNull().default("SCOTUS"),
+    caseName: text("case_name"),
+    docket: text("docket"),
+    usCite: text("us_cite"),
+    term: integer("term"),
+    decisionDate: date("decision_date"),
+    chief: text("chief"),
+    issueArea: text("issue_area"),
+    decisionDirection: text("decision_direction"), // "conservative" | "liberal" | "unspecifiable"
+    majorityVotes: integer("majority_votes"),
+    minorityVotes: integer("minority_votes"),
+    majorityOpinionWriter: text("majority_opinion_writer"),
+    declaredUnconstitutional: boolean("declared_unconstitutional"),
+    precedentAltered: boolean("precedent_altered"),
+    metadata: jsonb("metadata"),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("court_cases_scdb_idx").on(table.scdbCaseId),
+    index("court_cases_term_idx").on(table.term),
+  ],
+);
+
+export const caseVotes = pgTable(
+  "case_votes",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    caseId: uuid("case_id")
+      .notNull()
+      .references(() => courtCases.id, { onDelete: "cascade" }),
+    justice: text("justice").notNull(), // SCDB justiceName, e.g. "CThomas"
+    justiceEntityId: uuid("justice_entity_id"),
+    inMajority: boolean("in_majority"),
+    direction: text("direction"), // "conservative" | "liberal"
+    vote: text("vote"),
+    opinion: text("opinion"),
+  },
+  (table) => [
+    uniqueIndex("case_votes_key_idx").on(table.caseId, table.justice),
+    index("case_votes_justice_idx").on(table.justice),
+  ],
+);
+
+// Political quiz sessions (src/lib/quiz, docs/quiz-plan.md). The answer log
+// is the source of truth; results are recomputed from it on every view.
+export const quizSessions = pgTable(
+  "quiz_sessions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    slug: text("slug").notNull(), // the URL hash: 12 random base62 chars
+    // sha256 of the edit token held in an httpOnly cookie by the browser
+    // that started the quiz.
+    editTokenHash: text("edit_token_hash").notNull(),
+    // Supabase auth.users.id once claimed — no FK, map_projects convention.
+    ownerId: uuid("owner_id"),
+    visibility: text("visibility").notNull().default("public"), // "public" | "private"
+    status: text("status").notNull().default("in_progress"), // "in_progress" | "complete"
+    bankVersion: text("bank_version").notNull(),
+    engineVersion: text("engine_version").notNull(),
+    answers: jsonb("answers").notNull().default(sql`'[]'::jsonb`), // QuizAnswer[]
+    refine: jsonb("refine").notNull().default(sql`'{}'::jsonb`), // RefineTargets
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+    completedAt: timestamp("completed_at", { withTimezone: true }),
+    claimedAt: timestamp("claimed_at", { withTimezone: true }),
+  },
+  (table) => [
+    uniqueIndex("quiz_sessions_slug_idx").on(table.slug),
+    index("quiz_sessions_owner_id_idx").on(table.ownerId),
+    index("quiz_sessions_unclaimed_created_idx").on(table.createdAt).where(sql`${table.ownerId} is null`),
+    check("quiz_sessions_visibility_check", sql`${table.visibility} in ('public', 'private')`),
+    check("quiz_sessions_status_check", sql`${table.status} in ('in_progress', 'complete')`),
+  ],
+);
+
+// Registered Worldview accounts (docs/auth-plan.md). A Supabase auth user
+// only counts as signed in once it has a row here — registration requires
+// the registration code, so sessions without a profile are ignored.
+export const profiles = pgTable("profiles", {
+  // Supabase auth.users.id — no FK, map_projects convention.
+  id: uuid("id").primaryKey(),
+  displayName: text("display_name"),
+  registeredAt: timestamp("registered_at", { withTimezone: true }).notNull().defaultNow(),
+});

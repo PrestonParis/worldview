@@ -20,9 +20,16 @@
 //   npm run backfill:members -- --congresses=118,119
 //
 //   --dry-run          fetch + match + report counts, write nothing
-//   --congresses=A,B   override the target Congress range
+//   --congresses=A,B   override the target Congress range (ranges ok: 95-119)
+//
+// Every matched member also gets the full id crosswalk (icpsrId, wikidataId,
+// fecCandidateIds, govtrackId, opensecretsId, ...) as entity properties, and
+// blank website / social / portrait fields are filled from the
+// legislators-social-media file and unitedstates/images.
+//
+// ENV_FILE=.env.cloud targets cloud without swapping .env.local.
 
-process.loadEnvFile(".env.local");
+process.loadEnvFile(process.env.ENV_FILE || ".env.local");
 
 import { randomUUID } from "node:crypto";
 import neo4j from "neo4j-driver";
@@ -32,16 +39,15 @@ import {
   displayName,
   nameLooksLikeMember,
   buildMemberMetadata,
+  parseCongressList,
+  crosswalkIds,
+  profileUrls,
 } from "./lib/members.mjs";
 
 const DRY_RUN = process.argv.includes("--dry-run");
 const congressArg = process.argv.find((a) => a.startsWith("--congresses="));
 const CONGRESSES = congressArg
-  ? congressArg
-      .slice("--congresses=".length)
-      .split(",")
-      .map((s) => Number(s.trim()))
-      .filter((n) => Number.isInteger(n) && n > 0)
+  ? parseCongressList(congressArg.slice("--congresses=".length))
   : [118, 119];
 
 if (CONGRESSES.length === 0) {
@@ -53,6 +59,9 @@ const LEGISLATORS_URLS = [
   "https://raw.githubusercontent.com/unitedstates/congress-legislators/main/legislators-current.yaml",
   "https://raw.githubusercontent.com/unitedstates/congress-legislators/main/legislators-historical.yaml",
 ];
+
+const SOCIAL_URL =
+  "https://raw.githubusercontent.com/unitedstates/congress-legislators/main/legislators-social-media.yaml";
 
 const METADATA_SOURCE = "unitedstates/congress-legislators";
 
@@ -66,6 +75,20 @@ async function fetchLegislators() {
     all.push(...loadYaml(await res.text()));
   }
   return all;
+}
+
+async function fetchSocial() {
+  const res = await fetch(SOCIAL_URL);
+  if (!res.ok) throw new Error(`${SOCIAL_URL} -> ${res.status}`);
+  return new Map((loadYaml(await res.text()) ?? []).map((s) => [s.id?.bioguide, s]));
+}
+
+function metadataState(raw) {
+  try {
+    return String(JSON.parse(raw || "{}").state ?? "").toUpperCase();
+  } catch {
+    return "";
+  }
 }
 
 function priorMetadataSource(raw) {
@@ -86,6 +109,9 @@ async function main() {
 
   const members = legislators.filter((l) => servedInCongresses(l.terms, CONGRESSES));
   console.log(`  ${members.length} served in the target range`);
+  const social = await fetchSocial();
+  // entityId -> legislator, applied in UNWIND batches at the end.
+  const crosswalk = new Map();
 
   const driver = neo4j.driver(
     process.env.NEO4J_URI,
@@ -136,6 +162,7 @@ async function main() {
       const linked = byBioguide.get(bioguideId);
       if (linked) {
         counts.linkedById++;
+        crosswalk.set(linked.id, legislator);
         const refreshable =
           !linked.metadata || priorMetadataSource(linked.metadata) === METADATA_SOURCE;
         if (!DRY_RUN && refreshable && linked.metadata !== metadata) {
@@ -149,9 +176,15 @@ async function main() {
       }
 
       // Link an existing hand-added politician rather than duplicate it.
-      const nameMatches = existing.filter(
-        (e) => !e.bioguideId && nameLooksLikeMember(e.name, name),
-      );
+      // A state recorded on the entity (e.g. MEDSL-created candidates) must
+      // agree with the member's state — guards same-name, different-person
+      // links now that the range reaches back decades.
+      const memberState = String(legislator.terms?.at(-1)?.state ?? "").toUpperCase();
+      const nameMatches = existing.filter((e) => {
+        if (e.bioguideId || !nameLooksLikeMember(e.name, name)) return false;
+        const st = metadataState(e.metadata);
+        return !st || st === memberState;
+      });
       if (nameMatches.length > 1) {
         counts.ambiguous++;
         ambiguous.push(
@@ -174,10 +207,13 @@ async function main() {
         // this name can't also claim the same entity in this run.
         match.bioguideId = bioguideId;
         byBioguide.set(bioguideId, match);
+        crosswalk.set(match.id, legislator);
         counts.linkedByName++;
         continue;
       }
 
+      const newId = randomUUID();
+      crosswalk.set(newId, legislator);
       if (!DRY_RUN) {
         await session.run(
           `CREATE (e:Entity {
@@ -189,7 +225,7 @@ async function main() {
              createdAt: datetime(), updatedAt: datetime()
            })`,
           {
-            id: randomUUID(),
+            id: newId,
             name,
             description:
               "Member of the United States Congress — imported from the congress-legislators crosswalk.",
@@ -201,7 +237,35 @@ async function main() {
       counts.created++;
     }
 
+    // Crosswalk ids are always (re)written; profile URLs only fill blanks.
+    const rows = [...crosswalk].map(([id, leg]) => ({
+      id,
+      ids: crosswalkIds(leg),
+      urls: profileUrls(leg, social.get(leg.id?.bioguide)),
+    }));
+    if (!DRY_RUN) {
+      for (const idx of ["icpsrId", "wikidataId", "govtrackId"]) {
+        await session.run(`CREATE INDEX entity_${idx} IF NOT EXISTS FOR (e:Entity) ON (e.${idx})`);
+      }
+      for (let i = 0; i < rows.length; i += 500) {
+        await session.run(
+          `UNWIND $rows AS row
+           MATCH (e:Entity {id: row.id})
+           SET e += row.ids,
+               e.websiteUrl = CASE WHEN coalesce(e.websiteUrl, '') = '' THEN row.urls.websiteUrl ELSE e.websiteUrl END,
+               e.xUrl = CASE WHEN coalesce(e.xUrl, '') = '' THEN row.urls.xUrl ELSE e.xUrl END,
+               e.facebookUrl = CASE WHEN coalesce(e.facebookUrl, '') = '' THEN row.urls.facebookUrl ELSE e.facebookUrl END,
+               e.instagramUrl = CASE WHEN coalesce(e.instagramUrl, '') = '' THEN row.urls.instagramUrl ELSE e.instagramUrl END,
+               e.youtubeUrl = CASE WHEN coalesce(e.youtubeUrl, '') = '' THEN row.urls.youtubeUrl ELSE e.youtubeUrl END,
+               e.imageUrl = CASE WHEN coalesce(e.imageUrl, '') = '' THEN row.urls.imageUrl ELSE e.imageUrl END`,
+          { rows: rows.slice(i, i + 500) },
+        );
+      }
+    }
+    counts.crosswalked = rows.length;
+
     console.log("\n--- Summary ---");
+    console.log(`Crosswalk written:  ${counts.crosswalked}`);
     console.log(`Created:            ${counts.created}`);
     console.log(
       `Linked by bioguide: ${counts.linkedById}` +

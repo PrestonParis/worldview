@@ -24,7 +24,7 @@
 //
 // Needs FEC_API_KEY in .env.local (get one free at https://api.data.gov/signup/).
 
-process.loadEnvFile(".env.local");
+process.loadEnvFile(process.env.ENV_FILE || ".env.local");
 
 import { randomUUID } from "node:crypto";
 import { Client } from "pg";

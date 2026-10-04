@@ -12,7 +12,7 @@
 //   Restore Neo4j: no generic restore yet — reconstruct-fec-graph.mjs and
 //   seed.mjs are the current paths.
 
-process.loadEnvFile(".env.local");
+process.loadEnvFile(process.env.ENV_FILE || ".env.local");
 
 import fs from "node:fs";
 import path from "node:path";

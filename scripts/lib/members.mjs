@@ -100,3 +100,62 @@ export function buildMemberMetadata(legislator, congresses) {
     })),
   };
 }
+
+// `--congresses=` accepts a comma list and/or inclusive ranges: "95-119",
+// "118,119", "100-105,118".
+export function parseCongressList(spec) {
+  return [
+    ...new Set(
+      String(spec ?? "")
+        .split(",")
+        .flatMap((part) => {
+          const [a, b] = part.trim().split("-").map((s) => Number(s.trim()));
+          if (!Number.isInteger(a) || a <= 0) return [];
+          if (b === undefined) return [a];
+          if (!Number.isInteger(b) || b < a) return [];
+          return Array.from({ length: b - a + 1 }, (_, i) => a + i);
+        }),
+    ),
+  ].sort((x, y) => x - y);
+}
+
+// Every external id the crosswalk carries, as first-class entity properties
+// — the join keys the Voteview / FEC / Wikidata / Open States importers use
+// instead of name matching. Empty ids are omitted (never written as "").
+export function crosswalkIds(legislator) {
+  const id = legislator?.id ?? {};
+  const str = (v) => (v === undefined || v === null || v === "" ? undefined : String(v));
+  const out = {
+    icpsrId: str(id.icpsr),
+    wikidataId: str(id.wikidata),
+    govtrackId: str(id.govtrack),
+    opensecretsId: str(id.opensecrets),
+    votesmartId: str(id.votesmart),
+    ballotpediaId: str(id.ballotpedia),
+    thomasId: str(id.thomas),
+    lisId: str(id.lis),
+    fecCandidateIds: Array.isArray(id.fec) && id.fec.length ? id.fec.map(String) : undefined,
+  };
+  return Object.fromEntries(Object.entries(out).filter(([, v]) => v !== undefined));
+}
+
+// Profile URLs from the social-media file + latest term + the public-domain
+// unitedstates/images portrait. The caller only fills fields that are blank,
+// so hand-curated values always win.
+export function profileUrls(legislator, social) {
+  const s = social?.social ?? {};
+  const term = (legislator?.terms ?? []).at(-1) ?? {};
+  const bioguide = legislator?.id?.bioguide;
+  return {
+    websiteUrl: term.url ?? "",
+    xUrl: s.twitter ? `https://x.com/${s.twitter}` : "",
+    facebookUrl: s.facebook ? `https://www.facebook.com/${s.facebook}` : "",
+    instagramUrl: s.instagram ? `https://www.instagram.com/${s.instagram}` : "",
+    youtubeUrl: s.youtube_id
+      ? `https://www.youtube.com/channel/${s.youtube_id}`
+      : s.youtube
+        ? `https://www.youtube.com/${s.youtube}`
+        : "",
+    imageUrl: bioguide ? `https://unitedstates.github.io/images/congress/450x550/${bioguide}.jpg` : "",
+  };
+}

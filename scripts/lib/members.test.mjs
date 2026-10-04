@@ -126,3 +126,35 @@ describe("buildMemberMetadata", () => {
     expect(buildMemberMetadata(rep, [118]).district).toBe("3");
   });
 });
+
+describe("parseCongressList", () => {
+  it("expands ranges and dedupes", async () => {
+    const { parseCongressList } = await import("./members.mjs");
+    expect(parseCongressList("118,119")).toEqual([118, 119]);
+    expect(parseCongressList("95-97,96,119")).toEqual([95, 96, 97, 119]);
+    expect(parseCongressList("x,5-3")).toEqual([]);
+  });
+});
+
+describe("crosswalkIds", () => {
+  it("lifts the external ids and drops blanks", async () => {
+    const { crosswalkIds } = await import("./members.mjs");
+    expect(
+      crosswalkIds({ id: { bioguide: "C000127", icpsr: 39310, wikidata: "Q22250", fec: ["S8WA00194"], opensecrets: "" } }),
+    ).toEqual({ icpsrId: "39310", wikidataId: "Q22250", fecCandidateIds: ["S8WA00194"] });
+  });
+});
+
+describe("profileUrls", () => {
+  it("builds social + portrait urls", async () => {
+    const { profileUrls } = await import("./members.mjs");
+    const urls = profileUrls(
+      { id: { bioguide: "C000127" }, terms: [{ url: "https://www.cantwell.senate.gov" }] },
+      { social: { twitter: "SenatorCantwell", youtube_id: "UCabc" } },
+    );
+    expect(urls.xUrl).toBe("https://x.com/SenatorCantwell");
+    expect(urls.youtubeUrl).toBe("https://www.youtube.com/channel/UCabc");
+    expect(urls.facebookUrl).toBe("");
+    expect(urls.imageUrl).toContain("/450x550/C000127.jpg");
+  });
+});
