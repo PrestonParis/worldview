@@ -19,6 +19,7 @@
 
 # production
 /build
+/dist
 
 # misc
 .DS_Store
@@ -46,6 +47,7 @@ yarn-error.log*
 !/backups/2026-09-07T00-12-neo4j-full/
 
 # claude code — machine-local settings, not shared
+.claude/
 .claude/settings.local.json
 
 # election import cache — large MEDSL source files fetched on demand by

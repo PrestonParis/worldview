@@ -1,10 +1,65 @@
 # Worldview
 
-A political research and visualization platform. Entities and relationships live in
-Neo4j; claims, sources, bills, votes, and contributions live in Postgres (Supabase).
-The tool pages — People & Power, Legislation & Courts, Money & Influence, Elections,
-Geography — read from that shared data, alongside a full-bleed map/annotation studio
-at `/geography`.
+Worldview is a political research and visualization platform for exploring how public officials, legislation, money, elections, geography, and institutions connect.
+
+![CI](https://github.com/PrestonParis/worldview/actions/workflows/ci.yml/badge.svg) · **Public demo:** planned; see [Status and next steps](#status-and-next-steps)
+
+![Worldview research dashboard](docs/images/worldview-home.png)
+
+## Features
+
+- Explore people and organizations as a relationship graph backed by normalized public records.
+- Follow bills, roll-call votes, committees, court cases, and executive actions.
+- Trace contributions, lobbying registrations, and independent expenditures.
+- Look up the federal, state, and local offices representing a U.S. address.
+- Compare election results, demographics, and geography through maps and projections.
+- Take a versioned political quiz whose results can be revisited, shared, and claimed without storing raw edit tokens.
+
+## Architecture
+
+```mermaid
+flowchart LR
+    Browser[Next.js application] --> Actions[Server actions and route handlers]
+    Actions --> Postgres[(Supabase PostgreSQL)]
+    Actions --> Neo4j[(Neo4j graph)]
+    Imports[Idempotent public-data importers] --> Postgres
+    Imports --> Neo4j
+    Sources[FEC, Congress.gov, Census, Voteview, SCDB and others] --> Imports
+    Actions --> Maps[MapLibre visualization]
+```
+
+Worldview uses PostgreSQL for structured records such as claims, sources, bills, votes, contributions, elections, and quiz sessions. Neo4j stores entities and relationships that benefit from traversal and graph visualization. Importers link the two stores through stable external identifiers and use upserts or `MERGE` operations so interrupted or repeated runs do not duplicate data. Server actions and shared Zod schemas keep interactive edits and batch ingestion on the same validation boundary.
+
+## Tech stack
+
+- **Frontend:** Next.js 16, React 19, TypeScript, Tailwind CSS, MapLibre GL
+- **Backend:** Server Actions, Route Handlers, Zod, Drizzle ORM
+- **Data:** Supabase PostgreSQL and Auth, Neo4j, public government datasets and APIs
+- **Infrastructure:** Vercel-ready Next.js app, GitHub Actions data sync, Docker Compose for local services
+- **Testing:** Vitest and ESLint
+
+## Engineering highlights
+
+- **Two databases with explicit ownership.** Relational records stay queryable and constrained in PostgreSQL, while entities and edges live in Neo4j for graph traversal.
+- **Idempotent ingestion.** Stable source IDs, unique indexes, upserts, and Neo4j `MERGE` calls make imports resumable and safe to rerun.
+- **Source-aware public data.** Importers preserve external identifiers and provenance across FEC, Congress.gov, Census, Voteview, the Supreme Court Database, and other public sources.
+- **Guarded editing.** Public exploration is separated from authenticated data maintenance, with registration codes and server-side authorization protecting write paths.
+- **Recoverable operations.** Export, restore, dry-run, cursor, and audit-report workflows were added after real recovery incidents exposed the need for stronger operational boundaries.
+
+## Testing
+
+```bash
+npm test
+npm run lint
+```
+
+The current suite covers validation, money and election calculations, legislation helpers, authentication guards, demographic forecasting, government lookup, public-data utilities, and the political quiz engine.
+
+## Status and next steps
+
+Worldview is an active portfolio project and is not yet deployed as a public demo. Before launch it needs a durable Neo4j hosting choice and an employer-friendly read-only or guest experience; invite- or code-gated editing will remain separate. Options under consideration are a paid Neo4j tier, a monitored free instance with regular exports, or a read-only snapshot.
+
+**Demo video:** TODO — add a short product walkthrough.
 
 ## Local development
 
@@ -69,12 +124,11 @@ npm run dev
 
 ### 7. Sign in
 
-Every page except `/login` requires a session (`src/proxy.ts` — Next 16 renamed
-`middleware.ts` to `proxy.ts`; the ingest API is exempt, it has its own bearer-token
-auth). It's invite-only — there's no sign-up page. To create your own account, invite
-yourself from the Supabase Dashboard → Auth → Users → Invite, using whichever project
-`.env.local` currently points at (`npm run env:status`). Signing in sends a magic link
-to that email.
+Editing and account pages require a registered session (`src/proxy.ts` — Next 16
+renamed `middleware.ts` to `proxy.ts`; the ingest API is exempt and has its own
+bearer-token authentication). Registration is intentionally closed unless a valid
+`REGISTRATION_CODE` is configured and supplied. Email sign-in uses a magic link;
+Google sign-in can be enabled through Supabase when configured.
 
 ## Adding data
 
@@ -202,3 +256,7 @@ backup. Now:
 - `supabase/config.toml` — local Supabase CLI config.
 - `drizzle.config.ts` — reads `DATABASE_URL` from `.env.local`; throws if it's missing
   rather than silently defaulting anywhere.
+
+## License
+
+Licensed under the [MIT License](LICENSE).
