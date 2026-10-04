@@ -1,5 +1,6 @@
 "use server";
 
+import { requireContributor } from "../auth/guard";
 import { revalidatePath } from "next/cache";
 import {
   billCosponsorSchema,
@@ -39,6 +40,8 @@ async function run<T>(
 export async function createCosponsorAction(
   input: BillCosponsorInput,
 ): Promise<ActionResult<{ id: string }>> {
+  const denied = await requireContributor();
+  if (denied) return denied;
   const parsed = billCosponsorSchema.safeParse(input);
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
@@ -51,6 +54,8 @@ export async function createCosponsorAction(
 export async function createActionAction(
   input: BillActionInput,
 ): Promise<ActionResult<{ id: string }>> {
+  const denied = await requireContributor();
+  if (denied) return denied;
   const parsed = billActionSchema.safeParse(input);
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
@@ -63,6 +68,8 @@ export async function createActionAction(
 export async function createCommitteeAction(
   input: BillCommitteeInput,
 ): Promise<ActionResult<{ id: string }>> {
+  const denied = await requireContributor();
+  if (denied) return denied;
   const parsed = billCommitteeSchema.safeParse(input);
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
@@ -75,6 +82,8 @@ export async function createCommitteeAction(
 export async function createRelationAction(
   input: BillRelationInput,
 ): Promise<ActionResult<{ id: string }>> {
+  const denied = await requireContributor();
+  if (denied) return denied;
   const parsed = billRelationSchema.safeParse(input);
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
@@ -87,6 +96,8 @@ export async function createRelationAction(
 export async function createTextVersionAction(
   input: BillTextVersionInput,
 ): Promise<ActionResult<{ id: string }>> {
+  const denied = await requireContributor();
+  if (denied) return denied;
   const parsed = billTextVersionSchema.safeParse(input);
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
@@ -101,6 +112,8 @@ export async function deleteBillChildAction(
   id: string,
   billId: string,
 ): Promise<ActionResult<null>> {
+  const denied = await requireContributor();
+  if (denied) return denied;
   const del = {
     cosponsor: bd.deleteCosponsor,
     action: bd.deleteAction,

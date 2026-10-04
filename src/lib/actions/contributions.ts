@@ -1,5 +1,6 @@
 "use server";
 
+import { requireContributor } from "../auth/guard";
 import { revalidatePath } from "next/cache";
 import { contributionSchema, type ContributionInput } from "../validation/contribution";
 import * as contributionsDb from "../db/contributions";
@@ -8,6 +9,8 @@ import type { ActionResult } from "./entities";
 export async function createContributionAction(
   input: ContributionInput,
 ): Promise<ActionResult<{ id: string }>> {
+  const denied = await requireContributor();
+  if (denied) return denied;
   const parsed = contributionSchema.safeParse(input);
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
@@ -26,6 +29,8 @@ export async function updateContributionAction(
   id: string,
   input: ContributionInput,
 ): Promise<ActionResult<{ id: string }>> {
+  const denied = await requireContributor();
+  if (denied) return denied;
   const parsed = contributionSchema.safeParse(input);
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
@@ -44,6 +49,8 @@ export async function updateContributionAction(
 export async function deleteContributionAction(
   id: string,
 ): Promise<ActionResult<null>> {
+  const denied = await requireContributor();
+  if (denied) return denied;
   try {
     await contributionsDb.deleteContribution(id);
     revalidatePath("/data");

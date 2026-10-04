@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ContributorOnly } from "@/components/auth/can-edit";
 import { notFound } from "next/navigation";
 import {
   AtSign,
@@ -130,9 +131,11 @@ export default async function EntityProfilePage({
               ) : null}
             </div>
 
-            <Link href={`/data/entities/${entity.id}/edit`} className={buttonVariants.ghost}>
-              <Pencil className="mr-2 h-4 w-4" /> Edit profile
-            </Link>
+            <ContributorOnly>
+              <Link href={`/data/entities/${entity.id}/edit`} className={buttonVariants.ghost}>
+                <Pencil className="mr-2 h-4 w-4" /> Edit profile
+              </Link>
+            </ContributorOnly>
           </div>
 
           {socialLinks.length > 0 ? (
@@ -169,7 +172,10 @@ export default async function EntityProfilePage({
               </div>
             ) : (
               <p className="mt-3 rounded-xl border border-dashed border-slate-300 p-5 text-sm text-slate-500 dark:border-slate-700 dark:text-slate-400">
-                No expanded biography yet. Add background, career history, political significance, and positions in Edit profile.
+                No expanded biography yet.
+                <ContributorOnly>
+                  {" "}Add background, career history, political significance, and positions in Edit profile.
+                </ContributorOnly>
               </p>
             )}
           </section>

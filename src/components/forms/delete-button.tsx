@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { useCanEdit } from "@/components/auth/can-edit";
 import type { ActionResult } from "@/lib/actions/entities";
 
 export function DeleteButton({
@@ -17,6 +18,9 @@ export function DeleteButton({
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const canEdit = useCanEdit();
+
+  if (!canEdit) return null;
 
   return (
     <div className="flex items-center gap-2">

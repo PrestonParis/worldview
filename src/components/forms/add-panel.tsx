@@ -2,6 +2,7 @@
 
 import { useState, cloneElement, isValidElement, type ReactElement } from "react";
 import { Button } from "@/components/ui/button";
+import { useCanEdit } from "@/components/auth/can-edit";
 
 type WithOnDone = { onDone?: () => void };
 
@@ -15,7 +16,9 @@ export function AddPanel({
   defaultOpen?: boolean;
 }) {
   const [open, setOpen] = useState(defaultOpen);
+  const canEdit = useCanEdit();
 
+  if (!canEdit) return null;
   if (!open) {
     return (
       <Button type="button" onClick={() => setOpen(true)}>

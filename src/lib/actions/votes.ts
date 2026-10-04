@@ -1,5 +1,6 @@
 "use server";
 
+import { requireContributor } from "../auth/guard";
 import { revalidatePath } from "next/cache";
 import { voteSchema, type VoteInput } from "../validation/vote";
 import * as votesDb from "../db/votes";
@@ -8,6 +9,8 @@ import type { ActionResult } from "./entities";
 export async function createVoteAction(
   input: VoteInput,
 ): Promise<ActionResult<{ id: string }>> {
+  const denied = await requireContributor();
+  if (denied) return denied;
   const parsed = voteSchema.safeParse(input);
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
@@ -25,6 +28,8 @@ export async function createVoteAction(
 export async function deleteVoteAction(
   id: string,
 ): Promise<ActionResult<null>> {
+  const denied = await requireContributor();
+  if (denied) return denied;
   try {
     await votesDb.deleteVote(id);
     revalidatePath("/data");

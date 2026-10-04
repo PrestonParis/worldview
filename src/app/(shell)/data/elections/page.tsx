@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ContributorOnly } from "@/components/auth/can-edit";
 import { listElections } from "@/lib/db/elections";
 import { ElectionForm } from "@/components/forms/election-form";
 import { AddPanel } from "@/components/forms/add-panel";
@@ -30,12 +31,14 @@ export default async function ElectionsPage({
               </p>
             </div>
             <div className="flex shrink-0 items-center gap-3">
-              <Link
-                href={`/data/elections/${e.id}/edit`}
-                className="text-sm text-slate-600 underline underline-offset-2 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
-              >
-                Edit
-              </Link>
+              <ContributorOnly>
+                <Link
+                  href={`/data/elections/${e.id}/edit`}
+                  className="text-sm text-slate-600 underline underline-offset-2 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
+                >
+                  Edit
+                </Link>
+              </ContributorOnly>
               <DeleteButton id={e.id} label={e.name} action={deleteElectionAction} />
             </div>
           </li>

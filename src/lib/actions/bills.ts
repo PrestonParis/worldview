@@ -1,5 +1,6 @@
 "use server";
 
+import { requireContributor } from "../auth/guard";
 import { revalidatePath } from "next/cache";
 import { billSchema, type BillInput } from "../validation/bill";
 import * as billsDb from "../db/bills";
@@ -8,6 +9,8 @@ import type { ActionResult } from "./entities";
 export async function createBillAction(
   input: BillInput,
 ): Promise<ActionResult<{ id: string }>> {
+  const denied = await requireContributor();
+  if (denied) return denied;
   const parsed = billSchema.safeParse(input);
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
@@ -26,6 +29,8 @@ export async function updateBillAction(
   id: string,
   input: BillInput,
 ): Promise<ActionResult<{ id: string }>> {
+  const denied = await requireContributor();
+  if (denied) return denied;
   const parsed = billSchema.safeParse(input);
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
@@ -44,6 +49,8 @@ export async function updateBillAction(
 export async function deleteBillAction(
   id: string,
 ): Promise<ActionResult<null>> {
+  const denied = await requireContributor();
+  if (denied) return denied;
   try {
     await billsDb.deleteBill(id);
     revalidatePath("/data");

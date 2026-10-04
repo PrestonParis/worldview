@@ -1,3 +1,4 @@
+import { requireContributorPage } from "@/lib/auth/guard";
 import { notFound } from "next/navigation";
 import { getBill } from "@/lib/db/bills";
 import { listVotesForBill } from "@/lib/db/votes";
@@ -17,6 +18,7 @@ export default async function EditBillPage({
   params,
 }: PageProps<"/data/bills/[id]/edit">) {
   const { id } = await params;
+  await requireContributorPage(`/data/bills/${id}/edit`);
   const [bill, votes, cosponsors, actions, committees, relations, textVersions, entities] =
     await Promise.all([
       getBill(id),

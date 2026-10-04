@@ -1,5 +1,6 @@
 "use server";
 
+import { requireContributor } from "../auth/guard";
 import { revalidatePath } from "next/cache";
 import { entitySchema, type EntityInput } from "../validation/entity";
 import * as entitiesDb from "../neo4j/entities";
@@ -11,6 +12,8 @@ export type ActionResult<T> =
 export async function createEntityAction(
   input: EntityInput,
 ): Promise<ActionResult<{ id: string }>> {
+  const denied = await requireContributor();
+  if (denied) return denied;
   const parsed = entitySchema.safeParse(input);
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
@@ -28,6 +31,8 @@ export async function updateEntityAction(
   id: string,
   input: EntityInput,
 ): Promise<ActionResult<{ id: string }>> {
+  const denied = await requireContributor();
+  if (denied) return denied;
   const parsed = entitySchema.safeParse(input);
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
@@ -45,6 +50,8 @@ export async function updateEntityAction(
 export async function deleteEntityAction(
   id: string,
 ): Promise<ActionResult<null>> {
+  const denied = await requireContributor();
+  if (denied) return denied;
   try {
     await entitiesDb.deleteEntity(id);
     revalidatePath("/data");

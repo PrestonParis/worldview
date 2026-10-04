@@ -3,18 +3,14 @@
 import { revalidatePath } from "next/cache";
 import { mapProjectSchema, type MapProjectInput, type MapProject } from "../validation/mapProject";
 import * as mapProjectsDb from "../db/mapProjects";
-import { createClient } from "../supabase/server";
+import { getCurrentUserId } from "../auth/session";
 import type { ActionResult } from "./entities";
 
 // Every action re-derives the owner from the authenticated session server
 // side rather than trusting a client-supplied id — the client can't spoof
 // whose graphics it's reading or writing.
 async function requireUserId(): Promise<string | null> {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  return user?.id ?? null;
+  return getCurrentUserId();
 }
 
 export async function listMapProjectsAction(): Promise<ActionResult<MapProject[]>> {

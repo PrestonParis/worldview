@@ -1,3 +1,4 @@
+import { requireContributorPage } from "@/lib/auth/guard";
 import { notFound } from "next/navigation";
 import { getElection, listElections } from "@/lib/db/elections";
 import { listCandidaciesForElection } from "@/lib/db/candidacies";
@@ -9,6 +10,7 @@ export default async function EditElectionPage({
   params,
 }: PageProps<"/data/elections/[id]/edit">) {
   const { id } = await params;
+  await requireContributorPage(`/data/elections/${id}/edit`);
   const [election, elections, candidacies, entities] = await Promise.all([
     getElection(id),
     listElections(),

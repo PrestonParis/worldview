@@ -1,3 +1,4 @@
+import { requireContributorPage } from "@/lib/auth/guard";
 import { notFound } from "next/navigation";
 import { getContribution } from "@/lib/db/contributions";
 import { listSources } from "@/lib/db/sources";
@@ -8,6 +9,7 @@ export default async function EditContributionPage({
   params,
 }: PageProps<"/data/contributions/[id]/edit">) {
   const { id } = await params;
+  await requireContributorPage(`/data/contributions/${id}/edit`);
   const [contribution, entities, sources] = await Promise.all([
     getContribution(id),
     listEntities(),

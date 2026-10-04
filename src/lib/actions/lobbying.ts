@@ -1,5 +1,6 @@
 "use server";
 
+import { requireContributor } from "../auth/guard";
 import { revalidatePath } from "next/cache";
 import {
   lobbyingRegistrationSchema,
@@ -17,6 +18,8 @@ function revalidate() {
 export async function createLobbyingRegistrationAction(
   input: LobbyingRegistrationInput,
 ): Promise<ActionResult<{ id: string }>> {
+  const denied = await requireContributor();
+  if (denied) return denied;
   const parsed = lobbyingRegistrationSchema.safeParse(input);
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
@@ -34,6 +37,8 @@ export async function updateLobbyingRegistrationAction(
   id: string,
   input: LobbyingRegistrationInput,
 ): Promise<ActionResult<{ id: string }>> {
+  const denied = await requireContributor();
+  if (denied) return denied;
   const parsed = lobbyingRegistrationSchema.safeParse(input);
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
@@ -51,6 +56,8 @@ export async function updateLobbyingRegistrationAction(
 export async function deleteLobbyingRegistrationAction(
   id: string,
 ): Promise<ActionResult<null>> {
+  const denied = await requireContributor();
+  if (denied) return denied;
   try {
     await lobbyingDb.deleteLobbyingRegistration(id);
     revalidate();

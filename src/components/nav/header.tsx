@@ -3,9 +3,9 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useLayoutEffect, useRef, useState } from "react";
-import { Search, X } from "lucide-react";
-import { toolPages } from "@/lib/nav";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { ChevronDown, Search, X } from "lucide-react";
+import { generalPages, primaryPages } from "@/lib/nav";
 import { GlobalSearch } from "@/components/search/global-search";
 import { NewMenu } from "@/components/nav/new-menu";
 
@@ -14,15 +14,26 @@ interface PillRect {
   width: number;
 }
 
-export function Header({ email }: { email: string | null }) {
+export function Header({ accountLabel }: { accountLabel: string | null }) {
   const pathname = usePathname();
   const navRef = useRef<HTMLDivElement>(null);
-  const linkRefs = useRef<Map<string, HTMLAnchorElement>>(new Map());
+  const generalRef = useRef<HTMLDivElement>(null);
+  const linkRefs = useRef<Map<string, HTMLElement>>(new Map());
   const [pill, setPill] = useState<PillRect | null>(null);
+  const [generalOpen, setGeneralOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
+  const generalActive = generalPages.some(
+    (page) => pathname === page.href || pathname.startsWith(`${page.href}/`),
+  );
+  const activeKey = generalActive
+    ? "general"
+    : primaryPages.find(
+        (page) => pathname === page.href || pathname.startsWith(`${page.href}/`),
+      )?.href;
+
   useLayoutEffect(() => {
-    const activeLink = linkRefs.current.get(pathname);
+    const activeLink = activeKey ? linkRefs.current.get(activeKey) : undefined;
     const nav = navRef.current;
     if (!activeLink || !nav) {
       setPill(null);
@@ -32,7 +43,24 @@ export function Header({ email }: { email: string | null }) {
       left: activeLink.offsetLeft,
       width: activeLink.offsetWidth,
     });
-  }, [pathname]);
+  }, [activeKey]);
+
+  useEffect(() => {
+    function handlePointerDown(event: PointerEvent) {
+      if (!generalRef.current?.contains(event.target as Node)) setGeneralOpen(false);
+    }
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setGeneralOpen(false);
+    }
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   return (
     <header className="header-enter sticky top-0 z-20 border-b border-slate-200 bg-white/90 backdrop-blur dark:border-slate-800 dark:bg-slate-950/90">
@@ -46,7 +74,7 @@ export function Header({ email }: { email: string | null }) {
           </span>
         </Link>
 
-        <div ref={navRef} className="relative flex flex-1 items-center gap-1 overflow-x-auto">
+        <div ref={navRef} className="relative flex flex-1 items-center gap-1">
           {pill ? (
             <span
               aria-hidden
@@ -54,8 +82,59 @@ export function Header({ email }: { email: string | null }) {
               style={{ left: pill.left, width: pill.width }}
             />
           ) : null}
-          {toolPages.map((page) => {
-            const isActive = pathname === page.href;
+          <div ref={generalRef} className="relative z-20 shrink-0">
+            <button
+              type="button"
+              ref={(el) => {
+                if (el) linkRefs.current.set("general", el);
+                else linkRefs.current.delete("general");
+              }}
+              aria-haspopup="menu"
+              aria-expanded={generalOpen}
+              onClick={() => setGeneralOpen((open) => !open)}
+              className={`relative z-10 flex items-center gap-1 rounded-md px-3 py-1.5 text-sm font-medium whitespace-nowrap transition-colors ${
+                generalActive
+                  ? "text-slate-900 dark:text-slate-100"
+                  : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
+              }`}
+            >
+              General
+              <ChevronDown
+                size={14}
+                className={`transition-transform ${generalOpen ? "rotate-180" : ""}`}
+              />
+            </button>
+
+            {generalOpen ? (
+              <div
+                role="menu"
+                className="absolute top-full left-0 mt-2 w-56 overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl shadow-slate-950/10 dark:border-slate-800 dark:bg-slate-950"
+              >
+                {generalPages.map((page) => {
+                  const isActive = pathname === page.href || pathname.startsWith(`${page.href}/`);
+                  return (
+                    <Link
+                      key={page.href}
+                      href={page.href}
+                      role="menuitem"
+                      onClick={() => setGeneralOpen(false)}
+                      className={`block rounded-lg px-3 py-2.5 transition-colors ${
+                        isActive
+                          ? "bg-slate-100 text-slate-950 dark:bg-slate-800 dark:text-white"
+                          : "text-slate-600 hover:bg-slate-50 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-white"
+                      }`}
+                    >
+                      <span className="block text-sm font-medium">{page.navLabel}</span>
+                      <span className="mt-0.5 block text-xs text-slate-400">{page.label}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            ) : null}
+          </div>
+
+          {primaryPages.map((page) => {
+            const isActive = pathname === page.href || pathname.startsWith(`${page.href}/`);
             return (
               <Link
                 key={page.href}
@@ -92,11 +171,16 @@ export function Header({ email }: { email: string | null }) {
           ) : null}
         </div>
 
-        <NewMenu />
+        {accountLabel ? <NewMenu /> : null}
 
-        {email ? (
+        {accountLabel ? (
           <div className="flex shrink-0 items-center gap-2">
-            <span className="hidden text-sm text-slate-500 sm:inline dark:text-slate-400">{email}</span>
+            <Link
+              href="/account"
+              className="hidden max-w-48 truncate rounded-md px-2.5 py-1.5 text-sm text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 sm:inline dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
+            >
+              {accountLabel}
+            </Link>
             <form action="/auth/signout" method="post">
               <button
                 type="submit"
@@ -108,7 +192,7 @@ export function Header({ email }: { email: string | null }) {
           </div>
         ) : (
           <Link
-            href="/login"
+            href={`/login?next=${encodeURIComponent(pathname)}`}
             className="shrink-0 rounded-md px-2.5 py-1.5 text-sm text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
           >
             Sign in

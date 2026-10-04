@@ -1,3 +1,4 @@
+import { requireContributorPage } from "@/lib/auth/guard";
 import { notFound } from "next/navigation";
 import { getLobbyingRegistration } from "@/lib/db/lobbying";
 import { listEntities } from "@/lib/neo4j/entities";
@@ -7,6 +8,7 @@ export default async function EditLobbyingPage({
   params,
 }: PageProps<"/data/lobbying/[id]/edit">) {
   const { id } = await params;
+  await requireContributorPage(`/data/lobbying/${id}/edit`);
   const [registration, entities] = await Promise.all([
     getLobbyingRegistration(id),
     listEntities(),

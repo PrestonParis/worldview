@@ -1,5 +1,6 @@
 "use server";
 
+import { requireContributor } from "../auth/guard";
 import { revalidatePath } from "next/cache";
 import { candidacySchema, type CandidacyInput } from "../validation/candidacy";
 import * as candidaciesDb from "../db/candidacies";
@@ -8,6 +9,8 @@ import type { ActionResult } from "./entities";
 export async function createCandidacyAction(
   input: CandidacyInput,
 ): Promise<ActionResult<{ id: string }>> {
+  const denied = await requireContributor();
+  if (denied) return denied;
   const parsed = candidacySchema.safeParse(input);
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
@@ -26,6 +29,8 @@ export async function updateCandidacyAction(
   id: string,
   input: CandidacyInput,
 ): Promise<ActionResult<{ id: string }>> {
+  const denied = await requireContributor();
+  if (denied) return denied;
   const parsed = candidacySchema.safeParse(input);
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
@@ -44,6 +49,8 @@ export async function updateCandidacyAction(
 export async function deleteCandidacyAction(
   id: string,
 ): Promise<ActionResult<null>> {
+  const denied = await requireContributor();
+  if (denied) return denied;
   try {
     await candidaciesDb.deleteCandidacy(id);
     revalidatePath("/data");

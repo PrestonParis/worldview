@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ContributorOnly } from "@/components/auth/can-edit";
 import { listEntities } from "@/lib/neo4j/entities";
 import { EntityForm } from "@/components/forms/entity-form";
 import { AddPanel } from "@/components/forms/add-panel";
@@ -34,12 +35,14 @@ export default async function EntitiesPage({
               <p className="text-xs text-slate-500 dark:text-slate-400">{e.type}</p>
             </div>
             <div className="flex shrink-0 items-center gap-3">
-              <Link
-                href={`/data/entities/${e.id}/edit`}
-                className="text-sm text-slate-600 underline underline-offset-2 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
-              >
-                Edit
-              </Link>
+              <ContributorOnly>
+                <Link
+                  href={`/data/entities/${e.id}/edit`}
+                  className="text-sm text-slate-600 underline underline-offset-2 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
+                >
+                  Edit
+                </Link>
+              </ContributorOnly>
               <DeleteButton id={e.id} label={e.name} action={deleteEntityAction} />
             </div>
           </li>

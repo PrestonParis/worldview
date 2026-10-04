@@ -1,3 +1,4 @@
+import { requireContributorPage } from "@/lib/auth/guard";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db/client";
 import { claims as claimsTable } from "@/lib/db/schema";
@@ -11,6 +12,7 @@ export default async function EditClaimPage({
   params,
 }: PageProps<"/data/claims/[id]/edit">) {
   const { id } = await params;
+  await requireContributorPage(`/data/claims/${id}/edit`);
   const [row, entities, sources, claims] = await Promise.all([
     db.query.claims.findFirst({ where: eq(claimsTable.id, id) }),
     listEntities(),

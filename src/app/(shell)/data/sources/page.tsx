@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ContributorOnly } from "@/components/auth/can-edit";
 import { listSources } from "@/lib/db/sources";
 import { SourceForm } from "@/components/forms/source-form";
 import { AddPanel } from "@/components/forms/add-panel";
@@ -27,12 +28,14 @@ export default async function SourcesPage({
               </p>
             </div>
             <div className="flex shrink-0 items-center gap-3">
-              <Link
-                href={`/data/sources/${s.id}/edit`}
-                className="text-sm text-slate-600 underline underline-offset-2 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
-              >
-                Edit
-              </Link>
+              <ContributorOnly>
+                <Link
+                  href={`/data/sources/${s.id}/edit`}
+                  className="text-sm text-slate-600 underline underline-offset-2 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
+                >
+                  Edit
+                </Link>
+              </ContributorOnly>
               <DeleteButton id={s.id} label={s.title} action={deleteSourceAction} />
             </div>
           </li>

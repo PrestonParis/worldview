@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ContributorOnly } from "@/components/auth/can-edit";
 import { listContributions } from "@/lib/db/contributions";
 import { listSources } from "@/lib/db/sources";
 import { listEntities } from "@/lib/neo4j/entities";
@@ -36,12 +37,14 @@ export default async function ContributionsPage({
               </p>
             </div>
             <div className="flex shrink-0 items-center gap-3">
-              <Link
-                href={`/data/contributions/${c.id}/edit`}
-                className="text-sm text-slate-600 underline underline-offset-2 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
-              >
-                Edit
-              </Link>
+              <ContributorOnly>
+                <Link
+                  href={`/data/contributions/${c.id}/edit`}
+                  className="text-sm text-slate-600 underline underline-offset-2 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
+                >
+                  Edit
+                </Link>
+              </ContributorOnly>
               <DeleteButton
                 id={c.id}
                 label={`${nameOf(c.donorEntityId)} → ${nameOf(c.recipientEntityId)}`}
