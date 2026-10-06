@@ -4,10 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "predev": "node scripts/copy-maplibre-worker.mjs",
+    "predev": "node scripts/copy-maplibre-worker.mjs && (node scripts/migrate.mjs || echo 'migrate: local DB unreachable, skipped')",
     "dev": "next dev -p 3001",
     "prebuild": "node scripts/copy-maplibre-worker.mjs",
-    "build": "next build",
+    "build": "node scripts/migrate.mjs --if-vercel-production && next build",
     "start": "next start -p 3001",
     "lint": "eslint",
     "test": "vitest run",
@@ -58,6 +58,9 @@
     "data:partner": "node scripts/partner.mjs",
     "import:eavs": "node scripts/import-eavs.mjs",
     "import:all": "bash scripts/import-all.sh",
+    "db:pull": "node scripts/db-pull.mjs",
+    "db:migrate": "node scripts/migrate.mjs",
+    "data:backfill": "node scripts/backfill-datasets.mjs",
     "build:demographics": "node scripts/build-demographics.mjs"
   },
   "dependencies": {

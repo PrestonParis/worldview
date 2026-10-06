@@ -1,0 +1,42 @@
+name: Post-deploy data sync
+
+# After every successful Vercel production deploy: apply any pending SQL
+# migrations (the build already does this; re-running is a no-op) and load
+# any catalog dataset that has no rows yet, so a deploy that adds a dataset
+# ships with its data. Regular refreshes stay in sync-public-data.yml.
+on: deployment_status
+
+concurrency:
+  group: post-deploy
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    if: github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'Production'
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.deployment.sha }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Write .env.local
+        run: |
+          {
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}"
+            echo "NEO4J_URI=${{ secrets.NEO4J_URI }}"
+            echo "NEO4J_USER=${{ secrets.NEO4J_USER }}"
+            echo "NEO4J_PASSWORD=${{ secrets.NEO4J_PASSWORD }}"
+            echo "FEC_API_KEY=${{ secrets.FEC_API_KEY }}"
+            echo "CENSUS_API_KEY=${{ secrets.CENSUS_API_KEY }}"
+          } > .env.local
+
+      - run: node scripts/migrate.mjs
+      - run: node scripts/backfill-datasets.mjs
