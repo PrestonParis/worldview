@@ -94,10 +94,15 @@ describe("industryLabel", () => {
 });
 
 describe("isDonorEdge", () => {
-  it("recognizes funding-flavored labels", () => {
-    expect(isDonorEdge("donated to")).toBe(true);
-    expect(isDonorEdge("provided campaign financing")).toBe(true);
-    expect(isDonorEdge("endorsed")).toBe(false);
+  it("recognizes funding-flavored labels on untyped edges", () => {
+    expect(isDonorEdge({ label: "donated to" })).toBe(true);
+    expect(isDonorEdge({ label: "provided campaign financing" })).toBe(true);
+    expect(isDonorEdge({ label: "endorsed" })).toBe(false);
+  });
+
+  it("trusts relType over the label when present", () => {
+    expect(isDonorEdge({ label: "contributes to", relType: "contributes-to" })).toBe(false);
+    expect(isDonorEdge({ label: "gave $5,000", relType: "donated-to" })).toBe(true);
   });
 });
 

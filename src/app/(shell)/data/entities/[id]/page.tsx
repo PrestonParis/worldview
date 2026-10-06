@@ -64,8 +64,8 @@ export default async function EntityProfilePage({
   const highlights = parseHighlights(entity.highlights);
   const metadata = metadataOf(entity.metadata);
   const entitiesById = new Map(entities.map((item) => [item.id, item]));
-  const donors = connections.filter((edge) => isDonorEdge(edge.label));
-  const relationships = connections.filter((edge) => !isDonorEdge(edge.label));
+  const donors = connections.filter((edge) => isDonorEdge(edge));
+  const relationships = connections.filter((edge) => !isDonorEdge(edge));
   const isPerson = individualEntityTypes.has(entity.type);
   const socialLinks = [
     { label: "Website", href: entity.websiteUrl || String(metadata.website || ""), icon: Globe2 },
@@ -80,9 +80,15 @@ export default async function EntityProfilePage({
     ["Party", metadata.party],
     ["State", metadata.state],
     ["Country", metadata.country],
+    ["Born", metadata.born],
+    ["Died", metadata.died],
+    ["Also known as", Array.isArray(metadata.aliases) ? metadata.aliases.join(", ") : undefined],
   ].filter((fact): fact is [string, string | number] =>
-    typeof fact[1] === "string" || typeof fact[1] === "number",
+    (typeof fact[1] === "string" && fact[1] !== "") || typeof fact[1] === "number",
   );
+  const sources = Array.isArray(metadata.sources)
+    ? metadata.sources.filter((url): url is string => typeof url === "string" && /^https?:\/\//.test(url))
+    : [];
 
   function relatedEntity(edge: (typeof connections)[number]) {
     const otherId = edge.sourceEntityId === id
@@ -245,6 +251,22 @@ export default async function EntityProfilePage({
               <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Highlights</h2>
               <ul className="mt-3 space-y-2 text-sm text-slate-600 dark:text-slate-300">
                 {highlights.map((highlight) => <li key={highlight}>• {highlight}</li>)}
+              </ul>
+            </section>
+          ) : null}
+
+          {sources.length > 0 ? (
+            <section className="rounded-2xl border border-slate-200 p-5 dark:border-slate-800">
+              <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Sources</h2>
+              <ul className="mt-3 space-y-2 text-sm">
+                {sources.map((url) => (
+                  <li key={url}>
+                    <a href={url} target="_blank" rel="noreferrer" className="break-all text-slate-600 hover:underline dark:text-slate-300">
+                      {new URL(url).hostname.replace(/^www\./, "")}
+                      <ExternalLink className="ml-1 inline h-3 w-3" />
+                    </a>
+                  </li>
+                ))}
               </ul>
             </section>
           ) : null}

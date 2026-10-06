@@ -1,0 +1,211 @@
+{
+ "source": "Gallup, \"Vermont Leads States in LGBT Identification\" (Feb. 15, 2017), 2015\u20132016 Daily Tracking; transcribed via Wikipedia, LGBTQ demographics of the United States",
+ "url": "https://news.gallup.com/poll/203513/vermont-leads-states-lgbt-identification.aspx",
+ "nationalPercent": null,
+ "states": {
+  "06": {
+   "name": "California",
+   "lgbtPercent": 4.9
+  },
+  "48": {
+   "name": "Texas",
+   "lgbtPercent": 3.6
+  },
+  "36": {
+   "name": "New York",
+   "lgbtPercent": 4.5
+  },
+  "12": {
+   "name": "Florida",
+   "lgbtPercent": 4.2
+  },
+  "17": {
+   "name": "Illinois",
+   "lgbtPercent": 3.9
+  },
+  "42": {
+   "name": "Pennsylvania",
+   "lgbtPercent": 3.6
+  },
+  "39": {
+   "name": "Ohio",
+   "lgbtPercent": 3.8
+  },
+  "13": {
+   "name": "Georgia",
+   "lgbtPercent": 4.0
+  },
+  "26": {
+   "name": "Michigan",
+   "lgbtPercent": 3.8
+  },
+  "37": {
+   "name": "North Carolina",
+   "lgbtPercent": 3.5
+  },
+  "34": {
+   "name": "New Jersey",
+   "lgbtPercent": 3.6
+  },
+  "51": {
+   "name": "Virginia",
+   "lgbtPercent": 3.4
+  },
+  "53": {
+   "name": "Washington",
+   "lgbtPercent": 4.6
+  },
+  "25": {
+   "name": "Massachusetts",
+   "lgbtPercent": 4.9
+  },
+  "04": {
+   "name": "Arizona",
+   "lgbtPercent": 4.0
+  },
+  "18": {
+   "name": "Indiana",
+   "lgbtPercent": 4.1
+  },
+  "47": {
+   "name": "Tennessee",
+   "lgbtPercent": 3.1
+  },
+  "29": {
+   "name": "Missouri",
+   "lgbtPercent": 3.4
+  },
+  "24": {
+   "name": "Maryland",
+   "lgbtPercent": 3.9
+  },
+  "55": {
+   "name": "Wisconsin",
+   "lgbtPercent": 3.4
+  },
+  "27": {
+   "name": "Minnesota",
+   "lgbtPercent": 4.0
+  },
+  "08": {
+   "name": "Colorado",
+   "lgbtPercent": 4.3
+  },
+  "01": {
+   "name": "Alabama",
+   "lgbtPercent": 3.0
+  },
+  "45": {
+   "name": "South Carolina",
+   "lgbtPercent": 3.0
+  },
+  "22": {
+   "name": "Louisiana",
+   "lgbtPercent": 3.7
+  },
+  "21": {
+   "name": "Kentucky",
+   "lgbtPercent": 3.3
+  },
+  "41": {
+   "name": "Oregon",
+   "lgbtPercent": 4.9
+  },
+  "40": {
+   "name": "Oklahoma",
+   "lgbtPercent": 3.5
+  },
+  "09": {
+   "name": "Connecticut",
+   "lgbtPercent": 3.5
+  },
+  "19": {
+   "name": "Iowa",
+   "lgbtPercent": 3.2
+  },
+  "28": {
+   "name": "Mississippi",
+   "lgbtPercent": 3.2
+  },
+  "05": {
+   "name": "Arkansas",
+   "lgbtPercent": 3.0
+  },
+  "20": {
+   "name": "Kansas",
+   "lgbtPercent": 3.1
+  },
+  "49": {
+   "name": "Utah",
+   "lgbtPercent": 3.3
+  },
+  "32": {
+   "name": "Nevada",
+   "lgbtPercent": 4.8
+  },
+  "35": {
+   "name": "New Mexico",
+   "lgbtPercent": 4.2
+  },
+  "31": {
+   "name": "Nebraska",
+   "lgbtPercent": 3.6
+  },
+  "54": {
+   "name": "West Virginia",
+   "lgbtPercent": 3.4
+  },
+  "16": {
+   "name": "Idaho",
+   "lgbtPercent": 2.8
+  },
+  "15": {
+   "name": "Hawaii",
+   "lgbtPercent": 3.8
+  },
+  "23": {
+   "name": "Maine",
+   "lgbtPercent": 4.5
+  },
+  "33": {
+   "name": "New Hampshire",
+   "lgbtPercent": 4.6
+  },
+  "44": {
+   "name": "Rhode Island",
+   "lgbtPercent": 4.0
+  },
+  "30": {
+   "name": "Montana",
+   "lgbtPercent": 3.0
+  },
+  "10": {
+   "name": "Delaware",
+   "lgbtPercent": 4.7
+  },
+  "46": {
+   "name": "South Dakota",
+   "lgbtPercent": 2.0
+  },
+  "02": {
+   "name": "Alaska",
+   "lgbtPercent": 3.0
+  },
+  "38": {
+   "name": "North Dakota",
+   "lgbtPercent": 2.7
+  },
+  "11": {
+   "name": "District of Columbia",
+   "lgbtPercent": 8.6
+  },
+  "50": {
+   "name": "Vermont",
+   "lgbtPercent": 5.3
+  },
+  "56": {
+   "name": "Wyoming",
+   "lgbtPercent": 3.5
+  }
+ }
+}

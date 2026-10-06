@@ -895,6 +895,85 @@ export const areaStats = pgTable(
     ),
     index("area_stats_lookup_idx").on(table.metric, table.geoLevel, table.period),
     index("area_stats_geoid_idx").on(table.geoid),
+    index("area_stats_source_idx").on(table.source, table.metric),
+  ],
+);
+
+// Institutions (universities, think tanks, agencies, newsrooms) approved to
+// publish their own datasets onto the platform (docs/data-hosting.md).
+// Only `approved` partners' keys are accepted by the partner API.
+export const dataPartners = pgTable(
+  "data_partners",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    slug: text("slug").notNull(),
+    name: text("name").notNull(),
+    // "university" | "think-tank" | "government" | "nonprofit" | "newsroom" | "other"
+    kind: text("kind").notNull().default("other"),
+    website: text("website"),
+    contactEmail: text("contact_email"),
+    description: text("description"),
+    // "pending" | "approved" | "suspended"
+    status: text("status").notNull().default("pending"),
+    approvedAt: timestamp("approved_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [uniqueIndex("data_partners_slug_idx").on(table.slug)],
+);
+
+// API keys for partners. Only the SHA-256 of the key is stored; the key is
+// shown once when issued (scripts/partner.mjs).
+export const partnerKeys = pgTable(
+  "partner_keys",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    partnerId: uuid("partner_id")
+      .notNull()
+      .references(() => dataPartners.id, { onDelete: "cascade" }),
+    keyPrefix: text("key_prefix").notNull(),
+    keyHash: text("key_hash").notNull(),
+    label: text("label"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    lastUsedAt: timestamp("last_used_at", { withTimezone: true }),
+    revokedAt: timestamp("revoked_at", { withTimezone: true }),
+  },
+  (table) => [
+    uniqueIndex("partner_keys_hash_idx").on(table.keyHash),
+    index("partner_keys_partner_idx").on(table.partnerId),
+  ],
+);
+
+// Catalog of every statistical dataset on the platform: one row per
+// `area_stats.source`. Built-in public imports have no partner; partner
+// datasets can only be written by that partner's keys. Only `published`
+// datasets are shown or served by the public API.
+export const datasets = pgTable(
+  "datasets",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    slug: text("slug").notNull(), // = area_stats.source
+    title: text("title").notNull(),
+    // "immigration" | "crime" | "demographics" | "elections" | "economy" | "government" | ...
+    topic: text("topic").notNull(),
+    publisher: text("publisher").notNull(),
+    partnerId: uuid("partner_id").references(() => dataPartners.id, { onDelete: "set null" }),
+    description: text("description"),
+    methodology: text("methodology"),
+    sourceUrl: text("source_url"),
+    license: text("license"),
+    cadence: text("cadence"),
+    // metric -> { label, unit, description }
+    metrics: jsonb("metrics").notNull().default({}),
+    // "draft" | "published" | "retired"
+    status: text("status").notNull().default("draft"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("datasets_slug_idx").on(table.slug),
+    index("datasets_topic_idx").on(table.topic),
+    index("datasets_partner_idx").on(table.partnerId),
   ],
 );
 

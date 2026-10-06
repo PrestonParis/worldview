@@ -44,6 +44,19 @@ export async function fetchRetry(url, init = {}, { attempts = 6, label = url } =
   }
 }
 
+// The Census API answers a bad or unactivated key with a 302 to an HTML
+// page, which otherwise surfaces as a JSON parse error deep in a run.
+export async function checkCensusKey(key) {
+  if (!key) throw new Error("CENSUS_API_KEY is not set (free: https://api.census.gov/data/key_signup.html)");
+  const res = await fetch(`https://api.census.gov/data/2023/acs/acs1?get=NAME&for=us:1&key=${key}`, { redirect: "manual" });
+  if (res.headers.get("x-datawebapi-keyerror") || res.status >= 300) {
+    throw new Error(
+      "CENSUS_API_KEY was rejected by api.census.gov — the key is invalid or was never activated " +
+        "(click the link in the signup email, or request a new key at https://api.census.gov/data/key_signup.html).",
+    );
+  }
+}
+
 export async function fetchJson(url, init, opts) {
   return (await fetchRetry(url, init, opts)).json();
 }

@@ -44,3 +44,38 @@ describe("demographic forecasts", () => {
     expect(race?.categories.some((category) => category.id === "white")).toBe(false);
   });
 });
+
+describe("projection ranges", () => {
+  it("brackets every projected value between its lowest and highest scenario", () => {
+    for (const series of demographicSeries) {
+      for (const point of series.points) {
+        if (point.year < series.observedThrough) {
+          expect(point.low).toBeUndefined();
+          continue;
+        }
+        for (const category of series.categories) {
+          const value = point.values[category.id];
+          expect(point.low?.[category.id]).toBeLessThanOrEqual(value + 0.01);
+          expect(point.high?.[category.id]).toBeGreaterThanOrEqual(value - 0.01);
+        }
+      }
+    }
+  });
+
+  it("fans out from a single point in the last observed year", () => {
+    for (const series of demographicSeries) {
+      const start = series.points.find((point) => point.year === series.observedThrough);
+      expect(start?.low).toEqual(start?.values);
+      expect(start?.high).toEqual(start?.values);
+    }
+  });
+
+  it("spans the Census immigration scenarios for race", () => {
+    const race = demographicSeries.find((series) => series.id === "race");
+    const end = race?.points.at(-1);
+    // High immigration lowers the White non-Hispanic share; zero immigration
+    // raises it — the 2050 range must be several points wide.
+    expect((end?.high?.nhWhite ?? 0) - (end?.low?.nhWhite ?? 0)).toBeGreaterThan(3);
+    expect(race?.scenarios).toHaveLength(3);
+  });
+});

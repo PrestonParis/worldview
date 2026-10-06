@@ -15,6 +15,8 @@ step() {
 
 step node scripts/export-db.mjs
 step node scripts/apply-sql.mjs supabase/sql/2026-10-01-data-imports.sql
+step node scripts/apply-sql.mjs supabase/sql/2026-10-05-data-hosting.sql
+step node scripts/sync-catalog.mjs
 
 # Identity spine first — everything below resolves people through it.
 step node scripts/backfill-members.mjs --congresses=95-119
@@ -26,8 +28,12 @@ step node scripts/import-voteview.mjs
 step node scripts/import-scdb.mjs
 step node scripts/import-federal-register.mjs
 step node scripts/import-cbp-encounters.mjs
+step node scripts/import-ice-detention.mjs
+step node scripts/import-dhs-yearbook.mjs
+step node scripts/import-census-pep.mjs
 step node scripts/import-eavs.mjs
 step node scripts/import-acs.mjs
+step node scripts/import-acs-immigration.mjs
 step node scripts/import-usaspending.mjs
 
 # Rate-limited API sweeps (slow).

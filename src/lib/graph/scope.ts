@@ -44,6 +44,30 @@ export const HUB_ENTITY_NAMES = new Set<string>([
   "Democratic Party",
 ]);
 
+// Seats, committee slots and party cards: ~11k of the ~13k edges, and they
+// say where someone sits rather than who they're tied to. The overview
+// leaves them out (they're what glued 700+ legislators and committees into
+// one unreadable blob) unless the "institutional" filter is picked; a
+// focused ego network keeps them, since there they *are* the story.
+export const STRUCTURAL_REL_TYPES = new Set<string>([
+  "serves-in",
+  "sits-on-committee",
+  "chairs",
+  "governor-of",
+  "holds-office",
+  "party-member",
+]);
+
+export function withoutStructuralEdges(edges: Edge[]): Edge[] {
+  return edges.filter(
+    (e) =>
+      !STRUCTURAL_REL_TYPES.has(e.relType ?? "") &&
+      // Subcommittee → committee links are typed member-of (there's no
+      // dedicated slug) but are just as much plumbing as committee seats.
+      e.label !== "subcommittee of",
+  );
+}
+
 // Kept in sync with the schema's entity taxonomy so the filter chips and
 // the legend never drift.
 export const ENTITY_TYPE_ORDER = entityTypes;

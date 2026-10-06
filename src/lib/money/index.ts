@@ -14,8 +14,12 @@ export * from "./us-states";
 // table instead; see the aggregation types below.
 export const donorLabelPattern = /(donat|contribut|campaign financ|funded|funding)/i;
 
-export function isDonorEdge(label: string): boolean {
-  return donorLabelPattern.test(label);
+// A typed edge is a donation only if its relType says so — label text
+// alone misfires on non-money verbs like "contributes to" (writes for).
+// The label pattern is the fallback for legacy edges with no relType.
+export function isDonorEdge(edge: { label: string; relType?: string }): boolean {
+  if (edge.relType) return edge.relType === "donated-to";
+  return donorLabelPattern.test(edge.label);
 }
 
 export const individualEntityTypes = new Set<EntityType>([

@@ -2,7 +2,8 @@ name: Sync public data
 
 # Weekly refresh of the bulk public datasets: the member crosswalk +
 # committees (congress-legislators), state officials (Open States), Voteview
-# ideology, Federal Register documents, CBP encounters, FEC independent
+# ideology, Federal Register documents, CBP encounters, ICE detention, the
+# DHS immigration yearbook, Census population estimates, FEC independent
 # expenditures, and FBI crime. Every importer is idempotent; Federal
 # Register is incremental. Slow one-off loads (SCDB, EAVS, USAspending
 # history, ACS) are run by hand: `ENV_FILE=.env.cloud npm run import:all`.
@@ -47,5 +48,9 @@ jobs:
       - run: npm run import:federal-register
       - run: npm run import:cbp
         continue-on-error: true # cbp.gov occasionally blocks CI runners
+      - run: npm run import:ice-detention
+        continue-on-error: true
+      - run: npm run import:dhs-yearbook
+      - run: npm run import:census-pep
       - run: npm run import:fec-ie
       - run: npm run import:fbi-crime -- --from=2024

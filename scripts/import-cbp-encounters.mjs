@@ -17,6 +17,7 @@
 //   ENV_FILE=.env.cloud node scripts/import-cbp-encounters.mjs
 
 import { STATE_FIPS, arg, fetchRetry, parseCsv, runImport, upsertRows } from "./lib/bulk.mjs";
+import { registerDataset } from "./lib/catalog.mjs";
 
 const PAGE = "https://www.cbp.gov/document/stats/nationwide-encounters";
 const HEADERS = {
@@ -49,6 +50,7 @@ async function discoverUrls() {
 }
 
 await runImport("cbp-encounters", async (pg) => {
+  await registerDataset(pg, "cbp");
   const urls = arg("urls", "") ? arg("urls", "").split(",") : await discoverUrls();
   const agg = new Map(); // key -> row; later files overwrite earlier months
   for (const url of urls) {

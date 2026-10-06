@@ -1,10 +1,11 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
+import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { X } from "lucide-react";
+import { Crosshair, ExternalLink, X } from "lucide-react";
 import { EntitySearch } from "./entity-search";
-import { EntityGraph } from "./entity-graph";
+import { NetworkGraph } from "./network-graph";
 import { ENTITY_TYPE_ORDER } from "@/lib/graph/scope";
 import {
   relationshipCategories,
@@ -12,33 +13,32 @@ import {
   relationshipCategoryOf,
 } from "@/lib/relationships";
 import { entityColorFor } from "@/lib/entity-colors";
-import type { Entity } from "@/lib/validation/entity";
-import type { Edge } from "@/lib/validation/edge";
-import type { PositionedNode } from "@/lib/graph/layout";
+import type { NetworkLink, NetworkNode, SearchItem } from "@/lib/graph/network";
 
 export function GraphView({
-  entities,
-  edges,
-  positions,
-  allEntities,
+  nodes,
+  links,
+  searchItems,
   rootEntity,
   depth,
   includeHubs,
   typeFilter,
   relFilter,
+  hidesStructural,
   relCategoryCounts,
   totalEntityCount,
   searchPlaceholder,
 }: {
-  entities: Entity[];
-  edges: Edge[];
-  positions: PositionedNode[];
-  allEntities: Entity[];
-  rootEntity: Entity | null;
+  nodes: NetworkNode[];
+  links: NetworkLink[];
+  searchItems: SearchItem[];
+  rootEntity: { id: string; name: string } | null;
   depth: number;
   includeHubs: boolean;
   typeFilter: string[];
   relFilter: string[];
+  /** Overview with no relationship filter: seats/committees/parties are left out. */
+  hidesStructural: boolean;
   relCategoryCounts: Record<string, number>;
   totalEntityCount: number;
   searchPlaceholder: string;
@@ -46,15 +46,7 @@ export function GraphView({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-
-  const edgeStyles = useMemo(() => {
-    const map: Record<string, { stroke: string }> = {};
-    for (const e of edges) {
-      const cat = relationshipCategoryOf(e.relType ?? "");
-      if (cat) map[e.id] = { stroke: relationshipCategoryColors[cat] };
-    }
-    return map;
-  }, [edges]);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const setParams = useCallback(
     (patch: Record<string, string | null>) => {
@@ -64,10 +56,29 @@ export function GraphView({
         else next.set(key, value);
       }
       const qs = next.toString();
+      setSelectedId(null);
       router.push(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
     },
     [router, pathname, searchParams],
   );
+  const focusOn = useCallback((id: string) => setParams({ root: id }), [setParams]);
+
+  const nodeById = useMemo(() => new Map(nodes.map((n) => [n.id, n])), [nodes]);
+  const selected = selectedId ? nodeById.get(selectedId) ?? null : null;
+  // The selected node's ties in view, grouped by relationship category.
+  const selectedTies = useMemo(() => {
+    if (!selected) return [];
+    const groups = new Map<string, { link: NetworkLink; other: NetworkNode; outgoing: boolean }[]>();
+    for (const link of links) {
+      const outgoing = link.source === selected.id;
+      if (!outgoing && link.target !== selected.id) continue;
+      const other = nodeById.get(outgoing ? link.target : link.source);
+      if (!other) continue;
+      const cat = relationshipCategoryOf(link.relType) ?? "other";
+      groups.set(cat, [...(groups.get(cat) ?? []), { link, other, outgoing }]);
+    }
+    return [...groups.entries()].sort((a, b) => b[1].length - a[1].length);
+  }, [selected, links, nodeById]);
 
   const activeTypes = new Set(typeFilter);
   const toggleType = (t: string) => {
@@ -89,11 +100,7 @@ export function GraphView({
   return (
     <div className="flex h-full flex-col">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-        <EntitySearch
-          entities={allEntities}
-          placeholder={searchPlaceholder}
-          onSelect={(id) => setParams({ root: id })}
-        />
+        <EntitySearch entities={searchItems} placeholder={searchPlaceholder} onSelect={focusOn} />
 
         {ENTITY_TYPE_ORDER.map((t) => {
           const active = activeTypes.has(t);
@@ -110,10 +117,7 @@ export function GraphView({
               }`}
               style={active ? { background: c.bg, borderColor: c.border, color: c.text } : undefined}
             >
-              <span
-                className="h-2 w-2 rounded-full border-2"
-                style={{ background: c.bg, borderColor: c.border }}
-              />
+              <span className="h-2 w-2 rounded-full" style={{ background: c.border }} />
               {t}
             </button>
           );
@@ -131,7 +135,7 @@ export function GraphView({
                 key={cat}
                 type="button"
                 onClick={() => toggleRel(cat)}
-                title={`${relCategoryCounts[cat]} in view`}
+                title={`${relCategoryCounts[cat]} ${rootEntity ? "in view" : "in the graph"}`}
                 className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium capitalize transition-colors ${
                   active
                     ? "border-transparent text-white"
@@ -163,7 +167,7 @@ export function GraphView({
         {rootEntity ? (
           <>
             <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 py-1 pr-1 pl-2.5 font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-200">
-              Focused on {rootEntity.name}
+              Centred on {rootEntity.name}
               <button
                 type="button"
                 aria-label="Clear focus"
@@ -202,23 +206,114 @@ export function GraphView({
           </>
         ) : (
           <span>
-            Showing the connected core: {entities.length} of {totalEntityCount}, with party
-            and chamber hubs hidden. Search for anyone to focus on their neighbourhood; click
-            a node to open its profile.
+            {hidesStructural
+              ? `Real ties between ${nodes.length} of ${totalEntityCount} people and organizations. Seats, committees and party cards are hidden — pick “institutional” to add them.`
+              : `${nodes.length} of ${totalEntityCount} people and organizations linked by the selected relationships.`}
           </span>
         )}
         <span className="ml-auto tabular-nums">
-          {entities.length} shown · {edges.length} links
+          {nodes.length} shown · {links.length} links · size = connections · click to inspect,
+          double-click to centre
         </span>
       </div>
 
-      <div className="mt-3 flex-1 overflow-hidden rounded-lg border border-slate-200 dark:border-slate-800">
-        <EntityGraph
-          entities={entities}
-          edges={edges}
-          positions={positions}
-          edgeStyles={edgeStyles}
-        />
+      <div className="relative mt-3 flex-1 overflow-hidden rounded-lg border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
+        {nodes.length === 0 ? (
+          <p className="p-6 text-sm text-slate-500">Nothing matches these filters.</p>
+        ) : (
+          <NetworkGraph
+            nodes={nodes}
+            links={links}
+            rootId={rootEntity?.id ?? null}
+            selectedId={selectedId}
+            onSelect={setSelectedId}
+            onFocus={focusOn}
+          />
+        )}
+
+        {selected ? (
+          <aside className="absolute inset-x-2 bottom-2 max-h-[55%] overflow-y-auto rounded-xl border border-slate-200 bg-white/95 p-4 shadow-lg backdrop-blur sm:inset-x-auto sm:top-2 sm:right-2 sm:bottom-2 sm:max-h-none sm:w-80 dark:border-slate-700 dark:bg-slate-900/95">
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0">
+                <span
+                  className="inline-block rounded-full border px-2 py-0.5 text-[11px] font-semibold capitalize"
+                  style={{
+                    background: entityColorFor(selected.type).bg,
+                    borderColor: entityColorFor(selected.type).border,
+                    color: entityColorFor(selected.type).text,
+                  }}
+                >
+                  {selected.type}
+                </span>
+                <h2 className="mt-1.5 text-base font-semibold text-slate-900 dark:text-white">{selected.name}</h2>
+              </div>
+              <button
+                type="button"
+                aria-label="Close"
+                onClick={() => setSelectedId(null)}
+                className="rounded-full p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            {selected.description ? (
+              <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">{selected.description}</p>
+            ) : null}
+
+            <div className="mt-3 flex gap-2">
+              {selected.id !== rootEntity?.id ? (
+                <button
+                  type="button"
+                  onClick={() => focusOn(selected.id)}
+                  className="inline-flex items-center gap-1.5 rounded-md bg-slate-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-slate-700 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white"
+                >
+                  <Crosshair className="h-3.5 w-3.5" /> Centre here
+                </button>
+              ) : null}
+              <Link
+                href={`/data/entities/${selected.id}`}
+                className="inline-flex items-center gap-1.5 rounded-md border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 hover:border-slate-500 dark:border-slate-600 dark:text-slate-200"
+              >
+                <ExternalLink className="h-3.5 w-3.5" /> Full profile
+              </Link>
+            </div>
+
+            <h3 className="mt-4 text-xs font-medium tracking-wide text-slate-400 uppercase">
+              {selected.degree} connection{selected.degree === 1 ? "" : "s"} in view
+            </h3>
+            <div className="mt-2 space-y-3">
+              {selectedTies.map(([cat, ties]) => (
+                <div key={cat}>
+                  <p className="flex items-center gap-1.5 text-[11px] font-medium text-slate-500 capitalize">
+                    <span
+                      className="h-2 w-2 rounded-full"
+                      style={{ background: relationshipCategoryColors[cat as keyof typeof relationshipCategoryColors] ?? "#94A3B8" }}
+                    />
+                    {cat} · {ties.length}
+                  </p>
+                  <ul className="mt-1 space-y-1">
+                    {ties.slice(0, 12).map(({ link, other, outgoing }) => (
+                      <li key={link.id} className="text-sm">
+                        <button
+                          type="button"
+                          onClick={() => setSelectedId(other.id)}
+                          className="text-left hover:underline"
+                        >
+                          <span className="text-slate-400">{outgoing ? link.label : `${link.label} ←`}</span>{" "}
+                          <span className="font-medium text-slate-800 dark:text-slate-100">{other.name}</span>
+                          {link.role ? <span className="text-slate-400"> · {link.role}</span> : null}
+                        </button>
+                      </li>
+                    ))}
+                    {ties.length > 12 ? (
+                      <li className="text-xs text-slate-400">+{ties.length - 12} more — centre here to see all</li>
+                    ) : null}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </aside>
+        ) : null}
       </div>
     </div>
   );

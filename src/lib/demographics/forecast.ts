@@ -9,6 +9,10 @@ export interface DemographicCategory {
 export interface DemographicPoint {
   year: number;
   values: Record<string, number>;
+  // Lowest / highest projection across scenarios. Present only from the last
+  // observed year onward, where both equal `values` and then fan out.
+  low?: Record<string, number>;
+  high?: Record<string, number>;
 }
 
 export interface DemographicSource {
@@ -24,6 +28,13 @@ export interface DemographicSeries {
   observedThrough: number;
   categories: DemographicCategory[];
   points: DemographicPoint[];
+  // How a sub-national series was derived (absent for the nation).
+  basis?: string;
+  // What the shaded projection range spans.
+  rangeNote: string;
+  // The individual scenario paths behind the range, from the last observed
+  // year on. State and city projections scale these.
+  scenarios?: DemographicPoint[][];
   sources: DemographicSource[];
 }
 
@@ -33,7 +44,7 @@ const round = (value: number) => Math.round(value * 100) / 100;
 
 const share = (part: number, total: number) => (part / total) * 100;
 
-function normalize(values: Record<string, number>): Record<string, number> {
+export function normalize(values: Record<string, number>): Record<string, number> {
   const entries = Object.entries(values);
   const total = entries.reduce((sum, [, value]) => sum + value, 0);
   const normalized = Object.fromEntries(
@@ -45,7 +56,7 @@ function normalize(values: Record<string, number>): Record<string, number> {
   return normalized;
 }
 
-function interpolateAnchors(anchors: Anchor[], startYear: number, endYear: number): DemographicPoint[] {
+export function interpolateAnchors(anchors: DemographicPoint[], startYear: number, endYear: number): DemographicPoint[] {
   return Array.from({ length: endYear - startYear + 1 }, (_, index) => {
     const year = startYear + index;
     const exact = anchors.find((anchor) => anchor.year === year);
@@ -62,6 +73,104 @@ function interpolateAnchors(anchors: Anchor[], startYear: number, endYear: numbe
       ]),
     );
     return { year, values: normalize(values) };
+  });
+}
+
+// Attach the projection range: for every year from `observedThrough` on, the
+// lowest and highest value any scenario (or the central path itself) gives
+// each category. Scenario paths must cover observedThrough..last year.
+export function withRange(
+  points: DemographicPoint[],
+  observedThrough: number,
+  scenarios: DemographicPoint[][],
+): DemographicPoint[] {
+  return points.map((point) => {
+    if (point.year < observedThrough) return point;
+    if (point.year === observedThrough) {
+      return { ...point, low: { ...point.values }, high: { ...point.values } };
+    }
+    const matches = scenarios
+      .map((path) => path.find((item) => item.year === point.year))
+      .filter((item): item is DemographicPoint => Boolean(item));
+    const low: Record<string, number> = {};
+    const high: Record<string, number> = {};
+    for (const [key, value] of Object.entries(point.values)) {
+      const candidates = [value, ...matches.map((item) => item.values[key] ?? value)];
+      low[key] = round(Math.max(0, Math.min(...candidates)));
+      high[key] = round(Math.min(100, Math.max(...candidates)));
+    }
+    return { ...point, low, high };
+  });
+}
+
+// Re-base a published projection onto the latest observed composition: keep
+// the projection's change since `baseYear`, start from the observed values.
+function rebase(
+  observed: Record<string, number>,
+  projection: Anchor[],
+  baseYear: number,
+): Anchor[] {
+  const base = projection.find((point) => point.year === baseYear)!;
+  return projection
+    .filter((point) => point.year >= baseYear)
+    .map((point) => ({
+      year: point.year,
+      values: normalize(Object.fromEntries(
+        Object.keys(observed).map((key) => [
+          key,
+          Math.max(0, observed[key] + (point.values[key] ?? 0) - (base.values[key] ?? 0)),
+        ]),
+      )),
+    }));
+}
+
+const scenarioYears = [2025, 2030, 2035, 2040, 2045, 2050];
+
+// Census 2023 National Projections alternative immigration scenarios
+// (np2023_d1_hi / _low / _zero), share of total population.
+const censusScenarioRows: Record<"high" | "low" | "zero", Record<string, number[]>> = {
+  high: {
+    male: [49.57, 49.52, 49.46, 49.42, 49.39, 49.39],
+    female: [50.43, 50.48, 50.54, 50.58, 50.61, 50.61],
+    nhWhite: [57.58, 55.39, 53.17, 50.94, 48.74, 46.62],
+    nhBlack: [12.64, 12.68, 12.74, 12.82, 12.93, 13.06],
+    nhAian: [0.72, 0.7, 0.68, 0.67, 0.65, 0.63],
+    nhAsian: [6.5, 7.15, 7.77, 8.38, 8.98, 9.56],
+    nhNhpi: [0.2, 0.21, 0.22, 0.23, 0.25, 0.26],
+    nhMultiracial: [2.54, 2.8, 3.08, 3.37, 3.67, 3.98],
+    hispanic: [19.84, 21.07, 22.34, 23.59, 24.78, 25.89],
+  },
+  low: {
+    male: [49.57, 49.51, 49.46, 49.42, 49.41, 49.43],
+    female: [50.43, 50.49, 50.54, 50.58, 50.59, 50.57],
+    nhWhite: [58, 56.47, 54.86, 53.18, 51.47, 49.77],
+    nhBlack: [12.66, 12.74, 12.83, 12.92, 13.03, 13.14],
+    nhAian: [0.72, 0.72, 0.71, 0.71, 0.7, 0.7],
+    nhAsian: [6.22, 6.48, 6.73, 6.98, 7.24, 7.51],
+    nhNhpi: [0.2, 0.2, 0.21, 0.22, 0.22, 0.23],
+    nhMultiracial: [2.55, 2.82, 3.12, 3.44, 3.78, 4.14],
+    hispanic: [19.64, 20.56, 21.54, 22.55, 23.55, 24.52],
+  },
+  zero: {
+    male: [49.56, 49.51, 49.46, 49.43, 49.43, 49.46],
+    female: [50.44, 50.49, 50.54, 50.57, 50.57, 50.54],
+    nhWhite: [58.35, 57.39, 56.34, 55.21, 54.03, 52.86],
+    nhBlack: [12.69, 12.8, 12.91, 13.02, 13.12, 13.22],
+    nhAian: [0.73, 0.73, 0.74, 0.75, 0.75, 0.76],
+    nhAsian: [6, 5.91, 5.82, 5.72, 5.61, 5.51],
+    nhNhpi: [0.19, 0.2, 0.2, 0.2, 0.2, 0.21],
+    nhMultiracial: [2.56, 2.84, 3.16, 3.5, 3.88, 4.28],
+    hispanic: [19.48, 20.13, 20.84, 21.6, 22.4, 23.17],
+  },
+};
+
+function censusScenarioPaths(observed: Record<string, number>): DemographicPoint[][] {
+  return Object.values(censusScenarioRows).map((rows) => {
+    const anchors = scenarioYears.map((year, index) => ({
+      year,
+      values: Object.fromEntries(Object.keys(observed).map((key) => [key, rows[key][index]])),
+    }));
+    return interpolateAnchors(rebase(observed, anchors, 2025), 2025, 2050);
   });
 }
 
@@ -302,13 +411,30 @@ const orientationObservedAnchors: Anchor[] = orientationTotals.map(([year, total
 
 const orientationObserved = interpolateAnchors(orientationObservedAnchors, 2012, 2025);
 const orientationSlope = regressionSlope(orientationTotals);
+const projectedNotReported = (year: number) => 5 + ((3 - 5) * (year - 2025)) / 25;
 let projectedOrientationTotal = 9;
 const orientationProjected: DemographicPoint[] = [];
 for (let year = 2026; year <= 2050; year += 1) {
   projectedOrientationTotal += orientationSlope * 0.94 ** (year - 2026);
-  const notReported = 5 + ((3 - 5) * (year - 2025)) / 25;
-  orientationProjected.push({ year, values: orientationValues(projectedOrientationTotal, notReported) });
+  orientationProjected.push({
+    year,
+    values: orientationValues(projectedOrientationTotal, projectedNotReported(year)),
+  });
 }
+
+const orientationScenarioYears = Array.from({ length: 26 }, (_, index) => 2025 + index);
+const orientationScenarios: DemographicPoint[][] = [
+  // Identification holds at its 2025 level.
+  orientationScenarioYears.map((year) => ({
+    year,
+    values: orientationValues(9, projectedNotReported(year)),
+  })),
+  // The 2012–2025 trend continues without slowing.
+  orientationScenarioYears.map((year) => ({
+    year,
+    values: orientationValues(9 + orientationSlope * (year - 2025), projectedNotReported(year)),
+  })),
+];
 
 const religionAnchors: Anchor[] = [
   {
@@ -329,6 +455,52 @@ const religionAnchors: Anchor[] = [
   },
 ];
 
+// Pew's four religious-switching scenarios (Sept. 2022): Christian and
+// unaffiliated shares at each year the report states, from the 2020 base.
+// "Other religions" takes the remainder.
+const pewScenarioAnchors: Array<Array<[number, number, number]>> = [
+  // Steady switching
+  [[2020, 64, 30], [2070, 46, 41]],
+  // Rising disaffiliation with limits
+  [[2020, 64, 30], [2050, 47, 42], [2070, 39, 48]],
+  // Rising disaffiliation without limits
+  [[2020, 64, 30], [2055, 43, 46], [2070, 35, 52]],
+  // No switching
+  [[2020, 64, 30], [2070, 54, 34]],
+];
+
+function religionScenarioPaths(observed: Record<string, number>): DemographicPoint[][] {
+  return pewScenarioAnchors.map((published) => {
+    const anchors: Anchor[] = interpolateAnchors(
+      published.map(([year, christian, unaffiliated]) => ({
+        year,
+        values: { christian, unaffiliated, other: 100 - christian - unaffiliated },
+      })),
+      2020,
+      2070,
+    ).filter((point) => point.year >= 2024 && point.year <= 2050);
+    const base = anchors[0].values;
+    return anchors.map((point) => ({
+      year: point.year,
+      values: normalize({
+        ...observed,
+        christian: Math.max(0, observed.christian + point.values.christian - base.christian),
+        unaffiliated: Math.max(0, observed.unaffiliated + point.values.unaffiliated - base.unaffiliated),
+        otherReligions: Math.max(0, observed.otherReligions + point.values.other - base.other),
+      }),
+    }));
+  });
+}
+
+const sexPoints = interpolateAnchors(sexAnchors, 1820, 2050);
+const racePoints = interpolateAnchors(raceAnchors, 2000, 2050);
+const religionPoints = interpolateAnchors(religionAnchors, 2007, 2050);
+const religionScenarios = religionScenarioPaths(
+  religionPoints.find((point) => point.year === 2024)!.values,
+);
+const sexScenarios = censusScenarioPaths(sexActualBase.values);
+const raceScenarios = censusScenarioPaths(raceActualBase.values);
+
 export const demographicSeries: DemographicSeries[] = [
   {
     id: "sex",
@@ -340,7 +512,9 @@ export const demographicSeries: DemographicSeries[] = [
       { id: "male", label: "Male", color: "#2563eb" },
       { id: "female", label: "Female", color: "#ec4899" },
     ],
-    points: interpolateAnchors(sexAnchors, 1820, 2050),
+    points: withRange(sexPoints, 2025, sexScenarios),
+    scenarios: sexScenarios,
+    rangeNote: "Census high-, low- and zero-immigration scenarios",
     sources: [
       {
         label: "U.S. Census Bureau — historical sex composition, 1820–1900",
@@ -383,7 +557,9 @@ export const demographicSeries: DemographicSeries[] = [
       { id: "nhAian", label: "American Indian / Alaska Native, non-Hispanic", color: "#f59e0b" },
       { id: "nhNhpi", label: "Native Hawaiian / Pacific Islander, non-Hispanic", color: "#10b981" },
     ],
-    points: interpolateAnchors(raceAnchors, 2000, 2050),
+    points: withRange(racePoints, 2025, raceScenarios),
+    scenarios: raceScenarios,
+    rangeNote: "Census high-, low- and zero-immigration scenarios",
     sources: [
       {
         label: "U.S. Census Bureau — 2000–2010 intercensal estimates",
@@ -416,7 +592,9 @@ export const demographicSeries: DemographicSeries[] = [
       { id: "other", label: "Another orientation", color: "#06b6d4" },
       { id: "notReported", label: "Not reported", color: "#cbd5e1" },
     ],
-    points: [...orientationObserved, ...orientationProjected],
+    points: withRange([...orientationObserved, ...orientationProjected], 2025, orientationScenarios),
+    scenarios: orientationScenarios,
+    rangeNote: "2025 identification level held flat to the 2012–2025 trend continuing",
     sources: [
       {
         label: "Gallup — U.S. LGBTQ+ identification trend, 2012–2025",
@@ -441,7 +619,9 @@ export const demographicSeries: DemographicSeries[] = [
       { id: "multiChristian", label: "Multiple / other Christian", color: "#8b5cf6" },
       { id: "notReported", label: "Not reported", color: "#cbd5e1" },
     ],
-    points: interpolateAnchors(religionAnchors, 2007, 2050),
+    points: withRange(religionPoints, 2024, religionScenarios),
+    scenarios: religionScenarios,
+    rangeNote: "Pew religious-switching scenarios",
     sources: [
       {
         label: "Pew Research Center — 2007, 2014 and 2023–24 Religious Landscape Studies",

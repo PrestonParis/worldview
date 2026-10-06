@@ -14,7 +14,8 @@
 //   node scripts/import-acs.mjs [--year=2024] [--levels=state,county,cd,sldu,sldl,us]
 //   ENV_FILE=.env.cloud node scripts/import-acs.mjs
 
-import { arg, fetchJson, num, runImport, upsertRows } from "./lib/bulk.mjs";
+import { arg, checkCensusKey, fetchJson, num, runImport, upsertRows } from "./lib/bulk.mjs";
+import { registerDataset } from "./lib/catalog.mjs";
 
 const YEAR = Number(arg("year", "2024"));
 const LEVELS = arg("levels", "us,state,county,cd,sldu,sldl").split(",");
@@ -74,7 +75,8 @@ const METRICS = {
 
 await runImport("census-acs5", async (pg) => {
   const key = process.env.CENSUS_API_KEY;
-  if (!key) throw new Error("CENSUS_API_KEY is not set (free: https://api.census.gov/data/key_signup.html)");
+  await checkCensusKey(key);
+  await registerDataset(pg, "census-acs5");
   const vars = [...new Set(Object.values(METRICS).flatMap((m) => m.vars))];
   let total = 0;
   for (const level of LEVELS) {

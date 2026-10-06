@@ -23,7 +23,7 @@ export async function MoneyGraphPage({ content }: { content: PageContent }) {
   // hand-entered donor edges from the shared entity graph as an unverified
   // overlay. `buildMoneyGraph` merges them and narrows entities to the ones
   // actually connected.
-  const manualDonorEdges = allEdges.filter((e) => isDonorEdge(e.label));
+  const manualDonorEdges = allEdges.filter((e) => isDonorEdge(e));
   const { entities, edges, edgeStyles, rows } = buildMoneyGraph({
     entities: allEntities,
     flows,

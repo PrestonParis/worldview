@@ -1,0 +1,923 @@
+{
+ "source": "Pew Research Center Religious Landscape Study \u2014 2014 and 2023\u201324 state religious composition (adults)",
+ "states": {
+  "01": {
+   "name": "Alabama",
+   "2014": {
+    "christian": 86,
+    "unaffiliated": 12,
+    "otherReligions": 1,
+    "notReported": 1
+   },
+   "2024": {
+    "christian": 73,
+    "unaffiliated": 22,
+    "otherReligions": 3
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/alabama/",
+    "https://web.archive.org/web/20221204015627id_/https://www.pewresearch.org/religion/religious-landscape-study/state/alabama/"
+   ]
+  },
+  "02": {
+   "name": "Alaska",
+   "2014": {
+    "christian": 62,
+    "unaffiliated": 31,
+    "otherReligions": 6,
+    "notReported": 1
+   },
+   "2024": {
+    "christian": 56,
+    "unaffiliated": 33,
+    "otherReligions": 6
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/alaska/",
+    "https://web.archive.org/web/20221202165249id_/https://www.pewresearch.org/religion/religious-landscape-study/state/alaska/"
+   ]
+  },
+  "04": {
+   "name": "Arizona",
+   "2014": {
+    "christian": 67,
+    "unaffiliated": 27,
+    "otherReligions": 6,
+    "notReported": null
+   },
+   "2024": {
+    "christian": 58,
+    "unaffiliated": 31,
+    "otherReligions": 10
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/arizona/",
+    "https://web.archive.org/web/20221206084833id_/https://www.pewresearch.org/religion/religious-landscape-study/state/arizona/"
+   ]
+  },
+  "05": {
+   "name": "Arkansas",
+   "2014": {
+    "christian": 79,
+    "unaffiliated": 18,
+    "otherReligions": 3,
+    "notReported": null
+   },
+   "2024": {
+    "christian": 79,
+    "unaffiliated": 18,
+    "otherReligions": 3
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/arkansas/",
+    "https://web.archive.org/web/20230204151816id_/https://www.pewresearch.org/religion/religious-landscape-study/state/arkansas/"
+   ]
+  },
+  "06": {
+   "name": "California",
+   "2014": {
+    "christian": 63,
+    "unaffiliated": 27,
+    "otherReligions": 9,
+    "notReported": 1
+   },
+   "2024": {
+    "christian": 55,
+    "unaffiliated": 33,
+    "otherReligions": 9
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/california/",
+    "https://web.archive.org/web/20221202162021id_/https://www.pewresearch.org/religion/religious-landscape-study/state/california/"
+   ]
+  },
+  "08": {
+   "name": "Colorado",
+   "2014": {
+    "christian": 64,
+    "unaffiliated": 29,
+    "otherReligions": 5,
+    "notReported": 2
+   },
+   "2024": {
+    "christian": 52,
+    "unaffiliated": 40,
+    "otherReligions": 7
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/colorado/",
+    "https://web.archive.org/web/20230128053642id_/https://www.pewresearch.org/religion/religious-landscape-study/state/colorado/"
+   ]
+  },
+  "09": {
+   "name": "Connecticut",
+   "2014": {
+    "christian": 70,
+    "unaffiliated": 23,
+    "otherReligions": 7,
+    "notReported": 1
+   },
+   "2024": {
+    "christian": 57,
+    "unaffiliated": 31,
+    "otherReligions": 11
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/connecticut/",
+    "https://web.archive.org/web/20230307045128id_/https://www.pewresearch.org/religion/religious-landscape-study/state/connecticut/"
+   ]
+  },
+  "10": {
+   "name": "Delaware",
+   "2014": {
+    "christian": 69,
+    "unaffiliated": 23,
+    "otherReligions": 6,
+    "notReported": 1
+   },
+   "2024": {
+    "christian": 70,
+    "unaffiliated": 24,
+    "otherReligions": 6
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/delaware/",
+    "https://web.archive.org/web/20221102082430id_/https://www.pewresearch.org/religion/religious-landscape-study/state/delaware/"
+   ]
+  },
+  "11": {
+   "name": "District of Columbia",
+   "2014": {
+    "christian": 65,
+    "unaffiliated": 25,
+    "otherReligions": 9,
+    "notReported": 1
+   },
+   "2024": {
+    "christian": 57,
+    "unaffiliated": 33,
+    "otherReligions": 9
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/district-of-columbia/",
+    "https://web.archive.org/web/20230307045151id_/https://www.pewresearch.org/religion/religious-landscape-study/state/district-of-columbia/"
+   ]
+  },
+  "12": {
+   "name": "Florida",
+   "2014": {
+    "christian": 70,
+    "unaffiliated": 24,
+    "otherReligions": 6,
+    "notReported": null
+   },
+   "2024": {
+    "christian": 64,
+    "unaffiliated": 27,
+    "otherReligions": 7
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/florida/",
+    "https://web.archive.org/web/20221113190919id_/https://www.pewresearch.org/religion/religious-landscape-study/state/florida/"
+   ]
+  },
+  "13": {
+   "name": "Georgia",
+   "2014": {
+    "christian": 79,
+    "unaffiliated": 18,
+    "otherReligions": 3,
+    "notReported": 1
+   },
+   "2024": {
+    "christian": 67,
+    "unaffiliated": 26,
+    "otherReligions": 7
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/georgia/",
+    "https://web.archive.org/web/20221130013527id_/https://www.pewresearch.org/religion/religious-landscape-study/state/georgia/"
+   ]
+  },
+  "15": {
+   "name": "Hawaii",
+   "2014": {
+    "christian": 63,
+    "unaffiliated": 26,
+    "otherReligions": 10,
+    "notReported": 1
+   },
+   "2024": {
+    "christian": 60,
+    "unaffiliated": 30,
+    "otherReligions": 9
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/hawaii/",
+    "https://web.archive.org/web/20221225093718id_/https://www.pewresearch.org/religion/religious-landscape-study/state/hawaii/"
+   ]
+  },
+  "16": {
+   "name": "Idaho",
+   "2014": {
+    "christian": 67,
+    "unaffiliated": 27,
+    "otherReligions": 4,
+    "notReported": 1
+   },
+   "2024": {
+    "christian": 62,
+    "unaffiliated": 33,
+    "otherReligions": 4
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/idaho/",
+    "https://web.archive.org/web/20230102123550id_/https://www.pewresearch.org/religion/religious-landscape-study/state/idaho/"
+   ]
+  },
+  "17": {
+   "name": "Illinois",
+   "2014": {
+    "christian": 71,
+    "unaffiliated": 22,
+    "otherReligions": 6,
+    "notReported": 1
+   },
+   "2024": {
+    "christian": 62,
+    "unaffiliated": 29,
+    "otherReligions": 8
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/illinois/",
+    "https://web.archive.org/web/20221127113138id_/https://www.pewresearch.org/religion/religious-landscape-study/state/illinois/"
+   ]
+  },
+  "18": {
+   "name": "Indiana",
+   "2014": {
+    "christian": 72,
+    "unaffiliated": 26,
+    "otherReligions": 2,
+    "notReported": null
+   },
+   "2024": {
+    "christian": 65,
+    "unaffiliated": 31,
+    "otherReligions": 3
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/indiana/",
+    "https://web.archive.org/web/20230307045213id_/https://www.pewresearch.org/religion/religious-landscape-study/state/indiana/"
+   ]
+  },
+  "19": {
+   "name": "Iowa",
+   "2014": {
+    "christian": 77,
+    "unaffiliated": 21,
+    "otherReligions": 1,
+    "notReported": 1
+   },
+   "2024": {
+    "christian": 62,
+    "unaffiliated": 31,
+    "otherReligions": 5
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/iowa/",
+    "https://web.archive.org/web/20230110013618id_/https://www.pewresearch.org/religion/religious-landscape-study/state/iowa/"
+   ]
+  },
+  "20": {
+   "name": "Kansas",
+   "2014": {
+    "christian": 76,
+    "unaffiliated": 20,
+    "otherReligions": 4,
+    "notReported": null
+   },
+   "2024": {
+    "christian": 70,
+    "unaffiliated": 28,
+    "otherReligions": 0
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/kansas/",
+    "https://web.archive.org/web/20221218185342id_/https://www.pewresearch.org/religion/religious-landscape-study/state/kansas/"
+   ]
+  },
+  "21": {
+   "name": "Kentucky",
+   "2014": {
+    "christian": 76,
+    "unaffiliated": 22,
+    "otherReligions": 2,
+    "notReported": null
+   },
+   "2024": {
+    "christian": 72,
+    "unaffiliated": 23,
+    "otherReligions": 4
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/kentucky/",
+    "https://web.archive.org/web/20220418181748id_/https://www.pewresearch.org/religion/religious-landscape-study/state/kentucky/"
+   ]
+  },
+  "22": {
+   "name": "Louisiana",
+   "2014": {
+    "christian": 84,
+    "unaffiliated": 13,
+    "otherReligions": 2,
+    "notReported": null
+   },
+   "2024": {
+    "christian": 74,
+    "unaffiliated": 21,
+    "otherReligions": 4
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/louisiana/",
+    "https://web.archive.org/web/20220419142937id_/https://www.pewresearch.org/religion/religious-landscape-study/state/louisiana/"
+   ]
+  },
+  "23": {
+   "name": "Maine",
+   "2014": {
+    "christian": 60,
+    "unaffiliated": 31,
+    "otherReligions": 7,
+    "notReported": 2
+   },
+   "2024": {
+    "christian": 51,
+    "unaffiliated": 39,
+    "otherReligions": 9
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/maine/",
+    "https://web.archive.org/web/20230120220316id_/https://www.pewresearch.org/religion/religious-landscape-study/state/maine/"
+   ]
+  },
+  "24": {
+   "name": "Maryland",
+   "2014": {
+    "christian": 69,
+    "unaffiliated": 23,
+    "otherReligions": 8,
+    "notReported": null
+   },
+   "2024": {
+    "christian": 58,
+    "unaffiliated": 32,
+    "otherReligions": 9
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/maryland/",
+    "https://web.archive.org/web/20230307045207id_/https://www.pewresearch.org/religion/religious-landscape-study/state/maryland/"
+   ]
+  },
+  "25": {
+   "name": "Massachusetts",
+   "2014": {
+    "christian": 58,
+    "unaffiliated": 32,
+    "otherReligions": 9,
+    "notReported": 1
+   },
+   "2024": {
+    "christian": 52,
+    "unaffiliated": 37,
+    "otherReligions": 11
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/massachusetts/",
+    "https://web.archive.org/web/20221202172843id_/https://www.pewresearch.org/religion/religious-landscape-study/state/massachusetts/"
+   ]
+  },
+  "26": {
+   "name": "Michigan",
+   "2014": {
+    "christian": 70,
+    "unaffiliated": 24,
+    "otherReligions": 5,
+    "notReported": 1
+   },
+   "2024": {
+    "christian": 61,
+    "unaffiliated": 31,
+    "otherReligions": 6
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/michigan/",
+    "https://web.archive.org/web/20221225101712id_/https://www.pewresearch.org/religion/religious-landscape-study/state/michigan/"
+   ]
+  },
+  "27": {
+   "name": "Minnesota",
+   "2014": {
+    "christian": 74,
+    "unaffiliated": 20,
+    "otherReligions": 5,
+    "notReported": 2
+   },
+   "2024": {
+    "christian": 63,
+    "unaffiliated": 29,
+    "otherReligions": 7
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/minnesota/",
+    "https://web.archive.org/web/20230115055139id_/https://www.pewresearch.org/religion/religious-landscape-study/state/minnesota/"
+   ]
+  },
+  "28": {
+   "name": "Mississippi",
+   "2014": {
+    "christian": 83,
+    "unaffiliated": 14,
+    "otherReligions": 2,
+    "notReported": 1
+   },
+   "2024": {
+    "christian": 77,
+    "unaffiliated": 18,
+    "otherReligions": 1
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/mississippi/",
+    "https://web.archive.org/web/20230307045207id_/https://www.pewresearch.org/religion/religious-landscape-study/state/mississippi/"
+   ]
+  },
+  "29": {
+   "name": "Missouri",
+   "2014": {
+    "christian": 77,
+    "unaffiliated": 20,
+    "otherReligions": 3,
+    "notReported": null
+   },
+   "2024": {
+    "christian": 62,
+    "unaffiliated": 33,
+    "otherReligions": 4
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/missouri/",
+    "https://web.archive.org/web/20221129172207id_/https://www.pewresearch.org/religion/religious-landscape-study/state/missouri/"
+   ]
+  },
+  "30": {
+   "name": "Montana",
+   "2014": {
+    "christian": 65,
+    "unaffiliated": 30,
+    "otherReligions": 5,
+    "notReported": null
+   },
+   "2024": {
+    "christian": 55,
+    "unaffiliated": 39,
+    "otherReligions": 6
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/montana/",
+    "https://web.archive.org/web/20221205211530id_/https://www.pewresearch.org/religion/religious-landscape-study/state/montana/"
+   ]
+  },
+  "31": {
+   "name": "Nebraska",
+   "2014": {
+    "christian": 75,
+    "unaffiliated": 20,
+    "otherReligions": 4,
+    "notReported": 1
+   },
+   "2024": {
+    "christian": 74,
+    "unaffiliated": 21,
+    "otherReligions": 3
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/nebraska/",
+    "https://web.archive.org/web/20221129165643id_/https://www.pewresearch.org/religion/religious-landscape-study/state/nebraska/"
+   ]
+  },
+  "32": {
+   "name": "Nevada",
+   "2014": {
+    "christian": 66,
+    "unaffiliated": 28,
+    "otherReligions": 5,
+    "notReported": 1
+   },
+   "2024": {
+    "christian": 60,
+    "unaffiliated": 35,
+    "otherReligions": 5
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/nevada/",
+    "https://web.archive.org/web/20221204020353id_/https://www.pewresearch.org/religion/religious-landscape-study/state/nevada/"
+   ]
+  },
+  "33": {
+   "name": "New Hampshire",
+   "2014": {
+    "christian": 59,
+    "unaffiliated": 36,
+    "otherReligions": 5,
+    "notReported": null
+   },
+   "2024": {
+    "christian": 45,
+    "unaffiliated": 48,
+    "otherReligions": 5
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/new-hampshire/",
+    "https://web.archive.org/web/20221204015510id_/https://www.pewresearch.org/religion/religious-landscape-study/state/new-hampshire/"
+   ]
+  },
+  "34": {
+   "name": "New Jersey",
+   "2014": {
+    "christian": 67,
+    "unaffiliated": 18,
+    "otherReligions": 14,
+    "notReported": 1
+   },
+   "2024": {
+    "christian": 59,
+    "unaffiliated": 27,
+    "otherReligions": 12
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/new-jersey/",
+    "https://web.archive.org/web/20230302183541id_/https://www.pewresearch.org/religion/religious-landscape-study/state/new-jersey/"
+   ]
+  },
+  "35": {
+   "name": "New Mexico",
+   "2014": {
+    "christian": 75,
+    "unaffiliated": 21,
+    "otherReligions": 4,
+    "notReported": null
+   },
+   "2024": {
+    "christian": 63,
+    "unaffiliated": 30,
+    "otherReligions": 5
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/new-mexico/",
+    "https://web.archive.org/web/20221120144726id_/https://www.pewresearch.org/religion/religious-landscape-study/state/new-mexico/"
+   ]
+  },
+  "36": {
+   "name": "New York",
+   "2014": {
+    "christian": 60,
+    "unaffiliated": 27,
+    "otherReligions": 12,
+    "notReported": 1
+   },
+   "2024": {
+    "christian": 57,
+    "unaffiliated": 27,
+    "otherReligions": 13
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/new-york/",
+    "https://web.archive.org/web/20221115045719id_/https://www.pewresearch.org/religion/religious-landscape-study/state/new-york/"
+   ]
+  },
+  "37": {
+   "name": "North Carolina",
+   "2014": {
+    "christian": 77,
+    "unaffiliated": 20,
+    "otherReligions": 3,
+    "notReported": null
+   },
+   "2024": {
+    "christian": 69,
+    "unaffiliated": 26,
+    "otherReligions": 5
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/north-carolina/",
+    "https://web.archive.org/web/20221208171143id_/https://www.pewresearch.org/religion/religious-landscape-study/state/north-carolina/"
+   ]
+  },
+  "38": {
+   "name": "North Dakota",
+   "2014": {
+    "christian": 77,
+    "unaffiliated": 20,
+    "otherReligions": 3,
+    "notReported": null
+   },
+   "2024": {
+    "christian": 73,
+    "unaffiliated": 23,
+    "otherReligions": 2
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/north-dakota/",
+    "https://web.archive.org/web/20230128140443id_/https://www.pewresearch.org/religion/religious-landscape-study/state/north-dakota/"
+   ]
+  },
+  "39": {
+   "name": "Ohio",
+   "2014": {
+    "christian": 73,
+    "unaffiliated": 22,
+    "otherReligions": 4,
+    "notReported": null
+   },
+   "2024": {
+    "christian": 64,
+    "unaffiliated": 29,
+    "otherReligions": 5
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/ohio/",
+    "https://web.archive.org/web/20230116164045id_/https://www.pewresearch.org/religion/religious-landscape-study/state/ohio/"
+   ]
+  },
+  "40": {
+   "name": "Oklahoma",
+   "2014": {
+    "christian": 79,
+    "unaffiliated": 18,
+    "otherReligions": 2,
+    "notReported": 1
+   },
+   "2024": {
+    "christian": 70,
+    "unaffiliated": 26,
+    "otherReligions": 2
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/oklahoma/",
+    "https://web.archive.org/web/20230102193427id_/https://www.pewresearch.org/religion/religious-landscape-study/state/oklahoma/"
+   ]
+  },
+  "41": {
+   "name": "Oregon",
+   "2014": {
+    "christian": 61,
+    "unaffiliated": 31,
+    "otherReligions": 7,
+    "notReported": 1
+   },
+   "2024": {
+    "christian": 43,
+    "unaffiliated": 43,
+    "otherReligions": 10
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/oregon/",
+    "https://web.archive.org/web/20221204132352id_/https://www.pewresearch.org/religion/religious-landscape-study/state/oregon/"
+   ]
+  },
+  "42": {
+   "name": "Pennsylvania",
+   "2014": {
+    "christian": 73,
+    "unaffiliated": 21,
+    "otherReligions": 6,
+    "notReported": 1
+   },
+   "2024": {
+    "christian": 62,
+    "unaffiliated": 30,
+    "otherReligions": 6
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/pennsylvania/",
+    "https://web.archive.org/web/20221116025615id_/https://www.pewresearch.org/religion/religious-landscape-study/state/pennsylvania/"
+   ]
+  },
+  "44": {
+   "name": "Rhode Island",
+   "2014": {
+    "christian": 75,
+    "unaffiliated": 20,
+    "otherReligions": 5,
+    "notReported": 1
+   },
+   "2024": {
+    "christian": 63,
+    "unaffiliated": 31,
+    "otherReligions": 5
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/rhode-island/",
+    "https://web.archive.org/web/20220419142836id_/https://www.pewresearch.org/religion/religious-landscape-study/state/rhode-island/"
+   ]
+  },
+  "45": {
+   "name": "South Carolina",
+   "2014": {
+    "christian": 78,
+    "unaffiliated": 19,
+    "otherReligions": 3,
+    "notReported": 1
+   },
+   "2024": {
+    "christian": 77,
+    "unaffiliated": 16,
+    "otherReligions": 6
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/south-carolina/",
+    "https://web.archive.org/web/20220419142849id_/https://www.pewresearch.org/religion/religious-landscape-study/state/south-carolina/"
+   ]
+  },
+  "46": {
+   "name": "South Dakota",
+   "2014": {
+    "christian": 79,
+    "unaffiliated": 18,
+    "otherReligions": 3,
+    "notReported": null
+   },
+   "2024": {
+    "christian": 79,
+    "unaffiliated": 18,
+    "otherReligions": 2
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/south-dakota/",
+    "https://web.archive.org/web/20230307045252id_/https://www.pewresearch.org/religion/religious-landscape-study/state/south-dakota/"
+   ]
+  },
+  "47": {
+   "name": "Tennessee",
+   "2014": {
+    "christian": 81,
+    "unaffiliated": 14,
+    "otherReligions": 3,
+    "notReported": 1
+   },
+   "2024": {
+    "christian": 72,
+    "unaffiliated": 24,
+    "otherReligions": 3
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/tennessee/",
+    "https://web.archive.org/web/20220406163805id_/https://www.pewresearch.org/religion/religious-landscape-study/state/tennessee/"
+   ]
+  },
+  "48": {
+   "name": "Texas",
+   "2014": {
+    "christian": 77,
+    "unaffiliated": 18,
+    "otherReligions": 4,
+    "notReported": null
+   },
+   "2024": {
+    "christian": 67,
+    "unaffiliated": 26,
+    "otherReligions": 6
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/texas/",
+    "https://web.archive.org/web/20221120024240id_/https://www.pewresearch.org/religion/religious-landscape-study/state/texas/"
+   ]
+  },
+  "49": {
+   "name": "Utah",
+   "2014": {
+    "christian": 73,
+    "unaffiliated": 22,
+    "otherReligions": 4,
+    "notReported": 1
+   },
+   "2024": {
+    "christian": 63,
+    "unaffiliated": 34,
+    "otherReligions": 2
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/utah/",
+    "https://web.archive.org/web/20221220111538id_/https://www.pewresearch.org/religion/religious-landscape-study/state/utah/"
+   ]
+  },
+  "50": {
+   "name": "Vermont",
+   "2014": {
+    "christian": 54,
+    "unaffiliated": 37,
+    "otherReligions": 8,
+    "notReported": 2
+   },
+   "2024": {
+    "christian": 45,
+    "unaffiliated": 46,
+    "otherReligions": 8
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/vermont/",
+    "https://web.archive.org/web/20230204162825id_/https://www.pewresearch.org/religion/religious-landscape-study/state/vermont/"
+   ]
+  },
+  "51": {
+   "name": "Virginia",
+   "2014": {
+    "christian": 73,
+    "unaffiliated": 20,
+    "otherReligions": 6,
+    "notReported": null
+   },
+   "2024": {
+    "christian": 62,
+    "unaffiliated": 28,
+    "otherReligions": 7
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/virginia/",
+    "https://web.archive.org/web/20230201084413id_/https://www.pewresearch.org/religion/religious-landscape-study/state/virginia/"
+   ]
+  },
+  "53": {
+   "name": "Washington",
+   "2014": {
+    "christian": 61,
+    "unaffiliated": 32,
+    "otherReligions": 6,
+    "notReported": 1
+   },
+   "2024": {
+    "christian": 51,
+    "unaffiliated": 38,
+    "otherReligions": 10
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/washington/",
+    "https://web.archive.org/web/20230122191439id_/https://www.pewresearch.org/religion/religious-landscape-study/state/washington/"
+   ]
+  },
+  "54": {
+   "name": "West Virginia",
+   "2014": {
+    "christian": 78,
+    "unaffiliated": 18,
+    "otherReligions": 3,
+    "notReported": 1
+   },
+   "2024": {
+    "christian": 64,
+    "unaffiliated": 31,
+    "otherReligions": 3
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/west-virginia/",
+    "https://web.archive.org/web/20221102200221id_/https://www.pewresearch.org/religion/religious-landscape-study/state/west-virginia/"
+   ]
+  },
+  "55": {
+   "name": "Wisconsin",
+   "2014": {
+    "christian": 71,
+    "unaffiliated": 25,
+    "otherReligions": 4,
+    "notReported": null
+   },
+   "2024": {
+    "christian": 61,
+    "unaffiliated": 34,
+    "otherReligions": 4
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/wisconsin/",
+    "https://web.archive.org/web/20230302024445id_/https://www.pewresearch.org/religion/religious-landscape-study/state/wisconsin/"
+   ]
+  },
+  "56": {
+   "name": "Wyoming",
+   "2014": {
+    "christian": 71,
+    "unaffiliated": 26,
+    "otherReligions": 3,
+    "notReported": null
+   },
+   "2024": {
+    "christian": 62,
+    "unaffiliated": 34,
+    "otherReligions": 3
+   },
+   "sources": [
+    "https://www.pewresearch.org/religious-landscape-study/state/wyoming/",
+    "https://web.archive.org/web/20221202154329id_/https://www.pewresearch.org/religion/religious-landscape-study/state/wyoming/"
+   ]
+  }
+ }
+}

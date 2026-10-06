@@ -12,6 +12,7 @@
 //   ENV_FILE=.env.cloud node scripts/import-usaspending.mjs
 
 import { STATE_FIPS, arg, fetchJson, num, runImport, upsertRows } from "./lib/bulk.mjs";
+import { registerDataset } from "./lib/catalog.mjs";
 
 const CATEGORIES = {
   contracts: ["A", "B", "C", "D"],
@@ -32,6 +33,7 @@ function geoid(level, code) {
 }
 
 await runImport("usaspending", async (pg) => {
+  await registerDataset(pg, "usaspending");
   let total = 0;
   for (let fy = FROM_FY; fy <= CURRENT_FY; fy++) {
     for (const level of LEVELS) {

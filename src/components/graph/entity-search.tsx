@@ -4,7 +4,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 import { entityColorFor } from "@/lib/entity-colors";
-import type { Entity } from "@/lib/validation/entity";
 
 const MAX_RESULTS = 8;
 
@@ -13,7 +12,7 @@ export function EntitySearch({
   placeholder,
   onSelect,
 }: {
-  entities: Entity[];
+  entities: { id: string; name: string; type: string }[];
   placeholder: string;
   /** When set, called with the picked entity id instead of navigating to its profile. */
   onSelect?: (id: string) => void;

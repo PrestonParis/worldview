@@ -22,6 +22,7 @@ import { mkdtempSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { STATE_FIPS, arg, fetchRetry, parseCsv, runImport, upsertRows } from "./lib/bulk.mjs";
+import { registerDataset } from "./lib/catalog.mjs";
 
 const YEARS = {
   2024: {
@@ -69,6 +70,7 @@ const YEAR = Number(arg("year", "2024"));
 const FIPS_TO_ABBR = Object.fromEntries(Object.entries(STATE_FIPS).map(([a, f]) => [f, a]));
 
 await runImport(`eavs-${YEAR}`, async (pg) => {
+  await registerDataset(pg, "eavs");
   const spec = YEARS[YEAR];
   if (!spec) throw new Error(`no verified code map for EAVS ${YEAR} (have: ${Object.keys(YEARS).join(", ")})`);
   const dir = mkdtempSync(join(tmpdir(), "eavs-"));

@@ -2,6 +2,9 @@
 // for the nation and every state into `area_stats`: per offense, the
 // reported count and the rate per 100,000, plus clearances. source =
 // 'fbi-cde', period = 'YYYY-MM', geo_level 'nation' | 'state' (FIPS geoid).
+// metadata.coverage = percent of the population covered by agencies that
+// reported that month. Months after the API's max_data_date (which it
+// returns as 0 or null) are dropped.
 //
 // Needs an api.data.gov key — FBI_API_KEY, or the FEC_API_KEY already in
 // .env (api.data.gov keys work across agencies). DEMO_KEY is 30 req/hour,
@@ -12,6 +15,7 @@
 //   ENV_FILE=.env.cloud node scripts/import-fbi-crime.mjs
 
 import { STATE_FIPS, arg, fetchJson, num, runImport, sleep, upsertRows } from "./lib/bulk.mjs";
+import { registerDataset } from "./lib/catalog.mjs";
 
 const OFFENSES = {
   V: "violent_crime", P: "property_crime", HOM: "homicide", RPE: "rape", ROB: "robbery",
@@ -27,17 +31,28 @@ const STATES = Object.keys(STATE_FIPS).filter(
   (s) => !["AS", "GU", "MP", "VI"].includes(s) && (!ONLY_STATES.length || ONLY_STATES.includes(s)),
 );
 
-function seriesRows(series, metric, unit, geoLevel, geoid, geoName) {
-  return Object.entries(series ?? {}).map(([mmYYYY, value]) => {
+// "09/2026" -> "2026-09"
+const maxPeriod = (d) => {
+  const [mm, yyyy] = String(d.cde_properties?.max_data_date?.UCR ?? "").split("/");
+  return yyyy ? `${yyyy}-${mm}` : "9999-12";
+};
+
+function seriesRows(series, metric, unit, geoLevel, geoid, geoName, { through, coverage }) {
+  return Object.entries(series ?? {}).flatMap(([mmYYYY, value]) => {
     const [mm, yyyy] = mmYYYY.split("-");
-    return {
+    const period = `${yyyy}-${mm}`;
+    if (period > through || num(value) === null) return [];
+    const cov = coverage?.[mmYYYY];
+    return [{
       source: "fbi-cde", metric, geo_level: geoLevel, geoid, geo_name: geoName,
-      period: `${yyyy}-${mm}`, period_start: `${yyyy}-${mm}-01`, value: num(value), unit, metadata: null,
-    };
+      period, period_start: `${period}-01`, value: num(value), unit,
+      metadata: cov === undefined ? null : { coverage: cov },
+    }];
   });
 }
 
 await runImport("fbi-cde", async (pg) => {
+  await registerDataset(pg, "fbi-cde");
   const key = process.env.FBI_API_KEY || process.env.FEC_API_KEY || "DEMO_KEY";
   const delay = key === "DEMO_KEY" ? 120_000 : 300;
   const offenses = Object.keys(OFFENSES).filter((o) => !ONLY_OFFENSES.length || ONLY_OFFENSES.includes(o));
@@ -57,10 +72,11 @@ await runImport("fbi-cde", async (pg) => {
       const geoLevel = kind === "national" ? "nation" : "state";
       const geoid = kind === "national" ? "US" : STATE_FIPS[st];
       const metric = OFFENSES[off];
+      const opts = { through: maxPeriod(d), coverage: d.tooltips?.["Percent of Population Coverage"]?.[label] };
       const rows = [
-        ...seriesRows(actuals[`${label} Offenses`], `${metric}_count`, "offenses", geoLevel, geoid, label),
-        ...seriesRows(rates[`${label} Offenses`], `${metric}_rate`, "per_100k", geoLevel, geoid, label),
-        ...seriesRows(actuals[`${label} Clearances`], `${metric}_clearances`, "clearances", geoLevel, geoid, label),
+        ...seriesRows(actuals[`${label} Offenses`], `${metric}_count`, "offenses", geoLevel, geoid, label, opts),
+        ...seriesRows(rates[`${label} Offenses`], `${metric}_rate`, "per_100k", geoLevel, geoid, label, opts),
+        ...seriesRows(actuals[`${label} Clearances`], `${metric}_clearances`, "clearances", geoLevel, geoid, label, opts),
       ];
       if (rows.length) {
         total += await upsertRows(pg, "area_stats", Object.keys(rows[0]), rows, [

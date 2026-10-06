@@ -1,9 +1,10 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { DemographicsForecast } from "@/components/demographics/demographics-forecast";
 
 export const metadata: Metadata = {
   title: "Demographics | Worldview",
-  description: "Annual U.S. demographic composition forecasts through 2050.",
+  description: "U.S., state, and city demographic composition forecasts through 2050.",
 };
 
 export default function DemographicsPage() {
@@ -15,11 +16,15 @@ export default function DemographicsPage() {
           Demographic outlook
         </h1>
         <p className="mt-3 text-base leading-7 text-slate-500 dark:text-slate-400">
-          National population shares by sex, race, sexual orientation, and religion—projected annually through 2050.
+          Population shares by sex, race, sexual orientation, and religion—projected annually through 2050
+          as a range between the highest and lowest scenarios. Select a state on the map, then a city.
         </p>
       </header>
 
-      <DemographicsForecast />
+      {/* The explorer reads ?state= / ?city= from the URL. */}
+      <Suspense>
+        <DemographicsForecast />
+      </Suspense>
     </div>
   );
 }
