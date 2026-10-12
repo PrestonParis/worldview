@@ -5,6 +5,7 @@ import {
   computeState,
   nextItem,
   NO_FIT_OPTION_ID,
+  primaryAxis,
   questionById,
   statementById,
   type NextItem,
@@ -12,14 +13,22 @@ import {
   type RefineTargets,
 } from "./engine";
 import { explainQuestion, explainStatement } from "./explanations";
+import { axisById, groupLabel } from "./axes";
+import { CONFIDENCE_MEDIUM_SD } from "./results";
+import { axisIds } from "./types";
 
+// `area` and `topic` say what a question is about (never which way an answer
+// scores): an axis group and axis for statements, an issue and its policy
+// attribute for choices.
 export type RunnerItem =
-  | { kind: "statement"; id: string; text: string; explanation: string }
+  | { kind: "statement"; id: string; text: string; explanation: string; area: string; topic: string }
   | {
       kind: "choice";
       id: string;
       prompt: string;
       explanation: string;
+      area: string;
+      topic: string;
       issue: string;
       isScreener: boolean;
       selection: "single" | "multiple";
@@ -36,19 +45,28 @@ export interface RunnerState {
   next: RunnerItem | null;
   recent: AnsweredItem[]; // newest last, for "Back"
   answeredCount: number;
-  progress: number;
+  // Axes with a stable reading (results would show at least medium
+  // confidence), and issues whose questions are all answered.
+  axesMeasured: number;
+  axesTotal: number;
+  issuesDone: number;
+  issuesTotal: number;
   complete: boolean;
 }
 
 const RECENT = 15;
+const MEASURED_MIN_ANSWERS = 3;
 
 function serializeNext(item: NextItem): RunnerItem {
   if (item.kind === "statement") {
+    const axis = axisById[primaryAxis(item.statement)];
     return {
       kind: "statement",
       id: item.statement.id,
       text: item.statement.text,
       explanation: explainStatement(item.statement),
+      area: groupLabel(axis.group),
+      topic: axis.name,
     };
   }
   return {
@@ -56,6 +74,8 @@ function serializeNext(item: NextItem): RunnerItem {
     id: item.question.id,
     prompt: item.question.prompt,
     explanation: explainQuestion(item.question, item.module),
+    area: item.module.name,
+    topic: item.question.attribute,
     issue: item.module.name,
     isScreener: item.isScreener,
     selection: item.question.selection ?? "single",
@@ -88,7 +108,13 @@ export function runnerState(answers: QuizAnswer[], refine: RefineTargets, seed: 
     next: next ? serializeNext(next) : null,
     recent,
     answeredCount: answers.length,
-    progress: state.progress,
+    axesMeasured: axisIds.filter((a) => {
+      const s = state.axes[a];
+      return s.settled || (s.answered >= MEASURED_MIN_ANSWERS && s.sd < CONFIDENCE_MEDIUM_SD);
+    }).length,
+    axesTotal: axisIds.length,
+    issuesDone: state.issues.filter((i) => i.screenerAnswered && i.pending.length === 0).length,
+    issuesTotal: state.issues.length,
     complete: state.complete,
   };
 }

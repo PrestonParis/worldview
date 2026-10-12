@@ -1,4 +1,14 @@
-import type { Axis, AxisId } from "./types";
+import type { Axis, AxisGroup, AxisId } from "./types";
+
+export const AXIS_GROUPS: { id: AxisGroup; label: string }[] = [
+  { id: "governance", label: "Governance" },
+  { id: "economy", label: "Economy" },
+  { id: "foreign", label: "Foreign policy" },
+  { id: "society", label: "Society" },
+  { id: "tech", label: "Technology & environment" },
+];
+
+export const groupLabel = (group: AxisGroup) => AXIS_GROUPS.find((g) => g.id === group)?.label ?? group;
 
 export const axes: Axis[] = [
   // Governance

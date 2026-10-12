@@ -13,8 +13,13 @@ export const metadata: Metadata = {
 const TOPICS: Record<string, string> = {
   immigration: "Immigration",
   crime: "Crime & justice",
+  abortion: "Abortion",
   demographics: "Demographics",
   elections: "Elections",
+  money: "Money in politics",
+  legislation: "Congress",
+  courts: "Courts",
+  executive: "Executive branch",
   government: "Government spending",
   economy: "Economy",
 };

@@ -68,6 +68,12 @@ const STATE_NAME = {
   WV: "West Virginia", WI: "Wisconsin", WY: "Wyoming",
 };
 const STATES = new Set(Object.keys(STATE_NAME));
+const HOUSE_SEATS = {
+  AL:7,AK:1,AZ:9,AR:4,CA:52,CO:8,CT:5,DE:1,FL:28,GA:14,HI:2,ID:2,IL:17,IN:9,IA:4,
+  KS:4,KY:6,LA:6,ME:2,MD:8,MA:9,MI:13,MN:8,MS:4,MO:8,MT:2,NE:3,NV:4,NH:2,NJ:12,
+  NM:3,NY:26,NC:14,ND:1,OH:15,OK:5,OR:6,PA:17,RI:2,SC:7,SD:1,TN:9,TX:38,UT:4,
+  VT:1,VA:11,WA:10,WV:2,WI:8,WY:1,
+};
 
 // ── helpers ──────────────────────────────────────────────────────────────
 function parseCsv(raw) {
@@ -295,10 +301,12 @@ async function main() {
 
   // ── House ──────────────────────────────────────────────────────────────
   if (OFFICES.has("house")) {
+    const scaffolded = new Set();
     for (const rep of reps) {
       const t = current(rep);
       if (!STATES.has(t.state)) continue; // skip territories/DC delegate
       const jur = houseJur(t.state, t.district);
+      scaffolded.add(jur);
       const eid = await upsertElection({
         name: `${jur} — U.S. House ${YEAR}`,
         office: "U.S. House", jurisdiction: jur, level: "federal",
@@ -309,6 +317,21 @@ async function main() {
         bioguide: rep.id.bioguide, name: rep.name.official_full, party: t.party,
       });
       await upsertIncumbentCandidacy(eid, entId, t.party, `cycle:${YEAR}:inc:${rep.id.bioguide}`);
+    }
+    // The current-legislators roster omits vacant seats. A federal general
+    // election still exists in all 435 districts, so scaffold those seats
+    // without inventing an incumbent.
+    for (const [state, seats] of Object.entries(HOUSE_SEATS)) {
+      for (let district = 1; district <= seats; district++) {
+        const jur = houseJur(state, district);
+        if (scaffolded.has(jur)) continue;
+        await upsertElection({
+          name: `${jur} — U.S. House ${YEAR}`,
+          office: "U.S. House", jurisdiction: jur, level: "federal",
+          electionType: "general", openSeat: true,
+          extId: `cycle:${YEAR}:house:${jur}`,
+        });
+      }
     }
   }
 

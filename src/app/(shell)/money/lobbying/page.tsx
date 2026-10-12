@@ -1,38 +1,96 @@
-import { listLobbyingRegistrations } from "@/lib/db/lobbying";
-import { listBills } from "@/lib/db/bills";
-import { listEntities } from "@/lib/neo4j/entities";
+import type { Metadata } from "next";
+import { ChartCard } from "@/components/charts/chart-card";
+import { RankedBars, type RankedItem } from "@/components/charts/ranked-bars";
 import { LobbyingView } from "@/components/money/lobbying-view";
+import { Coverage, MONEY_SOURCES, MoneyHeader, MoneySection, Snapshot, usd } from "@/components/money/money-ui";
+import { Term } from "@/components/money/term";
+import { formatValue } from "@/lib/format";
+import { listBills } from "@/lib/db/bills";
+import { listLobbyingRegistrations } from "@/lib/db/lobbying";
+import { loadLobbyingSummary } from "@/lib/db/moneyOverview";
+import { MONEY_COLORS } from "@/lib/money/semantic";
+import { getEntitiesByIds } from "@/lib/neo4j/entities";
+
+export const metadata: Metadata = {
+  title: "Lobbying | Money & Influence | Worldview",
+  description: "Senate Lobbying Disclosure Act filings: clients, firms, spending, issues, and the bills they lobbied on.",
+};
 
 export const dynamic = "force-dynamic";
 
 export default async function Page() {
-  const [registrations, bills, entities] = await Promise.all([
-    listLobbyingRegistrations(),
-    listBills(),
-    listEntities(),
-  ]);
+  const [summary, registrations, allBills] = await Promise.all([loadLobbyingSummary(), listLobbyingRegistrations(), listBills()]);
+  // Ship only the entities and bills the filings name, not the whole graph.
+  const entities = await getEntitiesByIds(registrations.flatMap((r) => [r.clientEntityId, r.registrantEntityId]));
+  const billIds = new Set(registrations.flatMap((r) => r.issues.map((i) => i.billId)).filter(Boolean));
+  const bills = allBills.filter((b) => billIds.has(b.id));
+
+  const filings = (n: number) => `${n.toLocaleString()} filing${n === 1 ? "" : "s"}`;
+  const clients: RankedItem[] = summary.topClients.map((c) => ({ label: c.name, value: c.total, note: filings(c.count), color: MONEY_COLORS.lobbying }));
+  const firms: RankedItem[] = summary.topFirms.map((c) => ({ label: c.name, value: c.total, note: filings(c.count), color: MONEY_COLORS.lobbying }));
+  const issues: RankedItem[] = summary.issues.map((i) => ({ label: i.label, value: i.total, note: filings(i.total), color: MONEY_COLORS.lobbying }));
+  const years = summary.years.join("–");
 
   return (
-    <div className="flex h-full flex-col">
-      <h1 className="text-2xl font-semibold tracking-tight">Lobbying network</h1>
-      <p className="mt-1 text-slate-500 dark:text-slate-400">
-        Who lobbies for whom, from Senate LDA filings: client to firm, with the
-        issues and bills named.
-      </p>
-      <div className="mt-6 flex-1">
-        {registrations.length === 0 ? (
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            No lobbying filings yet. Run <code>npm run import:lda-lobbying</code>, or add
-            one in{" "}
-            <a href="/data/lobbying" className="underline underline-offset-2">
-              Manage Data
-            </a>
-            .
-          </p>
-        ) : (
-          <LobbyingView registrations={registrations} entities={entities} bills={bills} />
-        )}
-      </div>
+    <div className="mx-auto max-w-7xl space-y-14 pb-16">
+      <MoneyHeader
+        title="Lobbying"
+        intro={
+          <>
+            Money spent to influence policy rather than elections: what <Term k="lobbyingClient">clients</Term> pay{" "}
+            <Term k="lobbyingRegistrant">lobbying firms</Term> (or spend in-house) to lobby Congress and federal agencies, the issues they name, and
+            the bills they cite.
+          </>
+        }
+        extra={summary.latestYear ? <Coverage label="Latest lobbying year">{summary.latestYear}</Coverage> : null}
+      />
+
+      {summary.filings === 0 ? (
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          No lobbying filings yet. Run <code>npm run import:lda-lobbying</code>, or add one in{" "}
+          <a href="/data/lobbying" className="underline underline-offset-2">
+            Manage Data
+          </a>
+          .
+        </p>
+      ) : (
+        <>
+          <div className="flex flex-wrap gap-2">
+            <Coverage label="Records">
+              {filings(summary.filings)} from {summary.clients} clients and {summary.firms} registrants{years ? `, ${years}` : ""}
+            </Coverage>
+          </div>
+
+          <Snapshot
+            items={[
+              { label: `Reported lobbying${years ? `, ${years}` : ""}`, value: usd(summary.total), detail: "Firm income from clients plus in-house lobbying expenses." },
+              { label: "Filings", value: summary.filings.toLocaleString(), detail: "Registrations and quarterly activity reports." },
+              { label: "Clients", value: summary.clients.toLocaleString(), detail: "Organizations paying for lobbying." },
+              { label: "Registrants", value: summary.firms.toLocaleString(), detail: "Lobbying firms, plus organizations lobbying in-house." },
+            ]}
+          />
+
+          <MoneySection title="Who pays, who lobbies, and on what">
+            <div className="grid gap-4 lg:grid-cols-3">
+              <ChartCard title="Top clients" subtitle="Reported spending" source={MONEY_SOURCES.lda} table={{ columns: ["Client", "Amount", "Filings"], rows: clients.map((c) => [c.label, formatValue(c.value, "usd"), c.note ?? ""]) }}>
+                <RankedBars items={clients} unit="usd" limit={10} />
+              </ChartCard>
+              <ChartCard title="Top registrants" subtitle="Firm income, or in-house spending when an organization lobbies for itself" source={MONEY_SOURCES.lda} table={{ columns: ["Firm", "Amount", "Filings"], rows: firms.map((c) => [c.label, formatValue(c.value, "usd"), c.note ?? ""]) }}>
+                <RankedBars items={firms} unit="usd" limit={10} />
+              </ChartCard>
+              <ChartCard title="Most-lobbied issues" subtitle="Number of filings naming each issue (not dollars)" source={MONEY_SOURCES.lda} table={{ columns: ["Issue", "Filings"], rows: issues.map((i) => [i.label, i.value]) }}>
+                <RankedBars items={issues} unit="count" limit={10} />
+              </ChartCard>
+            </div>
+          </MoneySection>
+
+          <MoneySection title="Client–firm relationships" intro="Each row is one client and the firm representing it, with the issues and bills named across their filings.">
+            <div className="h-144">
+              <LobbyingView registrations={registrations} entities={entities} bills={bills} />
+            </div>
+          </MoneySection>
+        </>
+      )}
     </div>
   );
 }

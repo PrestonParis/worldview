@@ -22,6 +22,7 @@ import { isDonorEdge, individualEntityTypes } from "@/lib/money";
 import { EntityMoneySummary } from "@/components/money/entity-money-summary";
 import { EntityLobbying } from "@/components/money/entity-lobbying";
 import { buttonVariants } from "@/components/ui/button";
+import { publicEntityPath } from "@/lib/people/public";
 
 function initialsOf(name: string): string {
   return name
@@ -204,7 +205,7 @@ export default async function EntityProfilePage({
                     return (
                       <Link
                         key={edge.id}
-                        href={other ? `/data/entities/${other.id}` : "#"}
+                        href={other ? publicEntityPath(other) : "#"}
                         className="rounded-xl border border-slate-200 p-4 transition hover:border-slate-400 hover:shadow-sm dark:border-slate-800 dark:hover:border-slate-600"
                       >
                         <p className="font-medium text-slate-900 dark:text-slate-100">{other?.name ?? "Unknown entity"}</p>
@@ -279,7 +280,7 @@ export default async function EntityProfilePage({
                   const other = relatedEntity(edge);
                   return (
                     <li key={edge.id}>
-                      <Link href={other ? `/data/entities/${other.id}` : "#"} className="group text-sm">
+                      <Link href={other ? publicEntityPath(other) : "#"} className="group text-sm">
                         <span className="font-medium text-slate-800 group-hover:underline dark:text-slate-200">{other?.name ?? "Unknown entity"}</span>
                         <span className="mt-0.5 flex items-center gap-1 text-xs text-slate-500">
                           {edge.label} <ExternalLink className="h-3 w-3" />
@@ -291,6 +292,12 @@ export default async function EntityProfilePage({
               </ul>
             </section>
           ) : null}
+          <Link
+            href={`/people?view=network&root=${entity.id}`}
+            className="flex items-center justify-between rounded-2xl border border-slate-200 p-5 text-sm font-medium text-slate-900 hover:border-slate-400 dark:border-slate-800 dark:text-white dark:hover:border-slate-600"
+          >
+            Explore direct network <span aria-hidden="true">→</span>
+          </Link>
         </aside>
       </div>
     </div>

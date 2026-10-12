@@ -2,12 +2,14 @@
 
 Worldview is a political research and visualization platform for exploring how public officials, legislation, money, elections, geography, and institutions connect.
 
-![CI](https://github.com/PrestonParis/worldview/actions/workflows/ci.yml/badge.svg) · **Public demo:** planned; see [Status and next steps](#status-and-next-steps)
+![CI](https://github.com/PrestonParis/worldview/actions/workflows/ci.yml/badge.svg) · **Live:** [worldview-tawny.vercel.app](https://worldview-tawny.vercel.app)
 
 ![Worldview research dashboard](docs/images/worldview-home.png)
 
 ## Features
 
+- Browse national and state data on immigration, crime, and demographics, each with sources and methods.
+- Search a catalog of every dataset on the platform, with a keyed partner API for institutions that publish their own.
 - Explore people and organizations as a relationship graph backed by normalized public records.
 - Follow bills, roll-call votes, committees, court cases, and executive actions.
 - Trace contributions, lobbying registrations, and independent expenditures.
@@ -55,11 +57,9 @@ npm run lint
 
 The current suite covers validation, money and election calculations, legislation helpers, authentication guards, demographic forecasting, government lookup, public-data utilities, and the political quiz engine.
 
-## Status and next steps
+## Deployment
 
-Worldview is an active portfolio project and is not yet deployed as a public demo. Before launch it needs a durable Neo4j hosting choice and an employer-friendly read-only or guest experience; invite- or code-gated editing will remain separate. Options under consideration are a paid Neo4j tier, a monitored free instance with regular exports, or a read-only snapshot.
-
-**Demo video:** TODO — add a short product walkthrough.
+Production runs on Vercel against Supabase and Neo4j Aura. Database migrations run on each production deploy, followed by a dataset backfill workflow; scheduled GitHub Actions keep public data current. Browsing is open to everyone, and editing requires a registered account.
 
 ## Local development
 
@@ -80,8 +80,8 @@ Each copies a template (`.env.local.docker` / `.env.cloud`) to `.env.local`.
 `npm run env:status` shows which is active. Both stores move together — Postgres/Auth
 and Neo4j are always either both local or both cloud, never split.
 
-The full ~1,100-entity graph currently lives in the **local Docker Neo4j**; the cloud
-Aura instance is seeded from it. Keep them in sync with `npm run db:migrate-neo4j`
+The graph (~14,000 entities) lives in both the local Docker Neo4j and the cloud
+Aura instance. Keep them in sync with `npm run db:migrate-neo4j`
 (see [Backups](#backups-and-recovery)). Neo4j Aura Free instances **pause after 3 days
 idle and are deleted after 30 days idle** with no point-in-time restore, so run
 `npm run db:export` on a schedule if the cloud copy matters.
@@ -127,8 +127,8 @@ npm run dev
 Editing and account pages require a registered session (`src/proxy.ts` — Next 16
 renamed `middleware.ts` to `proxy.ts`; the ingest API is exempt and has its own
 bearer-token authentication). Registration is intentionally closed unless a valid
-`REGISTRATION_CODE` is configured and supplied. Email sign-in uses a magic link;
-Google sign-in can be enabled through Supabase when configured.
+`REGISTRATION_CODE` is configured and supplied. Sign-in is email and password; an emailed
+code is used only to reset a forgotten password.
 
 ## Adding data
 

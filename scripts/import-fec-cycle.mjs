@@ -92,9 +92,6 @@ async function fec(path, params = {}) {
 
 const normTokens = (s) =>
   (s || "").toLowerCase().replace(/[.,'"]/g, "").split(/\s+/).filter(Boolean);
-const nameKey = (first, last, state) =>
-  `${(last || "").toLowerCase()}|${(first || "").toLowerCase()[0] || ""}|${(state || "").toUpperCase()}`;
-
 async function fetchAllCandidates() {
   const out = [];
   for (const office of OFFICES) {
@@ -189,10 +186,12 @@ async function main() {
       if (meta.fecCandidateId) byFecId.set(meta.fecCandidateId, id);
       const bg = meta.bioguide || meta.bioguideId;
       if (bg) byBioguide.set(bg, id);
+      // Keyed on the full first name: an initial alone merged different
+      // people (Sherrod, Scott, and Shontel Brown all became "brown|s").
       const toks = normTokens(name);
       if (toks.length >= 2) {
-        byName.set(`${toks[toks.length - 1]}|${toks[0][0]}|${(meta.state || "").toUpperCase()}`, id);
-        byName.set(`${toks[toks.length - 1]}|${toks[0][0]}|`, id); // state-less fallback
+        byName.set(`${toks[toks.length - 1]}|${toks[0]}|${(meta.state || "").toUpperCase()}`, id);
+        byName.set(`${toks[toks.length - 1]}|${toks[0]}|`, id); // state-less fallback
       }
     }
     console.log(`  ${entRes.records.length} politician entities (${byFecId.size} already FEC-linked)`);
@@ -229,10 +228,10 @@ async function main() {
       if (!id) {
         const toks = normTokens(cand.name); // FEC name is "LAST, FIRST"
         const last = toks[0];
-        const firstInit = (toks[1] || "")[0] || "";
-        id =
-          byName.get(`${last}|${firstInit}|${(cand.state || "").toUpperCase()}`) ||
-          byName.get(`${last}|${firstInit}|`);
+        const first = toks[1] || "";
+        id = first
+          ? byName.get(`${last}|${first}|${(cand.state || "").toUpperCase()}`) || byName.get(`${last}|${first}|`)
+          : undefined;
       }
       if (id) {
         byFecId.set(fid, id);

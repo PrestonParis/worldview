@@ -4,7 +4,8 @@ name: Sync public data
 # committees (congress-legislators), state officials (Open States), Voteview
 # ideology, Federal Register documents, CBP encounters, ICE detention, the
 # DHS immigration yearbook, Census population estimates, FEC independent
-# expenditures, and FBI crime. Every importer is idempotent; Federal
+# expenditures, FBI crime (state, city, hate crime, arrests), CDC violent
+# deaths, and the NCVS. Every importer is idempotent; Federal
 # Register is incremental. Slow one-off loads (SCDB, EAVS, USAspending
 # history, ACS) are run by hand: `ENV_FILE=.env.cloud npm run import:all`.
 on:
@@ -52,5 +53,11 @@ jobs:
         continue-on-error: true
       - run: npm run import:dhs-yearbook
       - run: npm run import:census-pep
+      - run: npm run import:state-migration
       - run: npm run import:fec-ie
       - run: npm run import:fbi-crime -- --from=2024
+      - run: npm run import:fbi-annual -- --from=2024
+      - run: npm run import:fbi-cities -- --from=2024
+      - run: npm run import:cdc-violent-deaths
+      - run: npm run import:ncvs
+      - run: npm run import:abortion

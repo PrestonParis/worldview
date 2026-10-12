@@ -1,117 +1,148 @@
-import {
-  countEntities,
-  countEntitiesCreatedSince,
-  listEntities,
-} from "@/lib/neo4j/entities";
-import { countEdges, countEdgesCreatedSince, listEdges } from "@/lib/neo4j/edges";
-import { countSources, countSourcesCreatedSince } from "@/lib/db/sources";
-import { countBills, countBillsCreatedSince } from "@/lib/db/bills";
-import { countRollCalls, countRollCallsCreatedSince } from "@/lib/db/rollCalls";
-import { countContributions, countContributionsCreatedSince } from "@/lib/db/contributions";
-import { countElections, countElectionsCreatedSince } from "@/lib/db/elections";
-import { computeForceLayout } from "@/lib/graph/layout";
-import { daysAgo } from "@/lib/dates";
-import { Hero } from "@/components/home/hero";
-import { KnowledgeBase } from "@/components/home/knowledge-base";
-import { RecentActivity } from "@/components/home/recent-activity";
-import { Connections } from "@/components/home/connections";
-import { ToolModules } from "@/components/home/tool-modules";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import { loadImmigration } from "@/lib/immigration/data";
+import { loadCrime } from "@/lib/crime/data";
+import { listDatasets } from "@/lib/db/stats";
+import { getDemographicSeries } from "@/lib/demographics/forecast";
+import { countEntities, listRecentEntities } from "@/lib/neo4j/entities";
+import { countEdges } from "@/lib/neo4j/edges";
+import { countContributions, listContributionTotalsByCurrency } from "@/lib/db/contributions";
+import { countBills } from "@/lib/db/bills";
+import { countRollCalls } from "@/lib/db/rollCalls";
+import { listCycles } from "@/lib/db/election-overview";
+import { formatPeriod } from "@/lib/format";
+import { Hero, type SnapshotMetric } from "@/components/home/hero";
+import { ToolModules, type PlatformFacts } from "@/components/home/tool-modules";
 
 export const dynamic = "force-dynamic";
 
-const GRAPH_PREVIEW_SIZE = 20;
+const settle = <T,>(promise: Promise<T>) => promise.then((value) => value, () => null);
+
+async function loadUsPopulation() {
+  const file = await readFile(path.join(process.cwd(), "public/data/demographics/states.json"), "utf8");
+  const { regions } = JSON.parse(file) as { regions: { population: number }[] };
+  return regions.reduce((sum, region) => sum + region.population, 0);
+}
 
 export default async function Home() {
-  const weekAgo = daysAgo(7);
-
   const [
+    immigration,
+    crime,
+    datasets,
+    population,
     entityCount,
     edgeCount,
-    sourceCount,
+    recentEntities,
+    contributionCount,
+    contributionTotals,
     billCount,
     rollCallCount,
-    contributionCount,
-    electionCount,
-    entityDelta,
-    edgeDelta,
-    sourceDelta,
-    billDelta,
-    rollCallDelta,
-    contributionDelta,
-    electionDelta,
-    allEntities,
-    allEdges,
+    cycles,
   ] = await Promise.all([
-    countEntities(),
-    countEdges(),
-    countSources(),
-    countBills(),
-    countRollCalls(),
-    countContributions(),
-    countElections(),
-    countEntitiesCreatedSince(weekAgo),
-    countEdgesCreatedSince(weekAgo),
-    countSourcesCreatedSince(weekAgo),
-    countBillsCreatedSince(weekAgo),
-    countRollCallsCreatedSince(weekAgo),
-    countContributionsCreatedSince(weekAgo),
-    countElectionsCreatedSince(weekAgo),
-    listEntities(),
-    listEdges(),
+    settle(loadImmigration()),
+    settle(loadCrime()),
+    settle(listDatasets()),
+    settle(loadUsPopulation()),
+    settle(countEntities()),
+    settle(countEdges()),
+    settle(listRecentEntities(4)),
+    settle(countContributions()),
+    settle(listContributionTotalsByCurrency()),
+    settle(countBills()),
+    settle(countRollCalls()),
+    settle(listCycles()),
   ]);
 
-  const entityById = new Map(allEntities.map((e) => [e.id, e]));
-  const sortedByCreated = [...allEntities].sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
-  const recentEntities = sortedByCreated.slice(0, 6);
-  const graphEntities = sortedByCreated.slice(0, GRAPH_PREVIEW_SIZE);
-  const graphEntityIds = new Set(graphEntities.map((e) => e.id));
-  const graphEdges = allEdges.filter(
-    (e) => graphEntityIds.has(e.sourceEntityId) && graphEntityIds.has(e.targetEntityId),
-  );
-  const graphPositions = computeForceLayout(graphEntities, graphEdges);
-  const recentEdges = allEdges.slice(0, 5);
+  const race = getDemographicSeries("race");
+  const observed = race.points.find((point) => point.year === race.observedThrough);
+  const encounter = immigration?.stats.encounters;
+  const violentCrime = crime?.headline.violent;
 
-  const stats = [
-    { label: "Entities", value: entityCount, delta: entityDelta, href: "/data/entities" },
-    { label: "Relationships", value: edgeCount, delta: edgeDelta, href: "/data/edges" },
-    { label: "Sources", value: sourceCount, delta: sourceDelta, href: "/data/sources" },
-    { label: "Bills", value: billCount, delta: billDelta, href: "/data/bills" },
-    {
-      label: "Roll-call votes",
-      value: rollCallCount,
-      delta: rollCallDelta,
-      href: "/legislation",
-    },
-    {
-      label: "Contributions",
-      value: contributionCount,
-      delta: contributionDelta,
-      href: "/data/contributions",
-    },
-    {
-      label: "Elections",
-      value: electionCount,
-      delta: electionDelta,
-      href: "/data/elections",
-    },
+  const snapshot: SnapshotMetric[] = [
+    ...(encounter ? [{
+      label: "Border encounters",
+      value: encounter.value,
+      unit: "encounters",
+      period: encounter.period ? formatPeriod(encounter.period) : undefined,
+      change: encounter.change,
+      href: "/immigration",
+      source: "U.S. Customs and Border Protection",
+    }] : []),
+    ...(crime?.year ? [{
+      label: "Violent crime rate",
+      value: violentCrime?.value ?? null,
+      unit: "per_100k",
+      period: `${crime.year}, per 100,000 residents`,
+      change: violentCrime?.change,
+      href: "/crime",
+      source: "FBI Crime Data Explorer",
+    }] : []),
+    ...(population ? [{
+      label: "U.S. resident population",
+      value: population,
+      unit: "people",
+      period: `${race.observedThrough} estimate`,
+      href: "/demographics",
+      source: "U.S. Census Bureau",
+    }] : []),
+    ...(immigration?.stats.netMigration ? [{
+      label: "Net international migration",
+      value: immigration.stats.netMigration.value,
+      unit: "people",
+      period: immigration.stats.netMigration.period ? formatPeriod(immigration.stats.netMigration.period) : undefined,
+      change: immigration.stats.netMigration.change,
+      href: "/immigration",
+      source: "U.S. Census Bureau",
+    }] : []),
   ];
 
+  const latestCycle = cycles?.[0];
+  const facts: PlatformFacts = {
+    ...(entityCount != null && edgeCount != null ? {
+      people: { entities: entityCount, relationships: edgeCount, recent: recentEntities?.map((entity) => entity.name) ?? [] },
+    } : {}),
+    ...(contributionCount != null ? {
+      money: { contributions: contributionCount, usdTotal: contributionTotals?.find((total) => total.currency === "USD")?.total ?? 0 },
+    } : {}),
+    ...(billCount != null && rollCallCount != null ? { legislation: { bills: billCount, rollCalls: rollCallCount } } : {}),
+    ...(latestCycle ? {
+      elections: { cycle: latestCycle.cycle, races: Object.values(latestCycle.offices).reduce((sum, count) => sum + (count ?? 0), 0) },
+    } : {}),
+  };
+
+  const publishers = new Set(datasets?.map((dataset) => dataset.publisher)).size;
+
   return (
-    <div className="mx-auto flex max-w-5xl flex-col gap-12">
-      <Hero />
-
-      <KnowledgeBase
-        stats={stats}
-        graphEntities={graphEntities}
-        graphEdges={graphEdges}
-        graphPositions={graphPositions}
+    <div className="mx-auto max-w-7xl">
+      <Hero datasetCount={datasets?.length ?? 0} publisherCount={publishers} snapshot={snapshot} />
+      <ToolModules
+        immigration={encounter ? {
+          label: "Border encounters, monthly",
+          value: encounter.value,
+          unit: "encounters",
+          period: encounter.period ? formatPeriod(encounter.period) : "Latest month",
+          source: "CBP",
+          values: encounter.spark ?? [],
+          firstPeriod: "Prior 24 months",
+        } : null}
+        crime={crime?.year && violentCrime ? {
+          label: "Violent crime rate",
+          value: violentCrime.value,
+          unit: "per_100k",
+          period: `${crime.year}, per 100,000`,
+          source: "FBI",
+          values: violentCrime.spark ?? [],
+          firstPeriod: crime.baseYear ?? undefined,
+        } : null}
+        demographics={observed ? {
+          period: `${race.observedThrough} estimate`,
+          source: "U.S. Census Bureau",
+          categories: race.categories.map((category) => ({ label: category.label, value: observed.values[category.id] ?? 0, color: category.color })),
+        } : null}
+        facts={facts}
+        datasetCount={datasets?.length ?? 0}
+        publisherCount={publishers}
       />
-
-      <RecentActivity entities={recentEntities} edges={allEdges} />
-
-      <Connections edges={recentEdges} entityById={entityById} />
-
-      <ToolModules />
     </div>
   );
 }

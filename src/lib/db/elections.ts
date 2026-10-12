@@ -2,6 +2,7 @@ import { eq, count, gte, max } from "drizzle-orm";
 import { db } from "./client";
 import { elections } from "./schema";
 import type { Election, ElectionInput } from "../validation/election";
+import { validateFederalElectionDate } from "../elections/dates";
 
 function toElection(row: typeof elections.$inferSelect): Election {
   return {
@@ -27,6 +28,8 @@ function toElection(row: typeof elections.$inferSelect): Election {
 }
 
 function toRow(input: ElectionInput) {
+  const dateError = validateFederalElectionDate(input);
+  if (dateError) throw new Error(dateError);
   return {
     name: input.name,
     office: input.office,

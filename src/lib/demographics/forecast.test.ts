@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { demographicSeries } from "./forecast";
+import { demographicSeries, nationalPopulation } from "./forecast";
 
 describe("demographic forecasts", () => {
   it("covers every year through 2050", () => {
@@ -16,7 +16,7 @@ describe("demographic forecasts", () => {
       demographicSeries.map((series) => [series.id, series.points[0].year]),
     );
 
-    expect(starts).toEqual({ sex: 1820, race: 2000, orientation: 2012, religion: 2007 });
+    expect(starts).toEqual({ age: 2010, sex: 1820, race: 2000, orientation: 2012, religion: 2007 });
   });
 
   it("keeps every annual composition at 100 percent", () => {
@@ -77,5 +77,30 @@ describe("projection ranges", () => {
     // raises it — the 2050 range must be several points wide.
     expect((end?.high?.nhWhite ?? 0) - (end?.low?.nhWhite ?? 0)).toBeGreaterThan(3);
     expect(race?.scenarios).toHaveLength(3);
+  });
+});
+
+describe("age", () => {
+  it("matches the Census 2025 estimate for adults", () => {
+    expect(nationalPopulation("adults", 2025)).toBe(269764000);
+    expect(nationalPopulation("residents", 2050)).toBe(360639000);
+    expect(nationalPopulation("adults", 1990)).toBeNull();
+  });
+
+  it("ages the population in the middle path", () => {
+    const age = demographicSeries.find((series) => series.id === "age")!;
+    const now = age.points.find((point) => point.year === 2025)!;
+    const end = age.points.at(-1)!;
+    expect(end.values.age65plus).toBeGreaterThan(now.values.age65plus);
+    expect(end.values.under18).toBeLessThan(now.values.under18);
+  });
+});
+
+describe("geography availability", () => {
+  it("publishes survey measures for states only", () => {
+    for (const series of demographicSeries) {
+      expect(series.geographies.includes("city")).toBe(series.measure === "census");
+      expect(series.geographies).toContain("state");
+    }
   });
 });

@@ -30,11 +30,18 @@ step node scripts/import-federal-register.mjs
 step node scripts/import-cbp-encounters.mjs
 step node scripts/import-ice-detention.mjs
 step node scripts/import-dhs-yearbook.mjs
+step node scripts/import-dhs-unauthorized.mjs
 step node scripts/import-census-pep.mjs
+step node scripts/import-state-migration.mjs
+step node scripts/import-un-migrant-stock.mjs
 step node scripts/import-eavs.mjs
+step node scripts/import-cps-voting.mjs
 step node scripts/import-acs.mjs
 step node scripts/import-acs-immigration.mjs
 step node scripts/import-usaspending.mjs
+step node scripts/import-cdc-violent-deaths.mjs
+step node scripts/import-bjs-ncvs.mjs
+step node scripts/import-abortion.mjs
 
 # Rate-limited API sweeps (slow).
 step node scripts/import-congress-bills.mjs --congress=119
@@ -42,6 +49,8 @@ step node scripts/import-congress-votes.mjs --congress=119
 step node scripts/import-fec-cycle.mjs --office=H,S
 step node scripts/import-fec-independent-expenditures.mjs
 step node scripts/import-fbi-crime.mjs
+step node scripts/import-fbi-annual.mjs
+step node scripts/import-fbi-cities.mjs
 if [ "$QUICK" != "quick" ]; then
   step node scripts/import-congress-bills.mjs --congress=118
   step node scripts/import-congress-votes.mjs --congress=118

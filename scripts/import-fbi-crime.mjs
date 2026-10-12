@@ -6,8 +6,9 @@
 // reported that month. Months after the API's max_data_date (which it
 // returns as 0 or null) are dropped.
 //
-// Needs an api.data.gov key — FBI_API_KEY, or the FEC_API_KEY already in
-// .env (api.data.gov keys work across agencies). DEMO_KEY is 30 req/hour,
+// Needs an api.data.gov key — FBI_API_KEY, or the FEC_API_KEY /
+// CONGRESS_GOV_API_KEY already in .env (api.data.gov keys work across
+// agencies). DEMO_KEY is 30 req/hour,
 // too slow for the ~530 calls a full run makes.
 //
 // Usage:
@@ -53,7 +54,7 @@ function seriesRows(series, metric, unit, geoLevel, geoid, geoName, { through, c
 
 await runImport("fbi-cde", async (pg) => {
   await registerDataset(pg, "fbi-cde");
-  const key = process.env.FBI_API_KEY || process.env.FEC_API_KEY || "DEMO_KEY";
+  const key = process.env.FBI_API_KEY || process.env.FEC_API_KEY || process.env.CONGRESS_GOV_API_KEY || "DEMO_KEY";
   const delay = key === "DEMO_KEY" ? 120_000 : 300;
   const offenses = Object.keys(OFFENSES).filter((o) => !ONLY_OFFENSES.length || ONLY_OFFENSES.includes(o));
   let total = 0;

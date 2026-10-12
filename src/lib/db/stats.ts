@@ -5,6 +5,7 @@
 
 import { and, asc, desc, eq, gte, inArray, isNotNull, lte, sql } from "drizzle-orm";
 import { db } from "./client";
+import { recordCoverage, type RecordTableCoverage } from "./records";
 import { areaStats, dataPartners, datasets, syncRuns } from "./schema";
 import { periodEnd, periodStart, type ObservationInput } from "@/lib/validation/observation";
 
@@ -31,12 +32,16 @@ export interface Dataset {
 }
 
 export interface DatasetCoverage {
+  // "values" for area_stats series; "records" for record datasets
+  // (src/lib/db/records.ts), which also break their rows down by table.
+  kind: "values" | "records";
   rows: number;
   metrics: number;
   geoLevels: string[];
   firstPeriod: string | null;
   lastPeriod: string | null;
   lastUpdated: string | null;
+  tables?: RecordTableCoverage[];
 }
 
 export interface Point {
@@ -110,10 +115,11 @@ export async function getDataset(slug: string, { includeUnpublished = false } = 
   return row ? toDataset(row) : null;
 }
 
-// Coverage per dataset slug, from area_stats plus the latest successful
-// import or partner push.
+// Coverage per dataset slug: area_stats series, plus record datasets
+// counted from their own tables.
 export async function datasetCoverage(slugs: string[]): Promise<Record<string, DatasetCoverage>> {
   if (!slugs.length) return {};
+  const records = await recordCoverage(slugs);
   const rows = await db
     .select({
       source: areaStats.source,
@@ -127,10 +133,27 @@ export async function datasetCoverage(slugs: string[]): Promise<Record<string, D
     .from(areaStats)
     .where(and(inArray(areaStats.source, slugs), isNotNull(areaStats.value)))
     .groupBy(areaStats.source);
-  return Object.fromEntries(
+  return {
+    ...Object.fromEntries(
+      Object.entries(records).map(([slug, r]) => [
+        slug,
+        {
+          kind: "records" as const,
+          rows: r.rows,
+          metrics: 0,
+          geoLevels: [],
+          firstPeriod: r.firstYear === null ? null : String(r.firstYear),
+          lastPeriod: r.lastYear === null ? null : String(r.lastYear),
+          lastUpdated: r.lastUpdated,
+          tables: r.tables,
+        },
+      ]),
+    ),
+    ...Object.fromEntries(
     rows.map((r) => [
       r.source,
       {
+        kind: "values" as const,
         rows: r.rows,
         metrics: r.metrics,
         geoLevels: r.geoLevels,
@@ -139,7 +162,8 @@ export async function datasetCoverage(slugs: string[]): Promise<Record<string, D
         lastUpdated: r.lastUpdated ? new Date(r.lastUpdated).toISOString() : null,
       },
     ]),
-  );
+    ),
+  };
 }
 
 // One metric for one place over time, oldest first.
@@ -178,6 +202,7 @@ export async function getSeriesMany(source: string, metrics: string[], geoLevel 
       period: areaStats.period,
       periodStart: areaStats.periodStart,
       value: areaStats.value,
+      metadata: areaStats.metadata,
     })
     .from(areaStats)
     .where(
@@ -191,7 +216,19 @@ export async function getSeriesMany(source: string, metrics: string[], geoLevel 
     )
     .orderBy(asc(areaStats.periodStart), asc(areaStats.period));
   const out: Record<string, Point[]> = Object.fromEntries(metrics.map((m) => [m, []]));
-  for (const r of rows) out[r.metric].push({ period: r.period, periodStart: r.periodStart, value: r.value! });
+  for (const r of rows) out[r.metric].push({ period: r.period, periodStart: r.periodStart, value: r.value!, metadata: r.metadata as Record<string, unknown> | null });
+  return out;
+}
+
+// One metric's series for every area at a level, keyed by geoid.
+export async function getSeriesByGeo(source: string, metric: string, geoLevel: string) {
+  const rows = await db
+    .select({ geoid: areaStats.geoid, period: areaStats.period, periodStart: areaStats.periodStart, value: areaStats.value })
+    .from(areaStats)
+    .where(and(eq(areaStats.source, source), eq(areaStats.metric, metric), eq(areaStats.geoLevel, geoLevel), isNotNull(areaStats.value)))
+    .orderBy(asc(areaStats.periodStart), asc(areaStats.period));
+  const out: Record<string, Point[]> = {};
+  for (const r of rows) (out[r.geoid] ??= []).push({ period: r.period, periodStart: r.periodStart, value: r.value! });
   return out;
 }
 
@@ -277,6 +314,64 @@ export async function sumByGeo(
     .groupBy(areaStats.geoid)
     .orderBy(desc(sql`sum(${areaStats.value})`));
   return rows.map((r) => ({ geoid: r.geoid, geoName: r.geoName, value: r.value }));
+}
+
+// Calendar-year sums of monthly values for every area at a level, with how
+// many months each year has (and how many aren't marked metadata.reported =
+// false) and the mean / lowest metadata.coverage across them (for sources
+// that report those, like fbi-cde). `geoidPrefix` narrows to, e.g., the
+// counties of one state.
+export interface YearlyValue {
+  metric: string;
+  geoid: string;
+  year: string;
+  value: number;
+  months: number;
+  reportedMonths: number;
+  coverage: number | null;
+  minCoverage: number | null;
+}
+
+export async function yearlySumsByGeo(
+  source: string,
+  metrics: string[],
+  geoLevel: string,
+  { geoidPrefix }: { geoidPrefix?: string } = {},
+): Promise<YearlyValue[]> {
+  const year = sql<string>`left(${areaStats.period}, 4)`;
+  const cov = sql`(${areaStats.metadata}->>'coverage')::float8`;
+  return db
+    .select({
+      metric: areaStats.metric,
+      geoid: areaStats.geoid,
+      year,
+      value: sql<number>`sum(${areaStats.value})::float8`,
+      months: sql<number>`count(*)::int`,
+      reportedMonths: sql<number>`(count(*) filter (where (${areaStats.metadata}->>'reported') is distinct from 'false'))::int`,
+      coverage: sql<number | null>`avg(${cov})::float8`,
+      minCoverage: sql<number | null>`min(${cov})::float8`,
+    })
+    .from(areaStats)
+    .where(
+      and(
+        eq(areaStats.source, source),
+        inArray(areaStats.metric, metrics),
+        eq(areaStats.geoLevel, geoLevel),
+        geoidPrefix ? sql`${areaStats.geoid} like ${`${geoidPrefix}%`}` : undefined,
+        isNotNull(areaStats.value),
+      ),
+    )
+    .groupBy(areaStats.metric, areaStats.geoid, year);
+}
+
+// Each area's name and metadata from its newest row of one metric.
+export async function latestMetadataByGeo(source: string, metric: string, geoLevel: string) {
+  const rows = await db
+    .selectDistinctOn([areaStats.geoid], { geoid: areaStats.geoid, geoName: areaStats.geoName, metadata: areaStats.metadata })
+    .from(areaStats)
+    .where(and(eq(areaStats.source, source), eq(areaStats.metric, metric), eq(areaStats.geoLevel, geoLevel)))
+    .orderBy(areaStats.geoid, desc(areaStats.period));
+  return rows.map((r) => ({ geoid: r.geoid, geoName: r.geoName, metadata: (r.metadata ?? {}) as Record<string, unknown> }));
 }
 
 export interface ObservationQuery {

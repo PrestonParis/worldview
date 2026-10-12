@@ -2,6 +2,7 @@ import Link from "next/link";
 import { formatAmount } from "@/lib/money";
 import type { LobbyingRegistration } from "@/lib/validation/lobbying";
 import type { Entity } from "@/lib/validation/entity";
+import { publicEntityPath } from "@/lib/people/public";
 
 function summarize(regs: LobbyingRegistration[], counterpartyOf: (r: LobbyingRegistration) => string) {
   const by = new Map<string, { total: number; filings: number; years: Set<number> }>();
@@ -33,7 +34,7 @@ function Row({
         return (
           <li key={row.entityId} className="flex items-center justify-between gap-4 py-2 text-sm">
             <Link
-              href={e ? `/data/entities/${e.id}` : "#"}
+              href={e ? publicEntityPath(e) : "#"}
               className="min-w-0 truncate font-medium text-slate-800 hover:underline dark:text-slate-200"
             >
               {e?.name ?? "Unknown entity"}

@@ -6,6 +6,7 @@ import type {
   EntityContributionSummary,
 } from "@/lib/money";
 import type { Entity } from "@/lib/validation/entity";
+import { publicEntityPath } from "@/lib/people/public";
 
 function totalsLine(totals: CurrencyTotal[]): string {
   return totals
@@ -30,7 +31,7 @@ function Counterparties({
         return (
           <li key={`${row.entityId}:${row.currency}`} className="flex items-center justify-between gap-4 py-2 text-sm">
             <Link
-              href={other ? `/data/entities/${other.id}` : "#"}
+              href={other ? publicEntityPath(other) : "#"}
               className="min-w-0 truncate font-medium text-slate-800 hover:underline dark:text-slate-200"
             >
               {other?.name ?? "Unknown entity"}

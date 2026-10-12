@@ -2,6 +2,7 @@
 
 import { useMemo, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
+import { useIsDark } from "@/lib/theme";
 import {
   ReactFlow,
   Background,
@@ -15,6 +16,7 @@ import { EntityNode, type EntityNodeData } from "./entity-node";
 import type { Entity } from "@/lib/validation/entity";
 import type { Edge } from "@/lib/validation/edge";
 import type { PositionedNode } from "@/lib/graph/layout";
+import { publicEntityPath } from "@/lib/people/public";
 
 const nodeTypes = { entity: EntityNode };
 
@@ -41,10 +43,9 @@ export function EntityGraph({
 }) {
   const router = useRouter();
 
-  // ReactFlow's colorMode="system" reads the OS theme via matchMedia, which
-  // isn't available during server rendering — it renders "light" on the
-  // server and may render "dark" on the client's very first paint,
-  // producing a hydration mismatch. useSyncExternalStore is the sanctioned
+  // ReactFlow's colorMode follows the page theme, which is only known in the
+  // browser — it renders "light" on the server and may render "dark" on the
+  // client's very first paint, producing a hydration mismatch. useSyncExternalStore is the sanctioned
   // way to let a value differ between the server and client render passes:
   // the snapshot never changes after mount (no subscription needed), it
   // just reports false for the server render and true once actually
@@ -54,6 +55,8 @@ export function EntityGraph({
     () => true,
     () => false,
   );
+
+  const dark = useIsDark();
 
   const nodes = useMemo<Node<EntityNodeData>[]>(() => {
     const positionById = new Map(positions.map((p) => [p.id, p]));
@@ -106,12 +109,15 @@ export function EntityGraph({
         // homepage preview, which is meant to show its whole (tiny) subset.
         fitViewOptions={interactive ? { minZoom: 1 } : undefined}
         minZoom={0.1}
-        colorMode="system"
+        colorMode={dark ? "dark" : "light"}
         // The graph can have 1,000+ nodes/edges — without this, React Flow
         // keeps every one of them in the DOM at all times regardless of
         // whether it's on-screen, which is what makes pan/zoom feel laggy.
         onlyRenderVisibleElements
-        onNodeClick={(_, node) => router.push(`/data/entities/${node.id}`)}
+        onNodeClick={(_, node) => {
+          const entity = entities.find((item) => item.id === node.id);
+          if (entity) router.push(publicEntityPath(entity));
+        }}
         panOnDrag={interactive}
         panOnScroll={interactive}
         zoomOnScroll={interactive}

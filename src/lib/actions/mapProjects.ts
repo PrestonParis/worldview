@@ -48,10 +48,14 @@ export async function updateMapProjectAction(
 ): Promise<ActionResult<MapProject>> {
   const userId = await requireUserId();
   if (!userId) return { ok: false, error: "Not signed in." };
+  const parsed = mapProjectSchema.partial().safeParse(patch);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+  }
   try {
-    const project = await mapProjectsDb.updateMapProject(id, userId, patch);
+    // No revalidatePath: the studio is client state, and this runs on every autosave.
+    const project = await mapProjectsDb.updateMapProject(id, userId, parsed.data);
     if (!project) return { ok: false, error: "Graphic not found." };
-    revalidatePath("/geography");
     return { ok: true, data: project };
   } catch (err) {
     return { ok: false, error: (err as Error).message };

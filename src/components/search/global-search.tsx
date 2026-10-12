@@ -7,12 +7,14 @@ import { typeColorFor } from "@/lib/type-colors";
 import type { SearchResponse, SearchResult } from "@/app/api/search/route";
 
 const GROUPS: { key: keyof SearchResponse; label: string }[] = [
+  { key: "pages", label: "Pages & data" },
+  { key: "datasets", label: "Datasets" },
   { key: "entities", label: "People & organizations" },
   { key: "claims", label: "Claims" },
   { key: "sources", label: "Sources" },
 ];
 
-const EMPTY: SearchResponse = { entities: [], claims: [], sources: [] };
+const EMPTY: SearchResponse = { pages: [], datasets: [], entities: [], claims: [], sources: [] };
 
 export function GlobalSearch({
   placeholder = "Search…",
@@ -93,7 +95,17 @@ export function GlobalSearch({
         }`}
       />
       <input
-        type="text"
+        // A bare unnamed text input looks like a username field to Safari's
+        // password autofill; declaring it a search box keeps it out.
+        type="search"
+        name="q"
+        enterKeyHint="search"
+        autoComplete="off"
+        autoCorrect="off"
+        spellCheck={false}
+        aria-label="Search"
+        data-1p-ignore
+        data-lpignore="true"
         autoFocus={autoFocus}
         value={query}
         onChange={(e) => {
@@ -120,7 +132,7 @@ export function GlobalSearch({
           }
         }}
         placeholder={placeholders ? placeholders[placeholderIndex] : placeholder}
-        className={inputClass}
+        className={`${inputClass} appearance-none [&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none`}
       />
 
       {open && query.trim() ? (

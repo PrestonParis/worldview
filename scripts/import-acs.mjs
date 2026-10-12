@@ -14,7 +14,7 @@
 //   node scripts/import-acs.mjs [--year=2024] [--levels=state,county,cd,sldu,sldl,us]
 //   ENV_FILE=.env.cloud node scripts/import-acs.mjs
 
-import { arg, checkCensusKey, fetchJson, num, runImport, upsertRows } from "./lib/bulk.mjs";
+import { arg, checkCensusKey, num, runImport, STATE_FIPS, upsertRows } from "./lib/bulk.mjs";
 import { registerDataset } from "./lib/catalog.mjs";
 
 const YEAR = Number(arg("year", "2024"));
@@ -27,15 +27,20 @@ const GEOS = {
   cd: { for: "congressional district:*", in: "state:*", geoid: (r) => r.state + r["congressional district"] },
   sldu: {
     for: "state legislative district (upper chamber):*",
-    in: "state:*",
+    perState: true,
     geoid: (r) => r.state + r["state legislative district (upper chamber)"],
   },
   sldl: {
     for: "state legislative district (lower chamber):*",
-    in: "state:*",
+    perState: true,
     geoid: (r) => r.state + r["state legislative district (lower chamber)"],
   },
 };
+
+// The API rejects a state wildcard for legislative districts, so those are
+// fetched one state at a time (states without the chamber, like Nebraska's
+// lower house, return no rows).
+const STATES = Object.values(STATE_FIPS).filter((f) => Number(f) <= 56 || f === "72");
 
 // metric -> { vars, value(row) , unit }
 const sum = (r, vars) => vars.reduce((t, v) => t + (num(r[v]) ?? 0), 0);
@@ -81,13 +86,21 @@ await runImport("census-acs5", async (pg) => {
   let total = 0;
   for (const level of LEVELS) {
     const geo = GEOS[level];
-    const url = new URL(`https://api.census.gov/data/${YEAR}/acs/acs5`);
-    url.searchParams.set("get", ["NAME", ...vars].join(","));
-    url.searchParams.set("for", geo.for);
-    if (geo.in) url.searchParams.set("in", geo.in);
-    url.searchParams.set("key", key);
-    const [header, ...data] = await fetchJson(url, {}, { label: `ACS ${level}` });
-    const rows = data.map((d) => Object.fromEntries(header.map((h, i) => [h, d[i]])));
+    const rows = [];
+    for (const state of geo.perState ? STATES : [null]) {
+      const url = new URL(`https://api.census.gov/data/${YEAR}/acs/acs5`);
+      url.searchParams.set("get", ["NAME", ...vars].join(","));
+      url.searchParams.set("for", geo.for);
+      if (state) url.searchParams.set("in", `state:${state}`);
+      else if (geo.in) url.searchParams.set("in", geo.in);
+      url.searchParams.set("key", key);
+      const res = await fetch(url);
+      // 204 = the state has no such chamber.
+      if (state && res.status === 204) continue;
+      if (!res.ok) throw new Error(`ACS ${level}${state ? ` ${state}` : ""} -> ${res.status} ${(await res.text()).slice(0, 200)}`);
+      const [header, ...data] = await res.json();
+      rows.push(...data.map((d) => Object.fromEntries(header.map((h, i) => [h, d[i]]))));
+    }
     const out = [];
     for (const r of rows) {
       for (const [metric, m] of Object.entries(METRICS)) {

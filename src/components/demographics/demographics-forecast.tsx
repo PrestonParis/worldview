@@ -1,423 +1,72 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { ArrowUpRight, CalendarRange, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, ChevronLeft, ChevronRight, Info, MapPin, X } from "lucide-react";
 import {
   demographicSeries,
   getDemographicSeries,
+  nationalPopulation,
   type DemographicDimensionId,
   type DemographicPoint,
   type DemographicSeries,
+  type GeoLevel,
 } from "@/lib/demographics/forecast";
 import {
+  GEO_LABEL,
+  STATUS_LABEL,
+  publishedYears,
+  rangeExplanation,
+  yearProvenance,
+} from "@/lib/demographics/provenance";
+import {
+  packedRange,
   packedValue,
+  regionCount,
   unpackSeries,
   type RegionFile,
   type RegionRecord,
 } from "@/lib/demographics/regional";
-import { DemographicsMap, valueExtent, type MapArea, type MapCity } from "./demographics-map";
+import { CompositionRail } from "./composition-rail";
+import { DemographicsMap, NEGATIVE_COLOR, divergingExtent, valueExtent, type MapArea, type MapCity } from "./demographics-map";
+import { formatPeople, formatPoints } from "./format";
+import { RegionTable, type TableRow } from "./region-table";
+import { InfoTip, StatusBadge } from "./status-badge";
+import { TrendChart } from "./trend-chart";
 
-const CHART_WIDTH = 960;
-const CHART_HEIGHT = 350;
-const MARGIN = { top: 24, right: 12, bottom: 34, left: 42 };
-const PLOT_WIDTH = CHART_WIDTH - MARGIN.left - MARGIN.right;
-const PLOT_HEIGHT = CHART_HEIGHT - MARGIN.top - MARGIN.bottom;
+type MapMode = "share" | "change" | "people";
 
-function xFor(year: number, start: number, end: number): number {
-  return MARGIN.left + ((year - start) / Math.max(1, end - start)) * PLOT_WIDTH;
-}
+const DEFAULT_YEAR = 2025;
+const END_YEAR = 2050;
 
-function yFor(percent: number, maximum: number): number {
-  return MARGIN.top + ((maximum - percent) / maximum) * PLOT_HEIGHT;
-}
+// Which group the map shows first: the one whose geography varies most.
+const DEFAULT_FOCUS: Record<DemographicDimensionId, string> = {
+  age: "age65plus",
+  sex: "female",
+  race: "hispanic",
+  religion: "unaffiliated",
+  orientation: "bisexual",
+};
 
-type Pick = (point: DemographicPoint) => number;
+const MEASURE_LABEL = { census: "Census population estimates", survey: "Survey estimates" } as const;
 
-function pathThrough(
-  points: DemographicPoint[],
-  pick: Pick,
-  maximum: number,
-  visibleStart: number,
-  visibleEnd: number,
-): string {
-  return points
-    .map((point, index) => {
-      const x = xFor(point.year, visibleStart, visibleEnd);
-      const y = yFor(pick(point), maximum);
-      return `${index === 0 ? "M" : "L"} ${x} ${y}`;
-    })
-    .join(" ");
-}
+const isDimension = (value: string | null): value is DemographicDimensionId =>
+  demographicSeries.some((series) => series.id === value);
+const isMode = (value: string | null): value is MapMode =>
+  value === "share" || value === "change" || value === "people";
 
-// Closed polygon: along the high bound, back along the low bound.
-function bandPath(
-  points: DemographicPoint[],
-  low: Pick,
-  high: Pick,
-  maximum: number,
-  visibleStart: number,
-  visibleEnd: number,
-): string {
-  const top = points.map((point) => `${xFor(point.year, visibleStart, visibleEnd)} ${yFor(high(point), maximum)}`);
-  const bottom = [...points]
-    .reverse()
-    .map((point) => `${xFor(point.year, visibleStart, visibleEnd)} ${yFor(low(point), maximum)}`);
-  return `M ${top.join(" L ")} L ${bottom.join(" L ")} Z`;
-}
-
-function yMaximum(series: DemographicSeries): number {
-  const maximum = Math.max(
-    ...series.points.flatMap((point) =>
-      series.categories.map((category) => point.high?.[category.id] ?? point.values[category.id] ?? 0),
-    ),
-  );
-  return Math.min(100, Math.max(10, Math.ceil(maximum / 10) * 10));
-}
-
-function yearTicks(start: number, end: number): number[] {
-  const span = end - start;
-  const step = span <= 12 ? 2 : span <= 30 ? 5 : span <= 60 ? 10 : 50;
-  const ticks = [start];
-  // Skip round years that would crowd the labelled first and last years.
-  for (let year = Math.ceil(start / step) * step; year < end; year += step) {
-    if (year - start >= step * 0.6 && end - year >= step * 0.6) ticks.push(year);
+// Patch the query string without a navigation; Next keeps useSearchParams
+// in sync with the native history API.
+function writeParams(patch: Record<string, string | null>, push = false) {
+  const params = new URLSearchParams(window.location.search);
+  for (const [key, value] of Object.entries(patch)) {
+    if (value === null) params.delete(key);
+    else params.set(key, value);
   }
-  ticks.push(end);
-  return [...new Set(ticks)];
-}
-
-const isProjected = (series: DemographicSeries, point: DemographicPoint) =>
-  point.year > series.observedThrough && point.low !== undefined && point.high !== undefined;
-
-function LineChart({
-  series,
-  selectedYear,
-  visibleStart,
-  visibleEnd,
-  onPan,
-}: {
-  series: DemographicSeries;
-  selectedYear: number;
-  visibleStart: number;
-  visibleEnd: number;
-  onPan: (start: number) => void;
-}) {
-  const ticks = yearTicks(visibleStart, visibleEnd);
-  const forecastStart = Math.max(visibleStart, series.observedThrough);
-  const forecastX = xFor(forecastStart, visibleStart, visibleEnd);
-  const selectedX = xFor(selectedYear, visibleStart, visibleEnd);
-  const maximum = yMaximum(series);
-  const yTicks = Array.from({ length: 5 }, (_, index) => (maximum / 4) * index);
-  const visiblePoints = series.points.filter(
-    (point) => point.year >= visibleStart && point.year <= visibleEnd,
-  );
-  const observedPoints = visiblePoints.filter((point) => point.year <= series.observedThrough);
-  const forecastPoints = visiblePoints.filter(
-    (point) => point.year >= series.observedThrough && point.low && point.high,
-  );
-  const selectedPoint = series.points.find((point) => point.year === selectedYear) ?? series.points[0];
-  const selectedProjected = isProjected(series, selectedPoint);
-  const drag = useRef<{ pointerId: number; clientX: number; start: number } | null>(null);
-  const [dragging, setDragging] = useState(false);
-
-  const beginDrag = (event: ReactPointerEvent<SVGSVGElement>) => {
-    event.currentTarget.setPointerCapture(event.pointerId);
-    drag.current = { pointerId: event.pointerId, clientX: event.clientX, start: visibleStart };
-    setDragging(true);
-  };
-
-  const continueDrag = (event: ReactPointerEvent<SVGSVGElement>) => {
-    if (!drag.current || drag.current.pointerId !== event.pointerId) return;
-    const pixelWidth = event.currentTarget.getBoundingClientRect().width * (PLOT_WIDTH / CHART_WIDTH);
-    const delta = Math.round(
-      ((drag.current.clientX - event.clientX) / pixelWidth) * (visibleEnd - visibleStart),
-    );
-    onPan(drag.current.start + delta);
-  };
-
-  const endDrag = (event: ReactPointerEvent<SVGSVGElement>) => {
-    if (drag.current?.pointerId === event.pointerId) drag.current = null;
-    setDragging(false);
-  };
-
-  return (
-    <svg
-      viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`}
-      role="img"
-      aria-label={`${series.label} percentage lines from ${visibleStart} to ${visibleEnd}, with projection ranges after ${series.observedThrough}`}
-      className={`block h-auto w-full select-none ${dragging ? "cursor-grabbing" : "cursor-grab"}`}
-      style={{ touchAction: "pan-y" }}
-      onPointerDown={beginDrag}
-      onPointerMove={continueDrag}
-      onPointerUp={endDrag}
-      onPointerCancel={endDrag}
-    >
-      {visibleEnd > series.observedThrough ? (
-        <rect
-          x={forecastX}
-          y={MARGIN.top}
-          width={CHART_WIDTH - MARGIN.right - forecastX}
-          height={PLOT_HEIGHT}
-          fill="#64748b"
-          opacity="0.07"
-        />
-      ) : null}
-
-      {yTicks.map((value) => (
-        <g key={value}>
-          <line
-            x1={MARGIN.left}
-            x2={CHART_WIDTH - MARGIN.right}
-            y1={yFor(value, maximum)}
-            y2={yFor(value, maximum)}
-            stroke="#64748b"
-            strokeOpacity="0.22"
-            strokeWidth="1"
-          />
-          <text
-            x={MARGIN.left - 9}
-            y={yFor(value, maximum) + 4}
-            textAnchor="end"
-            fill="#94a3b8"
-            fontSize="11"
-          >
-            {Number.isInteger(value) ? value : value.toFixed(1)}%
-          </text>
-        </g>
-      ))}
-
-      {/* Bands first so every line sits above every wash. */}
-      {forecastPoints.length > 1
-        ? series.categories.map((category) => (
-            <path
-              key={`band-${category.id}`}
-              d={bandPath(
-                forecastPoints,
-                (point) => point.low?.[category.id] ?? 0,
-                (point) => point.high?.[category.id] ?? 0,
-                maximum,
-                visibleStart,
-                visibleEnd,
-              )}
-              fill={category.color}
-              fillOpacity="0.14"
-              stroke="none"
-            />
-          ))
-        : null}
-
-      {series.categories.map((category) => (
-        <g key={category.id}>
-          {observedPoints.length > 1 ? (
-            <path
-              d={pathThrough(observedPoints, (point) => point.values[category.id] ?? 0, maximum, visibleStart, visibleEnd)}
-              fill="none"
-              stroke={category.color}
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          ) : null}
-          {forecastPoints.length > 1
-            ? (["low", "high"] as const).map((bound) => (
-                <path
-                  key={bound}
-                  d={pathThrough(
-                    forecastPoints,
-                    (point) => point[bound]?.[category.id] ?? 0,
-                    maximum,
-                    visibleStart,
-                    visibleEnd,
-                  )}
-                  fill="none"
-                  stroke={category.color}
-                  strokeWidth="2"
-                  strokeDasharray="7 6"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              ))
-            : null}
-        </g>
-      ))}
-
-      {series.observedThrough > visibleStart && series.observedThrough < visibleEnd ? (
-        <g>
-          <line
-            x1={forecastX}
-            x2={forecastX}
-            y1={MARGIN.top}
-            y2={CHART_HEIGHT - MARGIN.bottom}
-            stroke="#cbd5e1"
-            strokeOpacity="0.8"
-            strokeWidth="1"
-            strokeDasharray="4 5"
-          />
-          <text
-            x={Math.min(forecastX + 8, CHART_WIDTH - 74)}
-            y={MARGIN.top + 15}
-            fill="#94a3b8"
-            fontSize="10"
-            fontWeight="700"
-            letterSpacing="1.3"
-          >
-            FORECAST
-          </text>
-        </g>
-      ) : null}
-
-      {selectedYear >= visibleStart && selectedYear <= visibleEnd ? (
-        <g>
-          <line
-            x1={selectedX}
-            x2={selectedX}
-            y1={MARGIN.top}
-            y2={CHART_HEIGHT - MARGIN.bottom}
-            stroke="#94a3b8"
-            strokeOpacity="0.9"
-            strokeWidth="1.5"
-          />
-          {series.categories.flatMap((category) =>
-            (selectedProjected
-              ? [selectedPoint.low?.[category.id] ?? 0, selectedPoint.high?.[category.id] ?? 0]
-              : [selectedPoint.values[category.id] ?? 0]
-            ).map((value, index) => (
-              <circle
-                key={`${category.id}-${index}`}
-                cx={selectedX}
-                cy={yFor(value, maximum)}
-                r="4"
-                fill={category.color}
-                stroke="#0f172a"
-                strokeWidth="1.5"
-              />
-            )),
-          )}
-        </g>
-      ) : null}
-
-      {ticks.map((year) => (
-        <text
-          key={year}
-          x={xFor(year, visibleStart, visibleEnd)}
-          y={CHART_HEIGHT - 10}
-          textAnchor={year === ticks[0] ? "start" : year === ticks.at(-1) ? "end" : "middle"}
-          fill="#94a3b8"
-          fontSize="11"
-        >
-          {year}
-        </text>
-      ))}
-    </svg>
-  );
-}
-
-function CompositionRail({
-  series,
-  point,
-  focus,
-  onFocus,
-}: {
-  series: DemographicSeries;
-  point: DemographicPoint;
-  focus: string;
-  onFocus: (category: string) => void;
-}) {
-  const baseline = series.points[0];
-  const projected = isProjected(series, point);
-
-  return (
-    <aside className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-950">
-      <div className="flex items-end justify-between border-b border-slate-200 pb-4 dark:border-slate-800">
-        <div>
-          <p className="text-[10px] font-semibold tracking-[0.16em] text-slate-400 uppercase">Composition</p>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            {projected ? `${point.year} projected range` : `${point.year} estimate`}
-          </p>
-        </div>
-        <p className="font-mono text-3xl font-semibold tracking-tight tabular-nums text-slate-950 dark:text-white">
-          {point.year}
-        </p>
-      </div>
-
-      <div className="mt-2 divide-y divide-slate-100 dark:divide-slate-900">
-        {series.categories.map((category) => {
-          const value = point.values[category.id] ?? 0;
-          const low = point.low?.[category.id] ?? value;
-          const high = point.high?.[category.id] ?? value;
-          const change = value - (baseline.values[category.id] ?? 0);
-          const active = category.id === focus;
-          return (
-            <button
-              key={category.id}
-              type="button"
-              onClick={() => onFocus(category.id)}
-              aria-pressed={active}
-              className={`-mx-2 block w-[calc(100%+1rem)] rounded-lg px-2 py-3 text-left transition-colors ${
-                active ? "bg-slate-100 dark:bg-slate-900" : "hover:bg-slate-50 dark:hover:bg-slate-900/60"
-              }`}
-            >
-              <div className="flex items-start gap-2.5">
-                <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: category.color }} />
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-baseline justify-between gap-3">
-                    <span className="inline-flex items-center gap-1 text-xs leading-5 text-slate-600 dark:text-slate-300">
-                      {category.label}
-                      {active ? <MapPin size={11} className="shrink-0 text-slate-400" aria-label="Shown on map" /> : null}
-                    </span>
-                    <span className="shrink-0 font-mono text-sm font-semibold tabular-nums text-slate-950 dark:text-white">
-                      {projected ? `${low.toFixed(1)}–${high.toFixed(1)}%` : `${value.toFixed(1)}%`}
-                    </span>
-                  </div>
-                  <div className="mt-2 flex items-center gap-2">
-                    <div className="relative h-1 flex-1 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-900">
-                      {projected ? (
-                        <>
-                          <div
-                            className="absolute inset-y-0 left-0 rounded-full opacity-30"
-                            style={{ width: `${low}%`, backgroundColor: category.color }}
-                          />
-                          <div
-                            className="absolute inset-y-0 rounded-full"
-                            style={{
-                              left: `${low}%`,
-                              width: `max(4px, ${high - low}%)`,
-                              backgroundColor: category.color,
-                            }}
-                          />
-                        </>
-                      ) : (
-                        <div
-                          className="h-full rounded-full"
-                          style={{ width: `${Math.max(1, value)}%`, backgroundColor: category.color }}
-                        />
-                      )}
-                    </div>
-                    <span
-                      className={`w-12 text-right font-mono text-[10px] tabular-nums ${
-                        change > 0.045
-                          ? "text-emerald-600 dark:text-emerald-400"
-                          : change < -0.045
-                            ? "text-rose-600 dark:text-rose-400"
-                            : "text-slate-400"
-                      }`}
-                    >
-                      {Math.abs(change) < 0.045 ? "—" : `${change > 0 ? "+" : ""}${change.toFixed(1)}`}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </button>
-          );
-        })}
-      </div>
-      <p className="mt-2 text-[10px] text-slate-400">
-        Change in percentage points from {baseline.year}
-        {projected ? " (midpoint of range)" : ""} · select a group to map it
-      </p>
-    </aside>
-  );
+  const query = params.toString();
+  const url = query ? `?${query}` : window.location.pathname;
+  if (push) window.history.pushState(null, "", url);
+  else window.history.replaceState(null, "", url);
 }
 
 interface ViewRange {
@@ -445,25 +94,18 @@ function fitRange(range: ViewRange, series: DemographicSeries): ViewRange {
   return { start, end: start + span };
 }
 
-function initialViewRanges(): Record<DemographicDimensionId, ViewRange> {
+function initialViewRanges(year: number): Record<DemographicDimensionId, ViewRange> {
   return Object.fromEntries(
-    demographicSeries.map((item) => [item.id, rangeAround(item, 2026, 25)]),
+    demographicSeries.map((item) => [item.id, rangeAround(item, year, 25)]),
   ) as Record<DemographicDimensionId, ViewRange>;
 }
 
-// Which group the map shows first: the one whose geography varies most.
-const DEFAULT_FOCUS: Record<DemographicDimensionId, string> = {
-  sex: "female",
-  race: "hispanic",
-  orientation: "bisexual",
-  religion: "unaffiliated",
-};
-
-function formatPopulation(value: number): string {
-  if (value >= 1e6) return `${(value / 1e6).toFixed(1)}M`;
-  if (value >= 1e3) return `${Math.round(value / 1e3)}K`;
-  return String(value);
+// Changes are measured from the first annual figure since 2000.
+function changeBaseline(series: DemographicSeries): DemographicPoint | null {
+  return series.points.find((point) => point.year >= 2000) ?? null;
 }
+
+const pointAt = (series: DemographicSeries, year: number) => series.points.find((point) => point.year === year);
 
 function regionSeries(
   region: RegionRecord,
@@ -474,8 +116,18 @@ function regionSeries(
   const meta = file.dimensions[dimension];
   if (!packed || !meta) return null;
   const national = getDemographicSeries(dimension);
-  const who = national.population.includes("adults") ? "Adults" : "Residents";
+  const who = national.universe === "adults" ? "Adults" : "Residents";
   return unpackSeries(packed, national, meta, `${who} of ${region.name}`);
+}
+
+function cityNotice(series: DemographicSeries, cityName: string | null, stateName: string): string {
+  const label = series.label.toLowerCase();
+  if (!series.geographies.includes("city")) {
+    return `City-level ${label} estimates aren't available. Showing ${stateName} instead.`;
+  }
+  return cityName
+    ? `${series.label} figures aren't published for ${cityName}. Showing ${stateName} instead.`
+    : `That city isn't in the data. Showing ${stateName} instead.`;
 }
 
 async function loadRegions(url: string): Promise<RegionFile | null> {
@@ -492,6 +144,28 @@ export function DemographicsForecast() {
   const requestedState = searchParams.get("state");
   const requestedCity = searchParams.get("city");
 
+  // View settings start from the URL and are written back to it, so any
+  // view can be shared.
+  const [dimension, setDimension] = useState<DemographicDimensionId>(() => {
+    const value = searchParams.get("dim");
+    return isDimension(value) ? value : "race";
+  });
+  const [groups, setGroups] = useState<Partial<Record<DemographicDimensionId, string>>>(() => {
+    const value = searchParams.get("group");
+    // Race is the default dimension, so its links carry no dim param.
+    const dim = searchParams.get("dim") ?? "race";
+    return value && isDimension(dim) ? { [dim]: value } : {};
+  });
+  const [year, setYear] = useState(() => Number(searchParams.get("year")) || DEFAULT_YEAR);
+  const [mode, setMode] = useState<MapMode>(() => {
+    const value = searchParams.get("mode");
+    return isMode(value) ? value : "share";
+  });
+  const [viewRanges, setViewRanges] = useState<Record<DemographicDimensionId, ViewRange>>(() =>
+    initialViewRanges(Number(searchParams.get("year")) || DEFAULT_YEAR),
+  );
+  const [notice, setNotice] = useState<string | null>(null);
+
   const [statesFile, setStatesFile] = useState<RegionFile | null>(null);
   const [cityFiles, setCityFiles] = useState<Record<string, RegionFile | null>>({});
 
@@ -506,149 +180,262 @@ export function DemographicsForecast() {
     );
   }, [requestedState, cityFiles]);
 
+  const national = getDemographicSeries(dimension);
+  const citySupported = national.geographies.includes("city");
+
+  // Geography is never finer than the active dimension supports: a city is
+  // only in view when this dimension is published for it.
   const state = statesFile?.regions.find((region) => region.id === requestedState) ?? null;
   const cityFile = state ? cityFiles[state.id] ?? null : null;
-  const city = cityFile?.regions.find((region) => region.id === requestedCity) ?? null;
-  const region = city ?? state;
-  const regionFile = city ? cityFile : statesFile;
+  const cityCandidate = cityFile?.regions.find((region) => region.id === requestedCity) ?? null;
+  const city = citySupported && cityCandidate?.series[dimension] ? cityCandidate : null;
 
-  const [dimension, setDimension] = useState<DemographicDimensionId>("race");
-  const available = (id: DemographicDimensionId) => !region || Boolean(region.series[id]);
-  const activeDimension = available(dimension) ? dimension : "race";
+  const stateSeries = state && statesFile ? regionSeries(state, statesFile, dimension) : null;
+  const citySeries = city && cityFile ? regionSeries(city, cityFile, dimension) : null;
+  const series = citySeries ?? stateSeries ?? national;
+  const level: GeoLevel = citySeries ? "city" : stateSeries ? "state" : "national";
+  const region = level === "city" ? city : level === "state" ? state : null;
+  const places = { state: state?.name, city: city?.name };
 
-  const series = useMemo(
-    () =>
-      (region && regionFile && regionSeries(region, regionFile, activeDimension)) ||
-      getDemographicSeries(activeDimension),
-    [region, regionFile, activeDimension],
-  );
+  // A city the URL asks for but the active dimension can't show (a shared
+  // link, say) resolves to its state, with a note saying so.
+  const unresolvedCity = Boolean(requestedCity && state && state.id in cityFiles && !city);
+  const unresolvedState = Boolean(requestedState && statesFile && !state);
+  const shownNotice =
+    notice ??
+    (unresolvedState
+      ? "That state isn't in the data. Showing the United States instead."
+      : unresolvedCity && state
+        ? cityNotice(national, cityCandidate?.name ?? null, state.name)
+        : null);
+  const dismissNotice = () => {
+    setNotice(null);
+    if (unresolvedState) writeParams({ state: null, city: null });
+    else if (unresolvedCity) writeParams({ city: null });
+  };
+
   const [firstYear, lastYear] = seriesBounds(series);
-
-  const [years, setYears] = useState<Record<DemographicDimensionId, number>>({
-    sex: 2026,
-    race: 2026,
-    orientation: 2026,
-    religion: 2026,
-  });
-  const [viewRanges, setViewRanges] = useState<Record<DemographicDimensionId, ViewRange>>(
-    initialViewRanges,
-  );
-  const [focus, setFocus] = useState<Partial<Record<DemographicDimensionId, string>>>({});
-  const selectedYear = Math.min(lastYear, Math.max(firstYear, years[activeDimension]));
-  const viewRange = fitRange(viewRanges[activeDimension], series);
-  const point = useMemo(
-    () => series.points.find((item) => item.year === selectedYear) ?? series.points[0],
-    [selectedYear, series],
-  );
+  const selectedYear = Math.min(lastYear, Math.max(firstYear, year));
+  const viewRange = fitRange(viewRanges[dimension], series);
+  const point = pointAt(series, selectedYear) ?? series.points[0];
   const focusCategory =
-    series.categories.find((category) => category.id === (focus[activeDimension] ?? DEFAULT_FOCUS[activeDimension])) ??
+    series.categories.find((category) => category.id === (groups[dimension] ?? DEFAULT_FOCUS[dimension])) ??
     series.categories[0];
+  const focus = focusCategory.id;
+  const universe = national.universe;
+  const provenance = yearProvenance(series, level, selectedYear, places);
+  const pastProvenance = yearProvenance(series, level, series.observedThrough, places);
+  const futureProvenance = yearProvenance(series, level, series.observedThrough + 1, places);
+  const published = publishedYears(series, level);
 
-  const navigate = useCallback((next: { state: string | null; city: string | null }) => {
-    const params = new URLSearchParams();
-    if (next.state) params.set("state", next.state);
-    if (next.state && next.city) params.set("city", next.city);
-    const query = params.toString();
-    window.history.pushState(null, "", query ? `?${query}` : window.location.pathname);
-  }, []);
-  const selectState = useCallback((id: string) => navigate({ state: id, city: null }), [navigate]);
-  const selectCity = useCallback(
-    (id: string) => navigate({ state: id.slice(0, 2), city: id }),
-    [navigate],
-  );
+  // Settings -> URL, debounced so dragging the year doesn't flood history.
+  useEffect(() => {
+    const timer = window.setTimeout(
+      () =>
+        writeParams({
+          dim: dimension === "race" ? null : dimension,
+          group: groups[dimension] ?? null,
+          year: year === DEFAULT_YEAR ? null : String(year),
+          mode: mode === "share" ? null : mode,
+        }),
+      250,
+    );
+    return () => window.clearTimeout(timer);
+  }, [dimension, groups, year, mode]);
+
+  const navigate = (next: { state: string | null; city: string | null }) => {
+    setNotice(null);
+    writeParams({ state: next.state, city: next.state ? next.city : null }, true);
+  };
+  const selectState = (id: string) => navigate({ state: id, city: null });
+  const selectCity = (id: string) => navigate({ state: id.slice(0, 2), city: id });
+  const goNational = () => navigate({ state: null, city: null });
+  // One level up: city -> its state -> the nation.
+  const goUp = () => {
+    if (city && state) navigate({ state: state.id, city: null });
+    else navigate({ state: null, city: null });
+  };
+
+  // Esc goes one level up, like goUp.
+  const shownCityId = city?.id ?? null;
+  useEffect(() => {
+    if (!requestedState) return;
+    const onKey = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (event.key !== "Escape" || target?.closest("input, select, textarea")) return;
+      setNotice(null);
+      writeParams(shownCityId ? { city: null } : { state: null, city: null }, true);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [requestedState, shownCityId]);
+
+  // Geography is resolved here, not the dimension: a city the new dimension
+  // isn't published for gives way to its state.
+  const chooseDimension = (id: DemographicDimensionId) => {
+    setNotice(null);
+    setDimension(id);
+    if (!requestedCity || !state) return;
+    const target = getDemographicSeries(id);
+    const keeps = target.geographies.includes("city") && Boolean(cityCandidate?.series[id]);
+    if (city && keeps) return;
+    writeParams({ city: null });
+    if (city) setNotice(cityNotice(target, city.name, state.name));
+  };
 
   const moveView = (nextStart: number) => {
     const span = viewRange.end - viewRange.start;
     const start = Math.min(lastYear - span, Math.max(firstYear, nextStart));
     const end = start + span;
-    setViewRanges((current) => ({ ...current, [activeDimension]: { start, end } }));
-    if (selectedYear < start || selectedYear > end) {
-      setYears((current) => ({
-        ...current,
-        [activeDimension]: Math.min(end, Math.max(start, selectedYear)),
-      }));
-    }
+    setViewRanges((current) => ({ ...current, [dimension]: { start, end } }));
+    if (selectedYear < start || selectedYear > end) setYear(Math.min(end, Math.max(start, selectedYear)));
   };
 
   const setViewSpan = (span: number | "all") => {
     const next = span === "all" ? { start: firstYear, end: lastYear } : rangeAround(series, selectedYear, span);
-    setViewRanges((current) => ({ ...current, [activeDimension]: next }));
+    setViewRanges((current) => ({ ...current, [dimension]: next }));
   };
 
-  const selectYear = (year: number) => {
-    setYears((current) => ({ ...current, [activeDimension]: year }));
-    if (year < viewRange.start || year > viewRange.end) {
+  const selectYear = (next: number) => {
+    const clamped = Math.min(lastYear, Math.max(firstYear, next));
+    setYear(clamped);
+    if (clamped < viewRange.start || clamped > viewRange.end) {
       const span = viewRange.end - viewRange.start;
-      setViewRanges((current) => ({ ...current, [activeDimension]: rangeAround(series, year, span) }));
+      setViewRanges((current) => ({ ...current, [dimension]: rangeAround(series, clamped, span) }));
     }
   };
 
-  const mapStates = useMemo<MapArea[]>(
-    () =>
-      (statesFile?.regions ?? []).map((item) => ({
-        id: item.id,
-        name: item.name,
-        value: packedValue(item.series[activeDimension], focusCategory.id, selectedYear),
-      })),
-    [statesFile, activeDimension, focusCategory.id, selectedYear],
-  );
-  const mapCities = useMemo<MapCity[]>(
-    () =>
-      (cityFile?.regions ?? []).map((item) => ({
+  // ---- map and table values -------------------------------------------
+
+  // Cities carry the map inside a state only for city-level dimensions.
+  const showCities = Boolean(state) && citySupported;
+  const mapFile = showCities ? cityFile : statesFile;
+  const mapBaseline = mapFile?.regions.find((item) => item.series[dimension])?.series[dimension]?.start ?? null;
+
+  const shareOf = (record: RegionRecord) => packedValue(record.series[dimension], focus, selectedYear);
+  const changeOf = (record: RegionRecord) => {
+    const packed = record.series[dimension];
+    const now = packedValue(packed, focus, selectedYear);
+    const then = packed ? packedValue(packed, focus, packed.start) : null;
+    return now === null || then === null || !packed || selectedYear < packed.start ? null : now - then;
+  };
+  const peopleOf = (record: RegionRecord) => {
+    const share = packedValue(record.series[dimension], focus, selectedYear);
+    const count = regionCount(record, universe, selectedYear);
+    return share === null || count === null ? null : (share / 100) * count;
+  };
+  const mapValue = mode === "share" ? shareOf : mode === "change" ? changeOf : peopleOf;
+
+  const mapStates: MapArea[] = (statesFile?.regions ?? []).map((item) => ({
+    id: item.id,
+    name: item.name,
+    value: mapValue(item),
+  }));
+  const mapCities: MapCity[] = showCities
+    ? (cityFile?.regions ?? []).map((item) => ({
         id: item.id,
         name: item.name,
         lat: item.lat ?? 0,
         lon: item.lon ?? 0,
         population: item.population,
-        value: packedValue(item.series[activeDimension], focusCategory.id, selectedYear),
-      })),
-    [cityFile, activeDimension, focusCategory.id, selectedYear],
-  );
-  const legendAreas = state ? mapCities : mapStates;
-  const [legendMin, legendMax] = valueExtent(legendAreas.map((area) => area.value));
-  const legendHasData = legendAreas.some((area) => area.value !== null);
-  const formatValue = useCallback(
-    (value: number | null) => (value === null ? "no data" : `${focusCategory.label} ${value.toFixed(1)}%`),
-    [focusCategory.label],
-  );
+        value: mapValue(item),
+      }))
+    : [];
+  const legendAreas = showCities ? mapCities : mapStates;
+  const legendValues = legendAreas.map((area) => area.value);
+  const legendHasData = legendValues.some((value) => value !== null);
+  const formatValue = (value: number | null) => {
+    if (value === null) return "no data";
+    if (mode === "change") return `${focusCategory.label} ${formatPoints(value)} since ${mapBaseline}`;
+    if (mode === "people") return `${focusCategory.label} ≈${formatPeople(value)}`;
+    return `${focusCategory.label} ${value.toFixed(1)}%`;
+  };
+
+  const tableRows: TableRow[] = (mapFile?.regions ?? []).map((item) => ({
+    id: item.id,
+    name: item.name,
+    share: shareOf(item),
+    people: peopleOf(item),
+    change: changeOf(item),
+    end: packedRange(item.series[dimension], focus, END_YEAR),
+    selectable: Boolean(item.series[dimension]),
+  }));
+
+  // The row the table is measured against: the U.S. for states, the state
+  // for its cities.
+  const referenceRow = ((): TableRow | null => {
+    const parent = showCities ? stateSeries : national;
+    if (!parent) return null;
+    const now = pointAt(parent, selectedYear);
+    const then = mapBaseline !== null ? pointAt(parent, mapBaseline) : undefined;
+    const end = pointAt(parent, END_YEAR);
+    const share = now?.values[focus] ?? null;
+    const count = showCities
+      ? state ? regionCount(state, universe, selectedYear) : null
+      : nationalPopulation(universe, selectedYear);
+    return {
+      id: "reference",
+      name: showCities ? `All of ${state?.name}` : "United States",
+      share,
+      people: share !== null && count !== null ? (share / 100) * count : null,
+      change: share !== null && then && selectedYear >= then.year ? share - (then.values[focus] ?? 0) : null,
+      end: end?.low && end.high ? [end.low[focus], end.high[focus]] : null,
+      selectable: false,
+    };
+  })();
+
+  // ---- comparison with the parent geography ----------------------------
+
+  const parent = level === "city" ? stateSeries : level === "state" ? national : null;
+  const parentLabel = level === "city" ? state?.abbr ?? "State" : "U.S.";
+  const population =
+    level === "national"
+      ? nationalPopulation(universe, selectedYear)
+      : region
+        ? regionCount(region, universe, selectedYear)
+        : null;
 
   const placeName = city ? `${city.name}, ${state?.abbr}` : state?.name ?? "United States";
-  const loadingRegion = (requestedState && !state && !statesFile) || (requestedCity && !city && !cityFile);
+  const loadingRegion = (requestedState && !statesFile) || (requestedCity && state && !(state.id in cityFiles));
 
   return (
     <div className="space-y-5">
-      <section className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-2.5 shadow-sm dark:border-slate-800 dark:bg-slate-950">
-        <div className="flex min-w-0 flex-wrap gap-1">
-          {demographicSeries.map((item) => {
-            const enabled = available(item.id);
-            return (
-              <button
-                key={item.id}
-                type="button"
-                disabled={!enabled}
-                title={enabled ? undefined : "Not published at the city level"}
-                onClick={() => setDimension(item.id)}
-                className={`rounded-xl px-4 py-2.5 text-sm font-medium transition-all disabled:cursor-not-allowed disabled:opacity-40 ${
-                  activeDimension === item.id
-                    ? "bg-slate-950 text-white shadow-sm dark:bg-white dark:text-slate-950"
-                    : "text-slate-500 hover:bg-slate-100 hover:text-slate-900 disabled:hover:bg-transparent dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-slate-100"
-                }`}
-              >
-                {item.label}
-              </button>
-            );
-          })}
-        </div>
+      <section className="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-950">
+        <div className="flex flex-wrap items-center justify-between gap-4 p-2.5">
+          <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2">
+            {(["census", "survey"] as const).map((measure) => (
+              <div key={measure} role="group" aria-label={MEASURE_LABEL[measure]} className="flex items-center gap-1">
+                <span className="hidden pr-1 pl-2 text-[9px] font-semibold tracking-[0.14em] text-slate-400 uppercase lg:inline">
+                  {measure === "census" ? "Census" : "Surveys"}
+                </span>
+                {demographicSeries
+                  .filter((item) => item.measure === measure)
+                  .map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => chooseDimension(item.id)}
+                      aria-pressed={dimension === item.id}
+                      className={`rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all ${
+                        dimension === item.id
+                          ? "bg-slate-950 text-white shadow-sm dark:bg-white dark:text-slate-950"
+                          : "text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-slate-100"
+                      }`}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                {measure === "census" ? (
+                  <span className="ml-2 hidden h-6 w-px bg-slate-200 sm:block dark:bg-slate-800" aria-hidden="true" />
+                ) : null}
+              </div>
+            ))}
+          </div>
 
-        <div className="flex items-center gap-4 px-2 text-xs text-slate-500 dark:text-slate-400">
-          <nav aria-label="Geography" className="flex items-center gap-1.5">
+          <nav aria-label="Geography" className="flex items-center gap-1.5 px-2 text-xs text-slate-500 dark:text-slate-400">
             <MapPin size={14} className="shrink-0" />
             {state ? (
-              <button
-                type="button"
-                onClick={() => navigate({ state: null, city: null })}
-                className="hover:text-slate-950 hover:underline dark:hover:text-white"
-              >
+              <button type="button" onClick={goNational} className="hover:text-slate-950 hover:underline dark:hover:text-white">
                 United States
               </button>
             ) : (
@@ -677,61 +464,195 @@ export function DemographicsForecast() {
               </>
             ) : null}
           </nav>
-          <span className="hidden items-center gap-1.5 sm:inline-flex"><CalendarRange size={14} /> Through 2050</span>
+        </div>
+
+        <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-2 border-t border-slate-200 px-5 py-3 dark:border-slate-800">
+          <p className="max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-300">{national.definition}</p>
+          <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
+            <span
+              className={`rounded-full px-2 py-0.5 font-medium ring-1 ring-inset ${
+                national.measure === "census"
+                  ? "bg-emerald-50 text-emerald-700 ring-emerald-600/20 dark:bg-emerald-500/10 dark:text-emerald-300 dark:ring-emerald-400/20"
+                  : "bg-amber-50 text-amber-800 ring-amber-600/25 dark:bg-amber-500/10 dark:text-amber-300 dark:ring-amber-400/25"
+              }`}
+            >
+              {MEASURE_LABEL[national.measure]}
+            </span>
+            <span className="rounded-full bg-slate-100 px-2 py-0.5 font-medium text-slate-600 dark:bg-slate-900 dark:text-slate-300">
+              {universe === "adults" ? "Adults 18+" : "All residents"}
+            </span>
+            <span className="inline-flex items-center gap-1 text-slate-500 dark:text-slate-400">
+              Available for
+              {(["national", "state", "city"] as const).map((geo) => {
+                const has = national.geographies.includes(geo);
+                return (
+                  <span
+                    key={geo}
+                    className={has ? "font-medium text-slate-700 dark:text-slate-200" : "text-slate-300 line-through dark:text-slate-600"}
+                  >
+                    {GEO_LABEL[geo]}
+                  </span>
+                );
+              })}
+            </span>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-slate-200 px-5 py-3 dark:border-slate-800">
+          <span className="text-[10px] font-semibold tracking-[0.14em] text-slate-400 uppercase">Year</span>
+          <div className="flex min-w-60 flex-1 items-center gap-2">
+            <button
+              type="button"
+              onClick={() => selectYear(selectedYear - 1)}
+              disabled={selectedYear <= firstYear}
+              className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-950 disabled:opacity-30 dark:hover:bg-slate-900 dark:hover:text-white"
+              aria-label="Previous year"
+            >
+              <ChevronLeft size={15} />
+            </button>
+            <span className="font-mono text-[10px] text-slate-400 tabular-nums">{firstYear}</span>
+            <label className="relative flex-1">
+              <span className="sr-only">Year</span>
+              <input
+                type="range"
+                min={firstYear}
+                max={lastYear}
+                step={1}
+                value={selectedYear}
+                onChange={(event) => selectYear(Number(event.target.value))}
+                className="h-1.5 w-full cursor-pointer appearance-none rounded-full accent-slate-950 dark:accent-white"
+                style={{
+                  background: `linear-gradient(to right, #cbd5e1 0%, #cbd5e1 ${
+                    ((series.observedThrough - firstYear) / Math.max(1, lastYear - firstYear)) * 100
+                  }%, #a5b4fc ${((series.observedThrough - firstYear) / Math.max(1, lastYear - firstYear)) * 100}%, #a5b4fc 100%)`,
+                }}
+              />
+            </label>
+            <span className="font-mono text-[10px] text-slate-400 tabular-nums">{lastYear}</span>
+            <button
+              type="button"
+              onClick={() => selectYear(selectedYear + 1)}
+              disabled={selectedYear >= lastYear}
+              className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-950 disabled:opacity-30 dark:hover:bg-slate-900 dark:hover:text-white"
+              aria-label="Next year"
+            >
+              <ChevronRight size={15} />
+            </button>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="font-mono text-2xl font-semibold tabular-nums text-slate-950 dark:text-white">{selectedYear}</span>
+            <StatusBadge provenance={provenance} align="right" />
+          </div>
         </div>
       </section>
 
-      <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_310px]">
+      {shownNotice ? (
+        <div
+          role="status"
+          className="flex items-start justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2.5 text-sm text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200"
+        >
+          <span className="inline-flex items-start gap-2">
+            <Info size={15} className="mt-0.5 shrink-0" />
+            {shownNotice}
+          </span>
+          <button type="button" onClick={dismissNotice} aria-label="Dismiss" className="shrink-0 opacity-70 hover:opacity-100">
+            <X size={15} />
+          </button>
+        </div>
+      ) : null}
+
+      <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_320px]">
         <div className="min-w-0 space-y-5">
           <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-950">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-5 py-3 dark:border-slate-800">
-              <div className="min-w-0">
-                <p className="text-sm font-semibold text-slate-950 dark:text-white">
-                  {focusCategory.label} · {selectedYear}
-                </p>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  {state
-                    ? `Cities in ${state.name} with 65,000+ residents — select one to open it`
-                    : "Select a state to open it"}
-                </p>
+              <div className="flex min-w-0 items-center gap-3">
+                {state ? (
+                  <button
+                    type="button"
+                    onClick={goUp}
+                    className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-950 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-900 dark:hover:text-white"
+                  >
+                    <ArrowLeft size={13} />
+                    {city ? state.name : "United States"}
+                  </button>
+                ) : null}
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-slate-950 dark:text-white">
+                    {focusCategory.label} · {selectedYear}
+                  </p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    {!state
+                      ? "Select a state to open it"
+                      : showCities
+                        ? `Cities in ${state.name} with 65,000+ residents · Esc to go back`
+                        : `${national.label} is estimated for states, not cities · Esc to go back`}
+                  </p>
+                </div>
               </div>
               <div className="flex flex-wrap items-center gap-2">
-                <label className="sr-only" htmlFor="demographics-state">State</label>
-                <select
-                  id="demographics-state"
-                  value={state?.id ?? ""}
-                  onChange={(event) =>
-                    event.target.value ? selectState(event.target.value) : navigate({ state: null, city: null })
-                  }
-                  className="rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200"
-                >
-                  <option value="">All states</option>
-                  {[...(statesFile?.regions ?? [])]
-                    .sort((a, b) => a.name.localeCompare(b.name))
-                    .map((item) => (
-                      <option key={item.id} value={item.id}>{item.name}</option>
-                    ))}
-                </select>
-                {state && cityFile ? (
-                  <>
-                    <label className="sr-only" htmlFor="demographics-city">City</label>
-                    <select
-                      id="demographics-city"
-                      value={city?.id ?? ""}
-                      onChange={(event) =>
-                        event.target.value
-                          ? selectCity(event.target.value)
-                          : navigate({ state: state.id, city: null })
-                      }
-                      className="max-w-48 rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200"
+                <div role="group" aria-label="Map by" className="flex items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-slate-900">
+                  {(
+                    [
+                      ["share", "Share"],
+                      ["change", "Change"],
+                      ["people", "People"],
+                    ] as const
+                  ).map(([id, label]) => (
+                    <button
+                      key={id}
+                      type="button"
+                      onClick={() => setMode(id)}
+                      aria-pressed={mode === id}
+                      className={`rounded-md px-2 py-1 text-[11px] font-semibold transition-colors ${
+                        mode === id
+                          ? "bg-white text-slate-950 shadow-sm dark:bg-slate-800 dark:text-white"
+                          : "text-slate-500 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"
+                      }`}
                     >
-                      <option value="">All of {state.name}</option>
-                      {cityFile.regions.map((item) => (
-                        <option key={item.id} value={item.id}>{item.name}</option>
-                      ))}
+                      {label}
+                    </button>
+                  ))}
+                </div>
+                {showCities ? (
+                  cityFile && cityFile.regions.length ? (
+                    <>
+                      <label className="sr-only" htmlFor="demographics-city">City</label>
+                      <select
+                        id="demographics-city"
+                        value={city?.id ?? ""}
+                        onChange={(event) =>
+                          event.target.value ? selectCity(event.target.value) : navigate({ state: state!.id, city: null })
+                        }
+                        className="max-w-56 rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200"
+                      >
+                        <option value="">{city ? `All of ${state?.name}` : "Jump to a city…"}</option>
+                        {cityFile.regions.map((item) => (
+                          <option key={item.id} value={item.id} disabled={!item.series[dimension]}>
+                            {item.name}
+                            {item.series[dimension] ? "" : " (not published)"}
+                          </option>
+                        ))}
+                      </select>
+                    </>
+                  ) : null
+                ) : (
+                  <>
+                    <label className="sr-only" htmlFor="demographics-state">State</label>
+                    <select
+                      id="demographics-state"
+                      value={state?.id ?? ""}
+                      onChange={(event) => (event.target.value ? selectState(event.target.value) : goNational())}
+                      className="rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200"
+                    >
+                      <option value="">{state ? "All states" : "Jump to a state…"}</option>
+                      {[...(statesFile?.regions ?? [])]
+                        .sort((a, b) => a.name.localeCompare(b.name))
+                        .map((item) => (
+                          <option key={item.id} value={item.id}>{item.name}</option>
+                        ))}
                     </select>
                   </>
-                ) : null}
+                )}
               </div>
             </div>
 
@@ -740,60 +661,100 @@ export function DemographicsForecast() {
               cities={mapCities}
               selectedStateId={state?.id ?? null}
               selectedCityId={city?.id ?? null}
+              cityLevel={showCities}
               color={focusCategory.color}
+              scale={mode === "change" ? "diverging" : "sequential"}
               formatValue={formatValue}
               onSelectState={selectState}
               onSelectCity={selectCity}
+              onBack={goUp}
+              onNational={goNational}
             />
 
-            <div className="flex flex-wrap items-center gap-3 px-5 py-3 text-[10px] text-slate-500 dark:text-slate-400">
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 px-5 py-3 text-[10px] text-slate-500 dark:text-slate-400">
               {legendHasData ? (
-                <>
-                  <span className="font-mono tabular-nums">{legendMin.toFixed(1)}%</span>
-                  <span
-                    className="h-2 w-40 rounded-full"
-                    style={{
-                      background: `linear-gradient(to right, color-mix(in srgb, ${focusCategory.color} 12%, white), ${focusCategory.color})`,
-                    }}
-                  />
-                  <span className="font-mono tabular-nums">{legendMax.toFixed(1)}%</span>
-                  <span>{focusCategory.label}, {state ? "by city" : "by state"}</span>
-                </>
+                <span className="inline-flex items-center gap-2">
+                  <span className="font-semibold text-slate-600 dark:text-slate-300">Color</span>
+                  {mode === "change" ? (
+                    <>
+                      <span className="font-mono tabular-nums">−{divergingExtent(legendValues).toFixed(1)} pp</span>
+                      <span
+                        className="h-2 w-40 rounded-full"
+                        style={{
+                          background: `linear-gradient(to right, ${NEGATIVE_COLOR}, color-mix(in srgb, ${NEGATIVE_COLOR} 10%, transparent), color-mix(in srgb, ${focusCategory.color} 10%, transparent), ${focusCategory.color})`,
+                        }}
+                      />
+                      <span className="font-mono tabular-nums">+{divergingExtent(legendValues).toFixed(1)} pp</span>
+                      <span>change in {focusCategory.label} share since {mapBaseline}</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="font-mono tabular-nums">
+                        {mode === "people" ? formatPeople(valueExtent(legendValues)[0]) : `${valueExtent(legendValues)[0].toFixed(1)}%`}
+                      </span>
+                      <span
+                        className="h-2 w-40 rounded-full"
+                        style={{
+                          background: `linear-gradient(to right, color-mix(in srgb, ${focusCategory.color} 12%, transparent), ${focusCategory.color})`,
+                        }}
+                      />
+                      <span className="font-mono tabular-nums">
+                        {mode === "people" ? formatPeople(valueExtent(legendValues)[1]) : `${valueExtent(legendValues)[1].toFixed(1)}%`}
+                      </span>
+                      <span>
+                        {mode === "people" ? `${universe === "adults" ? "adults" : "people"}: ` : ""}
+                        {focusCategory.label}, {showCities ? "by city" : "by state"}
+                      </span>
+                    </>
+                  )}
+                </span>
               ) : (
                 <span>
-                  {state
-                    ? `${series.label} is not published for individual cities`
-                    : `No state figures for ${selectedYear}`}
+                  {mode === "people"
+                    ? `Population counts run through ${showCities ? 2024 : 2025}; head counts aren't projected below the national level.`
+                    : `No ${showCities ? "city" : "state"} figures for ${selectedYear}.`}
                 </span>
               )}
+              {showCities ? (
+                <>
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="font-semibold text-slate-600 dark:text-slate-300">Size</span>
+                    <svg width="34" height="16" aria-hidden="true">
+                      <circle cx="5" cy="10" r="4" fill="none" stroke="currentColor" />
+                      <circle cx="23" cy="8" r="7.5" fill="none" stroke="currentColor" />
+                    </svg>
+                    city population (2024)
+                  </span>
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="h-2.5 w-2.5 rounded-full bg-slate-300" /> not published for this city
+                  </span>
+                  <InfoTip label="Why only cities of 65,000+" align="right">
+                    The Census Bureau&apos;s American Community Survey publishes 1-year estimates only for places with
+                    65,000 or more residents. Smaller places have 5-year estimates only, which aren&apos;t comparable year
+                    to year, so they&apos;re left off.
+                  </InfoTip>
+                </>
+              ) : null}
             </div>
           </section>
 
           <section className="min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-950">
             <div className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-200 px-5 py-4 dark:border-slate-800">
-              <div>
-                <div className="flex items-center gap-2.5">
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2.5">
                   <h2 className="text-lg font-semibold tracking-tight text-slate-950 dark:text-white">
                     {series.label} · {placeName}
                   </h2>
-                  <span
-                    className={`rounded-full px-2 py-1 text-[9px] font-bold tracking-[0.12em] uppercase ${
-                      selectedYear > series.observedThrough
-                        ? "bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-300"
-                        : "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-300"
-                    }`}
-                  >
-                    {selectedYear > series.observedThrough ? "Forecast" : "Observed"}
-                  </span>
+                  <StatusBadge provenance={provenance} />
                 </div>
                 <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                   {series.description} · {series.population}
-                  {region ? ` · ${formatPopulation(region.population)} residents` : ""}
                   {loadingRegion ? " · loading…" : ""}
                 </p>
-                {series.basis ? (
-                  <p className="mt-0.5 text-xs text-slate-400 dark:text-slate-500">{series.basis}</p>
-                ) : null}
+                <p className="mt-0.5 text-xs text-slate-400 dark:text-slate-500">
+                  {STATUS_LABEL[pastProvenance.status]} by {pastProvenance.by} through {series.observedThrough} ·
+                  projected by {futureProvenance.by} to {lastYear}
+                </p>
               </div>
               <p className="font-mono text-2xl font-semibold tabular-nums text-slate-950 dark:text-white">{selectedYear}</p>
             </div>
@@ -819,7 +780,7 @@ export function DemographicsForecast() {
                 >
                   <ChevronRight size={15} />
                 </button>
-                <span className="ml-2 hidden text-[10px] tracking-wide uppercase sm:inline">Drag chart to pan</span>
+                <span className="ml-2 hidden text-[10px] tracking-wide uppercase sm:inline">Click a year · drag to pan</span>
               </div>
 
               <div className="flex items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-slate-900">
@@ -849,49 +810,83 @@ export function DemographicsForecast() {
             </div>
 
             <div className="px-4 pt-1 sm:px-5">
-              <LineChart
+              <TrendChart
                 series={series}
+                focus={focus}
                 selectedYear={selectedYear}
                 visibleStart={viewRange.start}
                 visibleEnd={viewRange.end}
                 onPan={moveView}
+                onSelectYear={selectYear}
+                compare={parent ? { label: parentLabel, points: parent.points } : null}
+                published={published}
+                pastModeled={published !== null && published.length === 0}
               />
             </div>
 
-            <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 px-5 pb-1 text-[10px] text-slate-500 dark:text-slate-400">
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 px-5 pb-4 text-[10px] text-slate-500 dark:text-slate-400">
               <span className="inline-flex items-center gap-1.5">
-                <svg width="22" height="6" aria-hidden="true"><line x1="1" x2="21" y1="3" y2="3" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" /></svg>
-                Observed
+                <svg width="22" height="6" aria-hidden="true">
+                  <line
+                    x1="1" x2="21" y1="3" y2="3" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"
+                    strokeDasharray={published?.length === 0 ? "2 4" : undefined}
+                  />
+                </svg>
+                {published?.length === 0 ? "Modeled by Worldview" : `${STATUS_LABEL[pastProvenance.status]} (${pastProvenance.by})`}
               </span>
+              {published && published.length ? (
+                <span className="inline-flex items-center gap-1.5">
+                  <svg width="8" height="8" aria-hidden="true"><circle cx="4" cy="4" r="3.5" fill="currentColor" /></svg>
+                  Survey year; lines between are interpolated
+                </span>
+              ) : null}
               <span className="inline-flex items-center gap-1.5">
                 <svg width="22" height="12" aria-hidden="true">
                   <rect x="0" y="2" width="22" height="8" fill="currentColor" opacity="0.14" />
                   <line x1="1" x2="21" y1="2" y2="2" stroke="currentColor" strokeWidth="1.5" strokeDasharray="4 3" />
                   <line x1="1" x2="21" y1="10" y2="10" stroke="currentColor" strokeWidth="1.5" strokeDasharray="4 3" />
                 </svg>
-                Highest and lowest projection — {series.rangeNote}
+                Scenario range, not a confidence interval
+                <InfoTip label="What the projection range means">
+                  <span className="block">{rangeExplanation(series, level, places)}</span>
+                  <span className="mt-2 block text-[11px] text-slate-500 dark:text-slate-400">
+                    The band runs from the lowest to the highest scenario. No probability is attached to it, so it is not
+                    a 95% confidence interval.
+                  </span>
+                </InfoTip>
               </span>
+              {parent ? (
+                <span className="inline-flex items-center gap-1.5">
+                  <svg width="22" height="6" aria-hidden="true">
+                    <line x1="1" x2="21" y1="3" y2="3" stroke="#64748b" strokeWidth="1.75" strokeDasharray="1 4" strokeLinecap="round" />
+                  </svg>
+                  {parentLabel} {focusCategory.label}, for comparison
+                </span>
+              ) : null}
             </div>
+          </section>
 
-            <div className="mt-3 border-t border-slate-200 px-5 py-4 dark:border-slate-800">
-              <div className="mb-2 flex items-center justify-between text-[10px] font-medium text-slate-400">
-                <span>{viewRange.start}</span>
-                <span>Drag to inspect</span>
-                <span>{viewRange.end}</span>
-              </div>
-              <label className="block">
-                <span className="sr-only">Select year in the visible range</span>
-                <input
-                  type="range"
-                  min={viewRange.start}
-                  max={viewRange.end}
-                  step={1}
-                  value={selectedYear}
-                  onChange={(event) => selectYear(Number(event.target.value))}
-                  className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-slate-200 accent-slate-950 dark:bg-slate-800 dark:accent-white"
-                />
-              </label>
+          <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-950">
+            <div className="border-b border-slate-200 px-5 py-3 dark:border-slate-800">
+              <h2 className="text-sm font-semibold text-slate-950 dark:text-white">
+                {focusCategory.label} by {showCities ? `city in ${state?.name}` : "state"}, {selectedYear}
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Select a column to sort, a row to open it. {END_YEAR} figures are the projected scenario range.
+              </p>
             </div>
+            <RegionTable
+              rows={tableRows}
+              reference={referenceRow}
+              placeLabel={showCities ? "City" : "State"}
+              groupLabel={focusCategory.label}
+              year={selectedYear}
+              baselineYear={mapBaseline}
+              endYear={END_YEAR}
+              peopleLabel={universe === "adults" ? "Adults" : "People"}
+              selectedId={showCities ? city?.id ?? null : state?.id ?? null}
+              onSelect={showCities ? selectCity : selectState}
+            />
           </section>
         </div>
 
@@ -899,28 +894,85 @@ export function DemographicsForecast() {
           <CompositionRail
             series={series}
             point={point}
-            focus={focusCategory.id}
-            onFocus={(category) => setFocus((current) => ({ ...current, [activeDimension]: category }))}
+            baseline={changeBaseline(series)}
+            focus={focus}
+            onFocus={(category) => setGroups((current) => ({ ...current, [dimension]: category }))}
+            provenance={provenance}
+            compare={parent ? { label: parentLabel, point: pointAt(parent, selectedYear) ?? null } : null}
+            population={population}
           />
         </div>
       </div>
 
-      <section className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-slate-200 pt-4 dark:border-slate-800">
-        <span className="text-[10px] font-semibold tracking-[0.14em] text-slate-400 uppercase">Sources</span>
-        {series.sources.map((source) => (
-          <a
-            key={source.href}
-            href={source.href}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-1 text-xs font-medium text-slate-500 transition-colors hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"
-          >
-            {source.label}
-            <ArrowUpRight size={11} />
-          </a>
-        ))}
+      <section
+        aria-labelledby="demographics-method"
+        className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-950"
+      >
+        <h2 id="demographics-method" className="text-sm font-semibold text-slate-950 dark:text-white">
+          About these {national.label.toLowerCase()} figures · {placeName}
+        </h2>
+        <dl className="mt-4 grid gap-5 text-xs leading-5 text-slate-600 sm:grid-cols-2 xl:grid-cols-4 dark:text-slate-300">
+          <div>
+            <dt className="font-semibold text-slate-900 dark:text-white">What&apos;s measured</dt>
+            <dd className="mt-1">
+              {national.definition} Shares are of {universe === "adults" ? "adults 18 and over" : "all residents, every age"}.
+            </dd>
+          </div>
+          <div>
+            <dt className="font-semibold text-slate-900 dark:text-white">Through {series.observedThrough}</dt>
+            <dd className="mt-1">
+              <span className="font-medium">{STATUS_LABEL[pastProvenance.status]} · {pastProvenance.by}.</span>{" "}
+              {pastProvenance.detail}
+            </dd>
+          </div>
+          <div>
+            <dt className="font-semibold text-slate-900 dark:text-white">After {series.observedThrough}</dt>
+            <dd className="mt-1">
+              <span className="font-medium">Projected · {futureProvenance.by}.</span> {futureProvenance.detail}{" "}
+              <span className="font-medium">Range:</span> {rangeExplanation(series, level, places)}
+            </dd>
+          </div>
+          <div>
+            <dt className="font-semibold text-slate-900 dark:text-white">Geography</dt>
+            <dd className="mt-1">
+              Published for {national.geographies.map((geo) => GEO_LABEL[geo]).join(", ")}.
+              {citySupported
+                ? " City figures cover places with 65,000+ residents, the threshold for ACS 1-year estimates."
+                : ` No source estimates ${national.label.toLowerCase()} for individual cities.`}
+            </dd>
+          </div>
+        </dl>
+        {national.categoryNotes ? (
+          <dl className="mt-5 grid gap-x-5 gap-y-2 border-t border-slate-100 pt-4 text-xs leading-5 sm:grid-cols-2 dark:border-slate-900">
+            {series.categories
+              .filter((category) => national.categoryNotes?.[category.id])
+              .map((category) => (
+                <div key={category.id} className="flex gap-2">
+                  <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: category.color }} />
+                  <div>
+                    <dt className="inline font-semibold text-slate-900 dark:text-white">{category.label}: </dt>
+                    <dd className="inline text-slate-600 dark:text-slate-300">{national.categoryNotes?.[category.id]}</dd>
+                  </div>
+                </div>
+              ))}
+          </dl>
+        ) : null}
+        <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-slate-100 pt-4 dark:border-slate-900">
+          <span className="text-[10px] font-semibold tracking-[0.14em] text-slate-400 uppercase">Sources</span>
+          {series.sources.map((source) => (
+            <a
+              key={source.href}
+              href={source.href}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1 text-xs font-medium text-slate-500 transition-colors hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"
+            >
+              {source.label}
+              <ArrowUpRight size={11} />
+            </a>
+          ))}
+        </div>
       </section>
     </div>
   );
 }
-

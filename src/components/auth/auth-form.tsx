@@ -310,6 +310,12 @@ export function AuthForm({
             {register ? "Sign in" : "Create an account"}
           </Link>
         </p>
+        <p className="mt-6 border-t border-slate-200 pt-5 text-xs leading-5 text-slate-500 dark:border-slate-800 dark:text-slate-400">
+          {register ? "By creating an account, you agree to the " : "Review the "}
+          <Link href="/terms" className="underline underline-offset-2">Terms of Use</Link>
+          {register ? " and acknowledge the " : " and "}
+          <Link href="/privacy" className="underline underline-offset-2">Privacy Policy</Link>.
+        </p>
       </div>
     </div>
   );

@@ -1,28 +1,39 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f7f8fa;
+  --foreground: #111827;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-public-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Quiz agree/disagree pair: same lightness and chroma, only hue differs,
+   so neither side of the scale reads heavier than the other. */
+@theme {
+  --color-agree-400: oklch(0.8 0.13 165);
+  --color-agree-500: oklch(0.72 0.15 165);
+  --color-agree-600: oklch(0.56 0.13 165);
+  --color-disagree-400: oklch(0.8 0.13 292);
+  --color-disagree-500: oklch(0.72 0.15 292);
+  --color-disagree-600: oklch(0.56 0.13 292);
+}
+
+:root.dark {
+  --background: #080b12;
+  --foreground: #f1f5f9;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
 }
 
 @keyframes header-enter {
@@ -121,26 +132,55 @@ body {
   --viz-seq-6: #184f95;
   --viz-seq-7: #0d366b;
   --viz-empty: #f1f5f9;
+  /* Parties: ColorBrewer RdBu endpoints (src/lib/party-colors.ts), lifted in dark mode. */
+  --viz-dem: #2166ac;
+  --viz-rep: #b2182b;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --viz-surface: #020617;
-    --viz-series-1: #3987e5;
-    --viz-series-2: #d95926;
-    --viz-series-3: #199e70;
-    --viz-grid: #1e293b;
-    --viz-axis: #334155;
-    --viz-muted: #94a3b8;
-    --viz-seq-1: #0d366b;
-    --viz-seq-2: #104281;
-    --viz-seq-3: #184f95;
-    --viz-seq-4: #256abf;
-    --viz-seq-5: #3987e5;
-    --viz-seq-6: #6da7ec;
-    --viz-seq-7: #b7d3f6;
-    --viz-empty: #0f172a;
-  }
+:root.dark {
+  --viz-surface: #020617;
+  --viz-series-1: #3987e5;
+  --viz-series-2: #d95926;
+  --viz-series-3: #199e70;
+  --viz-grid: #1e293b;
+  --viz-axis: #334155;
+  --viz-muted: #94a3b8;
+  --viz-seq-1: #0d366b;
+  --viz-seq-2: #104281;
+  --viz-seq-3: #184f95;
+  --viz-seq-4: #256abf;
+  --viz-seq-5: #3987e5;
+  --viz-seq-6: #6da7ec;
+  --viz-seq-7: #b7d3f6;
+  --viz-empty: #0f172a;
+  --viz-dem: #4393c3;
+  --viz-rep: #d6604d;
+}
+
+/* Money & Influence semantics (src/lib/money/semantic.ts). One colour per kind
+   of money, the same on every /money view: sources take categorical slots
+   3 / 2 / 7 plus a neutral, lobbying slot 4, and support / oppose the
+   green ↔ magenta pair, so blue and red only ever mean a party. Validated
+   with the dataviz palette checker in both modes. */
+:root {
+  --money-individual: #1baf7a;
+  --money-pac: #eb6834;
+  --money-party: #4a3aa7;
+  --money-other: #94a3b8;
+  --money-lobbying: #eda100;
+  --money-support: #008300;
+  --money-oppose: #e87ba4;
+  --money-neutral: #64748b;
+}
+:root.dark {
+  --money-individual: #199e70;
+  --money-pac: #d95926;
+  --money-party: #9085e9;
+  --money-other: #64748b;
+  --money-lobbying: #c98500;
+  --money-support: #008300;
+  --money-oppose: #d55181;
+  --money-neutral: #94a3b8;
 }
 
 /* Label ink on each sequential step (white or ink by fill luminance). */
@@ -148,9 +188,21 @@ body {
   --viz-seq-ink-1: #0f172a; --viz-seq-ink-2: #0f172a; --viz-seq-ink-3: #0f172a;
   --viz-seq-ink-4: #ffffff; --viz-seq-ink-5: #ffffff; --viz-seq-ink-6: #ffffff; --viz-seq-ink-7: #ffffff;
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --viz-seq-ink-1: #ffffff; --viz-seq-ink-2: #ffffff; --viz-seq-ink-3: #ffffff; --viz-seq-ink-4: #ffffff;
-    --viz-seq-ink-5: #0f172a; --viz-seq-ink-6: #0f172a; --viz-seq-ink-7: #0f172a;
-  }
+:root.dark {
+  --viz-seq-ink-1: #ffffff; --viz-seq-ink-2: #ffffff; --viz-seq-ink-3: #ffffff; --viz-seq-ink-4: #ffffff;
+  --viz-seq-ink-5: #0f172a; --viz-seq-ink-6: #0f172a; --viz-seq-ink-7: #0f172a;
+}
+
+/* Abortion gestational limits (src/components/abortion/limits-map.tsx): five
+   ordered classes on one blue hue, 1 = total ban (most salient) … 5 = no
+   limit. The 7-step ramp above can't give five classes that read apart, so
+   these are spaced evenly in OKLCH lightness; adjacent pairs clear ΔE 15
+   (normal vision) in both modes per the dataviz palette checker. */
+:root {
+  --limit-1: #002c5e; --limit-2: #0256a9; --limit-3: #4087de; --limit-4: #8cbaf7; --limit-5: #d4eaff;
+  --limit-ink-1: #ffffff; --limit-ink-2: #ffffff; --limit-ink-3: #ffffff; --limit-ink-4: #0f172a; --limit-ink-5: #0f172a;
+}
+:root.dark {
+  --limit-1: #dff0ff; --limit-2: #95c4ff; --limit-3: #4c94ec; --limit-4: #1b65b9; --limit-5: #003977;
+  --limit-ink-1: #0f172a; --limit-ink-2: #0f172a; --limit-ink-3: #0f172a; --limit-ink-4: #ffffff; --limit-ink-5: #ffffff;
 }

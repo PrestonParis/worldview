@@ -1,11 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { SortTh, useTableSort } from "@/components/data/sortable-table";
 import { SearchInput } from "@/components/search/search-input";
 import { partyColorFor } from "@/lib/party-colors";
 import type { AreaBreakdown } from "@/lib/validation/electionResult";
-
-type SortKey = "name" | "margin" | "total";
 
 export function AreaResultsTable({
   areas,
@@ -17,30 +16,14 @@ export function AreaResultsTable({
   selectedAreaId?: string | null;
 }) {
   const [query, setQuery] = useState("");
-  const [sort, setSort] = useState<SortKey>("margin");
-
-  const visible = useMemo(() => {
+  const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    const filtered = q
-      ? areas.filter((a) => a.areaName.toLowerCase().includes(q))
-      : areas;
-    const sorted = [...filtered];
-    if (sort === "name") sorted.sort((a, b) => a.areaName.localeCompare(b.areaName));
-    else if (sort === "total") sorted.sort((a, b) => b.total - a.total);
-    else sorted.sort((a, b) => b.marginPct - a.marginPct);
-    return sorted;
-  }, [areas, query, sort]);
-
-  const th = "py-2 pr-4 font-medium";
-  const sortable = (key: SortKey, label: string) => (
-    <button
-      type="button"
-      onClick={() => setSort(key)}
-      className={`${th} text-left ${sort === key ? "text-slate-900 dark:text-slate-100" : ""}`}
-    >
-      {label}
-      {sort === key ? " ↓" : ""}
-    </button>
+    return q ? areas.filter((a) => a.areaName.toLowerCase().includes(q)) : areas;
+  }, [areas, query]);
+  const { sorted: visible, sort, toggle } = useTableSort(
+    filtered,
+    (a, col) => [(a.areaName || a.areaId).toLowerCase(), a.leaderParty || null, a.marginPct, a.total][col],
+    { col: 2, dir: -1 },
   );
 
   return (
@@ -54,10 +37,11 @@ export function AreaResultsTable({
         <table className="w-full min-w-[520px] border-collapse text-sm">
           <thead className="sticky top-0 bg-white dark:bg-slate-950">
             <tr className="border-b border-slate-200 text-left text-xs tracking-wider text-slate-400 uppercase dark:border-slate-800">
-              <th>{sortable("name", "County")}</th>
-              <th className={th}>Winner</th>
-              <th>{sortable("margin", "Margin")}</th>
-              <th>{sortable("total", "Votes")}</th>
+              {["County", "Winner", "Margin", "Votes"].map((label, i) => (
+                <SortTh key={label} col={i} sort={sort} onSort={toggle} className="py-2 pr-4 font-medium uppercase">
+                  {label}
+                </SortTh>
+              ))}
             </tr>
           </thead>
           <tbody>

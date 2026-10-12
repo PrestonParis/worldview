@@ -2,6 +2,7 @@ import { randomUUID } from "crypto";
 import neo4j, { type Node } from "neo4j-driver";
 import { getDriver } from "./client";
 import type { Entity, EntityInput, EntityType } from "../validation/entity";
+import { publicEntitySlug } from "../people/public";
 
 function toEntity(node: Node): Entity {
   const p = node.properties as Record<string, unknown>;
@@ -37,6 +38,36 @@ export async function listEntities(filter?: {
         : "MATCH (e:Entity) RETURN e ORDER BY e.name",
       filter?.type ? { type: filter.type } : {},
     );
+    return result.records.map((r) => toEntity(r.get("e")));
+  } finally {
+    await session.close();
+  }
+}
+
+// id -> name for just the given entities (the election overview needs a few
+// hundred candidate names, not the whole graph).
+export async function getEntityNames(ids: string[]): Promise<Map<string, string>> {
+  if (ids.length === 0) return new Map();
+  const session = getDriver().session();
+  try {
+    const result = await session.run(
+      "MATCH (e:Entity) WHERE e.id IN $ids RETURN e.id AS id, e.name AS name",
+      { ids },
+    );
+    return new Map(result.records.map((r) => [String(r.get("id")), String(r.get("name"))]));
+  } finally {
+    await session.close();
+  }
+}
+
+// Full records for just the given entities, for pages that reference a subset
+// of the graph (money breakdowns, lobbying) rather than all of it.
+export async function getEntitiesByIds(ids: string[]): Promise<Entity[]> {
+  const unique = [...new Set(ids.filter(Boolean))];
+  if (unique.length === 0) return [];
+  const session = getDriver().session();
+  try {
+    const result = await session.run("MATCH (e:Entity) WHERE e.id IN $ids RETURN e", { ids: unique });
     return result.records.map((r) => toEntity(r.get("e")));
   } finally {
     await session.close();
@@ -107,6 +138,24 @@ export async function getEntity(id: string): Promise<Entity | null> {
     );
     const record = result.records[0];
     return record ? toEntity(record.get("e")) : null;
+  } finally {
+    await session.close();
+  }
+}
+
+/** Resolve the public, human-readable profile slug without exposing CRUD URLs. */
+export async function getEntityByPublicSlug(slug: string): Promise<Entity | null> {
+  const shortId = slug.match(/-([0-9a-f]{8})$/i)?.[1];
+  if (!shortId) return null;
+  const session = getDriver().session();
+  try {
+    const result = await session.run(
+      "MATCH (e:Entity) WHERE e.id STARTS WITH $shortId RETURN e LIMIT 10",
+      { shortId },
+    );
+    return result.records
+      .map((record) => toEntity(record.get("e")))
+      .find((entity) => publicEntitySlug(entity) === slug) ?? null;
   } finally {
     await session.close();
   }

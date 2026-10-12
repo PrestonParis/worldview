@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { getOrgProfile } from "@/lib/neo4j/graph";
 import { entityColorFor } from "@/lib/entity-colors";
 import { relationshipCategoryColors } from "@/lib/relationships";
+import { publicEntityPath } from "@/lib/people/public";
 
 export const dynamic = "force-dynamic";
 
@@ -83,7 +84,7 @@ export default async function OrgProfilePage({ params }: PageProps<"/people/orgs
                     }}
                   />
                   <Link
-                    href={`/data/entities/${other.id}`}
+                    href={publicEntityPath(other)}
                     className="min-w-0 flex-1 truncate text-sm font-medium text-slate-800 hover:underline dark:text-slate-200"
                   >
                     {other.name}

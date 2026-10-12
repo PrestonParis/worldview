@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import { SortableTable } from "@/components/data/sortable-table";
 
 export interface TableView {
   columns: string[];
@@ -9,7 +10,7 @@ export interface TableView {
 
 // Frame for every chart: title, one-line subtitle, the chart or its table
 // view, and the source line. The table view keeps every value reachable
-// without hovering.
+// without hovering; every column of it sorts.
 export function ChartCard({
   title,
   subtitle,
@@ -57,28 +58,17 @@ export function ChartCard({
       <div className="mt-4">
         {showTable && table ? (
           <div className="max-h-80 overflow-auto rounded-lg border border-slate-100 dark:border-slate-800">
-            <table className="w-full text-sm">
-              <thead className="sticky top-0 bg-slate-50 text-left text-xs text-slate-500 dark:bg-slate-900 dark:text-slate-400">
-                <tr>
-                  {table.columns.map((c, i) => (
-                    <th key={c} className={`px-3 py-2 font-medium ${i > 0 ? "text-right" : ""}`}>
-                      {c}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                {table.rows.map((r, i) => (
-                  <tr key={i}>
-                    {r.map((cell, j) => (
-                      <td key={j} className={`px-3 py-1.5 ${j > 0 ? "text-right tabular-nums" : "text-slate-700 dark:text-slate-300"}`}>
-                        {cell}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <SortableTable
+              columns={table.columns.map((c, i) => ({ label: c, align: i > 0 ? "right" : "left" }))}
+              rows={table.rows.map((r, i) => ({
+                key: String(i),
+                cells: r.map((cell, j) => ({
+                  content: cell,
+                  className: `px-3 py-1.5 ${j > 0 ? "tabular-nums" : "text-slate-700 dark:text-slate-300"}`,
+                })),
+              }))}
+              theadClassName="sticky top-0 bg-slate-50 text-xs text-slate-500 dark:bg-slate-900 dark:text-slate-400"
+            />
           </div>
         ) : (
           children

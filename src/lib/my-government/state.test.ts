@@ -28,4 +28,26 @@ describe("selectStateOfficials", () => {
     expect(officials.map((o) => o.name)).toEqual(["Greg Governor", "Sam Senator", "Rae Rep"]);
     expect(officials.find((o) => o.name === "Sam Senator")?.office).toBe("State senator");
   });
+
+  it("labels DC's Mayor and Council instead of state offices", () => {
+    const dc: StateOfficialRow[] = [
+      { id: "m", name: "Muriel Bowser", govChamber: "executive", govDistrict: "", govOffice: "Governor" },
+      { id: "w2", name: "Brooke Pinto", govChamber: "legislature", govDistrict: "Ward 2", govOffice: "State legislator" },
+      { id: "w3", name: "Matt Frumin", govChamber: "legislature", govDistrict: "Ward 3", govOffice: "State legislator" },
+      { id: "al", name: "Anita Bonds", govChamber: "legislature", govDistrict: "At-Large", govOffice: "State legislator" },
+      { id: "ch", name: "Phil Mendelson", govChamber: "legislature", govDistrict: "Chairman", govOffice: "State legislator" },
+    ];
+    const officials = selectStateOfficials(dc, {
+      stateCode: "DC",
+      stateName: "District of Columbia",
+      stateUpperDistrict: "Ward 2",
+      stateLowerDistrict: "",
+    });
+    expect(officials.map((o) => [o.name, o.office, o.jurisdiction])).toEqual([
+      ["Muriel Bowser", "Mayor", "District of Columbia"],
+      ["Brooke Pinto", "Councilmember", "Ward 2"],
+      ["Anita Bonds", "Councilmember (at-large)", "District of Columbia"],
+      ["Phil Mendelson", "Council chair", "District of Columbia"],
+    ]);
+  });
 });

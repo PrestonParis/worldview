@@ -2,7 +2,7 @@
 // geoid ACS and the county maps use) plus lookups to the tile-grid layout in
 // src/lib/money/us-states.ts.
 
-import { US_STATE_GRID } from "@/lib/money/us-states";
+import { US_STATE_GRID } from "../money/us-states";
 
 export const STATE_FIPS: Record<string, string> = {
   AL: "01", AK: "02", AZ: "04", AR: "05", CA: "06", CO: "08", CT: "09", DE: "10",

@@ -31,7 +31,10 @@ import {
 const SOURCE = "congress-votes";
 const API_BASE = "https://api.congress.gov/v3";
 const PAGE_SIZE = 250;
-const DELAY_MS = 200;
+// Spacing between requests. Congress.gov's hourly limit is per key (see the
+// x-ratelimit-limit response header; 5,000 is the usual default), so pick
+// --delay to fit: 750 ms stays under 5,000 an hour, 200 ms under 20,000.
+const DELAY_MS = Number(process.argv.find((a) => a.startsWith("--delay="))?.slice(8) ?? 200);
 
 // Any api.data.gov key works for Congress.gov, so the FEC key doubles as one.
 const apiKey = process.env.CONGRESS_GOV_API_KEY || process.env.FEC_API_KEY;
@@ -54,11 +57,31 @@ const SESSIONS = arg("sessions")
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-async function api(path) {
+// Requests are spaced on one shared schedule, so parallel calls (bill
+// details fan out six at a time) still respect DELAY_MS. A 429 or a dropped
+// connection waits and retries instead of dropping the record.
+let nextSlot = 0;
+async function api(path, attempt = 0) {
+  const wait = Math.max(0, nextSlot - Date.now());
+  nextSlot = Math.max(Date.now(), nextSlot) + DELAY_MS;
+  if (wait) await sleep(wait);
   const url = `${API_BASE}${path}${path.includes("?") ? "&" : "?"}format=json&api_key=${apiKey}`;
-  const res = await fetch(url, { headers: { accept: "application/json" } });
+  let res;
+  try {
+    res = await fetch(url, { headers: { accept: "application/json" }, signal: AbortSignal.timeout(30_000) });
+  } catch (err) {
+    // Dropped connections and timeouts are transient; back off and retry.
+    if (attempt >= 5) throw new Error(`GET ${path} -> ${err.cause?.code ?? err.message}`);
+    await sleep(2_000 * 2 ** attempt);
+    return api(path, attempt + 1);
+  }
+  if (res.status === 429 && attempt < 8) {
+    const retryAfter = Number(res.headers.get("retry-after")) || 300;
+    console.log(`  rate limited; waiting ${retryAfter}s`);
+    await sleep(retryAfter * 1000);
+    return api(path, attempt + 1);
+  }
   if (!res.ok) throw new Error(`GET ${path} -> ${res.status}`);
-  await sleep(DELAY_MS);
   return res.json();
 }
 
@@ -118,7 +141,16 @@ async function main() {
         let offset = 0;
 
         for (;;) {
-          const page = await api(`/${chamber}-vote/${CONGRESS}/${sess}?limit=${PAGE_SIZE}&offset=${offset}`);
+          let page;
+          try {
+            page = await api(`/${chamber}-vote/${CONGRESS}/${sess}?limit=${PAGE_SIZE}&offset=${offset}`);
+          } catch (err) {
+            // Congress.gov publishes House roll calls only so far; a chamber or
+            // session it doesn't carry 404s rather than returning an empty list.
+            if (!/-> 404$/.test(err.message)) throw err;
+            console.log(`  ${chamberLabel} session ${sess}: not published on Congress.gov`);
+            break;
+          }
           const items = pickResultsArray(page);
           if (items.length === 0) break;
 

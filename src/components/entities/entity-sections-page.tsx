@@ -1,6 +1,6 @@
 import { listEntities } from "@/lib/neo4j/entities";
 import { listEdges } from "@/lib/neo4j/edges";
-import { EmptyStateFeatures } from "@/components/empty-state";
+import { EmptyState } from "@/components/empty-state";
 import { EntityTypeSection } from "./entity-type-section";
 import type { PageContent } from "@/lib/pages-content";
 import type { EntityType } from "@/lib/validation/entity";
@@ -29,8 +29,7 @@ export async function EntitySectionsPage({
 
       <div className="mt-6">
         {totalCount === 0 ? (
-          <EmptyStateFeatures
-            content={content}
+          <EmptyState
             message={emptyMessage}
             cta={{ href: "/data/entities", label: "Manage Data" }}
           />

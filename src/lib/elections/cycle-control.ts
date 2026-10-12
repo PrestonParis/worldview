@@ -11,6 +11,7 @@ import {
 } from "./control";
 import type { Rating } from "../validation/raceRating";
 import context from "../../../data/elections/2026-context.json";
+import { consensusRating, partyLetter, type RatingRow } from "./overview";
 
 function officeToChamber(office: string): Chamber | null {
   if (office === "U.S. Senate") return "senate";
@@ -19,14 +20,6 @@ function officeToChamber(office: string): Chamber | null {
   return null;
 }
 
-function partyLetter(party: string | null): Party | null {
-  if (!party) return null;
-  const p = party.trim().toLowerCase();
-  if (p.startsWith("d")) return "D";
-  if (p.startsWith("r") || p === "gop") return "R";
-  if (p.startsWith("i") || p.includes("independent")) return "I";
-  return null;
-}
 
 /**
  * Chamber-control projections for a cycle: pulls every scaffolded race, its
@@ -65,16 +58,17 @@ export async function chamberProjections(
     })
     .from(raceRatings)
     .where(inArray(raceRatings.electionId, ids));
-  // best rating per race: prefer a non-"inferred" source, then most recent
-  const bestRating = new Map<string, Rating>();
-  const bestScore = new Map<string, number>();
+  // One rating per race: the handicapper consensus (overview.ts).
+  const rowsByRace = new Map<string, RatingRow[]>();
   for (const r of ratingRows) {
-    const score =
-      (r.source === "inferred" ? 0 : 1_000_000_000_000) + r.asOf.getTime();
-    if (score > (bestScore.get(r.electionId) ?? -1)) {
-      bestScore.set(r.electionId, score);
-      bestRating.set(r.electionId, r.rating as Rating);
-    }
+    const list = rowsByRace.get(r.electionId) ?? [];
+    list.push({ source: r.source, rating: r.rating as Rating, asOf: r.asOf });
+    rowsByRace.set(r.electionId, list);
+  }
+  const bestRating = new Map<string, Rating>();
+  for (const [id, rows] of rowsByRace) {
+    const consensus = consensusRating(rows);
+    if (consensus) bestRating.set(id, consensus.rating);
   }
 
   const byChamber = new Map<Chamber, RatedRace[]>();

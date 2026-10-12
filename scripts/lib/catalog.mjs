@@ -1,10 +1,16 @@
 // Catalog entries for the built-in public datasets: one per `area_stats`
-// source. Each importer calls registerDataset(pg, slug) so the `datasets`
-// row (title, publisher, methodology, metric labels) exists before its
-// rows do; `node scripts/sync-catalog.mjs` registers them all at once.
+// source, plus record datasets whose rows live in their own tables (bills,
+// court cases, ...). Each `area_stats` importer calls registerDataset(pg,
+// slug) so the `datasets` row (title, publisher, methodology, metric labels)
+// exists before its rows do; `node scripts/sync-catalog.mjs` registers them
+// all at once (import:all runs it first).
 // Partner datasets are created with scripts/partner.mjs instead.
 
+import { DIMENSIONS, metricName } from "../../src/lib/elections/electorate.ts";
+
 const m = (label, unit, description) => ({ label, unit, ...(description ? { description } : {}) });
+
+const CPS_MEASURES = { citizens: "Eligible citizens", registered: "Registered", voted: "Voted" };
 
 export const CATALOG = {
   cbp: {
@@ -17,7 +23,7 @@ export const CATALOG = {
     description:
       "Monthly encounters at and between ports of entry: U.S. Border Patrol apprehensions, Office of Field Operations inadmissibles, and Title 42 expulsions (March 2020 to May 2023).",
     methodology:
-      "Counts are events, not unique people: one person encountered twice is counted twice. Months follow the federal fiscal year (October to September). State rows are the state of the encountering field office or sector.",
+      "Counts are events, not unique people: one person encountered twice is counted twice. Months follow the federal fiscal year (October to September). State rows are the state of the CBP office that recorded the encounter, not where the person lives or goes. Border Patrol (USBP) apprehends people between ports of entry; the Office of Field Operations (OFO) records people found inadmissible at ports of entry, including airports. Region 'Other' covers coastal sectors and interior/air ports.",
     metrics: {
       encounters_total: m("Total encounters", "encounters"),
       encounters_by_citizenship: m("Encounters by citizenship", "encounters"),
@@ -28,6 +34,9 @@ export const CATALOG = {
       encounters_accompanied_minors: m("Accompanied minors", "encounters"),
       encounters_title_8: m("Title 8 encounters", "encounters", "Apprehensions and inadmissibles processed under immigration law (Title 8)."),
       encounters_title_42: m("Title 42 expulsions", "encounters", "Public-health expulsions, March 2020 to May 2023."),
+      encounters_usbp: m("Border Patrol encounters", "encounters", "Apprehensions and Title 42 expulsions by U.S. Border Patrol between ports of entry."),
+      encounters_ofo: m("Field Operations encounters", "encounters", "Inadmissibles and Title 42 expulsions by the Office of Field Operations at ports of entry."),
+      encounters_by_aor: m("Encounters by sector or field office", "encounters"),
     },
   },
   "dhs-yearbook": {
@@ -38,9 +47,9 @@ export const CATALOG = {
     cadence: "Annual",
     license: "Public domain (U.S. government work)",
     description:
-      "Legal immigration and humanitarian admissions by fiscal year: new lawful permanent residents (green cards), naturalizations, refugee arrivals, and asylum grants — nationally, by state of residence, and by country of birth or nationality.",
+      "Legal immigration, humanitarian admissions, temporary admissions, and enforcement by fiscal year: new lawful permanent residents (green cards), naturalizations, refugee arrivals, asylum grants, nonimmigrant admissions by visa class, and removals and returns — nationally, by state of residence, and by country of birth or nationality.",
     methodology:
-      "Fiscal years run October to September. DHS rounds every published cell to the nearest 10. LPR counts include both new arrivals and adjustments of status by people already in the U.S.",
+      "Fiscal years run October to September. DHS rounds every published cell to the nearest 10. LPR counts include both new arrivals and adjustments of status by people already in the U.S. Nonimmigrant admissions and removals count events, not unique people. The enforcement chapter is published about a year after the others, so it trails by one fiscal year.",
     metrics: {
       lpr_total: m("New lawful permanent residents", "people"),
       lpr_adjustments: m("LPRs adjusting status inside the U.S.", "people"),
@@ -61,6 +70,34 @@ export const CATALOG = {
       asylum_grants_defensive: m("Asylum granted defensively (immigration courts)", "people"),
       asylum_affirmative_by_country: m("Affirmative asylum grants by nationality", "people"),
       asylum_affirmative_by_region: m("Affirmative asylum grants by region of nationality", "people"),
+      nonimmigrant_admissions_total: m("Nonimmigrant admissions (all, estimated)", "admissions", "Includes short visits by Mexican and Canadian border crossers not recorded on Form I-94."),
+      nonimmigrant_i94_admissions: m("Nonimmigrant I-94 admissions", "admissions"),
+      nonimmigrant_by_class: m("I-94 admissions by class of admission", "admissions"),
+      removals: m("Removals", "events", "Compulsory, confirmed departures based on an order of removal."),
+      returns_administrative: m("Administrative returns", "events"),
+      returns_enforcement: m("Enforcement returns", "events", "Confirmed departures without an order of removal (e.g., voluntary return or departure)."),
+      expulsions_title_42: m("Title 42 expulsions", "events"),
+      removals_criminal: m("Removals of people with a known criminal conviction", "events"),
+      removals_noncriminal: m("Removals of people without a known criminal conviction", "events"),
+      removals_by_country: m("Removals by country of nationality", "events"),
+    },
+  },
+  "dhs-unauthorized": {
+    title: "Unauthorized Immigrant Population Estimates",
+    topic: "immigration",
+    publisher: "DHS Office of Homeland Security Statistics",
+    sourceUrl: "https://ohss.dhs.gov/topics/immigration/illegal/population-estimates",
+    cadence: "Irregular (latest report April 2024, covering January 2022)",
+    license: "Public domain (U.S. government work); transcribed from the PDF report",
+    description:
+      "Estimated number of unauthorized immigrants living in the United States on January 1 of each year, 2000 and 2005–2022, with the top countries of birth, top states of residence, and period of entry.",
+    methodology:
+      "Residual method: the ACS foreign-born population, adjusted for survey undercount, minus the estimated legally resident population (LPRs, refugees, asylees, and nonimmigrants). Series breaks: 2005–2009 use ACS tied to the 2000 Census, 2010–2020 the 2010 Census (with method updates for 2015–2018 and 2018–2020), and 2022 the 2020 Census; revised values are used where the report gives them. No estimates for 2001–2004 or 2021.",
+    metrics: {
+      unauthorized_population: m("Unauthorized immigrant population (January 1)", "people"),
+      unauthorized_by_country: m("Unauthorized population by country of birth", "people"),
+      unauthorized_by_state: m("Unauthorized population by state of residence", "people"),
+      unauthorized_by_entry_period: m("Unauthorized population by period of entry", "people"),
     },
   },
   "census-pep": {
@@ -125,6 +162,43 @@ export const CATALOG = {
       facilities: m("Detention facilities in use", "facilities"),
     },
   },
+  "census-state-migration": {
+    title: "State-to-State Migration Flows (ACS 1-year)",
+    topic: "immigration",
+    publisher: "U.S. Census Bureau",
+    sourceUrl: "https://www.census.gov/topics/population/migration/guidance/state-to-state-migration-flows.html",
+    cadence: "Annual (each autumn)",
+    license: "Public domain (U.S. government work)",
+    description:
+      "How many people moved from each state to every other state in the past year, from the American Community Survey 1-year estimates, with each state's total movers in and out.",
+    methodology:
+      "Movers are people 1 year and over whose residence 1 year ago was in a different state. Survey estimates with margins of error (metadata.moe); flows the Census Bureau suppresses for small samples are omitted. Flow rows use geo_level 'flow' and geoid '<destination FIPS>:<origin FIPS>'. Puerto Rico is included as a state of origin and destination.",
+    metrics: {
+      state_inflow: m("Moved in from another state", "people"),
+      state_outflow: m("Moved out to another state", "people"),
+      state_net_flow: m("Net movers between states", "people", "Moved in from other states minus moved out to other states."),
+      moved_from_abroad: m("Moved in from abroad", "people", "Residence 1 year ago was in a foreign country, Puerto Rico, or a U.S. Island Area."),
+      state_to_state: m("Movers from one state to another", "people"),
+    },
+  },
+  "un-migrant-stock": {
+    title: "International Migrant Stock: Americans Abroad",
+    topic: "immigration",
+    publisher: "United Nations Population Division (UN DESA)",
+    sourceUrl: "https://www.un.org/development/desa/pd/content/international-migrant-stock",
+    cadence: "Every 4–5 years",
+    license: "CC BY 3.0 IGO",
+    description:
+      "People born in the United States who live in another country, by country and region of residence, 1990 onward — with the matching count of people born abroad who live in the United States.",
+    methodology:
+      "Mid-year stock estimates built from each destination country's censuses, registers, and surveys. Most countries count people by country of birth; some count by citizenship instead. Country rows use geo_level 'country' with the UN M49 code as geoid; region rows use geo_level 'region'.",
+    metrics: {
+      emigrants_total: m("U.S.-born living abroad", "people"),
+      emigrants_by_country: m("U.S.-born living abroad, by country of residence", "people"),
+      emigrants_by_region: m("U.S.-born living abroad, by region of residence", "people"),
+      immigrants_total: m("Foreign-born living in the U.S.", "people"),
+    },
+  },
   "fbi-cde": {
     title: "Crime in the United States (UCR / NIBRS)",
     topic: "crime",
@@ -148,6 +222,234 @@ export const CATALOG = {
         [`${k}_clearances`, m(`${label} clearances`, "clearances")],
       ]),
     ),
+  },
+  "fbi-cde-cities": {
+    title: "Crime in Large Cities (UCR / NIBRS)",
+    topic: "crime",
+    publisher: "FBI Crime Data Explorer",
+    sourceUrl: "https://cde.ucr.cjis.gov/",
+    cadence: "Monthly",
+    license: "Public domain (U.S. government work)",
+    description:
+      "Monthly reported offenses, rates per 100,000 residents, and clearances for the police departments of every U.S. city over 100,000 residents, with each department's annual staffing.",
+    methodology:
+      "Cities are incorporated places over 100,000 residents in the Census Bureau's latest ACS 1-year estimates, matched to their municipal police department (or the consolidated city-county agency that polices them). Rates use the population the department serves. metadata.reported is false for months the department did not report; annual rates are only computed for years it reported all twelve months. Staffing counts sworn officers and civilian employees as of October 31 each year.",
+    metrics: {
+      ...Object.fromEntries(
+        [
+          ["violent_crime", "Violent crime"], ["property_crime", "Property crime"], ["homicide", "Homicide"],
+          ["rape", "Rape"], ["robbery", "Robbery"], ["aggravated_assault", "Aggravated assault"],
+          ["burglary", "Burglary"], ["larceny", "Larceny-theft"], ["motor_vehicle_theft", "Motor vehicle theft"],
+        ].flatMap(([k, label]) => [
+          [`${k}_count`, m(`${label} offenses`, "offenses")],
+          [`${k}_rate`, m(`${label} rate`, "per_100k")],
+          [`${k}_clearances`, m(`${label} clearances`, "clearances")],
+        ]),
+      ),
+      employees_per_1000: m("Law enforcement employees per 1,000 residents", "per_1000"),
+      officers: m("Sworn officers", "people"),
+    },
+  },
+  "fbi-hate-crime": {
+    title: "Hate Crime Statistics",
+    topic: "crime",
+    publisher: "FBI Crime Data Explorer",
+    sourceUrl: "https://cde.ucr.cjis.gov/",
+    cadence: "Annual",
+    license: "Public domain (U.S. government work)",
+    description: "Hate crime incidents reported to the FBI each year, nationally and by state, by the category of bias motivating them.",
+    methodology:
+      "Counts are incidents reported by participating agencies; participation in hate crime reporting is voluntary and varies by year and state, so changes in counts reflect reporting as well as offending. An incident motivated by more than one bias category is counted once, under multiple bias.",
+    metrics: {
+      hate_incidents: m("Hate crime incidents", "incidents"),
+      hate_incidents_race: m("Race, ethnicity, or ancestry", "incidents"),
+      hate_incidents_religion: m("Religion", "incidents"),
+      hate_incidents_sexual_orientation: m("Sexual orientation", "incidents"),
+      hate_incidents_gender_identity: m("Gender identity", "incidents"),
+      hate_incidents_disability: m("Disability", "incidents"),
+      hate_incidents_gender: m("Gender", "incidents"),
+      hate_incidents_multiple: m("Multiple bias", "incidents"),
+    },
+  },
+  "fbi-arrests": {
+    title: "Arrests (UCR / NIBRS)",
+    topic: "crime",
+    publisher: "FBI Crime Data Explorer",
+    sourceUrl: "https://cde.ucr.cjis.gov/",
+    cadence: "Annual",
+    license: "Public domain (U.S. government work)",
+    description: "Arrests reported to the FBI each year, nationally and by state: totals, arrests of people under 18, and arrests for drug, weapons, and DUI offenses.",
+    methodology:
+      "Counts cover participating agencies only, so totals move with participation; shares (such as the share of arrests that were of juveniles) are comparable across years. Juveniles are people under 18. Drug arrests combine possession, sale or manufacturing, and summary-reported drug abuse violations; before 2021 the CDE lists summary totals alongside their own subtotals, so drug counts for those years overlap and are not comparable.",
+    metrics: {
+      arrests_total: m("Arrests", "arrests"),
+      arrests_juvenile: m("Arrests of people under 18", "arrests"),
+      arrests_drug: m("Drug arrests", "arrests"),
+      arrests_weapons: m("Weapons arrests", "arrests"),
+      arrests_dui: m("DUI arrests", "arrests"),
+      arrests_violent: m("Arrests for violent offenses", "arrests"),
+    },
+  },
+  "cdc-violent-deaths": {
+    title: "Homicide and Firearm Deaths",
+    topic: "crime",
+    publisher: "CDC National Center for Injury Prevention and Control",
+    sourceUrl: "https://www.cdc.gov/injury-violence-data/",
+    cadence: "Monthly",
+    license: "Public domain (U.S. government work)",
+    description:
+      "Deaths by homicide (all methods and by firearm) and all firearm deaths, from death certificates, as counts and rates per 100,000 residents — nationally, by state, and by county.",
+    methodology:
+      "From the National Vital Statistics System via CDC's Mapping Injury, Overdose, and Violence dashboard. Deaths are counted by the decedent's place of residence. Homicide here is the medical examiner's or coroner's finding of death by another person, which includes deaths the FBI does not count as murder, such as killings in self-defense. Recent periods are provisional. County counts of 1–9 are suppressed and their rates flagged unreliable. *_ttm metrics are trailing-twelve-month figures whose period is the last month covered.",
+    metrics: {
+      homicide_rate: m("Homicide death rate", "per_100k"),
+      homicide_deaths: m("Homicide deaths", "deaths"),
+      firearm_homicide_rate: m("Firearm homicide death rate", "per_100k"),
+      firearm_homicide_deaths: m("Firearm homicide deaths", "deaths"),
+      firearm_deaths_rate: m("Firearm death rate (all intents)", "per_100k"),
+      firearm_deaths: m("Firearm deaths (all intents)", "deaths"),
+      firearm_suicide_rate: m("Firearm suicide death rate", "per_100k"),
+      firearm_suicide_deaths: m("Firearm suicide deaths", "deaths"),
+      homicide_rate_ttm: m("Homicide death rate, trailing 12 months", "per_100k"),
+      firearm_homicide_rate_ttm: m("Firearm homicide death rate, trailing 12 months", "per_100k"),
+      firearm_deaths_rate_ttm: m("Firearm death rate, trailing 12 months", "per_100k"),
+      firearm_suicide_rate_ttm: m("Firearm suicide death rate, trailing 12 months", "per_100k"),
+    },
+  },
+  "bjs-ncvs": {
+    title: "National Crime Victimization Survey",
+    topic: "crime",
+    publisher: "Bureau of Justice Statistics",
+    sourceUrl: "https://bjs.ojp.gov/data-collection/ncvs",
+    cadence: "Annual",
+    license: "Public domain (U.S. government work)",
+    description:
+      "Crime as reported by victims in a nationally representative household survey, whether or not it was reported to police: victimization rates by type of crime, the share reported to police, and violence by the victim's relationship to the offender.",
+    methodology:
+      "Computed by Worldview from the NCVS Select person- and household-level files: sums of the series-adjusted victimization weight (NEWWGT) over the persons-age-12-or-older and household weights for each year. Violent rates are per 1,000 persons age 12 or older; property rates per 1,000 households. Violent crime excludes homicide, which a survey of victims cannot measure. Reported-to-police shares exclude victimizations with a missing answer. Domestic violence is violence by an intimate partner or other relative. Estimates come from a sample and carry sampling error, which is larger for rarer crimes and single years.",
+    metrics: {
+      violent_rate: m("Violent victimization rate", "per_1000"),
+      property_rate: m("Property victimization rate", "per_1000"),
+      rape_sexual_assault_rate: m("Rape or sexual assault", "per_1000"),
+      robbery_rate: m("Robbery", "per_1000"),
+      aggravated_assault_rate: m("Aggravated assault", "per_1000"),
+      simple_assault_rate: m("Simple assault", "per_1000"),
+      burglary_rate: m("Burglary and trespassing", "per_1000"),
+      motor_vehicle_theft_rate: m("Motor vehicle theft", "per_1000"),
+      other_theft_rate: m("Other household theft", "per_1000"),
+      domestic_violence_rate: m("Domestic violence (intimate partner or relative)", "per_1000"),
+      intimate_partner_rate: m("Intimate partner violence", "per_1000"),
+      stranger_violence_rate: m("Violence by a stranger", "per_1000"),
+      ...Object.fromEntries(
+        ["violent", "property", "rape_sexual_assault", "robbery", "aggravated_assault", "simple_assault", "burglary", "motor_vehicle_theft", "other_theft"].map(
+          (k) => [`${k}_reported_pct`, m(`Share reported to police: ${k.replace(/_/g, " ")}`, "percent")],
+        ),
+      ),
+    },
+  },
+  "guttmacher-monthly-abortions": {
+    title: "Monthly Abortion Provision Study",
+    topic: "abortion",
+    publisher: "Guttmacher Institute",
+    sourceUrl: "https://www.guttmacher.org/monthly-abortion-provision-study",
+    cadence: "Several times a year",
+    license: "Free to use with citation (Guttmacher public-use data)",
+    description:
+      "Estimated abortions provided by U.S. clinicians each month since January 2023, nationally and in every state, with annual counts of patients who traveled from another state, abortions by virtual-only (telehealth) providers, and a table of where each state's residents obtained abortions.",
+    methodology:
+      "Counts are by state of occurrence: where the procedure took place or where pills were received, including medication abortion mailed by telehealth providers into states with total bans under other states' shield laws. Estimates are modeled from a sample of providers and rounded to the nearest 10; metadata.lower and metadata.upper give the 90% uncertainty interval. Excludes abortions provided under exceptions to total bans and self-managed abortions with pills obtained outside the U.S. health care system. The travel table suppresses cells under 100, so abortions_by_residence and abortions_residents_out_of_state are sums of published cells and slightly undercount small flows. Groups 'total-ban' and 'no-total-ban' follow Guttmacher's classification.",
+    metrics: {
+      abortions_monthly: m("Abortions per month", "abortions"),
+      abortions: m("Abortions per year (state of occurrence)", "abortions"),
+      abortions_from_other_states: m("Abortion patients from other states", "abortions"),
+      abortions_from_other_states_share: m("Share of patients from other states", "percent"),
+      abortions_virtual_only: m("Abortions by virtual-only (telehealth) providers", "abortions"),
+      abortions_by_residence: m("Abortions obtained by state residents (anywhere)", "abortions"),
+      abortions_residents_out_of_state: m("Residents who obtained an abortion in another state", "abortions"),
+      abortion_travel: m("Abortions by state of occurrence and state of residence", "abortions"),
+    },
+  },
+  "guttmacher-pregnancy-history": {
+    title: "Pregnancies, Births and Abortions in the United States, 1973–2020",
+    topic: "abortion",
+    publisher: "Guttmacher Institute",
+    sourceUrl: "https://osf.io/kthnf/",
+    cadence: "Irregular (latest release October 2024)",
+    license: "Free to use with citation (Guttmacher public-use data)",
+    description:
+      "Abortions, abortion rates, and pregnancy rates by state of residence and age group: nationally for every year from 1973 to 2020, and for states in 1988, 1992, 1996, 2000, and every year from 2005.",
+    methodology:
+      "Abortion counts combine Guttmacher's census of all known abortion providers with CDC and state health department data, reassigned from state of occurrence to state of residence. Rates are per 1,000 women aged 15–44 (age-group rates per 1,000 women in that group); the ratio is abortions per 1,000 live births. Where a state lacked data by age, Guttmacher estimated it from similar states; metadata.note records how.",
+    metrics: {
+      abortions: m("Abortions (state of residence)", "abortions"),
+      abortion_rate: m("Abortion rate per 1,000 women aged 15–44", "per_1000"),
+      abortion_ratio: m("Abortions per 1,000 live births", "per_1000"),
+      pregnancy_rate: m("Pregnancy rate per 1,000 women aged 15–44", "per_1000"),
+      abortion_rate_1519: m("Abortion rate, ages 15–19", "per_1000"),
+      abortion_rate_2024: m("Abortion rate, ages 20–24", "per_1000"),
+      abortion_rate_2529: m("Abortion rate, ages 25–29", "per_1000"),
+      abortion_rate_3034: m("Abortion rate, ages 30–34", "per_1000"),
+      abortion_rate_3539: m("Abortion rate, ages 35–39", "per_1000"),
+      abortion_rate_40plus: m("Abortion rate, ages 40 and over", "per_1000"),
+    },
+  },
+  "cdc-abortion-surveillance": {
+    title: "Abortion Surveillance",
+    topic: "abortion",
+    publisher: "Centers for Disease Control and Prevention",
+    sourceUrl: "https://www.cdc.gov/reproductive-health/data-statistics/abortion-surveillance-findings.html",
+    cadence: "Annual (latest report covers 2022)",
+    license: "Public domain (U.S. government work)",
+    description:
+      "Abortions reported to CDC by state health agencies: counts, rates, and ratios by state of occurrence, the share obtained by out-of-state residents, method (medication or procedural), and the age, race and ethnicity, and weeks of gestation of patients.",
+    methodology:
+      "Reporting is voluntary. California, Maryland, and New Hampshire do not report, and New Jersey reported only some years, so national counts are lower than Guttmacher's. National rates (per 1,000 women aged 15–44) and ratios (per 1,000 live births) cover only the areas that reported every year in the newest report. Characteristics are shares of abortions with that characteristic known, among the areas that reported it. Medication share is medication abortions as a share of abortions with a known method. Parsed from the MMWR reports' tables on PubMed Central; metadata.report names the report.",
+    metrics: {
+      abortions_reported: m("Abortions reported to CDC", "abortions"),
+      abortion_rate: m("Abortion rate per 1,000 women aged 15–44", "per_1000"),
+      abortion_ratio: m("Abortions per 1,000 live births", "per_1000"),
+      abortions_nonresidents: m("Abortions obtained by out-of-state residents", "abortions"),
+      abortions_nonresidents_share: m("Share obtained by out-of-state residents", "percent"),
+      medication_share: m("Medication abortions, share of known method", "percent"),
+      share_age_under15: m("Share aged under 15", "percent"),
+      share_age_15_19: m("Share aged 15–19", "percent"),
+      share_age_20_24: m("Share aged 20–24", "percent"),
+      share_age_25_29: m("Share aged 25–29", "percent"),
+      share_age_30_34: m("Share aged 30–34", "percent"),
+      share_age_35_39: m("Share aged 35–39", "percent"),
+      share_age_40plus: m("Share aged 40 and over", "percent"),
+      share_weeks_le13: m("Share at 13 weeks or earlier", "percent"),
+      share_weeks_le6: m("Share at 6 weeks or earlier", "percent"),
+      share_weeks_7_9: m("Share at 7–9 weeks", "percent"),
+      share_weeks_10_13: m("Share at 10–13 weeks", "percent"),
+      share_weeks_gt13: m("Share after 13 weeks", "percent"),
+      share_weeks_14_15: m("Share at 14–15 weeks", "percent"),
+      share_weeks_16_17: m("Share at 16–17 weeks", "percent"),
+      share_weeks_18_20: m("Share at 18–20 weeks", "percent"),
+      share_weeks_ge21: m("Share at 21 weeks or later", "percent"),
+      ...Object.fromEntries(
+        [["black", "non-Hispanic Black"], ["white", "non-Hispanic White"], ["other", "non-Hispanic other races"], ["hispanic", "Hispanic"]].flatMap(([k, label]) => [
+          [`share_${k}`, m(`Share ${label}`, "percent")],
+          [`abortion_rate_${k}`, m(`Abortion rate, ${label} women`, "per_1000")],
+          [`abortion_ratio_${k}`, m(`Abortion ratio, ${label} women`, "per_1000")],
+        ]),
+      ),
+    },
+  },
+  "abortion-gestational-limits": {
+    title: "State Abortion Gestational Limits",
+    topic: "abortion",
+    publisher: "Guttmacher Institute (state policy summaries)",
+    sourceUrl: "https://states.guttmacher.org/policies/",
+    cadence: "Monthly snapshot",
+    license: "Compiled from a public source",
+    description: "The point in pregnancy after which each state bans abortion, as in effect in each month imported: a total ban, a ban at a set number of weeks, at fetal viability, or no gestational limit.",
+    methodology:
+      "Read from the gestational-limit statement in each state's Guttmacher policy summary. Week counts are as the state law states them; some laws count from fertilization rather than the last menstrual period. Viability is stored as 24 weeks and the third trimester as 27 for sorting; metadata.label and metadata.detail give the wording. Exceptions (life of the patient, rape, incest, fetal anomaly) vary by state and are not captured. Categories: 1 total ban, 2 banned at 6–12 weeks, 3 at 15–22 weeks, 4 at 24 weeks, viability, or the third trimester, 5 no gestational limit.",
+    metrics: {
+      gestational_limit_category: m("Gestational limit category", "category"),
+      gestational_limit_weeks: m("Gestational limit (weeks)", "weeks"),
+    },
   },
   "census-acs5": {
     title: "American Community Survey 5-year Profiles",
@@ -211,6 +513,167 @@ export const CATALOG = {
     description: "Voter registration, list maintenance, mail and provisional ballots, and turnout by voting method for every election jurisdiction.",
     methodology: "Aggregates count only jurisdictions that reported each item (metadata.reporting).",
     metrics: {},
+  },
+
+  "cps-voting": {
+    title: "Voting and Registration Supplement",
+    topic: "elections",
+    publisher: "U.S. Census Bureau (Current Population Survey)",
+    sourceUrl: "https://www.census.gov/topics/public-sector/voting.html",
+    cadence: "Biennial",
+    license: "Public domain (U.S. government work)",
+    description:
+      "Who registers and who votes in November federal elections: eligible citizens, registered voters, and voters by age, race and ethnicity, sex, education, and family income, plus how voters cast their ballots. National and by state.",
+    methodology:
+      "Survey estimates from the CPS November supplement public-use file, weighted with PWSSWGT. The universe is U.S. citizens 18 and older. Respondents who did not answer whether they voted are counted as not voting, as in the Census Bureau's published tables. Race groups other than Hispanic are non-Hispanic and single-race. metadata.sample is the number of respondents behind each estimate.",
+    metrics: Object.fromEntries(
+      Object.entries(CPS_MEASURES).flatMap(([measure, label]) => [
+        [metricName(measure), m(`${label}, total`, "people")],
+        ...DIMENSIONS.filter((d) => !d.votersOnly || measure === "voted").flatMap((d) =>
+          d.groups.map((g) => [metricName(measure, d.key, g.key), m(`${label}: ${d.label}, ${g.label}`, "people")]),
+        ),
+      ]),
+    ),
+  },
+
+  // Record datasets (records: true): rows live in their own tables, not
+  // area_stats. Which tables, and how coverage is counted, is in
+  // src/lib/db/records.ts.
+  "congress-bills": {
+    title: "Congressional Bills",
+    topic: "legislation",
+    publisher: "Library of Congress (Congress.gov)",
+    sourceUrl: "https://api.congress.gov/",
+    cadence: "Daily",
+    license: "Public domain (U.S. government work)",
+    description: "Bills and resolutions with sponsors, cosponsors, actions, committee referrals, text versions, and related bills.",
+    methodology: "Synced incrementally by each bill's last update date. Sponsors and cosponsors are matched to members by Bioguide ID.",
+    metrics: {},
+    records: true,
+  },
+  "congress-votes": {
+    title: "Congressional Roll-Call Votes",
+    topic: "legislation",
+    publisher: "Library of Congress (Congress.gov)",
+    sourceUrl: "https://api.congress.gov/",
+    cadence: "Daily",
+    license: "Public domain (U.S. government work)",
+    description: "Recorded House and Senate votes: the question, the result, and how each member voted.",
+    methodology: "Members are matched by Bioguide ID. Roll calls link to the bill they concern when that bill has been imported.",
+    metrics: {},
+    records: true,
+  },
+  voteview: {
+    title: "DW-NOMINATE Ideology Scores",
+    topic: "legislation",
+    publisher: "Voteview (Lewis, Poole, Rosenthal et al.)",
+    sourceUrl: "https://voteview.com/data",
+    cadence: "Weekly",
+    license: "Free for use with attribution",
+    description: "Ideology scores for every member of Congress in each Congress since 1977, estimated from their roll-call voting record.",
+    methodology:
+      "One row per member per Congress per chamber. The first dimension runs from liberal (−1) to conservative (+1); the second captures cross-cutting issues of each era.",
+    metrics: {},
+    records: true,
+  },
+  scdb: {
+    title: "Supreme Court Database",
+    topic: "courts",
+    publisher: "The Supreme Court Database (Spaeth et al.)",
+    sourceUrl: "http://scdb.la.psu.edu/",
+    cadence: "Each term",
+    license: "Free for use with attribution",
+    description: "Every Supreme Court decision since the 1946 term, with each justice's vote, the issue area, and the ideological direction of the outcome.",
+    methodology:
+      "Decision direction follows the database's own coding (conservative, liberal, or unspecifiable). One case row per docket; one vote row per justice per case.",
+    metrics: {},
+    records: true,
+  },
+  "federal-register": {
+    title: "Presidential Documents and Significant Rules",
+    topic: "executive",
+    publisher: "Office of the Federal Register (National Archives)",
+    sourceUrl: "https://www.federalregister.gov/developers/documentation/api/v1",
+    cadence: "Daily",
+    license: "Public domain (U.S. government work)",
+    description:
+      "Executive orders, proclamations, memoranda, and other presidential documents since 1994, plus every rule and proposed rule designated significant under Executive Order 12866.",
+    methodology: "Documents are dated by Federal Register publication. Signing dates are kept where the Register records them.",
+    metrics: {},
+    records: true,
+  },
+  fec: {
+    title: "Campaign Finance: Candidates and PAC Contributions",
+    topic: "money",
+    publisher: "Federal Election Commission",
+    sourceUrl: "https://api.open.fec.gov/developers/",
+    cadence: "Daily",
+    license: "Public domain (U.S. government work)",
+    description: "Each federal candidate's receipts, spending, cash on hand, and debts, plus the largest PAC and committee contributions to their campaigns.",
+    methodology:
+      "Totals come from each candidate's principal campaign committee for the cycle. Contributions carry FEC's own record ID; donor industry is classified from the filer's name and employer.",
+    metrics: {},
+    records: true,
+  },
+  "fec-ie": {
+    title: "Independent Expenditures",
+    topic: "money",
+    publisher: "Federal Election Commission",
+    sourceUrl: "https://api.open.fec.gov/developers/",
+    cadence: "Daily",
+    license: "Public domain (U.S. government work)",
+    description: "Spending by super PACs, parties, and outside groups for or against a federal candidate (FEC Schedule E).",
+    methodology: "Only periodic-report rows are counted, so 24- and 48-hour notices that are later re-reported are not double counted.",
+    metrics: {},
+    records: true,
+  },
+  lda: {
+    title: "Federal Lobbying Disclosures",
+    topic: "money",
+    publisher: "U.S. Senate Office of Public Records",
+    sourceUrl: "https://lda.senate.gov/api/",
+    cadence: "Quarterly",
+    license: "Public domain (U.S. government work)",
+    description: "Lobbying Disclosure Act filings: who hired which firm, what they reported spending, and the issues and bills they lobbied on.",
+    methodology: "One record per filing. Bill numbers named in activity descriptions are linked to imported bills where they match.",
+    metrics: {},
+    records: true,
+  },
+  "medsl-elections": {
+    title: "U.S. Election Returns",
+    topic: "elections",
+    publisher: "MIT Election Data and Science Lab",
+    sourceUrl: "https://electionlab.mit.edu/data",
+    cadence: "Each election",
+    license: "CC0 / public domain",
+    description: "Statewide returns for presidential, Senate, and House elections since 2000: every candidate, party, and vote total.",
+    methodology: "Candidates are matched to existing people only on an unambiguous name match; ambiguous matches are skipped, never guessed.",
+    metrics: {},
+    records: true,
+  },
+  "county-results": {
+    title: "County Presidential Results",
+    topic: "elections",
+    publisher: "Tony McGovern (compiled from state and county returns)",
+    sourceUrl: "https://github.com/tonmcg/US_County_Level_Election_Results_08-24",
+    cadence: "Each presidential election",
+    license: "MIT",
+    description: "Republican and Democratic presidential vote totals in every county, 2008 onward.",
+    methodology: "Two-party votes only, keyed by five-digit county FIPS code.",
+    metrics: {},
+    records: true,
+  },
+  "race-ratings": {
+    title: "Race Ratings",
+    topic: "elections",
+    publisher: "Sabato's Crystal Ball (University of Virginia Center for Politics)",
+    sourceUrl: "https://centerforpolitics.org/crystalball/",
+    cadence: "As published",
+    license: "Transcribed from a public source",
+    description: "Handicapper ratings (safe, likely, lean, toss-up) for competitive Senate, House, and governor races in the current cycle.",
+    methodology: "Each published rating is kept with its date, so changes over the cycle stay visible.",
+    metrics: {},
+    records: true,
   },
 };
 

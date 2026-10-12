@@ -16,6 +16,11 @@ export function getDriver(): Driver {
     );
   }
 
-  driver = neo4j.driver(uri, neo4j.auth.basic(user, password));
+  // Fail fast when the instance is unreachable (Aura Free pauses after 3 idle
+  // days) so pages hit their error boundary instead of hanging.
+  driver = neo4j.driver(uri, neo4j.auth.basic(user, password), {
+    connectionTimeout: 10_000,
+    connectionAcquisitionTimeout: 15_000,
+  });
   return driver;
 }

@@ -19,10 +19,13 @@ export function formatValue(value: number | null | undefined, unit?: Unit, opts:
       return `${oneDp.format(value)}%`;
     case "per_100k":
     case "per_1000":
+    case "index": // base period = 100
     case "days":
       return oneDp.format(value);
     case "usd":
       return `$${formatNumber(value, opts)}`;
+    case "score": // DW-NOMINATE and other −1…+1 scales
+      return value.toFixed(2);
     default:
       return formatNumber(value, opts);
   }

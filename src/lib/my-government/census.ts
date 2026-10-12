@@ -92,7 +92,8 @@ function geographyFromMatch(match: CensusMatch | undefined): CensusGeography {
     district("County", county),
     district("Place", place),
     district("U.S. House", congress),
-    district("State Senate", upper),
+    // DC's "upper" legislative districts are its eight council wards.
+    district(stateCode === "DC" ? "Ward" : "State Senate", upper),
     district("State House", lower),
     ...schoolDistricts,
   ].filter((item): item is GovernmentDistrict => Boolean(item));

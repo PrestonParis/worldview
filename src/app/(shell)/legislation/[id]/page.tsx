@@ -121,10 +121,10 @@ export default async function BillDetailPage({
   return (
     <div className="max-w-3xl">
       <Link
-        href="/legislation"
+        href="/legislation/bills"
         className="text-sm text-slate-500 underline underline-offset-2 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
       >
-        ← Legislation
+        ← Bills
       </Link>
 
       <div className="mt-3 flex items-center gap-2">

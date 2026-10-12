@@ -1,3 +1,5 @@
+import type { NodeFamily } from "./lean";
+
 // The slim, serializable shape the People network canvas renders. Built
 // server-side in graph-page.tsx so the client never receives full entity
 // records (biographies, metadata) for nodes it only draws as dots.
@@ -13,6 +15,8 @@ export interface NetworkNode {
   size: number;
   /** Connections within the current view. */
   degree: number;
+  /** Colour channel: people by political family, everything else an institution. */
+  family: NodeFamily;
 }
 
 export interface NetworkLink {
@@ -23,6 +27,13 @@ export interface NetworkLink {
   /** Human verb, e.g. "founded", "sits on". */
   label: string;
   role: string;
+  validFrom?: string;
+  validTo?: string;
+  sourced?: boolean;
+  sourceTitle?: string;
+  sourceUrl?: string;
+  sourcePublisher?: string;
+  former?: boolean;
 }
 
 export interface SearchItem {

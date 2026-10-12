@@ -8,6 +8,13 @@ const requestSchema = z.object({
   magicKey: z.string().trim().min(1).max(1024).optional(),
 });
 
+export function GET() {
+  return NextResponse.json(
+    { error: "Use POST with a JSON body: { address }." },
+    { status: 405, headers: { Allow: "POST" } },
+  );
+}
+
 export async function POST(request: Request) {
   let parsed: z.infer<typeof requestSchema>;
   try {

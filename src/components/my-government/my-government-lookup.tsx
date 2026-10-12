@@ -123,8 +123,8 @@ function OfficeCard({ official }: { official: GovernmentOfficial }) {
   );
 }
 
-export function MyGovernmentLookup() {
-  const [address, setAddress] = useState("");
+export function MyGovernmentLookup({ initialAddress = "" }: { initialAddress?: string }) {
+  const [address, setAddress] = useState(initialAddress);
   const [result, setResult] = useState<GovernmentLookupResult | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -219,6 +219,8 @@ export function MyGovernmentLookup() {
                 <span className="sr-only">Your home address</span>
                 <input
                   type="text"
+                  role="combobox"
+                  aria-autocomplete="list"
                   value={address}
                   onChange={(event) => {
                     setAddress(event.target.value);
@@ -271,7 +273,7 @@ export function MyGovernmentLookup() {
           {[
             ["1", "Match your address", "The Census geocoder identifies the exact government and school districts for your location."],
             ["2", "Resolve officeholders", "Current public rosters are matched to those districts, with every source attached."],
-            ["3", "Follow the record", "Jump from each official to votes, donors, promises, and scorecards across Worldview."],
+            ["3", "Follow the record", "Jump from each official to their votes, donors, and connections across Worldview."],
           ].map(([number, title, description]) => (
             <div key={number} className="rounded-2xl border border-slate-200 p-6 dark:border-slate-800">
               <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-950 text-xs font-semibold text-white dark:bg-white dark:text-slate-950">{number}</span>

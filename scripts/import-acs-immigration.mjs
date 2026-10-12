@@ -13,14 +13,17 @@
 // cells), so variables are resolved by label from each year's group
 // metadata rather than hard-coded codes.
 //
-// Needs CENSUS_API_KEY (free, https://api.census.gov/data/key_signup.html —
-// the key only works after clicking the activation link in the email).
+// With a valid CENSUS_API_KEY (free, https://api.census.gov/data/key_signup.html
+// — the key only works after clicking the activation link in the email) the
+// data comes from the API. Without one it falls back to the keyless
+// table-based summary files on www2.census.gov, which start in 2021; earlier
+// years are skipped until a key is available. Group metadata needs no key.
 //
 // Usage:
 //   node scripts/import-acs-immigration.mjs [--years=2005-2024]
 //   ENV_FILE=.env.cloud node scripts/import-acs-immigration.mjs
 
-import { arg, checkCensusKey, fetchJson, num, runImport, upsertRows } from "./lib/bulk.mjs";
+import { arg, checkCensusKey, fetchJson, fetchRetry, num, runImport, STATE_FIPS, STATE_NAME_TO_ABBR, upsertRows } from "./lib/bulk.mjs";
 import { registerDataset } from "./lib/catalog.mjs";
 
 const [FROM, TO] = arg("years", "2005-2024").split("-").map(Number);
@@ -45,7 +48,32 @@ async function groupVars(year, group) {
     .map(([name, v]) => ({ name, label: v.label, path: path(v.label) }));
 }
 
+const FIPS_NAME = Object.fromEntries(Object.entries(STATE_NAME_TO_ABBR).map(([name, abbr]) => [STATE_FIPS[abbr], name]));
+FIPS_NAME["72"] ??= "Puerto Rico";
+const SF_FROM = 2021;
+
+// Table-based summary file: pipe-delimited, GEO_ID + B05002_E001/B05002_M001
+// columns. Rows are reshaped to the API's shape (NAME, state, B05002_001E).
+async function fetchGroupFile(year, group) {
+  const url = `https://www2.census.gov/programs-surveys/acs/summary_file/${year}/table-based-SF/data/1YRData/acsdt1y${year}-${group.toLowerCase()}.dat`;
+  const [head, ...lines] = (await (await fetchRetry(url, {}, { label: `ACS1 SF ${group} ${year}` })).text()).trim().split("\n");
+  const cols = head.split("|").map((c) => c.replace(/^(\w+)_([EM])(\d+)$/, (_, g, k, n) => `${g}_${n}${k}`));
+  const rows = [];
+  for (const line of lines) {
+    const cells = line.split("|");
+    const geo = cells[0];
+    let r;
+    if (geo === "0100000US") r = { NAME: "United States" };
+    else if (/^0400000US\d{2}$/.test(geo)) r = { NAME: FIPS_NAME[geo.slice(-2)] ?? geo.slice(-2), state: geo.slice(-2) };
+    else continue;
+    cols.forEach((c, i) => i && (r[c] = cells[i]));
+    rows.push(r);
+  }
+  return rows;
+}
+
 async function fetchGroup(year, group, key) {
+  if (!key) return fetchGroupFile(year, group);
   const rows = [];
   for (const geo of [{ for: "us:1" }, { for: "state:*" }]) {
     const url = new URL(`https://api.census.gov/data/${year}/acs/acs1`);
@@ -59,11 +87,21 @@ async function fetchGroup(year, group, key) {
 }
 
 await runImport("census-acs1-immigration", async (pg) => {
-  const key = process.env.CENSUS_API_KEY;
-  await checkCensusKey(key);
+  let key = process.env.CENSUS_API_KEY;
+  try {
+    await checkCensusKey(key);
+  } catch (err) {
+    console.warn(`  ${err.message}\n  Falling back to the table-based summary files (${SF_FROM} onward).`);
+    key = null;
+  }
   await registerDataset(pg, "census-acs1-immigration");
   let total = 0;
+  const skipped = [];
   for (const year of YEARS) {
+    if (!key && year < SF_FROM) {
+      skipped.push(year);
+      continue;
+    }
     const out = [];
     const base = { source: "census-acs1-immigration", period: String(year), period_start: `${year}-01-01` };
     const value = (r, name) => {
@@ -124,5 +162,6 @@ await runImport("census-acs1-immigration", async (pg) => {
     });
     console.log(`  ${year}: ${out.length} rows`);
   }
-  return { inserted: total };
+  if (skipped.length) console.warn(`  skipped ${skipped.join(", ")} (needs a valid CENSUS_API_KEY)`);
+  return { inserted: total, skipped: skipped.length };
 });

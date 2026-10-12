@@ -30,6 +30,14 @@ export interface DimensionMeta {
   sources: DemographicSource[];
 }
 
+// Residents and adults (18+) by year, from `start`; null where the source
+// has no figure for that year.
+export interface RegionCounts {
+  start: number;
+  residents: Array<number | null>;
+  adults: Array<number | null>;
+}
+
 export interface RegionRecord {
   id: string; // state FIPS or place GEOID
   name: string;
@@ -38,6 +46,7 @@ export interface RegionRecord {
   lat?: number;
   lon?: number;
   population: number;
+  counts?: RegionCounts;
   series: Partial<Record<DemographicDimensionId, PackedSeries>>;
 }
 
@@ -105,6 +114,29 @@ export function packedValue(packed: PackedSeries | undefined, category: string, 
   const column = packed.categories.indexOf(category);
   const row = packed.values[year - packed.start];
   return column === -1 || !row ? null : row[column];
+}
+
+// One category's projected low / high in a given year; null before the
+// projection starts or outside the series.
+export function packedRange(
+  packed: PackedSeries | undefined,
+  category: string,
+  year: number,
+): [number, number] | null {
+  if (!packed) return null;
+  const column = packed.categories.indexOf(category);
+  const offset = year - packed.observedThrough;
+  if (column === -1 || offset <= 0 || !packed.low[offset]) return null;
+  return [packed.low[offset][column], packed.high[offset][column]];
+}
+
+export function regionCount(
+  record: RegionRecord,
+  universe: "residents" | "adults",
+  year: number,
+): number | null {
+  if (!record.counts) return null;
+  return record.counts[universe][year - record.counts.start] ?? null;
 }
 
 // Damped log-linear extrapolation of each category's share from its change

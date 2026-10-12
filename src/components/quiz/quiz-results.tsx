@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { axes as axisDefs, axisById } from "@/lib/quiz/axes";
+import { AXIS_GROUPS, axes as axisDefs, axisById } from "@/lib/quiz/axes";
 import {
   poleLabel,
   verdict,
@@ -12,16 +12,10 @@ import { FAMILIES, familyColor } from "@/lib/quiz/families";
 import { ideologyMap, placeRespondent } from "@/lib/quiz/map";
 import { ideologies } from "@/lib/quiz/ideologies";
 import { refineAxisAction, startQuizAction } from "@/lib/actions/quiz";
-import type { AxisGroup, AxisId, IdeologyFamily } from "@/lib/quiz/types";
+import type { AxisId, IdeologyFamily } from "@/lib/quiz/types";
 import { QuizShareButton } from "./quiz-share";
 
-const GROUPS: { id: AxisGroup; label: string }[] = [
-  { id: "governance", label: "Governance" },
-  { id: "economy", label: "Economy" },
-  { id: "foreign", label: "Foreign policy" },
-  { id: "society", label: "Society" },
-  { id: "tech", label: "Technology & environment" },
-];
+const GROUPS = AXIS_GROUPS;
 
 const FEATURED = 3;
 const LISTED = 10;

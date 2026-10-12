@@ -1,174 +1,272 @@
 import Link from "next/link";
-import type { ReactElement } from "react";
-import { toolPages } from "@/lib/nav";
-import { pagesContent } from "@/lib/pages-content";
-import { typeColorFor } from "@/lib/type-colors";
+import { ArrowRight, MapPin, Search } from "lucide-react";
+import { formatValue } from "@/lib/format";
 
-const CATEGORY_SLUGS = ["my-government", "people", "legislation", "money", "elections", "demographics", "quiz", "geography"];
+export interface TrendSample {
+  label: string;
+  value: number | null;
+  unit: string;
+  period: string;
+  source: string;
+  values: number[];
+  firstPeriod?: string;
+}
 
-function NodeGraphIcon() {
+export interface DemographicSample {
+  period: string;
+  source: string;
+  categories: { label: string; value: number; color: string }[];
+}
+
+export interface PlatformFacts {
+  people?: { entities: number; relationships: number; recent: string[] };
+  money?: { contributions: number; usdTotal: number };
+  legislation?: { bills: number; rollCalls: number };
+  elections?: { cycle: number; races: number };
+}
+
+export function ToolModules({
+  immigration,
+  crime,
+  demographics,
+  facts,
+  datasetCount,
+  publisherCount,
+}: {
+  immigration: TrendSample | null;
+  crime: TrendSample | null;
+  demographics: DemographicSample | null;
+  facts: PlatformFacts;
+  datasetCount: number;
+  publisherCount: number;
+}) {
   return (
-    <svg viewBox="0 0 64 40" className="h-10 w-16" aria-hidden>
-      <g stroke="currentColor" strokeWidth="1.5" fill="none" opacity="0.9">
-        <line x1="10" y1="12" x2="30" y2="8" />
-        <line x1="10" y1="12" x2="18" y2="30" />
-        <line x1="30" y1="8" x2="50" y2="18" />
-        <line x1="18" y1="30" x2="50" y2="18" />
-        <line x1="30" y1="8" x2="18" y2="30" />
-      </g>
-      <g fill="currentColor">
-        <circle cx="10" cy="12" r="3.5" />
-        <circle cx="30" cy="8" r="3" />
-        <circle cx="18" cy="30" r="3" />
-        <circle cx="50" cy="18" r="4" />
-      </g>
-    </svg>
+    <div className="space-y-20 py-16 lg:space-y-24 lg:py-20">
+      <GovernmentLookup />
+      <IssuesSection immigration={immigration} crime={crime} demographics={demographics} />
+      <PowerSection facts={facts} />
+      <DemocracySection facts={facts} />
+      <ToolsSection />
+      <TrustSection datasetCount={datasetCount} publisherCount={publisherCount} />
+    </div>
   );
 }
 
-function DocsIcon() {
+function SectionHeading({ label, title, body }: { label: string; title: string; body: string }) {
   return (
-    <svg viewBox="0 0 64 40" className="h-10 w-16" aria-hidden>
-      <g stroke="currentColor" strokeWidth="1.5" fill="none">
-        <rect x="4" y="14" width="14" height="12" rx="2" opacity="0.8" />
-        <rect x="25" y="14" width="14" height="12" rx="2" opacity="0.55" />
-        <rect x="46" y="14" width="14" height="12" rx="2" opacity="0.55" />
-      </g>
-      <line x1="18" y1="20" x2="25" y2="20" stroke="currentColor" strokeWidth="1.5" />
-      <line x1="39" y1="20" x2="46" y2="20" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M50 20l2.5 2.5L57 17.5" stroke="currentColor" strokeWidth="1.75" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
+    <div className="grid gap-3 border-t border-slate-300 pt-5 md:grid-cols-[12rem_1fr] dark:border-slate-700">
+      <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">{label}</p>
+      <div className="max-w-3xl">
+        <h2 className="text-3xl font-semibold tracking-[-0.025em] text-slate-950 dark:text-white">{title}</h2>
+        <p className="mt-3 text-base leading-7 text-slate-600 dark:text-slate-400">{body}</p>
+      </div>
+    </div>
   );
 }
 
-function MoneyFlowIcon() {
+function GovernmentLookup() {
   return (
-    <svg viewBox="0 0 64 40" className="h-10 w-16" aria-hidden>
-      <path d="M8 30c12 0 12-20 24-20s12 20 24 20" stroke="currentColor" strokeWidth="1.5" fill="none" opacity="0.6" />
-      <g fill="currentColor">
-        <circle cx="8" cy="30" r="3.5" />
-        <circle cx="56" cy="30" r="3.5" />
-      </g>
-      <circle cx="32" cy="20" r="6.5" fill="none" stroke="currentColor" strokeWidth="1.5" />
-      <line x1="32" y1="15.5" x2="32" y2="24.5" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  );
-}
-
-function GlobeIcon() {
-  return (
-    <svg viewBox="0 0 64 40" className="h-10 w-16" aria-hidden>
-      <g stroke="currentColor" strokeWidth="1.5" fill="none">
-        <circle cx="32" cy="20" r="13" />
-        <ellipse cx="32" cy="20" rx="5.5" ry="13" />
-        <line x1="19" y1="20" x2="45" y2="20" />
-        <line x1="21.5" y1="12" x2="42.5" y2="12" opacity="0.7" />
-        <line x1="21.5" y1="28" x2="42.5" y2="28" opacity="0.7" />
-      </g>
-    </svg>
-  );
-}
-
-function BallotIcon() {
-  return (
-    <svg viewBox="0 0 64 40" className="h-10 w-16" aria-hidden>
-      <g stroke="currentColor" strokeWidth="1.5" fill="none">
-        <rect x="18" y="6" width="28" height="24" rx="2" opacity="0.8" />
-        <path d="M23 15l3 3 6-7" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-        <line x1="23" y1="24" x2="41" y2="24" opacity="0.6" />
-      </g>
-      <rect x="10" y="30" width="44" height="5" rx="1.5" fill="currentColor" opacity="0.85" />
-      <rect x="29" y="27" width="6" height="6" fill="currentColor" />
-    </svg>
-  );
-}
-
-function DemographicsIcon() {
-  return (
-    <svg viewBox="0 0 64 40" className="h-10 w-16" aria-hidden>
-      <path d="M6 32h52" stroke="currentColor" strokeWidth="1.5" opacity="0.45" />
-      <path d="M8 28c9-1 11-7 19-8 8-2 12 3 18-2 5-4 8-9 11-10v20H8Z" fill="currentColor" opacity="0.18" />
-      <path d="M8 28c9-1 11-7 19-8 8-2 12 3 18-2 5-4 8-9 11-10" fill="none" stroke="currentColor" strokeWidth="1.75" />
-      <circle cx="27" cy="20" r="2.5" fill="currentColor" />
-      <circle cx="45" cy="18" r="2.5" fill="currentColor" />
-    </svg>
-  );
-}
-
-function QuizIcon() {
-  return (
-    <svg viewBox="0 0 64 40" className="h-10 w-16" aria-hidden>
-      <g stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-        <line x1="8" y1="10" x2="56" y2="10" opacity="0.45" />
-        <line x1="8" y1="20" x2="56" y2="20" opacity="0.45" />
-        <line x1="8" y1="30" x2="56" y2="30" opacity="0.45" />
-      </g>
-      <g fill="currentColor">
-        <circle cx="40" cy="10" r="3.5" />
-        <circle cx="19" cy="20" r="3.5" />
-        <circle cx="47" cy="30" r="3.5" />
-      </g>
-    </svg>
-  );
-}
-
-function GovernmentIcon() {
-  return (
-    <svg viewBox="0 0 64 40" className="h-10 w-16" aria-hidden>
-      <g fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M11 17h42L32 7 11 17Z" />
-        <path d="M15 34h34M13 37h38M18 18v16M27 18v16M37 18v16M46 18v16" opacity="0.9" />
-      </g>
-      <circle cx="32" cy="12" r="2" fill="currentColor" />
-    </svg>
-  );
-}
-
-const ICONS: Record<string, () => ReactElement> = {
-  "my-government": GovernmentIcon,
-  people: NodeGraphIcon,
-  legislation: DocsIcon,
-  money: MoneyFlowIcon,
-  elections: BallotIcon,
-  demographics: DemographicsIcon,
-  quiz: QuizIcon,
-  geography: GlobeIcon,
-};
-
-export function ToolModules() {
-  const categories = CATEGORY_SLUGS.map((slug) =>
-    toolPages.find((p) => p.href === `/${slug}`),
-  ).filter((p): p is (typeof toolPages)[number] => Boolean(p));
-
-  return (
-    <section>
-      <h2 className="text-xs font-semibold tracking-wider text-slate-400 uppercase">
-        Explore Worldview
-      </h2>
-
-      <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
-        {categories.map((page) => {
-          const slug = page.href.slice(1);
-          const content = pagesContent[slug];
-          const color = typeColorFor(slug);
-          const Icon = ICONS[slug] ?? NodeGraphIcon;
-          return (
-            <Link
-              key={page.href}
-              href={page.href}
-              className="group flex items-center justify-between gap-4 rounded-xl border border-slate-200 p-5 transition-colors hover:border-slate-400 dark:border-slate-800 dark:hover:border-slate-600"
-            >
-              <div className="min-w-0">
-                <p className="text-base font-semibold text-slate-900 dark:text-slate-100">{page.label}</p>
-                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{content?.tagline}</p>
-              </div>
-              <div className="shrink-0" style={{ color: color.border }}>
-                <Icon />
-              </div>
-            </Link>
-          );
-        })}
+    <section id="my-government" className="scroll-mt-24 border-y border-slate-300 py-8 md:grid md:grid-cols-[1fr_1.1fr] md:gap-12 dark:border-slate-700">
+      <div>
+        <p className="text-sm font-semibold text-blue-700 dark:text-blue-300">Find your government</p>
+        <h2 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">Who represents your address?</h2>
+        <p className="mt-3 max-w-xl text-base leading-7 text-slate-600 dark:text-slate-400">
+          Look up federal, state, county, city, school board, and judicial offices in one place.
+        </p>
+      </div>
+      <div className="mt-6 md:mt-0">
+        <form action="/my-government" className="flex flex-col gap-2 sm:flex-row">
+          <label className="flex min-w-0 flex-1 items-center gap-3 rounded-lg border border-slate-300 bg-white px-4 dark:border-slate-700 dark:bg-slate-900">
+            <MapPin size={17} className="shrink-0 text-slate-400" aria-hidden />
+            <span className="sr-only">Your address</span>
+            <input name="address" type="text" autoComplete="street-address" placeholder="Street address, city, state, ZIP" className="h-12 min-w-0 flex-1 bg-transparent text-sm text-slate-950 outline-none placeholder:text-slate-400 dark:text-white" />
+          </label>
+          <button type="submit" className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-blue-700 px-5 text-sm font-semibold text-white hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-500">
+            <Search size={16} aria-hidden /> Search
+          </button>
+        </form>
+        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+          Worldview does not save your address. The lookup uses public geocoding services. <Link href="/privacy#address-lookups" className="underline underline-offset-2">Learn more</Link>.
+        </p>
       </div>
     </section>
   );
+}
+
+function IssuesSection({ immigration, crime, demographics }: { immigration: TrendSample | null; crime: TrendSample | null; demographics: DemographicSample | null }) {
+  return (
+    <section id="issues" className="scroll-mt-24">
+      <SectionHeading label="Issues" title="Start with the numbers." body="Each preview below uses the same public data shown on its topic page. Open a topic for definitions, comparisons, and original sources." />
+      <div className="mt-9 grid gap-x-8 gap-y-10 lg:grid-cols-3">
+        <IssueCard href="/immigration" title="Immigration" description="Border encounters, legal immigration, asylum, migration, and enforcement.">
+          {immigration ? <TrendChart sample={immigration} color="#2563eb" /> : <NoPreview />}
+        </IssueCard>
+        <IssueCard href="/crime" title="Crime" description="National trends, state comparisons, cities, and reported offenses.">
+          {crime ? <TrendChart sample={crime} color="#c2410c" /> : <NoPreview />}
+        </IssueCard>
+        <IssueCard href="/demographics" title="Demographics" description="Population estimates, age, race and ethnicity, religion, and education.">
+          {demographics ? <Composition sample={demographics} /> : <NoPreview />}
+        </IssueCard>
+      </div>
+    </section>
+  );
+}
+
+function IssueCard({ href, title, description, children }: { href: string; title: string; description: string; children: React.ReactNode }) {
+  return (
+    <Link href={href} className="group border-t-2 border-slate-950 pt-4 dark:border-white">
+      {children}
+      <h3 className="mt-5 text-xl font-semibold text-slate-950 group-hover:text-blue-700 dark:text-white dark:group-hover:text-blue-300">{title}</h3>
+      <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">{description}</p>
+      <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-blue-700 group-hover:underline dark:text-blue-300">
+        Explore {title.toLowerCase()} <ArrowRight size={14} aria-hidden />
+      </span>
+    </Link>
+  );
+}
+
+function TrendChart({ sample, color }: { sample: TrendSample; color: string }) {
+  const points = linePoints(sample.values, 340, 96);
+  return (
+    <div>
+      <div className="flex items-end justify-between gap-4">
+        <div>
+          <p className="text-sm text-slate-500 dark:text-slate-400">{sample.label}</p>
+          <p className="mt-1 text-2xl font-semibold text-slate-950 dark:text-white">{formatValue(sample.value, sample.unit, { compact: true })}</p>
+        </div>
+        <p className="text-right text-sm text-slate-500 dark:text-slate-400">{sample.period}</p>
+      </div>
+      <svg viewBox="0 0 340 100" role="img" aria-label={`${sample.label} trend`} className="mt-5 h-28 w-full overflow-visible">
+        <line x1="0" y1="98" x2="340" y2="98" stroke="currentColor" className="text-slate-200 dark:text-slate-700" />
+        <polyline points={points} fill="none" stroke={color} strokeWidth="3" vectorEffect="non-scaling-stroke" />
+      </svg>
+      <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400">
+        <span>{sample.firstPeriod}</span><span>{sample.source}</span>
+      </div>
+    </div>
+  );
+}
+
+function Composition({ sample }: { sample: DemographicSample }) {
+  return (
+    <div>
+      <div className="flex items-baseline justify-between gap-4">
+        <p className="text-sm text-slate-500 dark:text-slate-400">Race and ethnicity</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400">{sample.period}</p>
+      </div>
+      <div className="mt-6 flex h-4 overflow-hidden" aria-label="Population share by race and ethnicity">
+        {sample.categories.map((category) => <span key={category.label} style={{ width: `${category.value}%`, backgroundColor: category.color }} title={`${category.label}: ${category.value.toFixed(1)}%`} />)}
+      </div>
+      <div className="mt-5 space-y-2">
+        {sample.categories.slice(0, 4).map((category) => (
+          <div key={category.label} className="grid grid-cols-[auto_1fr_auto] items-center gap-2 text-xs">
+            <span className="size-2 rounded-sm" style={{ backgroundColor: category.color }} />
+            <span className="truncate text-slate-600 dark:text-slate-300">{category.label}</span>
+            <span className="font-medium text-slate-900 dark:text-white">{category.value.toFixed(1)}%</span>
+          </div>
+        ))}
+      </div>
+      <p className="mt-4 text-xs text-slate-500 dark:text-slate-400">{sample.source}</p>
+    </div>
+  );
+}
+
+function PowerSection({ facts }: { facts: PlatformFacts }) {
+  const items = [
+    {
+      href: "/people", title: "People and organizations", body: "Public officials, candidates, institutions, and the relationships between them.",
+      facts: facts.people ? [
+        `${facts.people.entities.toLocaleString()} profiles`,
+        `${facts.people.relationships.toLocaleString()} relationships`,
+        ...(facts.people.recent.length ? [`Recently added: ${facts.people.recent.slice(0, 2).join(", ")}`] : []),
+      ] : [],
+    },
+    {
+      href: "/money", title: "Political money", body: "Contributions, donors, recipients, industries, and geographic patterns.",
+      facts: facts.money ? [`${facts.money.contributions.toLocaleString()} contribution records`, `${formatValue(facts.money.usdTotal, "usd", { compact: true })} tracked in USD`] : [],
+    },
+    {
+      href: "/legislation", title: "Congress", body: "Bills, sponsors, legislative status, roll calls, and member votes.",
+      facts: facts.legislation ? [`${facts.legislation.bills.toLocaleString()} bills`, `${facts.legislation.rollCalls.toLocaleString()} roll-call votes`] : [],
+    },
+  ];
+  return (
+    <section id="power" className="scroll-mt-24">
+      <SectionHeading label="Power" title="Follow people, money, and decisions." body="The records are connected so you can move from a public official to donors, legislation, votes, and source documents." />
+      <div className="mt-9 grid border-y border-slate-300 md:grid-cols-3 md:divide-x dark:border-slate-700 dark:divide-slate-700">
+        {items.map((item) => (
+          <Link key={item.href} href={item.href} className="group border-b border-slate-300 py-6 last:border-b-0 md:border-b-0 md:px-7 md:first:pl-0 md:last:pr-0 dark:border-slate-700">
+            <h3 className="text-lg font-semibold text-slate-950 group-hover:text-blue-700 dark:text-white dark:group-hover:text-blue-300">{item.title}</h3>
+            <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">{item.body}</p>
+            {item.facts.length ? <ul className="mt-5 space-y-1.5 text-sm text-slate-800 dark:text-slate-200">{item.facts.map((fact) => <li key={fact}>{fact}</li>)}</ul> : null}
+            <span className="mt-5 inline-flex items-center gap-1 text-sm font-medium text-blue-700 dark:text-blue-300">Open section <ArrowRight size={14} aria-hidden /></span>
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function DemocracySection({ facts }: { facts: PlatformFacts }) {
+  return (
+    <section>
+      <SectionHeading label="Democracy" title="Elections and representation." body="Browse races and results nationwide, or use an address to identify the districts and offices that represent you." />
+      <div className="mt-9 grid gap-8 md:grid-cols-2">
+        <TextLink href="/elections" title="Elections">
+          {facts.elections ? `${facts.elections.races.toLocaleString()} races are available for the ${facts.elections.cycle} cycle, including federal, state, and local offices.` : "Browse races, results, district maps, candidates, and nonpartisan race ratings."}
+        </TextLink>
+        <TextLink href="/my-government" title="My Government">Enter one address to find federal, state, county, municipal, school board, and judicial representation.</TextLink>
+      </div>
+    </section>
+  );
+}
+
+function ToolsSection() {
+  return (
+    <section>
+      <SectionHeading label="Tools" title="Work with the information." body="Answer questions about your political views, build geographic stories, or inspect the datasets behind the site." />
+      <div className="mt-9 grid gap-8 md:grid-cols-3">
+        <TextLink href="/quiz" title="Political Quiz">Compare your views across 17 political axes and 25 policy issues.</TextLink>
+        <TextLink href="/geography" title="Geography Studio">Build and save maps about alliances, conflict, resources, trade, and other geographic subjects.</TextLink>
+        <TextLink href="/datasets" title="Dataset catalog">Review publishers, coverage, update dates, methodology, and original sources.</TextLink>
+      </div>
+    </section>
+  );
+}
+
+function TextLink({ href, title, children }: { href: string; title: string; children: React.ReactNode }) {
+  return (
+    <Link href={href} className="group border-t-2 border-slate-950 pt-4 dark:border-white">
+      <h3 className="text-lg font-semibold text-slate-950 group-hover:text-blue-700 dark:text-white dark:group-hover:text-blue-300">{title}</h3>
+      <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">{children}</p>
+      <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-blue-700 dark:text-blue-300">Open <ArrowRight size={14} aria-hidden /></span>
+    </Link>
+  );
+}
+
+function TrustSection({ datasetCount, publisherCount }: { datasetCount: number; publisherCount: number }) {
+  return (
+    <section className="grid gap-4 border-t border-slate-300 pt-6 md:grid-cols-[12rem_1fr] dark:border-slate-700">
+      <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">How Worldview works</p>
+      <div className="max-w-3xl">
+        <h2 className="text-2xl font-semibold text-slate-950 dark:text-white">Source records stay attached.</h2>
+        <p className="mt-3 text-base leading-7 text-slate-600 dark:text-slate-400">
+          Worldview organizes data from {publisherCount || "public"} publishers into consistent views without hiding where it came from. Definitions, coverage dates, and links to original sources are included throughout the site.
+        </p>
+        <Link href="/datasets" className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-blue-700 hover:underline dark:text-blue-300">Review {datasetCount || "all"} datasets <ArrowRight size={14} aria-hidden /></Link>
+      </div>
+    </section>
+  );
+}
+
+function NoPreview() {
+  return <div className="flex h-48 items-center justify-center border-y border-slate-200 text-sm text-slate-500 dark:border-slate-800 dark:text-slate-400">Open the topic to view its data.</div>;
+}
+
+function linePoints(values: number[], width: number, height: number) {
+  if (values.length < 2) return "";
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const range = max - min || 1;
+  return values.map((value, index) => `${(index / (values.length - 1)) * width},${height - ((value - min) / range) * (height - 8)}`).join(" ");
 }

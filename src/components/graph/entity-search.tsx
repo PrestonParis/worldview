@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 import { entityColorFor } from "@/lib/entity-colors";
+import { publicEntityPath } from "@/lib/people/public";
 
 const MAX_RESULTS = 8;
 
@@ -43,11 +44,14 @@ export function EntitySearch({
     setOpen(false);
     setQuery("");
     if (onSelect) onSelect(id);
-    else router.push(`/data/entities/${id}`);
+    else {
+      const entity = entities.find((item) => item.id === id);
+      if (entity) router.push(publicEntityPath(entity));
+    }
   }
 
   return (
-    <div ref={containerRef} className="relative max-w-sm">
+    <div ref={containerRef} className="relative w-56 max-w-full">
       <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
       <input
         type="text"

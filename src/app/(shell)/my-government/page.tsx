@@ -6,6 +6,8 @@ export const metadata: Metadata = {
   description: "Find the public offices and officials that represent a U.S. address.",
 };
 
-export default function MyGovernmentPage() {
-  return <MyGovernmentLookup />;
+export default async function MyGovernmentPage({ searchParams }: PageProps<"/my-government">) {
+  const params = await searchParams;
+  const address = typeof params.address === "string" ? params.address : "";
+  return <MyGovernmentLookup initialAddress={address} />;
 }

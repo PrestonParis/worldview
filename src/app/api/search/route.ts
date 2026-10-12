@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { listEntities } from "@/lib/neo4j/entities";
 import { listClaims } from "@/lib/db/claims";
 import { listSources } from "@/lib/db/sources";
+import { listDatasets } from "@/lib/db/stats";
+import { findTopics, normalizeQuery, searchSite, significantWords } from "@/lib/search/site";
 
 const MAX_PER_GROUP = 6;
 
@@ -14,6 +16,8 @@ export interface SearchResult {
 }
 
 export interface SearchResponse {
+  pages: SearchResult[];
+  datasets: SearchResult[];
   entities: SearchResult[];
   claims: SearchResult[];
   sources: SearchResult[];
@@ -51,14 +55,36 @@ export async function GET(request: Request) {
   const q = (searchParams.get("q") ?? "").trim().toLowerCase();
 
   if (!q) {
-    return NextResponse.json<SearchResponse>({ entities: [], claims: [], sources: [] });
+    return NextResponse.json<SearchResponse>({ pages: [], datasets: [], entities: [], claims: [], sources: [] });
   }
 
-  const [entities, claims, sources] = await Promise.all([
+  const [entities, claims, sources, datasets] = await Promise.all([
     listEntities(),
     listClaims(),
     listSources(),
+    listDatasets().catch(() => []),
   ]);
+
+  const pageResults: SearchResult[] = searchSite(q).slice(0, MAX_PER_GROUP);
+
+  // Datasets match when every meaningful word of the query appears in the
+  // title, topic, or publisher. Failing that, show the datasets behind the
+  // topic the query is about ("H-1B immigration" → immigration datasets).
+  const words = significantWords(q);
+  const exact = words.length
+    ? datasets.filter((d) => {
+        const haystack = `${d.title} ${d.topic} ${d.publisher} ${d.partner?.name ?? ""}`.toLowerCase();
+        return words.every((word) => haystack.includes(word));
+      })
+    : [];
+  const topics: string[] = findTopics(normalizeQuery(q));
+  const matchedDatasets = exact.length ? exact : datasets.filter((d) => topics.includes(d.topic)).slice(0, 3);
+  const datasetResults: SearchResult[] = matchedDatasets.slice(0, MAX_PER_GROUP).map((d) => ({
+    id: d.slug,
+    label: d.title,
+    meta: d.publisher,
+    href: `/datasets/${d.slug}`,
+  }));
 
   const entityResults: SearchResult[] = byRank(q, entities, (e) => e.name).map((e) => ({
     id: e.id,
@@ -93,6 +119,8 @@ export async function GET(request: Request) {
   }));
 
   return NextResponse.json<SearchResponse>({
+    pages: pageResults,
+    datasets: datasetResults,
     entities: entityResults,
     claims: claimResults,
     sources: sourceResults,

@@ -159,7 +159,7 @@ export function computeClusterLayout(
     }
   }
   forceAtlas2.assign(graph, {
-    iterations: nodes.length > 500 ? 300 : 600,
+    iterations: nodes.length > 5000 ? 120 : nodes.length > 500 ? 300 : 600,
     settings: {
       ...forceAtlas2.inferSettings(graph),
       barnesHutOptimize: nodes.length > 300,
@@ -250,4 +250,154 @@ export function computeRadialLayout(
     });
   }
   return positions;
+}
+
+// Rows for the People graph, top to bottom: money at the top, the people
+// it reaches at the bottom, and the outlets and institutions that sit
+// between them in the middle.
+export const GRAPH_ROWS = [
+  { key: "donors", label: "Donors", types: ["donor", "company", "lobbyist"] },
+  { key: "commentators", label: "Commentators", types: ["pundit", "journalist"] },
+  { key: "organizations", label: "Organizations", types: ["organization"] },
+  { key: "politicians", label: "Politicians", types: ["politician"] },
+] as const;
+
+/** Index into GRAPH_ROWS; unknown types sit with the organizations. */
+export function graphRowIndexForType(type: string): number {
+  const r = GRAPH_ROWS.findIndex((row) => (row.types as readonly string[]).includes(type));
+  return r === -1 ? 2 : r;
+}
+
+export interface GraphRow {
+  key: string;
+  label: string;
+  /** Graph-space y of the row's centre line. */
+  y: number;
+  count: number;
+}
+
+// Spacing in graph units. The ratio is what matters: when the rows are
+// zoomed to fill the canvas height, neighbouring nodes in the longest row
+// land ~22px apart — room for a dot and a slanted label — so that row runs
+// off to the right and is scrolled.
+const ROW_NODE_GAP = 14;
+export const ROW_GAP = 110;
+const ORDER_SWEEPS = 6;
+
+/**
+ * Layered layout: one horizontal row per entity group (GRAPH_ROWS). Each
+ * row is ordered by the barycentre of its neighbours in the other rows —
+ * a few sweeps of the classic Sugiyama heuristic — so donors sit above the
+ * candidates they fund and edges stay short. The longest row sets the
+ * width; the others are placed under or over their neighbours, and nodes
+ * with no ties are pushed to the right end of their row.
+ */
+export function computeRowLayout(
+  nodes: { id: string; type: string }[],
+  links: { source: string; target: string }[],
+): { positions: PositionedNode[]; rows: GraphRow[] } {
+  const rowOf = new Map<string, number>();
+  const members = GRAPH_ROWS.map(() => [] as string[]);
+  for (const n of nodes) {
+    const idx = graphRowIndexForType(n.type);
+    rowOf.set(n.id, idx);
+    members[idx].push(n.id);
+  }
+
+  const neighbours = new Map<string, string[]>();
+  for (const l of links) {
+    const a = rowOf.get(l.source);
+    const b = rowOf.get(l.target);
+    if (a === undefined || b === undefined || a === b) continue;
+    for (const [from, to] of [[l.source, l.target], [l.target, l.source]]) {
+      const list = neighbours.get(from);
+      if (list) list.push(to);
+      else neighbours.set(from, [to]);
+    }
+  }
+
+  // Normalised position within the row, 0..1.
+  const pos = new Map<string, number>();
+  const assign = (ids: string[]) =>
+    ids.forEach((id, i) => pos.set(id, ids.length === 1 ? 0.5 : i / (ids.length - 1)));
+  for (const ids of members) {
+    ids.sort((a, b) => (neighbours.get(b)?.length ?? 0) - (neighbours.get(a)?.length ?? 0));
+    assign(ids);
+  }
+  const reorder = (ids: string[]) => {
+    const key = new Map<string, number>();
+    for (const id of ids) {
+      const ns = neighbours.get(id);
+      // Unconnected nodes go to the far right, in their current order.
+      key.set(id, ns ? ns.reduce((sum, n) => sum + pos.get(n)!, 0) / ns.length : 2 + pos.get(id)!);
+    }
+    ids.sort((a, b) => key.get(a)! - key.get(b)!);
+    assign(ids);
+  };
+  for (let sweep = 0; sweep < ORDER_SWEEPS; sweep++) {
+    const order = sweep % 2 === 0 ? members.keys() : [...members.keys()].reverse();
+    for (const r of order) reorder(members[r]);
+  }
+
+  // x positions. The longest row is laid out evenly at ROW_NODE_GAP; every
+  // other node sits at the mean x of its neighbours, so a donor lands right
+  // above the candidates it funds. Overlaps are then pushed apart along the
+  // row, and nodes with no ties fill in after the last connected one.
+  const anchor = members.reduce((best, ids, r) => (ids.length > members[best].length ? r : best), 0);
+  const x = new Map<string, number>();
+  const width = Math.max(1, members[anchor].length - 1) * ROW_NODE_GAP;
+  for (const ids of members) for (const id of ids) x.set(id, pos.get(id)! * width);
+  const settle = (ids: string[]) => {
+    const connected = ids.filter((id) => neighbours.has(id));
+    const desired = new Map(
+      connected.map((id) => {
+        const ns = neighbours.get(id)!;
+        return [id, ns.reduce((sum, n) => sum + x.get(n)!, 0) / ns.length] as const;
+      }),
+    );
+    connected.sort((a, b) => desired.get(a)! - desired.get(b)!);
+    // 1-D overlap removal by block merging: runs of nodes that would
+    // overlap become a block centred on its members' mean desired x, so
+    // each node moves as little as it can and nothing drifts globally.
+    const blocks: { ids: string[]; start: number }[] = [];
+    for (const id of connected) {
+      let block = { ids: [id], start: desired.get(id)! };
+      while (blocks.length) {
+        const last = blocks[blocks.length - 1];
+        if (last.start + last.ids.length * ROW_NODE_GAP <= block.start) break;
+        blocks.pop();
+        const ids = [...last.ids, ...block.ids];
+        const start =
+          ids.reduce((sum, m, i) => sum + desired.get(m)! - i * ROW_NODE_GAP, 0) / ids.length;
+        block = { ids, start };
+      }
+      blocks.push(block);
+    }
+    let prev = -Infinity;
+    for (const block of blocks) {
+      block.ids.forEach((id, i) => x.set(id, block.start + i * ROW_NODE_GAP));
+      prev = block.start + (block.ids.length - 1) * ROW_NODE_GAP;
+    }
+    for (const id of ids.filter((id) => !neighbours.has(id))) {
+      prev = Math.max(prev + ROW_NODE_GAP, connected.length ? prev + ROW_NODE_GAP : 0);
+      x.set(id, prev);
+    }
+    ids.splice(0, ids.length, ...[...ids].sort((a, b) => x.get(a)! - x.get(b)!));
+  };
+  for (let pass = 0; pass < 2; pass++) {
+    members.forEach((ids, r) => {
+      if (r !== anchor) settle(ids);
+    });
+  }
+
+  const used = members.map((ids, r) => ({ ids, r })).filter(({ ids }) => ids.length > 0);
+  const positions: PositionedNode[] = [];
+  const rows: GraphRow[] = [];
+  used.forEach(({ ids, r }, i) => {
+    // Sigma's y axis points up, so the first row gets the largest y.
+    const y = (used.length - 1 - i) * ROW_GAP;
+    rows.push({ key: GRAPH_ROWS[r].key, label: GRAPH_ROWS[r].label, y, count: ids.length });
+    for (const id of ids) positions.push({ id, x: x.get(id)!, y });
+  });
+  return { positions, rows };
 }

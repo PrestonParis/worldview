@@ -99,81 +99,121 @@ export function edgeLabelCounts(edges: Edge[]): { label: string; count: number }
     .sort((a, b) => b.count - a.count);
 }
 
-/**
- * The "connected core" starting view. Almost every politician is wired
- * only to their party and chamber (the hubs), which says nothing — so the
- * overview drops the hubs and keeps the sub-networks that are actually a
- * graph: the donor→politician money cluster, governor clusters, the media
- * host/founder clusters, etc. Whole connected components are taken
- * largest-first up to `limit` nodes. Falls back to top-degree when there
- * are no non-hub edges yet (a fresh database).
- */
-export function overviewSubgraph(
-  entities: Entity[],
-  edges: Edge[],
-  { limit = 160, entityTypes }: { limit?: number; entityTypes?: Set<string> } = {},
-): Subgraph {
-  const byId = new Map(entities.map((e) => [e.id, e]));
-  const hubNames = HUB_ENTITY_NAMES;
-  const nonHubEdges = edges.filter(
-    (e) =>
-      !hubNames.has(byId.get(e.sourceEntityId)?.name ?? "") &&
-      !hubNames.has(byId.get(e.targetEntityId)?.name ?? ""),
-  );
+/** How many entities the overview could draw at each tier — drives the "show more" control. */
+export interface OverviewTiers {
+  /** Entities with at least one real (non-structural) tie. */
+  direct: number;
+  /** Entities reachable only through seats, committees and offices. */
+  structural: number;
+  /** Entities with no ties at all once the four hubs are set aside. */
+  unconnected: number;
+}
 
-  if (nonHubEdges.length === 0) {
-    const deg = degreeMap(edges);
-    const top = entities
-      .filter((e) => !hubNames.has(e.name))
-      .filter((e) => !entityTypes || entityTypes.has(e.type))
-      .sort((a, b) => (deg.get(b.id) ?? 0) - (deg.get(a.id) ?? 0))
-      .slice(0, limit);
-    const ids = new Set(top.map((e) => e.id));
-    return { entities: top, edges: edgesWithin(edges, ids) };
-  }
-
+function components(edges: Edge[]): string[][] {
   const adjacency = new Map<string, string[]>();
   const link = (a: string, b: string) => {
     const list = adjacency.get(a);
     if (list) list.push(b);
     else adjacency.set(a, [b]);
   };
-  for (const e of nonHubEdges) {
+  for (const e of edges) {
     link(e.sourceEntityId, e.targetEntityId);
     link(e.targetEntityId, e.sourceEntityId);
   }
-
+  const deg = degreeMap(edges);
+  // Breadth-first from each component's best-connected node, so a
+  // component cut off at the limit keeps its core rather than a random
+  // fringe.
+  const starts = [...adjacency.keys()].sort((a, b) => (deg.get(b) ?? 0) - (deg.get(a) ?? 0));
   const seen = new Set<string>();
-  const components: string[][] = [];
-  for (const startId of adjacency.keys()) {
+  const comps: string[][] = [];
+  for (const startId of starts) {
     if (seen.has(startId)) continue;
-    const stack = [startId];
+    const comp = [startId];
     seen.add(startId);
-    const comp: string[] = [];
-    while (stack.length) {
-      const id = stack.pop()!;
-      comp.push(id);
-      for (const other of adjacency.get(id) ?? []) {
+    for (let i = 0; i < comp.length; i++) {
+      for (const other of adjacency.get(comp[i]) ?? []) {
         if (!seen.has(other)) {
           seen.add(other);
-          stack.push(other);
+          comp.push(other);
         }
       }
     }
-    components.push(comp);
+    comps.push(comp);
   }
-  components.sort((a, b) => b.length - a.length);
+  return comps.sort((a, b) => b.length - a.length);
+}
+
+/**
+ * The starting view, filled in tiers until `limit` entities are drawn:
+ *
+ * 1. Whole sub-networks of real ties (`edges`) — the donor→politician
+ *    money cluster, media host/founder clusters, etc. — largest first.
+ * 2. Then, if `structuralEdges` is given, people tied in only by seats,
+ *    committees and offices. Their structural edges come with them.
+ * 3. Then, if `includeUnconnected`, everyone with no ties at all.
+ *
+ * The four hubs are always left out: nearly every politician is wired to
+ * a party and a chamber, which says nothing and collapses the layout.
+ */
+export function overviewSubgraph(
+  entities: Entity[],
+  edges: Edge[],
+  {
+    limit = 500,
+    entityTypes,
+    structuralEdges,
+    includeUnconnected = false,
+  }: {
+    limit?: number;
+    entityTypes?: Set<string>;
+    structuralEdges?: Edge[];
+    includeUnconnected?: boolean;
+  } = {},
+): Subgraph & { tiers: OverviewTiers } {
+  const byId = new Map(entities.map((e) => [e.id, e]));
+  const eligible = (id: string) => {
+    const e = byId.get(id);
+    return !!e && !HUB_ENTITY_NAMES.has(e.name) && (!entityTypes || entityTypes.has(e.type));
+  };
+  const usable = (list: Edge[]) =>
+    list.filter((e) => eligible(e.sourceEntityId) && eligible(e.targetEntityId));
+
+  const direct = usable(edges);
+  const structural = structuralEdges ? usable(structuralEdges) : [];
 
   const kept = new Set<string>();
-  for (const comp of components) {
-    if (kept.size >= limit) break;
-    for (const id of comp) kept.add(id);
-  }
+  const take = (ids: Iterable<string>) => {
+    for (const id of ids) {
+      if (kept.size >= limit) return;
+      kept.add(id);
+    }
+  };
+  const directComps = components(direct);
+  for (const comp of directComps) take(comp);
+  const directCount = directComps.reduce((n, c) => n + c.length, 0);
 
-  let scoped = [...kept].map((id) => byId.get(id)!).filter(Boolean);
-  if (entityTypes) scoped = scoped.filter((e) => entityTypes.has(e.type));
-  const ids = new Set(scoped.map((e) => e.id));
-  return { entities: scoped, edges: edgesWithin(nonHubEdges, ids) };
+  const structuralComps = components(structural);
+  const connected = new Set([...directComps.flat(), ...structuralComps.flat()]);
+  for (const comp of structuralComps) take(comp.filter((id) => !kept.has(id)));
+  const structuralCount = connected.size - directCount;
+
+  const unconnected = entities
+    .filter((e) => eligible(e.id) && !connected.has(e.id))
+    .map((e) => e.id);
+  if (includeUnconnected) take(unconnected);
+
+  const scoped = [...kept].map((id) => byId.get(id)!);
+  // Structural edges only join in once the view has grown past the real
+  // ties — before that they'd only add committee clutter.
+  const pool = kept.size > directCount ? [...direct, ...structural] : direct;
+  const seenEdge = new Set<string>();
+  const within = edgesWithin(pool, kept).filter((e) => !seenEdge.has(e.id) && seenEdge.add(e.id));
+  return {
+    entities: scoped,
+    edges: within,
+    tiers: { direct: directCount, structural: structuralCount, unconnected: unconnected.length },
+  };
 }
 
 /**

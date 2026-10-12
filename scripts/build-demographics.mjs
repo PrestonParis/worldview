@@ -1,8 +1,8 @@
 // Builds the state and city demographic series behind /demographics and
 // writes them to public/data/demographics/ (states.json + cities/<FIPS>.json).
 //
-//   Sex, race   states: Census population estimates 2010–2025 (Vintage 2020
-//               + Vintage 2025 ALLDATA6). cities: ACS 1-year 2021–2024 for
+//   Age, sex,   states: Census population estimates 2010–2025 (Vintage 2020
+//   race        + Vintage 2025 ALLDATA6). cities: ACS 1-year 2021–2024 for
 //               every place the ACS publishes (65,000+ residents).
 //   Religion    states: Pew Religious Landscape Study 2014 + 2023–24
 //               (data/demographics/pew-rls-states.json).
@@ -59,8 +59,11 @@ const share = (part, total) => (total > 0 ? (part / total) * 100 : 0);
 // ---------------------------------------------------------------- states
 
 const RACE_KEYS = ["nhWhite", "nhBlack", "nhAian", "nhAsian", "nhNhpi", "nhMultiracial"];
+const AGE_KEYS = ["under18", "age18to24", "age25to44", "age45to64", "age65plus"];
+const ageGroup = (age) =>
+  age < 18 ? "under18" : age < 25 ? "age18to24" : age < 45 ? "age25to44" : age < 65 ? "age45to64" : "age65plus";
 
-// state FIPS -> year -> { total, male, female, hispanic, nhWhite, ... }
+// state FIPS -> year -> { total, adults, male, female, hispanic, nhWhite, ..., under18, ... }
 function readStateEstimates(file, columns, counts) {
   const [header, ...lines] = fs.readFileSync(file, "latin1").trim().split(/\r?\n/);
   const cols = header.split(",");
@@ -72,19 +75,24 @@ function readStateEstimates(file, columns, counts) {
     const sex = Number(row[index.SEX]);
     const origin = Number(row[index.ORIGIN]);
     const race = Number(row[index.RACE]);
+    const age = Number(row[index.AGE]);
     names[state] = row[index.NAME];
     for (const [column, year] of columns) {
       const value = Number(row[index[column]]);
       const bucket = ((counts[state] ??= {})[year] ??= {
-        total: 0, male: 0, female: 0, hispanic: 0,
-        ...Object.fromEntries(RACE_KEYS.map((key) => [key, 0])),
+        total: 0, adults: 0, male: 0, female: 0, hispanic: 0,
+        ...Object.fromEntries([...RACE_KEYS, ...AGE_KEYS].map((key) => [key, 0])),
       });
       if (origin !== 0) {
         if (sex === 0 && origin === 1) bucket[RACE_KEYS[race - 1]] += value;
         if (sex === 0 && origin === 2) bucket.hispanic += value;
         continue;
       }
-      if (sex === 0) bucket.total += value;
+      if (sex === 0) {
+        bucket.total += value;
+        bucket[ageGroup(age)] += value;
+        if (age >= 18) bucket.adults += value;
+      }
       if (sex === 1) bucket.male += value;
       if (sex === 2) bucket.female += value;
     }
@@ -147,6 +155,14 @@ function scaledOrientation(index) {
 }
 
 const STATE_META = {
+  age: {
+    basis: "Census estimates 2010–2025; projected with the national Census scenarios and the state's own trend",
+    sources: [
+      { label: "U.S. Census Bureau — State population by characteristics, 2010–2020", href: "https://www.census.gov/programs-surveys/popest/technical-documentation/research/evaluation-estimates/2020-evaluation-estimates/2010s-state-detail.html" },
+      { label: "U.S. Census Bureau — State population by characteristics, 2020–2025", href: "https://www.census.gov/data/tables/time-series/demo/popest/2020s-state-detail.html" },
+      { label: "U.S. Census Bureau — 2023 National Population Projections", href: "https://www.census.gov/data/datasets/2023/demo/popproj/2023-popproj.html" },
+    ],
+  },
   sex: {
     basis: "Census estimates 2010–2025; projected with the national Census scenarios and the state's own trend",
     sources: [
@@ -180,6 +196,12 @@ const STATE_META = {
 };
 
 const CITY_META = {
+  age: {
+    basis: "ACS 1-year estimates 2021–2024; projected with the state's projected change",
+    sources: [
+      { label: "U.S. Census Bureau — ACS 1-year, Table B01001", href: "https://www.census.gov/programs-surveys/acs/data/summary-file.html" },
+    ],
+  },
   sex: {
     basis: "ACS 1-year estimates 2021–2024; projected with the state's projected change",
     sources: [
@@ -204,8 +226,12 @@ function readAcs(file, columns) {
   for (const line of lines) {
     if (!line.startsWith("1600000US")) continue;
     const row = line.split("|");
+    const read = (column) => Number(row[index[column]]);
     out[row[0].slice(9)] = Object.fromEntries(
-      Object.entries(columns).map(([key, column]) => [key, Number(row[index[column]])]),
+      Object.entries(columns).map(([key, column]) => [
+        key,
+        Array.isArray(column) ? column.reduce((sum, item) => sum + read(item), 0) : read(column),
+      ]),
     );
   }
   return out;
@@ -254,9 +280,24 @@ const places = Object.fromEntries(
 const STATE_ABBR = {};
 for (const row of Object.values(places)) STATE_ABBR[row.GEOID.slice(0, 2)] = row.USPS;
 
+// B01001 age brackets, male columns then the matching female ones (+24).
+const b01001 = (from, to) =>
+  Array.from({ length: to - from + 1 }, (_, i) => from + i).flatMap((n) =>
+    [n, n + 24].map((m) => `B01001_E${String(m).padStart(3, "0")}`),
+  );
+const ACS_AGE = {
+  under18: b01001(3, 6),
+  age18to24: b01001(7, 10),
+  age25to44: b01001(11, 14),
+  age45to64: b01001(15, 19),
+  age65plus: b01001(20, 25),
+};
+
 const acs = {};
 for (const year of ACS_YEARS) {
-  const sex = readAcs(await cached(acsUrl(year, "b01001")), { total: "B01001_E001", male: "B01001_E002", female: "B01001_E026" });
+  const sex = readAcs(await cached(acsUrl(year, "b01001")), {
+    total: "B01001_E001", male: "B01001_E002", female: "B01001_E026", ...ACS_AGE,
+  });
   const race = readAcs(await cached(acsUrl(year, "b03002")), {
     nhWhite: "B03002_E003", nhBlack: "B03002_E004", nhAian: "B03002_E005", nhAsian: "B03002_E006",
     nhNhpi: "B03002_E007", nhMultiracial: "B03002_E009", hispanic: "B03002_E012",
@@ -272,7 +313,7 @@ for (const fips of stateIds) {
   const byYear = counts[fips];
   const series = {};
   const projected = {};
-  for (const dimension of ["sex", "race"]) {
+  for (const dimension of ["age", "sex", "race"]) {
     projected[dimension] = projectRegion({
       history: censusHistory(byYear, dimension),
       observedThrough: 2025,
@@ -300,11 +341,17 @@ for (const fips of stateIds) {
       categoriesOf("orientation"),
     );
   }
+  const stateYears = Array.from({ length: 16 }, (_, i) => 2010 + i);
   stateRegions.push({
     id: fips,
     name: stateNames[fips],
     abbr: STATE_ABBR[fips],
     population: byYear[2025].total,
+    counts: {
+      start: 2010,
+      residents: stateYears.map((year) => byYear[year]?.total ?? null),
+      adults: stateYears.map((year) => byYear[year]?.adults ?? null),
+    },
     series,
   });
 
@@ -312,7 +359,7 @@ for (const fips of stateIds) {
   for (const [geoid, years] of Object.entries(acs)) {
     if (geoid.slice(0, 2) !== fips || !years[2024] || !places[geoid]) continue;
     const citySeries = {};
-    for (const dimension of ["sex", "race"]) {
+    for (const dimension of ["age", "sex", "race"]) {
       const keys = categoriesOf(dimension);
       const observed = Object.entries(years)
         .filter(([, values]) => keys.every((key) => Number.isFinite(values[key])))
@@ -338,6 +385,11 @@ for (const fips of stateIds) {
       lat: Number(place.INTPTLAT),
       lon: Number(place.INTPTLONG),
       population: years[2024].total,
+      counts: {
+        start: ACS_YEARS[0],
+        residents: ACS_YEARS.map((year) => years[year]?.total ?? null),
+        adults: ACS_YEARS.map((year) => (years[year] ? years[year].total - years[year].under18 : null)),
+      },
       series: citySeries,
     });
   }

@@ -12,6 +12,8 @@ export interface StateMetric {
   unit: string;
   period: string; // shown under the map
   source: string;
+  group?: string; // metrics with groups are picked from a grouped menu
+  description?: string; // what the measure counts, shown beside the map
 }
 
 export interface StateRow {
@@ -36,6 +38,7 @@ export function StateExplorer({ metrics, rows }: { metrics: StateMetric[]; rows:
   const [hover, setHover] = useState<string | null>(null);
   const [ref, width] = useWidth<HTMLDivElement>();
   const metric = metrics.find((m) => m.key === active)!;
+  const groups = [...new Set(metrics.map((m) => m.group).filter((g): g is string => !!g))];
 
   const byAbbr = useMemo(() => new Map(rows.map((r) => [r.abbr, r])), [rows]);
   const present = rows.map((r) => r.values[active]).filter((v): v is number => v !== null && v !== undefined);
@@ -57,24 +60,47 @@ export function StateExplorer({ metrics, rows }: { metrics: StateMetric[]; rows:
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap gap-2" role="tablist" aria-label="Map metric">
-        {metrics.map((m) => (
-          <button
-            key={m.key}
-            type="button"
-            role="tab"
-            aria-selected={m.key === active}
-            onClick={() => setActive(m.key)}
-            className={`rounded-full border px-3 py-1.5 text-sm ${
-              m.key === active
-                ? "border-slate-900 bg-slate-900 text-white dark:border-white dark:bg-white dark:text-slate-900"
-                : "border-slate-200 text-slate-600 hover:border-slate-400 dark:border-slate-700 dark:text-slate-300"
-            }`}
+      {groups.length ? (
+        <label className="flex flex-wrap items-center gap-3 text-sm text-slate-600 dark:text-slate-300">
+          <span className="font-medium">Measure</span>
+          <select
+            value={active}
+            onChange={(e) => setActive(e.target.value)}
+            className="max-w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
           >
-            {m.label}
-          </button>
-        ))}
-      </div>
+            {groups.map((g) => (
+              <optgroup key={g} label={g}>
+                {metrics
+                  .filter((m) => m.group === g)
+                  .map((m) => (
+                    <option key={m.key} value={m.key}>
+                      {m.label}
+                    </option>
+                  ))}
+              </optgroup>
+            ))}
+          </select>
+        </label>
+      ) : (
+        <div className="flex flex-wrap gap-2" role="tablist" aria-label="Map metric">
+          {metrics.map((m) => (
+            <button
+              key={m.key}
+              type="button"
+              role="tab"
+              aria-selected={m.key === active}
+              onClick={() => setActive(m.key)}
+              className={`rounded-full border px-3 py-1.5 text-sm ${
+                m.key === active
+                  ? "border-slate-900 bg-slate-900 text-white dark:border-white dark:bg-white dark:text-slate-900"
+                  : "border-slate-200 text-slate-600 hover:border-slate-400 dark:border-slate-700 dark:text-slate-300"
+              }`}
+            >
+              {m.label}
+            </button>
+          ))}
+        </div>
+      )}
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_16rem]">
         <div ref={ref} className="relative min-w-0">
@@ -132,6 +158,7 @@ export function StateExplorer({ metrics, rows }: { metrics: StateMetric[]; rows:
           <p className="text-xs text-slate-500 dark:text-slate-400">
             {metric.period} · {metric.source}
           </p>
+          {metric.description && <p className="text-xs leading-5 text-slate-600 dark:text-slate-300">{metric.description}</p>}
           {breaks.length > 0 && (
             <ul className="space-y-1 text-xs text-slate-600 dark:text-slate-300">
               {Array.from({ length: STEPS }, (_, i) => {

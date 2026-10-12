@@ -84,14 +84,15 @@ export const relationshipTypeBySlug: Record<string, RelationshipType> = Object.f
   relationshipTypes.map((r) => [r.slug, r]),
 );
 
-// One colour per category, for edge styling and the graph legend.
+// One colour per category, for edge styling and the graph legend. Kept off
+// the party blue/red, which the network uses for people's political family.
 export const relationshipCategoryColors: Record<RelationshipCategory, string> = {
   institutional: "#64748B", // slate
-  affiliation: "#6366F1", // indigo
-  employment: "#0EA5E9", // sky
-  political: "#EF4444", // red
-  media: "#A855F7", // purple
-  personal: "#EC4899", // pink
+  affiliation: "#8B5CF6", // violet
+  employment: "#14B8A6", // teal
+  political: "#F59E0B", // amber
+  media: "#C026D3", // fuchsia
+  personal: "#F472B6", // pink
   corporate: "#16A34A", // green
 };
 

@@ -1,11 +1,18 @@
+import type { Metadata } from "next";
 import { listIndustryBreakdown } from "@/lib/db/contributions";
-import { listEntities } from "@/lib/neo4j/entities";
+import { getEntitiesByIds } from "@/lib/neo4j/entities";
 import { IndustryExplorer } from "@/components/money/industry-explorer";
+
+export const metadata: Metadata = {
+  title: "Donors by industry | Worldview",
+  description: "Campaign contributions grouped by donor industry, from FEC filings.",
+};
 
 export const dynamic = "force-dynamic";
 
 export default async function Page() {
-  const [rows, entities] = await Promise.all([listIndustryBreakdown(), listEntities()]);
+  const rows = await listIndustryBreakdown();
+  const entities = await getEntitiesByIds(rows.flatMap((r) => [r.recipientEntityId, r.donorEntityId]));
 
   return (
     <div>

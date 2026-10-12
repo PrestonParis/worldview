@@ -4,6 +4,7 @@ export interface RankedItem {
   label: string;
   value: number;
   note?: string;
+  color?: string; // per-bar colour, e.g. a party; overrides `color` and `slot`
 }
 
 // Horizontal bars, largest first, value at the bar tip. Plain HTML so labels
@@ -13,11 +14,13 @@ export function RankedBars({
   items,
   unit,
   slot = 1,
+  color,
   limit = 10,
 }: {
   items: RankedItem[];
   unit?: string;
   slot?: 1 | 2 | 3;
+  color?: string; // overrides the slot
   limit?: number;
 }) {
   const shown = items.slice(0, limit);
@@ -35,7 +38,7 @@ export function RankedBars({
           <span className="flex min-w-0 items-center gap-2">
             <span
               className="h-3.5 shrink-0 rounded-r"
-              style={{ width: `calc(${Math.max(0.5, (item.value / max) * 100)}% - 4.5rem)`, minWidth: 2, background: `var(--viz-series-${slot})` }}
+              style={{ width: `calc(${Math.max(0.5, (item.value / max) * 100)}% - 4.5rem)`, minWidth: 2, background: item.color ?? color ?? `var(--viz-series-${slot})` }}
             />
             <span className="shrink-0 text-xs font-medium text-slate-900 tabular-nums dark:text-white">
               {formatValue(item.value, unit, { compact: true })}

@@ -24,6 +24,13 @@ export async function listSources(): Promise<Source[]> {
   return rows.map(toSource);
 }
 
+export async function getSourcesByIds(ids: string[]): Promise<Source[]> {
+  const unique = [...new Set(ids.filter(Boolean))];
+  if (unique.length === 0) return [];
+  const rows = await db.query.sources.findMany({ where: (s, { inArray }) => inArray(s.id, unique) });
+  return rows.map(toSource);
+}
+
 export async function countSources(): Promise<number> {
   const [row] = await db.select({ value: count() }).from(sources);
   return row.value;

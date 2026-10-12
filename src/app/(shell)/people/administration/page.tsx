@@ -1,6 +1,13 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { getAdministration } from "@/lib/neo4j/graph";
 import { entityColorFor } from "@/lib/entity-colors";
+import { publicEntityPath } from "@/lib/people/public";
+
+export const metadata: Metadata = {
+  title: "Administration | Worldview",
+  description: "The current presidential administration's personnel and how they connect.",
+};
 
 export const dynamic = "force-dynamic";
 
@@ -48,7 +55,7 @@ export default async function AdministrationPage() {
           <h1 className="text-2xl font-semibold tracking-tight">Administration</h1>
           <p className="mt-1 text-slate-500 dark:text-slate-400">
             The executive branch under{" "}
-            <Link href={`/data/entities/${president.id}`} className="font-medium text-slate-700 hover:underline dark:text-slate-300">
+            <Link href={publicEntityPath(president)} className="font-medium text-slate-700 hover:underline dark:text-slate-300">
               {president.name}
             </Link>{" "}
             ({roles.length} appointees).
@@ -86,7 +93,7 @@ export default async function AdministrationPage() {
             />
             <div className="min-w-0 flex-1">
               <Link
-                href={`/data/entities/${r.person.id}`}
+                href={publicEntityPath(r.person)}
                 className="font-medium text-slate-900 hover:underline dark:text-slate-100"
               >
                 {r.person.name}

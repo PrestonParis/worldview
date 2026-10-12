@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { validateFederalElectionDate } from "../elections/dates";
 
 export const electionLevels = ["federal", "state", "local"] as const;
 export const electionTypes = ["general", "primary", "runoff", "special"] as const;
@@ -31,6 +32,9 @@ export const electionSchema = z.object({
   priorElectionId: z.uuid().optional().or(z.literal("")),
   parentElectionId: z.uuid().optional().or(z.literal("")),
   notes: z.string().max(4000).optional().or(z.literal("")),
+}).superRefine((value, context) => {
+  const error = validateFederalElectionDate(value);
+  if (error) context.addIssue({ code: "custom", path: ["electionDate"], message: error });
 });
 
 export type ElectionInput = z.infer<typeof electionSchema>;

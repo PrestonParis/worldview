@@ -14,11 +14,18 @@ export interface Series {
   id: string;
   label: string;
   slot: 1 | 2 | 3;
+  color?: string; // overrides the slot, e.g. var(--viz-dem) for a party
   points: SeriesPoint[];
 }
 
 export interface Marker {
   x: number;
+  label: string;
+  to?: number; // shade the span from x to here (e.g. a policy period)
+}
+
+export interface Reference {
+  value: number;
   label: string;
 }
 
@@ -34,6 +41,8 @@ export function TimeSeriesChart({
   height = 260,
   unit,
   markers = [],
+  reference,
+  fromZero = true,
   endLabels = true,
 }: {
   series: Series[];
@@ -41,6 +50,8 @@ export function TimeSeriesChart({
   height?: number;
   unit?: string;
   markers?: Marker[];
+  reference?: Reference; // dashed horizontal line, e.g. an index base of 100
+  fromZero?: boolean; // false fits the y-axis to the data (lines only)
   endLabels?: boolean;
 }) {
   const [ref, width] = useWidth<HTMLDivElement>();
@@ -63,8 +74,9 @@ export function TimeSeriesChart({
   const stacked = type === "column" && series.length > 1;
   const totals = xs.map(({ x }) => byX.reduce((t, m) => t + (m.get(x) ?? 0), 0));
   const values = stacked ? totals : series.flatMap((s) => s.points.map((p) => p.value));
-  const yMinRaw = Math.min(0, ...values);
-  const yMaxRaw = Math.max(...values);
+  const refValues = reference ? [reference.value] : [];
+  const yMinRaw = fromZero || type === "column" ? Math.min(0, ...values) : Math.min(...values, ...refValues);
+  const yMaxRaw = Math.max(...values, ...refValues);
   const yTicks = niceTicks(yMinRaw, yMaxRaw);
   const [y0, y1] = [yTicks[0], yTicks.at(-1)!];
 
@@ -105,7 +117,7 @@ export function TimeSeriesChart({
   };
 
   const barW = Math.max(1, Math.min(24, band - 2));
-  const color = (s: Series) => `var(--viz-series-${s.slot})`;
+  const color = (s: Series) => s.color ?? `var(--viz-series-${s.slot})`;
 
   return (
     <div ref={ref} className="relative">
@@ -149,13 +161,48 @@ export function TimeSeriesChart({
             {label}
           </text>
         ))}
-        {markers.map((mk) => {
+        {reference && (
+          <g>
+            <line
+              x1={M.left}
+              x2={width - M.right}
+              y1={yPos(reference.value)}
+              y2={yPos(reference.value)}
+              stroke="var(--viz-muted)"
+              strokeDasharray="4 3"
+            />
+            <text x={M.left + 4} y={yPos(reference.value) - 5} className="fill-[var(--viz-muted)] text-[11px]">
+              {reference.label}
+            </text>
+          </g>
+        )}
+        {markers.map((mk, k) => {
           const i = xs.findIndex((p) => p.x >= mk.x);
           if (i < 0) return null;
+          const j = mk.to === undefined ? i : xs.findLastIndex((p) => p.x < mk.to!);
+          // Labels step down in up to three rows (one per marker on narrow
+          // charts) so neighbors don't collide, and flip to the left of the
+          // line near the right edge.
+          const flip = xPos(i) > width - M.right - 110;
           return (
-            <g key={mk.label}>
+            <g key={`${mk.x}-${mk.label}`}>
+              {j > i && (
+                <rect
+                  x={xPos(i) - (type === "column" ? band / 2 : 0)}
+                  y={M.top}
+                  width={xPos(j) - xPos(i) + (type === "column" ? band : 0)}
+                  height={plotH}
+                  fill="var(--viz-muted)"
+                  opacity={0.08}
+                />
+              )}
               <line x1={xPos(i)} x2={xPos(i)} y1={M.top} y2={M.top + plotH} stroke="var(--viz-axis)" />
-              <text x={xPos(i) + 4} y={M.top + 10} className="fill-[var(--viz-muted)] text-[11px]">
+              <text
+                x={xPos(i) + (flip ? -4 : 4)}
+                y={M.top + 10 + (markers.length > 2 ? (k % (width < 640 ? markers.length : 3)) * 13 : 0)}
+                textAnchor={flip ? "end" : "start"}
+                className="fill-[var(--viz-muted)] text-[11px]"
+              >
                 {mk.label}
               </text>
             </g>
@@ -167,6 +214,15 @@ export function TimeSeriesChart({
               let base = 0;
               return series.map((s, si) => {
                 const v = byX[si].get(x) ?? 0;
+                if (v < 0 && !stacked) {
+                  // Single-series negatives hang below zero, rounded at the data end.
+                  const top = yPos(0);
+                  const h = Math.max(0, yPos(v) - top);
+                  const r = Math.min(4, barW / 2, h);
+                  const left = xPos(i) - barW / 2;
+                  const d = `M${left},${top} V${top + h - r} Q${left},${top + h} ${left + r},${top + h} H${left + barW - r} Q${left + barW},${top + h} ${left + barW},${top + h - r} V${top} Z`;
+                  return <path key={s.id} d={d} fill={color(s)} opacity={hover === null || hover === i ? 1 : 0.55} />;
+                }
                 if (v <= 0) return null;
                 const top = yPos(base + v);
                 const bottom = yPos(base);

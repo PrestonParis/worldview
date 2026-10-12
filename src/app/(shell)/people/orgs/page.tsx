@@ -1,6 +1,13 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { listOrgDirectory } from "@/lib/neo4j/graph";
 import { entityColorFor } from "@/lib/entity-colors";
+import { publicEntityPath } from "@/lib/people/public";
+
+export const metadata: Metadata = {
+  title: "Organizations | Worldview",
+  description: "Organizations and companies in the Worldview graph and the people connected to them.",
+};
 
 export const dynamic = "force-dynamic";
 
@@ -39,7 +46,7 @@ export default async function OrgDirectoryPage() {
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0">
                   <Link
-                    href={`/people/orgs/${entity.id}`}
+                    href={publicEntityPath(entity)}
                     className="font-medium text-slate-900 hover:underline dark:text-slate-100"
                   >
                     {entity.name}

@@ -37,11 +37,25 @@ export function selectStateOfficials(
   const upper = districtKey(geography.stateUpperDistrict);
   const lower = districtKey(geography.stateLowerDistrict);
 
+  const isDC = geography.stateCode === "DC";
+
   return rows.flatMap((row) => {
     const district = districtKey(row.govDistrict ?? "");
     let office = row.govOffice;
     let jurisdiction = geography.stateName;
-    if (row.govChamber === "upper" || row.govChamber === "legislature") {
+    if (isDC && row.govChamber === "executive") {
+      // Open States files the Mayor under the governor slot.
+      if (office === "Governor") office = "Mayor";
+    } else if (isDC && row.govChamber === "legislature") {
+      // The DC Council: one member per ward, plus at-large members and a chair
+      // elected citywide.
+      if (district === "at large") office = "Councilmember (at-large)";
+      else if (district === "chairman" || district === "chair") office = "Council chair";
+      else if (upper && district === upper) {
+        office = "Councilmember";
+        jurisdiction = geography.stateUpperDistrict;
+      } else return [];
+    } else if (row.govChamber === "upper" || row.govChamber === "legislature") {
       if (!upper || district !== upper) return [];
       // Nebraska's unicameral members are senators.
       office = "State senator";
@@ -81,10 +95,11 @@ export async function getStateOfficials(geography: CensusGeography): Promise<Gov
       { state: geography.stateCode },
     );
     const rows = result.records.map((record) => record.toObject() as StateOfficialRow);
-    // Governor first, then the rest of the statewide offices alphabetically.
+    // Governor (or DC's Mayor) first, then the rest alphabetically.
     const officials = selectStateOfficials(rows, geography);
+    const head = (office: string) => office === "Governor" || office === "Mayor";
     return officials.sort((a, b) =>
-      a.office === "Governor" ? -1 : b.office === "Governor" ? 1 : a.office.localeCompare(b.office),
+      head(a.office) ? -1 : head(b.office) ? 1 : a.office.localeCompare(b.office),
     );
   } finally {
     await session.close();

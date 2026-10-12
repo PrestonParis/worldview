@@ -1,8 +1,14 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { listEntities, getEntity } from "@/lib/neo4j/entities";
 import { listSharedVotes } from "@/lib/db/votingRecord";
 import { agreementRate } from "@/lib/legislation/votingRecord";
 import type { votePositions } from "@/lib/validation/vote";
+
+export const metadata: Metadata = {
+  title: "Compare members | Worldview",
+  description: "Compare two members of Congress vote by vote.",
+};
 
 export const dynamic = "force-dynamic";
 

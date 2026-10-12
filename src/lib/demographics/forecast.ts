@@ -1,4 +1,6 @@
-export type DemographicDimensionId = "sex" | "race" | "orientation" | "religion";
+export type DemographicDimensionId = "age" | "sex" | "race" | "religion" | "orientation";
+
+export type GeoLevel = "national" | "state" | "city";
 
 export interface DemographicCategory {
   id: string;
@@ -25,6 +27,14 @@ export interface DemographicSeries {
   label: string;
   description: string;
   population: string;
+  // Census population estimates, or survey estimates of adults.
+  measure: "census" | "survey";
+  // Whom the shares are of: everyone, or adults 18 and over.
+  universe: "residents" | "adults";
+  // One sentence on what is measured, shown under the tabs.
+  definition: string;
+  // Finest-first list of the geographies the dimension is published for.
+  geographies: GeoLevel[];
   observedThrough: number;
   categories: DemographicCategory[];
   points: DemographicPoint[];
@@ -32,6 +42,8 @@ export interface DemographicSeries {
   basis?: string;
   // What the shaded projection range spans.
   rangeNote: string;
+  // What each category counts, where the label alone is ambiguous.
+  categoryNotes?: Record<string, string>;
   // The individual scenario paths behind the range, from the last observed
   // year on. State and city projections scale these.
   scenarios?: DemographicPoint[][];
@@ -127,7 +139,8 @@ function rebase(
 const scenarioYears = [2025, 2030, 2035, 2040, 2045, 2050];
 
 // Census 2023 National Projections alternative immigration scenarios
-// (np2023_d1_hi / _low / _zero), share of total population.
+// (np2023_d1_hi / _low / _zero), share of total population. Age groups sum
+// the single-year-of-age columns.
 const censusScenarioRows: Record<"high" | "low" | "zero", Record<string, number[]>> = {
   high: {
     male: [49.57, 49.52, 49.46, 49.42, 49.39, 49.39],
@@ -139,6 +152,11 @@ const censusScenarioRows: Record<"high" | "low" | "zero", Record<string, number[
     nhNhpi: [0.2, 0.21, 0.22, 0.23, 0.25, 0.26],
     nhMultiracial: [2.54, 2.8, 3.08, 3.37, 3.67, 3.98],
     hispanic: [19.84, 21.07, 22.34, 23.59, 24.78, 25.89],
+    under18: [20.99, 20.1, 19.57, 19.44, 19.29, 18.99],
+    age18to24: [9.29, 8.94, 8.48, 8.03, 7.83, 7.93],
+    age25to44: [27.02, 27.24, 27.26, 26.91, 26.41, 25.66],
+    age45to64: [24.04, 23.33, 23.5, 24.17, 24.93, 25.53],
+    age65plus: [18.65, 20.39, 21.19, 21.45, 21.54, 21.9],
   },
   low: {
     male: [49.57, 49.51, 49.46, 49.42, 49.41, 49.43],
@@ -150,6 +168,11 @@ const censusScenarioRows: Record<"high" | "low" | "zero", Record<string, number[
     nhNhpi: [0.2, 0.2, 0.21, 0.22, 0.22, 0.23],
     nhMultiracial: [2.55, 2.82, 3.12, 3.44, 3.78, 4.14],
     hispanic: [19.64, 20.56, 21.54, 22.55, 23.55, 24.52],
+    under18: [20.98, 19.97, 19.2, 18.8, 18.44, 18.03],
+    age18to24: [9.23, 8.87, 8.44, 8.01, 7.75, 7.71],
+    age25to44: [26.85, 26.78, 26.59, 26.16, 25.7, 25],
+    age45to64: [24.15, 23.59, 23.86, 24.57, 25.31, 25.84],
+    age65plus: [18.79, 20.8, 21.91, 22.45, 22.81, 23.42],
   },
   zero: {
     male: [49.56, 49.51, 49.46, 49.43, 49.43, 49.46],
@@ -161,6 +184,11 @@ const censusScenarioRows: Record<"high" | "low" | "zero", Record<string, number[
     nhNhpi: [0.19, 0.2, 0.2, 0.2, 0.2, 0.21],
     nhMultiracial: [2.56, 2.84, 3.16, 3.5, 3.88, 4.28],
     hispanic: [19.48, 20.13, 20.84, 21.6, 22.4, 23.17],
+    under18: [20.98, 19.86, 18.88, 18.23, 17.64, 17.08],
+    age18to24: [9.17, 8.81, 8.41, 8, 7.68, 7.5],
+    age25to44: [26.71, 26.39, 26.01, 25.48, 25.03, 24.36],
+    age45to64: [24.24, 23.8, 24.16, 24.93, 25.65, 26.14],
+    age65plus: [18.9, 21.14, 22.53, 23.37, 24, 24.92],
   },
 };
 
@@ -359,6 +387,92 @@ const raceAnchors: Anchor[] = [
     })),
 ];
 
+// Census population estimates by age (Vintage 2020 for 2010–2019, Vintage
+// 2025 for 2020–2025), summed across the 50 states and D.C., in thousands:
+// under 18, 18–24, 25–44, 45–64, 65+.
+const AGE_KEYS = ["under18", "age18to24", "age25to44", "age45to64", "age65plus"] as const;
+const ageCounts: Record<number, number[]> = {
+  2010: [74123, 30764, 82193, 81769, 40478],
+  2011: [73917, 31087, 82435, 82795, 41351],
+  2012: [73713, 31385, 82816, 82832, 43132],
+  2013: [73592, 31506, 83301, 83029, 44632],
+  2014: [73593, 31438, 83879, 83315, 46161],
+  2015: [73654, 31156, 84514, 83759, 47656],
+  2016: [73699, 30830, 85239, 84095, 49208],
+  2017: [73632, 30544, 86088, 84101, 50758],
+  2018: [73386, 30396, 86911, 83791, 52355],
+  2019: [73089, 30235, 87678, 83292, 54037],
+  2020: [73660, 31242, 86887, 83841, 55948],
+  2021: [73021, 31298, 87287, 83046, 57448],
+  2022: [72785, 31607, 88143, 82354, 59107],
+  2023: [72653, 31879, 89388, 81880, 60955],
+  2024: [72549, 32095, 90945, 81602, 62813],
+  2025: [72021, 31937, 91885, 81325, 64617],
+};
+
+const ageActualAnchors: Anchor[] = Object.entries(ageCounts).map(([year, counts]) => {
+  const total = counts.reduce((sum, value) => sum + value, 0);
+  return {
+    year: Number(year),
+    values: Object.fromEntries(AGE_KEYS.map((key, index) => [key, share(counts[index], total)])),
+  };
+});
+
+// Census 2023 National Projections, middle series (np2023_d1_mid).
+const ageProjectionRows = {
+  under18: [21.74, 20.99, 20.02, 19.35, 19.07, 18.79, 18.44],
+  age18to24: [9.4, 9.25, 8.9, 8.46, 8.02, 7.78, 7.8],
+  age25to44: [26.76, 26.92, 26.97, 26.87, 26.48, 26, 25.28],
+  age45to64: [24.76, 24.11, 23.48, 23.71, 24.4, 25.15, 25.71],
+  age65plus: [17.34, 18.73, 20.63, 21.61, 22.04, 22.27, 22.77],
+};
+
+const ageProjectionAnchors: Anchor[] = censusProjectionYears.map((year, index) => ({
+  year,
+  values: Object.fromEntries(
+    Object.entries(ageProjectionRows).map(([key, values]) => [key, values[index]]),
+  ),
+}));
+
+const ageActualBase = ageActualAnchors.at(-1)!;
+const ageProjectionBase = ageProjectionAnchors.find((point) => point.year === 2025)!;
+const ageAnchors: Anchor[] = [
+  ...ageActualAnchors,
+  ...ageProjectionAnchors
+    .filter((point) => point.year > 2025)
+    .map((point) => ({
+      year: point.year,
+      values: normalize(Object.fromEntries(
+        Object.keys(point.values).map((key) => [
+          key,
+          ageActualBase.values[key] + point.values[key] - ageProjectionBase.values[key],
+        ]),
+      )),
+    })),
+];
+
+// Census 2023 National Projections, middle series: total and 18+
+// population, 2026–2050, in thousands.
+const projectedResidents = [
+  339513, 340970, 342385, 343754, 345074, 346339, 347545, 348702, 349808, 350861, 351861, 352806, 353696,
+  354530, 355309, 356034, 356705, 357327, 357903, 358438, 358936, 359400, 359836, 360247, 360639,
+];
+const projectedAdults = [
+  269163, 271046, 272804, 274438, 275986, 277482, 278942, 280376, 281738, 282962, 284072, 285060, 285965,
+  286733, 287563, 288319, 289044, 289742, 290417, 291071, 291710, 292333, 292946, 293550, 294149,
+];
+
+// U.S. residents or adults in a year: Census estimates through 2025, the
+// Census middle-series projection after. Null where neither exists.
+export function nationalPopulation(universe: "residents" | "adults", year: number): number | null {
+  if (year > 2025 && year <= 2050) {
+    return (universe === "residents" ? projectedResidents : projectedAdults)[year - 2026] * 1000;
+  }
+  if (universe === "residents") return modernPopulation[year - 2000] ?? null;
+  const counts = ageCounts[year];
+  return counts ? counts.slice(1).reduce((sum, value) => sum + value, 0) * 1000 : null;
+}
+
 const orientationTotals = [
   [2012, 3.5],
   [2013, 3.6],
@@ -373,6 +487,13 @@ const orientationTotals = [
   [2024, 9.3],
   [2025, 9.0],
 ] as const;
+
+// Years the surveys behind each national series actually fielded; the years
+// between are interpolated.
+export const SURVEY_YEARS: Partial<Record<DemographicDimensionId, number[]>> = {
+  orientation: orientationTotals.map(([year]) => year),
+  religion: [2007, 2014, 2024],
+};
 
 function regressionSlope(points: readonly (readonly [number, number])[]): number {
   const meanX = points.reduce((sum, [x]) => sum + x, 0) / points.length;
@@ -492,21 +613,63 @@ function religionScenarioPaths(observed: Record<string, number>): DemographicPoi
   });
 }
 
+const agePoints = interpolateAnchors(ageAnchors, 2010, 2050);
 const sexPoints = interpolateAnchors(sexAnchors, 1820, 2050);
 const racePoints = interpolateAnchors(raceAnchors, 2000, 2050);
 const religionPoints = interpolateAnchors(religionAnchors, 2007, 2050);
 const religionScenarios = religionScenarioPaths(
   religionPoints.find((point) => point.year === 2024)!.values,
 );
+const ageScenarios = censusScenarioPaths(ageActualBase.values);
 const sexScenarios = censusScenarioPaths(sexActualBase.values);
 const raceScenarios = censusScenarioPaths(raceActualBase.values);
 
 export const demographicSeries: DemographicSeries[] = [
   {
+    id: "age",
+    label: "Age",
+    description: "Age groups, by age at last birthday",
+    population: "U.S. resident population",
+    measure: "census",
+    universe: "residents",
+    definition: "Census estimates of the resident population by age, as of July 1 each year.",
+    geographies: ["national", "state", "city"],
+    observedThrough: 2025,
+    categories: [
+      { id: "under18", label: "Under 18", color: "#0ea5e9" },
+      { id: "age18to24", label: "18–24", color: "#6366f1" },
+      { id: "age25to44", label: "25–44", color: "#a855f7" },
+      { id: "age45to64", label: "45–64", color: "#ec4899" },
+      { id: "age65plus", label: "65 and older", color: "#f97316" },
+    ],
+    points: withRange(agePoints, 2025, ageScenarios),
+    scenarios: ageScenarios,
+    rangeNote: "Census high-, low- and zero-immigration scenarios",
+    sources: [
+      {
+        label: "U.S. Census Bureau — State population by characteristics, 2010–2020",
+        href: "https://www.census.gov/programs-surveys/popest/technical-documentation/research/evaluation-estimates/2020-evaluation-estimates/2010s-state-detail.html",
+      },
+      {
+        label: "U.S. Census Bureau — State population by characteristics, 2020–2025",
+        href: "https://www.census.gov/data/tables/time-series/demo/popest/2020s-state-detail.html",
+      },
+      {
+        label: "U.S. Census Bureau — 2023 National Population Projections",
+        href: "https://www.census.gov/data/datasets/2023/demo/popproj/2023-popproj.html",
+      },
+    ],
+  },
+  {
     id: "sex",
     label: "Sex",
     description: "Share of the total resident population",
     population: "U.S. resident population",
+    measure: "census",
+    universe: "residents",
+    definition:
+      "Sex as recorded in Census population estimates, which classify every resident as male or female. Gender identity is not measured.",
+    geographies: ["national", "state", "city"],
     observedThrough: 2025,
     categories: [
       { id: "male", label: "Male", color: "#2563eb" },
@@ -544,9 +707,14 @@ export const demographicSeries: DemographicSeries[] = [
   },
   {
     id: "race",
-    label: "Race",
+    label: "Race & ethnicity",
     description: "Mutually exclusive race and ethnicity categories",
     population: "U.S. resident population",
+    measure: "census",
+    universe: "residents",
+    definition:
+      "Census estimates of the resident population in mutually exclusive race and ethnicity groups.",
+    geographies: ["national", "state", "city"],
     observedThrough: 2025,
     categories: [
       { id: "nhWhite", label: "White, non-Hispanic", color: "#94a3b8" },
@@ -560,6 +728,12 @@ export const demographicSeries: DemographicSeries[] = [
     points: withRange(racePoints, 2025, raceScenarios),
     scenarios: raceScenarios,
     rangeNote: "Census high-, low- and zero-immigration scenarios",
+    categoryNotes: {
+      hispanic:
+        "The Census treats Hispanic or Latino origin as an ethnicity, not a race. Anyone of Hispanic origin is counted here, whatever their race; every other group is non-Hispanic.",
+      nhWhite: "Non-Hispanic people who report White as their only race.",
+      nhMultiracial: "Non-Hispanic people who report two or more races.",
+    },
     sources: [
       {
         label: "U.S. Census Bureau — 2000–2010 intercensal estimates",
@@ -580,37 +754,15 @@ export const demographicSeries: DemographicSeries[] = [
     ],
   },
   {
-    id: "orientation",
-    label: "Sexual orientation",
-    description: "Adult self-identification",
-    population: "U.S. adults",
-    observedThrough: 2025,
-    categories: [
-      { id: "straight", label: "Straight / heterosexual", color: "#64748b" },
-      { id: "bisexual", label: "Bisexual", color: "#8b5cf6" },
-      { id: "gayLesbian", label: "Gay or lesbian", color: "#ec4899" },
-      { id: "other", label: "Another orientation", color: "#06b6d4" },
-      { id: "notReported", label: "Not reported", color: "#cbd5e1" },
-    ],
-    points: withRange([...orientationObserved, ...orientationProjected], 2025, orientationScenarios),
-    scenarios: orientationScenarios,
-    rangeNote: "2025 identification level held flat to the 2012–2025 trend continuing",
-    sources: [
-      {
-        label: "Gallup — U.S. LGBTQ+ identification trend, 2012–2025",
-        href: "https://news.gallup.com/poll/702206/lgbtq-identification-holds.aspx",
-      },
-      {
-        label: "CDC/NCHS — 2024 sexual-orientation distribution",
-        href: "https://www.cdc.gov/nchs/data/rss/codebook.pdf",
-      },
-    ],
-  },
-  {
     id: "religion",
     label: "Religion",
     description: "Adult religious affiliation",
     population: "U.S. adults",
+    measure: "survey",
+    universe: "adults",
+    definition:
+      "Survey estimates of the religious identity of U.S. adults (18+). The Census does not ask about religion.",
+    geographies: ["national", "state"],
     observedThrough: 2024,
     categories: [
       { id: "christian", label: "Christian", color: "#2563eb" },
@@ -622,6 +774,14 @@ export const demographicSeries: DemographicSeries[] = [
     points: withRange(religionPoints, 2024, religionScenarios),
     scenarios: religionScenarios,
     rangeNote: "Pew religious-switching scenarios",
+    categoryNotes: {
+      christian:
+        "Protestants (evangelical, mainline and historically Black), Catholics, Orthodox Christians, Latter-day Saints and Jehovah's Witnesses, as Pew classifies them.",
+      unaffiliated: "Atheists, agnostics and people who say their religion is “nothing in particular.”",
+      otherReligions: "Jewish, Muslim, Buddhist, Hindu and all other non-Christian faiths, combined.",
+      multiChristian: "Pew's small “other Christian” group outside the traditions above. National series only.",
+      notReported: "Respondents who declined to answer or said they didn't know.",
+    },
     sources: [
       {
         label: "Pew Research Center — 2007, 2014 and 2023–24 Religious Landscape Studies",
@@ -634,6 +794,45 @@ export const demographicSeries: DemographicSeries[] = [
       {
         label: "PRRI — Census of American Religion",
         href: "https://prri.org/wp-content/uploads/2026/04/PRRI-Apr-2026-Census-of-American-Religion-final.pdf",
+      },
+    ],
+  },
+  {
+    id: "orientation",
+    label: "Sexual orientation",
+    description: "Adult self-identification",
+    population: "U.S. adults",
+    measure: "survey",
+    universe: "adults",
+    definition:
+      "Survey estimates of how U.S. adults (18+) describe their sexual orientation. The Census does not count sexual orientation.",
+    geographies: ["national", "state"],
+    observedThrough: 2025,
+    categories: [
+      { id: "straight", label: "Straight / heterosexual", color: "#64748b" },
+      { id: "bisexual", label: "Bisexual", color: "#8b5cf6" },
+      { id: "gayLesbian", label: "Gay or lesbian", color: "#ec4899" },
+      { id: "other", label: "Another orientation", color: "#06b6d4" },
+      { id: "notReported", label: "Not reported", color: "#cbd5e1" },
+    ],
+    points: withRange([...orientationObserved, ...orientationProjected], 2025, orientationScenarios),
+    scenarios: orientationScenarios,
+    rangeNote: "2025 identification level held flat to the 2012–2025 trend continuing",
+    categoryNotes: {
+      straight: "Adults who identify as straight or heterosexual.",
+      bisexual: "Gallup's 2025 split of the LGBTQ+ total, applied to every year.",
+      gayLesbian: "Gallup's 2025 split of the LGBTQ+ total, applied to every year.",
+      other: "Pansexual, asexual, queer and other identities (Gallup's “something else”).",
+      notReported: "Respondents who declined to answer or said they didn't know.",
+    },
+    sources: [
+      {
+        label: "Gallup — U.S. LGBTQ+ identification trend, 2012–2025",
+        href: "https://news.gallup.com/poll/702206/lgbtq-identification-holds.aspx",
+      },
+      {
+        label: "CDC/NCHS — 2024 sexual-orientation distribution",
+        href: "https://www.cdc.gov/nchs/data/rss/codebook.pdf",
       },
     ],
   },

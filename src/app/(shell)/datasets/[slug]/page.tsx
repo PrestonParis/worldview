@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { coverageLabel } from "@/components/data/dataset-list";
+import { SortableTable } from "@/components/data/sortable-table";
+import { RECORD_DATASETS, recordPreview } from "@/lib/db/records";
 import { datasetCoverage, getDataset } from "@/lib/db/stats";
 
 export const dynamic = "force-dynamic";
@@ -26,6 +28,8 @@ export default async function DatasetPage({ params }: Props) {
   const coverage = (await datasetCoverage([slug]))[slug] ?? null;
   const metrics = Object.entries(dataset.metrics);
   const example = metrics[0]?.[0];
+  const record = RECORD_DATASETS[slug];
+  const preview = record ? await recordPreview(slug) : null;
 
   const facts = [
     ["Publisher", dataset.publisher],
@@ -47,11 +51,18 @@ export default async function DatasetPage({ params }: Props) {
         </p>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-950 dark:text-white">{dataset.title}</h1>
         {dataset.description && <p className="mt-3 max-w-3xl text-base leading-7 text-slate-500 dark:text-slate-400">{dataset.description}</p>}
-        {dataset.sourceUrl && (
-          <a href={dataset.sourceUrl} className="mt-3 inline-block text-sm font-medium text-slate-900 underline underline-offset-2 dark:text-white">
-            Original source ↗
-          </a>
-        )}
+        <p className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm font-medium">
+          {record?.explore && (
+            <Link href={record.explore.href} className="text-slate-900 underline underline-offset-2 dark:text-white">
+              {record.explore.label} →
+            </Link>
+          )}
+          {dataset.sourceUrl && (
+            <a href={dataset.sourceUrl} className="text-slate-900 underline underline-offset-2 dark:text-white">
+              Original source ↗
+            </a>
+          )}
+        </p>
       </header>
 
       <dl className="grid gap-x-8 gap-y-4 rounded-2xl border border-slate-200 p-5 sm:grid-cols-2 lg:grid-cols-3 dark:border-slate-800">
@@ -74,36 +85,77 @@ export default async function DatasetPage({ params }: Props) {
         <section>
           <h2 className="text-lg font-semibold text-slate-950 dark:text-white">Measures</h2>
           <div className="mt-3 overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
-            <table className="w-full min-w-[36rem] text-sm">
-              <thead className="bg-slate-50 text-left text-xs text-slate-500 dark:bg-slate-900 dark:text-slate-400">
-                <tr>
-                  <th className="px-3 py-2 font-medium">Measure</th>
-                  <th className="px-3 py-2 font-medium">Unit</th>
-                  <th className="px-3 py-2 font-medium">API name</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                {metrics.map(([key, m]) => (
-                  <tr key={key}>
-                    <td className="px-3 py-2 text-slate-900 dark:text-white">
-                      {m.label}
-                      {m.description && <span className="block text-xs text-slate-500 dark:text-slate-400">{m.description}</span>}
-                    </td>
-                    <td className="px-3 py-2 text-slate-600 dark:text-slate-300">{UNITS[m.unit] ?? m.unit}</td>
-                    <td className="px-3 py-2 font-mono text-xs text-slate-500 dark:text-slate-400">{key}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <SortableTable
+              className="w-full min-w-[36rem] text-sm"
+              columns={[{ label: "Measure" }, { label: "Unit" }, { label: "API name" }]}
+              rows={metrics.map(([key, m]) => ({
+                key,
+                cells: [
+                  {
+                    content: (
+                      <>
+                        {m.label}
+                        {m.description && <span className="block text-xs text-slate-500 dark:text-slate-400">{m.description}</span>}
+                      </>
+                    ),
+                    sort: m.label.toLowerCase(),
+                    className: "px-3 py-2 text-slate-900 dark:text-white",
+                  },
+                  { content: UNITS[m.unit] ?? m.unit, className: "px-3 py-2 text-slate-600 dark:text-slate-300" },
+                  { content: key, className: "px-3 py-2 font-mono text-xs text-slate-500 dark:text-slate-400" },
+                ],
+              }))}
+            />
+          </div>
+        </section>
+      )}
+
+      {coverage?.tables && (
+        <section>
+          <h2 className="text-lg font-semibold text-slate-950 dark:text-white">Records</h2>
+          <dl className="mt-3 flex flex-wrap gap-x-10 gap-y-3">
+            {coverage.tables.map((t) => (
+              <div key={t.label}>
+                <dt className="text-xs text-slate-500 dark:text-slate-400">{t.label}</dt>
+                <dd className="mt-0.5 text-lg font-semibold text-slate-950 tabular-nums dark:text-white">{t.rows.toLocaleString("en-US")}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      )}
+
+      {preview && preview.rows.length > 0 && (
+        <section>
+          <h2 className="text-lg font-semibold text-slate-950 dark:text-white">{preview.title}</h2>
+          <div className="mt-3 overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
+            <SortableTable
+              className="w-full min-w-xl text-sm"
+              columns={preview.columns.map((c) => ({ label: c }))}
+              rows={preview.rows.map((row, i) => ({
+                key: String(i),
+                cells: row.map((v, j) => ({
+                  content: v,
+                  className: `px-3 py-2 ${j === 1 ? "text-slate-900 dark:text-white" : "text-slate-600 dark:text-slate-300"}`,
+                })),
+              }))}
+            />
           </div>
         </section>
       )}
 
       <section>
         <h2 className="text-lg font-semibold text-slate-950 dark:text-white">API</h2>
-        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Open, no key required. Up to 10,000 values per request; follow <code>next</code> to page.</p>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+          {record ? (
+            "Open, no key required. Returns the dataset's description and coverage."
+          ) : (
+            <>Open, no key required. Up to 10,000 values per request; follow <code>next</code> to page.</>
+          )}
+        </p>
         <pre className="mt-3 overflow-x-auto rounded-xl bg-slate-950 p-4 text-xs leading-6 text-slate-100">
-          {`GET /api/data/v1/datasets/${slug}\nGET /api/data/v1/datasets/${slug}/observations?metric=${example ?? "<metric>"}&geoLevel=nation&from=2015`}
+          {record
+            ? `GET /api/data/v1/datasets/${slug}`
+            : `GET /api/data/v1/datasets/${slug}\nGET /api/data/v1/datasets/${slug}/observations?metric=${example ?? "<metric>"}&geoLevel=nation&from=2015`}
         </pre>
       </section>
     </div>

@@ -10,6 +10,16 @@
 //   refugee_arrivals              nation 1980–; _by_region / _by_country
 //   asylum_grants_total / _affirmative / _defensive          nation 1990–
 //   asylum_affirmative_by_region / _by_country
+//   nonimmigrant_admissions_total (all, estimated) / nonimmigrant_i94_admissions
+//                                 nation, 10 FYs
+//   nonimmigrant_by_class         I-94 admissions per class of admission,
+//                                 geo_level 'class', geoid = class code ('h1b')
+// Enforcement (from the newest yearbook that has its chapter — it trails the
+// others by a year):
+//   removals, returns_administrative, returns_enforcement,
+//   expulsions_title_42           nation 1892–
+//   removals_criminal / _noncriminal                         nation, 10 FYs
+//   removals_by_country           10 FYs
 // Breakdown rows use geo_level 'region' | 'country' | 'class' with a slug
 // geoid and the DHS label as geo_name (CBP's citizenship rows do the same).
 //
@@ -53,6 +63,8 @@ async function workbooks(year) {
     naturalizations: find(/naturalizations/i),
     refugees: find(/refugees/i),
     asylees: find(/asylees/i),
+    nonimmigrants: find(/nonimmigrants/i),
+    enforcement: find(/enforcement/i),
   };
 }
 
@@ -206,6 +218,71 @@ await runImport("dhs-yearbook", async (pg) => {
     nation("asylum_grants_defensive", y, count(r[3]));
   }
   byRegionCountry(table(asy, "Table 17", /^Region and country/i), "asylum_affirmative_by_region", "asylum_affirmative_by_country");
+
+  // --- Nonimmigrant (temporary) admissions. Leaf classes carry their code in
+  // parentheses ("... (H1B)"); group rows don't and are left to the page.
+  // H-2B shares a row with returning H-2B workers, so its code is 'h2r'.
+  const nonimm = await load(urls.nonimmigrants);
+  {
+    const t = table(nonimm, "Table 26", /^Class of admission/i);
+    const years = parseYearColumns(t);
+    for (const r of t.body) {
+      const name = label(r[0]);
+      const each = (metric, geoLevel, geoid, geoName) => {
+        for (const [i, y] of years) row(metric, geoLevel, geoid, geoName, y, count(r[i]), "admissions");
+      };
+      if (/^Total all admissions/i.test(name)) each("nonimmigrant_admissions_total", "nation", "US", "United States");
+      else if (/^Total I-94 admissions/i.test(name)) each("nonimmigrant_i94_admissions", "nation", "US", "United States");
+      else {
+        // The last parenthetical is the code: "... (NAFTA) professional workers (TN)".
+        const code = [...name.matchAll(/\(([A-Z0-9]+(?: to [A-Z0-9]+)?)\)/g)].at(-1)?.[1];
+        if (code) each("nonimmigrant_by_class", "class", slug(code), name);
+      }
+    }
+  }
+
+  // --- Enforcement: the newest yearbook with an enforcement workbook.
+  let enforcement = urls.enforcement;
+  for (let back = 1; !enforcement && back <= 2; back++) enforcement = (await workbooks(year - back)).enforcement;
+  if (!enforcement) throw new Error(`no enforcement workbook in yearbooks FY${year - 2}–FY${year}`);
+  const enf = await load(enforcement);
+  {
+    const t = table(enf, "Table 39", /^Year$/);
+    const col = (re) => t.header.findIndex((h) => re.test(String(h ?? "")));
+    const cols = {
+      returns_administrative: col(/^Administrative Returns/i),
+      returns_enforcement: col(/^Enforcement Returns/i),
+      removals: col(/^Removals/i),
+      expulsions_title_42: col(/^Expulsions/i),
+    };
+    if (Object.values(cols).some((i) => i < 0)) throw new Error(`Table 39 header changed: ${JSON.stringify(t.header)}`);
+    for (const r of t.body) {
+      const y = yearOf(r[0]);
+      if (y) for (const [metric, i] of Object.entries(cols)) nation(metric, y, count(r[i]), "events");
+    }
+  }
+  {
+    // Three columns per year: Total, Criminal, Non-Criminal.
+    const t = table(enf, "Table 42", /^Region and country/i);
+    const years = parseYearColumns(t);
+    let section = null;
+    for (const r of t.body) {
+      const name = label(r[0]);
+      if (name === "REGION" || name === "COUNTRY") {
+        section = name;
+        continue;
+      }
+      if (!section || !name) continue;
+      for (const [i, y] of years) {
+        if (name === "Total" && section === "REGION") {
+          nation("removals_criminal", y, count(r[i + 1]), "events");
+          nation("removals_noncriminal", y, count(r[i + 2]), "events");
+        } else if (section === "COUNTRY" && name !== "Total") {
+          row("removals_by_country", "country", slug(name), name, y, count(r[i]), "events");
+        }
+      }
+    }
+  }
 
   const columns = ["source", "metric", "geo_level", "geoid", "geo_name", "period", "period_start", "value", "unit", "metadata"];
   const inserted = await upsertRows(pg, "area_stats", columns, out, ["source", "metric", "geo_level", "geoid", "period"]);
