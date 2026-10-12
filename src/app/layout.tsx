@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist_Mono, Public_Sans } from "next/font/google";
 import "./globals.css";
 import { THEME_SCRIPT } from "@/lib/theme";
-import { SITE_URL } from "@/lib/site";
+import { SITE_URL, SLOGAN } from "@/lib/site";
 
 // Public Sans is the U.S. federal government's typeface (USWDS).
 const publicSans = Public_Sans({
@@ -17,8 +17,9 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "Worldview",
+  title: `Worldview · ${SLOGAN.slice(0, -1)}`,
   description: "Explore American public issues, political power, elections, government, demographics, and the public records behind them.",
+  openGraph: { siteName: "Worldview" },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SLOGAN } from "@/lib/site";
 
 const GROUPS = [
   {
@@ -24,6 +25,7 @@ export function Footer() {
       <div className="mx-auto grid max-w-[1440px] gap-10 px-8 py-12 md:grid-cols-[1.5fr_repeat(3,1fr)]">
         <div className="max-w-sm">
           <Link href="/" className="text-lg font-semibold text-slate-950 dark:text-white">Worldview</Link>
+          <p className="mt-1 text-sm font-semibold text-slate-500 dark:text-slate-400">{SLOGAN}</p>
           <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">
             Public records on government, elections, people, money, and the issues shaping the United States.
           </p>

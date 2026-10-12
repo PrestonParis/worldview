@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { GlobalSearch } from "@/components/search/global-search";
 import { formatValue } from "@/lib/format";
+import { SLOGAN } from "@/lib/site";
 
 export interface SnapshotMetric {
   label: string;
@@ -36,11 +37,12 @@ export function Hero({ datasetCount, publisherCount, snapshot }: {
   return (
     <section className="grid gap-12 border-b border-slate-200 pb-14 pt-8 lg:grid-cols-[1.05fr_.95fr] lg:items-start lg:gap-20 lg:pb-20 lg:pt-14 dark:border-slate-800">
       <div>
-        <h1 className="max-w-3xl text-4xl font-semibold leading-[1.08] tracking-[-0.035em] text-slate-950 sm:text-5xl lg:text-[3.5rem] dark:text-white">
-          Public data for understanding the United States.
+        <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Public data for understanding the United States</p>
+        <h1 className="mt-3 max-w-3xl text-5xl font-semibold leading-[1.02] tracking-[-0.04em] text-slate-950 sm:text-6xl lg:text-[4.25rem] dark:text-white">
+          {SLOGAN}
         </h1>
         <p className="mt-5 max-w-2xl text-[17px] leading-7 text-slate-600 dark:text-slate-300">
-          Worldview brings government records on immigration, crime, elections, demographics, political money, and Congress into one searchable site.
+          Every figure on Worldview comes from a government record or published study — immigration, crime, elections, demographics, political money, and Congress — and links back to where it came from.
         </p>
 
         <div className="mt-8 max-w-2xl">
@@ -59,14 +61,14 @@ export function Hero({ datasetCount, publisherCount, snapshot }: {
         {datasetCount > 0 ? (
           <p className="mt-8 text-sm text-slate-500 dark:text-slate-400">
             <Link href="/datasets" className="font-medium text-slate-800 hover:underline dark:text-slate-200">{datasetCount} public datasets</Link>{" "}
-            from {publisherCount} {publisherCount === 1 ? "publisher" : "publishers"}, with links to original sources.
+            from {publisherCount} {publisherCount === 1 ? "publisher" : "publishers"}. Check any of them at the source.
           </p>
         ) : null}
       </div>
 
       <div className="border-t-2 border-slate-950 pt-4 dark:border-white">
         <div className="flex items-baseline justify-between gap-4">
-          <h2 className="text-lg font-semibold text-slate-950 dark:text-white">Latest figures</h2>
+          <h2 className="text-lg font-semibold text-slate-950 dark:text-white">Latest figures, straight from the record</h2>
           <span className="text-sm text-slate-500 dark:text-slate-400">Latest available release</span>
         </div>
         <div className="mt-3 divide-y divide-slate-200 border-b border-slate-200 dark:divide-slate-800 dark:border-slate-800">

@@ -37,6 +37,7 @@ export default async function DatasetsPage() {
       <header className="max-w-3xl">
         <p className="text-xs font-semibold tracking-[0.18em] text-slate-400 uppercase">Data</p>
         <h1 className="mt-2 text-4xl font-semibold tracking-tight text-slate-950 dark:text-white">Datasets</h1>
+        <p className="mt-3 text-lg text-slate-600 dark:text-slate-300">It&rsquo;s all real. Here&rsquo;s where it comes from.</p>
         <p className="mt-3 text-base leading-7 text-slate-500 dark:text-slate-400">
           Every statistic on Worldview comes from one of these datasets — public records refreshed from the agencies that
           publish them, and research data published here by partner institutions. Each is documented and available through
