@@ -82,6 +82,7 @@
     "db:pull": "node scripts/db-pull.mjs",
     "db:rebalance": "node scripts/db-rebalance.mjs",
     "db:migrate": "node scripts/migrate.mjs",
+    "auth:role": "node scripts/set-role.mjs",
     "data:backfill": "node scripts/backfill-datasets.mjs",
     "build:demographics": "node scripts/build-demographics.mjs",
     "sync:wiki-races": "node scripts/sync-wiki-races.mjs",

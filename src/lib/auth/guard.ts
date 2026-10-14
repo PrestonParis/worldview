@@ -1,21 +1,31 @@
 // Write access to shared data (docs/auth-plan.md). Server-only.
 //
-// Browsing is open, but every create/update/delete of shared records requires
-// a registered account (a profiles row, i.e. someone who signed up with the
-// registration code). Server actions are public POST endpoints, so hiding the
-// edit UI is not enough: each action must check this itself.
+// Browsing is open and anyone can create an account, but every
+// create/update/delete of shared records requires an editor (profiles.role).
+// Server actions are public POST endpoints, so hiding the edit UI is not
+// enough: each action must check this itself.
 
 import { redirect } from "next/navigation";
-import { getCurrentUserId } from "./session";
+import { getCurrentUser, type CurrentUser } from "./session";
 
-export const NOT_SIGNED_IN = "Sign in with a registered account to change data.";
+export const NOT_SIGNED_IN = "Sign in with an editor account to change data.";
+export const NOT_EDITOR = "Your account can't change shared data. Ask an editor for access.";
+
+export function isEditor(user: CurrentUser | null): boolean {
+  return user?.profile.role === "editor";
+}
 
 // For server actions: null when allowed, otherwise a failed ActionResult.
 export async function requireContributor(): Promise<{ ok: false; error: string } | null> {
-  return (await getCurrentUserId()) ? null : { ok: false, error: NOT_SIGNED_IN };
+  const user = await getCurrentUser();
+  if (!user) return { ok: false, error: NOT_SIGNED_IN };
+  return isEditor(user) ? null : { ok: false, error: NOT_EDITOR };
 }
 
-// For edit pages: sends signed-out visitors to sign in, then back.
+// For edit pages: sends signed-out visitors to sign in, then back, and
+// members to the read-only page the editor sits under.
 export async function requireContributorPage(next: string): Promise<void> {
-  if (!(await getCurrentUserId())) redirect(`/login?next=${encodeURIComponent(next)}`);
+  const user = await getCurrentUser();
+  if (!user) redirect(`/login?next=${encodeURIComponent(next)}`);
+  if (!isEditor(user)) redirect(next.replace(/\/edit\/?$/, "") || "/");
 }

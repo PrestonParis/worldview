@@ -45,7 +45,7 @@ Worldview uses PostgreSQL for structured records such as claims, sources, bills,
 - **Two databases with explicit ownership.** Relational records stay queryable and constrained in PostgreSQL, while entities and edges live in Neo4j for graph traversal.
 - **Idempotent ingestion.** Stable source IDs, unique indexes, upserts, and Neo4j `MERGE` calls make imports resumable and safe to rerun.
 - **Source-aware public data.** Importers preserve external identifiers and provenance across FEC, Congress.gov, Census, Voteview, the Supreme Court Database, and other public sources.
-- **Guarded editing.** Public exploration is separated from authenticated data maintenance, with registration codes and server-side authorization protecting write paths.
+- **Guarded editing.** Public exploration is separated from authenticated data maintenance, with editor roles and server-side authorization protecting write paths.
 - **Recoverable operations.** Export, restore, dry-run, cursor, and audit-report workflows were added after real recovery incidents exposed the need for stronger operational boundaries.
 
 ## Testing
@@ -124,11 +124,12 @@ npm run dev
 
 ### 7. Sign in
 
-Editing and account pages require a registered session (`src/proxy.ts` — Next 16
-renamed `middleware.ts` to `proxy.ts`; the ingest API is exempt and has its own
-bearer-token authentication). Registration is intentionally closed unless a valid
-`REGISTRATION_CODE` is configured and supplied. Sign-in is email and password; an emailed
-code is used only to reset a forgotten password.
+Editing and account pages require a session (`src/proxy.ts` — Next 16 renamed
+`middleware.ts` to `proxy.ts`; the ingest API is exempt and has its own
+bearer-token authentication). Anyone can create an account with email and password,
+confirmed by an emailed code; a forgotten password is reset the same way. New accounts
+are members, who own their maps and quizzes. Changing shared data needs an editor,
+granted with `npm run auth:role -- <email> editor`.
 
 ## Adding data
 

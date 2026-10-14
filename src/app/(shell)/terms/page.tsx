@@ -37,7 +37,7 @@ export default function TermsPage() {
 
       <h2 className={heading}>Accounts</h2>
       <p className={paragraph}>
-        Some features require an account and, while registration is limited, a valid registration code. You must provide accurate account information, keep credentials secure, and promptly report suspected unauthorized access. You are responsible for activity performed through your account. Do not share a registration code unless authorized to do so.
+        Some features require an account. You must provide accurate account information, keep credentials secure, and promptly report suspected unauthorized access. You are responsible for activity performed through your account.
       </p>
 
       <h2 className={heading}>Acceptable use</h2>

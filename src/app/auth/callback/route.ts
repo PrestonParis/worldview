@@ -14,11 +14,7 @@ export async function GET(request: Request) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
-      const result = await finalizeSignIn();
-      if (result === "ok") return NextResponse.redirect(`${origin}${await claimAfterSignIn(next)}`);
-      if (result === "not_registered") {
-        return NextResponse.redirect(`${origin}/register?error=not_registered&next=${encodeURIComponent(next)}`);
-      }
+      if ((await finalizeSignIn()) === "ok") return NextResponse.redirect(`${origin}${await claimAfterSignIn(next)}`);
     }
   }
 

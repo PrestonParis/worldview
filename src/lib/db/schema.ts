@@ -1146,12 +1146,17 @@ export const quizSessions = pgTable(
   ],
 );
 
-// Registered Worldview accounts (docs/auth-plan.md). A Supabase auth user
-// only counts as signed in once it has a row here — registration requires
-// the registration code, so sessions without a profile are ignored.
-export const profiles = pgTable("profiles", {
-  // Supabase auth.users.id — no FK, map_projects convention.
-  id: uuid("id").primaryKey(),
-  displayName: text("display_name"),
-  registeredAt: timestamp("registered_at", { withTimezone: true }).notNull().defaultNow(),
-});
+// Worldview accounts (docs/auth-plan.md). finalizeSignIn creates the row the
+// first time a verified Supabase auth user signs in. Only editors may change
+// shared data (src/lib/auth/guard.ts); members own their own maps and quizzes.
+export const profiles = pgTable(
+  "profiles",
+  {
+    // Supabase auth.users.id — no FK, map_projects convention.
+    id: uuid("id").primaryKey(),
+    displayName: text("display_name"),
+    role: text("role").notNull().default("member"),
+    registeredAt: timestamp("registered_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [check("profiles_role_check", sql`${table.role} in ('member', 'editor')`)],
+);

@@ -2,9 +2,12 @@ import { eq } from "drizzle-orm";
 import { db } from "./client";
 import { mapProjects, profiles, quizSessions } from "./schema";
 
+export type Role = "member" | "editor";
+
 export interface Profile {
   id: string;
   displayName: string | null;
+  role: Role;
   registeredAt: string;
 }
 
@@ -12,6 +15,7 @@ function toProfile(row: typeof profiles.$inferSelect): Profile {
   return {
     id: row.id,
     displayName: row.displayName,
+    role: row.role === "editor" ? "editor" : "member",
     registeredAt: row.registeredAt.toISOString(),
   };
 }
