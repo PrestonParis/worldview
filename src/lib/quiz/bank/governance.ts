@@ -60,7 +60,7 @@ export const governanceStatements: Statement[] = [
   st("liberty.07", -0.25, "Intelligence agencies need much stronger oversight from Congress and the courts."),
   st("liberty.08", -0.25, "I would accept a slightly higher risk of terrorism to keep my communications private."),
   st("liberty.09", 0, "Targeted surveillance with a warrant is acceptable, but collecting everyone's data is not."),
-  st("liberty.10", 0, "Surveillance of Americans should require individualized court approval."),
+  st("liberty.10", -0.25, "Surveillance of Americans should require individualized court approval."),
   st("liberty.11", 0.25, "Police should be able to use facial recognition to identify suspects in serious crimes."),
   st("liberty.12", 0.25, "Extensive airport security screening is a reasonable price for safer travel."),
   st("liberty.13", 0.5, "Tech companies should be required to give law enforcement a way to read encrypted messages when a court approves."),
@@ -71,6 +71,7 @@ export const governanceStatements: Statement[] = [
   st("liberty.18", 1, "Suspected terrorists, even U.S. citizens, may be held indefinitely without trial."),
   st("liberty.19", -0.75, "Police stopping and searching people without probable cause is never acceptable.", on("justice", -0.5, 0.3)),
   st("liberty.20", 0.5, "A national ID card would be a reasonable security measure."),
+  st("liberty.21", 0, "Some surveillance programs are necessary, but each should be reviewed regularly and scaled back once it is no longer needed."),
 
   // ── Voting: Majoritarian (-1) ↔ Safeguarded (+1) ──
   st("voting.01", -1, "The Senate should be abolished or radically reformed so that each state no longer gets equal representation."),
@@ -105,7 +106,7 @@ export const governanceStatements: Statement[] = [
   st("democracy.08", -0.25, "Ordinary citizens are capable of making good decisions about how their country is run."),
   st("democracy.09", -0.5, "Limits on how long a leader can stay in power are essential."),
   st("democracy.10", 0, "How well a government performs matters about as much as how it was chosen."),
-  st("democracy.11", 0, "Democracy suits some countries better than others."),
+  st("democracy.11", 0.25, "Democracy suits some countries better than others."),
   st("democracy.12", 0.25, "Some decisions are too important to leave to elected politicians and should rest with independent experts."),
   st("democracy.13", 0.25, "Stability and order matter more than holding frequent elections."),
   st("democracy.14", 0.5, "In a national crisis, a leader should be able to postpone elections until order is restored."),
@@ -115,4 +116,5 @@ export const governanceStatements: Statement[] = [
   st("democracy.18", 0.75, "A wise ruler with unchecked power would govern better than an elected parliament."),
   st("democracy.19", 1, "Political parties that oppose the state's founding principles should be banned."),
   st("democracy.20", 1, "Final authority should rest with a ruler who does not answer to voters."),
+  st("democracy.21", 0, "Democracy is the best system in principle, but it often moves too slowly to solve urgent problems."),
 ];

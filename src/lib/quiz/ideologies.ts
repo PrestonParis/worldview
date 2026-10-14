@@ -334,7 +334,7 @@ export const ideologies: Ideology[] = [
     description: "Political authority should be ordered toward religious truth, with the state subordinate to the church.",
     position: { federalism: 0.4, executive: 0.7, liberty: 0.6, voting: 0.8, democracy: 0.6, ownership: -0.1, regulation: -0.3, redistribution: -0.3, trade: -0.3, engagement: 0.3, force: 0, social: 1, religion: 1, immigration: 0.5, justice: 0.7, identity: 0.3, environment: 0, technology: -0.4 },
     core: ["democracy", "executive", "liberty", "ownership", "regulation", "redistribution", "social", "religion"],
-    tradition: ["catholic"], authority: ["clergy", "monarch"],
+    tradition: ["catholic"], authority: ["clergy", "monarch", "leader"],
   },
   {
     id: "neoreaction",

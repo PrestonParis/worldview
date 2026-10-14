@@ -9,7 +9,7 @@ import { policyIssues } from "./issues-policy";
 
 // Bump when statement/option wording, locations, or weights change. Stored
 // quizzes record the version they were taken against.
-export const BANK_VERSION = "3.1.0";
+export const BANK_VERSION = "3.2.0";
 
 // Statements removed from the bank. Answers to them stay in stored logs but no
 // longer score; the wording is kept so those answers can still be displayed.
