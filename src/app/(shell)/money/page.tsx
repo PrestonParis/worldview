@@ -70,7 +70,7 @@ export default async function MoneyPage({ searchParams }: PageProps<"/money">) {
     <div className="mx-auto max-w-7xl space-y-14 pb-16">
       <MoneyHeader
         title={content.title}
-        intro="Follow the money in federal politics: what campaigns raise, what outside groups spend to win or defeat candidates, and what organizations pay to lobby Washington."
+        features={["What campaigns raise", "Outside spending to win or defeat candidates", "Lobbying in Washington"]}
         cycle={cycle}
         cycles={cycles}
         basePath="/money"
@@ -78,11 +78,29 @@ export default async function MoneyPage({ searchParams }: PageProps<"/money">) {
 
       {isEmpty ? (
         <EmptyState
-          message="No money recorded yet. Run npm run import:fec-cycle and npm run import:lda-lobbying, or add records in"
+          message="No money recorded yet. Add records in"
           cta={{ href: "/data/contributions", label: "Manage Data" }}
         />
       ) : (
         <>
+          {cand.length > 0 && cycle != null ? (
+            <MoneySection
+              id="follow"
+              title="Follow the money"
+              intro="Where each party's campaign money comes from. Pick a candidate to see their funding mix, largest donor committees, and their opponent."
+            >
+              <MoneyFlow
+                key={requested ?? "all"}
+                cycle={cycle}
+                candidates={cand.map(toFlowCandidate)}
+                donorsByCandidate={donorsByCandidate}
+                opponents={opponents}
+                initialCandidateId={requested}
+                source={MONEY_SOURCES.fec}
+              />
+            </MoneySection>
+          ) : null}
+
           <MoneySection
             title="Four kinds of political money"
             intro="Each number below measures a different flow from a different filing, so they don't add up to one total. A contribution record is a single transaction that also counts toward some campaign's receipts; lobbying pays for influence over policy, not for winning elections."
@@ -225,24 +243,6 @@ export default async function MoneyPage({ searchParams }: PageProps<"/money">) {
                   />
                 </div>
               </div>
-            </MoneySection>
-          ) : null}
-
-          {cand.length > 0 && cycle != null ? (
-            <MoneySection
-              id="follow"
-              title="Follow the money"
-              intro="Where each party's campaign money comes from. Pick a candidate to see their funding mix, largest donor committees, and their opponent."
-            >
-              <MoneyFlow
-                key={requested ?? "all"}
-                cycle={cycle}
-                candidates={cand.map(toFlowCandidate)}
-                donorsByCandidate={donorsByCandidate}
-                opponents={opponents}
-                initialCandidateId={requested}
-                source={MONEY_SOURCES.fec}
-              />
             </MoneySection>
           ) : null}
 

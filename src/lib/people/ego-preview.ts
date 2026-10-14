@@ -1,6 +1,6 @@
 // A small, static ego network for the People & Power landing page: one
 // subject and its direct (non-institutional) ties, each labelled with what
-// the tie is. The full interactive network lives at /people?view=network.
+// the tie is. The full list lives in the profile's relationships section.
 
 import { familyOf, type NodeFamily } from "@/lib/graph/lean";
 import { withoutStructuralEdges } from "@/lib/graph/scope";

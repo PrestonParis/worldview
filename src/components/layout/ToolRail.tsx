@@ -33,7 +33,7 @@ export function ToolRail() {
   const setActiveTool = useAppStore((s) => s.setActiveTool);
 
   return (
-    <nav className="flex w-14 flex-col items-center gap-1 border-r border-neutral-800 bg-neutral-950 py-3">
+    <nav className="hidden w-14 flex-col items-center gap-1 border-r border-neutral-800 bg-neutral-950 py-3 lg:flex">
       {TOOLS.map(({ id, label, icon: Icon }) => {
         const isActive = activeTool === id;
         return (

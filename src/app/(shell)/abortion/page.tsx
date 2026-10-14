@@ -15,6 +15,7 @@ import { SectionNav } from "@/components/data/section-nav";
 import { loadAbortion } from "@/lib/abortion/data";
 import { formatValue } from "@/lib/format";
 import { loadStatePaths } from "@/lib/geo/state-paths";
+import { FeatureList } from "@/components/ui/feature-list";
 
 export const dynamic = "force-dynamic";
 
@@ -89,7 +90,7 @@ export default async function AbortionPage() {
     return (
       <div className="mx-auto max-w-7xl">
         <h1 className="text-4xl font-bold tracking-tight text-slate-950 dark:text-white">Abortion</h1>
-        <p className="mt-4 text-slate-500">No abortion data is loaded yet. Run npm run import:abortion.</p>
+        <p className="mt-4 text-slate-500">No abortion data is loaded yet.</p>
       </div>
     );
   }
@@ -101,11 +102,25 @@ export default async function AbortionPage() {
       <header className="max-w-3xl">
         <p className="text-sm font-semibold tracking-[0.14em] text-blue-700 uppercase dark:text-blue-400">United States</p>
         <h1 className="mt-2 text-4xl font-bold tracking-tight text-slate-950 sm:text-5xl dark:text-white">Abortion</h1>
-        <p className="mt-4 text-lg leading-8 text-slate-600 dark:text-slate-300">
-          How many abortions take place, where, and how — month by month since 2023, by state back to 1988, and nationally back to 1973 — with
-          each state&apos;s current gestational limit.
-        </p>
+        <FeatureList
+          className="mt-4"
+          items={[
+            "Monthly counts since 2023",
+            "Every state back to 1988",
+            "National totals back to 1973",
+            "Each state's current gestational limit",
+          ]}
+        />
       </header>
+
+      <ChartCard
+        title="Abortions per year since 1973"
+        subtitle="Three sources · the line marks the Dobbs decision"
+        source={SOURCES.history}
+        table={seriesTable(d.longRun, "abortions")}
+      >
+        <TimeSeriesChart series={d.longRun} unit="abortions" height={340} markers={[DOBBS]} />
+      </ChartCard>
 
       <SectionNav sections={SECTIONS} />
 
@@ -220,14 +235,9 @@ export default async function AbortionPage() {
             for 2021–2022. CDC&apos;s count is lower because several states don&apos;t report to it.
           </p>
         </Prose>
-        <div className="grid gap-6 lg:grid-cols-2">
-          <ChartCard title="Abortions per year" subtitle="Three sources" source={SOURCES.history} table={seriesTable(d.longRun, "abortions")}>
-            <TimeSeriesChart series={d.longRun} unit="abortions" height={280} markers={[DOBBS]} />
-          </ChartCard>
-          <ChartCard title="Abortion rate" subtitle="Per 1,000 women aged 15–44" source={SOURCES.history} table={seriesTable(d.rates, "per_1000")}>
-            <TimeSeriesChart series={d.rates} unit="per_1000" height={280} />
-          </ChartCard>
-        </div>
+        <ChartCard title="Abortion rate" subtitle="Per 1,000 women aged 15–44" source={SOURCES.history} table={seriesTable(d.rates, "per_1000")}>
+          <TimeSeriesChart series={d.rates} unit="per_1000" height={280} />
+        </ChartCard>
       </Section>
 
       {/* --------------------------------------------------------- State limits */}

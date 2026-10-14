@@ -1,4 +1,4 @@
-import type { AxisId, ChoiceOption, Condition, ItemModel, Loadings, Statement } from "../types";
+import type { AxisId, ChoiceOption, Condition, ItemModel, Lens, Loadings, Statement } from "../types";
 
 // Choice option shorthand.
 export function o(
@@ -6,8 +6,9 @@ export function o(
   text: string,
   stance: string,
   axes: Loadings = {},
+  lens?: Lens,
 ): ChoiceOption {
-  return { id, text, stance, axes };
+  return lens ? { id, text, stance, axes, lens } : { id, text, stance, axes };
 }
 
 // "Question q was answered with one of these options."

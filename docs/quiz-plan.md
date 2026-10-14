@@ -38,7 +38,7 @@ statements are **ideal-point** (GGUM-style): people at both extremes reject them
 - [ ] Signed-in users can **claim** a quiz, then set it **public** (anyone with the
       link) or **private** (owner only).
 - [ ] Results: axis chart with a confidence level per axis, policy profiles, a distance-ranked match
-      against all 55 ideologies (never a percentage), and "why you landed here" for each axis.
+      against every ideology in the catalog (never a percentage), and "why you landed here" for each axis.
 - [ ] Finishing isn't final: after completion, any low-confidence axis offers "answer N more
       questions to refine this", appended to the same quiz.
 - [ ] **Not in scope yet:** matching users to politicians or other real people.
@@ -62,15 +62,20 @@ statements are **ideal-point** (GGUM-style): people at both extremes reject them
 5. **Store raw answers, not just results.** A quiz row stores the answer log plus
    the bank and engine versions. That allows changing an answer, recomputing
    results, and later re-fitting each question's parameters from real response data.
+   Each answer also stores a `shown` snapshot (the item text, options, and response
+   label as displayed), so a log stays readable after items are reworded or retired.
+   `npm run quiz:answers -- <slug>` prints a session's full log with current scoring;
+   `-- --backfill` fills snapshots on older answers (run it before changing wording).
+   Retired statement ids stay listed in `retiredStatements` and no longer score.
 6. **Postgres (Drizzle) + Supabase auth**, same ownership pattern as `map_projects`.
-7. **The axes are a hypothesis, not a fixed map of politics.** The 17 axes are versioned
+7. **The axes are a hypothesis, not a fixed map of politics.** The 18 axes are versioned
    with the bank. Once there is response data, factor analysis tests whether each axis's
    statements really move together, and axes get split, merged, or redrawn when they don't.
    Raw answers plus `bankVersion` make old quizzes re-scorable under a new axis set.
 
 ## Axes (US-adapted, v1)
 
-Poles are named so that both sides would accept the description. 17 axes in 5 groups:
+Poles are named so that both sides would accept the description. 18 axes in 5 groups:
 
 | # | Group | Axis (− pole ↔ + pole) | Covers | 12axes origin |
 |---|---|---|---|---|
@@ -78,6 +83,7 @@ Poles are named so that both sides would accept the description. 17 axes in 5 gr
 | 2 | Governance | Checks & balances ↔ Strong executive | Executive orders, independent agencies, filibuster | Democratic–Autocratic (reframed; pro-democracy statements get near-universal agreement in the US) |
 | 3 | Governance | Civil liberty ↔ Security | Surveillance, emergency powers, policing powers | Security–Freedom |
 | 4 | Governance | Majoritarian ↔ Safeguarded | Electoral College, Senate, filibuster, voter ID, mail voting | new (*watch: ballot access and counter-majoritarian structure may prove to be two dimensions*) |
+| 4b | Governance | Democratic ↔ Autocratic | Whether government must be chosen in free elections; opposition, press, term limits | Democratic–Autocratic (added in bank 3.0.0, worded without US references so non-democratic views can be stated directly) |
 | 5 | Economy | Public ownership ↔ Private ownership | Public option, utilities, nationalization | Collectivize–Privatize |
 | 6 | Economy | Regulated ↔ Laissez-faire | Business, finance, labor regulation | Planned–Laissez-Faire |
 | 7 | Economy | Redistributive ↔ Self-reliant | Taxes, welfare, entitlements | new (split out of 5/6) |
@@ -85,12 +91,34 @@ Poles are named so that both sides would accept the description. 17 axes in 5 gr
 | 9 | Foreign | Internationalist ↔ America First | Alliances, UN, foreign aid | Nationalism–Internationalism |
 | 10 | Foreign | Interventionist ↔ Restraint | Use of force, defense spending | Militarist–Pacifist |
 | 11 | Society | Progressive ↔ Traditional | Gender, sexuality, family norms | Progressive–Traditional |
-| 12 | Society | Secular ↔ Religious | Religion in public life and law | Irreligious–Religious |
+| 12 | Society | Secular ↔ Religious | Religion and the state, from a state that discourages religion to one governed by religious law; statements are tradition-neutral | Irreligious–Religious |
 | 13 | Society | Open/pluralist ↔ Restrictive/assimilationist | Immigration levels, language, national identity | Assimilationist–Multiculturalist |
 | 14 | Society | Reform ↔ Law & order | Sentencing, policing, drugs, death penalty | new |
 | 15 | Society | Group-conscious ↔ Colorblind | Affirmative action, disparate impact, DEI | new |
 | 16 | Tech & nature | Environmental ↔ Growth-first | Climate, fossil fuels, conservation, energy | new |
 | 17 | Tech & nature | Precautionary ↔ Accelerationist | AI, biotech, nuclear, automation | Acceleration–Bioconservative |
+
+Axis 2 (executive) and axis 4 (elections) keep their US meaning; whether there should be
+elections at all is the democracy axis, so a strong-president populist no longer sits with
+monarchism and fascism.
+
+### Lenses
+
+Some differences are categorical, not positions on a line: which religious tradition should
+shape the law, who should hold final authority, and what defines the nation. These are
+recorded as **lenses** (`types.ts`, `lenses.ts`) from the Religion & law and Political
+system modules. Lenses never move an axis (decision 3). In matching, each lens the
+respondent answered adds one well-measured pseudo-axis per ideology: no gap if the
+ideology accepts the answer, `LENS_GAP` if not. Ideologies list accepted values (Islamism:
+Sunni or Shia, clerical rule); untagged ones get defaults from their positions (secular
+ones accept no tradition, democratic ones accept elected rule, and untagged religious
+Western entries accept the Christian traditions).
+
+`npm run quiz:audit` checks that the catalog stays separable. It reports close pairs that
+no lens separates, whether a simulated respondent placed on each ideology (answering lens
+questions as it would) ranks it first, match calibration distances, and simulated accuracy.
+Bank 3.0.0: 80/80 rank first, no unseparated close pairs, mean axis error 0.07,
+~144 answers on average.
 
 Environment and technology are separate because people combine them freely
 (pro-nuclear but AI-cautious; green but pro-biotech). Term limits doesn't count toward
@@ -108,6 +136,11 @@ Compact multiple-selection batteries are used where several independent policies
 together; an unchecked option is not treated as opposition.
 Each screener also records whether the issue is of low, medium, or high importance. That
 modestly changes how much evidence the answer contributes without changing its direction.
+Policy answers are weighted up (`CHOICE_WEIGHT`) relative to statements, so one strong
+reaction to an abstract statement can't outweigh several concrete policy choices. When the
+statement answers alone and the policy answers alone each place an axis clearly but in
+different places, the axis is reported as mixed and its uncertainty widened to span both,
+which also lowers its weight in ideology matching.
 
 Modules:
 
@@ -116,7 +149,7 @@ minimum wage · Social Security & Medicare · Climate & energy · Policing ·
 Death penalty · Drugs · LGBTQ rights · Affirmative action · Education & school
 choice · Speech & content moderation · Voting rules · Supreme Court & judiciary
 · Israel/Gaza · Ukraine/Russia · China · Trade & tariffs · AI & tech regulation
-· Religious liberty · Housing & zoning · Federal debt
+· Religious liberty · Housing & zoning · Federal debt · Religion & law · Political system
 
 ## Question model
 
@@ -201,8 +234,8 @@ Estimate:
 
 | Respondent | Axis statements | Issue questions | Total |
 |---|---|---|---|
-| Clear-cut | 17 × ~4–5 | ~25 screeners + few follow-ups | ~110 |
-| Ambivalent | 17 × ~8–12 | ~25 screeners + many follow-ups | ~170–200 |
+| Clear-cut | 18 × ~4–5 | ~27 screeners + few follow-ups | ~120 |
+| Ambivalent | 18 × ~8–12 | ~27 screeners + many follow-ups | ~180–210 |
 
 The minimum per axis and the issue screeners set a floor of roughly 100. The point of the adaptivity is
 to spend extra questions where someone is torn, not to cut the quiz short.
@@ -244,13 +277,13 @@ quizSessions = pgTable("quiz_sessions", {
 
 ## Results page
 
-- Axis chart: 17 bars grouped by category, each with a marker and a precision band.
+- Axis chart: one bar per axis, grouped by category, each with a marker and a precision band.
   This replaces bare percentages.
 - **Confidence per axis**, from posterior SD: High / Medium / Low. Low comes with the reason
   ("your answers on this axis pointed both ways" or "few answers") and a button: "Answer N
   more questions to refine this". It reopens the engine on that axis alone and appends to the same quiz.
 - **Policy profiles:** one card per module listing each explicitly supplied stance.
-- **Closest ideological traditions:** all 55 ideologies, ranked by distance weighted by
+- **Closest ideological traditions:** every ideology in the catalog, ranked by distance weighted by
   precision and counting only each ideology's defining axes.
   - Shown as distances, never as percentages or "You are X". There's no probability model
     behind a percentage.
@@ -300,7 +333,7 @@ quizSessions = pgTable("quiz_sessions", {
 
 ## Decided
 
-- 17 axes (technology split into environment + technology after review); issue list as drafted; the bank's v1 is up for review.
+- 18 axes (technology split into environment + technology after review; democracy added in bank 3.0.0); issue list as drafted; the bank's v1 is up for review.
 - No matching to politicians or other real people yet; ideology labels only, with the full ranking shown.
 - Unclaimed quizzes are kept for 7 days.
 - "Quiz" sits at the top level next to Demographics.

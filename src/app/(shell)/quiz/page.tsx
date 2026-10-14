@@ -11,10 +11,11 @@ import { ideologies } from "@/lib/quiz/ideologies";
 import { FAMILIES, familyColor } from "@/lib/quiz/families";
 import { ideologyMatches, type AxisResult, type Confidence } from "@/lib/quiz/results";
 import { axisIds, type AxisId, type IdeologyFamily } from "@/lib/quiz/types";
+import { FeatureList } from "@/components/ui/feature-list";
 
 export const metadata: Metadata = {
   title: "Political Quiz | Worldview",
-  description: "An adaptive, in-depth quiz that maps your views on 17 political axes and 25 issues.",
+  description: "An adaptive, in-depth quiz that maps your views on 18 political axes and 27 issues.",
 };
 
 export const dynamic = "force-dynamic";
@@ -32,6 +33,7 @@ const EXAMPLE: Record<AxisId, { at: number; confidence: Confidence }> = {
   executive: { at: 0.2, confidence: "medium" },
   liberty: { at: 0.15, confidence: "medium" },
   voting: { at: 0.35, confidence: "high" },
+  democracy: { at: -0.4, confidence: "high" },
   ownership: { at: 0.1, confidence: "medium" },
   regulation: { at: -0.3, confidence: "medium" },
   redistribution: { at: -0.2, confidence: "medium" },
@@ -65,7 +67,7 @@ const EXAMPLE_STANCES: Record<string, string> = {
 const CONTRAST: [string, string] = ["libertarianism", "national-conservatism"];
 const CONTRAST_AXES = 6;
 
-const FAMILY_ORDER: IdeologyFamily[] = ["left", "liberal", "center", "conservative", "right", "libertarian", "populist", "other"];
+const FAMILY_ORDER: IdeologyFamily[] = ["left", "liberal", "center", "conservative", "right", "libertarian", "populist", "religious", "other"];
 
 const CONFIDENCE_LABEL: Record<Confidence, string> = { high: "High confidence", medium: "Medium", low: "Low" };
 
@@ -112,10 +114,14 @@ export default async function QuizPage() {
           <h1 className="mt-3 text-4xl font-semibold tracking-tight text-balance text-slate-950 sm:text-5xl dark:text-white">
             Where do you actually stand?
           </h1>
-          <p className="mt-4 max-w-md text-lg leading-8 text-slate-600 dark:text-slate-300">
-            Most quizzes put you on a chart. This one builds a model of what you believe, dimension by dimension and
-            issue by issue, then compares it with {ideologies.length} political traditions.
-          </p>
+          <FeatureList
+            className="mt-4"
+            items={[
+              "A model of your beliefs, not a dot on a chart",
+              "Scored issue by issue",
+              `Compared with ${ideologies.length} political traditions`,
+            ]}
+          />
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <StartButton label={inProgress ? "Start a new quiz" : "Start the quiz"} primary />
@@ -235,7 +241,7 @@ export default async function QuizPage() {
         <h2 className={h2}>Answer, refine, explore</h2>
         <ol className="mt-10 grid gap-x-10 gap-y-10 md:grid-cols-3">
           <Step n="01" title="Answer">
-            React to short statements on a seven-point scale, from strongly agree to strongly disagree. Strength counts:
+            React to short statements on a seven-point scale, from strongly disagree to strongly agree. Strength counts:
             a strong answer moves a dimension further than a mild one. Issue questions ask what the law should actually
             say.
           </Step>
@@ -259,12 +265,12 @@ export default async function QuizPage() {
               ))}
             </div>
             <div className="mt-2.5 grid grid-cols-3 text-xs font-medium">
-              <span className="text-agree-600 dark:text-agree-400">Strongly agree</span>
+              <span className="text-disagree-600 dark:text-disagree-400">Strongly disagree</span>
               <span className="text-center text-slate-500">Neutral</span>
-              <span className="text-right text-disagree-600 dark:text-disagree-400">Strongly disagree</span>
+              <span className="text-right text-agree-600 dark:text-agree-400">Strongly agree</span>
             </div>
             <p className="mt-4 text-sm leading-6 text-slate-600 dark:text-slate-400">
-              Seven points: strongly agree, agree, somewhat agree, neutral, and the same three on the disagree side.
+              Seven points: strongly disagree, disagree, somewhat disagree, neutral, and the same three on the agree side.
               Neutral means you hold a middle view, and it counts. <strong className="font-semibold text-slate-800 dark:text-slate-200">Not sure</strong>{" "}
               is a separate button. It skips the question and doesn&rsquo;t move your results, so not knowing is never
               scored as moderation.
@@ -464,13 +470,13 @@ export default async function QuizPage() {
 }
 
 const SCALE_PREVIEW = [
-  { size: "size-10", tone: "border-agree-500/70" },
-  { size: "size-8", tone: "border-agree-500/70" },
-  { size: "size-6", tone: "border-agree-500/70" },
-  { size: "size-5", tone: "border-slate-400 dark:border-slate-600" },
-  { size: "size-6", tone: "border-disagree-500/70" },
-  { size: "size-8", tone: "border-disagree-500/70" },
   { size: "size-10", tone: "border-disagree-500/70" },
+  { size: "size-8", tone: "border-disagree-500/70" },
+  { size: "size-6", tone: "border-disagree-500/70" },
+  { size: "size-5", tone: "border-slate-400 dark:border-slate-600" },
+  { size: "size-6", tone: "border-agree-500/70" },
+  { size: "size-8", tone: "border-agree-500/70" },
+  { size: "size-10", tone: "border-agree-500/70" },
 ];
 
 function StartButton({ label, primary, inverted }: { label: string; primary?: boolean; inverted?: boolean }) {

@@ -293,10 +293,10 @@ export default async function EntityProfilePage({
             </section>
           ) : null}
           <Link
-            href={`/people?view=network&root=${entity.id}`}
+            href={`${publicEntityPath(entity)}#relationships`}
             className="flex items-center justify-between rounded-2xl border border-slate-200 p-5 text-sm font-medium text-slate-900 hover:border-slate-400 dark:border-slate-800 dark:text-white dark:hover:border-slate-600"
           >
-            Explore direct network <span aria-hidden="true">→</span>
+            Public relationships <span aria-hidden="true">→</span>
           </Link>
         </aside>
       </div>

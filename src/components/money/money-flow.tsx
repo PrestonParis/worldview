@@ -184,9 +184,15 @@ export function MoneyFlow({
   source: { label: string; href?: string };
 }) {
   const initial = candidates.find((c) => c.id === initialCandidateId);
-  const [party, setParty] = useState<PartyCode>(
-    PARTIES.find((p) => p.code === initial?.party)?.code ?? "DEM",
-  );
+  // Open on the linked candidate's party; otherwise on whichever party has
+  // raised more, so there's no fixed default side.
+  const [party, setParty] = useState<PartyCode>(() => {
+    const linked = PARTIES.find((p) => p.code === initial?.party)?.code;
+    if (linked) return linked;
+    const raised = (code: PartyCode) =>
+      candidates.reduce((s, c) => s + (c.party === code ? c.receipts : 0), 0);
+    return raised("REP") > raised("DEM") ? "REP" : "DEM";
+  });
   const [hover, setHover] = useState<{
     kind: "source" | "candidate" | "ribbon";
     id: string;

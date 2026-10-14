@@ -1,7 +1,6 @@
 // Idempotent seed. Running it on an empty database yields a small,
-// coherent, non-broken app: a few Neo4j entities + a relationship + a donor
-// edge so the /money graph renders, and one certified election with two
-// candidacies in Postgres so /elections renders.
+// coherent, non-broken app: a few Neo4j entities, and one certified
+// election with two candidacies in Postgres so /elections renders.
 //
 // Every Neo4j write is a MERGE keyed on a fixed UUID and every Postgres
 // write is ON CONFLICT DO NOTHING on a fixed UUID, so re-running never
@@ -18,9 +17,7 @@ import neo4j from "neo4j-driver";
 import pg from "pg";
 
 const TRUMP_ID = "959fad0d-0edb-4c1e-9c56-c9a1696e443b";
-const ZELENSKYY_ID = "b1d9c0a2-4e3f-4a1b-8c7d-0e1f2a3b4c5d";
 const WHITEHOUSE_ID = "c2e8f1a3-5d4b-4c2a-9b8e-1f0a2b3c4d5e";
-const PAC_ID = "d3f7a2b4-6c5e-4d3b-8a9f-2e1b3c4d5e6f";
 const HARRIS_ID = "e4a1c2d3-1111-4aaa-8bbb-000000000010";
 
 // Postgres fixture ids (elections + candidacies).
@@ -37,25 +34,11 @@ const ENTITIES = [
     metadata: { office: "President of the United States", party: "Republican", country: "United States" },
   },
   {
-    id: ZELENSKYY_ID,
-    type: "politician",
-    name: "Volodymyr Zelenskyy",
-    description: "President of Ukraine",
-    metadata: { office: "President of Ukraine", country: "Ukraine" },
-  },
-  {
     id: WHITEHOUSE_ID,
     type: "organization",
     name: "The White House",
     description: "Office of the President of the United States",
     metadata: { country: "United States" },
-  },
-  {
-    id: PAC_ID,
-    type: "company",
-    name: "Example Leadership PAC",
-    description: "Placeholder political committee — replace with real FEC data via scripts/import-fec-donors.mjs.",
-    metadata: { placeholder: true },
   },
   {
     id: HARRIS_ID,
@@ -66,24 +49,7 @@ const ENTITIES = [
   },
 ];
 
-const EDGES = [
-  {
-    id: "1a2b3c4d-0001-4000-8000-000000000001",
-    sourceEntityId: TRUMP_ID,
-    targetEntityId: ZELENSKYY_ID,
-    label: "met with",
-    validFrom: "2019-09-25",
-    notes: "Bilateral meeting on the margins of the UN General Assembly.",
-  },
-  {
-    id: "1a2b3c4d-0002-4000-8000-000000000002",
-    sourceEntityId: PAC_ID,
-    targetEntityId: TRUMP_ID,
-    label: "donated to",
-    validFrom: "2024-01-01",
-    notes: "Placeholder contribution edge so the money graph renders.",
-  },
-];
+const EDGES = [];
 
 async function seedNeo4j() {
   const driver = neo4j.driver(

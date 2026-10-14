@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, MapPin, Search } from "lucide-react";
+import { ArrowRight, MapPin } from "lucide-react";
 import { formatValue } from "@/lib/format";
 
 export interface TrendSample {
@@ -42,7 +42,6 @@ export function ToolModules({
 }) {
   return (
     <div className="space-y-20 py-16 lg:space-y-24 lg:py-20">
-      <GovernmentLookup />
       <IssuesSection immigration={immigration} crime={crime} demographics={demographics} />
       <PowerSection facts={facts} />
       <DemocracySection facts={facts} />
@@ -64,32 +63,27 @@ function SectionHeading({ label, title, body }: { label: string; title: string; 
   );
 }
 
-function GovernmentLookup() {
+function AddressLookup() {
   return (
-    <section id="my-government" className="scroll-mt-24 border-y border-slate-300 py-8 md:grid md:grid-cols-[1fr_1.1fr] md:gap-12 dark:border-slate-700">
-      <div>
-        <p className="text-sm font-semibold text-blue-700 dark:text-blue-300">Find your government</p>
-        <h2 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">Who represents your address?</h2>
-        <p className="mt-3 max-w-xl text-base leading-7 text-slate-600 dark:text-slate-400">
-          Look up federal, state, county, city, school board, and judicial offices in one place.
-        </p>
-      </div>
-      <div className="mt-6 md:mt-0">
-        <form action="/my-government" className="flex flex-col gap-2 sm:flex-row">
-          <label className="flex min-w-0 flex-1 items-center gap-3 rounded-lg border border-slate-300 bg-white px-4 dark:border-slate-700 dark:bg-slate-900">
-            <MapPin size={17} className="shrink-0 text-slate-400" aria-hidden />
-            <span className="sr-only">Your address</span>
-            <input name="address" type="text" autoComplete="street-address" placeholder="Street address, city, state, ZIP" className="h-12 min-w-0 flex-1 bg-transparent text-sm text-slate-950 outline-none placeholder:text-slate-400 dark:text-white" />
-          </label>
-          <button type="submit" className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-blue-700 px-5 text-sm font-semibold text-white hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-500">
-            <Search size={16} aria-hidden /> Search
-          </button>
-        </form>
-        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-          Worldview does not save your address. The lookup uses public geocoding services. <Link href="/privacy#address-lookups" className="underline underline-offset-2">Learn more</Link>.
-        </p>
-      </div>
-    </section>
+    <div className="border-t-2 border-slate-950 pt-4 dark:border-white">
+      <h3 className="text-lg font-semibold text-slate-950 dark:text-white">Who represents your address?</h3>
+      <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
+        Federal, state, county, city, school board, and judicial offices in one place.
+      </p>
+      <form action="/my-government" className="mt-4 flex flex-col gap-2 sm:flex-row">
+        <label className="flex min-w-0 flex-1 items-center gap-3 rounded-lg border border-slate-300 bg-white px-4 dark:border-slate-700 dark:bg-slate-900">
+          <MapPin size={17} className="shrink-0 text-slate-400" aria-hidden />
+          <span className="sr-only">Your address</span>
+          <input name="address" type="text" autoComplete="street-address" placeholder="Street address, city, state, ZIP" className="h-11 min-w-0 flex-1 bg-transparent text-sm text-slate-950 outline-none placeholder:text-slate-400 dark:text-white" />
+        </label>
+        <button type="submit" className="inline-flex h-11 items-center justify-center rounded-lg bg-blue-700 px-5 text-sm font-semibold text-white hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-500">
+          Find
+        </button>
+      </form>
+      <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+        Worldview does not save your address. <Link href="/privacy#address-lookups" className="underline underline-offset-2">Learn more</Link>.
+      </p>
+    </div>
   );
 }
 
@@ -209,13 +203,13 @@ function PowerSection({ facts }: { facts: PlatformFacts }) {
 
 function DemocracySection({ facts }: { facts: PlatformFacts }) {
   return (
-    <section>
+    <section id="my-government" className="scroll-mt-24">
       <SectionHeading label="Democracy" title="Elections and representation." body="Browse races and results nationwide, or use an address to identify the districts and offices that represent you." />
       <div className="mt-9 grid gap-8 md:grid-cols-2">
         <TextLink href="/elections" title="Elections">
           {facts.elections ? `${facts.elections.races.toLocaleString()} races are available for the ${facts.elections.cycle} cycle, including federal, state, and local offices.` : "Browse races, results, district maps, candidates, and nonpartisan race ratings."}
         </TextLink>
-        <TextLink href="/my-government" title="My Government">Enter one address to find federal, state, county, municipal, school board, and judicial representation.</TextLink>
+        <AddressLookup />
       </div>
     </section>
   );

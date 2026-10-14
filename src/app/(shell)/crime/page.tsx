@@ -11,6 +11,7 @@ import { coverageLabel } from "@/components/data/dataset-list";
 import { loadCrime, type CrimeData } from "@/lib/crime/data";
 import { FULL_COVERAGE, type YearValue } from "@/lib/crime/offenses";
 import { formatSigned, formatValue } from "@/lib/format";
+import { FeatureList } from "@/components/ui/feature-list";
 
 export const dynamic = "force-dynamic";
 
@@ -52,10 +53,10 @@ export default async function CrimePage() {
       <header className="max-w-3xl">
         <p className="text-sm font-semibold tracking-[0.14em] text-blue-700 uppercase dark:text-blue-400">United States</p>
         <h1 className="mt-2 text-4xl font-bold tracking-tight sm:text-5xl text-slate-950 dark:text-white">Crime</h1>
-        <p className="mt-4 text-lg leading-8 text-slate-500 dark:text-slate-400">
-          Offenses reported to police, as rates per 100,000 residents so years and states compare fairly — nationally and
-          for every state, updated monthly from the FBI.
-        </p>
+        <FeatureList
+          className="mt-4"
+          items={["Offenses reported to police", "Rates per 100,000 residents", "National and every state", "Updated monthly from the FBI"]}
+        />
         <dl className="mt-6 flex flex-wrap gap-3 text-sm">
           <div className="rounded-xl border border-slate-200 px-4 py-2.5 dark:border-slate-800">
             <dt className="text-xs text-slate-500 dark:text-slate-400">Latest complete year</dt>
@@ -75,9 +76,24 @@ export default async function CrimePage() {
         </dl>
       </header>
 
-      <nav aria-label="On this page" className="-mt-6 flex flex-wrap gap-x-5 gap-y-2 border-y border-slate-200 py-3 text-sm dark:border-slate-800">
+      <section id="trend" className="scroll-mt-24 space-y-4">
+        <h2 className={h2}>National trend, {baseYear}–{year}</h2>
+        <CrimeTrends offenses={d.offenses} flaggedYears={d.flaggedYears} baseYear={baseYear} />
+        <p className="max-w-3xl text-xs leading-5 text-slate-500 dark:text-slate-400">
+          Annual rates for complete calendar years. The index view puts every offense on one scale.
+          {d.flaggedYears.length > 0 && (
+            <>
+              {" "}
+              {d.flaggedYears.map((f) => f.year).join(", ")} is marked: the FBI&apos;s switch to NIBRS left agencies covering
+              only {d.flaggedYears.map((f) => formatValue(f.coverage, "percent")).join(", ")} of residents reporting, so
+              its rates read low.
+            </>
+          )}
+        </p>
+      </section>
+
+      <nav aria-label="On this page" className=" flex flex-wrap gap-x-5 gap-y-2 border-y border-slate-200 py-3 text-sm dark:border-slate-800">
         {[
-          ["#trend", "National trend"],
           ...(d.prelim ? [["#preliminary", `${d.prelim.year} so far`]] : []),
           ["#cleared", "Cases cleared"],
           ...(d.victimization ? [["#victims", "Victim surveys"]] : []),
@@ -115,25 +131,6 @@ export default async function CrimePage() {
           </div>
           <ChangeTable d={d} />
         </div>
-      </section>
-
-      <section id="trend" className="scroll-mt-24 space-y-5">
-        <div className="max-w-3xl">
-          <h2 className={h2}>National trend</h2>
-          <p className={lede}>
-            Annual rates for complete calendar years, {baseYear}–{year}. Switch to the index view to put every offense on one
-            scale and see which rose or fell the most.
-            {d.flaggedYears.length > 0 && (
-              <>
-                {" "}
-                {d.flaggedYears.map((f) => f.year).join(", ")} is marked: the FBI&apos;s switch to NIBRS left agencies covering
-                only {d.flaggedYears.map((f) => formatValue(f.coverage, "percent")).join(", ")} of residents reporting, so
-                its rates read low.
-              </>
-            )}
-          </p>
-        </div>
-        <CrimeTrends offenses={d.offenses} flaggedYears={d.flaggedYears} baseYear={baseYear} />
       </section>
 
       {d.prelim && <Preliminary d={d} />}

@@ -12,6 +12,7 @@ import {
   jsonb,
   index,
   uniqueIndex,
+  primaryKey,
   check,
   pgEnum,
   type AnyPgColumn,
@@ -815,10 +816,14 @@ export const mapProjects = pgTable(
     // Neo4j entity references elsewhere in this file).
     ownerId: uuid("owner_id").notNull(),
     name: text("name").notNull().default("Untitled graphic"),
+    documentVersion: integer("document_version").notNull().default(1),
     // MapViewState and Layer[] from src/lib/types.ts — the editor's own
     // state, serialized as-is rather than re-declared as SQL columns.
     mapView: jsonb("map_view").notNull(),
     layers: jsonb("layers").notNull(),
+    liveValues: jsonb("live_values").notNull().default(sql`'{}'::jsonb`),
+    isPublished: boolean("is_published").notNull().default(false),
+    shareToken: uuid("share_token").notNull().defaultRandom(),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
@@ -826,7 +831,33 @@ export const mapProjects = pgTable(
       .notNull()
       .defaultNow(),
   },
-  (table) => [index("map_projects_owner_id_idx").on(table.ownerId)],
+  (table) => [
+    index("map_projects_owner_id_idx").on(table.ownerId),
+    uniqueIndex("map_projects_share_token_idx").on(table.shareToken),
+  ],
+);
+
+export const aisVesselPositions = pgTable(
+  "ais_vessel_positions",
+  {
+    mmsi: text("mmsi").primaryKey(),
+    shipName: text("ship_name"),
+    callSign: text("call_sign"),
+    shipType: integer("ship_type"),
+    destination: text("destination"),
+    navigationalStatus: integer("navigational_status"),
+    longitude: doublePrecision("longitude").notNull(),
+    latitude: doublePrecision("latitude").notNull(),
+    speedKnots: doublePrecision("speed_knots"),
+    course: doublePrecision("course"),
+    heading: integer("heading"),
+    observedAt: timestamp("observed_at", { withTimezone: true }).notNull(),
+    receivedAt: timestamp("received_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("ais_vessel_positions_observed_at_idx").on(table.observedAt),
+    index("ais_vessel_positions_location_idx").on(table.longitude, table.latitude),
+  ],
 );
 
 // ---------------------------------------------------------------------------
@@ -872,7 +903,6 @@ export const memberIdeology = pgTable(
 export const areaStats = pgTable(
   "area_stats",
   {
-    id: uuid("id").primaryKey().defaultRandom(),
     source: text("source").notNull(),
     metric: text("metric").notNull(),
     geoLevel: text("geo_level").notNull(),
@@ -885,17 +915,13 @@ export const areaStats = pgTable(
     metadata: jsonb("metadata"),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },
+  // Every query filters by source, so the key is the only index
+  // (supabase/sql/2026-10-15-area-stats-compact.sql).
   (table) => [
-    uniqueIndex("area_stats_key_idx").on(
-      table.source,
-      table.metric,
-      table.geoLevel,
-      table.geoid,
-      table.period,
-    ),
-    index("area_stats_lookup_idx").on(table.metric, table.geoLevel, table.period),
-    index("area_stats_geoid_idx").on(table.geoid),
-    index("area_stats_source_idx").on(table.source, table.metric),
+    primaryKey({
+      name: "area_stats_pkey",
+      columns: [table.source, table.metric, table.geoLevel, table.geoid, table.period],
+    }),
   ],
 );
 
@@ -967,6 +993,10 @@ export const datasets = pgTable(
     metrics: jsonb("metrics").notNull().default({}),
     // "draft" | "published" | "retired"
     status: text("status").notNull().default("draft"),
+    // Which Postgres holds this dataset's area_stats rows: "supabase" (the
+    // main database) or "neon" (overflow once Supabase nears its size cap).
+    // Moved by scripts/db-rebalance.mjs; see src/lib/db/stores.ts.
+    storage: text("storage").notNull().default("supabase"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },

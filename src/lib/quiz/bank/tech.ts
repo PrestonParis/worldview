@@ -39,7 +39,6 @@ export const techStatements: Statement[] = [
   st("technology.08", -0.25, "Self-driving cars should not be allowed on public roads until they are proven far safer than human drivers."),
   st("technology.09", 0, "Artificial intelligence will bring major benefits and major risks in roughly equal measure."),
   st("technology.10", 0, "Innovation is valuable, but government should oversee technologies that could cause large-scale harm."),
-  st("technology.11", 0.25, "Nuclear power should be a major part of America's energy supply."),
   st("technology.12", 0.25, "Self-driving cars should be allowed on public roads once they are as safe as human drivers."),
   st("technology.13", 0.5, "AI development should be largely free of government regulation.", on("regulation", 0.5, 0.3)),
   st("technology.14", 0.5, "The benefits of new technology almost always outweigh its risks."),
@@ -49,4 +48,6 @@ export const techStatements: Statement[] = [
   st("technology.18", 1, "Human aging should be treated as a disease to be cured."),
   st("technology.19", -0.5, "Social media should be heavily restricted for anyone under 18."),
   st("technology.20", 0.5, "Parents should be allowed to use gene editing to prevent serious diseases in their children."),
+  // Replaces technology.11 (nuclear power), which read energy politics as a view on technology.
+  st("technology.21", 0.25, "Delivery drones should be allowed to fly over residential neighborhoods."),
 ];

@@ -57,8 +57,7 @@ export default async function LobbyingPage({
         ))}
         {registrations.length === 0 ? (
           <p className="py-6 text-sm text-slate-500 dark:text-slate-400">
-            No lobbying filings yet. Add one above or run{" "}
-            <code>npm run import:lda-lobbying</code>.
+            No lobbying filings yet. Add one above.
           </p>
         ) : null}
       </ul>

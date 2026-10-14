@@ -66,11 +66,14 @@ export default async function DonorsPage({ searchParams }: PageProps<"/money/don
     <div className="mx-auto max-w-7xl space-y-14 pb-16">
       <MoneyHeader
         title="Donors"
-        intro={
+        features={[
           <>
-            Who gives to federal campaigns: itemized gifts from <Term k="pac">PACs</Term>, <Term k="partyCommittee">party committees</Term>, and{" "}
-            <Term k="candidateCommittee">candidate committees</Term> to the candidates they fund, as reported to the FEC.
-          </>
+            Gifts from <Term k="pac">PACs</Term>, <Term k="partyCommittee">parties</Term> and{" "}
+            <Term k="candidateCommittee">campaigns</Term>
+          </>,
+          "Matched to the candidates they fund",
+          "As reported to the FEC",
+        ]
         }
         cycle={cycle}
         cycles={cycles}
@@ -78,7 +81,7 @@ export default async function DonorsPage({ searchParams }: PageProps<"/money/don
       />
 
       {d.totals.count === 0 ? (
-        <EmptyState message="No contributions recorded for this cycle yet. Run npm run import:fec-cycle, or add records in" cta={{ href: "/data/contributions", label: "Manage Data" }} />
+        <EmptyState message="No contributions recorded for this cycle yet. Add records in" cta={{ href: "/data/contributions", label: "Manage Data" }} />
       ) : (
         <>
           <div className="flex flex-wrap gap-2">

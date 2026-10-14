@@ -1,9 +1,11 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { formatValue } from "@/lib/format";
+import { FollowMoneyMenu } from "@/components/money/follow-money-menu";
 import type { CampaignCandidate, Race } from "@/lib/db/moneyOverview";
 import { FUNDING_SOURCES, MONEY_COLORS, partyColor, partyLetter } from "@/lib/money/semantic";
 import { Term } from "./term";
+import { FeatureList } from "@/components/ui/feature-list";
 
 // Shared building blocks for the /money views. Each has one job and one
 // visual form: headline numbers are unboxed, rankings are compact lists,
@@ -31,18 +33,18 @@ export function withCycle(href: string, cycle: number | null, latest: number | n
   return `${path}${path.includes("?") ? "&" : "?"}cycle=${cycle}${hash ? `#${hash}` : ""}`;
 }
 
-// Page header shared by every /money view: title, one-line purpose, and the
+// Page header shared by every /money view: title, a few feature points, and the
 // cycle every number below is scoped to.
 export function MoneyHeader({
   title,
-  intro,
+  features,
   cycle,
   cycles,
   basePath,
   extra,
 }: {
   title: string;
-  intro: ReactNode;
+  features: ReactNode[];
   cycle?: number | null;
   cycles?: number[];
   basePath?: string;
@@ -52,7 +54,7 @@ export function MoneyHeader({
     <header className="flex flex-wrap items-end justify-between gap-4">
       <div className="max-w-3xl">
         <h1 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl dark:text-white">{title}</h1>
-        <p className="mt-3 text-base leading-7 text-slate-500 dark:text-slate-400">{intro}</p>
+        <FeatureList className="mt-3" items={features} />
       </div>
       <div className="flex flex-wrap items-center gap-2">
         {extra}
@@ -358,11 +360,19 @@ export function RaceCard({ race, cycle, latest }: { race: Race; cycle: number | 
       <footer className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-1 pt-4 text-xs">
         {others > 0 ? <span className="text-slate-400">+{others} other candidate{others === 1 ? "" : "s"}</span> : null}
         <span className="ml-auto flex gap-4">
-          {leaders[0] ? (
-            <Link href={withCycle(`/money?candidate=${leaders[0].entityId}#follow`, cycle, latest)} className="font-medium text-slate-600 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white">
-              Follow the money →
-            </Link>
-          ) : null}
+          <FollowMoneyMenu
+            label="Follow the money →"
+            className="font-medium text-slate-600 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white"
+            options={race.candidates
+              .filter((c) => ["D", "R"].includes(partyLetter(c.party)))
+              .map((c) => ({
+                href: withCycle(`/money?candidate=${c.entityId}#follow`, cycle, latest),
+                name: c.name,
+                party: partyLetter(c.party),
+                color: partyColor(c.party),
+                raised: usd(c.receipts),
+              }))}
+          />
           {race.electionId ? (
             <Link href={`/elections/${race.electionId}`} className="font-medium text-slate-600 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white">
               View race →

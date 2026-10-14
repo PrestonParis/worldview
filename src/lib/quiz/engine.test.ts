@@ -11,7 +11,11 @@ import {
 } from "./engine";
 import { computeResult, matchPercent, verdict, MATCH_CEILING, MATCH_FLOOR, type IdeologyMatch } from "./results";
 import { randomRespondent, simulate } from "./sim";
-import { axisIds } from "./types";
+import { axisIds, lensIds } from "./types";
+import { acceptedLens } from "./lenses";
+import { issues } from "./bank";
+import { ideologies } from "./ideologies";
+import { answerSnapshot } from "./runner";
 
 describe("response models", () => {
   it("directional agreement rises toward the statement's pole and holds at the extreme", () => {
@@ -158,8 +162,8 @@ describe("simulated respondents", () => {
   it("produce a full result", () => {
     const res = computeResult(runs[0].answers);
     expect(res.axes).toHaveLength(axisIds.length);
-    expect(res.profiles).toHaveLength(25);
-    expect(res.ideologies).toHaveLength(55);
+    expect(res.profiles).toHaveLength(issues.length);
+    expect(res.ideologies).toHaveLength(ideologies.length);
     expect(res.ideologies[0].distance).toBeLessThanOrEqual(res.ideologies[1].distance);
     expect(res.ideologies[0].match).toBeGreaterThanOrEqual(res.ideologies[1].match);
     for (const a of res.axes) expect(a.influences.length).toBeGreaterThan(0);
@@ -182,5 +186,76 @@ describe("verdict", () => {
     expect(verdict(at(90, 75))).toBe("clear");
     expect(verdict(at(90, 85))).toBe("lean");
     expect(verdict(at(90, 88))).toBe("torn");
+  });
+});
+
+describe("statement and policy conflict", () => {
+  const statementsFor = (value: number): QuizAnswer[] =>
+    ["federalism.15", "federalism.16", "federalism.17", "federalism.18", "federalism.20", "federalism.11"].map((id) => ({
+      kind: "statement",
+      id,
+      value,
+    }));
+  const statesPolicies: QuizAnswer[] = [
+    { kind: "choice", id: "abortion.level", value: "states" },
+    { kind: "choice", id: "education.department", value: "yes" },
+    { kind: "choice", id: "housing.federal-role", value: "no" },
+    { kind: "choice", id: "healthcare.medicaid", value: "states" },
+    { kind: "choice", id: "ai.states", value: "yes" },
+  ];
+
+  it("flags an axis where statements and policy answers point opposite ways", () => {
+    const state = computeState([...statementsFor(3), ...statesPolicies]);
+    expect(state.axes.federalism.conflict).toBe(true);
+    expect(computeResult([...statementsFor(3), ...statesPolicies]).axes.find((a) => a.axis === "federalism")!.lowReason).toBe("mixed");
+  });
+
+  it("does not flag consistent answers", () => {
+    expect(computeState([...statementsFor(-3), ...statesPolicies]).axes.federalism.conflict).toBe(false);
+  });
+});
+
+describe("answer snapshots", () => {
+  it("record the wording and response as shown", () => {
+    const shown = answerSnapshot({ kind: "choice", id: "abortion.legal", value: "some", importance: 3 });
+    expect(shown?.text).toBe("Which comes closest to your view on abortion?");
+    expect(shown?.options).toContain("Mixed / none of these fits");
+    expect(shown?.importance).toBe("High");
+    expect(answerSnapshot({ kind: "statement", id: "social.01", value: -3 })?.answer).toBe("Strongly disagree");
+  });
+
+  it("keep the wording of retired statements, which no longer score", () => {
+    const retired: QuizAnswer = { kind: "statement", id: "religion.09", value: 3 };
+    expect(answerSnapshot(retired)?.text).toMatch(/^Religion is a private matter/);
+    expect(computeState([retired]).axes.religion.answered).toBe(0);
+  });
+});
+
+describe("lenses", () => {
+  const tradition = (value: string): QuizAnswer => ({ kind: "choice", id: "religion-law.tradition", value });
+
+  it("are read from the chosen options", () => {
+    expect(computeResult([tradition("sunni")]).lenses).toEqual({ tradition: "sunni" });
+    expect(computeResult([{ kind: "choice", id: "regime.authority", value: "party" }]).lenses).toEqual({ authority: "party" });
+  });
+
+  it("separate religious ideologies by tradition", () => {
+    const rank = (answers: QuizAnswer[], id: string) => computeResult(answers).ideologies.findIndex((m) => m.ideology.id === id);
+    const theocrat: QuizAnswer[] = [
+      { kind: "statement", id: "religion.28", value: 3 },
+      { kind: "statement", id: "religion.29", value: 3 },
+      { kind: "choice", id: "regime.authority", value: "clergy" },
+    ];
+    expect(rank([...theocrat, tradition("catholic")], "integralism")).toBeLessThan(rank([...theocrat, tradition("catholic")], "islamism"));
+    expect(rank([...theocrat, tradition("sunni")], "islamism")).toBeLessThan(rank([...theocrat, tradition("sunni")], "integralism"));
+  });
+
+  it("let a simulated respondent on a lens-tagged ideology find it", () => {
+    for (const id of ["islamism", "hindutva", "integralism", "maoism", "developmentalism"]) {
+      const ideology = ideologies.find((i) => i.id === id)!;
+      const lens = Object.fromEntries(lensIds.flatMap((l) => (acceptedLens(ideology, l) ? [[l, acceptedLens(ideology, l)!]] : [])));
+      const { answers } = simulate({ truth: { ...ideology.position }, noise: 1, skipRate: 0, lens }, id);
+      expect(computeResult(answers).ideologies[0].ideology.id, id).toBe(id);
+    }
   });
 });

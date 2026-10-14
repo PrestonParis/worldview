@@ -78,15 +78,14 @@ export function DonorMap({
   if (rows.length === 0) {
     return (
       <p className="text-sm text-slate-500 dark:text-slate-400">
-        No contribution data yet. Run <code>npm run import:fec-donors</code>.
+        No contribution data yet.
       </p>
     );
   }
   if (rows.every((r) => r.state === "")) {
     return (
       <p className="text-sm text-slate-500 dark:text-slate-400">
-        Contributions don&rsquo;t have a donor state yet. Run{" "}
-        <code>npm run import:fec-donors -- --refresh</code> to pull it from the filings.
+        Contributions don&rsquo;t have a donor state yet.
       </p>
     );
   }

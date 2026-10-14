@@ -11,25 +11,30 @@ import { countBills } from "@/lib/db/bills";
 import { countRollCalls } from "@/lib/db/rollCalls";
 import { listCycles } from "@/lib/db/election-overview";
 import { formatPeriod } from "@/lib/format";
+import { loadStatePaths } from "@/lib/geo/state-paths";
 import { Hero, type SnapshotMetric } from "@/components/home/hero";
+import type { StateMeasure } from "@/components/home/state-map";
 import { ToolModules, type PlatformFacts } from "@/components/home/tool-modules";
 
 export const dynamic = "force-dynamic";
 
 const settle = <T,>(promise: Promise<T>) => promise.then((value) => value, () => null);
 
-async function loadUsPopulation() {
+async function loadStatePopulations() {
   const file = await readFile(path.join(process.cwd(), "public/data/demographics/states.json"), "utf8");
-  const { regions } = JSON.parse(file) as { regions: { population: number }[] };
-  return regions.reduce((sum, region) => sum + region.population, 0);
+  const { regions } = JSON.parse(file) as { regions: { abbr: string; population: number }[] };
+  return regions;
 }
+
+const numbers = (values: (number | null)[]) => values.filter((value): value is number => value !== null && Number.isFinite(value));
 
 export default async function Home() {
   const [
     immigration,
     crime,
     datasets,
-    population,
+    statePopulations,
+    stateMap,
     entityCount,
     edgeCount,
     recentEntities,
@@ -42,7 +47,8 @@ export default async function Home() {
     settle(loadImmigration()),
     settle(loadCrime()),
     settle(listDatasets()),
-    settle(loadUsPopulation()),
+    settle(loadStatePopulations()),
+    settle(loadStatePaths()),
     settle(countEntities()),
     settle(countEdges()),
     settle(listRecentEntities(4)),
@@ -57,44 +63,70 @@ export default async function Home() {
   const observed = race.points.find((point) => point.year === race.observedThrough);
   const encounter = immigration?.stats.encounters;
   const violentCrime = crime?.headline.violent;
+  const population = statePopulations?.reduce((sum, region) => sum + region.population, 0);
 
   const snapshot: SnapshotMetric[] = [
     ...(encounter ? [{
       label: "Border encounters",
       value: encounter.value,
       unit: "encounters",
-      period: encounter.period ? formatPeriod(encounter.period) : undefined,
+      period: `CBP · ${encounter.period ? formatPeriod(encounter.period) : "latest month"}`,
       change: encounter.change,
+      compareLabel: encounter.compare,
+      spark: encounter.spark,
       href: "/immigration",
-      source: "U.S. Customs and Border Protection",
     }] : []),
     ...(crime?.year ? [{
-      label: "Violent crime rate",
+      label: "Violent crime per 100,000",
       value: violentCrime?.value ?? null,
       unit: "per_100k",
-      period: `${crime.year}, per 100,000 residents`,
+      period: `FBI · ${crime.year}`,
       change: violentCrime?.change,
+      compareLabel: crime.priorYear ? `vs ${crime.priorYear}` : undefined,
+      spark: numbers(violentCrime?.spark ?? []),
       href: "/crime",
-      source: "FBI Crime Data Explorer",
-    }] : []),
-    ...(population ? [{
-      label: "U.S. resident population",
-      value: population,
-      unit: "people",
-      period: `${race.observedThrough} estimate`,
-      href: "/demographics",
-      source: "U.S. Census Bureau",
     }] : []),
     ...(immigration?.stats.netMigration ? [{
       label: "Net international migration",
       value: immigration.stats.netMigration.value,
       unit: "people",
-      period: immigration.stats.netMigration.period ? formatPeriod(immigration.stats.netMigration.period) : undefined,
+      period: `Census · ${immigration.stats.netMigration.period ? formatPeriod(immigration.stats.netMigration.period) : "latest year"}`,
       change: immigration.stats.netMigration.change,
+      compareLabel: immigration.stats.netMigration.compare,
+      spark: immigration.stats.netMigration.spark,
       href: "/immigration",
-      source: "U.S. Census Bureau",
+    }] : []),
+    ...(population ? [{
+      label: "U.S. resident population",
+      value: population,
+      unit: "people",
+      period: `Census · ${race.observedThrough} estimate`,
+      href: "/demographics",
     }] : []),
   ];
+
+  const stateValue = <T extends { abbr: string }>(rows: T[] | undefined, pick: (row: T) => number | null | undefined) =>
+    Object.fromEntries((rows ?? []).map((row) => [row.abbr, pick(row) ?? null]));
+  const immigrationMetric = (key: string) => immigration?.states.metrics.find((metric) => metric.key === key);
+  const crimeYear = crime?.year ? crime.states.years.indexOf(crime.year) : -1;
+  const measures: StateMeasure[] = [
+    ...(immigrationMetric("fb") ? [{
+      key: "fb", label: "Foreign-born share", unit: "percent", period: immigrationMetric("fb")!.period, source: "Census ACS", href: "/immigration",
+      values: stateValue(immigration!.states.rows, (row) => row.values.fb),
+    }] : []),
+    ...(crime && crimeYear >= 0 ? [{
+      key: "violent", label: "Violent crime rate", unit: "per_100k", period: `${crime.year}, per 100,000`, source: "FBI", href: "/crime",
+      values: stateValue(crime.states.rows, (row) => row.rates.violent_crime[crimeYear]),
+    }] : []),
+    ...(immigrationMetric("intlRate") ? [{
+      key: "intlRate", label: "Migration per 1,000", unit: "per_1000", period: immigrationMetric("intlRate")!.period, source: "Census PEP", href: "/immigration",
+      values: stateValue(immigration!.states.rows, (row) => row.values.intlRate),
+    }] : []),
+    ...(statePopulations ? [{
+      key: "population", label: "Population", unit: "people", period: `${race.observedThrough} estimate`, source: "Census", href: "/demographics",
+      values: stateValue(statePopulations, (row) => row.population),
+    }] : []),
+  ].filter((measure) => Object.values(measure.values).some((value) => value !== null));
 
   const latestCycle = cycles?.[0];
   const facts: PlatformFacts = {
@@ -114,7 +146,7 @@ export default async function Home() {
 
   return (
     <div className="mx-auto max-w-7xl">
-      <Hero datasetCount={datasets?.length ?? 0} publisherCount={publishers} snapshot={snapshot} />
+      <Hero datasetCount={datasets?.length ?? 0} publisherCount={publishers} snapshot={snapshot} map={stateMap} measures={measures} />
       <ToolModules
         immigration={encounter ? {
           label: "Border encounters, monthly",

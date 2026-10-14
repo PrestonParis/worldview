@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { db } from "./client";
+import { dbFor } from "./stores";
 import { DIMENSIONS, type Measure } from "../elections/electorate";
 
 // The electorate from the CPS Voting and Registration Supplement
@@ -32,6 +32,7 @@ export interface Electorate {
 }
 
 export async function loadElectorate(geoid = "US"): Promise<Electorate | null> {
+  const db = await dbFor("cps-voting");
   const [rows, states] = await Promise.all([
     db.execute(sql`select period, metric, value, geo_name, metadata from area_stats
                    where source = 'cps-voting' and geoid = ${geoid}`),

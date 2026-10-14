@@ -5,6 +5,8 @@ export type GeoLevel = "national" | "state" | "city";
 export interface DemographicCategory {
   id: string;
   label: string;
+  // A compact label for the group chips, where the full one is long.
+  short?: string;
   color: string;
 }
 
@@ -717,13 +719,13 @@ export const demographicSeries: DemographicSeries[] = [
     geographies: ["national", "state", "city"],
     observedThrough: 2025,
     categories: [
-      { id: "nhWhite", label: "White, non-Hispanic", color: "#94a3b8" },
+      { id: "nhWhite", label: "White, non-Hispanic", short: "White", color: "#94a3b8" },
       { id: "hispanic", label: "Hispanic or Latino", color: "#f97316" },
-      { id: "nhBlack", label: "Black, non-Hispanic", color: "#8b5cf6" },
-      { id: "nhAsian", label: "Asian, non-Hispanic", color: "#06b6d4" },
-      { id: "nhMultiracial", label: "Two or more races, non-Hispanic", color: "#f43f5e" },
-      { id: "nhAian", label: "American Indian / Alaska Native, non-Hispanic", color: "#f59e0b" },
-      { id: "nhNhpi", label: "Native Hawaiian / Pacific Islander, non-Hispanic", color: "#10b981" },
+      { id: "nhBlack", label: "Black, non-Hispanic", short: "Black", color: "#8b5cf6" },
+      { id: "nhAsian", label: "Asian, non-Hispanic", short: "Asian", color: "#06b6d4" },
+      { id: "nhMultiracial", label: "Two or more races, non-Hispanic", short: "Two or more races", color: "#f43f5e" },
+      { id: "nhAian", label: "American Indian / Alaska Native, non-Hispanic", short: "American Indian / Alaska Native", color: "#f59e0b" },
+      { id: "nhNhpi", label: "Native Hawaiian / Pacific Islander, non-Hispanic", short: "Pacific Islander", color: "#10b981" },
     ],
     points: withRange(racePoints, 2025, raceScenarios),
     scenarios: raceScenarios,

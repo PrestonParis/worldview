@@ -185,14 +185,25 @@ export async function loadImmigration() {
   ]);
 
   // ------------------------------------------------------------ Population
-  const [netMigration, naturalChange, population, acs, fbByCountry, fbByRegion] = await Promise.all([
+  const [netMigration, naturalChange, population, acs, fbByCountry, fbByRegion, censusShare] = await Promise.all([
     getSeries("census-pep", "international_migration"),
     getSeries("census-pep", "natural_change"),
     getSeries("census-pep", "population"),
     getSeriesMany("census-acs1-immigration", ["foreign_born", "foreign_born_share", "naturalized", "noncitizen"]),
     getCrossSection("census-acs1-immigration", "foreign_born_by_country", "country", { geoidPrefix: "US:" }),
     getCrossSection("census-acs1-immigration", "foreign_born_by_region", "region", { geoidPrefix: "US:" }),
+    getSeries("census-historical-nativity", "foreign_born_share"),
   ]);
+  // Foreign-born share since 1850: decennial censuses, then the ACS.
+  const lastCensus = censusShare.at(-1)?.period ?? "";
+  const longRun: ChartPoint[] = [
+    ...censusShare.map((p) => ({
+      x: Number(p.period),
+      label: Number(p.period) <= 1860 ? `${p.period} census (free population)` : `${p.period} census`,
+      value: p.value,
+    })),
+    ...acs.foreign_born_share.filter((p) => p.period > lastCensus).map((p) => ({ x: Number(p.period), label: `${p.period} survey`, value: p.value })),
+  ];
   const growthYears = new Set(naturalChange.map((p) => p.period));
 
   // ----------------------------------------------------------- Enforcement
@@ -235,7 +246,12 @@ export async function loadImmigration() {
     getCrossSection("un-migrant-stock", "emigrants_by_region", "region"),
   ]);
 
-  const datasets = await listDatasets({ topic: "immigration" });
+  // Population estimates are filed under demographics but supply this page's
+  // net international and domestic migration.
+  const datasets = [
+    ...(await listDatasets({ topic: "immigration" })),
+    ...(await listDatasets({ topic: "demographics" })).filter((d) => d.slug === "census-pep"),
+  ];
   const coverage = await datasetCoverage(datasets.map((d) => d.slug));
 
   // ------------------------------------------------------------ Headlines
@@ -480,6 +496,7 @@ export async function loadImmigration() {
         { id: "non", label: "Not U.S. citizens", slot: 2 as const, points: toChartPoints(acs.noncitizen) },
       ],
       foreignBornShare: single("fbs", "Foreign-born share", toChartPoints(acs.foreign_born_share)),
+      longRun: single("fbs-long", "Foreign-born share", longRun),
       byCountry: { period: fbByCountry.period ?? "", items: named(fbByCountry.values) },
       byRegion: { period: fbByRegion.period ?? "", items: named(fbByRegion.values) },
       netMigration: single("nim", "Net international migration", toChartPoints(netMigration)),

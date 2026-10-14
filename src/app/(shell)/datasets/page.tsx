@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { DatasetList } from "@/components/data/dataset-list";
 import { datasetCoverage, listDatasets } from "@/lib/db/stats";
+import { FeatureList } from "@/components/ui/feature-list";
 
 export const dynamic = "force-dynamic";
 
@@ -14,14 +15,21 @@ const TOPICS: Record<string, string> = {
   immigration: "Immigration",
   crime: "Crime & justice",
   abortion: "Abortion",
+  guns: "Guns",
+  health: "Health care",
+  energy: "Energy & climate",
   demographics: "Demographics",
+  education: "Education",
+  family: "Family",
+  religion: "Religion",
+  economy: "Economy",
+  housing: "Housing",
+  spending: "Government spending",
   elections: "Elections",
   money: "Money in politics",
   legislation: "Congress",
   courts: "Courts",
   executive: "Executive branch",
-  government: "Government spending",
-  economy: "Economy",
 };
 
 export default async function DatasetsPage() {
@@ -38,11 +46,15 @@ export default async function DatasetsPage() {
         <p className="text-xs font-semibold tracking-[0.18em] text-slate-400 uppercase">Data</p>
         <h1 className="mt-2 text-4xl font-semibold tracking-tight text-slate-950 dark:text-white">Datasets</h1>
         <p className="mt-3 text-lg text-slate-600 dark:text-slate-300">It&rsquo;s all real. Here&rsquo;s where it comes from.</p>
-        <p className="mt-3 text-base leading-7 text-slate-500 dark:text-slate-400">
-          Every statistic on Worldview comes from one of these datasets — public records refreshed from the agencies that
-          publish them, and research data published here by partner institutions. Each is documented and available through
-          an open API.
-        </p>
+        <FeatureList
+          className="mt-3"
+          items={[
+            "The source behind every number on Worldview",
+            "Refreshed from the agencies that publish them",
+            "Research data from partner institutions",
+            "Documented, with an open API",
+          ]}
+        />
         <p className="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-sm">
           <Link href="/datasets/publish" className="font-medium text-slate-900 underline underline-offset-2 dark:text-white">
             Publish your institution&apos;s data

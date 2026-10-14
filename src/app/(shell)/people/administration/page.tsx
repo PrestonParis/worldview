@@ -31,11 +31,7 @@ export default async function AdministrationPage() {
       <div className="mx-auto max-w-3xl">
         <h1 className="text-2xl font-semibold tracking-tight">Administration</h1>
         <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">
-          No administration imported yet. Run{" "}
-          <code className="rounded bg-slate-100 px-1 py-0.5 text-xs dark:bg-slate-800">
-            node scripts/import-administration.mjs
-          </code>
-          .
+          No administration loaded yet.
         </p>
       </div>
     );

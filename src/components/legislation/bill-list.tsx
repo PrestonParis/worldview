@@ -111,7 +111,7 @@ export async function BillList({ content, params }: { content: PageContent; para
       {total === 0 && !filtered ? (
         <div className="mt-6">
           <EmptyState
-            message="No bills recorded yet. Run the Congress.gov import (npm run import:congress-bills) or add one by hand in"
+            message="No bills recorded yet. Add one by hand in"
             cta={{ href: "/data/bills", label: "Manage Data" }}
           />
         </div>

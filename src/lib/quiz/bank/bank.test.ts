@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { statements, issues } from "./index";
 import { axes } from "../axes";
 import { ideologies } from "../ideologies";
-import { axisIds, type ChoiceQuestion, type Condition } from "../types";
+import { authorities, axisIds, lensIds, nationBases, traditions, type ChoiceQuestion, type Condition, type LensId } from "../types";
 import { explainQuestion, explainStatement } from "../explanations";
 
 const primaryAxis = (id: string) => id.split(".")[0];
@@ -84,9 +84,9 @@ describe("statements", () => {
 describe("issue modules", () => {
   const questions: ChoiceQuestion[] = issues.flatMap((m) => [m.screener, ...m.followUps]);
 
-  it("cover 25 distinct issues", () => {
-    expect(new Set(issues.map((m) => m.id)).size).toBe(25);
-    expect(issues.length).toBe(25);
+  it("cover 27 distinct issues", () => {
+    expect(new Set(issues.map((m) => m.id)).size).toBe(27);
+    expect(issues.length).toBe(27);
   });
 
   it("have unique question ids prefixed by their issue", () => {
@@ -142,7 +142,7 @@ describe("issue modules", () => {
   it("includes compact policy batteries for independent selections", () => {
     const multiple = questions.filter((question) => question.selection === "multiple");
     expect(multiple.map((question) => question.id)).toEqual(
-      expect.arrayContaining(["abortion.exceptions", "policing.tactics", "voting-rules.access", "immigration.temp-workers"]),
+      expect.arrayContaining(["abortion.exceptions", "policing.tactics", "immigration.temp-workers"]),
     );
     for (const question of multiple) {
       expect(question.options.some((option) => option.exclusive), question.id).toBe(true);
@@ -170,6 +170,15 @@ describe("issue modules", () => {
         if (f.when) check(f.when, f.id);
         seen.set(f.id, new Set(f.options.map((o) => o.id)));
       }
+    }
+  });
+
+  it("offer every lens value somewhere, each from a single question", () => {
+    const valid: Record<LensId, readonly string[]> = { tradition: traditions, authority: authorities, nation: nationBases };
+    for (const lens of lensIds) {
+      const qs = questions.filter((q) => q.options.some((o) => o.lens?.[lens]));
+      expect(qs.length, lens).toBe(1);
+      expect(qs[0].options.flatMap((o) => (o.lens?.[lens] ? [o.lens[lens]] : [])).sort(), lens).toEqual([...valid[lens]].sort());
     }
   });
 
@@ -202,6 +211,15 @@ describe("ideologies", () => {
         expect(i.core.length, i.id).toBeGreaterThanOrEqual(2);
         expect(new Set(i.core).size, i.id).toBe(i.core.length);
         for (const axis of i.core) expect(axisIds, `${i.id} core → ${axis}`).toContain(axis);
+      }
+    }
+  });
+
+  it("tag lenses only with known values", () => {
+    const valid: Record<LensId, readonly string[]> = { tradition: traditions, authority: authorities, nation: nationBases };
+    for (const i of ideologies) {
+      for (const lens of lensIds) {
+        for (const v of i[lens] ?? []) expect(valid[lens], `${i.id} ${lens}`).toContain(v);
       }
     }
   });

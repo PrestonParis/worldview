@@ -154,7 +154,7 @@ export function PeopleExplore({
             ) : null}
           </div>
           <div id="networks" className="scroll-mt-24">
-            <NetworkPreview preview={preview} />
+            <NetworkPreview preview={preview} moreHref={`${preview.root.href}#relationships`} />
           </div>
         </section>
       ) : null}

@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { mapProjectSchema, type MapProjectInput, type MapProject } from "../validation/mapProject";
+import { mapProjectPatchSchema, mapProjectSchema, type MapProjectInput, type MapProject } from "../validation/mapProject";
 import * as mapProjectsDb from "../db/mapProjects";
 import { getCurrentUserId } from "../auth/session";
 import type { ActionResult } from "./entities";
@@ -48,7 +48,7 @@ export async function updateMapProjectAction(
 ): Promise<ActionResult<MapProject>> {
   const userId = await requireUserId();
   if (!userId) return { ok: false, error: "Not signed in." };
-  const parsed = mapProjectSchema.partial().safeParse(patch);
+  const parsed = mapProjectPatchSchema.safeParse(patch);
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
   }
@@ -69,6 +69,21 @@ export async function deleteMapProjectAction(id: string): Promise<ActionResult<n
     await mapProjectsDb.deleteMapProject(id, userId);
     revalidatePath("/geography");
     return { ok: true, data: null };
+  } catch (err) {
+    return { ok: false, error: (err as Error).message };
+  }
+}
+
+export async function setMapProjectPublishedAction(
+  id: string,
+  isPublished: boolean,
+): Promise<ActionResult<MapProject>> {
+  const userId = await requireUserId();
+  if (!userId) return { ok: false, error: "Not signed in." };
+  try {
+    const project = await mapProjectsDb.setMapProjectPublished(id, userId, isPublished);
+    if (!project) return { ok: false, error: "Graphic not found." };
+    return { ok: true, data: project };
   } catch (err) {
     return { ok: false, error: (err as Error).message };
   }

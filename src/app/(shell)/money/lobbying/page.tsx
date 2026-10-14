@@ -35,19 +35,20 @@ export default async function Page() {
     <div className="mx-auto max-w-7xl space-y-14 pb-16">
       <MoneyHeader
         title="Lobbying"
-        intro={
+        features={[
+          "Spent on policy, not elections",
           <>
-            Money spent to influence policy rather than elections: what <Term k="lobbyingClient">clients</Term> pay{" "}
-            <Term k="lobbyingRegistrant">lobbying firms</Term> (or spend in-house) to lobby Congress and federal agencies, the issues they name, and
-            the bills they cite.
-          </>
+            What <Term k="lobbyingClient">clients</Term> pay <Term k="lobbyingRegistrant">lobbying firms</Term>
+          </>,
+          "The issues and bills they name",
+        ]
         }
         extra={summary.latestYear ? <Coverage label="Latest lobbying year">{summary.latestYear}</Coverage> : null}
       />
 
       {summary.filings === 0 ? (
         <p className="text-sm text-slate-500 dark:text-slate-400">
-          No lobbying filings yet. Run <code>npm run import:lda-lobbying</code>, or add one in{" "}
+          No lobbying filings yet. Add one in{" "}
           <a href="/data/lobbying" className="underline underline-offset-2">
             Manage Data
           </a>
@@ -60,15 +61,6 @@ export default async function Page() {
               {filings(summary.filings)} from {summary.clients} clients and {summary.firms} registrants{years ? `, ${years}` : ""}
             </Coverage>
           </div>
-
-          <Snapshot
-            items={[
-              { label: `Reported lobbying${years ? `, ${years}` : ""}`, value: usd(summary.total), detail: "Firm income from clients plus in-house lobbying expenses." },
-              { label: "Filings", value: summary.filings.toLocaleString(), detail: "Registrations and quarterly activity reports." },
-              { label: "Clients", value: summary.clients.toLocaleString(), detail: "Organizations paying for lobbying." },
-              { label: "Registrants", value: summary.firms.toLocaleString(), detail: "Lobbying firms, plus organizations lobbying in-house." },
-            ]}
-          />
 
           <MoneySection title="Who pays, who lobbies, and on what">
             <div className="grid gap-4 lg:grid-cols-3">
@@ -83,6 +75,15 @@ export default async function Page() {
               </ChartCard>
             </div>
           </MoneySection>
+
+          <Snapshot
+            items={[
+              { label: `Reported lobbying${years ? `, ${years}` : ""}`, value: usd(summary.total), detail: "Firm income from clients plus in-house lobbying expenses." },
+              { label: "Filings", value: summary.filings.toLocaleString(), detail: "Registrations and quarterly activity reports." },
+              { label: "Clients", value: summary.clients.toLocaleString(), detail: "Organizations paying for lobbying." },
+              { label: "Registrants", value: summary.firms.toLocaleString(), detail: "Lobbying firms, plus organizations lobbying in-house." },
+            ]}
+          />
 
           <MoneySection title="Client–firm relationships" intro="Each row is one client and the firm representing it, with the issues and bills named across their filings.">
             <div className="h-144">

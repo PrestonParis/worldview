@@ -42,7 +42,7 @@ function syncMapState(map: MapLibreMap) {
   void applySelectionState(map, mapView.selectedCountryId, mapView.showNeighbors);
 }
 
-export function MapCanvas() {
+export function MapCanvas({ interactive = true }: { interactive?: boolean }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
 
@@ -71,6 +71,7 @@ export function MapCanvas() {
         center,
         zoom,
         attributionControl: { compact: true },
+        interactive,
         // Needed to read the canvas back out for image export (see
         // src/lib/map/exportImage.ts) — WebGL's drawing buffer is cleared
         // after compositing by default, so getCanvas() isn't reliably
@@ -80,10 +81,11 @@ export function MapCanvas() {
       mapRef.current = map;
       setMap(map);
 
-      map.addControl(new NavigationControl({ showCompass: false }), "bottom-right");
+      if (interactive) map.addControl(new NavigationControl({ showCompass: false }), "bottom-right");
       map.on("error", (e) => console.error("MapLibre error:", e.error?.message));
       map.on("style.load", () => syncMapState(map));
       map.on("moveend", () => {
+        if (!interactive) return;
         const c = map.getCenter();
         setCenter([c.lng, c.lat]);
         setZoom(map.getZoom());

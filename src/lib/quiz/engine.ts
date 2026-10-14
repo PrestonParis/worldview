@@ -2,7 +2,7 @@
 // stored answers are the source of truth and everything here is a replay.
 // See docs/quiz-plan.md (Engine).
 
-import { axisIds, type AxisId, type ChoiceQuestion, type Condition, type IssueModule, type Statement } from "./types";
+import { axisIds, type AxisId, type ChoiceQuestion, type Condition, type IssueModule, type Lens, type Statement } from "./types";
 import { statements, issues } from "./bank";
 
 // ── Answers ──
@@ -10,8 +10,19 @@ import { statements, issues } from "./bank";
 // value: statements -3 (strongly disagree) … +3 (strongly agree); choices an
 // option id. null = skipped, which carries no information.
 export type QuizAnswer =
-  | { kind: "statement"; id: string; value: number | null }
-  | { kind: "choice"; id: string; value: string | string[] | null; importance?: 1 | 2 | 3 };
+  | { kind: "statement"; id: string; value: number | null; shown?: AnswerSnapshot }
+  | { kind: "choice"; id: string; value: string | string[] | null; importance?: 1 | 2 | 3; shown?: AnswerSnapshot };
+
+// The item and response exactly as the respondent saw them, saved with each
+// answer so the log stays readable after the bank is reworded or an item is
+// retired. Display only: scoring always reads the current bank by id.
+export interface AnswerSnapshot {
+  text: string; // statement text or question prompt
+  options?: string[]; // choice options in the order shown
+  answer: string; // "Strongly agree", the chosen option text(s), or "Skipped"
+  importance?: string; // "Low" | "Medium" | "High" for issue screeners
+  at: string; // ISO time the answer was saved
+}
 
 export type NextItem =
   | { kind: "statement"; statement: Statement }
@@ -31,6 +42,12 @@ export const DIRECTIONAL_SLOPE = 3;
 export const DIRECTIONAL_THRESHOLD = 0.85; // threshold = location × this, so ±1 items are still agreeable at the pole
 export const IDEAL_WIDTH = 0.7;
 export const CHOICE_SHARPNESS = 6;
+// Concrete policy answers are scaled up against abstract statements: a
+// strong reaction to one statement shouldn't outweigh several issue answers.
+export const CHOICE_WEIGHT = 2;
+// Statement and policy evidence on an axis count as conflicting when their
+// means differ by more than their combined SDs plus this margin.
+export const CONFLICT_MARGIN = 0.4;
 export const MIN_PER_AXIS = 5;
 export const MAX_PER_AXIS = 15;
 export const SD_TARGET = 0.12;
@@ -38,7 +55,7 @@ export const COVERAGE_PER_AXIS = 2;
 export const STATEMENTS_BETWEEN_SCREENERS = 3;
 export const EXPOSURE_TOP_K = 3;
 export const REFINE_STEP = 4;
-export const ENGINE_VERSION = "2.0.0";
+export const ENGINE_VERSION = "3.0.0";
 export const NO_FIT_OPTION_ID = "__none_fit__";
 
 // ── Lookups ──
@@ -61,7 +78,9 @@ export const coveredStatementsByQuestion: Record<string, string[]> = {
   "entitlements.solvency": ["ownership.16", "redistribution.16"],
   "climate.approach": ["environment.02", "environment.17"],
   "ai.governance": ["technology.02", "technology.03", "technology.13"],
-  "voting-rules.access": ["voting.04", "voting.05", "voting.09", "voting.10", "voting.12"],
+  "voting-rules.photo-id": ["voting.12"],
+  "voting-rules.mail": ["voting.05", "voting.14"],
+  "voting-rules.registration": ["voting.04"],
   "lgbtq.marriage": ["social.03"],
   "affirmative-action.admissions": ["identity.03", "identity.13"],
   "policing.direction": ["justice.02", "justice.03", "justice.09", "justice.13"],
@@ -185,10 +204,9 @@ export function answerEvidence(a: QuizAnswer): Partial<Record<AxisId, number[]>>
       out[axis] = GRID.map((_, g) => parts.reduce((sum, p) => sum + p.ll[g] * p.weight, 0) / parts.length);
     }
   }
-  if (a.kind === "choice" && a.importance) {
-    const importanceWeight = a.importance === 1 ? 0.7 : a.importance === 3 ? 1.3 : 1;
-    for (const axis of Object.keys(out) as AxisId[]) out[axis] = out[axis]!.map((value) => value * importanceWeight);
-  }
+  const importanceWeight = a.importance === 1 ? 0.7 : a.importance === 3 ? 1.3 : 1;
+  const scale = CHOICE_WEIGHT * importanceWeight;
+  for (const axis of Object.keys(out) as AxisId[]) out[axis] = out[axis]!.map((value) => value * scale);
   return out;
 }
 
@@ -202,6 +220,19 @@ export function posteriors(answers: QuizAnswer[], exclude = -1): Record<AxisId, 
     }
   });
   return Object.fromEntries(axisIds.map((a) => [a, normalize(logs[a])])) as Record<AxisId, number[]>;
+}
+
+// Categorical lens values from the chosen options; the latest answer wins.
+export function lensAnswers(answers: QuizAnswer[]): Lens {
+  const out: Lens = {};
+  for (const a of answers) {
+    if (a.kind !== "choice" || a.value === null) continue;
+    const q = questionIndex.get(a.id)?.question;
+    const first = Array.isArray(a.value) ? a.value[0] : a.value;
+    const lens = q?.options.find((o) => o.id === first)?.lens;
+    if (lens) Object.assign(out, lens);
+  }
+  return out;
 }
 
 // ── Branching ──
@@ -255,6 +286,9 @@ export interface AxisState {
   asked: number; // statements shown, including skips
   answered: number; // informative statement or policy answers on this axis
   settled: boolean;
+  // Statement answers and policy answers each place this axis clearly, in
+  // different places. The SD is widened to span both readings.
+  conflict: boolean;
 }
 
 export interface QuizState {
@@ -287,20 +321,30 @@ export function computeState(answers: QuizAnswer[], refine: RefineTargets = {}):
     }
   }
   const dispersion = overdispersion(answers, post);
+  const split = conflicts(answers);
   const remaining = Object.fromEntries(axisIds.map((a) => [a, 0])) as Record<AxisId, number>;
   for (const s of statements) if (!seen.has(s.id)) remaining[primaryAxis(s)]++;
 
   const axes = {} as Record<AxisId, AxisState>;
   for (const a of axisIds) {
     const { mean, sd: rawSd } = moments(post[a]);
-    const sd = rawSd * dispersion[a];
+    const gap = split[a];
+    const sd = Math.sqrt((rawSd * dispersion[a]) ** 2 + (gap / 2) ** 2);
     // Mixed views across a broad axis are meaningful, not a request for an
     // endless tie-breaker. Use model precision for stopping while retaining
     // the widened SD in results as an honest confidence signal.
     const precise = answered[a] >= MIN_PER_AXIS && rawSd < SD_TARGET;
     const capped = asked[a] >= MAX_PER_AXIS || remaining[a] === 0;
     const refineOpen = (refine[a] ?? 0) > asked[a] && remaining[a] > 0;
-    axes[a] = { axis: a, mean, sd, asked: asked[a], answered: answered[a], settled: (precise || capped) && !refineOpen };
+    axes[a] = {
+      axis: a,
+      mean,
+      sd,
+      asked: asked[a],
+      answered: answered[a],
+      settled: (precise || capped) && !refineOpen,
+      conflict: gap > 0,
+    };
   }
 
   const iss = issueStates(answers);
@@ -331,6 +375,26 @@ function overdispersion(answers: QuizAnswer[], post: Record<AxisId, number[]>): 
   }
   return Object.fromEntries(
     axisIds.map((a) => [a, n[a] >= 3 ? Math.sqrt(Math.max(1, sq[a] / n[a] / RESPONSE_SD ** 2)) : 1]),
+  ) as Record<AxisId, number>;
+}
+
+// Per axis, the distance between what the statement answers alone and the
+// policy answers alone say, when both are clear and they disagree beyond
+// their own uncertainty; 0 otherwise. Simulated respondents answer both from
+// one position, so this only fires on real disagreement between the abstract
+// and the concrete.
+const CONFLICT_MAX_SD = 0.3;
+function conflicts(answers: QuizAnswer[]): Record<AxisId, number> {
+  const fromStatements = posteriors(answers.filter((a) => a.kind === "statement"));
+  const fromChoices = posteriors(answers.filter((a) => a.kind === "choice"));
+  return Object.fromEntries(
+    axisIds.map((a) => {
+      const s = moments(fromStatements[a]);
+      const c = moments(fromChoices[a]);
+      if (s.sd > CONFLICT_MAX_SD || c.sd > CONFLICT_MAX_SD) return [a, 0];
+      const gap = Math.abs(s.mean - c.mean);
+      return [a, gap > s.sd + c.sd + CONFLICT_MARGIN ? gap : 0];
+    }),
   ) as Record<AxisId, number>;
 }
 

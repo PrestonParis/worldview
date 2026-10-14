@@ -15,6 +15,8 @@ import { consensusRating, HANDICAPPERS, partyLetter } from "@/lib/elections/over
 import { ratingLabel } from "@/lib/validation/raceRating";
 import { ElectionStatusPill } from "@/components/elections/election-status";
 import { DataSourceNote } from "@/components/elections/data-source-note";
+import { FollowMoneyMenu } from "@/components/money/follow-money-menu";
+import { partyColor as fecPartyColor, partyLetter as fecPartyLetter } from "@/lib/money/semantic";
 import { ResultsSection } from "@/components/elections/results-section";
 import type { Entity } from "@/lib/validation/entity";
 
@@ -216,9 +218,24 @@ function ResultCandidate({ candidate, entity, total }: { candidate: Candidacy; e
 
 function FinanceComparison({ candidates, entityById, financeByEntity, outsideSpending }: { candidates: Candidacy[]; entityById: Map<string, Entity>; financeByEntity: Map<string, CandidateFinance>; outsideSpending: Map<string, CandidateOutsideSpending> }) {
   const latest = [...financeByEntity.values()].map((finance) => finance.coverageEndDate).filter(Boolean).sort().at(-1);
+  // Follow the money charts Democrats and Republicans, so offer this race's
+  // major-party candidates with FEC data and let the reader pick.
+  const followOptions = candidates
+    .flatMap((candidate) => {
+      const finance = financeByEntity.get(candidate.candidateEntityId);
+      return finance && (finance.party === "DEM" || finance.party === "REP") ? [{ candidate, finance }] : [];
+    })
+    .sort((a, b) => (b.finance.totalReceipts ?? 0) - (a.finance.totalReceipts ?? 0))
+    .map(({ candidate, finance }) => ({
+      href: `/money?candidate=${finance.entityId}&cycle=${finance.cycle}#follow`,
+      name: normalizeCandidateName(entityById.get(candidate.candidateEntityId)?.name ?? "Unknown"),
+      party: fecPartyLetter(finance.party),
+      color: fecPartyColor(finance.party),
+      raised: formatAmount(finance.totalReceipts ?? 0, "USD"),
+    }));
   return (
     <section className="mt-12 border-t border-slate-300 pt-6 dark:border-slate-700">
-      <div className="flex flex-wrap items-end justify-between gap-3"><div><h2 className="text-2xl font-semibold text-slate-950 dark:text-white">Campaign money</h2><p className="mt-1 text-sm text-slate-500 dark:text-slate-400">FEC candidate filings for the {candidates[0] ? financeByEntity.get(candidates[0].candidateEntityId)?.cycle ?? "current" : "current"} cycle{latest ? `, through ${shortDate(latest)}` : ""}.</p></div><Link href={`/money?candidate=${candidates[0]?.candidateEntityId ?? ""}#follow`} className="text-sm font-semibold text-blue-700 hover:underline dark:text-blue-300">Follow the money in this race →</Link></div>
+      <div className="flex flex-wrap items-end justify-between gap-3"><div><h2 className="text-2xl font-semibold text-slate-950 dark:text-white">Campaign money</h2><p className="mt-1 text-sm text-slate-500 dark:text-slate-400">FEC candidate filings for the {candidates[0] ? financeByEntity.get(candidates[0].candidateEntityId)?.cycle ?? "current" : "current"} cycle{latest ? `, through ${shortDate(latest)}` : ""}.</p></div><FollowMoneyMenu label="Follow the money in this race →" options={followOptions} className="text-sm font-semibold text-blue-700 hover:underline dark:text-blue-300" /></div>
       <div className="mt-5 overflow-x-auto"><table className="w-full min-w-[42rem] text-sm"><thead className="border-b border-slate-300 text-left text-xs text-slate-500 dark:border-slate-700 dark:text-slate-400"><tr><th className="py-2 pr-4">Candidate</th><th className="px-3 py-2 text-right">Raised</th><th className="px-3 py-2 text-right">Spent</th><th className="px-3 py-2 text-right">Cash on hand</th><th className="py-2 pl-3 text-right">Outside spending</th></tr></thead><tbody className="divide-y divide-slate-200 dark:divide-slate-800">{candidates.map((candidate) => { const finance = financeByEntity.get(candidate.candidateEntityId); const outside = outsideSpending.get(candidate.candidateEntityId); const cell = (value: number | null | undefined) => value == null ? "Not reported" : formatAmount(value, "USD"); return <tr key={candidate.id}><td className="py-3 pr-4 font-medium">{normalizeCandidateName(entityById.get(candidate.candidateEntityId)?.name ?? "Unknown")}</td><td className="px-3 py-3 text-right tabular-nums">{cell(finance?.totalReceipts)}</td><td className="px-3 py-3 text-right tabular-nums">{cell(finance?.totalDisbursements)}</td><td className="px-3 py-3 text-right tabular-nums">{cell(finance?.cashOnHand)}</td><td className="py-3 pl-3 text-right tabular-nums">{cell(outside ? outside.support + outside.oppose : null)}</td></tr>; })}</tbody></table></div>
     </section>
   );

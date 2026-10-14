@@ -2,7 +2,9 @@ import { ImageResponse } from "next/og";
 import { getQuizSession } from "@/lib/db/quizSessions";
 import { SLUG_PATTERN } from "@/lib/quiz/access";
 import { computeResult } from "@/lib/quiz/results";
-import { axisById } from "@/lib/quiz/axes";
+import { axes, axisById } from "@/lib/quiz/axes";
+import { issues } from "@/lib/quiz/bank";
+import { ideologies } from "@/lib/quiz/ideologies";
 import { familyColor, FAMILIES } from "@/lib/quiz/families";
 
 export const alt = "Political quiz results";
@@ -53,7 +55,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
         ) : (
           <div style={{ display: "flex", flexDirection: "column", marginTop: 48 }}>
             <div style={{ fontSize: 72, fontWeight: 700 }}>Where do you stand?</div>
-            <div style={{ fontSize: 32, color: "#cbd5e1", marginTop: 16 }}>17 axes · 25 issues · 55 ideological traditions</div>
+            <div style={{ fontSize: 32, color: "#cbd5e1", marginTop: 16 }}>{`${axes.length} axes · ${issues.length} issues · ${ideologies.length} ideological traditions`}</div>
           </div>
         )}
       </div>

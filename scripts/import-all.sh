@@ -31,6 +31,7 @@ step node scripts/import-cbp-encounters.mjs
 step node scripts/import-ice-detention.mjs
 step node scripts/import-dhs-yearbook.mjs
 step node scripts/import-dhs-unauthorized.mjs
+step node scripts/import-census-historical-nativity.mjs
 step node scripts/import-census-pep.mjs
 step node scripts/import-state-migration.mjs
 step node scripts/import-un-migrant-stock.mjs
@@ -42,6 +43,16 @@ step node scripts/import-usaspending.mjs
 step node scripts/import-cdc-violent-deaths.mjs
 step node scripts/import-bjs-ncvs.mjs
 step node scripts/import-abortion.mjs
+step node scripts/import-acs-social.mjs
+step node scripts/import-fertility.mjs
+step node scripts/import-religion.mjs
+step node scripts/import-federal-budget.mjs
+step node scripts/import-fred.mjs
+step node scripts/import-acs-issues.mjs
+step node scripts/import-health.mjs
+step node scripts/import-guns.mjs
+step node scripts/import-naep.mjs
+step node scripts/import-climate.mjs
 
 # Rate-limited API sweeps (slow).
 step node scripts/import-congress-bills.mjs --congress=119

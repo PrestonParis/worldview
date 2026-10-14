@@ -9,7 +9,7 @@ const list = "mt-3 list-disc space-y-2 pl-6 leading-7 text-slate-700 dark:text-s
 
 export default function TermsPage() {
   const email = process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim();
-  const contactHref = email ? `mailto:${email}` : "https://github.com/PrestonParis/worldview/issues";
+  const contactHref = email ? `mailto:${email}` : null;
 
   return (
     <article className="mx-auto max-w-3xl pb-16 pt-6">
@@ -92,7 +92,7 @@ export default function TermsPage() {
 
       <h2 className={heading}>Contact</h2>
       <p className={paragraph}>
-        Questions, correction reports, and legal notices can be submitted through the <a href={contactHref} className="font-medium text-blue-700 underline underline-offset-2 dark:text-blue-300">Worldview contact channel</a>.
+        Questions, correction reports, and legal notices can be submitted through the {contactHref ? <a href={contactHref} className="font-medium text-blue-700 underline underline-offset-2 dark:text-blue-300">Worldview contact channel</a> : "Worldview contact channel"}.
       </p>
     </article>
   );

@@ -11,27 +11,37 @@ import { FreehandShape } from "./FreehandShape";
 import { TextShape } from "./TextShape";
 import { IconShape } from "./IconShape";
 import { HighlightShape } from "./HighlightShape";
+import { CompositionShape } from "./CompositionShape";
+import { ImageShape } from "./ImageShape";
+import { useAppStore } from "@/lib/store/useAppStore";
+import { resolveLayerBindings } from "@/lib/map/liveBindings";
 
 export function ShapeLayerView({ layer, map }: { layer: Layer; map: MapLibreMap }) {
-  switch (layer.type) {
+  const liveValues = useAppStore((state) => state.liveValues);
+  const resolved = resolveLayerBindings(layer, liveValues);
+  switch (resolved.type) {
     case "arrow":
-      return <ArrowShape layer={layer} map={map} />;
+      return <ArrowShape layer={resolved} map={map} />;
     case "line":
-      return <LineShape layer={layer} map={map} />;
+      return <LineShape layer={resolved} map={map} />;
     case "rectangle":
-      return <RectangleShape layer={layer} map={map} />;
+      return <RectangleShape layer={resolved} map={map} />;
     case "circle":
-      return <CircleShape layer={layer} map={map} />;
+      return <CircleShape layer={resolved} map={map} />;
     case "polygon":
-      return <PolygonShape layer={layer} map={map} />;
+      return <PolygonShape layer={resolved} map={map} />;
     case "freehand":
-      return <FreehandShape layer={layer} map={map} />;
+      return <FreehandShape layer={resolved} map={map} />;
     case "text":
-      return <TextShape layer={layer} map={map} />;
+      return <TextShape layer={resolved} map={map} />;
     case "icon":
-      return <IconShape layer={layer} map={map} />;
+      return <IconShape layer={resolved} map={map} />;
     case "highlight":
-      return <HighlightShape layer={layer} map={map} />;
+      return <HighlightShape layer={resolved} map={map} />;
+    case "composition":
+      return <CompositionShape layer={resolved} map={map} />;
+    case "image":
+      return <ImageShape layer={resolved} map={map} />;
     default:
       return null;
   }

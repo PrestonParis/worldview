@@ -25,6 +25,36 @@ export const useAppStore = create<AppState>()(
   )
 );
 
+type LayerHistoryState = { layers: AppState["layers"] };
+let layerTransactionStart: LayerHistoryState | null = null;
+
+// Range inputs can emit dozens of changes during one pointer gesture. Pause
+// zundo while the pointer is down and commit the pre-gesture snapshot once on
+// release so a slider drag is one useful undo step.
+export function beginLayerHistoryTransaction() {
+  if (layerTransactionStart) return;
+  layerTransactionStart = { layers: structuredClone(useAppStore.getState().layers) };
+  useAppStore.temporal.getState().pause();
+}
+
+export function endLayerHistoryTransaction() {
+  if (!layerTransactionStart) return;
+  const start = layerTransactionStart;
+  layerTransactionStart = null;
+  useAppStore.temporal.getState().resume();
+  if (JSON.stringify(start.layers) === JSON.stringify(useAppStore.getState().layers)) return;
+  useAppStore.temporal.setState((history) => ({
+    pastStates: [...history.pastStates, start].slice(-100),
+    futureStates: [],
+  }));
+}
+
+export const layerHistoryTransactionProps = {
+  onPointerDown: beginLayerHistoryTransaction,
+  onPointerUp: endLayerHistoryTransaction,
+  onPointerCancel: endLayerHistoryTransaction,
+};
+
 // A thin React-facing wrapper around zundo's vanilla `.temporal` store —
 // undo/redo actions plus derived canUndo/canRedo booleans (subscribing to
 // pastStates/futureStates directly would re-render on every array identity

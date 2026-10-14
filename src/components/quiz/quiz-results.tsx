@@ -9,6 +9,7 @@ import {
   type QuizResult,
 } from "@/lib/quiz/results";
 import { FAMILIES, familyColor } from "@/lib/quiz/families";
+import { LENS_NAMES, LENS_VALUE_LABELS } from "@/lib/quiz/lenses";
 import { ideologyMap, placeRespondent } from "@/lib/quiz/map";
 import { ideologies } from "@/lib/quiz/ideologies";
 import { refineAxisAction, startQuizAction } from "@/lib/actions/quiz";
@@ -711,6 +712,24 @@ function IdeologyRow({ rank, match, featured = false }: { rank: number; match: I
               );
             })}
           </ul>
+          {match.lenses.length > 0 && (
+            <ul className="mt-4 space-y-2 border-t border-slate-200 pt-3 dark:border-slate-800">
+              {match.lenses.map((l) => {
+                const labels = LENS_VALUE_LABELS[l.lens];
+                return (
+                  <li key={l.lens} className="grid grid-cols-[8rem_minmax(0,1fr)_3rem] items-center gap-3 text-xs">
+                    <span className="text-slate-600 dark:text-slate-300">{LENS_NAMES[l.lens]}</span>
+                    <span className="truncate text-slate-500 dark:text-slate-400">
+                      {l.match ? labels[l.you] : `${labels[l.you]} vs. ${l.accepted.map((v) => labels[v]).join(" or ")}`}
+                    </span>
+                    <span className={`text-right font-medium ${l.match ? "text-slate-400" : "text-rose-600 dark:text-rose-400"}`}>
+                      {l.match ? "Same" : "Differs"}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
         </div>
       </details>
     </li>

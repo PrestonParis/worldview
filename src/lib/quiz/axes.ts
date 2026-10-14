@@ -64,6 +64,19 @@ export const axes: Axis[] = [
       description: "Elections need strict integrity rules, and indirect structures like the Electoral College protect against bare majorities.",
     },
   },
+  {
+    id: "democracy",
+    group: "governance",
+    name: "Democracy",
+    negative: {
+      label: "Democratic",
+      description: "Government is legitimate only when chosen in free, competitive elections, with opposition free to organize.",
+    },
+    positive: {
+      label: "Autocratic",
+      description: "Authority can rightly rest with a party, leader, monarch, clergy, or elite rather than with elections.",
+    },
+  },
   // Economy
   {
     id: "ownership",
@@ -161,14 +174,14 @@ export const axes: Axis[] = [
   {
     id: "religion",
     group: "society",
-    name: "Religion in public life",
+    name: "Religion & state",
     negative: {
       label: "Secular",
-      description: "Religion should be kept out of law and government.",
+      description: "Religion is kept out of law and government; at the far end, the state actively discourages it.",
     },
     positive: {
       label: "Religious",
-      description: "Religious faith and values should shape public life and law.",
+      description: "Religious faith should shape public life; at the far end, religious law governs.",
     },
   },
   {

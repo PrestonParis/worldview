@@ -1,7 +1,7 @@
 import type { Statement } from "../types";
 import { st, on } from "./helpers";
 
-// Governance axes: federalism, executive, liberty, voting.
+// Governance axes: federalism, executive, liberty, voting, democracy.
 // Location -1 = negative pole, +1 = positive pole (see axes.ts).
 
 export const governanceStatements: Statement[] = [
@@ -18,7 +18,6 @@ export const governanceStatements: Statement[] = [
   st("federalism.10", 0, "Some issues clearly belong to the states and others to Washington, and neither level should dominate."),
   st("federalism.11", 0.25, "One national rule is usually better for businesses and families than fifty different state rules."),
   st("federalism.12", 0.25, "Federal agencies are better equipped than states to handle problems like pollution and pandemics that cross state lines."),
-  st("federalism.13", 0.5, "A citizen's basic rights should not depend on which state they live in."),
   st("federalism.14", 0.5, "Federal environmental protections should override weaker state rules when pollution crosses state lines."),
   st("federalism.15", 0.75, "Education standards should be set nationally rather than by each state."),
   st("federalism.16", 0.75, "Congress should be able to override state and local laws whenever it sees fit."),
@@ -26,6 +25,8 @@ export const governanceStatements: Statement[] = [
   st("federalism.18", 1, "All major policy should be set in Washington, with states acting only as administrators."),
   st("federalism.19", -0.75, "There should be no federal minimum wage; each state should set its own."),
   st("federalism.20", 0.75, "Elections for federal office should follow one set of national rules rather than each state's own.", on("voting", -0.3, 0.3)),
+  // Replaces federalism.13, which nearly everyone agrees with whatever their view.
+  st("federalism.21", 0.5, "The federal government, not the states, should set the rules that protect individual rights."),
 
   // ── Executive: Checks & balances (-1) ↔ Strong executive (+1) ──
   st("executive.01", -1, "The presidency has become so powerful that it should be weakened by constitutional amendment."),
@@ -92,4 +93,26 @@ export const governanceStatements: Statement[] = [
   st("voting.18", 1, "Only people who pay income tax should be allowed to vote."),
   st("voting.19", -0.25, "Congressional districts should be drawn by independent commissions rather than state legislatures."),
   st("voting.20", 0.75, "The Senate filibuster protects the country from rushed, purely partisan legislation."),
+  // ── Democracy: Democratic (-1) ↔ Autocratic (+1) ──
+  // Worded without reference to any one country, so non-democratic views can be expressed directly.
+  st("democracy.01", -1, "Competitive elections are the only legitimate way to choose a government."),
+  st("democracy.02", -1, "A government that cancels elections has no right to be obeyed."),
+  st("democracy.03", -0.75, "Opposition parties should always be free to organize and criticize the government."),
+  st("democracy.04", -0.75, "A free press that can criticize those in power is essential to good government.", on("liberty", -0.4, 0.3)),
+  st("democracy.05", -0.5, "Even when a democracy makes bad decisions, it is better than any alternative."),
+  st("democracy.06", -0.5, "Leaders who lose an election must hand over power peacefully."),
+  st("democracy.07", -0.25, "Courts should be independent of whoever holds political power.", on("executive", -0.3, 0.3)),
+  st("democracy.08", -0.25, "Ordinary citizens are capable of making good decisions about how their country is run."),
+  st("democracy.09", -0.5, "Limits on how long a leader can stay in power are essential."),
+  st("democracy.10", 0, "How well a government performs matters about as much as how it was chosen."),
+  st("democracy.11", 0, "Democracy suits some countries better than others."),
+  st("democracy.12", 0.25, "Some decisions are too important to leave to elected politicians and should rest with independent experts."),
+  st("democracy.13", 0.25, "Stability and order matter more than holding frequent elections."),
+  st("democracy.14", 0.5, "In a national crisis, a leader should be able to postpone elections until order is restored."),
+  st("democracy.15", 0.5, "The government should be able to shut down media outlets that spread division.", on("liberty", 0.5, 0.3)),
+  st("democracy.16", 0.75, "Some countries are better off without elections."),
+  st("democracy.17", 0.75, "A country is best run by one party that represents the whole nation."),
+  st("democracy.18", 0.75, "A wise ruler with unchecked power would govern better than an elected parliament."),
+  st("democracy.19", 1, "Political parties that oppose the state's founding principles should be banned."),
+  st("democracy.20", 1, "Final authority should rest with a ruler who does not answer to voters."),
 ];

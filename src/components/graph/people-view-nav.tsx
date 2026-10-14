@@ -1,11 +1,10 @@
 import Link from "next/link";
 
-export type PeopleView = "explore" | "network" | "directory";
+export type PeopleView = "explore" | "directory";
 
 export function PeopleViewNav({ active }: { active: PeopleView }) {
   const views: { key: PeopleView; label: string }[] = [
     { key: "explore", label: "Explore" },
-    { key: "network", label: "Network" },
     { key: "directory", label: "Directory" },
   ];
 

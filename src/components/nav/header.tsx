@@ -6,34 +6,55 @@ import { usePathname } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   ArrowRight,
+  Baby,
   Banknote,
   ChevronDown,
+  Church,
   Compass,
+  Crosshair,
   Gavel,
   Globe2,
+  GraduationCap,
+  HeartPulse,
+  House,
   Landmark,
+  Map as MapIcon,
   Menu,
   Network,
   PersonStanding,
+  Receipt,
   Search,
   ShieldAlert,
   Stethoscope,
+  TrendingUp,
   Users,
   Vote,
   X,
+  Zap,
   type LucideIcon,
 } from "lucide-react";
 import { navGroups, navLinks } from "@/lib/nav";
 import { GlobalSearch } from "@/components/search/global-search";
 import { NewMenu } from "@/components/nav/new-menu";
 import { SettingsMenu } from "@/components/nav/settings-menu";
+import { HERO_SEARCH_ID } from "@/components/home/hero-search-id";
 import type { NavPreviews } from "@/lib/nav-previews";
 
 const ICONS: Record<string, LucideIcon> = {
   "/immigration": PersonStanding,
   "/crime": ShieldAlert,
   "/abortion": Stethoscope,
+  "/guns": Crosshair,
+  "/health-care": HeartPulse,
+  "/energy": Zap,
+  "/economy": TrendingUp,
+  "/housing": House,
+  "/spending": Receipt,
+  "/education": GraduationCap,
+  "/states": MapIcon,
   "/demographics": Users,
+  "/religion": Church,
+  "/family": Baby,
   "/people": Network,
   "/money": Banknote,
   "/legislation": Gavel,
@@ -51,7 +72,9 @@ interface PillRect {
 const isOn = (pathname: string, href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
 const GROUP_FEATURES: Record<string, { eyebrow: string; title: string; body: string; href: string }> = {
-  issues: { eyebrow: "Explore the evidence", title: "A shared view of public issues", body: "Compare trends across years and places, with definitions and primary sources attached.", href: "/demographics" },
+  issues: { eyebrow: "Start with immigration", title: "The issues, by the numbers", body: "Trends across years and states, with definitions and primary sources attached.", href: "/immigration" },
+  economy: { eyebrow: "Start with jobs and prices", title: "How Americans are doing", body: "Paychecks, prices, homes, and the federal budget — official figures, updated as agencies publish them.", href: "/economy" },
+  society: { eyebrow: "Explore the evidence", title: "Who we are, and where we're headed", body: "Population, schooling, belief, and family life — measured over decades and projected forward.", href: "/demographics" },
   power: { eyebrow: "Explore the network", title: "See how influence moves", body: "Connect people, institutions, money, legislation, and the relationships between them.", href: "/people" },
   democracy: { eyebrow: "Start with your address", title: "Government, made personal", body: "Find the offices that represent you, then explore the elections and districts beneath them.", href: "/my-government" },
   tools: { eyebrow: "Work with Worldview", title: "Explore it your way", body: "Map your politics or build a geographic view from the platform's underlying tools.", href: "/quiz" },
@@ -65,6 +88,21 @@ export function Header({ accountLabel, previews }: { accountLabel: string | null
   const [openGroup, setOpenGroup] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  // On the homepage the hero has its own search box; the header's appears
+  // only once that box has scrolled out of view.
+  const [heroInView, setHeroInView] = useState(true);
+  const heroSearchVisible = pathname === "/" && heroInView;
+
+  useEffect(() => {
+    const target = document.getElementById(HERO_SEARCH_ID);
+    if (!target) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      setHeroInView(entry.isIntersecting);
+      if (entry.isIntersecting) setSearchOpen(false);
+    }, { rootMargin: "-64px 0px 0px 0px" });
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [pathname]);
 
   const activeKey =
     navGroups.find((g) => g.items.some((i) => isOn(pathname, i.page.href)))?.id ??
@@ -123,7 +161,7 @@ export function Header({ accountLabel, previews }: { accountLabel: string | null
     }`;
 
   return (
-    <header className="header-enter sticky top-0 z-20 border-b border-slate-200/80 bg-[#f7f8fa]/90 backdrop-blur-xl dark:border-slate-800 dark:bg-[#080b12]/90">
+    <header className="header-enter sticky top-0 z-40 border-b border-slate-200/80 bg-[#f7f8fa]/90 backdrop-blur-xl dark:border-slate-800 dark:bg-[#080b12]/90">
       <div className="grid h-14 grid-cols-[1fr_auto] items-center gap-4 px-4 sm:px-6 lg:grid-cols-[1fr_auto_1fr]">
         <Link href="/" className="flex shrink-0 items-center gap-2 justify-self-start">
           <span className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-md bg-white ring-1 ring-slate-200">
@@ -205,9 +243,10 @@ export function Header({ accountLabel, previews }: { accountLabel: string | null
         </nav>
 
         <div className="flex items-center gap-1 justify-self-end">
-          <div className="relative shrink-0">
+          <div className={`relative shrink-0 transition-opacity ${heroSearchVisible ? "pointer-events-none opacity-0" : "opacity-100"}`} aria-hidden={heroSearchVisible || undefined}>
             <button
               type="button"
+              tabIndex={heroSearchVisible ? -1 : undefined}
               onClick={() => setSearchOpen((o) => !o)}
               aria-label="Search"
               className="flex h-8 w-8 items-center justify-center rounded-md text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
@@ -330,7 +369,9 @@ function MegaMenuFeature({
   const feature = GROUP_FEATURES[groupId];
   if (!feature) return null;
   const accents: Record<string, string> = {
-    issues: "from-blue-700 to-cyan-600",
+    issues: "from-indigo-700 to-blue-700",
+    economy: "from-emerald-700 to-teal-700",
+    society: "from-blue-700 to-cyan-600",
     power: "from-violet-700 to-fuchsia-700",
     // Neutral, so the red and blue state tiles read clearly.
     democracy: "from-slate-800 to-slate-900",
@@ -352,7 +393,8 @@ function MegaMenuFeature({
 
 // A real glimpse of each section, with a one-line caption saying what it is.
 function MegaMenuPreview({ groupId, previews }: { groupId: string; previews: NavPreviews }) {
-  if (groupId === "issues" && previews.issues) return <ShareChart data={previews.issues} />;
+  if (groupId === "issues" && previews.issues) return <ForeignBornChart points={previews.issues.points} />;
+  if (groupId === "society" && previews.society) return <ShareChart data={previews.society} />;
   if (groupId === "power") {
     const { total, categories } = previews.power;
     return (
@@ -416,7 +458,33 @@ function MegaMenuPreview({ groupId, previews }: { groupId: string; previews: Nav
   return null;
 }
 
-function ShareChart({ data }: { data: NonNullable<NavPreviews["issues"]> }) {
+function ForeignBornChart({ points }: { points: [number, number][] }) {
+  const W = 260;
+  const H = 72;
+  const [x0, x1] = [points[0][0], points.at(-1)![0]];
+  const max = Math.max(...points.map(([, v]) => v));
+  const x = (year: number) => ((year - x0) / (x1 - x0)) * W;
+  const y = (v: number) => H - (v / max) * (H - 6);
+  const [lastYear, lastValue] = points.at(-1)!;
+  return (
+    <figure aria-hidden>
+      <svg viewBox={`0 0 ${W} ${H + 2}`} className="h-20 w-full overflow-visible" preserveAspectRatio="none">
+        <path
+          d={points.map(([yr, v], i) => `${i ? "L" : "M"}${x(yr).toFixed(1)},${y(v).toFixed(1)}`).join("")}
+          fill="none"
+          stroke="white"
+          strokeWidth={2}
+          vectorEffect="non-scaling-stroke"
+        />
+      </svg>
+      <figcaption className="mt-2 text-[11px] text-white/65">
+        Foreign-born share of the U.S. population, {x0}–{lastYear}: {lastValue.toFixed(1)}% today
+      </figcaption>
+    </figure>
+  );
+}
+
+function ShareChart({ data }: { data: NonNullable<NavPreviews["society"]> }) {
   const W = 260;
   const H = 72;
   const [y0, y1] = data.years;

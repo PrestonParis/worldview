@@ -2,12 +2,14 @@
 // answers that moved each axis, per-issue policy profiles, and distance to
 // every ideology in the catalog. Pure; recomputed on every view.
 
-import { axisIds, type AxisId, type Ideology } from "./types";
+import { axisIds, lensIds, type AxisId, type Ideology, type Lens, type LensId } from "./types";
+import { acceptedLens } from "./lenses";
 import { axisById } from "./axes";
 import { ideologies } from "./ideologies";
 import {
   answerEvidence,
   computeState,
+  lensAnswers,
   moments,
   NO_FIT_OPTION_ID,
   questionById,
@@ -61,16 +63,25 @@ export interface AxisComparison {
   agreement: number; // 0–100: 100 = same position, 0 = opposite poles
 }
 
+export interface LensComparison {
+  lens: LensId;
+  you: string;
+  accepted: string[];
+  match: boolean;
+}
+
 export interface IdeologyMatch {
   ideology: Ideology;
   distance: number;
   match: number; // 0–100, see matchPercent
   comparisons: AxisComparison[]; // closest first
+  lenses: LensComparison[]; // only lenses both sides have a position on
 }
 
 export interface QuizResult {
   axes: AxisResult[];
   profiles: IssueProfile[];
+  lenses: Lens;
   ideologies: IdeologyMatch[];
   answeredCount: number;
   complete: boolean;
@@ -97,6 +108,10 @@ const PSEUDO_DISTANCE = 0.45;
 // Axes outside an ideology's core hold a typical adherent's position, which
 // varies more within the tradition, so a gap there says less.
 const SECONDARY_WEIGHT = 0.5;
+// A lens mismatch counts as a gap of this size on one extra, well-measured
+// core axis. Categorical answers are explicit, so they're treated as precise.
+const LENS_GAP = 1.2;
+const LENS_SD = 0.1;
 const TOP_INFLUENCES = 3;
 
 // Match percentage from distance, linear between two calibrated ends
@@ -178,17 +193,19 @@ function influences(answers: QuizAnswer[], full: Record<AxisId, number[]>): Reco
   return out;
 }
 
-// "Mixed" when the respondent's own answers pull the axis both ways about as
-// hard; otherwise low confidence just means too few answers.
-function lowReason(sd: number, answered: number, infl: Influence[]): AxisResult["lowReason"] {
+// "Mixed" when the respondent's statement and policy answers disagree, or
+// their answers pull the axis both ways about as hard; otherwise low
+// confidence just means too few answers.
+function lowReason(sd: number, answered: number, infl: Influence[], conflict: boolean): AxisResult["lowReason"] {
   if (sd < CONFIDENCE_MEDIUM_SD) return null;
+  if (conflict) return "mixed";
   if (answered < 4) return "few";
   const neg = infl.filter((i) => i.toward === "negative").length;
   const pos = infl.length - neg;
   return neg > 0 && pos > 0 ? "mixed" : "few";
 }
 
-export function ideologyMatches(axes: AxisResult[]): IdeologyMatch[] {
+export function ideologyMatches(axes: AxisResult[], lenses: Lens = {}): IdeologyMatch[] {
   const byAxis = new Map(axes.map((a) => [a.axis, a]));
   return ideologies
     .map((ideology) => {
@@ -208,8 +225,19 @@ export function ideologyMatches(axes: AxisResult[]): IdeologyMatch[] {
         comparisons.push({ axis, you: you.mean, them, gap, agreement: Math.round(100 * (1 - gap / 2)) });
       }
       comparisons.sort((a, b) => a.gap - b.gap);
+      const lensRows: LensComparison[] = [];
+      for (const lens of lensIds) {
+        const you = lenses[lens];
+        const accepted = acceptedLens(ideology, lens);
+        if (!you || !accepted) continue;
+        const match = accepted.includes(you);
+        const w = 1 / (LENS_SD ** 2 + 0.1 ** 2) / 100;
+        num += w * (match ? 0 : LENS_GAP ** 2);
+        den += w;
+        lensRows.push({ lens, you, accepted, match });
+      }
       const distance = Math.sqrt(num / den);
-      return { ideology, distance, match: matchPercent(distance), comparisons };
+      return { ideology, distance, match: matchPercent(distance), comparisons, lenses: lensRows };
     })
     .sort((a, b) => a.distance - b.distance);
 }
@@ -226,7 +254,7 @@ export function computeResult(answers: QuizAnswer[], refine: RefineTargets = {},
       sd: s.sd,
       answered: s.answered,
       confidence: confidenceFor(s.sd),
-      lowReason: lowReason(s.sd, s.answered, infl[axis]),
+      lowReason: lowReason(s.sd, s.answered, infl[axis], s.conflict),
       influences: infl[axis],
     };
   });
@@ -254,10 +282,12 @@ export function computeResult(answers: QuizAnswer[], refine: RefineTargets = {},
       }),
     }));
 
+  const lenses = lensAnswers(answers);
   return {
     axes,
     profiles,
-    ideologies: ideologyMatches(axes),
+    lenses,
+    ideologies: ideologyMatches(axes, lenses),
     answeredCount: answers.length,
     complete: st.complete,
     progress: st.progress,

@@ -34,12 +34,16 @@ export default async function OutsideSpendingPage({ searchParams }: PageProps<"/
     <div className="mx-auto max-w-7xl space-y-14 pb-16">
       <MoneyHeader
         title="Outside spending"
-        intro={
+        features={[
+          "Spent without coordinating with campaigns",
+          "Ads, mail and canvassing",
           <>
-            Money spent to help or defeat candidates <strong className="font-medium text-slate-700 dark:text-slate-200">without coordinating with their campaigns</strong>: ads,
-            mail, and canvassing paid for by <Term k="superPac">super PACs</Term>, party committees, and other groups, reported as{" "}
-            <Term k="independentExpenditure">independent expenditures</Term>.
-          </>
+            By <Term k="superPac">super PACs</Term>, parties and other groups
+          </>,
+          <>
+            Reported as <Term k="independentExpenditure">independent expenditures</Term>
+          </>,
+        ]
         }
         cycle={cycle}
         cycles={cycles}
@@ -47,7 +51,7 @@ export default async function OutsideSpendingPage({ searchParams }: PageProps<"/
       />
 
       {total === 0 ? (
-        <EmptyState message="No independent expenditures recorded for this cycle yet. Run npm run import:fec-cycle, or add records in" cta={{ href: "/data/contributions", label: "Manage Data" }} />
+        <EmptyState message="No independent expenditures recorded for this cycle yet. Add records in" cta={{ href: "/data/contributions", label: "Manage Data" }} />
       ) : (
         <>
           <div className="flex flex-wrap gap-2">
@@ -56,15 +60,6 @@ export default async function OutsideSpendingPage({ searchParams }: PageProps<"/
             </Coverage>
             {outside.lastDate ? <Coverage label="Latest expenditure">{shortDate(outside.lastDate)}</Coverage> : null}
           </div>
-
-          <Snapshot
-            items={[
-              { label: "Total outside spending", value: usd(total), detail: `Across ${targetedRaces.length} races and ${outside.targets.length} candidates.` },
-              { label: "Supporting candidates", value: usd(outside.support), detail: "Spent to help a named candidate win.", color: MONEY_COLORS.support },
-              { label: "Opposing candidates", value: usd(outside.oppose), detail: "Spent to defeat a named candidate.", color: MONEY_COLORS.oppose },
-              { label: "Groups spending", value: outside.groups.toLocaleString(), detail: "Committees that filed at least one independent expenditure." },
-            ]}
-          />
 
           <MoneySection title="Most-targeted races" intro="Every dollar spent for or against any candidate in the race. Opposition grows left, support right.">
             <div className="rounded-2xl border border-slate-200 p-5 dark:border-slate-800">
@@ -80,6 +75,15 @@ export default async function OutsideSpendingPage({ searchParams }: PageProps<"/
               />
             </div>
           </MoneySection>
+
+          <Snapshot
+            items={[
+              { label: "Total outside spending", value: usd(total), detail: `Across ${targetedRaces.length} races and ${outside.targets.length} candidates.` },
+              { label: "Supporting candidates", value: usd(outside.support), detail: "Spent to help a named candidate win.", color: MONEY_COLORS.support },
+              { label: "Opposing candidates", value: usd(outside.oppose), detail: "Spent to defeat a named candidate.", color: MONEY_COLORS.oppose },
+              { label: "Groups spending", value: outside.groups.toLocaleString(), detail: "Committees that filed at least one independent expenditure." },
+            ]}
+          />
 
           <div className="grid gap-12 lg:grid-cols-2">
             <MoneySection title="By candidate" intro="Who outside groups are spending for and against.">

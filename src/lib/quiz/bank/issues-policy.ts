@@ -71,6 +71,7 @@ export const policyIssues: IssueModule[] = [
         options: [
           o("yes", "Yes", "coverage for undocumented immigrants", L(["immigration", -0.7, 0.3])),
           o("emergency", "Emergency care only", "emergency care only for undocumented immigrants", L(["immigration", 0.2, 0.3])),
+          o("no", "No", "no government coverage for undocumented immigrants", L(["immigration", 0.7, 0.3])),
         ],
       },
     ],
@@ -85,7 +86,8 @@ export const policyIssues: IssueModule[] = [
       options: [
         o("70", "70% or higher", "Top rate of 70%+", L(["redistribution", -0.9, 0.5])),
         o("50", "Around 50%", "Top rate around 50%", L(["redistribution", -0.5, 0.5])),
-        o("40", "Around 40%", "Top rate around 40%", L(["redistribution", -0.1, 0.5])),
+        o("40", "Around 40%", "Top rate around 40%", L(["redistribution", -0.2, 0.5])),
+        o("37", "Around 37%, the current top rate", "Top rate kept around 37%", L(["redistribution", 0.1, 0.5])),
         o("30", "Around 30%", "Top rate around 30%", L(["redistribution", 0.4, 0.5])),
         o("flat", "One flat rate for everyone, around 15–20%", "Flat tax", L(["redistribution", 0.7, 0.5])),
         o("none", "There should be no federal income tax", "No income tax", L(["redistribution", 1, 0.5], ["ownership", 0.6, 0.2])),
@@ -96,7 +98,7 @@ export const policyIssues: IssueModule[] = [
         id: "taxes.wealth",
         attribute: "Wealth tax",
         prompt: "Should there be an annual tax on fortunes above $50 million?",
-        when: when("taxes.top-rate", "70", "50", "40"),
+        when: when("taxes.top-rate", "70", "50", "40", "37"),
         options: [
           o("yes", "Yes", "a wealth tax", L(["redistribution", -0.8, 0.3])),
           o("no", "No", "no wealth tax", L(["redistribution", 0, 0.3])),
@@ -109,7 +111,7 @@ export const policyIssues: IssueModule[] = [
         options: [
           o("35", "35% or higher", "corporate rate of 35%+", L(["redistribution", -0.7, 0.3], ["regulation", -0.4, 0.2])),
           o("28", "Around 28%", "corporate rate around 28%", L(["redistribution", -0.3, 0.3])),
-          o("21", "Around 21%", "corporate rate around 21%", L(["redistribution", 0.2, 0.3])),
+          o("21", "Around 21%, the current rate", "corporate rate kept around 21%", L(["redistribution", 0.2, 0.3])),
           o("15", "15% or lower", "corporate rate of 15% or lower", L(["redistribution", 0.6, 0.3])),
           o("0", "Zero", "no corporate income tax", L(["redistribution", 0.9, 0.3])),
         ],
@@ -118,7 +120,7 @@ export const policyIssues: IssueModule[] = [
         id: "taxes.child-credit",
         attribute: "Child tax credit",
         prompt: "Should families receive a child tax credit even if they have no income?",
-        when: when("taxes.top-rate", "50", "40", "30", "flat"),
+        when: when("taxes.top-rate", "50", "40", "37", "30", "flat"),
         options: [
           o("yes", "Yes", "fully refundable child tax credit", L(["redistribution", -0.6, 0.3])),
           o("working", "Only working families", "child tax credit for working families", L(["redistribution", 0.3, 0.3])),
@@ -129,7 +131,7 @@ export const policyIssues: IssueModule[] = [
         id: "taxes.estate",
         attribute: "Estate tax",
         prompt: "Should large inheritances be taxed?",
-        when: when("taxes.top-rate", "40", "30", "flat", "none"),
+        when: when("taxes.top-rate", "40", "37", "30", "flat", "none"),
         options: [
           o("yes", "Yes, estates above a few million dollars", "estate tax on large inheritances", L(["redistribution", -0.3, 0.3])),
           o("no", "No", "no estate tax", L(["redistribution", 0.6, 0.3])),
@@ -447,22 +449,49 @@ export const policyIssues: IssueModule[] = [
   {
     id: "voting-rules",
     name: "Voting rules",
+    // Replaces the voting-rules.access checklist (bank 3.1.0), which mixed
+    // access and safeguards, allowed contradictory picks, and bundled claims.
     screener: {
-      id: "voting-rules.access",
-      attribute: "Ballot access",
-      prompt: "Select all that apply: which voting rules should states adopt?",
-      selection: "multiple",
+      id: "voting-rules.priority",
+      attribute: "Access vs. safeguards",
+      prompt: "When setting voting rules, what should come first?",
       options: [
-        o("max-access", "Automatic voter registration", "automatic voter registration", L(["voting", -0.7, 0.2])),
-        o("access", "Same-day voter registration", "same-day voter registration", L(["voting", -0.6, 0.2])),
-        o("mail", "No-excuse voting by mail", "no-excuse mail voting", L(["voting", -0.5, 0.2])),
-        o("balanced", "Photo ID, with an acceptable ID provided free", "free voter photo ID", L(["voting", 0.2, 0.2])),
-        o("signature", "Signature verification for mail ballots", "mail-ballot signature verification", L(["voting", 0.3, 0.2])),
-        o("strict", "In-person voting unless a voter documents a need for an absentee ballot", "in-person voting by default", L(["voting", 0.8, 0.2])),
-        { ...o("none", "None of these", "none of the listed voting rules"), exclusive: true },
+        o("access", "Making voting as easy as possible", "access first", L(["voting", -0.8, 0.5])),
+        o("lean-access", "Mostly ease of voting, with basic safeguards", "mostly access", L(["voting", -0.4, 0.5])),
+        o("both", "Ease of voting and security equally", "access and security equally", L(["voting", 0, 0.5])),
+        o("lean-security", "Mostly security, while keeping voting accessible", "mostly security", L(["voting", 0.4, 0.5])),
+        o("security", "Preventing fraud, even if voting becomes harder", "security first", L(["voting", 0.8, 0.5])),
       ],
     },
     followUps: [
+      {
+        id: "voting-rules.photo-id",
+        attribute: "Voter ID",
+        prompt: "Should voters have to show a photo ID to vote?",
+        options: [
+          o("yes", "Yes", "photo ID required", L(["voting", 0.5, 0.3])),
+          o("no", "No", "no photo ID requirement", L(["voting", -0.5, 0.3])),
+        ],
+      },
+      {
+        id: "voting-rules.mail",
+        attribute: "Mail voting",
+        prompt: "Who should be able to vote by mail?",
+        options: [
+          o("anyone", "Any voter who asks", "mail voting for anyone", L(["voting", -0.5, 0.3])),
+          o("reason", "Only voters with a specific reason, such as illness or travel", "mail voting with an excuse", L(["voting", 0.4, 0.3])),
+          o("none", "No one, except voters who cannot vote in person at all", "in-person voting only", L(["voting", 0.8, 0.3])),
+        ],
+      },
+      {
+        id: "voting-rules.registration",
+        attribute: "Voter registration",
+        prompt: "Should eligible citizens be registered to vote automatically, for example when they get a driver's license?",
+        options: [
+          o("yes", "Yes", "automatic voter registration", L(["voting", -0.6, 0.3])),
+          o("no", "No, people should register themselves", "self-registration", L(["voting", 0.4, 0.3])),
+        ],
+      },
       {
         id: "voting-rules.ranked-choice",
         attribute: "Ranked-choice voting",

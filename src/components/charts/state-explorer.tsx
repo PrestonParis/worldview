@@ -1,9 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { US_STATE_GRID, US_STATE_GRID_COLS, US_STATE_GRID_ROWS } from "@/lib/money/us-states";
 import { formatValue } from "@/lib/format";
+import { stateSlug } from "@/lib/states/slug";
 import { useWidth } from "./use-width";
 
 export interface StateMetric {
@@ -36,6 +38,7 @@ export function StateExplorer({ metrics, rows }: { metrics: StateMetric[]; rows:
   const [active, setActive] = useState(metrics[0].key);
   const [sort, setSort] = useState<{ key: string; dir: 1 | -1 }>({ key: metrics[0].key, dir: -1 });
   const [hover, setHover] = useState<string | null>(null);
+  const [selected, setSelected] = useState<string | null>(null);
   const [ref, width] = useWidth<HTMLDivElement>();
   const metric = metrics.find((m) => m.key === active)!;
   const groups = [...new Set(metrics.map((m) => m.group).filter((g): g is string => !!g))];
@@ -49,7 +52,7 @@ export function StateExplorer({ metrics, rows }: { metrics: StateMetric[]; rows:
   const cell = Math.min(52, Math.floor((width - gap * (US_STATE_GRID_COLS - 1)) / US_STATE_GRID_COLS));
   const mapW = cell * US_STATE_GRID_COLS + gap * (US_STATE_GRID_COLS - 1);
   const mapH = cell * US_STATE_GRID_ROWS + gap * (US_STATE_GRID_ROWS - 1);
-  const hovered = hover ? byAbbr.get(hover) : null;
+  const focused = byAbbr.get(hover ?? selected ?? "");
 
   const sorted = [...rows].sort((a, b) => {
     if (sort.key === "name") return a.name.localeCompare(b.name) * sort.dir;
@@ -118,7 +121,8 @@ export function StateExplorer({ metrics, rows }: { metrics: StateMetric[]; rows:
                   onPointerLeave={() => setHover(null)}
                   onFocus={() => setHover(c.abbr)}
                   onBlur={() => setHover(null)}
-                  className="cursor-default outline-none"
+                  onClick={() => setSelected((current) => current === c.abbr ? null : c.abbr)}
+                  className="cursor-pointer outline-none"
                 >
                   <rect
                     x={x}
@@ -127,8 +131,9 @@ export function StateExplorer({ metrics, rows }: { metrics: StateMetric[]; rows:
                     height={cell}
                     rx={4}
                     fill={s ? `var(--viz-seq-${s})` : "var(--viz-empty)"}
-                    stroke={hover === c.abbr ? "var(--viz-muted)" : "none"}
-                    strokeWidth={2}
+                    stroke={selected === c.abbr ? "var(--viz-series-2)" : hover === c.abbr ? "var(--viz-muted)" : "none"}
+                    strokeWidth={selected === c.abbr ? 3 : 2}
+                    className="transition-all duration-300"
                   />
                   <text
                     x={x + cell / 2}
@@ -144,12 +149,13 @@ export function StateExplorer({ metrics, rows }: { metrics: StateMetric[]; rows:
               );
             })}
           </svg>
-          {hovered && (
+          {focused && (
             <div className="pointer-events-none absolute top-0 right-0 rounded-lg border border-slate-200 bg-white/95 px-3 py-2 text-xs shadow-lg dark:border-slate-700 dark:bg-slate-900/95">
-              <p className="font-medium text-slate-500 dark:text-slate-400">{hovered.name}</p>
+              <p className="font-medium text-slate-500 dark:text-slate-400">{focused.name}</p>
               <p className="mt-0.5 text-base font-semibold text-slate-900 tabular-nums dark:text-white">
-                {formatValue(hovered.values[active], metric.unit)}
+                {formatValue(focused.values[active], metric.unit)}
               </p>
+              {selected && !hover && <p className="mt-1 text-[11px] text-slate-400">Selected · click again to clear</p>}
             </div>
           )}
         </div>
@@ -179,7 +185,12 @@ export function StateExplorer({ metrics, rows }: { metrics: StateMetric[]; rows:
         </div>
       </div>
 
-      <div className="max-h-[32rem] overflow-auto rounded-xl border border-slate-200 dark:border-slate-800">
+      <details className="group rounded-xl border border-slate-200 dark:border-slate-800">
+        <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-sm font-semibold text-slate-900 dark:text-white">
+          View and sort the full state data table
+          <span aria-hidden className="text-slate-400 transition group-open:rotate-45">+</span>
+        </summary>
+        <div className="max-h-[32rem] overflow-auto border-t border-slate-200 dark:border-slate-800">
         <table className="w-full min-w-[40rem] text-sm">
           <thead className="sticky top-0 bg-slate-50 text-xs text-slate-500 dark:bg-slate-900 dark:text-slate-400">
             <tr>
@@ -201,7 +212,11 @@ export function StateExplorer({ metrics, rows }: { metrics: StateMetric[]; rows:
           <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {sorted.map((r) => (
               <tr key={r.abbr} className="hover:bg-slate-50 dark:hover:bg-slate-900/60">
-                <td className="px-3 py-1.5 text-slate-700 dark:text-slate-200">{r.name}</td>
+                <td className="px-3 py-1.5 text-slate-700 dark:text-slate-200">
+                  <Link href={`/states/${stateSlug(r.name)}`} className="hover:underline">
+                    {r.name}
+                  </Link>
+                </td>
                 {metrics.map((m) => (
                   <td key={m.key} className={`px-3 py-1.5 text-right tabular-nums ${m.key === active ? "font-medium text-slate-900 dark:text-white" : "text-slate-600 dark:text-slate-300"}`}>
                     {formatValue(r.values[m.key], m.unit)}
@@ -211,7 +226,8 @@ export function StateExplorer({ metrics, rows }: { metrics: StateMetric[]; rows:
             ))}
           </tbody>
         </table>
-      </div>
+        </div>
+      </details>
     </div>
   );
 }

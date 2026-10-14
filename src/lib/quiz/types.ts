@@ -6,6 +6,7 @@ export const axisIds = [
   "executive",
   "liberty",
   "voting",
+  "democracy",
   "ownership",
   "regulation",
   "redistribution",
@@ -67,6 +68,51 @@ export interface Statement {
   axes: Loadings;
 }
 
+// Categorical preferences that can't sit on a line. Recorded from choice
+// options and used only to tell ideologies apart when matching; they never
+// move an axis (docs/quiz-plan.md, principle 3).
+export const traditions = [
+  "none",
+  "pluralist",
+  "catholic",
+  "protestant",
+  "orthodox",
+  "christian",
+  "sunni",
+  "shia",
+  "jewish",
+  "hindu",
+  "buddhist",
+  "sikh",
+  "other",
+] as const;
+export type Tradition = (typeof traditions)[number];
+
+export const authorities = [
+  "elected",
+  "assemblies",
+  "party",
+  "leader",
+  "monarch",
+  "clergy",
+  "experts",
+  "military",
+  "owners",
+  "no-state",
+] as const;
+export type Authority = (typeof authorities)[number];
+
+export const nationBases = ["civic", "ethnic", "religious", "civilizational", "class"] as const;
+export type NationBasis = (typeof nationBases)[number];
+
+export interface Lens {
+  tradition?: Tradition; // the religious tradition that should shape the law
+  authority?: Authority; // who should hold final political authority
+  nation?: NationBasis; // what defines membership in the nation
+}
+export type LensId = keyof Lens;
+export const lensIds: LensId[] = ["tradition", "authority", "nation"];
+
 export type IssueId =
   | "abortion"
   | "guns"
@@ -92,7 +138,9 @@ export type IssueId =
   | "ai"
   | "religious-liberty"
   | "housing"
-  | "debt";
+  | "debt"
+  | "religion-law"
+  | "regime";
 
 export interface ChoiceOption {
   id: string; // unique within its question
@@ -105,6 +153,8 @@ export interface ChoiceOption {
   // In a multiple-selection question this option cannot be combined with
   // any other option (for example, "None of these").
   exclusive?: boolean;
+  // Categorical preference this option records (see Lens).
+  lens?: Lens;
 }
 
 export interface ChoiceQuestion {
@@ -145,6 +195,7 @@ export type IdeologyFamily =
   | "right"
   | "libertarian"
   | "populist"
+  | "religious"
   | "other";
 
 export interface Ideology {
@@ -157,4 +208,8 @@ export interface Ideology {
   // The axes that define this ideology; omitted means all of them. Other axes
   // carry a typical adherent's position and count less when matching.
   core?: AxisId[];
+  // Accepted lens values; omitted means the ideology takes no position.
+  tradition?: Tradition[];
+  authority?: Authority[];
+  nation?: NationBasis[];
 }

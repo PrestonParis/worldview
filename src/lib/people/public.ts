@@ -1,7 +1,5 @@
 import type { Entity } from "@/lib/validation/entity";
 
-export const PEOPLE_PAGE_SIZE = 50;
-
 export const roleGroups = [
   {
     key: "politicians",

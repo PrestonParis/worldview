@@ -4,6 +4,7 @@
 
 import { readFile } from "node:fs/promises";
 import path from "node:path";
+import { getSeries } from "./db/stats";
 import { getDemographicSeries } from "./demographics/forecast";
 import { US_STATE_GRID } from "./money/us-states";
 import { relationshipCategories, relationshipTypes } from "./relationships";
@@ -11,7 +12,9 @@ import { axisById } from "./quiz/axes";
 import type { AxisId } from "./quiz/types";
 
 export interface NavPreviews {
-  issues: {
+  // Foreign-born share of the population: each census, then the ACS.
+  issues: { points: [number, number][] } | null;
+  society: {
     years: [number, number];
     observedThrough: number;
     lines: { label: string; color: string; points: [number, number][] }[];
@@ -25,7 +28,20 @@ const RACE_LINES = ["nhWhite", "hispanic"];
 const RESULTS_YEAR = 2024;
 const QUIZ_AXES: AxisId[] = ["federalism", "trade", "religion"];
 
-function issuesPreview(): NavPreviews["issues"] {
+// Parsed once per server process; the series changes once a year.
+let issuesCache: Promise<NavPreviews["issues"]> | null = null;
+
+async function issuesPreview(): Promise<NavPreviews["issues"]> {
+  const [census, acs] = await Promise.all([
+    getSeries("census-historical-nativity", "foreign_born_share"),
+    getSeries("census-acs1-immigration", "foreign_born_share"),
+  ]);
+  const lastCensus = census.at(-1)?.period ?? "";
+  const points = [...census, ...acs.filter((p) => p.period > lastCensus)].map((p) => [Number(p.period), p.value] as [number, number]);
+  return points.length > 1 ? { points } : null;
+}
+
+function societyPreview(): NavPreviews["society"] {
   const series = getDemographicSeries("race");
   if (series.points.length < 2) return null;
   const years: [number, number] = [series.points[0].year, series.points.at(-1)!.year];
@@ -88,8 +104,13 @@ export async function getNavPreviews(): Promise<NavPreviews> {
     democracyCache = null;
     return null;
   });
+  issuesCache ??= issuesPreview().catch(() => {
+    issuesCache = null;
+    return null;
+  });
   return {
-    issues: issuesPreview(),
+    issues: await issuesCache,
+    society: societyPreview(),
     power: powerPreview(),
     democracy: await democracyCache,
     tools: QUIZ_AXES.map((id) => ({

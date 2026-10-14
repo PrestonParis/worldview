@@ -1,6 +1,6 @@
 // Synthetic respondents for tuning and testing the engine. Not used at runtime.
 
-import { axisIds, type AxisId } from "./types";
+import { axisIds, lensIds, type AxisId, type ChoiceOption, type LensId } from "./types";
 import {
   computeState,
   nextItem,
@@ -15,6 +15,8 @@ export interface Respondent {
   truth: Record<AxisId, number>;
   noise: number; // response noise on the -3…+3 scale
   skipRate: number;
+  // Accepted values per lens; a lens question is answered with one of them.
+  lens?: Partial<Record<LensId, string[]>>;
 }
 
 export function randomRespondent(seed: string, spread = 0.8, noise = 1): Respondent {
@@ -48,6 +50,11 @@ export function simulate(r: Respondent, seed: string, maxItems = 400): { answers
       const v = Math.round(Math.max(-3, Math.min(3, mu + gaussian(rand) * r.noise)));
       answers.push({ kind: "statement", id: item.statement.id, value: v });
     } else {
+      const lensPick = pickLens(r, item.question.options, rand);
+      if (lensPick) {
+        answers.push({ kind: "choice", id: item.question.id, value: lensPick });
+        continue;
+      }
       // Score each option by its distance to the respondent across the axes it loads on.
       const scores = item.question.options.map((o) => {
         const entries = Object.entries(o.axes) as [AxisId, { location: number; weight: number }][];
@@ -69,4 +76,14 @@ export function simulate(r: Respondent, seed: string, maxItems = 400): { answers
     }
   }
   return { answers, steps: maxItems };
+}
+
+function pickLens(r: Respondent, options: ChoiceOption[], rand: () => number): string | null {
+  for (const lens of lensIds) {
+    const accepted = r.lens?.[lens];
+    if (!accepted) continue;
+    const fits = options.filter((o) => o.lens?.[lens] && accepted.includes(o.lens[lens]!));
+    if (fits.length) return fits[Math.floor(rand() * fits.length)].id;
+  }
+  return null;
 }

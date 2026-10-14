@@ -6,6 +6,7 @@
 
 import { Client } from "pg";
 import neo4j from "neo4j-driver";
+import { closeNeon, routeAreaStats } from "./stores.mjs";
 
 // ENV_FILE=.env.cloud targets cloud without swapping .env.local.
 export function loadEnv() {
@@ -130,13 +131,28 @@ export function connectNeo4j() {
 
 // INSERT ... ON CONFLICT (conflict) DO UPDATE in batches. `rows` are objects
 // keyed by column name; every column in `columns` is written. Returns the
-// number of rows sent.
-export async function upsertRows(pg, table, columns, rows, conflict, { batchSize = 500, touchUpdatedAt = true } = {}) {
+// number of rows sent. area_stats rows go to whichever database holds their
+// dataset (Supabase or Neon, scripts/lib/stores.mjs).
+export async function upsertRows(pg, table, columns, rows, conflict, opts = {}) {
+  if (table !== "area_stats") return upsertInto(pg, table, columns, rows, conflict, opts);
+  let sent = 0;
+  for (const [db, group] of await routeAreaStats(pg, rows)) sent += await upsertInto(db, table, columns, group, conflict, opts);
+  return sent;
+}
+
+async function upsertInto(pg, table, columns, rows, conflict, { batchSize = 500, touchUpdatedAt = true } = {}) {
   const update = columns.filter((c) => !conflict.includes(c));
   const set = [
     ...update.map((c) => `"${c}" = excluded."${c}"`),
     ...(touchUpdatedAt ? ['"updated_at" = now()'] : []),
   ].join(", ");
+  // Re-imports resend mostly unchanged rows; rewriting them anyway would
+  // leave a dead row version behind for each (table bloat) and bump
+  // updated_at, which should mean "last changed".
+  const data = update.filter((c) => c !== "updated_at");
+  const changed = data.length
+    ? ` where (${data.map((c) => `t."${c}"`).join(", ")}) is distinct from (${data.map((c) => `excluded."${c}"`).join(", ")})`
+    : "";
   // Postgres rejects an upsert that touches the same key twice in one
   // statement, and sources do repeat records (overlapping API pages, a
   // document listed under two types) — keep the last occurrence.
@@ -153,10 +169,10 @@ export async function upsertRows(pg, table, columns, rows, conflict, { batchSize
       return `(${ph.join(", ")})`;
     });
     await pg.query(
-      `insert into ${table} (${columns.map((c) => `"${c}"`).join(", ")})
+      `insert into ${table} as t (${columns.map((c) => `"${c}"`).join(", ")})
        values ${values.join(", ")}
        on conflict (${conflict.map((c) => `"${c}"`).join(", ")})
-       do ${set ? `update set ${set}` : "nothing"}`,
+       do ${set ? `update set ${set}${changed}` : "nothing"}`,
       params,
     );
     sent += batch.length;
@@ -214,6 +230,7 @@ export async function runImport(source, main) {
     process.exitCode = 1;
   } finally {
     await pg.end();
+    await closeNeon();
   }
 }
 

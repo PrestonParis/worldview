@@ -11,12 +11,14 @@
 import { spawnSync } from "node:child_process";
 import { checkCensusKey, connectPg, loadEnv } from "./lib/bulk.mjs";
 import { CATALOG, registerDataset } from "./lib/catalog.mjs";
+import { closeNeon, sourceCounts } from "./lib/stores.mjs";
 
 // Catalog slug -> importer. Add an entry with every new catalog dataset.
 const IMPORTERS = {
   cbp: ["scripts/import-cbp-encounters.mjs"],
   "dhs-yearbook": ["scripts/import-dhs-yearbook.mjs"],
   "dhs-unauthorized": ["scripts/import-dhs-unauthorized.mjs"],
+  "census-historical-nativity": ["scripts/import-census-historical-nativity.mjs"],
   "census-pep": ["scripts/import-census-pep.mjs"],
   "census-acs1-immigration": ["scripts/import-acs-immigration.mjs"],
   "ice-detention": ["scripts/import-ice-detention.mjs"],
@@ -35,23 +37,49 @@ const IMPORTERS = {
   "census-acs5": ["scripts/import-acs.mjs"],
   usaspending: ["scripts/import-usaspending.mjs"],
   eavs: ["scripts/import-eavs.mjs"],
+  "cps-voting": ["scripts/import-cps-voting.mjs"],
+  "census-acs1-family": ["scripts/import-acs-social.mjs", "--only=acs"],
+  "census-acs1-social": ["scripts/import-acs-social.mjs", "--only=acs"],
+  "census-urban-rural": ["scripts/import-acs-social.mjs", "--only=urban"],
+  "cdc-natality": ["scripts/import-fertility.mjs", "--only=cdc"],
+  "world-bank-fertility": ["scripts/import-fertility.mjs", "--only=worldbank"],
+  "pew-rls": ["scripts/import-religion.mjs", "--only=pew"],
+  "gallup-religion": ["scripts/import-religion.mjs", "--only=gallup"],
+  "omb-historical-tables": ["scripts/import-federal-budget.mjs", "--only=omb"],
+  "treasury-fiscal-data": ["scripts/import-federal-budget.mjs", "--only=treasury"],
+  "payment-accuracy": ["scripts/import-federal-budget.mjs", "--only=accuracy"],
+  "fred-economy": ["scripts/import-fred.mjs", "--only=economy,states"],
+  "fred-housing": ["scripts/import-fred.mjs", "--only=housing,states"],
+  "fred-energy-prices": ["scripts/import-fred.mjs", "--only=energy"],
+  "fred-education": ["scripts/import-fred.mjs", "--only=education"],
+  "census-acs1-health": ["scripts/import-acs-issues.mjs", "--only=health"],
+  "census-acs1-housing": ["scripts/import-acs-issues.mjs", "--only=housing"],
+  "cdc-overdose-deaths": ["scripts/import-health.mjs", "--only=overdose"],
+  "world-bank-health": ["scripts/import-health.mjs", "--only=worldbank"],
+  "cdc-injury-mortality": ["scripts/import-guns.mjs", "--only=cdc"],
+  "gallup-guns": ["scripts/import-guns.mjs", "--only=gallup"],
+  naep: ["scripts/import-naep.mjs"],
+  "owid-energy": ["scripts/import-climate.mjs", "--only=owid"],
+  "noaa-climate": ["scripts/import-climate.mjs", "--only=noaa"],
 };
 
 // Importers that exit on a missing or rejected CENSUS_API_KEY.
-const NEEDS_CENSUS_KEY = new Set(["census-acs5", "census-acs1-immigration"]);
+const NEEDS_CENSUS_KEY = new Set(["census-acs5", "census-acs1-immigration", "census-acs1-family", "census-acs1-social", "census-urban-rural", "census-acs1-health", "census-acs1-housing"]);
 
 loadEnv();
 const pg = await connectPg();
 let missing;
 try {
   for (const slug of Object.keys(CATALOG)) await registerDataset(pg, slug);
-  const { rows } = await pg.query(
-    "select slug from datasets d where partner_id is null and not exists (select 1 from area_stats a where a.source = d.slug) order by slug",
-  );
+  // Rows may be in Supabase or Neon (scripts/lib/stores.mjs).
+  const counts = await sourceCounts(pg);
+  const { rows: built } = await pg.query("select slug from datasets where partner_id is null order by slug");
+  const rows = built.filter((r) => !counts.has(r.slug));
   // Record datasets keep their rows in their own tables, never area_stats.
   missing = rows.map((r) => r.slug).filter((s) => s in CATALOG && !CATALOG[s].records);
 } finally {
   await pg.end();
+  await closeNeon();
 }
 
 // A bad Census key is a known, external problem: skip those datasets with a

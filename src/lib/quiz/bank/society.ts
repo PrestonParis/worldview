@@ -29,24 +29,31 @@ export const societyStatements: Statement[] = [
   // ── Religion: Secular (-1) ↔ Religious (+1) ──
   st("religion.01", -1, "Religion does more harm than good to society."),
   st("religion.02", -1, "Religious organizations should lose their tax-exempt status."),
-  st("religion.03", -0.75, "\"In God We Trust\" should be removed from U.S. currency."),
   st("religion.04", -0.75, "Religious beliefs should never be the basis for a law."),
   st("religion.05", -0.5, "Public school staff should never lead prayers, even voluntary ones."),
   st("religion.06", -0.5, "Businesses should not be allowed to refuse service to anyone on religious grounds.", on("social", -0.4, 0.3)),
   st("religion.07", -0.25, "Politicians should keep their religious views out of their policy decisions."),
   st("religion.08", -0.25, "Government should not fund religious charities that hire only members of their own faith."),
-  st("religion.09", 0, "Religion is a private matter, but people of faith should be free to bring their values into public debate."),
   st("religion.10", 0, "Government should neither promote nor discourage religion."),
   st("religion.11", 0.25, "Religious charities should be able to receive government funding on the same terms as secular ones."),
   st("religion.12", 0.25, "Society is better off when more people practice a religion."),
-  st("religion.13", 0.5, "Public schools should be allowed to display the Ten Commandments."),
-  st("religion.14", 0.5, "Public school teachers should be allowed to lead students in prayer."),
-  st("religion.15", 0.75, "America's laws should reflect Christian values."),
   st("religion.16", 0.75, "A person cannot be truly moral without religion."),
-  st("religion.17", 1, "The United States should officially declare itself a Christian nation."),
   st("religion.18", 1, "Blasphemy should be punishable by law."),
   st("religion.19", -0.75, "Religious schools should not receive any public money, including through vouchers."),
   st("religion.20", 0.5, "People should be exempt from laws that conflict with their sincere religious beliefs."),
+  // religion.09 split into two single claims (21, 22); 23 keeps the centre covered.
+  st("religion.21", -0.25, "Religious faith is best kept a private matter."),
+  st("religion.22", 0.25, "People of faith should bring their religious values into public debate."),
+  st("religion.23", 0, "Religious and secular arguments should carry equal weight in debates over public policy."),
+  // Tradition-neutral replacements for the Christian-specific 03, 13, 14, 15, 17, so a
+  // respondent who wants another faith's law isn't scored as secular. The
+  // tradition itself is asked in the religion-law module.
+  st("religion.24", -0.75, "Religious symbols should be banned from government buildings."),
+  st("religion.25", -1, "The state should actively discourage religious practice."),
+  st("religion.26", 0.5, "Religious courts should be able to rule on marriage and divorce for members who choose them."),
+  st("religion.27", 0.75, "The state should have an official religion."),
+  st("religion.28", 1, "The country's laws should be based on religious law."),
+  st("religion.29", 1, "Religious leaders should be able to veto laws that violate their faith."),
 
   // ── Immigration: Open (-1) ↔ Restrictive (+1) ──
   st("immigration.01", -1, "National borders should be open to anyone who wants to come."),

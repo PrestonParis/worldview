@@ -1,7 +1,8 @@
 // Imports Census Bureau Population Estimates (PEP) into `area_stats`: July 1
 // population and the components of change — net international migration,
-// net domestic migration, natural change — for the nation, every state, and
-// every county (period = year, e.g. '2025').
+// net domestic migration, natural change, births and deaths — for the nation,
+// every state, and every county (period = year, e.g. '2025'; births and
+// deaths are the 12 months to July 1).
 //
 // Two vintages are stitched together: Vintage 2020 for 2011–2020 and the
 // latest vintage (2020–2025 file) for 2021 on; metadata.vintage records
@@ -36,6 +37,10 @@ const SERIES = {
   international_migration: ["INTERNATIONALMIG", "people"],
   domestic_migration: ["DOMESTICMIG", "people"],
   natural_change: ["NATURALCHG", "people"],
+  births: ["BIRTHS", "births"],
+  deaths: ["DEATHS", "deaths"],
+  birth_rate: ["RBIRTH", "per_1000"],
+  death_rate: ["RDEATH", "per_1000"],
   international_migration_rate: ["RINTERNATIONALMIG", "per_1000"],
   domestic_migration_rate: ["RDOMESTICMIG", "per_1000"],
 };

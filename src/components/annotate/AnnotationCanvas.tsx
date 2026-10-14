@@ -43,6 +43,7 @@ interface DragState {
   index: number; // only meaningful for "handle"
   originalLayer: Layer;
   startLngLat: LonLat;
+  startPoint: [number, number];
 }
 
 interface TextEditorState {
@@ -61,7 +62,9 @@ function isAnnotationLayer(layer: Layer): boolean {
     layer.type === "freehand" ||
     layer.type === "text" ||
     layer.type === "icon" ||
-    layer.type === "highlight"
+    layer.type === "highlight" ||
+    layer.type === "composition" ||
+    layer.type === "image"
   );
 }
 
@@ -132,7 +135,7 @@ function commitPolygonLayer(
 // so drawing/dragging a shape doesn't fight panning without needing
 // map.dragPan.disable()/enable() bookkeeping. The text editor's textarea is
 // the one deliberate exception, switched to pointer-events:auto itself.
-export function AnnotationCanvas() {
+export function AnnotationCanvas({ readOnly = false }: { readOnly?: boolean }) {
   const { map, setStage } = useMapInstance();
   useMapCamera(map);
   const [size, setSize] = useState({ width: 0, height: 0 });
@@ -208,6 +211,7 @@ export function AnnotationCanvas() {
   }, [activeTool, setActiveLayer]);
 
   useEffect(() => {
+    if (readOnly) return;
     function onKeyDown(e: KeyboardEvent) {
       const target = e.target as HTMLElement | null;
       if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA")) {
@@ -249,10 +253,10 @@ export function AnnotationCanvas() {
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [addLayer, removeLayer, setActiveLayer, setActiveTool]);
+  }, [addLayer, readOnly, removeLayer, setActiveLayer, setActiveTool]);
 
   useEffect(() => {
-    if (!map) return;
+    if (!map || readOnly) return;
     // Nested function declarations below don't retain the narrowing from
     // the guard above (separate closures) — capture a definitely-non-null
     // local instead of reaching for the outer `map` inside them.
@@ -281,6 +285,7 @@ export function AnnotationCanvas() {
             index: Number(indexStr),
             originalLayer: layer,
             startLngLat,
+            startPoint: [e.point.x, e.point.y],
           });
         } else if (id?.startsWith("layer:")) {
           const layerId = id.slice("layer:".length);
@@ -293,6 +298,7 @@ export function AnnotationCanvas() {
             index: -1,
             originalLayer: layer,
             startLngLat,
+            startPoint: [e.point.x, e.point.y],
           });
         }
         return;
@@ -410,6 +416,15 @@ export function AnnotationCanvas() {
       if (!drag) return;
 
       if (drag.kind === "move") {
+        if (drag.originalLayer.type === "composition" || drag.originalLayer.type === "image") {
+          const container = mapInstance.getContainer();
+          const position: [number, number] = [
+            Math.max(0, Math.min(1, drag.originalLayer.position[0] + (e.point.x - drag.startPoint[0]) / container.clientWidth)),
+            Math.max(0, Math.min(1, drag.originalLayer.position[1] + (e.point.y - drag.startPoint[1]) / container.clientHeight)),
+          ];
+          setLiveOverride({ layerId: drag.layerId, patch: { position } as Partial<Layer> });
+          return;
+        }
         const dLng = geo[0] - drag.startLngLat[0];
         const dLat = geo[1] - drag.startLngLat[1];
         setLiveOverride({
@@ -503,7 +518,7 @@ export function AnnotationCanvas() {
       map.off("mouseup", onMouseUp);
       map.off("dblclick", onDblClick);
     };
-  }, [map, addLayer, setActiveLayer, updateLayerGeometry]);
+  }, [map, readOnly, addLayer, setActiveLayer, updateLayerGeometry]);
 
   function handleCommitText(value: string) {
     const editor = textEditor;
@@ -537,7 +552,7 @@ export function AnnotationCanvas() {
     .map((l) => (l.id === liveOverride?.layerId ? ({ ...l, ...liveOverride.patch } as Layer) : l));
 
   const activeLayer = annotationLayers.find((l) => l.id === activeLayerId) ?? null;
-  const showHandles = activeTool === "select" && activeLayer && !activeLayer.locked;
+  const showHandles = !readOnly && activeTool === "select" && activeLayer && !activeLayer.locked;
 
   // Editing an existing text layer uses ITS OWN font/size/color, not
   // whatever the tool defaults currently are — otherwise re-opening an old
@@ -615,7 +630,7 @@ export function AnnotationCanvas() {
         </KonvaLayer>
       </Stage>
 
-      {textEditor && (
+      {!readOnly && textEditor && (
         <TextEditorOverlay
           map={map}
           anchor={textEditor.anchor}

@@ -8,6 +8,20 @@ describe("searchSite", () => {
     expect(first.href).toBe("/demographics?state=48&dim=race&group=hispanic");
   });
 
+  it("opens religion views on the religion page", () => {
+    const [first] = searchSite("Christians in Texas");
+    expect(first.href).toBe("/religion?state=48&group=christian");
+    expect(first.meta).toBe("Religion");
+  });
+
+  it("sends marriage and fertility terms to the family page", () => {
+    expect(searchSite("divorce rate").map((r) => r.href)).toContain("/family");
+  });
+
+  it("sends budget terms to the spending page", () => {
+    expect(searchSite("national debt").map((r) => r.href)).toContain("/spending");
+  });
+
   it("reads an election year and office", () => {
     const [first] = searchSite("2024 presidential election");
     expect(first.label).toBe("2024 presidential election");
@@ -18,8 +32,14 @@ describe("searchSite", () => {
     expect(searchSite("H-1B immigration").map((r) => r.href)).toContain("/immigration");
   });
 
-  it("returns a state's population for a bare state name", () => {
-    expect(searchSite("Ohio")[0].href).toBe("/demographics?state=39");
+  it("returns a state's profile for a bare state name", () => {
+    expect(searchSite("Ohio")[0].href).toBe("/states/ohio");
+  });
+
+  it("offers the state profile alongside a topic", () => {
+    const hrefs = searchSite("crime in west virginia").map((r) => r.href);
+    expect(hrefs[0]).toBe("/crime");
+    expect(hrefs).toContain("/states/west-virginia");
   });
 
   it("returns nothing for a person's name", () => {

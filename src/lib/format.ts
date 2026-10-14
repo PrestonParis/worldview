@@ -21,7 +21,21 @@ export function formatValue(value: number | null | undefined, unit?: Unit, opts:
     case "per_1000":
     case "index": // base period = 100
     case "days":
+    case "years":
+    case "points": // NAEP scale scores
+    case "tonnes_per_person":
       return oneDp.format(value);
+    case "deg_f":
+      return `${oneDp.format(value)}°F`;
+    case "times": // ratios, e.g. home price to income
+      return `${oneDp.format(value)}×`;
+    case "cents":
+      return `${oneDp.format(value)}¢`;
+    case "usd_cents": // prices quoted to the cent, e.g. a gallon of gas
+      return `$${value.toFixed(2)}`;
+    case "per_woman": // total fertility rate
+    case "per_household":
+      return value.toFixed(2);
     case "usd":
       return `$${formatNumber(value, opts)}`;
     case "score": // DW-NOMINATE and other −1…+1 scales
@@ -44,19 +58,24 @@ export function pctChange(current: number | null | undefined, previous: number |
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-// "2026-08" -> "Aug 2026", "FY2024" -> "FY 2024", "2025" -> "2025"
+// "2026-08" -> "Aug 2026", "2026-Q2" -> "Q2 2026", "FY2024" -> "FY 2024", "2025" -> "2025"
 export function formatPeriod(period: string): string {
   const m = /^(\d{4})-(\d{2})$/.exec(period);
   if (m) return `${MONTHS[Number(m[2]) - 1]} ${m[1]}`;
+  const q = /^(\d{4})-Q([1-4])$/.exec(period);
+  if (q) return `Q${q[2]} ${q[1]}`;
   const fy = /^FY(\d{4})$/.exec(period);
   if (fy) return `FY ${fy[1]}`;
   return period;
 }
 
-// Numeric x position for a period: years as-is, months as fractional years.
+// Numeric x position for a period: years as-is, months and quarters as
+// fractional years.
 export function periodToX(period: string): number {
   const m = /^(\d{4})-(\d{2})$/.exec(period);
   if (m) return Number(m[1]) + (Number(m[2]) - 1) / 12;
+  const q = /^(\d{4})-Q([1-4])$/.exec(period);
+  if (q) return Number(q[1]) + (Number(q[2]) - 1) / 4;
   const y = /(\d{4})/.exec(period);
   return y ? Number(y[1]) : NaN;
 }

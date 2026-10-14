@@ -5,7 +5,8 @@ name: Sync public data
 # ideology, Federal Register documents, CBP encounters, ICE detention, the
 # DHS immigration yearbook, Census population estimates, FEC independent
 # expenditures, FBI crime (state, city, hate crime, arrests), CDC violent
-# deaths, and the NCVS. Every importer is idempotent; Federal
+# deaths, the NCVS, FRED economy/housing/energy series, CDC overdoses, Gallup
+# gun polling, and energy/temperature data. Every importer is idempotent; Federal
 # Register is incremental. Slow one-off loads (SCDB, EAVS, USAspending
 # history, ACS) are run by hand: `ENV_FILE=.env.cloud npm run import:all`.
 on:
@@ -35,6 +36,7 @@ jobs:
         run: |
           {
             echo "DATABASE_URL=${{ secrets.DATABASE_URL }}"
+            echo "NEON_DATABASE_URL=${{ secrets.NEON_DATABASE_URL }}"
             echo "NEO4J_URI=${{ secrets.NEO4J_URI }}"
             echo "NEO4J_USER=${{ secrets.NEO4J_USER }}"
             echo "NEO4J_PASSWORD=${{ secrets.NEO4J_PASSWORD }}"
@@ -61,3 +63,10 @@ jobs:
       - run: npm run import:cdc-violent-deaths
       - run: npm run import:ncvs
       - run: npm run import:abortion
+      - run: npm run import:religion -- --only=gallup
+      - run: npm run import:fertility
+      - run: npm run import:federal-budget
+      - run: npm run import:fred
+      - run: npm run import:health
+      - run: npm run import:guns -- --only=gallup
+      - run: npm run import:climate

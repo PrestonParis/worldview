@@ -1,26 +1,42 @@
 "use client";
 
-import { useCallback, useEffect, useState, useTransition } from "react";
+import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChevronDown, CircleHelp } from "lucide-react";
-import { submitAnswerAction } from "@/lib/actions/quiz";
+import { runnerStateAction, submitAnswerAction } from "@/lib/actions/quiz";
 import type { AnsweredItem, RunnerItem, RunnerState } from "@/lib/quiz/runner";
 import type { QuizAnswer } from "@/lib/quiz/engine";
 
-// Agree on the left, matching keys 1–7.
+// Disagree on the left, agree on the right, matching keys 1–7.
 const SCALE: { value: number; label: string }[] = [
-  { value: 3, label: "Strongly agree" },
-  { value: 2, label: "Agree" },
-  { value: 1, label: "Somewhat agree" },
-  { value: 0, label: "Neutral" },
-  { value: -1, label: "Somewhat disagree" },
-  { value: -2, label: "Disagree" },
   { value: -3, label: "Strongly disagree" },
+  { value: -2, label: "Disagree" },
+  { value: -1, label: "Somewhat disagree" },
+  { value: 0, label: "Neutral" },
+  { value: 1, label: "Somewhat agree" },
+  { value: 2, label: "Agree" },
+  { value: 3, label: "Strongly agree" },
 ];
 
 // The results preview link appears once there's something to show.
 const PREVIEW_AFTER = 15;
+
+// Latest answer count per quiz in this tab, to tell when the page was
+// restored with an older state than the one last seen.
+const seenKey = (slug: string) => `quiz-answered:${slug}`;
+function readSeen(slug: string): number {
+  try {
+    return Number(sessionStorage.getItem(seenKey(slug)) ?? 0);
+  } catch {
+    return 0;
+  }
+}
+function writeSeen(slug: string, count: number) {
+  try {
+    sessionStorage.setItem(seenKey(slug), String(count));
+  } catch {}
+}
 
 // Showing an earlier answer to change it: either stepped back to from the
 // recent list, or opened directly from a results-page link.
@@ -43,7 +59,40 @@ export function QuizRunner({
   const [multi, setMulti] = useState<string[]>([]);
   const [single, setSingle] = useState<string | null>(null);
   const [importance, setImportance] = useState<1 | 2 | 3 | null>(null);
-  const [pending, startTransition] = useTransition();
+  const [submitting, startTransition] = useTransition();
+  // Known stale only on a client-side restore; a fresh server render is
+  // current, so this is false during hydration.
+  const [syncing, setSyncing] = useState(
+    () => !initialEdit && typeof window !== "undefined" && readSeen(slug) > initial.answeredCount,
+  );
+  const answeredHere = useRef(false);
+  const pending = submitting || syncing;
+
+  // Browser back/forward restores this page from Next's client cache with the
+  // state it was first rendered with, which can be several answers behind.
+  // Re-read the live state on mount; input is held while it loads when this
+  // tab has already seen a later state.
+  useEffect(() => {
+    if (initialEdit) return;
+    let cancelled = false;
+    runnerStateAction(slug)
+      .then((res) => {
+        if (cancelled || answeredHere.current || !res.ok) return;
+        writeSeen(slug, res.data.answeredCount);
+        if (res.data.answeredCount === initial.answeredCount) return;
+        setState(res.data);
+        if (res.data.complete && !res.data.next) {
+          router.replace(`/quiz/${slug}`);
+          router.refresh();
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setSyncing(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [slug, initial.answeredCount, initialEdit, router]);
 
   const item: RunnerItem | null = editing ? editing.answered.item : state.next;
   const current = editing ? editing.answered.value : undefined;
@@ -56,12 +105,14 @@ export function QuizRunner({
           ? { kind: "statement", id: item.id, value: value as number | null }
           : { kind: "choice", id: item.id, value: value as string | string[] | null, importance: answerImportance };
       setError(null);
+      answeredHere.current = true;
       startTransition(async () => {
         const res = await submitAnswerAction(slug, answer);
         if (!res.ok) {
           setError(res.error);
           return;
         }
+        writeSeen(slug, res.data.answeredCount);
         const wasDirectEdit = editing?.recentIndex === null;
         setEditing(null);
         setHovered(null);
@@ -136,8 +187,8 @@ export function QuizRunner({
   return (
     <div className="relative -mx-4 -my-8 min-h-[calc(100dvh-3.5rem)] overflow-hidden bg-slate-50 text-slate-900 sm:-mx-8 dark:bg-slate-950 dark:text-slate-100">
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-40 -left-32 size-[34rem] rounded-full bg-agree-500/20 blur-3xl dark:bg-agree-500/15" />
-        <div className="absolute -right-32 -bottom-40 size-[34rem] rounded-full bg-disagree-500/20 blur-3xl dark:bg-disagree-500/15" />
+        <div className="absolute -top-40 -left-32 size-[34rem] rounded-full bg-disagree-500/20 blur-3xl dark:bg-disagree-500/15" />
+        <div className="absolute -right-32 -bottom-40 size-[34rem] rounded-full bg-agree-500/20 blur-3xl dark:bg-agree-500/15" />
         <div className="absolute inset-0 bg-[radial-gradient(rgb(100_116_139/0.18)_1px,transparent_1px)] dark:bg-[radial-gradient(rgb(148_163_184/0.08)_1px,transparent_1px)] [background-size:22px_22px]" />
       </div>
 
@@ -224,9 +275,9 @@ export function QuizRunner({
                   })}
                 </div>
                 <div className="mt-4 grid grid-cols-3 items-start text-xs font-medium sm:text-sm">
-                  <span className="text-agree-600 dark:text-agree-400">Strongly agree</span>
+                  <span className="text-disagree-600 dark:text-disagree-400">Strongly disagree</span>
                   <span className="text-center text-slate-500 dark:text-slate-400">Neutral</span>
-                  <span className="text-right text-disagree-600 dark:text-disagree-400">Strongly disagree</span>
+                  <span className="text-right text-agree-600 dark:text-agree-400">Strongly agree</span>
                 </div>
               </div>
             ) : (

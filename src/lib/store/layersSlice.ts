@@ -1,9 +1,10 @@
 import type { StateCreator } from "zustand";
-import type { ArrowStyle, Layer, LayerBase, ShapeStyle, TextStyle } from "@/lib/types";
+import type { ArrowStyle, DataLayerConfig, Layer, LayerBase, ShapeStyle, TextStyle } from "@/lib/types";
 
 export interface LayersSlice {
   layers: Layer[];
   activeLayerId: string | null;
+  dataLayerStatuses: Record<string, { state: "loading" | "ready" | "error"; lastUpdated: string | null; count: number; error: string | null }>;
   addLayer: (layer: Layer) => void;
   removeLayer: (id: string) => void;
   updateLayer: (id: string, patch: Partial<Omit<LayerBase, "id">>) => void;
@@ -15,6 +16,8 @@ export interface LayersSlice {
   // but reuses it rather than adding a near-identical action.)
   updateLayerGeometry: (id: string, geometry: Partial<Layer>) => void;
   updateLayerStyle: (id: string, style: Partial<ShapeStyle | ArrowStyle | TextStyle>) => void;
+  updateDataLayer: (id: string, patch: Partial<DataLayerConfig>) => void;
+  setDataLayerStatus: (id: string, status: LayersSlice["dataLayerStatuses"][string]) => void;
   reorderLayers: (orderedIds: string[]) => void;
   // Swaps a layer with its immediate neighbor in stacking order ("forward"
   // = toward the front/rendered-last, "backward" = toward the back). A
@@ -47,6 +50,7 @@ export function createDefaultLayers(): Layer[] {
 export const createLayersSlice: StateCreator<LayersSlice> = (set, get) => ({
   layers: createDefaultLayers(),
   activeLayerId: null,
+  dataLayerStatuses: {},
   addLayer: (layer) => set((s) => ({ layers: [...s.layers, layer] })),
   removeLayer: (id) =>
     set((s) => ({ layers: s.layers.filter((l) => l.id !== id) })),
@@ -68,6 +72,16 @@ export const createLayersSlice: StateCreator<LayersSlice> = (set, get) => ({
           : l
       ),
     })),
+  updateDataLayer: (id, patch) =>
+    set((s) => ({
+      layers: s.layers.map((l) =>
+        l.id === id && l.type === "data"
+          ? { ...l, data: { ...l.data, ...patch } }
+          : l
+      ),
+    })),
+  setDataLayerStatus: (id, status) =>
+    set((s) => ({ dataLayerStatuses: { ...s.dataLayerStatuses, [id]: status } })),
   reorderLayers: (orderedIds) =>
     set((s) => ({
       layers: orderedIds

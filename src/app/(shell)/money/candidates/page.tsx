@@ -58,11 +58,14 @@ export default async function CandidatesPage({ searchParams }: PageProps<"/money
     <div className="mx-auto max-w-7xl space-y-14 pb-16">
       <MoneyHeader
         title="Candidates & races"
-        intro={
+        features={[
           <>
-            What each campaign has <Term k="receipts">raised</Term>, <Term k="disbursements">spent</Term>, and still has as{" "}
-            <Term k="cashOnHand">cash on hand</Term>, compared race by race, from the committees&rsquo; own FEC reports.
-          </>
+            Money <Term k="receipts">raised</Term> and <Term k="disbursements">spent</Term>
+          </>,
+          <Term key="cash" k="cashOnHand">Cash on hand</Term>,
+          "Compared race by race",
+          "From the campaigns' own FEC reports",
+        ]
         }
         cycle={cycle}
         cycles={cycles}
@@ -70,7 +73,7 @@ export default async function CandidatesPage({ searchParams }: PageProps<"/money
       />
 
       {cand.length === 0 ? (
-        <EmptyState message="No candidate filings for this cycle yet. Run npm run import:fec-cycle, or add records in" cta={{ href: "/data/contributions", label: "Manage Data" }} />
+        <EmptyState message="No candidate filings for this cycle yet. Add records in" cta={{ href: "/data/contributions", label: "Manage Data" }} />
       ) : (
         <>
           <div className="flex flex-wrap gap-2">

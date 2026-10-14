@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { ArrowLeft, ArrowUpRight, ChevronLeft, ChevronRight, Info, MapPin, X } from "lucide-react";
 import {
@@ -27,14 +28,14 @@ import {
   type RegionFile,
   type RegionRecord,
 } from "@/lib/demographics/regional";
-import { CompositionRail } from "./composition-rail";
 import { DemographicsMap, NEGATIVE_COLOR, divergingExtent, valueExtent, type MapArea, type MapCity } from "./demographics-map";
-import { formatPeople, formatPoints } from "./format";
+import { formatPoints } from "./format";
+import { GroupPicker } from "./group-picker";
 import { RegionTable, type TableRow } from "./region-table";
 import { InfoTip, StatusBadge } from "./status-badge";
-import { TrendChart } from "./trend-chart";
+import { TrendChart, isProjected } from "./trend-chart";
 
-type MapMode = "share" | "change" | "people";
+type MapMode = "share" | "change";
 
 const DEFAULT_YEAR = 2025;
 const END_YEAR = 2050;
@@ -53,7 +54,7 @@ const MEASURE_LABEL = { census: "Census population estimates", survey: "Survey e
 const isDimension = (value: string | null): value is DemographicDimensionId =>
   demographicSeries.some((series) => series.id === value);
 const isMode = (value: string | null): value is MapMode =>
-  value === "share" || value === "change" || value === "people";
+  value === "share" || value === "change";
 
 // Patch the query string without a navigation; Next keeps useSearchParams
 // in sync with the native history API.
@@ -139,7 +140,19 @@ async function loadRegions(url: string): Promise<RegionFile | null> {
   }
 }
 
-export function DemographicsForecast() {
+// Dimensions with their own topic page, which opens the same view (state,
+// group, year, map mode) with more data on that subject.
+const TOPIC_PAGES: Partial<Record<DemographicDimensionId, { href: string; label: string; blurb: string }>> = {
+  religion: {
+    href: "/religion",
+    label: "Religion",
+    blurb: "Attendance at services, religious traditions, beliefs, and party lean by state",
+  },
+};
+
+// `lockedDimension` pins the explorer to one dimension (a topic page's
+// copy of it): no dimension tabs, and no `dim` in the URL.
+export function DemographicsForecast({ lockedDimension }: { lockedDimension?: DemographicDimensionId } = {}) {
   const searchParams = useSearchParams();
   const requestedState = searchParams.get("state");
   const requestedCity = searchParams.get("city");
@@ -148,12 +161,12 @@ export function DemographicsForecast() {
   // view can be shared.
   const [dimension, setDimension] = useState<DemographicDimensionId>(() => {
     const value = searchParams.get("dim");
-    return isDimension(value) ? value : "race";
+    return lockedDimension ?? (isDimension(value) ? value : "race");
   });
   const [groups, setGroups] = useState<Partial<Record<DemographicDimensionId, string>>>(() => {
     const value = searchParams.get("group");
     // Race is the default dimension, so its links carry no dim param.
-    const dim = searchParams.get("dim") ?? "race";
+    const dim = lockedDimension ?? searchParams.get("dim") ?? "race";
     return value && isDimension(dim) ? { [dim]: value } : {};
   });
   const [year, setYear] = useState(() => Number(searchParams.get("year")) || DEFAULT_YEAR);
@@ -233,7 +246,7 @@ export function DemographicsForecast() {
     const timer = window.setTimeout(
       () =>
         writeParams({
-          dim: dimension === "race" ? null : dimension,
+          dim: lockedDimension || dimension === "race" ? null : dimension,
           group: groups[dimension] ?? null,
           year: year === DEFAULT_YEAR ? null : String(year),
           mode: mode === "share" ? null : mode,
@@ -241,7 +254,7 @@ export function DemographicsForecast() {
       250,
     );
     return () => window.clearTimeout(timer);
-  }, [dimension, groups, year, mode]);
+  }, [dimension, groups, year, mode, lockedDimension]);
 
   const navigate = (next: { state: string | null; city: string | null }) => {
     setNotice(null);
@@ -324,7 +337,7 @@ export function DemographicsForecast() {
     const count = regionCount(record, universe, selectedYear);
     return share === null || count === null ? null : (share / 100) * count;
   };
-  const mapValue = mode === "share" ? shareOf : mode === "change" ? changeOf : peopleOf;
+  const mapValue = mode === "share" ? shareOf : changeOf;
 
   const mapStates: MapArea[] = (statesFile?.regions ?? []).map((item) => ({
     id: item.id,
@@ -347,7 +360,6 @@ export function DemographicsForecast() {
   const formatValue = (value: number | null) => {
     if (value === null) return "no data";
     if (mode === "change") return `${focusCategory.label} ${formatPoints(value)} since ${mapBaseline}`;
-    if (mode === "people") return `${focusCategory.label} ≈${formatPeople(value)}`;
     return `${focusCategory.label} ${value.toFixed(1)}%`;
   };
 
@@ -395,42 +407,73 @@ export function DemographicsForecast() {
         ? regionCount(region, universe, selectedYear)
         : null;
 
+  // Change is measured from one year everywhere: the first year the map has
+  // figures for, so the map, the group line and the table agree.
+  const changeFrom = (mapBaseline !== null ? pointAt(series, mapBaseline) : null) ?? changeBaseline(series);
+
   const placeName = city ? `${city.name}, ${state?.abbr}` : state?.name ?? "United States";
+
+  // The current view as a query string for the matching page: the topic
+  // page from here, or back to this dimension on /demographics.
+  const viewQuery = (withDim: boolean) => {
+    const params = new URLSearchParams();
+    if (withDim) params.set("dim", dimension);
+    if (state) params.set("state", state.id);
+    if (groups[dimension]) params.set("group", groups[dimension]!);
+    if (year !== DEFAULT_YEAR) params.set("year", String(year));
+    if (mode !== "share") params.set("mode", mode);
+    const query = params.toString();
+    return query ? `?${query}` : "";
+  };
+  const topicPage = lockedDimension ? null : TOPIC_PAGES[dimension];
   const loadingRegion = (requestedState && !statesFile) || (requestedCity && state && !(state.id in cityFiles));
 
   return (
     <div className="space-y-5">
       <section className="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-950">
         <div className="flex flex-wrap items-center justify-between gap-4 p-2.5">
-          <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2">
-            {(["census", "survey"] as const).map((measure) => (
-              <div key={measure} role="group" aria-label={MEASURE_LABEL[measure]} className="flex items-center gap-1">
-                <span className="hidden pr-1 pl-2 text-[9px] font-semibold tracking-[0.14em] text-slate-400 uppercase lg:inline">
-                  {measure === "census" ? "Census" : "Surveys"}
-                </span>
-                {demographicSeries
-                  .filter((item) => item.measure === measure)
-                  .map((item) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => chooseDimension(item.id)}
-                      aria-pressed={dimension === item.id}
-                      className={`rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all ${
-                        dimension === item.id
-                          ? "bg-slate-950 text-white shadow-sm dark:bg-white dark:text-slate-950"
-                          : "text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-slate-100"
-                      }`}
-                    >
-                      {item.label}
-                    </button>
-                  ))}
-                {measure === "census" ? (
-                  <span className="ml-2 hidden h-6 w-px bg-slate-200 sm:block dark:bg-slate-800" aria-hidden="true" />
-                ) : null}
-              </div>
-            ))}
-          </div>
+          {lockedDimension ? (
+            <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 px-2.5 py-1.5">
+              <span className="text-sm font-semibold text-slate-950 dark:text-white">{national.label}</span>
+              <Link
+                href={`/demographics${viewQuery(true)}`}
+                className="inline-flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-950 hover:underline dark:text-slate-400 dark:hover:text-white"
+              >
+                <ArrowLeft size={12} />
+                Compare with age, sex, and race in Demographics
+              </Link>
+            </div>
+          ) : (
+            <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2">
+              {(["census", "survey"] as const).map((measure) => (
+                <div key={measure} role="group" aria-label={MEASURE_LABEL[measure]} className="flex items-center gap-1">
+                  <span className="hidden pr-1 pl-2 text-[9px] font-semibold tracking-[0.14em] text-slate-400 uppercase lg:inline">
+                    {measure === "census" ? "Census" : "Surveys"}
+                  </span>
+                  {demographicSeries
+                    .filter((item) => item.measure === measure)
+                    .map((item) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => chooseDimension(item.id)}
+                        aria-pressed={dimension === item.id}
+                        className={`rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all ${
+                          dimension === item.id
+                            ? "bg-slate-950 text-white shadow-sm dark:bg-white dark:text-slate-950"
+                            : "text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-slate-100"
+                        }`}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  {measure === "census" ? (
+                    <span className="ml-2 hidden h-6 w-px bg-slate-200 sm:block dark:bg-slate-800" aria-hidden="true" />
+                  ) : null}
+                </div>
+              ))}
+            </div>
+          )}
 
           <nav aria-label="Geography" className="flex items-center gap-1.5 px-2 text-xs text-slate-500 dark:text-slate-400">
             <MapPin size={14} className="shrink-0" />
@@ -498,6 +541,19 @@ export function DemographicsForecast() {
           </div>
         </div>
 
+        {topicPage ? (
+          <Link
+            href={`${topicPage.href}${viewQuery(false)}`}
+            className="group flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-slate-200 bg-blue-50/60 px-5 py-2.5 text-sm transition-colors hover:bg-blue-50 dark:border-slate-800 dark:bg-blue-500/5 dark:hover:bg-blue-500/10"
+          >
+            <span className="text-slate-600 dark:text-slate-300">{topicPage.blurb}</span>
+            <span className="inline-flex items-center gap-1 font-semibold text-blue-700 group-hover:underline dark:text-blue-300">
+              Open this view in {topicPage.label}
+              <ArrowUpRight size={14} />
+            </span>
+          </Link>
+        ) : null}
+
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-slate-200 px-5 py-3 dark:border-slate-800">
           <span className="text-[10px] font-semibold tracking-[0.14em] text-slate-400 uppercase">Year</span>
           <div className="flex min-w-60 flex-1 items-center gap-2">
@@ -561,347 +617,337 @@ export function DemographicsForecast() {
         </div>
       ) : null}
 
-      <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_320px]">
-        <div className="min-w-0 space-y-5">
-          <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-950">
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-5 py-3 dark:border-slate-800">
-              <div className="flex min-w-0 items-center gap-3">
-                {state ? (
-                  <button
-                    type="button"
-                    onClick={goUp}
-                    className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-950 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-900 dark:hover:text-white"
-                  >
-                    <ArrowLeft size={13} />
-                    {city ? state.name : "United States"}
-                  </button>
-                ) : null}
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-slate-950 dark:text-white">
-                    {focusCategory.label} · {selectedYear}
-                  </p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    {!state
-                      ? "Select a state to open it"
-                      : showCities
-                        ? `Cities in ${state.name} with 65,000+ residents · Esc to go back`
-                        : `${national.label} is estimated for states, not cities · Esc to go back`}
-                  </p>
-                </div>
+      <div className="space-y-5">
+        <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-950">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-5 py-3 dark:border-slate-800">
+            <div className="flex min-w-0 items-center gap-3">
+              {state ? (
+                <button
+                  type="button"
+                  onClick={goUp}
+                  className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-950 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-900 dark:hover:text-white"
+                >
+                  <ArrowLeft size={13} />
+                  {city ? state.name : "United States"}
+                </button>
+              ) : null}
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-slate-950 dark:text-white">
+                  {focusCategory.label} · {selectedYear}
+                </p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  {!state
+                    ? "Select a state to open it"
+                    : showCities
+                      ? `Cities in ${state.name} with 65,000+ residents · Esc to go back`
+                      : `${national.label} is estimated for states, not cities · Esc to go back`}
+                </p>
               </div>
-              <div className="flex flex-wrap items-center gap-2">
-                <div role="group" aria-label="Map by" className="flex items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-slate-900">
-                  {(
-                    [
-                      ["share", "Share"],
-                      ["change", "Change"],
-                      ["people", "People"],
-                    ] as const
-                  ).map(([id, label]) => (
-                    <button
-                      key={id}
-                      type="button"
-                      onClick={() => setMode(id)}
-                      aria-pressed={mode === id}
-                      className={`rounded-md px-2 py-1 text-[11px] font-semibold transition-colors ${
-                        mode === id
-                          ? "bg-white text-slate-950 shadow-sm dark:bg-slate-800 dark:text-white"
-                          : "text-slate-500 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"
-                      }`}
-                    >
-                      {label}
-                    </button>
-                  ))}
-                </div>
-                {showCities ? (
-                  cityFile && cityFile.regions.length ? (
-                    <>
-                      <label className="sr-only" htmlFor="demographics-city">City</label>
-                      <select
-                        id="demographics-city"
-                        value={city?.id ?? ""}
-                        onChange={(event) =>
-                          event.target.value ? selectCity(event.target.value) : navigate({ state: state!.id, city: null })
-                        }
-                        className="max-w-56 rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200"
-                      >
-                        <option value="">{city ? `All of ${state?.name}` : "Jump to a city…"}</option>
-                        {cityFile.regions.map((item) => (
-                          <option key={item.id} value={item.id} disabled={!item.series[dimension]}>
-                            {item.name}
-                            {item.series[dimension] ? "" : " (not published)"}
-                          </option>
-                        ))}
-                      </select>
-                    </>
-                  ) : null
-                ) : (
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <div role="group" aria-label="Map by" className="flex items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-slate-900">
+                {(
+                  [
+                    ["share", "Share"],
+                    ["change", "Change"],
+                  ] as const
+                ).map(([id, label]) => (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => setMode(id)}
+                    aria-pressed={mode === id}
+                    className={`rounded-md px-2 py-1 text-[11px] font-semibold transition-colors ${
+                      mode === id
+                        ? "bg-white text-slate-950 shadow-sm dark:bg-slate-800 dark:text-white"
+                        : "text-slate-500 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+              {showCities ? (
+                cityFile && cityFile.regions.length ? (
                   <>
-                    <label className="sr-only" htmlFor="demographics-state">State</label>
+                    <label className="sr-only" htmlFor="demographics-city">City</label>
                     <select
-                      id="demographics-state"
-                      value={state?.id ?? ""}
-                      onChange={(event) => (event.target.value ? selectState(event.target.value) : goNational())}
-                      className="rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200"
+                      id="demographics-city"
+                      value={city?.id ?? ""}
+                      onChange={(event) =>
+                        event.target.value ? selectCity(event.target.value) : navigate({ state: state!.id, city: null })
+                      }
+                      className="max-w-56 rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200"
                     >
-                      <option value="">{state ? "All states" : "Jump to a state…"}</option>
-                      {[...(statesFile?.regions ?? [])]
-                        .sort((a, b) => a.name.localeCompare(b.name))
-                        .map((item) => (
-                          <option key={item.id} value={item.id}>{item.name}</option>
-                        ))}
+                      <option value="">{city ? `All of ${state?.name}` : "Jump to a city…"}</option>
+                      {cityFile.regions.map((item) => (
+                        <option key={item.id} value={item.id} disabled={!item.series[dimension]}>
+                          {item.name}
+                          {item.series[dimension] ? "" : " (not published)"}
+                        </option>
+                      ))}
                     </select>
                   </>
-                )}
-              </div>
-            </div>
-
-            <DemographicsMap
-              states={mapStates}
-              cities={mapCities}
-              selectedStateId={state?.id ?? null}
-              selectedCityId={city?.id ?? null}
-              cityLevel={showCities}
-              color={focusCategory.color}
-              scale={mode === "change" ? "diverging" : "sequential"}
-              formatValue={formatValue}
-              onSelectState={selectState}
-              onSelectCity={selectCity}
-              onBack={goUp}
-              onNational={goNational}
-            />
-
-            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 px-5 py-3 text-[10px] text-slate-500 dark:text-slate-400">
-              {legendHasData ? (
-                <span className="inline-flex items-center gap-2">
-                  <span className="font-semibold text-slate-600 dark:text-slate-300">Color</span>
-                  {mode === "change" ? (
-                    <>
-                      <span className="font-mono tabular-nums">−{divergingExtent(legendValues).toFixed(1)} pp</span>
-                      <span
-                        className="h-2 w-40 rounded-full"
-                        style={{
-                          background: `linear-gradient(to right, ${NEGATIVE_COLOR}, color-mix(in srgb, ${NEGATIVE_COLOR} 10%, transparent), color-mix(in srgb, ${focusCategory.color} 10%, transparent), ${focusCategory.color})`,
-                        }}
-                      />
-                      <span className="font-mono tabular-nums">+{divergingExtent(legendValues).toFixed(1)} pp</span>
-                      <span>change in {focusCategory.label} share since {mapBaseline}</span>
-                    </>
-                  ) : (
-                    <>
-                      <span className="font-mono tabular-nums">
-                        {mode === "people" ? formatPeople(valueExtent(legendValues)[0]) : `${valueExtent(legendValues)[0].toFixed(1)}%`}
-                      </span>
-                      <span
-                        className="h-2 w-40 rounded-full"
-                        style={{
-                          background: `linear-gradient(to right, color-mix(in srgb, ${focusCategory.color} 12%, transparent), ${focusCategory.color})`,
-                        }}
-                      />
-                      <span className="font-mono tabular-nums">
-                        {mode === "people" ? formatPeople(valueExtent(legendValues)[1]) : `${valueExtent(legendValues)[1].toFixed(1)}%`}
-                      </span>
-                      <span>
-                        {mode === "people" ? `${universe === "adults" ? "adults" : "people"}: ` : ""}
-                        {focusCategory.label}, {showCities ? "by city" : "by state"}
-                      </span>
-                    </>
-                  )}
-                </span>
+                ) : null
               ) : (
-                <span>
-                  {mode === "people"
-                    ? `Population counts run through ${showCities ? 2024 : 2025}; head counts aren't projected below the national level.`
-                    : `No ${showCities ? "city" : "state"} figures for ${selectedYear}.`}
-                </span>
-              )}
-              {showCities ? (
                 <>
-                  <span className="inline-flex items-center gap-1.5">
-                    <span className="font-semibold text-slate-600 dark:text-slate-300">Size</span>
-                    <svg width="34" height="16" aria-hidden="true">
-                      <circle cx="5" cy="10" r="4" fill="none" stroke="currentColor" />
-                      <circle cx="23" cy="8" r="7.5" fill="none" stroke="currentColor" />
-                    </svg>
-                    city population (2024)
-                  </span>
-                  <span className="inline-flex items-center gap-1.5">
-                    <span className="h-2.5 w-2.5 rounded-full bg-slate-300" /> not published for this city
-                  </span>
-                  <InfoTip label="Why only cities of 65,000+" align="right">
-                    The Census Bureau&apos;s American Community Survey publishes 1-year estimates only for places with
-                    65,000 or more residents. Smaller places have 5-year estimates only, which aren&apos;t comparable year
-                    to year, so they&apos;re left off.
-                  </InfoTip>
+                  <label className="sr-only" htmlFor="demographics-state">State</label>
+                  <select
+                    id="demographics-state"
+                    value={state?.id ?? ""}
+                    onChange={(event) => (event.target.value ? selectState(event.target.value) : goNational())}
+                    className="rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200"
+                  >
+                    <option value="">{state ? "All states" : "Jump to a state…"}</option>
+                    {[...(statesFile?.regions ?? [])]
+                      .sort((a, b) => a.name.localeCompare(b.name))
+                      .map((item) => (
+                        <option key={item.id} value={item.id}>{item.name}</option>
+                      ))}
+                  </select>
                 </>
-              ) : null}
+              )}
             </div>
-          </section>
+          </div>
 
-          <section className="min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-950">
-            <div className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-200 px-5 py-4 dark:border-slate-800">
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-2.5">
-                  <h2 className="text-lg font-semibold tracking-tight text-slate-950 dark:text-white">
-                    {series.label} · {placeName}
-                  </h2>
-                  <StatusBadge provenance={provenance} />
-                </div>
-                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                  {series.description} · {series.population}
-                  {loadingRegion ? " · loading…" : ""}
-                </p>
-                <p className="mt-0.5 text-xs text-slate-400 dark:text-slate-500">
-                  {STATUS_LABEL[pastProvenance.status]} by {pastProvenance.by} through {series.observedThrough} ·
-                  projected by {futureProvenance.by} to {lastYear}
-                </p>
-              </div>
-              <p className="font-mono text-2xl font-semibold tabular-nums text-slate-950 dark:text-white">{selectedYear}</p>
-            </div>
-
-            <div className="flex flex-wrap items-center justify-between gap-3 px-5 pt-4">
-              <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
-                <button
-                  type="button"
-                  onClick={() => moveView(viewRange.start - Math.max(1, Math.round((viewRange.end - viewRange.start) / 3)))}
-                  className="rounded-lg p-1.5 hover:bg-slate-100 hover:text-slate-950 dark:hover:bg-slate-900 dark:hover:text-white"
-                  aria-label="Show earlier years"
-                >
-                  <ChevronLeft size={15} />
-                </button>
-                <span className="min-w-24 text-center font-mono font-medium tabular-nums">
-                  {viewRange.start}–{viewRange.end}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => moveView(viewRange.start + Math.max(1, Math.round((viewRange.end - viewRange.start) / 3)))}
-                  className="rounded-lg p-1.5 hover:bg-slate-100 hover:text-slate-950 dark:hover:bg-slate-900 dark:hover:text-white"
-                  aria-label="Show later years"
-                >
-                  <ChevronRight size={15} />
-                </button>
-                <span className="ml-2 hidden text-[10px] tracking-wide uppercase sm:inline">Click a year · drag to pan</span>
-              </div>
-
-              <div className="flex items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-slate-900">
-                {([10, 25, 50, "all"] as const).map((span) => {
-                  const active = span === "all"
-                    ? viewRange.start === firstYear && viewRange.end === lastYear
-                    : viewRange.end - viewRange.start === span;
-                  const fits = span === "all" || span <= lastYear - firstYear;
-                  return (
-                    <button
-                      key={span}
-                      type="button"
-                      disabled={!fits}
-                      onClick={() => setViewSpan(span)}
-                      className={`rounded-md px-2 py-1 text-[10px] font-semibold transition-colors disabled:opacity-30 ${
-                        active
-                          ? "bg-white text-slate-950 shadow-sm dark:bg-slate-800 dark:text-white"
-                          : "text-slate-500 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"
-                      }`}
-                      aria-pressed={active}
-                    >
-                      {span === "all" ? "All" : `${span}Y`}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="px-4 pt-1 sm:px-5">
-              <TrendChart
-                series={series}
-                focus={focus}
-                selectedYear={selectedYear}
-                visibleStart={viewRange.start}
-                visibleEnd={viewRange.end}
-                onPan={moveView}
-                onSelectYear={selectYear}
-                compare={parent ? { label: parentLabel, points: parent.points } : null}
-                published={published}
-                pastModeled={published !== null && published.length === 0}
-              />
-            </div>
-
-            <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 px-5 pb-4 text-[10px] text-slate-500 dark:text-slate-400">
-              <span className="inline-flex items-center gap-1.5">
-                <svg width="22" height="6" aria-hidden="true">
-                  <line
-                    x1="1" x2="21" y1="3" y2="3" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"
-                    strokeDasharray={published?.length === 0 ? "2 4" : undefined}
-                  />
-                </svg>
-                {published?.length === 0 ? "Modeled by Worldview" : `${STATUS_LABEL[pastProvenance.status]} (${pastProvenance.by})`}
-              </span>
-              {published && published.length ? (
-                <span className="inline-flex items-center gap-1.5">
-                  <svg width="8" height="8" aria-hidden="true"><circle cx="4" cy="4" r="3.5" fill="currentColor" /></svg>
-                  Survey year; lines between are interpolated
-                </span>
-              ) : null}
-              <span className="inline-flex items-center gap-1.5">
-                <svg width="22" height="12" aria-hidden="true">
-                  <rect x="0" y="2" width="22" height="8" fill="currentColor" opacity="0.14" />
-                  <line x1="1" x2="21" y1="2" y2="2" stroke="currentColor" strokeWidth="1.5" strokeDasharray="4 3" />
-                  <line x1="1" x2="21" y1="10" y2="10" stroke="currentColor" strokeWidth="1.5" strokeDasharray="4 3" />
-                </svg>
-                Scenario range, not a confidence interval
-                <InfoTip label="What the projection range means">
-                  <span className="block">{rangeExplanation(series, level, places)}</span>
-                  <span className="mt-2 block text-[11px] text-slate-500 dark:text-slate-400">
-                    The band runs from the lowest to the highest scenario. No probability is attached to it, so it is not
-                    a 95% confidence interval.
-                  </span>
-                </InfoTip>
-              </span>
-              {parent ? (
-                <span className="inline-flex items-center gap-1.5">
-                  <svg width="22" height="6" aria-hidden="true">
-                    <line x1="1" x2="21" y1="3" y2="3" stroke="#64748b" strokeWidth="1.75" strokeDasharray="1 4" strokeLinecap="round" />
-                  </svg>
-                  {parentLabel} {focusCategory.label}, for comparison
-                </span>
-              ) : null}
-            </div>
-          </section>
-
-          <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-950">
-            <div className="border-b border-slate-200 px-5 py-3 dark:border-slate-800">
-              <h2 className="text-sm font-semibold text-slate-950 dark:text-white">
-                {focusCategory.label} by {showCities ? `city in ${state?.name}` : "state"}, {selectedYear}
-              </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                Select a column to sort, a row to open it. {END_YEAR} figures are the projected scenario range.
-              </p>
-            </div>
-            <RegionTable
-              rows={tableRows}
-              reference={referenceRow}
-              placeLabel={showCities ? "City" : "State"}
-              groupLabel={focusCategory.label}
-              year={selectedYear}
-              baselineYear={mapBaseline}
-              endYear={END_YEAR}
-              peopleLabel={universe === "adults" ? "Adults" : "People"}
-              selectedId={showCities ? city?.id ?? null : state?.id ?? null}
-              onSelect={showCities ? selectCity : selectState}
-            />
-          </section>
-        </div>
-
-        <div className="xl:sticky xl:top-6">
-          <CompositionRail
+          <GroupPicker
             series={series}
             point={point}
-            baseline={changeBaseline(series)}
+            baseline={changeFrom}
             focus={focus}
             onFocus={(category) => setGroups((current) => ({ ...current, [dimension]: category }))}
-            provenance={provenance}
             compare={parent ? { label: parentLabel, point: pointAt(parent, selectedYear) ?? null } : null}
             population={population}
+            projected={isProjected(series, point)}
           />
-        </div>
+
+          <DemographicsMap
+            states={mapStates}
+            cities={mapCities}
+            selectedStateId={state?.id ?? null}
+            selectedCityId={city?.id ?? null}
+            cityLevel={showCities}
+            color={focusCategory.color}
+            scale={mode === "change" ? "diverging" : "sequential"}
+            formatValue={formatValue}
+            onSelectState={selectState}
+            onSelectCity={selectCity}
+            onBack={goUp}
+            onNational={goNational}
+          />
+
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 px-5 py-3 text-[10px] text-slate-500 dark:text-slate-400">
+            {legendHasData ? (
+              <span className="inline-flex items-center gap-2">
+                <span className="font-semibold text-slate-600 dark:text-slate-300">Color</span>
+                {mode === "change" ? (
+                  <>
+                    <span className="font-mono tabular-nums">−{divergingExtent(legendValues).toFixed(1)} pp</span>
+                    <span
+                      className="h-2 w-40 rounded-full"
+                      style={{
+                        background: `linear-gradient(to right, ${NEGATIVE_COLOR}, color-mix(in srgb, ${NEGATIVE_COLOR} 10%, transparent), color-mix(in srgb, ${focusCategory.color} 10%, transparent), ${focusCategory.color})`,
+                      }}
+                    />
+                    <span className="font-mono tabular-nums">+{divergingExtent(legendValues).toFixed(1)} pp</span>
+                    <span>change in {focusCategory.label} share since {mapBaseline}</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="font-mono tabular-nums">
+                      {valueExtent(legendValues)[0].toFixed(1)}%
+                    </span>
+                    <span
+                      className="h-2 w-40 rounded-full"
+                      style={{
+                        background: `linear-gradient(to right, color-mix(in srgb, ${focusCategory.color} 12%, transparent), ${focusCategory.color})`,
+                      }}
+                    />
+                    <span className="font-mono tabular-nums">
+                      {valueExtent(legendValues)[1].toFixed(1)}%
+                    </span>
+                    <span>
+                      {focusCategory.label}, {showCities ? "by city" : "by state"}
+                    </span>
+                  </>
+                )}
+              </span>
+            ) : (
+              <span>No {showCities ? "city" : "state"} figures for {selectedYear}.</span>
+            )}
+            {showCities ? (
+              <>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="font-semibold text-slate-600 dark:text-slate-300">Size</span>
+                  <svg width="34" height="16" aria-hidden="true">
+                    <circle cx="5" cy="10" r="4" fill="none" stroke="currentColor" />
+                    <circle cx="23" cy="8" r="7.5" fill="none" stroke="currentColor" />
+                  </svg>
+                  city population (2024)
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="h-2.5 w-2.5 rounded-full bg-slate-300" /> not published for this city
+                </span>
+                <InfoTip label="Why only cities of 65,000+" align="right">
+                  The Census Bureau&apos;s American Community Survey publishes 1-year estimates only for places with
+                  65,000 or more residents. Smaller places have 5-year estimates only, which aren&apos;t comparable year
+                  to year, so they&apos;re left off.
+                </InfoTip>
+              </>
+            ) : null}
+          </div>
+        </section>
+
+        <section className="min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-950">
+          <div className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-200 px-5 py-4 dark:border-slate-800">
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2.5">
+                <h2 className="text-lg font-semibold tracking-tight text-slate-950 dark:text-white">
+                  {series.label} · {placeName}
+                </h2>
+                <StatusBadge provenance={provenance} />
+              </div>
+              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                {series.description} · {series.population}
+                {loadingRegion ? " · loading…" : ""}
+              </p>
+              <p className="mt-0.5 text-xs text-slate-400 dark:text-slate-500">
+                {STATUS_LABEL[pastProvenance.status]} by {pastProvenance.by} through {series.observedThrough} ·
+                projected by {futureProvenance.by} to {lastYear}
+              </p>
+            </div>
+            <p className="font-mono text-2xl font-semibold tabular-nums text-slate-950 dark:text-white">{selectedYear}</p>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-between gap-3 px-5 pt-4">
+            <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
+              <button
+                type="button"
+                onClick={() => moveView(viewRange.start - Math.max(1, Math.round((viewRange.end - viewRange.start) / 3)))}
+                className="rounded-lg p-1.5 hover:bg-slate-100 hover:text-slate-950 dark:hover:bg-slate-900 dark:hover:text-white"
+                aria-label="Show earlier years"
+              >
+                <ChevronLeft size={15} />
+              </button>
+              <span className="min-w-24 text-center font-mono font-medium tabular-nums">
+                {viewRange.start}–{viewRange.end}
+              </span>
+              <button
+                type="button"
+                onClick={() => moveView(viewRange.start + Math.max(1, Math.round((viewRange.end - viewRange.start) / 3)))}
+                className="rounded-lg p-1.5 hover:bg-slate-100 hover:text-slate-950 dark:hover:bg-slate-900 dark:hover:text-white"
+                aria-label="Show later years"
+              >
+                <ChevronRight size={15} />
+              </button>
+              <span className="ml-2 hidden text-[10px] tracking-wide uppercase sm:inline">Click a year · drag to pan</span>
+            </div>
+
+            <div className="flex items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-slate-900">
+              {([10, 25, 50, "all"] as const).map((span) => {
+                const active = span === "all"
+                  ? viewRange.start === firstYear && viewRange.end === lastYear
+                  : viewRange.end - viewRange.start === span;
+                const fits = span === "all" || span <= lastYear - firstYear;
+                return (
+                  <button
+                    key={span}
+                    type="button"
+                    disabled={!fits}
+                    onClick={() => setViewSpan(span)}
+                    className={`rounded-md px-2 py-1 text-[10px] font-semibold transition-colors disabled:opacity-30 ${
+                      active
+                        ? "bg-white text-slate-950 shadow-sm dark:bg-slate-800 dark:text-white"
+                        : "text-slate-500 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"
+                    }`}
+                    aria-pressed={active}
+                  >
+                    {span === "all" ? "All" : `${span}Y`}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="px-4 pt-1 sm:px-5">
+            <TrendChart
+              series={series}
+              focus={focus}
+              selectedYear={selectedYear}
+              visibleStart={viewRange.start}
+              visibleEnd={viewRange.end}
+              onPan={moveView}
+              onSelectYear={selectYear}
+              compare={parent ? { label: parentLabel, points: parent.points } : null}
+              published={published}
+              pastModeled={published !== null && published.length === 0}
+            />
+          </div>
+
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 px-5 pb-4 text-[10px] text-slate-500 dark:text-slate-400">
+            <span className="inline-flex items-center gap-1.5">
+              <svg width="22" height="6" aria-hidden="true">
+                <line
+                  x1="1" x2="21" y1="3" y2="3" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"
+                  strokeDasharray={published?.length === 0 ? "2 4" : undefined}
+                />
+              </svg>
+              {published?.length === 0 ? "Modeled by Worldview" : `${STATUS_LABEL[pastProvenance.status]} (${pastProvenance.by})`}
+            </span>
+            {published && published.length ? (
+              <span className="inline-flex items-center gap-1.5">
+                <svg width="8" height="8" aria-hidden="true"><circle cx="4" cy="4" r="3.5" fill="currentColor" /></svg>
+                Survey year; lines between are interpolated
+              </span>
+            ) : null}
+            <span className="inline-flex items-center gap-1.5">
+              <svg width="22" height="12" aria-hidden="true">
+                <rect x="0" y="2" width="22" height="8" fill="currentColor" opacity="0.14" />
+                <line x1="1" x2="21" y1="2" y2="2" stroke="currentColor" strokeWidth="1.5" strokeDasharray="4 3" />
+                <line x1="1" x2="21" y1="10" y2="10" stroke="currentColor" strokeWidth="1.5" strokeDasharray="4 3" />
+              </svg>
+              Scenario range, not a confidence interval
+              <InfoTip label="What the projection range means">
+                <span className="block">{rangeExplanation(series, level, places)}</span>
+                <span className="mt-2 block text-[11px] text-slate-500 dark:text-slate-400">
+                  The band runs from the lowest to the highest scenario. No probability is attached to it, so it is not
+                  a 95% confidence interval.
+                </span>
+              </InfoTip>
+            </span>
+            {parent ? (
+              <span className="inline-flex items-center gap-1.5">
+                <svg width="22" height="6" aria-hidden="true">
+                  <line x1="1" x2="21" y1="3" y2="3" stroke="#64748b" strokeWidth="1.75" strokeDasharray="1 4" strokeLinecap="round" />
+                </svg>
+                {parentLabel} {focusCategory.label}, for comparison
+              </span>
+            ) : null}
+          </div>
+        </section>
+
+        <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-950">
+          <div className="border-b border-slate-200 px-5 py-3 dark:border-slate-800">
+            <h2 className="text-sm font-semibold text-slate-950 dark:text-white">
+              {focusCategory.label} by {showCities ? `city in ${state?.name}` : "state"}, {selectedYear}
+            </h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Select a column to sort, a row to open it. {END_YEAR} figures are the projected scenario range.
+            </p>
+          </div>
+          <RegionTable
+            rows={tableRows}
+            reference={referenceRow}
+            placeLabel={showCities ? "City" : "State"}
+            groupLabel={focusCategory.label}
+            year={selectedYear}
+            baselineYear={mapBaseline}
+            endYear={END_YEAR}
+            peopleLabel={universe === "adults" ? "Adults" : "People"}
+            selectedId={showCities ? city?.id ?? null : state?.id ?? null}
+            onSelect={showCities ? selectCity : selectState}
+          />
+        </section>
       </div>
 
       <section

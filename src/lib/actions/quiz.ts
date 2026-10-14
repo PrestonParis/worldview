@@ -6,7 +6,7 @@ import { revalidatePath } from "next/cache";
 import * as quizDb from "../db/quizSessions";
 import { BANK_VERSION } from "../quiz/bank";
 import { computeState, ENGINE_VERSION, isValidAnswer, REFINE_STEP, type QuizAnswer } from "../quiz/engine";
-import { applyAnswer, runnerState, type RunnerState } from "../quiz/runner";
+import { answerSnapshot, applyAnswer, runnerState, type RunnerState } from "../quiz/runner";
 import {
   EDIT_COOKIE_MAX_AGE,
   SLUG_PATTERN,
@@ -59,6 +59,8 @@ export async function submitAnswerAction(slug: string, answer: QuizAnswer): Prom
       ? { kind: "statement", id: String(answer.id), value: answer.value }
       : { kind: "choice", id: String(answer.id), value: answer.value, importance: answer.importance };
   if (!isValidAnswer(clean)) return { ok: false, error: "Invalid answer." };
+  // Saved server side from the bank, never taken from the client.
+  clean.shown = answerSnapshot(clean) ?? undefined;
 
   const answers = applyAnswer(session.answers, clean);
   const { complete } = computeState(answers, session.refine);
@@ -69,6 +71,13 @@ export async function submitAnswerAction(slug: string, answer: QuizAnswer): Prom
     completedAt: complete ? (session.completedAt ?? new Date()) : session.completedAt,
   });
   return { ok: true, data: runnerState(answers, session.refine, slug) };
+}
+
+// The live runner state, for a quiz page restored from the client cache.
+export async function runnerStateAction(slug: string): Promise<ActionResult<RunnerState>> {
+  const session = await loadEditable(slug);
+  if (!session) return { ok: false, error: "This quiz can't be edited from here." };
+  return { ok: true, data: runnerState(session.answers, session.refine, slug) };
 }
 
 export async function refineAxisAction(slug: string, axis: AxisId): Promise<void> {

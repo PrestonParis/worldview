@@ -200,15 +200,14 @@ export function IndustryExplorer({
   if (rows.length === 0) {
     return (
       <p className="text-sm text-slate-500 dark:text-slate-400">
-        No contribution data yet. Run <code>npm run import:fec-donors</code>.
+        No contribution data yet.
       </p>
     );
   }
   if (rows.every((r) => r.industry === "")) {
     return (
       <p className="text-sm text-slate-500 dark:text-slate-400">
-        Contributions aren&rsquo;t industry-classified yet. Run{" "}
-        <code>npm run backfill:donor-fields</code>.
+        Contributions aren&rsquo;t industry-classified yet.
       </p>
     );
   }

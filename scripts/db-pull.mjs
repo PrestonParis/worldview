@@ -5,8 +5,11 @@
 //   node scripts/db-pull.mjs                 # snapshot cloud, then mirror it locally
 //   node scripts/db-pull.mjs --from=<dir>    # mirror an existing snapshot (no cloud access)
 //
-// A snapshot dir holds cloud-public.dump (pg_dump -Fc of the public schema)
-// plus entities.json / edges.json (scripts/export-db.mjs format).
+// A snapshot dir holds cloud-public.dump (pg_dump -Fc of the public schema),
+// neon-area-stats.ndjson.gz (the area_stats rows kept in the Neon overflow
+// database, src/lib/db/stores.ts) and entities.json / edges.json
+// (scripts/export-db.mjs format). Local has no size cap, so both clouds'
+// area_stats land in the one local table.
 //
 // Only reads from cloud. Locally it overwrites every public-data table and
 // the whole Neo4j graph; user/account tables (profiles, quiz_sessions,
@@ -18,7 +21,10 @@
 import { execFileSync, spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
+import readline from "node:readline";
+import zlib from "node:zlib";
 import neo4j from "neo4j-driver";
+import pg from "pg";
 
 const KEEP_LOCAL = new Set([
   "profiles",
@@ -46,6 +52,7 @@ for (const f of [dumpFile, path.join(dir, "entities.json"), path.join(dir, "edge
 }
 
 await mirrorPostgres();
+await mirrorNeon();
 await mirrorNeo4j();
 console.log("\nLocal now mirrors", dir);
 
@@ -84,6 +91,7 @@ async function snapshotCloud() {
   });
   if (r.status !== 0) throw new Error(`pg_dump failed: ${r.stderr}`);
   fs.writeFileSync(path.join(out, "cloud-public.dump"), r.stdout);
+  await snapshotNeon(cloud.NEON_DATABASE_URL, path.join(out, "neon-area-stats.ndjson.gz"));
 
   const driver = neo4j.driver(cloud.NEO4J_URI, neo4j.auth.basic(cloud.NEO4J_USER, cloud.NEO4J_PASSWORD));
   const session = driver.session();
@@ -166,6 +174,84 @@ async function mirrorPostgres() {
   } finally {
     psql("postgres", `drop schema if exists ${STAGE} cascade`);
   }
+}
+
+// Neon runs a newer Postgres than the local pg_dump can read, so its rows
+// are streamed out through node instead.
+async function snapshotNeon(url, file) {
+  const gz = zlib.createGzip();
+  const done = new Promise((resolve, reject) => gz.pipe(fs.createWriteStream(file)).on("finish", resolve).on("error", reject));
+  let n = 0;
+  if (url) {
+    const client = new pg.Client({ connectionString: url });
+    await client.connect();
+    try {
+      // Pages in primary-key order.
+      const key = ["source", "metric", "geo_level", "geoid", "period"];
+      let after = null;
+      for (;;) {
+        const { rows } = await client.query(
+          `select * from area_stats ${after ? `where (${key}) > ($1, $2, $3, $4, $5)` : ""} order by ${key} limit 10000`,
+          after ?? [],
+        );
+        if (!rows.length) break;
+        for (const row of rows) if (!gz.write(JSON.stringify(row) + "\n")) await new Promise((r) => gz.once("drain", r));
+        n += rows.length;
+        after = key.map((c) => rows.at(-1)[c]);
+      }
+    } finally {
+      await client.end();
+    }
+  }
+  gz.end();
+  await done;
+  console.log(`Neon: ${n.toLocaleString()} area_stats rows`);
+}
+
+async function mirrorNeon() {
+  const file = path.join(dir, "neon-area-stats.ndjson.gz");
+  if (!fs.existsSync(file)) return; // snapshot from before the Neon split
+  const client = new pg.Client({ connectionString: local.DATABASE_URL });
+  await client.connect();
+  const seen = new Set();
+  let n = 0;
+  let batch = [];
+  const flush = async () => {
+    if (!batch.length) return;
+    const columns = Object.keys(batch[0]);
+    const params = [];
+    const values = batch.map((row) => `(${columns.map((c) => {
+      params.push(c === "metadata" && row[c] !== null ? JSON.stringify(row[c]) : row[c]);
+      return `$${params.length}`;
+    }).join(", ")})`);
+    await client.query(`insert into area_stats (${columns.map((c) => `"${c}"`).join(", ")}) values ${values.join(", ")}`, params);
+    n += batch.length;
+    batch = [];
+  };
+  try {
+    await client.query("begin");
+    const lines = readline.createInterface({ input: fs.createReadStream(file).pipe(zlib.createGunzip()), crlfDelay: Infinity });
+    for await (const line of lines) {
+      if (!line) continue;
+      const row = JSON.parse(line);
+      // Replace each Neon source wholesale, like the Supabase sources.
+      if (!seen.has(row.source)) {
+        await flush();
+        await client.query("delete from area_stats where source = $1", [row.source]);
+        seen.add(row.source);
+      }
+      batch.push(row);
+      if (batch.length >= 4000) await flush();
+    }
+    await flush();
+    await client.query("commit");
+  } catch (err) {
+    await client.query("rollback");
+    throw err;
+  } finally {
+    await client.end();
+  }
+  if (n) console.log(`Postgres: mirrored ${n.toLocaleString()} Neon area_stats rows (${[...seen].join(", ")})`);
 }
 
 async function mirrorNeo4j() {

@@ -1,20 +1,23 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ExternalLink, Network, Pencil } from "lucide-react";
+import { ExternalLink, Pencil } from "lucide-react";
 import { notFound, permanentRedirect } from "next/navigation";
 import { ContributorOnly } from "@/components/auth/can-edit";
 import { EntityMoneySummary } from "@/components/money/entity-money-summary";
 import { EntityLobbying } from "@/components/money/entity-lobbying";
+import { NetworkPreview } from "@/components/people/network-preview";
+import { RelationshipGroups } from "@/components/people/relationship-groups";
 import { buttonVariants } from "@/components/ui/button";
 import { getEntityContributionSummary } from "@/lib/db/contributions";
+import { getSourcesByIds } from "@/lib/db/sources";
 import { listLobbyingForEntity } from "@/lib/db/lobbying";
 import { entityColorFor } from "@/lib/entity-colors";
 import { leanLabels, leanOf } from "@/lib/graph/lean";
 import { isDonorEdge } from "@/lib/money";
 import { listEdgesForEntity } from "@/lib/neo4j/edges";
 import { getEntityByPublicSlug, listEntities } from "@/lib/neo4j/entities";
-import { entityPartyAndPlace, parseEntityMetadata, publicEntityPath, publicEntitySlug, typeLabels } from "@/lib/people/public";
-import { relationshipTypeBySlug } from "@/lib/relationships";
+import { buildEgoPreview } from "@/lib/people/ego-preview";
+import { entityPartyAndPlace, parseEntityMetadata, publicEntitySlug, typeLabels } from "@/lib/people/public";
 import { parseHighlights } from "@/lib/validation/entity";
 
 export const dynamic = "force-dynamic";
@@ -49,6 +52,11 @@ export default async function PublicEntityPage({ params }: ProfilePageProps) {
   const highlights = parseHighlights(entity.highlights);
   const donors = connections.filter(isDonorEdge);
   const relationships = connections.filter((edge) => !isDonorEdge(edge));
+  const edgeSources = new Map(
+    (await getSourcesByIds(relationships.map((edge) => edge.sourceRecordId ?? "")).catch(() => []))
+      .map((source) => [source.id, { title: source.title, url: source.url || undefined }]),
+  );
+  const preview = buildEgoPreview(entity, byId, relationships);
   const sources = Array.isArray(metadata.sources)
     ? metadata.sources.filter((value): value is string => typeof value === "string" && /^https?:\/\//.test(value))
     : [];
@@ -56,7 +64,6 @@ export default async function PublicEntityPage({ params }: ProfilePageProps) {
     ["Role", typeLabels[entity.type] ?? entity.type], ["Office", metadata.office], ["Party", party], ["Place", place],
     ["Broad political family", lean ? leanLabels[lean] : "Not classified"],
   ].filter((item): item is [string, string] => typeof item[1] === "string" && item[1].length > 0);
-  const related = (edge: (typeof connections)[number]) => byId.get(edge.sourceEntityId === entity.id ? edge.targetEntityId : edge.sourceEntityId);
 
   return (
     <article className="mx-auto max-w-6xl pb-12">
@@ -80,7 +87,6 @@ export default async function PublicEntityPage({ params }: ProfilePageProps) {
             </div>
           </div>
           <div className="flex shrink-0 gap-2">
-            <Link href={`/people?view=network&root=${entity.id}`} className={buttonVariants.primary}><Network className="mr-2 h-4 w-4" />View network</Link>
             <ContributorOnly><Link href={`/data/entities/${entity.id}/edit`} className={buttonVariants.ghost}><Pencil className="mr-2 h-4 w-4" />Edit</Link></ContributorOnly>
           </div>
         </div>
@@ -94,20 +100,11 @@ export default async function PublicEntityPage({ params }: ProfilePageProps) {
           </section>
 
           {relationships.length > 0 ? (
-            <section>
-              <div className="flex items-end justify-between"><h2 className="text-xl font-semibold">Organizations and relationships</h2><Link href={`/people?view=network&root=${entity.id}`} className="text-sm font-medium text-slate-500 hover:text-slate-950 dark:hover:text-white">Explore network</Link></div>
-              <div className="mt-4 divide-y divide-slate-100 rounded-2xl border border-slate-200 px-5 dark:divide-slate-800 dark:border-slate-800">
-                {relationships.slice(0, 20).map((edge) => {
-                  const other = related(edge);
-                  const incoming = edge.targetEntityId === entity.id;
-                  const kind = relationshipTypeBySlug[edge.relType ?? ""];
-                  return (
-                    <div key={edge.id} className="flex flex-col gap-1 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-5">
-                      <div><Link href={other ? publicEntityPath(other) : "#"} className="font-medium hover:underline">{other?.name ?? "Unknown entity"}</Link><p className="text-sm text-slate-500">{(incoming ? kind?.inverse : kind?.verb) || edge.label}{edge.role ? ` · ${edge.role}` : ""}</p></div>
-                      <p className="shrink-0 text-xs text-slate-400">{edge.validFrom || edge.validTo ? `${edge.validFrom || "Date unknown"} to ${edge.validTo || "present"}` : "Dates not reported"} · {edge.sourceRecordId ? "Source attached" : "Source unavailable"}</p>
-                    </div>
-                  );
-                })}
+            <section id="relationships" className="scroll-mt-24">
+              <h2 className="text-xl font-semibold">Organizations and relationships</h2>
+              {preview.nodes.length >= 3 ? <div className="mt-4"><NetworkPreview preview={preview} /></div> : null}
+              <div className="mt-4">
+                <RelationshipGroups subjectId={entity.id} edges={relationships} entitiesById={byId} sources={edgeSources} />
               </div>
             </section>
           ) : null}
@@ -121,7 +118,7 @@ export default async function PublicEntityPage({ params }: ProfilePageProps) {
           {highlights.length > 0 ? <section className="rounded-2xl border border-slate-200 p-5 dark:border-slate-800"><h2 className="text-sm font-semibold">Highlights</h2><ul className="mt-3 space-y-2 text-sm text-slate-600 dark:text-slate-300">{highlights.map((item) => <li key={item}>{item}</li>)}</ul></section> : null}
           <section className="rounded-2xl border border-slate-200 p-5 dark:border-slate-800">
             <h2 className="text-sm font-semibold">Sources and method</h2>
-            <p className="mt-3 text-xs leading-5 text-slate-500">Relationship labels, dates and sources reflect the fields available in Worldview. Missing evidence is shown as unavailable, not inferred.</p>
+            <p className="mt-3 text-xs leading-5 text-slate-500">Relationship dates and sources appear where Worldview has them recorded; nothing is inferred.</p>
             {sources.length > 0 ? <ul className="mt-4 space-y-2 text-sm">{sources.map((url) => <li key={url}><a href={url} target="_blank" rel="noreferrer" className="break-all hover:underline">{new URL(url).hostname.replace(/^www\./, "")} <ExternalLink className="inline h-3 w-3" /></a></li>)}</ul> : <p className="mt-3 text-sm text-slate-400">No profile-level sources attached.</p>}
           </section>
         </aside>

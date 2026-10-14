@@ -1,6 +1,6 @@
 "use client";
 
-import { useAppStore } from "@/lib/store/useAppStore";
+import { layerHistoryTransactionProps, useAppStore } from "@/lib/store/useAppStore";
 import type { ArrowStyle, HighlightStyle, IconKind, IconStyle, TextStyle } from "@/lib/types";
 import { TEXT_FONT_OPTIONS } from "@/lib/fonts";
 
@@ -35,7 +35,9 @@ export function ToolOptionsPanel() {
     activeTool === "select" && activeLayer && "style" in activeLayer ? activeLayer : null;
 
   const mode = editingLayer
-    ? editingLayer.type === "text"
+    ? editingLayer.type === "composition"
+      ? null
+      : editingLayer.type === "text"
       ? "text"
       : editingLayer.type === "icon"
         ? "icon"
@@ -170,6 +172,7 @@ function ShapeOptions({
           <span className="text-neutral-500">{style.thickness}px</span>
         </span>
         <input
+          {...layerHistoryTransactionProps}
           type="range"
           min={1}
           max={12}
@@ -263,6 +266,7 @@ function TextOptions({
           <span className="text-neutral-500">{style.fontSize}px</span>
         </span>
         <input
+          {...layerHistoryTransactionProps}
           type="range"
           min={12}
           max={72}
@@ -321,6 +325,7 @@ function TextOptions({
           <span className="text-neutral-500">{style.rotation}°</span>
         </span>
         <input
+          {...layerHistoryTransactionProps}
           type="range"
           min={-180}
           max={180}
@@ -384,6 +389,7 @@ function IconOptions({
           <span className="text-neutral-500">{style.size}px</span>
         </span>
         <input
+          {...layerHistoryTransactionProps}
           type="range"
           min={16}
           max={64}
@@ -420,6 +426,7 @@ function HighlightOptions({
           <span className="text-neutral-500">{Math.round(style.opacity * 100)}%</span>
         </span>
         <input
+          {...layerHistoryTransactionProps}
           type="range"
           min={20}
           max={100}

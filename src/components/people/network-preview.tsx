@@ -7,7 +7,8 @@ import { FAMILY_FILL } from "@/lib/people/family-colors";
 const LABEL_MAX = 24;
 const clip = (s: string) => (s.length > LABEL_MAX ? `${s.slice(0, LABEL_MAX - 1).trimEnd()}…` : s);
 
-export function NetworkPreview({ preview }: { preview: EgoPreview }) {
+/** `moreHref` adds a footer link to the subject's full relationship list. */
+export function NetworkPreview({ preview, moreHref }: { preview: EgoPreview; moreHref?: string }) {
   const { root, nodes, total } = preview;
   const padX = 190;
   const padY = 70;
@@ -70,12 +71,14 @@ export function NetworkPreview({ preview }: { preview: EgoPreview }) {
         <span className="text-slate-500 dark:text-slate-400">
           {nodes.length < total ? `${nodes.length} of ${total} direct ties shown` : `${total} direct ties`}
         </span>
-        <Link
-          href={`/people?view=network&root=${root.id}`}
-          className="inline-flex items-center gap-1.5 font-semibold text-slate-900 hover:underline dark:text-white"
-        >
-          Open interactive network <ArrowRight className="h-4 w-4" />
-        </Link>
+        {moreHref ? (
+          <Link
+            href={moreHref}
+            className="inline-flex items-center gap-1.5 font-semibold text-slate-900 hover:underline dark:text-white"
+          >
+            All relationships <ArrowRight className="h-4 w-4" />
+          </Link>
+        ) : null}
       </div>
     </div>
   );

@@ -20,11 +20,11 @@ export default async function ContributionsPage({ searchParams }: PageProps<"/mo
     <div className="mx-auto max-w-7xl space-y-8 pb-16">
       <MoneyHeader
         title="Contributions explorer"
-        intro={
-          <>
-            Every itemized contribution record: one row per reported transaction from a donor committee to a campaign. Filter, sort, and export
-            the rows; hover a donor type for its exact FEC category.
-          </>
+        features={[
+          "Every itemized contribution record",
+          "Filter, sort and export",
+          "Hover a donor type for its FEC category",
+        ]
         }
         cycle={cycle}
         cycles={cycles}

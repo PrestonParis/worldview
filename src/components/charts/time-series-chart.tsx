@@ -44,6 +44,8 @@ export function TimeSeriesChart({
   reference,
   fromZero = true,
   endLabels = true,
+  xTickValues,
+  gapOver,
 }: {
   series: Series[];
   type?: "line" | "column";
@@ -53,6 +55,8 @@ export function TimeSeriesChart({
   reference?: Reference; // dashed horizontal line, e.g. an index base of 100
   fromZero?: boolean; // false fits the y-axis to the data (lines only)
   endLabels?: boolean;
+  xTickValues?: number[]; // fixed x-axis years (lines only), for unevenly spaced data
+  gapOver?: number; // lines break where consecutive points are more than this many years apart
 }) {
   const [ref, width] = useWidth<HTMLDivElement>();
   const [hover, setHover] = useState<number | null>(null);
@@ -95,12 +99,12 @@ export function TimeSeriesChart({
   // ~6 x-axis labels on whole years.
   const years = [...new Set(xs.map((p) => Math.floor(p.x)))];
   const step = Math.max(1, Math.ceil(years.length / Math.max(2, Math.floor(plotW / 90))));
-  const xTicks = years
-    .filter((_, i) => i % step === 0)
-    .map((y) => {
-      const i = xs.findIndex((p) => Math.floor(p.x) === y);
-      return { i, label: String(y) };
-    });
+  const xTicks =
+    xTickValues && type === "line"
+      ? xTickValues.filter((y) => y >= x0 && y <= x1).map((y) => ({ x: M.left + ((y - x0) / (x1 - x0 || 1)) * plotW, label: String(y) }))
+      : years
+          .filter((_, i) => i % step === 0)
+          .map((y) => ({ x: xPos(xs.findIndex((p) => Math.floor(p.x) === y)), label: String(y) }));
 
   const nearest = (clientX: number, rect: DOMRect) => {
     const px = clientX - rect.left;
@@ -156,8 +160,8 @@ export function TimeSeriesChart({
             </text>
           </g>
         ))}
-        {xTicks.map(({ i, label }) => (
-          <text key={label} x={xPos(i)} y={height - 8} textAnchor="middle" className="fill-[var(--viz-muted)] text-[11px] tabular-nums">
+        {xTicks.map(({ x, label }) => (
+          <text key={label} x={x} y={height - 8} textAnchor="middle" className="fill-[var(--viz-muted)] text-[11px] tabular-nums">
             {label}
           </text>
         ))}
@@ -238,7 +242,7 @@ export function TimeSeriesChart({
             })
           : series.map((s) => {
               const pts = s.points.map((p) => [xPos(xIndex.get(p.x)!), yPos(p.value)] as const);
-              const d = pts.map(([px, py], i) => `${i ? "L" : "M"}${px},${py}`).join(" ");
+              const d = pts.map(([px, py], i) => `${i && !(gapOver && s.points[i].x - s.points[i - 1].x > gapOver) ? "L" : "M"}${px},${py}`).join(" ");
               const last = s.points.at(-1)!;
               return (
                 <g key={s.id}>

@@ -6,7 +6,8 @@ import { PeriodTag, type PeriodTagProps } from "./period-tag";
 // comparison period. Change is shown in neutral ink with an arrow — up is
 // not inherently good or bad for these measures. `tag` replaces the period
 // line with a period chip (see PeriodTag); `note` says what is being
-// counted ("Monthly events, not unique people").
+// counted ("Monthly events, not unique people"). `href` makes the whole
+// tile a link to the section that explains it.
 export function StatTile({
   label,
   value,
@@ -18,6 +19,7 @@ export function StatTile({
   change,
   compareLabel,
   spark,
+  href,
 }: {
   label: ReactNode;
   value: number | null;
@@ -29,9 +31,16 @@ export function StatTile({
   change?: number | null; // percent
   compareLabel?: string;
   spark?: number[];
+  href?: string;
 }) {
+  const Frame = href ? "a" : "div";
   return (
-    <div className="flex min-w-0 flex-col rounded-2xl border border-slate-200 p-4 dark:border-slate-800">
+    <Frame
+      href={href}
+      className={`flex min-w-0 flex-col rounded-2xl border border-slate-200 p-4 dark:border-slate-800 ${
+        href ? "transition hover:border-slate-400 hover:bg-white dark:hover:border-slate-600 dark:hover:bg-slate-900" : ""
+      }`}
+    >
       <p className="text-sm text-slate-500 dark:text-slate-400">{label}</p>
       <p className="mt-2 text-3xl font-semibold tracking-tight text-slate-950 dark:text-white">
         {formatValue(value, unit, { compact: true })}
@@ -53,13 +62,13 @@ export function StatTile({
         </div>
         {spark && spark.length > 1 && <Sparkline values={spark} />}
       </div>
-    </div>
+    </Frame>
   );
 }
 
-function Sparkline({ values }: { values: number[] }) {
-  const w = 72;
-  const h = 24;
+export function Sparkline({ values }: { values: number[] }) {
+  const w = 96;
+  const h = 32;
   const min = Math.min(...values);
   const max = Math.max(...values);
   const pts = values.map((v, i) => [(i / (values.length - 1)) * (w - 4) + 2, h - 2 - ((v - min) / (max - min || 1)) * (h - 4)]);

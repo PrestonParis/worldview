@@ -8,6 +8,7 @@ import {
   primaryAxis,
   questionById,
   statementById,
+  type AnswerSnapshot,
   type NextItem,
   type QuizAnswer,
   type RefineTargets,
@@ -16,6 +17,7 @@ import { explainQuestion, explainStatement } from "./explanations";
 import { axisById, groupLabel } from "./axes";
 import { CONFIDENCE_MEDIUM_SD } from "./results";
 import { axisIds } from "./types";
+import { retiredStatements } from "./bank";
 
 // `area` and `topic` say what a question is about (never which way an answer
 // scores): an axis group and axis for statements, an issue and its policy
@@ -116,6 +118,40 @@ export function runnerState(answers: QuizAnswer[], refine: RefineTargets, seed: 
     issuesDone: state.issues.filter((i) => i.screenerAnswered && i.pending.length === 0).length,
     issuesTotal: state.issues.length,
     complete: state.complete,
+  };
+}
+
+const RESPONSE_LABELS: Record<number, string> = {
+  [-3]: "Strongly disagree",
+  [-2]: "Disagree",
+  [-1]: "Somewhat disagree",
+  0: "Neutral",
+  1: "Somewhat agree",
+  2: "Agree",
+  3: "Strongly agree",
+};
+const IMPORTANCE_LABELS = { 1: "Low", 2: "Medium", 3: "High" } as const;
+
+// What the respondent saw and picked, rendered from the bank as it stands
+// when the answer is saved. Null for an item no longer in the bank (retired
+// statements keep their wording).
+export function answerSnapshot(answer: QuizAnswer, at: Date = new Date()): AnswerSnapshot | null {
+  const item = serializeItem(answer.kind, answer.id);
+  const retired = answer.kind === "statement" ? retiredStatements[answer.id] : undefined;
+  if (!item && !retired) return null;
+  if (!item || item.kind === "statement") {
+    const v = answer.value as number | null;
+    return { text: item?.text ?? retired!, answer: v === null ? "Skipped" : RESPONSE_LABELS[v], at: at.toISOString() };
+  }
+  const ids = answer.value === null ? [] : Array.isArray(answer.value) ? answer.value : [answer.value];
+  const chosen = ids.map((id) => item.options.find((o) => o.id === id)?.text ?? id);
+  const importance = answer.kind === "choice" && answer.importance ? IMPORTANCE_LABELS[answer.importance] : undefined;
+  return {
+    text: item.prompt,
+    options: item.options.map((o) => o.text),
+    answer: chosen.length ? chosen.join("; ") : "Skipped",
+    ...(importance ? { importance } : {}),
+    at: at.toISOString(),
   };
 }
 

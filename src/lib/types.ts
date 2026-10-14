@@ -28,6 +28,58 @@ export interface MapViewState {
   selectedCountryId: string | null;
 }
 
+export type DataProviderId =
+  | "worldview"
+  | "ais-ships"
+  | "usgs-earthquakes"
+  | "gdacs"
+  | "nasa-firms"
+  | "natural-earth-disputes"
+  | "marine-regions-eez";
+
+export type DataRefreshMode = "manual" | "interval" | "frozen";
+export type DataVisualizationType = "circle" | "heatmap" | "line" | "fill" | "choropleth";
+
+export interface DataColorStop {
+  value: number;
+  color: string;
+}
+
+export interface DataLayerStyle {
+  color: string;
+  opacity: number;
+  radius: number;
+  strokeColor: string;
+  strokeWidth: number;
+  colorStops?: DataColorStop[];
+}
+
+export interface DataLayerSource {
+  providerId: DataProviderId;
+  datasetId: string;
+  query: Record<string, string | number | boolean>;
+}
+
+export interface DataLayerMetadata {
+  attribution: string;
+  sourceUrl: string;
+  freshnessLabel: string;
+}
+
+export interface DataLayerConfig {
+  source: DataLayerSource;
+  visualization: DataVisualizationType;
+  refreshMode: DataRefreshMode;
+  refreshSeconds: number;
+  timeRange: { from: string | null; to: string | null };
+  filters: Record<string, string | number | boolean>;
+  style: DataLayerStyle;
+  labels: { visible: boolean; field: string | null; minZoom: number };
+  legend: { visible: boolean; title: string };
+  metadata: DataLayerMetadata;
+  frozenData?: GeoJSON.FeatureCollection;
+}
+
 export type ToolId =
   | "select"
   | "arrow"
@@ -106,11 +158,34 @@ export interface LayerBase {
   opacity: number;
   order: number;
   parentGroupId: string | null;
+  // Optional project-scoped live-value bindings. Static values remain on the
+  // layer and are used whenever a key is absent, so disabling a feed never
+  // destroys the authored design.
+  bindings?: { text?: string; color?: string };
 }
 
 export type Layer =
   | (LayerBase & { type: "map" })
   | (LayerBase & { type: "group" })
+  | (LayerBase & { type: "data"; data: DataLayerConfig })
+  | (LayerBase & {
+      type: "composition";
+      role: "title" | "subtitle" | "caption" | "source" | "timestamp";
+      position: [number, number];
+      width: number;
+      text: string;
+      backgroundColor: string;
+      backgroundOpacity: number;
+      padding: number;
+      style: TextStyle;
+    })
+  | (LayerBase & {
+      type: "image";
+      position: [number, number];
+      width: number;
+      height: number;
+      dataUrl: string;
+    })
   | (LayerBase & { type: "arrow"; points: [LonLat, LonLat]; style: ArrowStyle })
   | (LayerBase & { type: "line"; points: [LonLat, LonLat]; style: ShapeStyle })
   | (LayerBase & { type: "rectangle"; points: [LonLat, LonLat]; style: ShapeStyle })

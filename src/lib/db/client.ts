@@ -11,3 +11,11 @@ if (!connectionString) {
 }
 
 export const db = drizzle(connectionString, { schema });
+export type Db = typeof db;
+
+// Neon holds the area_stats rows of datasets that don't fit in Supabase
+// (src/lib/db/stores.ts). Unset means one database holds everything, as in
+// the local stack.
+export const neonDb: Db | null = process.env.NEON_DATABASE_URL
+  ? drizzle(process.env.NEON_DATABASE_URL, { schema })
+  : null;

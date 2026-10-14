@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { FeatureList } from "@/components/ui/feature-list";
 
 export const metadata: Metadata = {
   title: "Publish data | Worldview",
@@ -46,10 +47,15 @@ export default function PublishPage() {
         </Link>
         <p className="mt-6 text-xs font-semibold tracking-[0.18em] text-slate-400 uppercase">Data partners</p>
         <h1 className="mt-2 text-4xl font-semibold tracking-tight text-slate-950 dark:text-white">Publish your data on Worldview</h1>
-        <p className="mt-3 text-base leading-7 text-slate-500 dark:text-slate-400">
-          Institutions with permission can publish datasets directly to the platform. Your data sits beside federal sources
-          on the same maps and charts, credited to you, with your methodology attached.
-        </p>
+        <FeatureList
+          className="mt-3"
+          items={[
+            "Publish directly to the platform",
+            "Same maps and charts as federal data",
+            "Credited to your institution",
+            "Your methodology attached",
+          ]}
+        />
         {contact && (
           <a href={`mailto:${contact}?subject=Worldview data partnership`} className="mt-5 inline-flex rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 dark:bg-white dark:text-slate-900">
             Request access

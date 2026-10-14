@@ -1,125 +1,174 @@
 import type { ReactNode } from "react";
 import { Term } from "@/components/ui/term";
-import { formatValue } from "@/lib/format";
+import { Sparkline } from "@/components/charts/stat-tile";
+import type { ImmigrationFocus } from "@/components/immigration/green-card-views";
+import { formatSigned, formatValue } from "@/lib/format";
 
-// "How the system works" and "How these numbers relate" — the orientation
-// block at the top of /immigration. Server-rendered; numbers come from the
-// page's data so every figure here matches the sections below.
-
-const PATHWAYS: { title: string; body: ReactNode; measure: string; href: string }[] = [
-  {
-    title: "At the border",
-    body: (
-      <>
-        People stopped by <Term id="cbp">CBP</Term> crossing between ports of entry, or found{" "}
-        <Term id="inadmissible">inadmissible</Term> at one. What happens next depends on the legal authority used and the person&apos;s case.
-      </>
-    ),
-    measure: "Border encounters",
-    href: "#border",
-  },
-  {
-    title: "Temporary admission",
-    body: (
-      <>
-        Tourists, business travelers, students, and temporary workers admitted for a set purpose and period on a{" "}
-        <Term id="nonimmigrant">nonimmigrant</Term> class such as B-2, F-1, or H-1B.
-      </>
-    ),
-    measure: "Temporary admissions",
-    href: "#temporary",
-  },
-  {
-    title: "Permanent immigration",
-    body: (
-      <>
-        People granted a <Term id="green-card">green card</Term> through family, employment, the diversity lottery, or humanitarian
-        status — often years after they first arrived.
-      </>
-    ),
-    measure: "Green cards",
-    href: "#legal",
-  },
-  {
-    title: "Humanitarian protection",
-    body: (
-      <>
-        <Term id="refugee">Refugees</Term> approved abroad and resettled here, and people granted <Term id="asylum">asylum</Term> after
-        asking for it inside the U.S. or at the border.
-      </>
-    ),
-    measure: "Refugees & asylum",
-    href: "#humanitarian",
-  },
-  {
-    title: "Citizenship",
-    body: (
-      <>
-        Green-card holders who later become U.S. citizens through <Term id="naturalization">naturalization</Term>.
-      </>
-    ),
-    measure: "Naturalizations",
-    href: "#citizenship",
-  },
-  {
-    title: "Population",
-    body: (
-      <>
-        Everyone moving in and out of the country together changes how many <Term id="foreign-born">foreign-born</Term> people live here.
-        Some live here without legal status.
-      </>
-    ),
-    measure: "Population & unauthorized",
-    href: "#population",
-  },
-];
-
-export function SystemPathways() {
-  return (
-    <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-      {PATHWAYS.map((p, i) => (
-        <li key={p.title} className="flex flex-col rounded-2xl border border-slate-200 p-4 dark:border-slate-800">
-          <p className="text-xs font-semibold text-slate-400 tabular-nums">{String(i + 1).padStart(2, "0")}</p>
-          <h3 className="mt-1 font-semibold text-slate-950 dark:text-white">{p.title}</h3>
-          <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300">{p.body}</p>
-          <a href={p.href} className="mt-auto pt-3 text-sm font-medium text-blue-700 hover:underline dark:text-blue-400">
-            {p.measure} ↓
-          </a>
-        </li>
-      ))}
-    </ol>
-  );
-}
+// "How the system works" — the orientation diagram at the top of
+// /immigration. Yearly flows on the left feed status changes in the middle;
+// the population they add up to (a stock) sits on the right. Server-rendered;
+// numbers come from the page's data so every figure matches the sections
+// below. Flow bars share one linear scale; a flow far larger than the rest
+// (temporary admissions) is clipped and labeled as such.
 
 interface Figure {
   value: number | null | undefined;
   unit?: string;
   period?: string;
+  // Recent history and the change against a named period, e.g. "vs FY 2023".
+  spark?: number[];
+  change?: number | null;
+  compare?: string;
 }
 
-const fig = (f: Figure) => (f.value === null || f.value === undefined ? "—" : formatValue(f.value, f.unit, { compact: true }));
-
-function FlowBox({ label, figure, measure, kind, href }: { label: string; figure: Figure; measure: ReactNode; kind: string; href: string }) {
+function Trend({ figure }: { figure: Figure }) {
+  const { spark, change, compare } = figure;
+  const hasChange = change !== null && change !== undefined && Number.isFinite(change);
+  if (!hasChange && !(spark && spark.length > 1)) return null;
   return (
-    <div className="flex flex-col rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-800 dark:bg-slate-950">
-      <a href={href} className="text-xs font-medium text-slate-500 hover:text-slate-900 hover:underline dark:text-slate-400 dark:hover:text-white">
-        {label} ↓
-      </a>
-      <span className="mt-1 text-xl font-semibold text-slate-950 tabular-nums dark:text-white">{fig(figure)}</span>
-      <span className="text-sm text-slate-700 dark:text-slate-200">{measure}</span>
-      <span className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-        {kind}
-        {figure.period && ` · ${figure.period}`}
-      </span>
+    <div className="mt-2 flex items-end justify-between gap-3 text-xs text-slate-500 dark:text-slate-400">
+      {hasChange ? (
+        <span>
+          <span className="font-medium text-slate-700 dark:text-slate-200">
+            {change > 0 ? "▲" : change < 0 ? "▼" : ""} {formatSigned(change, "percent")}
+          </span>{" "}
+          {compare}
+        </span>
+      ) : (
+        <span />
+      )}
+      {spark && spark.length > 1 && <Sparkline values={spark} />}
     </div>
   );
 }
 
-const ARROW = <span aria-hidden className="text-slate-400">→</span>;
+const fig = (f: Figure) => (f.value === null || f.value === undefined ? "—" : formatValue(f.value, f.unit, { compact: true }));
+const has = (f: Figure): f is Figure & { value: number } => typeof f.value === "number" && f.value > 0;
 
-// The ontology: yearly flows in, the status changes that move people
-// between them, and the population (stock) they add up to.
-export function NumbersMap({
+function Bar({ value, scale, children }: { value: number | null | undefined; scale: number; children?: ReactNode }) {
+  if (!value || !scale) return null;
+  const clipped = value > scale * 1.5;
+  const width = clipped ? 100 : Math.max(1.5, (value / scale) * 100);
+  return (
+    <div className="mt-2" aria-hidden>
+      <div className="relative h-2 rounded-sm bg-slate-100 dark:bg-slate-800">
+        <div className="h-2 rounded-sm" style={{ width: `${width}%`, background: "var(--viz-series-1)" }} />
+        {clipped && <span className="absolute -top-0.75 right-6 h-3.5 w-1.5 -skew-x-12 bg-white dark:bg-slate-950" />}
+      </div>
+      {clipped && (
+        <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
+          Bar cut off — {Math.round(value / scale)}× the longest bar shown
+        </p>
+      )}
+      {children}
+    </div>
+  );
+}
+
+function Node({
+  label,
+  figure,
+  unit,
+  href,
+  selected,
+  onSelect,
+  scale,
+  route,
+  bar,
+}: {
+  label: string;
+  figure: Figure;
+  unit: string;
+  href: string;
+  selected?: boolean;
+  onSelect?: () => void;
+  scale?: number;
+  route?: ReactNode;
+  bar?: ReactNode;
+}) {
+  const labelClass = "text-xs font-medium text-slate-600 hover:text-slate-950 hover:underline dark:text-slate-300 dark:hover:text-white";
+  return (
+    <div
+      className={`rounded-xl border bg-white p-3 transition-all duration-500 dark:bg-slate-950 ${
+        selected
+          ? "relative z-10 scale-[1.025] border-blue-500 shadow-lg shadow-blue-500/10 ring-2 ring-blue-500/15 dark:border-blue-400"
+          : "border-slate-200 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-sm dark:border-slate-800 dark:hover:border-slate-700"
+      }`}
+    >
+      {onSelect ? (
+        <button
+          type="button"
+          onClick={onSelect}
+          aria-expanded={selected}
+          aria-controls="immigration-focus"
+          className={`${labelClass} text-left`}
+        >
+          {label} {selected ? "↑" : "↓"}
+        </button>
+      ) : (
+        <a href={href} className={labelClass}>
+          {label} ↓
+        </a>
+      )}
+      <p className="mt-0.5 flex flex-wrap items-baseline gap-x-1.5">
+        <span className="text-xl font-semibold text-slate-950 tabular-nums dark:text-white">{fig(figure)}</span>
+        <span className="text-xs text-slate-500 dark:text-slate-400">
+          {unit}
+          {figure.period && ` · ${figure.period}`}
+        </span>
+      </p>
+      {bar ?? (scale !== undefined && <Bar value={figure.value} scale={scale} />)}
+      <Trend figure={figure} />
+      {route && <p className="mt-2 text-xs leading-5 text-slate-500 dark:text-slate-400">{route}</p>}
+    </div>
+  );
+}
+
+function Stage({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <div className="flex min-w-0 flex-col gap-2">
+      <p className="text-[11px] font-semibold tracking-[0.12em] text-slate-500 uppercase dark:text-slate-400">{title}</p>
+      <div className="flex flex-1 flex-col justify-center gap-2">{children}</div>
+    </div>
+  );
+}
+
+function Arrow({ active = false }: { active?: boolean }) {
+  return (
+    <div aria-hidden className="flex items-center justify-center text-slate-400 lg:pt-6">
+      <svg width="20" height="20" viewBox="0 0 20 20" className={`rotate-90 transition-all duration-500 lg:rotate-0 ${active ? "text-blue-500 motion-safe:animate-pulse" : ""}`}>
+        <path d="M3 10h13M11 5l5 5-5 5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </div>
+  );
+}
+
+function Swatch({ color, children }: { color: string; children: ReactNode }) {
+  return (
+    <span className="flex items-center gap-1.5">
+      <span className="size-2.5 shrink-0 rounded-sm" style={{ background: color }} />
+      {children}
+    </span>
+  );
+}
+
+// A part-of-whole bar: segments with a 2px surface gap between them.
+// `width` (percent of the track) puts it on the flow scale.
+function SplitBar({ parts, width = 100 }: { parts: { value: number; color: string }[]; width?: number }) {
+  const total = parts.reduce((t, p) => t + p.value, 0);
+  if (!total) return null;
+  return (
+    <span className="mt-2 block h-2 rounded-sm bg-slate-100 dark:bg-slate-800" aria-hidden>
+      <span className="flex h-2 gap-0.5 overflow-hidden rounded-sm" style={{ width: `${width}%` }}>
+        {parts.map((p, i) => (
+          <span key={i} style={{ width: `${(p.value / total) * 100}%`, background: p.color }} />
+        ))}
+      </span>
+    </span>
+  );
+}
+
+export function ImmigrationFlow({
   encounters,
   temporary,
   humanitarian,
@@ -129,8 +178,10 @@ export function NumbersMap({
   netMigration,
   naturalized,
   noncitizen,
-  fbPeriod,
+  foreignBorn,
   unauthorized,
+  selectedFocus,
+  onFocusSelect,
 }: {
   encounters: Figure;
   temporary: Figure;
@@ -141,96 +192,169 @@ export function NumbersMap({
   netMigration: Figure;
   naturalized: number | null | undefined;
   noncitizen: number | null | undefined;
-  fbPeriod: string;
+  foreignBorn: Figure;
   unauthorized: Figure;
+  selectedFocus?: ImmigrationFocus | null;
+  onFocusSelect?: (focus: ImmigrationFocus) => void;
 }) {
+  // One scale for the yearly flows, set by the largest that isn't
+  // temporary admissions (which would flatten everything else).
+  const scale = Math.max(...[encounters, humanitarian, greenCards, naturalizations].filter(has).map((f) => f.value), 0);
   const total = (naturalized ?? 0) + (noncitizen ?? 0);
-  const natPct = total ? ((naturalized ?? 0) / total) * 100 : 0;
+  const adjusted = has(greenCards) && adjustmentShare ? (greenCards.value * adjustmentShare) / 100 : null;
+
   return (
-    <div className="space-y-4 rounded-2xl bg-slate-50 p-4 sm:p-6 dark:bg-slate-900/60">
-      <div>
-        <p className="text-xs font-semibold tracking-[0.12em] text-slate-500 uppercase dark:text-slate-400">1 · Yearly flows — events and decisions</p>
-        <div className="mt-2 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <FlowBox label="Stopped at the border" figure={encounters} measure="border encounters" kind="Events, not people" href="#border" />
-          <FlowBox label="Visiting, studying, working" figure={temporary} measure="temporary admissions" kind="Entries, not people" href="#temporary" />
-          <FlowBox label="Humanitarian" figure={humanitarian} measure="refugee arrivals + asylum grants" kind="People" href="#humanitarian" />
-          <FlowBox
-            label="Permanent residence"
-            figure={greenCards}
-            measure="new green cards"
-            kind={adjustmentShare ? `People · ${Math.round(adjustmentShare)}% already lived here` : "People"}
-            href="#legal"
-          />
-        </div>
-      </div>
-
-      <div>
-        <p className="text-xs font-semibold tracking-[0.12em] text-slate-500 uppercase dark:text-slate-400">2 · People move between these over time</p>
-        <ul className="mt-2 grid gap-2 text-sm text-slate-700 sm:grid-cols-2 dark:text-slate-200">
-          <li className="rounded-lg border border-slate-200 bg-white px-3 py-2 dark:border-slate-800 dark:bg-slate-950">
-            Encounter {ARROW} <Term id="removal">removal</Term>, <Term id="return">return</Term>, detention, or release with an immigration-court date
-          </li>
-          <li className="rounded-lg border border-slate-200 bg-white px-3 py-2 dark:border-slate-800 dark:bg-slate-950">
-            Temporary visitor or parolee {ARROW} green card through <Term id="adjustment-of-status">adjustment of status</Term>
-          </li>
-          <li className="rounded-lg border border-slate-200 bg-white px-3 py-2 dark:border-slate-800 dark:bg-slate-950">
-            Refugee or asylee {ARROW} green card after one year
-          </li>
-          <li className="rounded-lg border border-slate-200 bg-white px-3 py-2 dark:border-slate-800 dark:bg-slate-950">
-            Temporary visitor who stays past their admission {ARROW} <Term id="unauthorized">unauthorized</Term> (<Term id="overstay">overstay</Term>)
-          </li>
-          <li className="rounded-lg border border-slate-200 bg-white px-3 py-2 sm:col-span-2 dark:border-slate-800 dark:bg-slate-950">
-            Green-card holder {ARROW} U.S. citizen — <span className="font-semibold tabular-nums">{fig(naturalizations)}</span> naturalized
-            {naturalizations.period && ` in ${naturalizations.period}`}
-          </li>
-        </ul>
-      </div>
-
-      <div>
-        <p className="text-xs font-semibold tracking-[0.12em] text-slate-500 uppercase dark:text-slate-400">3 · Who lives here — the population (a stock)</p>
-        <div className="mt-2 grid gap-3 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
-          <div className="rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-800 dark:bg-slate-950">
-            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
-              <Term id="foreign-born">Foreign-born</Term> residents · {fbPeriod} ·{" "}
-              <a href="#population" className="hover:text-slate-900 hover:underline dark:hover:text-white">
-                Population ↓
-              </a>
-            </span>
-            <span className="mt-1 block text-xl font-semibold text-slate-950 tabular-nums dark:text-white">{total ? formatValue(total, "people", { compact: true }) : "—"}</span>
-            {total > 0 && (
+    <div className="rounded-2xl bg-slate-50 p-4 sm:p-6 dark:bg-slate-900/60">
+      <div className="grid gap-3 lg:grid-cols-[minmax(0,1.15fr)_auto_minmax(0,1fr)_auto_minmax(0,0.85fr)_auto_minmax(0,1.25fr)]">
+        <Stage title="Arrive or are stopped · yearly">
+          <Node
+            label="Stopped at the border"
+            figure={encounters}
+            unit="encounters"
+            href="#border"
+            selected={selectedFocus === "border"}
+            onSelect={onFocusSelect ? () => onFocusSelect("border") : undefined}
+            scale={scale}
+            route={
               <>
-                <span className="mt-2 flex h-3 gap-0.5 overflow-hidden rounded" aria-hidden>
-                  <span className="rounded-l" style={{ width: `${natPct}%`, background: "var(--viz-series-1)" }} />
-                  <span className="flex-1 rounded-r" style={{ background: "var(--viz-series-2)" }} />
-                </span>
-                <span className="mt-2 flex flex-wrap justify-between gap-2 text-xs text-slate-600 dark:text-slate-300">
-                  <span className="flex items-center gap-1.5">
-                    <span className="size-2.5 rounded-sm" style={{ background: "var(--viz-series-1)" }} />
-                    Naturalized citizens {formatValue(naturalized, "people", { compact: true })}
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <span className="size-2.5 rounded-sm" style={{ background: "var(--viz-series-2)" }} />
-                    Not citizens {formatValue(noncitizen, "people", { compact: true })} — green-card holders, temporary residents, refugees,
-                    asylees, and unauthorized
-                  </span>
-                </span>
+                Then <Term id="removal">removal</Term>, <Term id="return">return</Term>, detention, or release with a court date
               </>
-            )}
-            <span className="mt-2 block text-xs text-slate-500 dark:text-slate-400">
-              Of whom unauthorized: an estimated {fig(unauthorized)} ({unauthorized.period}, DHS) ·{" "}
-              <a href="#unauthorized" className="hover:text-slate-900 hover:underline dark:hover:text-white">
-                Unauthorized population ↓
-              </a>
-            </span>
-          </div>
-          <FlowBox
-            label="Changes the population each year"
-            figure={netMigration}
-            measure={<Term id="nim">net international migration</Term>}
-            kind="Everyone in minus everyone out, citizens included"
-            href="#population"
+            }
           />
-        </div>
+          <Node
+            label="Visiting, studying, working"
+            figure={temporary}
+            unit="admissions"
+            href="#temporary"
+            selected={selectedFocus === "temporary"}
+            onSelect={onFocusSelect ? () => onFocusSelect("temporary") : undefined}
+            scale={scale}
+            route={
+              <>
+                <Term id="nonimmigrant">Nonimmigrant</Term> entries, not people. Some later get a green card; some{" "}
+                <Term id="overstay">overstay</Term>
+              </>
+            }
+          />
+          <Node
+            label="Humanitarian protection"
+            figure={humanitarian}
+            unit="people"
+            href="#humanitarian"
+            selected={selectedFocus === "humanitarian"}
+            onSelect={onFocusSelect ? () => onFocusSelect("humanitarian") : undefined}
+            scale={scale}
+            route={
+              <>
+                <Term id="refugee">Refugee</Term> arrivals + <Term id="asylum">asylum</Term> grants; eligible for a green card after a year
+              </>
+            }
+          />
+        </Stage>
+        <Arrow active={Boolean(selectedFocus)} />
+        <Stage title="Become permanent residents">
+          <Node
+            label="Green cards"
+            figure={greenCards}
+            unit="people"
+            href="#legal"
+            selected={selectedFocus === "green-cards"}
+            onSelect={onFocusSelect ? () => onFocusSelect("green-cards") : undefined}
+            bar={
+              adjusted !== null && has(greenCards) ? (
+                <>
+                  <SplitBar
+                    width={(greenCards.value / scale) * 100}
+                    parts={[
+                      { value: adjusted, color: "var(--viz-series-1)" },
+                      {
+                        value: greenCards.value - adjusted,
+                        color: "var(--viz-series-2)",
+                      },
+                    ]}
+                  />
+                  <span className="mt-2 flex flex-col gap-1 text-xs text-slate-600 dark:text-slate-300">
+                    <Swatch color="var(--viz-series-1)">
+                      {Math.round(adjustmentShare!)}% <Term id="adjustment-of-status">already lived here</Term>
+                    </Swatch>
+                    <Swatch color="var(--viz-series-2)">{100 - Math.round(adjustmentShare!)}% arrived from abroad</Swatch>
+                  </span>
+                </>
+              ) : undefined
+            }
+            scale={scale}
+            route={
+              <>
+                A <Term id="green-card">green card</Term> through family, employment, the diversity lottery, or humanitarian status
+              </>
+            }
+          />
+        </Stage>
+        <Arrow active={Boolean(selectedFocus)} />
+        <Stage title="Become citizens">
+          <Node
+            label="Naturalizations"
+            figure={naturalizations}
+            unit="people"
+            href="#legal"
+            selected={selectedFocus === "naturalizations"}
+            onSelect={onFocusSelect ? () => onFocusSelect("naturalizations") : undefined}
+            scale={scale}
+            route={
+              <>
+                <Term id="naturalization">Naturalization</Term>, usually five years after the green card
+              </>
+            }
+          />
+        </Stage>
+        <Arrow active={Boolean(selectedFocus)} />
+        <Stage title="Live here · population">
+          <Node
+            label="Foreign-born residents"
+            figure={{ ...foreignBorn, value: total || foreignBorn.value }}
+            unit="people"
+            href="#population"
+            selected={selectedFocus === "population"}
+            onSelect={onFocusSelect ? () => onFocusSelect("population") : undefined}
+            bar={
+              total > 0 ? (
+                <>
+                  <SplitBar
+                    parts={[
+                      { value: naturalized ?? 0, color: "var(--viz-series-1)" },
+                      { value: noncitizen ?? 0, color: "var(--viz-series-2)" },
+                    ]}
+                  />
+                  <span className="mt-2 flex flex-col gap-1 text-xs text-slate-600 dark:text-slate-300">
+                    <Swatch color="var(--viz-series-1)">Naturalized citizens {formatValue(naturalized, "people", { compact: true })}</Swatch>
+                    <Swatch color="var(--viz-series-2)">Not citizens {formatValue(noncitizen, "people", { compact: true })}</Swatch>
+                  </span>
+                </>
+              ) : undefined
+            }
+            route={
+              <>
+                <Term id="foreign-born">Not U.S. citizens at birth</Term>, any status. Of whom <Term id="unauthorized">unauthorized</Term>:{" "}
+                {fig(unauthorized)}
+                {unauthorized.period && ` (${unauthorized.period})`} ·{" "}
+                <a href="#unauthorized" className="hover:text-slate-900 hover:underline dark:hover:text-white">More ↓</a>
+              </>
+            }
+          />
+          <Node
+            label="Net international migration"
+            figure={netMigration}
+            unit="people"
+            href="#population"
+            selected={selectedFocus === "net-migration"}
+            onSelect={onFocusSelect ? () => onFocusSelect("net-migration") : undefined}
+            route={
+              <>
+                <Term id="nim">Everyone in minus everyone out</Term>, citizens included
+              </>
+            }
+          />
+        </Stage>
       </div>
     </div>
   );

@@ -220,9 +220,37 @@ first. The minimal generic primitive:
       dragging a style slider (thickness, size, intensity, rotation)
       records one step per intermediate value rather than one step for the
       whole drag — still correct, just more granular than ideal.
-- [ ] Phase 4 — Real-time updating graphics. Planned in detail above (4a:
-      live broadcast sync via a public read-only presentation route +
-      Supabase Realtime on `map_projects`; 4b: a generic bindable-value
-      hook, no specific data source chosen yet). Not built — next step is
-      building 4a, and confirming the unlisted-link access model for the
-      presentation route before it ships.
+- [x] Original Phase 4 — Real-time updating graphics. Shipped in the extended
+      sequence as Phase 5 using an explicitly enabled, unlisted capability
+      token and a one-second ETag polling channel. The server returns only the
+      render document—never `ownerId`—and revoking a link rotates its token.
+      This works with the project's Postgres deployment without opening the
+      table to anonymous direct reads. Project-scoped live values can bind
+      text and color while preserving static fallbacks.
+- [x] Data-layer foundation — versioned project documents with deep validation and
+      read migration; a unified provider gateway and MapLibre renderer; a
+      metric/geography-aware Worldview catalog; USGS earthquakes, GDACS
+      disasters, NASA FIRMS fires, Natural Earth disputed boundaries, and
+      Marine Regions EEZ boundaries; per-layer show/hide, styling, legends,
+      refresh status, source attribution, time/provider filters, and frozen
+      snapshots. See `docs/geography-data-layers.md`.
+- [x] Live AIS — one centralized, reconnecting ingest worker with batched
+      latest-position upserts; indexed vessel snapshot storage; a bounded,
+      freshness-aware provider endpoint; five-second map refresh; vessel
+      inspection and speed/freshness controls. Provider credentials never
+      reach the browser.
+- [x] Robust visual creation — screen-anchored broadcast text elements,
+      embedded logos/images, safe-area guides, three starter templates,
+      responsive chrome-free small-screen output, data feature inspection,
+      and gesture-grouped undo for continuous slider edits.
+- [x] Extended Phase 5 — Live presentation and bound values. Read-only
+      `/geography/present/{token}` output for OBS/displays; explicit publish,
+      copy, revoke, and token rotation; automatic reconnect/backoff and
+      visibility-aware polling; ETags; editor-managed key/value inputs; text
+      and color bindings; autosave and project-document v3 persistence.
+- [x] Extended Phase 6 — Production hardening. Public response minimization,
+      UUID validation, no-index metadata, request caching controls, stale-link
+      revocation, strict live-value limits, AIS coordinate/type validation,
+      worker heartbeat and dead-connection recovery, lossless retry semantics,
+      stale vessel cleanup, ingest health reporting, accessibility status
+      messages, and regression coverage for bindings and document validation.

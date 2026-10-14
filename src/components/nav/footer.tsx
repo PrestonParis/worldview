@@ -12,13 +12,12 @@ const GROUPS = [
   },
   {
     title: "Worldview",
-    links: [["Privacy", "/privacy"], ["Terms", "/terms"], ["Source code", "https://github.com/PrestonParis/worldview"]],
+    links: [["Privacy", "/privacy"], ["Terms", "/terms"]],
   },
 ] as const;
 
 export function Footer() {
   const email = process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim();
-  const contactHref = email ? `mailto:${email}` : "https://github.com/PrestonParis/worldview/issues";
 
   return (
     <footer className="border-t border-slate-300 bg-white dark:border-slate-800 dark:bg-slate-950">
@@ -29,7 +28,7 @@ export function Footer() {
           <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">
             Public records on government, elections, people, money, and the issues shaping the United States.
           </p>
-          <a href={contactHref} className="mt-4 inline-block text-sm font-medium text-blue-700 hover:underline dark:text-blue-300">Contact</a>
+          {email ? <a href={`mailto:${email}`} className="mt-4 inline-block text-sm font-medium text-blue-700 hover:underline dark:text-blue-300">Contact</a> : null}
         </div>
         {GROUPS.map((group) => (
           <div key={group.title}>

@@ -3,20 +3,31 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { ChartCard } from "@/components/charts/chart-card";
 import { PeriodTag, periodTags } from "@/components/charts/period-tag";
-import { RankedBars } from "@/components/charts/ranked-bars";
-import { StatTile } from "@/components/charts/stat-tile";
 import { StateExplorer } from "@/components/charts/state-explorer";
-import { rankedTable, seriesTable } from "@/components/charts/tables";
+import { seriesTable } from "@/components/charts/tables";
 import { TimeSeriesChart } from "@/components/charts/time-series-chart";
 import { DatasetList } from "@/components/data/dataset-list";
-import { SectionNav } from "@/components/data/section-nav";
 import { EncounterExplorer } from "@/components/immigration/encounter-explorer";
-import { NumbersMap, SystemPathways } from "@/components/immigration/primer";
+import { ImmigrationChapterDeck, type ImmigrationChapter } from "@/components/immigration/chapter-deck";
+import { ChapterExplorer, EnforcementExplorer } from "@/components/immigration/chapter-explorer";
+import {
+  GreenCardChapter,
+  ImmigrationExplorerProvider,
+  ImmigrationOverviewExplorer,
+} from "@/components/immigration/green-card-explorer";
+import {
+  defaultFocusView,
+  focusHasView,
+  isImmigrationFocus,
+  type ImmigrationFocus,
+} from "@/components/immigration/green-card-views";
 import { StateFlows } from "@/components/immigration/state-flows";
+import { Disclosure } from "@/components/ui/disclosure";
 import { Term } from "@/components/ui/term";
 import { formatPeriod, formatValue } from "@/lib/format";
 import { GLOSSARY } from "@/lib/glossary";
 import { loadImmigration } from "@/lib/immigration/data";
+import { FeatureList } from "@/components/ui/feature-list";
 
 export const dynamic = "force-dynamic";
 
@@ -26,26 +37,28 @@ export const metadata: Metadata = {
     "U.S. immigration explained with data: how the system works, border encounters, green cards, refugees and asylum, the unauthorized population, temporary visas, the foreign-born population, removals and detention — nationally and by state.",
 };
 
-const SECTIONS = [
-  ["overview", "Overview"],
-  ["border", "Border"],
-  ["legal", "Green cards"],
-  ["humanitarian", "Humanitarian"],
-  ["unauthorized", "Unauthorized"],
-  ["temporary", "Temporary"],
-  ["population", "Population"],
-  ["enforcement", "Enforcement"],
-  ["states", "States"],
-  ["related", "Related migration"],
-  ["glossary", "Glossary"],
-  ["sources", "Sources"],
-] as const;
+const CHAPTERS: ImmigrationChapter[] = [
+  { id: "snapshot", label: "At a glance", group: "Start" },
+  { id: "border", label: "Border", group: "Core system" },
+  { id: "legal", label: "Green cards", group: "Core system" },
+  { id: "humanitarian", label: "Humanitarian", group: "Core system" },
+  { id: "unauthorized", label: "Unauthorized", group: "Population & places" },
+  { id: "temporary", label: "Temporary", group: "Core system" },
+  { id: "population", label: "Population", group: "Population & places" },
+  { id: "enforcement", label: "Enforcement", group: "Core system" },
+  { id: "states", label: "States", group: "Population & places" },
+  { id: "related", label: "Related migration", group: "Population & places" },
+  { id: "questions", label: "Questions", group: "Reference" },
+  { id: "glossary", label: "Glossary", group: "Reference" },
+  { id: "sources", label: "Sources", group: "Reference" },
+];
 
 const SOURCES = {
   cbp: { label: "U.S. Customs and Border Protection", href: "/datasets/cbp" },
   yearbook: { label: "DHS Yearbook of Immigration Statistics", href: "/datasets/dhs-yearbook" },
   unauthorized: { label: "DHS Office of Homeland Security Statistics", href: "/datasets/dhs-unauthorized" },
   pep: { label: "Census Bureau Population Estimates", href: "/datasets/census-pep" },
+  historical: { label: "Census Bureau decennial census and American Community Survey", href: "/datasets/census-historical-nativity" },
   acs: { label: "Census Bureau American Community Survey", href: "/datasets/census-acs1-immigration" },
   ice: { label: "ICE Detention Statistics", href: "/datasets/ice-detention" },
   flows: { label: "Census Bureau State-to-State Migration Flows", href: "/datasets/census-state-migration" },
@@ -58,11 +71,13 @@ const USES: Record<string, string> = {
   "dhs-unauthorized": "the unauthorized immigrant population, by country of birth, state, and period of entry",
   "census-pep": "net international migration, sources of population growth, and net moves between states",
   "census-acs1-immigration": "the foreign-born population, citizenship, and countries of birth",
+  "census-historical-nativity": "the foreign-born share of the population at each census, 1850–2000",
   "ice-detention": "the detained population, conviction status, facilities, and length of stay",
   "census-state-migration": "moves between states and residents who lived abroad a year earlier",
   "un-migrant-stock": "Americans living abroad",
 };
 
+const NUMBER_WORDS: Record<number, string> = { 5: "five", 6: "six", 7: "seven", 8: "eight", 9: "nine", 10: "ten", 11: "eleven", 12: "twelve" };
 const compact = (v: number | null | undefined, unit = "people") => formatValue(v, unit, { compact: true });
 const pct = (v: number | null | undefined) => (v === null || v === undefined ? "—" : `${Math.round(v)}%`);
 const year = (period: string) => period.replace(/\D/g, "");
@@ -136,12 +151,19 @@ function SubHeading({ id, title, question }: { id?: string; title: string; quest
   );
 }
 
-export default async function ImmigrationPage() {
+export default async function ImmigrationPage(props: PageProps<"/immigration">) {
+  const query = await props.searchParams;
   const d = await loadImmigration();
   const { stats: s } = d;
   const lastMonth = d.border.lastMonth;
   const yearbookYear = s.lpr ? year(s.lpr.period) : "";
   const removalsYear = s.removals ? year(s.removals.period) : "";
+  const requestedFocus = typeof query.focus === "string" ? query.focus : null;
+  const initialFocus: ImmigrationFocus | null = isImmigrationFocus(requestedFocus) ? requestedFocus : null;
+  const requestedView = typeof query.view === "string" ? query.view : null;
+  const initialView = initialFocus && focusHasView(initialFocus, requestedView)
+    ? requestedView
+    : defaultFocusView(initialFocus ?? "green-cards");
 
   const faq: { q: string; a: ReactNode }[] = [
     {
@@ -285,178 +307,266 @@ export default async function ImmigrationPage() {
     },
   ];
 
+  // Hero: the foreign-born share since 1850, and the last time it was this high.
+  const longRun = d.population.longRun[0].points;
+  const nowShare = longRun.at(-1);
+  const since = nowShare ? longRun.findLast((p) => p.x < nowShare.x && p.value >= nowShare.value) : undefined;
+
   const glossary = Object.entries(GLOSSARY).sort((a, b) => a[1].term.localeCompare(b[1].term));
+  const flowData = {
+    encounters: {
+      value: s.encounters12?.value,
+      period: lastMonth ? periodTags.trailing12(lastMonth).label : "",
+      change: s.encounters12?.change,
+      compare: "vs prior 12 months",
+      spark: s.encounters?.spark,
+    },
+    temporary: {
+      value: s.temporary?.value,
+      period: s.temporary ? formatPeriod(s.temporary.period) : "",
+      change: s.temporary?.change,
+      compare: s.temporary?.compare,
+      spark: s.temporary?.spark,
+    },
+    humanitarian: {
+      value: s.refugees && s.asylum && s.refugees.period === s.asylum.period ? s.refugees.value + s.asylum.value : null,
+      period: s.refugees ? formatPeriod(s.refugees.period) : "",
+    },
+    greenCards: {
+      value: s.lpr?.value,
+      period: s.lpr ? formatPeriod(s.lpr.period) : "",
+      change: s.lpr?.change,
+      compare: s.lpr?.compare,
+      spark: s.lpr?.spark,
+    },
+    adjustmentShare: s.lpr?.adjustmentShare,
+    naturalizations: {
+      value: s.naturalizations?.value,
+      period: s.naturalizations ? formatPeriod(s.naturalizations.period) : "",
+      change: s.naturalizations?.change,
+      compare: s.naturalizations?.compare,
+      spark: s.naturalizations?.spark,
+    },
+    netMigration: {
+      value: s.netMigration?.value,
+      period: s.netMigration ? periodTags.july(s.netMigration.period).label : "",
+      change: s.netMigration?.change,
+      compare: s.netMigration?.compare,
+      spark: s.netMigration?.spark,
+    },
+    naturalized: d.population.foreignBorn[0].points.at(-1)?.value,
+    noncitizen: d.population.foreignBorn[1].points.at(-1)?.value,
+    foreignBorn: {
+      value: s.foreignBorn?.value,
+      period: s.foreignBorn?.period ?? "",
+      change: s.foreignBorn?.change,
+      compare: s.foreignBorn?.compare,
+      spark: s.foreignBorn?.spark,
+    },
+    unauthorized: { value: s.unauthorized?.value, period: s.unauthorized ? `Jan ${s.unauthorized.period}` : "" },
+  };
+  const greenCardData = {
+    total: s.lpr?.value ?? null,
+    period: s.lpr ? formatPeriod(s.lpr.period) : "",
+    change: s.lpr?.change,
+    compare: s.lpr?.compare,
+    adjustmentShare: s.lpr?.adjustmentShare ?? null,
+    history: d.legal.lprHistory,
+    split: d.legal.lprSplit,
+    pathways: d.legal.pathways,
+    countries: d.legal.byCountry,
+    naturalizations: d.legal.naturalizations,
+    naturalizedShare: d.legal.naturalizedShare,
+    naturalizationCountries: d.legal.natzByCountry,
+  };
+  const explorerData = {
+    border: {
+      latest: {
+        value: s.encounters?.value,
+        period: s.encounters ? formatPeriod(s.encounters.period) : "",
+        change: s.encounters?.change,
+        compare: s.encounters?.compare,
+        spark: s.encounters?.spark,
+      },
+      trailing: {
+        value: s.encounters12?.value,
+        period: lastMonth ? periodTags.trailing12(lastMonth).label : "",
+        change: s.encounters12?.change,
+        compare: "vs prior 12 months",
+        note: s.encounters12 ? `${pct(s.encounters12.usbpShare)} Border Patrol · ${pct(s.encounters12.ofoShare)} at ports` : undefined,
+      },
+      peak: {
+        value: s.peakMonth?.value,
+        period: s.peakMonth ? formatPeriod(s.peakMonth.period) : "",
+      },
+      trend: d.border.series.nation?.authority ?? [],
+      states: d.border.byState,
+      citizenship: d.border.byCitizenship,
+      offices: d.border.byOffice,
+      period: lastMonth ? periodTags.trailing12(lastMonth).label : "",
+    },
+    temporary: {
+      recorded: flowData.temporary,
+      all: {
+        value: s.temporary?.all,
+        period: s.temporary ? formatPeriod(s.temporary.period) : "",
+        note: "Includes estimated short land-border visits not recorded on Form I-94",
+      },
+      purpose: d.temporary.groups,
+      trend: d.temporary.purpose,
+      work: d.temporary.workVisas,
+      period: d.temporary.period,
+    },
+    humanitarian: {
+      total: flowData.humanitarian,
+      refugees: {
+        value: s.refugees?.value,
+        period: s.refugees ? formatPeriod(s.refugees.period) : "",
+        change: s.refugees?.change,
+        compare: s.refugees?.compare,
+        spark: s.refugees?.spark,
+      },
+      asylum: {
+        value: s.asylum?.value,
+        period: s.asylum ? formatPeriod(s.asylum.period) : "",
+        change: s.asylum?.change,
+        compare: s.asylum?.compare,
+        spark: s.asylum?.spark,
+      },
+      refugeeTrend: d.humanitarian.refugees,
+      asylumTrend: d.humanitarian.asylum,
+      refugeeCountries: d.humanitarian.refugeesByCountry,
+      asylumCountries: d.humanitarian.asylumByCountry,
+    },
+    greenCards: greenCardData,
+    naturalizations: {
+      total: flowData.naturalizations,
+      history: d.legal.naturalizations,
+      countries: d.legal.natzByCountry,
+      share: d.legal.naturalizedShare,
+    },
+    population: {
+      total: flowData.foreignBorn,
+      share: {
+        value: s.foreignBorn?.share,
+        period: s.foreignBorn?.period ?? "",
+        note: s.foreignBorn?.naturalizedShare != null ? `${pct(s.foreignBorn.naturalizedShare)} are naturalized citizens` : undefined,
+      },
+      unauthorized: {
+        value: s.unauthorized?.value,
+        period: s.unauthorized ? `Jan ${s.unauthorized.period}` : "",
+        note: "Latest DHS estimate",
+      },
+      citizenship: d.population.foreignBorn,
+      shareHistory: d.population.foreignBornShare,
+      countries: d.population.byCountry,
+      regions: d.population.byRegion,
+    },
+    netMigration: {
+      total: flowData.netMigration,
+      trend: d.population.netMigration,
+      growth: d.population.growth,
+    },
+  };
 
   return (
+    <ImmigrationExplorerProvider initialFocus={initialFocus} initialView={initialView}>
     <div className="mx-auto max-w-7xl space-y-14">
       <header className="max-w-3xl">
         <p className="text-sm font-semibold tracking-[0.14em] text-blue-700 uppercase dark:text-blue-400">United States</p>
         <h1 className="mt-2 text-4xl font-bold tracking-tight text-slate-950 sm:text-5xl dark:text-white">Immigration</h1>
-        <p className="mt-4 text-lg leading-8 text-slate-600 dark:text-slate-300">
-          How people come to the United States, how they gain or lose legal status, how many live here, and how the law is enforced — with
-          each number explained, from the agencies that count them.
-        </p>
+        <FeatureList
+          className="mt-4"
+          items={[
+            "Border encounters and enforcement",
+            "Green cards, asylum and visas",
+            "Every state compared",
+            "From the agencies that count them",
+          ]}
+        />
       </header>
 
-      <SectionNav sections={SECTIONS} />
+      <ImmigrationChapterDeck chapters={CHAPTERS}>
 
-      {/* ------------------------------------------------------------ Overview */}
-      <section id="overview" className="scroll-mt-28 space-y-10">
-        <div className="space-y-4">
-          <h2 className="text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">At a glance</h2>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {s.encounters && (
-              <StatTile
-                label="Border encounters"
-                unit="encounters"
-                value={s.encounters.value}
-                tag={periodTags.month(s.encounters.period)}
-                note="Monthly enforcement events, not unique people"
-                change={s.encounters.change}
-                compareLabel={s.encounters.compare}
-                spark={s.encounters.spark}
-              />
-            )}
-            {s.lpr && (
-              <StatTile
-                label="New permanent residents"
-                unit="people"
-                value={s.lpr.value}
-                tag={{ ...periodTags.fiscalYear(s.lpr.period), latest: true }}
-                note={`People granted green cards — ${pct(s.lpr.adjustmentShare)} already lived in the U.S.`}
-                change={s.lpr.change}
-                compareLabel={s.lpr.compare}
-                spark={s.lpr.spark}
-              />
-            )}
-            {s.netMigration && (
-              <StatTile
-                label="Net international migration"
-                unit="people"
-                value={s.netMigration.value}
-                tag={periodTags.july(s.netMigration.period)}
-                note="Everyone moving in from abroad minus everyone moving out, U.S. citizens included"
-                change={s.netMigration.change}
-                compareLabel={s.netMigration.compare}
-                spark={s.netMigration.spark}
-              />
-            )}
-            {s.foreignBorn && (
-              <StatTile
-                label="Foreign-born population"
-                unit="people"
-                value={s.foreignBorn.value}
-                extra={s.foreignBorn.share !== null ? `${s.foreignBorn.share.toFixed(1)}%` : undefined}
-                tag={periodTags.survey(s.foreignBorn.period)}
-                note="People living here who weren't U.S. citizens at birth, any status — a population, not a yearly flow"
-                change={s.foreignBorn.change}
-                compareLabel={s.foreignBorn.compare}
-                spark={s.foreignBorn.spark}
-              />
-            )}
-          </div>
-          <p className="max-w-3xl text-sm leading-6 text-slate-500 dark:text-slate-400">
-            Each agency counts on its own calendar, so every figure is tagged with its period. <Term id="fiscal-year">Fiscal years</Term> run
-            October 1 – September 30. Census population estimates cover the year to July 1; the American Community Survey is collected across
-            a calendar year. Some measures are yearly flows and others are a <Term id="stock">stock</Term> — a population at one moment.
-          </p>
-        </div>
-
-        <div className="space-y-4">
-          <div className="max-w-3xl">
-            <h2 className="text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">How immigration works</h2>
-            <p className="mt-2 text-slate-600 dark:text-slate-300">
-              People interact with the immigration system in several separate ways. Each is counted by a different agency, in a different unit.
+      {/* ---------------------------------------------------------------- Hero */}
+      <section id="snapshot" className="scroll-mt-28">
+      {nowShare ? (
+        <figure className="space-y-5">
+          <figcaption className="max-w-3xl">
+            <p className="text-5xl font-semibold tracking-tight text-slate-950 tabular-nums sm:text-6xl dark:text-white">
+              {nowShare.value.toFixed(1)}%
             </p>
-          </div>
-          <SystemPathways />
-        </div>
-
-        <div className="space-y-4">
-          <div className="max-w-3xl">
-            <h2 className="text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">How these numbers relate</h2>
-            <p className="mt-2 text-slate-600 dark:text-slate-300">
-              The headline numbers are not steps in one pipeline, and they don&apos;t add up to each other. Yearly flows count events or status
-              decisions; people move between categories over years; the population is what&apos;s here at one moment.
+            <p className="mt-3 text-xl leading-8 text-slate-700 dark:text-slate-200">
+              About one in {NUMBER_WORDS[Math.round(100 / nowShare.value)] ?? Math.round(100 / nowShare.value)} people living in the U.S. is <Term id="foreign-born">foreign-born</Term>
+              {since ? <> — the highest share since {since.x}.</> : <> — the highest share on record.</>}
             </p>
-          </div>
-          <NumbersMap
-            encounters={{ value: s.encounters12?.value, unit: "encounters", period: lastMonth ? periodTags.trailing12(lastMonth).label : "" }}
-            temporary={{ value: s.temporary?.value, period: s.temporary ? formatPeriod(s.temporary.period) : "" }}
-            humanitarian={{
-              value: s.refugees && s.asylum && s.refugees.period === s.asylum.period ? s.refugees.value + s.asylum.value : null,
-              period: s.refugees ? formatPeriod(s.refugees.period) : "",
-            }}
-            greenCards={{ value: s.lpr?.value, period: s.lpr ? formatPeriod(s.lpr.period) : "" }}
-            adjustmentShare={s.lpr?.adjustmentShare}
-            naturalizations={{ value: s.naturalizations?.value, period: s.naturalizations ? formatPeriod(s.naturalizations.period) : "" }}
-            netMigration={{ value: s.netMigration?.value, period: s.netMigration ? periodTags.july(s.netMigration.period).label : "" }}
-            naturalized={d.population.foreignBorn[0].points.at(-1)?.value}
-            noncitizen={d.population.foreignBorn[1].points.at(-1)?.value}
-            fbPeriod={s.foreignBorn?.period ?? ""}
-            unauthorized={{ value: s.unauthorized?.value, period: s.unauthorized ? `Jan ${s.unauthorized.period}` : "" }}
-          />
-        </div>
-
-        <div className="space-y-3">
-          <h2 className="text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">Common questions</h2>
-          <div className="divide-y divide-slate-200 rounded-2xl border border-slate-200 dark:divide-slate-800 dark:border-slate-800">
-            {faq.map((f) => (
-              <details key={f.q} className="group px-4 py-3">
-                <summary className="flex cursor-pointer list-none items-start justify-between gap-4 font-medium text-slate-900 dark:text-white">
-                  {f.q}
-                  <span aria-hidden className="mt-0.5 text-slate-400 transition group-open:rotate-45">+</span>
-                </summary>
-                <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600 dark:text-slate-300">{f.a}</p>
-              </details>
-            ))}
-          </div>
-        </div>
+          </figcaption>
+          <ChartCard
+            title="Foreign-born share of the U.S. population"
+            subtitle={`Every census 1850–2000, then the yearly American Community Survey through ${nowShare.x}`}
+            source={SOURCES.historical}
+            table={seriesTable(d.population.longRun, "percent")}
+          >
+            <TimeSeriesChart
+              series={d.population.longRun}
+              unit="percent"
+              height={320}
+              xTickValues={[1850, 1875, 1900, 1925, 1950, 1975, 2000, 2025]}
+              markers={[
+                { x: 1924, label: "1924 quotas" },
+                { x: 1965, label: "1965 quotas end" },
+              ]}
+            />
+          </ChartCard>
+        </figure>
+      ) : (
+        <p className="rounded-2xl border border-slate-200 p-8 text-slate-500 dark:border-slate-800 dark:text-slate-400">The latest population snapshot is not available.</p>
+      )}
       </section>
 
       {/* -------------------------------------------------------------- Border */}
       <Section id="border" title="The border" question="How often does CBP stop people at the border, where, under what legal authority — and what happens next?">
+        <EncounterExplorer
+          regions={d.border.regions}
+          breakdowns={[
+            { key: "authority", label: "Legal authority", note: "Title 42 expulsions ran March 2020 – May 2023 (shaded). Everything else is processed under Title 8." },
+            { key: "agency", label: "Agency", note: "Border Patrol apprehends people between ports of entry; the Office of Field Operations records people found inadmissible at ports, including airports." },
+            {
+              key: "group",
+              label: "Who",
+              note: "Single adults; members of family units (a child with a parent or guardian) and other accompanied children; and unaccompanied children, who are transferred to HHS custody.",
+            },
+          ]}
+          series={d.border.series}
+          markers={[
+            { x: 2020 + 2 / 12, to: 2023 + 5 / 12, label: "Title 42 in effect" },
+            { x: 2021, label: "Biden term" },
+            { x: 2024 + 5 / 12, label: "Jun 2024 asylum limits" },
+            { x: 2025, label: "Trump term" },
+          ]}
+          source={SOURCES.cbp}
+        />
+
         <KeyPoint title="An encounter is an event, not a person.">
-          Someone stopped three times is three encounters. Encounters count people CBP stopped — not people who got in, and not how many people
-          live here without status (that&apos;s the <a href="#unauthorized" className="underline">unauthorized population</a>).
+          Someone stopped three times is three encounters. Encounters don&apos;t measure who got in or who lives here without status — that&apos;s
+          the <a href="#unauthorized" className="underline">unauthorized population</a>.
         </KeyPoint>
 
-        <div className="grid gap-4 sm:grid-cols-3">
-          {s.encounters && (
-            <StatTile
-              label="Encounters, latest month"
-              unit="encounters"
-              value={s.encounters.value}
-              tag={periodTags.month(s.encounters.period)}
-              change={s.encounters.change}
-              compareLabel={s.encounters.compare}
-              spark={s.encounters.spark}
-            />
-          )}
-          {s.encounters12 && lastMonth && (
-            <StatTile
-              label="Encounters, last 12 months"
-              unit="encounters"
-              value={s.encounters12.value}
-              tag={periodTags.trailing12(lastMonth)}
-              note={`${pct(s.encounters12.usbpShare)} Border Patrol between ports · ${pct(s.encounters12.ofoShare)} at ports of entry`}
-              change={s.encounters12.change}
-              compareLabel="vs prior 12 months"
-            />
-          )}
-          {s.peakMonth && (
-            <StatTile
-              label="Peak month since FY 2020"
-              unit="encounters"
-              value={s.peakMonth.value}
-              tag={periodTags.month(s.peakMonth.period)}
-              note="Highest monthly total since October 2019, where this series begins"
-            />
-          )}
-        </div>
+        <ChapterExplorer
+          primaryLabel="Where and who"
+          metrics={[
+            { label: "Latest month", value: s.encounters?.value, unit: "encounters", period: s.encounters ? formatPeriod(s.encounters.period) : "", change: s.encounters?.change, compare: s.encounters?.compare },
+            { label: "Last 12 months", value: s.encounters12?.value, unit: "encounters", period: lastMonth ? periodTags.trailing12(lastMonth).label : "", note: s.encounters12 ? `${pct(s.encounters12.usbpShare)} Border Patrol · ${pct(s.encounters12.ofoShare)} at ports` : undefined },
+            { label: "Peak month since FY 2020", value: s.peakMonth?.value, unit: "encounters", period: s.peakMonth ? formatPeriod(s.peakMonth.period) : "" },
+          ]}
+          primary={[
+            { key: "states", label: "States", title: "Where CBP encounters were recorded", subtitle: `${lastMonth ? periodTags.trailing12(lastMonth).label : ""} · office location, not where the person settled`, kind: "ranked", items: d.border.byState, itemLabel: "State", unit: "encounters", source: SOURCES.cbp },
+            { key: "offices", label: "Offices", title: "Border sectors and port field offices", subtitle: lastMonth ? periodTags.trailing12(lastMonth).label : "", kind: "ranked", items: d.border.byOffice, itemLabel: "Sector or field office", unit: "encounters", slot: 3, source: SOURCES.cbp },
+            { key: "citizenship", label: "Citizenship", title: "Encounters by citizenship", subtitle: lastMonth ? periodTags.trailing12(lastMonth).label : "", kind: "ranked", items: d.border.byCitizenship, itemLabel: "Citizenship", unit: "encounters", source: SOURCES.cbp },
+          ]}
+        />
 
-        <div id="title-8-42" className="scroll-mt-28 space-y-3">
-          <h3 className="text-xl font-semibold text-slate-950 dark:text-white">Title 8 vs. Title 42</h3>
+        <Disclosure id="title-8-42" summary="How the border process works: Title 8 vs. Title 42, Border Patrol vs. ports, and what happens next">
           <Explainers
             items={[
               {
@@ -502,186 +612,29 @@ export default async function ImmigrationPage() {
               },
             ]}
           />
-        </div>
-
-        <EncounterExplorer
-          regions={d.border.regions}
-          breakdowns={[
-            { key: "authority", label: "Legal authority", note: "Title 42 expulsions ran March 2020 – May 2023 (shaded). Everything else is processed under Title 8." },
-            { key: "agency", label: "Agency", note: "Border Patrol apprehends people between ports of entry; the Office of Field Operations records people found inadmissible at ports, including airports." },
-            {
-              key: "group",
-              label: "Who",
-              note: "Single adults; members of family units (a child with a parent or guardian) and other accompanied children; and unaccompanied children, who are transferred to HHS custody.",
-            },
-          ]}
-          series={d.border.series}
-          markers={[
-            { x: 2020 + 2 / 12, to: 2023 + 5 / 12, label: "Title 42 in effect" },
-            { x: 2021, label: "Biden term" },
-            { x: 2024 + 5 / 12, label: "Jun 2024 asylum limits" },
-            { x: 2025, label: "Trump term" },
-          ]}
-          source={SOURCES.cbp}
-        />
-
-        <Steps
-          title="What can happen after an encounter"
-          steps={[
-            <>Title 42 (2020–2023 only): expelled, usually within hours.</>,
-            <>Under Title 8, CBP decides how to process the person: expedited removal, a notice to appear in immigration court, voluntary return, parole, or referral for prosecution.</>,
-            <>Someone who says they fear return gets a screening interview; if they pass, they can pursue asylum before an immigration judge.</>,
-            <>While a case is pending, the person may be held in ICE detention or released with a court date — cases can take years.</>,
-            <>The case ends in permission to stay (asylum or another status) or an order of removal.</>,
-          ]}
-          counted={
-            <>
-              encounters (above), and later <a href="#enforcement" className="underline">removals, returns, and detention</a> and{" "}
-              <a href="#humanitarian" className="underline">asylum grants</a>. Individual encounters can&apos;t be followed through to their outcomes
-              in published data.
-            </>
-          }
-        />
-
-        <div className="grid gap-6 lg:grid-cols-2">
-          <ChartCard
-            title="Where CBP encounters were recorded, by state"
-            subtitle={`${lastMonth ? periodTags.trailing12(lastMonth).label : ""} · state of the CBP office that recorded the encounter — not where the person lives or went`}
-            source={SOURCES.cbp}
-            table={rankedTable(d.border.byState, "State", "encounters")}
-          >
-            <RankedBars items={d.border.byState} unit="encounters" />
-          </ChartCard>
-          <ChartCard
-            title="By Border Patrol sector or port field office"
-            subtitle={`${lastMonth ? periodTags.trailing12(lastMonth).label : ""} · sectors patrol between ports; field offices run ports, including airports`}
-            source={SOURCES.cbp}
-            table={rankedTable(d.border.byOffice, "Sector or field office", "encounters")}
-          >
-            <RankedBars items={d.border.byOffice} unit="encounters" slot={3} />
-          </ChartCard>
-          <ChartCard
-            title="By citizenship"
-            subtitle={`${lastMonth ? periodTags.trailing12(lastMonth).label : ""} · country of citizenship of the person encountered`}
-            source={SOURCES.cbp}
-            table={rankedTable(d.border.byCitizenship, "Citizenship", "encounters")}
-          >
-            <RankedBars items={d.border.byCitizenship} unit="encounters" />
-          </ChartCard>
-        </div>
+          <Steps
+            title="What can happen after an encounter"
+            steps={[
+              <>Title 42 (2020–2023 only): expelled, usually within hours.</>,
+              <>Under Title 8, CBP decides how to process the person: expedited removal, a notice to appear in immigration court, voluntary return, parole, or referral for prosecution.</>,
+              <>Someone who says they fear return gets a screening interview; if they pass, they can pursue asylum before an immigration judge.</>,
+              <>While a case is pending, the person may be held in ICE detention or released with a court date — cases can take years.</>,
+              <>The case ends in permission to stay (asylum or another status) or an order of removal.</>,
+            ]}
+            counted={
+              <>
+                encounters (above), and later <a href="#enforcement" className="underline">removals, returns, and detention</a> and{" "}
+                <a href="#humanitarian" className="underline">asylum grants</a>. Individual encounters can&apos;t be followed through to their outcomes
+                in published data.
+              </>
+            }
+          />
+        </Disclosure>
       </Section>
 
       {/* -------------------------------------------------------- Legal / LPR */}
       <Section id="legal" title="Green cards" question="How many people become permanent residents each year, through which programs, and from where?">
-        <Prose>
-          <p>
-            A <Term id="green-card">green card</Term> makes someone a <Term id="lpr">lawful permanent resident</Term>: they can live and work in the
-            U.S. permanently and, usually after five years, apply for citizenship. Green cards go both to people arriving with an immigrant visa and
-            to people already living here who <Term id="adjustment-of-status">adjust their status</Term> — so a year&apos;s green cards are not a
-            year&apos;s arrivals.
-          </p>
-        </Prose>
-
-        <div className="grid gap-6 lg:grid-cols-2">
-          <ChartCard
-            title="How people got green cards"
-            subtitle={`${formatPeriod(d.legal.pathways.period)} · class of admission`}
-            source={SOURCES.yearbook}
-            table={rankedTable(d.legal.pathways.items, "Class of admission", "people")}
-          >
-            <RankedBars items={d.legal.pathways.items} unit="people" />
-          </ChartCard>
-          <div className="rounded-2xl border border-slate-200 p-5 text-sm leading-6 text-slate-600 dark:border-slate-800 dark:text-slate-300">
-            <h3 className="text-base font-semibold text-slate-950 dark:text-white">The main pathways</h3>
-            <dl className="mt-3 space-y-3">
-              <div>
-                <dt className="font-medium text-slate-900 dark:text-white">Immediate relatives of U.S. citizens</dt>
-                <dd>Spouses, unmarried children under 21, and parents of adult citizens. No annual limit.</dd>
-              </div>
-              <div>
-                <dt className="font-medium text-slate-900 dark:text-white">Family-sponsored preferences</dt>
-                <dd>Other relatives of citizens and of green-card holders, under annual caps with per-country limits — waits can run decades.</dd>
-              </div>
-              <div>
-                <dt className="font-medium text-slate-900 dark:text-white">Employment-based preferences</dt>
-                <dd>Workers sponsored by employers, people of extraordinary ability, and investors, plus their families. Capped yearly.</dd>
-              </div>
-              <div>
-                <dt className="font-medium text-slate-900 dark:text-white">Refugees and asylees</dt>
-                <dd>People admitted for protection, adjusting to permanent residence after a year.</dd>
-              </div>
-              <div>
-                <dt className="font-medium text-slate-900 dark:text-white">Diversity</dt>
-                <dd>A lottery for countries with low recent immigration, up to about 55,000 a year.</dd>
-              </div>
-            </dl>
-          </div>
-          <ChartCard
-            title="Already here, or arriving?"
-            subtitle="Per fiscal year · where new green-card holders were when they got it"
-            source={SOURCES.yearbook}
-            table={seriesTable(d.legal.lprSplit, "people")}
-          >
-            <TimeSeriesChart series={d.legal.lprSplit} type="column" unit="people" />
-          </ChartCard>
-          <ChartCard
-            title="Green cards by country of birth"
-            subtitle={`${formatPeriod(d.legal.byCountry.period)} · top 10`}
-            source={SOURCES.yearbook}
-            table={rankedTable(d.legal.byCountry.items, "Country", "people")}
-          >
-            <RankedBars items={d.legal.byCountry.items} unit="people" />
-          </ChartCard>
-        </div>
-
-        <ChartCard
-          title="Two centuries of permanent immigration"
-          subtitle="New lawful permanent residents per fiscal year, 1820 onward, with the laws that reshaped who could come"
-          source={SOURCES.yearbook}
-          table={seriesTable(d.legal.lprHistory, "people")}
-        >
-          <TimeSeriesChart
-            series={d.legal.lprHistory}
-            unit="people"
-            height={320}
-            markers={[
-              { x: 1882, label: "1882 Chinese Exclusion Act" },
-              { x: 1921, label: "1921 Emergency Quota Act" },
-              { x: 1924, label: "1924 national-origins quotas" },
-              { x: 1965, label: "1965 Hart–Celler Act" },
-              { x: 1986, label: "1986 IRCA" },
-              { x: 1990, label: "1990 Immigration Act" },
-            ]}
-          />
-          <p className="mt-3 text-xs leading-5 text-slate-500 dark:text-slate-400">
-            These counts sit inside changing legal systems: early years come from port arrival records, the 1920s laws capped immigration by national
-            origin, and the 1965 act replaced those quotas with today&apos;s family- and employment-based system. The 1989–1991 peak is people
-            legalized under the 1986 Immigration Reform and Control Act (IRCA) receiving green cards.
-          </p>
-        </ChartCard>
-
-        <SubHeading id="citizenship" title="Becoming a citizen" question="How many green-card holders naturalize, and how much of the foreign-born population are citizens?" />
-        <div className="grid gap-6 lg:grid-cols-2">
-          <ChartCard title="Naturalization applications and new citizens" subtitle="Per fiscal year, since 1907" source={SOURCES.yearbook} table={seriesTable(d.legal.naturalizations, "people")}>
-            <TimeSeriesChart series={d.legal.naturalizations} unit="people" />
-          </ChartCard>
-          <ChartCard
-            title="Share of foreign-born residents who are citizens"
-            subtitle="Naturalized citizens as a share of all foreign-born residents · per survey year"
-            source={SOURCES.acs}
-            table={seriesTable(d.legal.naturalizedShare, "percent")}
-          >
-            <TimeSeriesChart series={d.legal.naturalizedShare} unit="percent" fromZero={false} />
-          </ChartCard>
-          <ChartCard
-            title="New citizens by country of birth"
-            subtitle={`${formatPeriod(d.legal.natzByCountry.period)} · top 10`}
-            source={SOURCES.yearbook}
-            table={rankedTable(d.legal.natzByCountry.items, "Country", "people")}
-          >
-            <RankedBars items={d.legal.natzByCountry.items} unit="people" />
-          </ChartCard>
-        </div>
+        <GreenCardChapter data={greenCardData} />
       </Section>
 
       {/* -------------------------------------------------------- Humanitarian */}
@@ -715,164 +668,54 @@ export default async function ImmigrationPage() {
           Refugees are counted when they arrive; asylees when their case is granted, often years after they arrived. The charts below are not two
           shares of one total.
         </KeyPoint>
-        <div className="grid gap-4 sm:grid-cols-2">
-          {s.refugees && (
-            <StatTile
-              label="Refugee arrivals"
-              unit="people"
-              value={s.refugees.value}
-              tag={{ ...periodTags.fiscalYear(s.refugees.period), latest: true }}
-              change={s.refugees.change}
-              compareLabel={s.refugees.compare}
-              spark={s.refugees.spark}
-            />
-          )}
-          {s.asylum && (
-            <StatTile
-              label="People granted asylum"
-              unit="people"
-              value={s.asylum.value}
-              tag={{ ...periodTags.fiscalYear(s.asylum.period), latest: true }}
-              change={s.asylum.change}
-              compareLabel={s.asylum.compare}
-              spark={s.asylum.spark}
-            />
-          )}
-        </div>
-        <div className="grid gap-6 lg:grid-cols-2">
-          <ChartCard title="Refugee arrivals" subtitle="Per fiscal year, since the Refugee Act of 1980" source={SOURCES.yearbook} table={seriesTable(d.humanitarian.refugees, "people")}>
-            <TimeSeriesChart
-              series={d.humanitarian.refugees}
-              unit="people"
-              markers={[
-                { x: 2002, label: "Post-9/11 security changes" },
-                { x: 2020, label: "COVID-19" },
-              ]}
-            />
-          </ChartCard>
-          <ChartCard title="Asylum grants, by route" subtitle="People granted asylum per fiscal year" source={SOURCES.yearbook} table={seriesTable(d.humanitarian.asylum, "people")}>
-            <TimeSeriesChart series={d.humanitarian.asylum} type="column" unit="people" />
-          </ChartCard>
-          <ChartCard
-            title="Refugee arrivals by nationality"
-            subtitle={`${formatPeriod(d.humanitarian.refugeesByCountry.period)} · top 10`}
-            source={SOURCES.yearbook}
-            table={rankedTable(d.humanitarian.refugeesByCountry.items, "Nationality", "people")}
-          >
-            <RankedBars items={d.humanitarian.refugeesByCountry.items} unit="people" />
-          </ChartCard>
-          <ChartCard
-            title="Affirmative asylum grants by nationality"
-            subtitle={`${formatPeriod(d.humanitarian.asylumByCountry.period)} · top 10 · grants by USCIS asylum officers`}
-            source={SOURCES.yearbook}
-            table={rankedTable(d.humanitarian.asylumByCountry.items, "Nationality", "people")}
-          >
-            <RankedBars items={d.humanitarian.asylumByCountry.items} unit="people" slot={2} />
-          </ChartCard>
-        </div>
+        <ChapterExplorer
+          primaryLabel="Route"
+          secondaryLabel="Nationality"
+          metrics={[
+            { label: "Refugee arrivals", value: s.refugees?.value, unit: "people", period: s.refugees ? formatPeriod(s.refugees.period) : "", change: s.refugees?.change, compare: s.refugees?.compare },
+            { label: "People granted asylum", value: s.asylum?.value, unit: "people", period: s.asylum ? formatPeriod(s.asylum.period) : "", change: s.asylum?.change, compare: s.asylum?.compare },
+          ]}
+          primary={[
+            { key: "refugees", label: "Refugees", title: "Refugee arrivals", subtitle: "Approved abroad and counted when they arrive", kind: "time", series: d.humanitarian.refugees, unit: "people", markers: [{ x: 2002, label: "Post-9/11 changes" }, { x: 2020, label: "COVID-19" }], source: SOURCES.yearbook },
+            { key: "asylum", label: "Asylum", title: "Asylum grants by route", subtitle: "Counted when protection is granted, often years after arrival", kind: "time", type: "column", series: d.humanitarian.asylum, unit: "people", source: SOURCES.yearbook },
+          ]}
+          secondary={[
+            { key: "refugee-origin", label: "Refugees", title: "Refugee arrivals by nationality", subtitle: `${formatPeriod(d.humanitarian.refugeesByCountry.period)} · top 10`, kind: "ranked", items: d.humanitarian.refugeesByCountry.items, itemLabel: "Nationality", unit: "people", source: SOURCES.yearbook },
+            { key: "asylum-origin", label: "Asylum", title: "Affirmative asylum grants by nationality", subtitle: `${formatPeriod(d.humanitarian.asylumByCountry.period)} · top 10`, kind: "ranked", items: d.humanitarian.asylumByCountry.items, itemLabel: "Nationality", unit: "people", slot: 2, source: SOURCES.yearbook },
+          ]}
+        />
       </Section>
 
       {/* -------------------------------------------------------- Unauthorized */}
       <Section id="unauthorized" title="The unauthorized population" question="How many people live in the U.S. without legal status, where are they from, and where do they live?">
         <KeyPoint title="Border encounters are not a measure of this population.">
-          Encounters count stops at the border, including repeat stops and people turned back. The unauthorized population is everyone living here
-          without status on a given date — including people who entered legally and overstayed, and people who arrived decades ago.
+          It includes people who entered legally and overstayed, and people who arrived decades ago.
         </KeyPoint>
-        <div className="grid gap-4 sm:grid-cols-3">
-          {s.unauthorized && (
-            <StatTile
-              label="Unauthorized immigrants (DHS estimate)"
-              unit="people"
-              value={s.unauthorized.value}
-              tag={{ ...periodTags.january(s.unauthorized.period), latest: true }}
-              spark={s.unauthorized.spark}
-            />
-          )}
-          {s.unauthorized?.shareOfPopulation != null && (
-            <StatTile
-              label="Share of all U.S. residents"
-              unit="percent"
-              value={s.unauthorized.shareOfPopulation}
-              tag={periodTags.january(s.unauthorized.period)}
-              note={s.unauthorized.shareOfForeignBorn != null ? `${pct(s.unauthorized.shareOfForeignBorn)} of the foreign-born population` : undefined}
-            />
-          )}
-          <StatTile
-            label="Pew Research Center estimate"
-            unit="people"
-            value={14_000_000}
-            tag={{ label: "Jul 2023", title: "Pew Research Center, published August 2025" }}
-            note={
-              <>
-                4.1% of U.S. residents ·{" "}
-                <a
-                  className="underline"
-                  href="https://www.pewresearch.org/race-and-ethnicity/2025/08/21/u-s-unauthorized-immigrant-population-reached-a-record-14-million-in-2023/"
-                >
-                  Pew, 2025
-                </a>
-              </>
-            }
-          />
-        </div>
-        <Prose>
-          <p>
-            No agency counts <Term id="unauthorized">unauthorized immigrants</Term> directly. DHS estimates them by subtraction: the foreign-born
-            population measured by the Census Bureau&apos;s survey, adjusted for people the survey misses, minus everyone known to be here legally
-            (green-card holders, refugees, asylees, and temporary residents). DHS&apos;s most recent estimate is for January 2022; independent
-            researchers use similar methods with newer survey data.
-          </p>
-        </Prose>
-        <div className="grid gap-6 lg:grid-cols-2">
-          <ChartCard
-            title="Estimated unauthorized population"
-            subtitle="January 1 of each year · no estimates for 2001–2004 or 2021"
-            source={SOURCES.unauthorized}
-            table={seriesTable(d.unauthorized.series, "people")}
-          >
-            <TimeSeriesChart
-              series={d.unauthorized.series}
-              unit="people"
-              markers={[
-                { x: 2010, label: "Re-based on 2010 Census" },
-                { x: 2022, label: "2020 Census base" },
-              ]}
-            />
-          </ChartCard>
-          <ChartCard
-            title="By country of birth"
-            subtitle={`January 1, ${d.unauthorized.byCountry.period} · top 10`}
-            source={SOURCES.unauthorized}
-            table={rankedTable(d.unauthorized.byCountry.items, "Country of birth", "people")}
-          >
-            <RankedBars items={d.unauthorized.byCountry.items} unit="people" limit={11} />
-          </ChartCard>
-          <ChartCard
-            title="By state of residence"
-            subtitle={`January 1, ${d.unauthorized.byState.period} · top 10 states`}
-            source={SOURCES.unauthorized}
-            table={rankedTable(
-              [...d.unauthorized.byState.items, ...(d.unauthorized.byState.other ? [{ label: "All other states", value: d.unauthorized.byState.other }] : [])],
-              "State",
-              "people",
-            )}
-          >
-            <RankedBars
-              items={[...d.unauthorized.byState.items, ...(d.unauthorized.byState.other ? [{ label: "All other states", value: d.unauthorized.byState.other }] : [])]}
-              unit="people"
-              limit={11}
-              slot={3}
-            />
-          </ChartCard>
-          <ChartCard
-            title="When they arrived"
-            subtitle={`January 1, ${d.unauthorized.byEntry.period} · period of entry to the U.S.`}
-            source={SOURCES.unauthorized}
-            table={rankedTable(d.unauthorized.byEntry.items, "Period of entry", "people")}
-          >
-            <RankedBars items={d.unauthorized.byEntry.items} unit="people" slot={2} />
-          </ChartCard>
-        </div>
+        <ChapterExplorer
+          metrics={[
+            { label: "DHS estimate", value: s.unauthorized?.value, unit: "people", period: s.unauthorized ? `Jan ${s.unauthorized.period}` : "" },
+            { label: "Share of all residents", value: s.unauthorized?.shareOfPopulation, unit: "percent", period: s.unauthorized ? `Jan ${s.unauthorized.period}` : "", note: s.unauthorized?.shareOfForeignBorn != null ? `${pct(s.unauthorized.shareOfForeignBorn)} of foreign-born residents` : undefined },
+            { label: "Pew estimate", value: 14_000_000, unit: "people", period: "Jul 2023", note: "Independent estimate; methodology and vintage differ from DHS" },
+          ]}
+          primary={[{ key: "estimate", label: "Estimate", title: "Estimated unauthorized population", subtitle: "January 1 · gaps in 2001–2004 and 2021", kind: "time", series: d.unauthorized.series, unit: "people", markers: [{ x: 2010, label: "2010 Census base" }, { x: 2022, label: "2020 Census base" }], source: SOURCES.unauthorized }]}
+          secondaryLabel="Composition"
+          secondary={[
+            { key: "country", label: "Country", title: "By country of birth", subtitle: `January 1, ${d.unauthorized.byCountry.period}`, kind: "ranked", items: d.unauthorized.byCountry.items, itemLabel: "Country", unit: "people", limit: 11, source: SOURCES.unauthorized },
+            { key: "state", label: "State", title: "By state of residence", subtitle: `January 1, ${d.unauthorized.byState.period}`, kind: "ranked", items: [...d.unauthorized.byState.items, ...(d.unauthorized.byState.other ? [{ label: "All other states", value: d.unauthorized.byState.other }] : [])], itemLabel: "State", unit: "people", limit: 11, slot: 3, source: SOURCES.unauthorized },
+            { key: "arrival", label: "Arrival era", title: "When they arrived", subtitle: `January 1, ${d.unauthorized.byEntry.period}`, kind: "ranked", items: d.unauthorized.byEntry.items, itemLabel: "Period", unit: "people", slot: 2, source: SOURCES.unauthorized },
+          ]}
+        />
+
+        <Disclosure summary="How DHS estimates a population no one counts directly">
+          <Prose>
+            <p>
+              No agency counts <Term id="unauthorized">unauthorized immigrants</Term> directly. DHS estimates them by subtraction: the foreign-born
+              population measured by the Census Bureau&apos;s survey, adjusted for people the survey misses, minus everyone known to be here legally
+              (green-card holders, refugees, asylees, and temporary residents). DHS&apos;s most recent estimate is for January 2022; independent
+              researchers use similar methods with newer survey data.
+            </p>
+          </Prose>
+        </Disclosure>
       </Section>
 
       {/* ----------------------------------------------------------- Temporary */}
@@ -884,274 +727,74 @@ export default async function ImmigrationPage() {
             trips — and admissions count entries, not people: a consultant who flies in ten times is ten admissions.
           </p>
         </Prose>
-        <div className="grid gap-4 sm:grid-cols-2">
-          {s.temporary && (
-            <StatTile
-              label="Temporary admissions recorded on Form I-94"
-              unit="admissions"
-              value={s.temporary.value}
-              tag={{ ...periodTags.fiscalYear(s.temporary.period), latest: true }}
-              note="Entries by air and sea, and land entries beyond the border zone"
-              change={s.temporary.change}
-              compareLabel={s.temporary.compare}
-              spark={s.temporary.spark}
-            />
-          )}
-          {s.temporary?.all != null && (
-            <StatTile
-              label="All temporary admissions (estimated)"
-              unit="admissions"
-              value={s.temporary.all}
-              tag={periodTags.fiscalYear(s.temporary.period)}
-              note="Adds short visits by Canadian and Mexican border crossers not recorded on I-94"
-            />
-          )}
-        </div>
-        <div className="grid gap-6 lg:grid-cols-2">
-          <ChartCard
-            title="Temporary admissions by purpose"
-            subtitle={`${formatPeriod(d.temporary.period)} · I-94 admissions`}
-            source={SOURCES.yearbook}
-            table={rankedTable(d.temporary.groups, "Purpose", "admissions")}
-          >
-            <RankedBars items={d.temporary.groups} unit="admissions" />
-          </ChartCard>
-          <ChartCard
-            title="Workers, students, and exchange visitors"
-            subtitle="I-94 admissions per fiscal year · their families are counted separately"
-            source={SOURCES.yearbook}
-            table={seriesTable(d.temporary.purpose, "admissions")}
-          >
-            <TimeSeriesChart series={d.temporary.purpose} type="column" unit="admissions" markers={[{ x: 2020, label: "COVID-19 travel limits" }]} />
-          </ChartCard>
-          <ChartCard
-            title="Largest temporary work classes"
-            subtitle={`${formatPeriod(d.temporary.period)} · I-94 admissions — workers who travel often are counted each time`}
-            source={SOURCES.yearbook}
-            table={rankedTable(d.temporary.workVisas, "Class", "admissions")}
-          >
-            <RankedBars items={d.temporary.workVisas} unit="admissions" slot={3} />
-          </ChartCard>
-        </div>
+        <ChapterExplorer
+          metrics={[
+            { label: "Recorded on Form I-94", value: s.temporary?.value, unit: "admissions", period: s.temporary ? formatPeriod(s.temporary.period) : "", change: s.temporary?.change, compare: s.temporary?.compare },
+            { label: "All temporary admissions", value: s.temporary?.all, unit: "admissions", period: s.temporary ? formatPeriod(s.temporary.period) : "", note: "Includes estimated short land-border visits" },
+          ]}
+          primary={[
+            { key: "trend", label: "Over time", title: "Workers, students, and exchange visitors", subtitle: "I-94 admissions; repeat entries count again", kind: "time", type: "column", series: d.temporary.purpose, unit: "admissions", markers: [{ x: 2020, label: "COVID-19 travel limits" }], source: SOURCES.yearbook },
+            { key: "purpose", label: "Latest mix", title: "Temporary admissions by purpose", subtitle: `${formatPeriod(d.temporary.period)} · I-94 admissions`, kind: "ranked", items: d.temporary.groups, itemLabel: "Purpose", unit: "admissions", source: SOURCES.yearbook },
+          ]}
+          secondaryLabel="Detail"
+          secondary={[{ key: "work", label: "Work classes", title: "Largest temporary work classes", subtitle: `${formatPeriod(d.temporary.period)} · repeat entries count again`, kind: "ranked", items: d.temporary.workVisas, itemLabel: "Class", unit: "admissions", slot: 3, source: SOURCES.yearbook }]}
+          callout="Admissions count entries, not unique people. A person who enters ten times is counted ten times."
+        />
       </Section>
 
       {/* ---------------------------------------------------------- Population */}
       <Section id="population" title="Immigration and population" question="How many immigrants live in the U.S., and how much does migration change the population?">
-        <div className="grid gap-4 sm:grid-cols-3">
-          {s.foreignBorn && (
-            <StatTile
-              label="Foreign-born residents"
-              unit="people"
-              value={s.foreignBorn.value}
-              tag={periodTags.survey(s.foreignBorn.period)}
-              change={s.foreignBorn.change}
-              compareLabel={s.foreignBorn.compare}
-              spark={s.foreignBorn.spark}
-            />
-          )}
-          {s.foreignBorn?.share != null && (
-            <StatTile
-              label="Share of the population"
-              unit="percent"
-              value={s.foreignBorn.share}
-              tag={periodTags.survey(s.foreignBorn.period)}
-              note={s.foreignBorn.naturalizedShare != null ? `${pct(s.foreignBorn.naturalizedShare)} of foreign-born residents are naturalized citizens` : undefined}
-            />
-          )}
-          {s.netMigration && (
-            <StatTile
-              label="Net international migration"
-              unit="people"
-              value={s.netMigration.value}
-              tag={periodTags.july(s.netMigration.period)}
-              change={s.netMigration.change}
-              compareLabel={s.netMigration.compare}
-            />
-          )}
-        </div>
-        <div className="grid gap-6 lg:grid-cols-2">
-          <ChartCard
-            title="Foreign-born population, by citizenship"
-            subtitle="People living in the U.S. who weren't citizens at birth · per survey year"
-            source={SOURCES.acs}
-            table={seriesTable(d.population.foreignBorn, "people")}
-          >
-            <TimeSeriesChart series={d.population.foreignBorn} type="column" unit="people" />
-          </ChartCard>
-          <ChartCard title="Foreign-born share of the population" subtitle="Per survey year" source={SOURCES.acs} table={seriesTable(d.population.foreignBornShare, "percent")}>
-            <TimeSeriesChart series={d.population.foreignBornShare} unit="percent" fromZero={false} />
-          </ChartCard>
-          <ChartCard
-            title="Net international migration"
-            subtitle="Everyone who moved in from abroad minus everyone who moved abroad · 12 months to July 1"
-            source={SOURCES.pep}
-            table={seriesTable(d.population.netMigration, "people")}
-          >
-            <TimeSeriesChart series={d.population.netMigration} type="column" unit="people" />
-            <div className="mt-4 rounded-xl bg-slate-50 p-3 text-sm leading-6 text-slate-600 dark:bg-slate-900/60 dark:text-slate-300">
-              <p className="font-medium text-slate-900 dark:text-white">Includes</p>
-              <ul className="mt-1 list-disc space-y-0.5 pl-5">
-                <li>immigrants of every status — green-card holders, temporary residents, unauthorized</li>
-                <li>U.S. citizens returning from or leaving for abroad, including Puerto Rico</li>
-                <li>foreign-born residents who leave the country</li>
-              </ul>
-              <p className="mt-2">So it is not green cards, not border encounters, and not immigration minus deportations.</p>
-            </div>
-          </ChartCard>
-          <ChartCard
-            title="Where population growth comes from"
-            subtitle="Natural increase vs. net international migration · 12 months to July 1"
-            source={SOURCES.pep}
-            table={seriesTable(d.population.growth, "people")}
-          >
-            <TimeSeriesChart series={d.population.growth} type="column" unit="people" />
-          </ChartCard>
-          <ChartCard
-            title="Foreign-born residents by country of birth"
-            subtitle={`${d.population.byCountry.period} survey · top 10`}
-            source={SOURCES.acs}
-            table={rankedTable(d.population.byCountry.items, "Country of birth", "people")}
-          >
-            <RankedBars items={d.population.byCountry.items} unit="people" />
-          </ChartCard>
-          <ChartCard
-            title="By world region of birth"
-            subtitle={`${d.population.byRegion.period} survey`}
-            source={SOURCES.acs}
-            table={rankedTable(d.population.byRegion.items, "Region", "people")}
-          >
-            <RankedBars items={d.population.byRegion.items} unit="people" slot={2} />
-          </ChartCard>
-        </div>
+        <ChapterExplorer
+          metrics={[
+            { label: "Foreign-born residents", value: s.foreignBorn?.value, unit: "people", period: s.foreignBorn?.period, change: s.foreignBorn?.change, compare: s.foreignBorn?.compare },
+            { label: "Share of the population", value: s.foreignBorn?.share, unit: "percent", period: s.foreignBorn?.period, note: s.foreignBorn?.naturalizedShare != null ? `${pct(s.foreignBorn.naturalizedShare)} are naturalized citizens` : undefined },
+            { label: "Net international migration", value: s.netMigration?.value, unit: "people", period: s.netMigration ? periodTags.july(s.netMigration.period).label : "", change: s.netMigration?.change, compare: s.netMigration?.compare },
+          ]}
+          primaryLabel="Measure"
+          primary={[
+            { key: "citizenship", label: "Citizenship", title: "Foreign-born population by citizenship", subtitle: "Naturalized citizens and noncitizens", kind: "time", type: "column", series: d.population.foreignBorn, unit: "people", source: SOURCES.acs },
+            { key: "share", label: "Population share", title: "Foreign-born share of the population", subtitle: "Per survey year", kind: "time", series: d.population.foreignBornShare, unit: "percent", fromZero: false, source: SOURCES.acs },
+            { key: "migration", label: "Net migration", title: "Net international migration", subtitle: "Everyone moving in from abroad minus everyone moving abroad", kind: "time", type: "column", series: d.population.netMigration, unit: "people", source: SOURCES.pep },
+            { key: "growth", label: "Population growth", title: "Where population growth comes from", subtitle: "Natural increase versus net international migration", kind: "time", type: "column", series: d.population.growth, unit: "people", source: SOURCES.pep },
+          ]}
+          secondaryLabel="Origin"
+          secondary={[
+            { key: "country", label: "Country", title: "Foreign-born residents by country of birth", subtitle: `${d.population.byCountry.period} survey`, kind: "ranked", items: d.population.byCountry.items, itemLabel: "Country", unit: "people", source: SOURCES.acs },
+            { key: "region", label: "Region", title: "By world region of birth", subtitle: `${d.population.byRegion.period} survey`, kind: "ranked", items: d.population.byRegion.items, itemLabel: "Region", unit: "people", slot: 2, source: SOURCES.acs },
+          ]}
+          callout="Net international migration includes every status and U.S. citizens moving to or from abroad. It is not green cards minus deportations."
+        />
       </Section>
 
       {/* --------------------------------------------------------- Enforcement */}
       <Section id="enforcement" title="Enforcement" question="How many people are removed or returned, and how many are held in immigration detention?">
-        <Explainers
-          cols={3}
-          items={[
-            { title: <Term id="removal">Removal</Term>, body: "A compulsory departure under a removal order. What most people mean by deportation; bars re-entry for years." },
-            { title: <Term id="return">Return</Term>, body: "A confirmed departure without a removal order, such as voluntary return at the border. Fewer consequences for re-entry." },
-            { title: <Term id="title-42">Title 42 expulsion</Term>, body: "A public-health expulsion, March 2020 – May 2023, with no immigration processing." },
-          ]}
+        <EnforcementExplorer
+          departures={{
+            metrics: [
+              { label: "Removals", value: s.removals?.value, unit: "events", period: s.removals ? formatPeriod(s.removals.period) : "", change: s.removals?.change, compare: s.removals?.compare },
+            ],
+            primary: [{ key: "history", label: "1892–present", title: "Removals, returns, and expulsions since 1892", subtitle: "DHS repatriations per fiscal year · events, not unique people", kind: "time", type: "column", series: d.enforcement.repatriations, unit: "events", markers: [{ x: 1924, label: "1924 quotas" }, { x: 1996, label: "IIRIRA" }, { x: 2020, to: 2023.4, label: "Title 42" }], source: SOURCES.yearbook, note: "After the 1996 law created expedited removal, formal removals—with re-entry penalties—replaced many returns." }],
+            secondary: [
+              { key: "status", label: "Criminal status", title: "Removals by criminal status", subtitle: "Known conviction at the time of removal", kind: "time", type: "column", series: d.enforcement.removalsByStatus, unit: "events", source: SOURCES.yearbook },
+              { key: "country", label: "Nationality", title: "Removals by nationality", subtitle: `${formatPeriod(d.enforcement.removalsByCountry.period)} · top 10`, kind: "ranked", items: d.enforcement.removalsByCountry.items, itemLabel: "Nationality", unit: "events", source: SOURCES.yearbook },
+            ],
+          }}
+          detention={{
+            metrics: [
+              { label: "Average daily population", value: s.detention?.value, unit: "people", period: s.detention ? `${formatPeriod(s.detention.period)} to date` : "", change: s.detention?.change, compare: s.detention?.compare },
+              { label: "No criminal conviction", value: s.detention?.noConvictionShare, unit: "percent", period: s.detention ? `${formatPeriod(s.detention.period)} to date` : "", note: s.detention?.mandatoryShare != null ? `${pct(s.detention.mandatoryShare)} in mandatory detention` : undefined },
+            ],
+            primary: [{ key: "population", label: "By conviction", title: "Average daily detained population", subtitle: "By criminal conviction; current year is year to date", kind: "time", type: "column", series: d.enforcement.detention, unit: "people", source: SOURCES.ice }],
+            secondary: [{ key: "facilities", label: "Largest", title: "Largest detention facilities", subtitle: `${formatPeriod(d.enforcement.facilities.period)} · hover for location and average stay`, kind: "ranked", items: d.enforcement.facilities.items, itemLabel: "Facility", unit: "people", source: SOURCES.ice }],
+          }}
         />
-        <div className="grid gap-4 sm:grid-cols-3">
-          {s.removals && (
-            <StatTile
-              label="Removals"
-              unit="events"
-              value={s.removals.value}
-              tag={{ ...periodTags.fiscalYear(s.removals.period), latest: true }}
-              change={s.removals.change}
-              compareLabel={s.removals.compare}
-              spark={s.removals.spark}
-            />
-          )}
-          {s.detention && (
-            <StatTile
-              label="Held in ICE detention, daily average"
-              unit="people"
-              value={s.detention.value}
-              tag={{ ...periodTags.fiscalYear(s.detention.period), label: `${periodTags.fiscalYear(s.detention.period).label} to date` }}
-              change={s.detention.change}
-              compareLabel={s.detention.compare}
-              spark={s.detention.spark}
-            />
-          )}
-          {s.detention?.noConvictionShare != null && (
-            <StatTile
-              label="Detained with no criminal conviction"
-              unit="percent"
-              value={s.detention.noConvictionShare}
-              tag={{ ...periodTags.fiscalYear(s.detention.period), label: `${periodTags.fiscalYear(s.detention.period).label} to date` }}
-              note={s.detention.mandatoryShare != null ? `${pct(s.detention.mandatoryShare)} were in mandatory detention` : undefined}
-            />
-          )}
-        </div>
-        <div className="grid gap-6 lg:grid-cols-2">
-          <ChartCard
-            title="Removals, returns, and expulsions since 1892"
-            subtitle="DHS repatriations per fiscal year · events, not unique people"
-            source={SOURCES.yearbook}
-            table={seriesTable(d.enforcement.repatriations, "events")}
-            className="lg:col-span-2"
-          >
-            <TimeSeriesChart
-              series={d.enforcement.repatriations}
-              type="column"
-              unit="events"
-              height={300}
-              markers={[{ x: 1996, label: "1996 IIRIRA: expedited removal" }]}
-            />
-            <p className="mt-3 text-xs leading-5 text-slate-500 dark:text-slate-400">
-              Through the 1990s most departures were returns of people stopped at the border. The 1996 Illegal Immigration Reform and Immigrant
-              Responsibility Act created expedited removal, and removals — with penalties on re-entry — replaced many returns.
-            </p>
-          </ChartCard>
-          <ChartCard
-            title="Removals by criminal status"
-            subtitle="Per fiscal year · known criminal conviction at the time of removal"
-            source={SOURCES.yearbook}
-            table={seriesTable(d.enforcement.removalsByStatus, "events")}
-          >
-            <TimeSeriesChart series={d.enforcement.removalsByStatus} type="column" unit="events" />
-          </ChartCard>
-          <ChartCard
-            title="Removals by country of nationality"
-            subtitle={`${formatPeriod(d.enforcement.removalsByCountry.period)} · top 10`}
-            source={SOURCES.yearbook}
-            table={rankedTable(d.enforcement.removalsByCountry.items, "Nationality", "events")}
-          >
-            <RankedBars items={d.enforcement.removalsByCountry.items} unit="events" />
-          </ChartCard>
-        </div>
-
-        <SubHeading title="Immigration detention" question="Who is held by ICE, and where?" />
-        <Explainers
-          items={[
-            {
-              title: <Term id="ice-detention">Civil, not criminal</Term>,
-              body: (
-                <>
-                  ICE detention holds people while their immigration case is decided or their removal is arranged. It is not a criminal sentence:
-                  being in the U.S. without status is a civil violation. People serving criminal sentences are in jails and prisons, not counted
-                  here.
-                </>
-              ),
-            },
-            {
-              title: <Term id="criminal-conviction">What “criminal conviction” means here</Term>,
-              body: (
-                <>
-                  Any conviction on record counts, including immigration crimes such as illegal re-entry and minor offenses. “No criminal
-                  conviction” can include people with pending charges. ICE rates people with convictions by <Term id="threat-level">threat level</Term>{" "}
-                  1–3.
-                </>
-              ),
-            },
-            {
-              title: <Term id="mandatory-detention">Mandatory detention</Term>,
-              body: "Some people must be held by law — for example those with certain convictions or in expedited removal — and cannot be released on bond.",
-            },
-            {
-              title: "Average daily population",
-              body: "The average number of people held on any given day over the fiscal year. It is not the number of people who passed through detention, which is far larger.",
-            },
-          ]}
-        />
-        <div className="grid gap-6 lg:grid-cols-2">
-          <ChartCard title="Average daily detained population" subtitle="By criminal conviction, per fiscal year (current year to date)" source={SOURCES.ice} table={seriesTable(d.enforcement.detention, "people")}>
-            <TimeSeriesChart series={d.enforcement.detention} type="column" unit="people" />
-          </ChartCard>
-          <ChartCard
-            title="Largest detention facilities"
-            subtitle={`${formatPeriod(d.enforcement.facilities.period)} · average daily population · hover for location and average stay`}
-            source={SOURCES.ice}
-            table={rankedTable(d.enforcement.facilities.items, "Facility", "people")}
-          >
-            <RankedBars items={d.enforcement.facilities.items} unit="people" />
-          </ChartCard>
-        </div>
+        <Disclosure summary="Definitions: removal, return, Title 42, detention, and criminal status">
+          <Explainers cols={3} items={[
+            { title: <Term id="removal">Removal</Term>, body: "A compulsory departure under a removal order, with consequences for re-entry." },
+            { title: <Term id="return">Return</Term>, body: "A confirmed departure without a removal order, such as voluntary return." },
+            { title: <Term id="title-42">Title 42 expulsion</Term>, body: "A public-health expulsion used from March 2020 through May 2023." },
+          ]} />
+        </Disclosure>
       </Section>
 
       {/* -------------------------------------------------------------- States */}
@@ -1176,21 +819,17 @@ export default async function ImmigrationPage() {
             year earlier.
           </p>
         </Prose>
-        <div className="grid gap-6 lg:grid-cols-2">
-          <ChartCard title="Largest net gains from other states" subtitle={`Year to July 1, ${d.domestic.period} · net domestic migration`} source={SOURCES.pep} table={rankedTable(d.domestic.gains, "State", "people")}>
-            <RankedBars items={d.domestic.gains} unit="people" slot={3} />
-          </ChartCard>
-          <ChartCard title="Largest net losses to other states" subtitle={`Year to July 1, ${d.domestic.period} · more people moved out than in`} source={SOURCES.pep} table={rankedTable(d.domestic.losses, "State", "people")}>
-            <RankedBars items={d.domestic.losses} unit="people" slot={2} />
-          </ChartCard>
-          <ChartCard title="Largest state-to-state moves" subtitle={`${d.domestic.flows.period} survey · people moving from one state to another`} source={SOURCES.flows} table={rankedTable(d.domestic.flows.corridors, "Move", "people")}>
-            <RankedBars items={d.domestic.flows.corridors} unit="people" />
-          </ChartCard>
-          <ChartCard title="People who moved between states" subtitle="Per survey year, 50 states and DC" source={SOURCES.flows} table={seriesTable(d.domestic.interstate, "people")}>
-            <TimeSeriesChart series={d.domestic.interstate} type="column" unit="people" />
-          </ChartCard>
-        </div>
-        {d.domestic.flows.states.some((st) => st.origins.length) && <StateFlows states={d.domestic.flows.states} period={d.domestic.flows.period} />}
+        <ChapterExplorer
+          primaryLabel="View"
+          primary={[
+            { key: "trend", label: "Total moving", title: "People who moved between states", subtitle: "Per survey year, 50 states and DC", kind: "time", type: "column", series: d.domestic.interstate, unit: "people", source: SOURCES.flows },
+            { key: "gains", label: "Net gains", title: "Largest net gains from other states", subtitle: `Year to July 1, ${d.domestic.period}`, kind: "ranked", items: d.domestic.gains, itemLabel: "State", unit: "people", slot: 3, source: SOURCES.pep },
+            { key: "losses", label: "Net losses", title: "Largest net losses to other states", subtitle: `Year to July 1, ${d.domestic.period}`, kind: "ranked", items: d.domestic.losses, itemLabel: "State", unit: "people", slot: 2, source: SOURCES.pep },
+          ]}
+          secondaryLabel="Routes"
+          secondary={[{ key: "corridors", label: "Largest", title: "Largest state-to-state moves", subtitle: `${d.domestic.flows.period} survey`, kind: "ranked", items: d.domestic.flows.corridors, itemLabel: "Move", unit: "people", source: SOURCES.flows }]}
+        />
+        {d.domestic.flows.states.some((st) => st.origins.length) && <Disclosure summary="Explore every state's origins and destinations"><StateFlows states={d.domestic.flows.states} period={d.domestic.flows.period} /></Disclosure>}
 
         <SubHeading id="abroad" title="Americans living abroad" question="How many people born in the U.S. live in other countries, and where?" />
         <Prose>
@@ -1207,16 +846,28 @@ export default async function ImmigrationPage() {
             <PeriodTag {...periodTags.midYear(d.abroad.total.period)} />
           </div>
         )}
-        <div className="grid gap-6 lg:grid-cols-2">
-          <ChartCard title="U.S.-born people living abroad" subtitle="Mid-year estimate" source={SOURCES.un} table={seriesTable(d.abroad.series, "people")} className="lg:col-span-2">
-            <TimeSeriesChart series={d.abroad.series} type="column" unit="people" height={240} />
-          </ChartCard>
-          <ChartCard title="Where they live, by country" subtitle={`Mid-${d.abroad.byCountry.period} · top 10`} source={SOURCES.un} table={rankedTable(d.abroad.byCountry.items, "Country", "people")}>
-            <RankedBars items={d.abroad.byCountry.items} unit="people" />
-          </ChartCard>
-          <ChartCard title="Where they live, by region" subtitle={`Mid-${d.abroad.byRegion.period}`} source={SOURCES.un} table={rankedTable(d.abroad.byRegion.items, "Region", "people")}>
-            <RankedBars items={d.abroad.byRegion.items} unit="people" slot={2} />
-          </ChartCard>
+        <ChapterExplorer
+          primary={[{ key: "trend", label: "Over time", title: "U.S.-born people living abroad", subtitle: "Mid-year estimate", kind: "time", type: "column", series: d.abroad.series, unit: "people", source: SOURCES.un }]}
+          secondaryLabel="Where they live"
+          secondary={[
+            { key: "country", label: "Country", title: "Where they live, by country", subtitle: `Mid-${d.abroad.byCountry.period} · top 10`, kind: "ranked", items: d.abroad.byCountry.items, itemLabel: "Country", unit: "people", source: SOURCES.un },
+            { key: "region", label: "Region", title: "Where they live, by region", subtitle: `Mid-${d.abroad.byRegion.period}`, kind: "ranked", items: d.abroad.byRegion.items, itemLabel: "Region", unit: "people", slot: 2, source: SOURCES.un },
+          ]}
+        />
+      </Section>
+
+      {/* ---------------------------------------------------- Common questions */}
+      <Section id="questions" title="Common questions" question="Short answers to the questions these numbers raise most.">
+        <div className="divide-y divide-slate-200 rounded-2xl border border-slate-200 dark:divide-slate-800 dark:border-slate-800">
+          {faq.map((f) => (
+            <details key={f.q} className="group px-4 py-3">
+              <summary className="flex cursor-pointer list-none items-start justify-between gap-4 font-medium text-slate-900 dark:text-white">
+                {f.q}
+                <span aria-hidden className="mt-0.5 text-slate-400 transition group-open:rotate-45">+</span>
+              </summary>
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600 dark:text-slate-300">{f.a}</p>
+            </details>
+          ))}
         </div>
       </Section>
 
@@ -1247,6 +898,22 @@ export default async function ImmigrationPage() {
           · <Link href="/datasets/publish" className="underline underline-offset-2">Publish your institution&apos;s data</Link>
         </p>
       </Section>
+      </ImmigrationChapterDeck>
+
+      {/* ------------------------------------------------------------ Overview */}
+      <section id="overview" className="scroll-mt-28 space-y-10">
+        <div className="space-y-4">
+          <div className="max-w-3xl">
+            <h2 className="text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">How immigration works</h2>
+            <p className="mt-2 text-slate-600 dark:text-slate-300">
+              Yearly flows on the left, the <Term id="stock">population</Term> they add up to on the right. Each is counted by a different
+              agency, in its own unit and on its own <Term id="fiscal-year">calendar</Term>.
+            </p>
+          </div>
+          <ImmigrationOverviewExplorer flow={flowData} data={explorerData} />
+        </div>
+      </section>
     </div>
+    </ImmigrationExplorerProvider>
   );
 }

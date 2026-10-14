@@ -23,6 +23,7 @@ import type {
   GovernmentOfficial,
 } from "@/lib/my-government/types";
 import type { AddressSuggestion } from "@/lib/my-government/suggestions";
+import { FeatureList } from "@/components/ui/feature-list";
 
 const GROUPS: Array<{ level: GovernmentLevel; label: string; description: string }> = [
   { level: "local", label: "Local", description: "Schools and city government" },
@@ -208,9 +209,11 @@ export function MyGovernmentLookup({ initialAddress = "" }: { initialAddress?: s
             <MapPin size={13} /> Address-based representation
           </div>
           <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">Who represents you?</h1>
-          <p className="mt-4 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg">
-            Start with one address. See the districts and public offices that govern it—from school board and county offices to the statehouse and Congress.
-          </p>
+          <FeatureList
+            tone="inverse"
+            className="mt-4"
+            items={["Every district for one address", "From school board to Congress", "Who holds each office"]}
+          />
 
           <div className="mt-8 max-w-3xl">
             <form onSubmit={submit} className="flex flex-col gap-2 rounded-2xl bg-white p-2 shadow-2xl shadow-black/25 sm:flex-row">

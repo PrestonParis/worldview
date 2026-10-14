@@ -12,6 +12,7 @@ export const FAMILIES: Record<IdeologyFamily, { label: string; color: string }> 
   right: { label: "Right", color: "#f97316" },
   libertarian: { label: "Libertarian", color: "#eab308" },
   populist: { label: "Populist", color: "#14b8a6" },
+  religious: { label: "Religious", color: "#84cc16" },
   other: { label: "Other", color: "#10b981" },
 };
 

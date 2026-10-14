@@ -12,6 +12,7 @@ import { IdeologyHistogram, RollCallList } from "@/components/legislation/overvi
 import { datasetCoverage, listDatasets } from "@/lib/db/stats";
 import { formatValue } from "@/lib/format";
 import { loadLegislation } from "@/lib/legislation/overview";
+import { FeatureList } from "@/components/ui/feature-list";
 
 export const dynamic = "force-dynamic";
 
@@ -81,12 +82,26 @@ export default async function LegislationPage() {
       <header className="max-w-3xl">
         <p className="text-sm font-semibold tracking-[0.14em] text-blue-700 uppercase dark:text-blue-400">United States</p>
         <h1 className="mt-2 text-4xl font-bold tracking-tight sm:text-5xl text-slate-950 dark:text-white">Legislation &amp; Courts</h1>
-        <p className="mt-4 text-lg leading-8 text-slate-500 dark:text-slate-400">
-          How laws are written, voted on, ordered, and tested — Congress&apos;s bills and roll calls, how far apart the parties
-          vote, every Supreme Court decision since 1946, and the executive orders presidents sign.
-        </p>
+        <FeatureList
+          className="mt-4"
+          items={[
+            "Bills and roll-call votes in Congress",
+            "How far apart the parties vote",
+            "Every Supreme Court decision since 1946",
+            "Presidential executive orders",
+          ]}
+        />
         <DataFreshness sources={["congress-bills", "congress-votes"]} className="mt-3" />
       </header>
+
+      <ChartCard
+        title="How far apart the parties vote"
+        subtitle="Republican average minus Democratic average ideology score, per Congress"
+        source={SOURCES.voteview}
+        table={seriesTable(polarization.gap, "score")}
+      >
+        <TimeSeriesChart series={polarization.gap} unit="score" height={320} endLabels={false} />
+      </ChartCard>
 
       <nav aria-label="Sections" className="sticky top-14 z-10 -mx-4 sm:-mx-8 overflow-x-auto border-y border-slate-100 bg-white/90 px-4 sm:px-8 py-2 backdrop-blur dark:border-slate-900 dark:bg-slate-950/90">
         <ul className="flex gap-1 text-sm whitespace-nowrap">
@@ -200,10 +215,7 @@ export default async function LegislationPage() {
           <ChartCard title="Senate: party averages" subtitle="Mean ideology score per Congress" source={SOURCES.voteview} table={seriesTable(polarization.senate, "score")}>
             <TimeSeriesChart series={polarization.senate} unit="score" />
           </ChartCard>
-          <ChartCard title="Distance between the parties" subtitle="Republican average minus Democratic average" source={SOURCES.voteview} table={seriesTable(polarization.gap, "score")}>
-            <TimeSeriesChart series={polarization.gap} unit="score" endLabels={false} />
-          </ChartCard>
-          <ChartCard title={`Where members sit, ${polarization.latestLabel}`} subtitle="Members by ideology score, House and Senate" source={SOURCES.voteview}>
+          <ChartCard className="lg:col-span-2" title={`Where members sit, ${polarization.latestLabel}`} subtitle="Members by ideology score, House and Senate" source={SOURCES.voteview}>
             <div className="space-y-6">
               {(["House", "Senate"] as const).map((chamber) => (
                 <div key={chamber}>
