@@ -698,7 +698,7 @@ and there's a concrete show segment that needs it.
 
 **Constraint:** `npm run lint` and the typecheck step (`.github` CI) must stay
 green. No new runtime env var without a README entry and an `.env` template
-update. Per `AGENTS.md`, read `node_modules/next/dist/docs/01-app` before
+update. Read `node_modules/next/dist/docs/01-app` before
 touching route segments — async `params`/`searchParams`, per-segment
 `dynamic`, and `PageProps<...>`/`LayoutProps<...>` generated types are all
 already in use and must be matched.

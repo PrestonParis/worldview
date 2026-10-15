@@ -62,3 +62,7 @@ next-env.d.ts
 # demographics build download cache
 /.cache/
 .neon
+
+# AI agent instructions — kept local, not published
+CLAUDE.md
+AGENTS.md

@@ -81,7 +81,7 @@ Worldview is live at [worldview-tawny.vercel.app](https://worldview-tawny.vercel
 
 **Demo video:** TODO — add a short product walkthrough.
 
-Built with AI-assisted development (Claude Code); `CLAUDE.md` and `AGENTS.md` hold the agent instructions used in this repository.
+Built with AI-assisted development (Claude Code).
 
 ## Local development
 
