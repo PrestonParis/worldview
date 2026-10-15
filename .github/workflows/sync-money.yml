@@ -26,6 +26,9 @@ concurrency:
   group: sync-money
   cancel-in-progress: false
 
+permissions:
+  contents: read
+
 jobs:
   sync:
     runs-on: ubuntu-latest

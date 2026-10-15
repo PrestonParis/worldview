@@ -13,6 +13,9 @@ concurrency:
   group: keepalive-neo4j
   cancel-in-progress: false
 
+permissions:
+  contents: read
+
 jobs:
   ping:
     runs-on: ubuntu-latest

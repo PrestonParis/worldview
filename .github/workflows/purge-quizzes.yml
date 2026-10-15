@@ -12,6 +12,9 @@ concurrency:
   group: purge-quizzes
   cancel-in-progress: false
 
+permissions:
+  contents: read
+
 jobs:
   purge:
     runs-on: ubuntu-latest

@@ -26,13 +26,13 @@ Geography conventions: state `geoid` = 2-digit FIPS, county = 5-digit FIPS, cd =
 
 ```bash
 # ENV_FILE=.env.cloud to target cloud
-npm run data:partner -- add cis --name="Center for Immigration Studies" --kind=think-tank --website=https://cis.org --email=data@cis.org
-npm run data:partner -- approve cis
-npm run data:partner -- dataset cis cis-removals-by-state --title="Removals by state" --topic=immigration \
+npm run data:partner -- add example --name="Example Policy Institute" --kind=think-tank --website=https://example.org --email=data@example.org
+npm run data:partner -- approve example
+npm run data:partner -- dataset example example-removals-by-state --title="Removals by state" --topic=immigration \
   --description="..." --methodology="..." --source-url=https://... --license="CC BY 4.0" --cadence=Annual
-npm run data:partner -- key cis --label="ETL server"     # prints the key once; send it securely
+npm run data:partner -- key example --label="ETL server"     # prints the key once; send it securely
 # partner pushes data; review it at /api/data/v1/datasets/<slug>/observations after publishing, or in the DB
-npm run data:partner -- publish cis-removals-by-state
+npm run data:partner -- publish example-removals-by-state
 npm run data:partner -- list
 ```
 

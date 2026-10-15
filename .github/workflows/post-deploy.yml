@@ -10,6 +10,9 @@ concurrency:
   group: post-deploy
   cancel-in-progress: false
 
+permissions:
+  contents: read
+
 jobs:
   sync:
     if: github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'Production'
