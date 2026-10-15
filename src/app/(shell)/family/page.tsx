@@ -85,6 +85,10 @@ export default async function FamilyPage() {
         </p>
       </header>
 
+      <ChartCard title="Births per woman" subtitle="Total fertility rate, since 1960" source={SOURCES.wb} table={seriesTable(d.tfrCompare, "per_woman")}>
+        <TimeSeriesChart series={d.tfrCompare} unit="per_woman" height={340} reference={REPLACEMENT} />
+      </ChartCard>
+
       <SectionNav sections={SECTIONS} />
 
       {/* ------------------------------------------------------------ Overview */}
@@ -148,9 +152,6 @@ export default async function FamilyPage() {
           </p>
         </Prose>
         <div className="grid gap-6 lg:grid-cols-2">
-          <ChartCard title="Births per woman" subtitle="Total fertility rate, since 1960" source={SOURCES.wb} table={seriesTable(d.tfrCompare, "per_woman")}>
-            <TimeSeriesChart series={d.tfrCompare} unit="per_woman" height={280} reference={REPLACEMENT} />
-          </ChartCard>
           <ChartCard title="Births per woman by country" subtitle={d.tfrYear ?? ""} source={SOURCES.wb} table={rankedTable(d.tfrRanking, "Country", "per_woman")}>
             <RankedBars items={d.tfrRanking} unit="per_woman" />
           </ChartCard>

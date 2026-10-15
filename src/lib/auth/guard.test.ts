@@ -1,35 +1,64 @@
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import type { CurrentUser } from "./session";
 
-const getCurrentUserId = vi.fn<() => Promise<string | null>>();
-vi.mock("./session", () => ({ getCurrentUserId: () => getCurrentUserId() }));
+const getCurrentUser = vi.fn<() => Promise<CurrentUser | null>>();
+vi.mock("./session", () => ({ getCurrentUser: () => getCurrentUser() }));
 vi.mock("next/navigation", () => ({
   redirect: (url: string) => {
     throw new Error(`redirect:${url}`);
   },
+  notFound: () => {
+    throw new Error("notFound");
+  },
 }));
 
-const { requireContributor, requireContributorPage, NOT_SIGNED_IN } = await import("./guard");
+const { requireContributor, requireContributorPage, requireOwnerPage, isOwner, NOT_SIGNED_IN, NOT_EDITOR } = await import("./guard");
+
+function user(role: "member" | "editor"): CurrentUser {
+  return {
+    id: "user-1",
+    email: "a@example.com",
+    displayName: null,
+    providers: ["email"],
+    profile: { id: "user-1", displayName: null, role, registeredAt: "2026-10-14T00:00:00.000Z" },
+  };
+}
 
 describe("requireContributor", () => {
-  beforeEach(() => getCurrentUserId.mockReset());
+  beforeEach(() => getCurrentUser.mockReset());
 
-  it("denies visitors without a registered account", async () => {
-    getCurrentUserId.mockResolvedValue(null);
+  it("denies signed-out visitors", async () => {
+    getCurrentUser.mockResolvedValue(null);
     expect(await requireContributor()).toEqual({ ok: false, error: NOT_SIGNED_IN });
   });
 
-  it("allows registered users", async () => {
-    getCurrentUserId.mockResolvedValue("user-1");
+  it("denies members", async () => {
+    getCurrentUser.mockResolvedValue(user("member"));
+    expect(await requireContributor()).toEqual({ ok: false, error: NOT_EDITOR });
+  });
+
+  it("allows editors", async () => {
+    getCurrentUser.mockResolvedValue(user("editor"));
     expect(await requireContributor()).toBeNull();
   });
 
   it("sends signed-out visitors on edit pages to sign in and back", async () => {
-    getCurrentUserId.mockResolvedValue(null);
+    getCurrentUser.mockResolvedValue(null);
     await expect(requireContributorPage("/data/bills/a b/edit")).rejects.toThrow(
       "redirect:/login?next=%2Fdata%2Fbills%2Fa%20b%2Fedit",
     );
+  });
+
+  it("sends members on edit pages to the read-only page", async () => {
+    getCurrentUser.mockResolvedValue(user("member"));
+    await expect(requireContributorPage("/data/bills/b1/edit")).rejects.toThrow("redirect:/data/bills/b1");
+  });
+
+  it("lets editors open edit pages", async () => {
+    getCurrentUser.mockResolvedValue(user("editor"));
+    await expect(requireContributorPage("/data/bills/b1/edit")).resolves.toBeUndefined();
   });
 });
 
@@ -50,5 +79,36 @@ describe("shared-data server actions", () => {
     for (const [, name, firstLine] of actions) {
       expect(firstLine.trim(), `${file} → ${name}`).toBe("const denied = await requireContributor();");
     }
+  });
+});
+
+describe("owner-only Geography", () => {
+  beforeEach(() => {
+    getCurrentUser.mockReset();
+    vi.stubEnv("OWNER_EMAIL", "Owner@Example.com");
+  });
+
+  it("matches the owner email case-insensitively", () => {
+    expect(isOwner({ ...user("member"), email: "owner@example.com" })).toBe(true);
+    expect(isOwner(user("editor"))).toBe(false);
+    expect(isOwner(null)).toBe(false);
+  });
+
+  it("lets nobody in when OWNER_EMAIL is unset", () => {
+    vi.stubEnv("OWNER_EMAIL", "");
+    expect(isOwner({ ...user("editor"), email: "" })).toBe(false);
+  });
+
+  it("sends signed-out visitors to sign in and hides the page from other accounts", async () => {
+    getCurrentUser.mockResolvedValue(null);
+    await expect(requireOwnerPage("/geography")).rejects.toThrow("redirect:/login?next=%2Fgeography");
+    getCurrentUser.mockResolvedValue(user("editor"));
+    await expect(requireOwnerPage("/geography")).rejects.toThrow("notFound");
+  });
+
+  it("gates every map-project action on the owner", () => {
+    const src = readFileSync(path.join(__dirname, "../actions/mapProjects.ts"), "utf8");
+    expect(src).toContain("isOwner(user)");
+    expect(src).not.toContain("getCurrentUserId");
   });
 });

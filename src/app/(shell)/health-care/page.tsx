@@ -54,6 +54,10 @@ export default async function HealthCarePage() {
         compare with other wealthy countries.
       </IssueHeader>
 
+      <ChartCard title="Uninsured" subtitle="Share of the civilian noninstitutionalized population" source={SOURCES.acs} table={seriesTable(d.coverage, "percent")}>
+        <TimeSeriesChart series={d.coverage} unit="percent" height={340} markers={[{ x: 2014, label: "ACA coverage begins" }]} />
+      </ChartCard>
+
       <SectionNav sections={SECTIONS} />
 
       <section id="overview" className="scroll-mt-28 space-y-6">
@@ -83,10 +87,7 @@ export default async function HealthCarePage() {
           </p>
         </Prose>
         <div className="grid gap-6 lg:grid-cols-2">
-          <ChartCard title="Uninsured" subtitle="Share of the civilian noninstitutionalized population" source={SOURCES.acs} table={seriesTable(d.coverage, "percent")}>
-            <TimeSeriesChart series={d.coverage} unit="percent" height={260} markers={[{ x: 2014, label: "ACA coverage begins" }]} />
-          </ChartCard>
-          <ChartCard title="Public coverage" subtitle="Share of the population covered" source={SOURCES.acs} table={seriesTable(d.publicCoverage, "percent")}>
+          <ChartCard title="Public coverage" subtitle="Share of the population covered" source={SOURCES.acs} table={seriesTable(d.publicCoverage, "percent")} className="lg:col-span-2">
             <TimeSeriesChart series={d.publicCoverage} unit="percent" height={260} />
           </ChartCard>
           <ChartCard title="Highest uninsured rates" subtitle="States" source={SOURCES.acs} table={rankedTable(d.uninsuredHigh, "State", "percent")} className="lg:col-span-2">

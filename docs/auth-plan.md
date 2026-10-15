@@ -10,49 +10,51 @@ the built-in Supabase mailer only delivers ~2 emails/hour.
 
 - **Browsing needs no account.** Accounts own things: `/geography` graphics,
   claimed quizzes.
-- **Sign-in** (`/login`): email + password. "Forgot your password?" falls
-  back to a 6-digit code emailed and typed on the page (`verifyOtp`); after
-  that, set a new password on `/account`. **Continue with Google** appears
-  once configured.
-- **Registration** (`/register`): registration code (`REGISTRATION_CODE`) +
-  email + password (8–72 chars). The code is checked server side
-  (`src/lib/actions/auth.ts`) before `signUp`, and the account is registered
-  in the same request — no email is sent. Google registration carries the
-  code across the OAuth redirect in a 30-minute signed pass cookie
-  (`src/lib/auth/registration.ts`).
+- **Registration** (`/register`): open to anyone — email + password (8–72
+  chars). With Supabase's "Confirm email" on, Supabase emails a 6-digit code
+  and the account is only usable once it's typed on the page (`verifyOtp`);
+  signing in to an unconfirmed account sends a fresh code. With it off, the
+  account signs in immediately. Google sign-in creates an account the same
+  way.
+- **Sign-in** (`/login`): email + password. **Forgot your password?** emails a
+  6-digit code; after it's entered the page asks for a new password
+  (`setNewPasswordAction`) and signs in.
+- **Profiles**: `finalizeSignIn()` (`src/lib/auth/session.ts`) creates the
+  `profiles` row on an account's first sign-in. `getCurrentUser()` only
+  treats a session as signed in when that row exists.
+- **Roles** (`profiles.role`): new accounts are **members** — they own their
+  maps and quizzes. Creating, editing, or deleting shared records (entities,
+  bills, claims, …) needs an **editor**: every shared-data server action
+  starts with `requireContributor()` (`src/lib/auth/guard.ts`, enforced by
+  `guard.test.ts`), and edit controls only render for editors. Accounts that
+  registered with the old registration code were made editors by
+  `supabase/sql/2026-10-15-profile-roles.sql`. Grant or remove it with
+  `npm run auth:role -- <email> editor|member` (`ENV_FILE=.env.cloud` for
+  production).
 - **Quiz claims**: "Sign in to claim" (top of an unclaimed quiz) sends you
   through sign-in/registration and claims the quiz automatically
   (`claimAfterSignIn` in `src/lib/quiz/access.ts`), landing on the results.
-- **The gate is `profiles`, not `auth.users`.** Anyone can create a Supabase
-  auth user with the public anon key, so `getCurrentUser()`
-  (`src/lib/auth/session.ts`) only treats a session as signed in when a
-  profile row exists. `finalizeSignIn()` signs out any session without one.
-  Every owner check (map projects, quiz claims) goes through it.
 - **Account page** (`/account`): display name, sign-in methods, sign out, and
   delete account (removes map projects, claimed quizzes, profile, and the auth
   user via the service-role key).
-
-## Registration code
-
-Lives only in env: `REGISTRATION_CODE` in `.env.local`, `.env.cloud`,
-`.env.local.docker`, and the deploy environment. Empty or unset = registration
-closed. To rotate, change the env value; outstanding passes stop working.
 
 ## Setup checklist (cloud)
 
 1. Apply the table: `ENV_FILE=.env.cloud node scripts/apply-sql.mjs supabase/sql/2026-10-02-profiles.sql`
    (also grandfathers every existing auth user). **Do this before deploying** —
    without the table nobody counts as signed in.
-2. Set `REGISTRATION_CODE` in the deploy environment.
+2. Remove the old `REGISTRATION_CODE` from the deploy environment (unused).
 3. Supabase → Auth → URL Configuration: Site URL = production domain; add
    `https://<domain>/**` and preview URLs to the redirect allow-list.
-4. Supabase → Authentication → Sign In / Providers → Email: turn **off**
-   "Confirm email", or password sign-ups get no session.
-5. Supabase → Auth → Email Templates (only used by the forgot-password code): paste `supabase/templates/sign-in-code.html`
-   into **Magic Link** and **Confirm signup** (subject "Your Worldview sign-in
-   code"). The defaults only contain a link, not `{{ .Token }}`.
-6. SMTP: Resend (or Postmark) with a verified sending domain + SPF/DKIM;
-   Supabase → Auth → SMTP Settings; raise the email rate limit.
+4. SMTP first: Resend (or Postmark) with a verified sending domain +
+   SPF/DKIM; Supabase → Auth → SMTP Settings; raise the email rate limit. The
+   built-in mailer sends ~2 emails/hour, which open registration outgrows.
+5. Supabase → Auth → Email Templates: paste `supabase/templates/sign-in-code.html`
+   into **Magic Link** (forgot password) and **Confirm signup** (new accounts).
+   The defaults only contain a link, not `{{ .Token }}`.
+6. Supabase → Authentication → Sign In / Providers → Email: turn **on**
+   "Confirm email" so new accounts must prove their address. The app also
+   works with it off (no confirmation step).
 7. Google: create an OAuth client (Google Cloud Console → Credentials), redirect
    URI `https://<project-ref>.supabase.co/auth/v1/callback`; enable the Google
    provider in Supabase; set `NEXT_PUBLIC_AUTH_GOOGLE_ENABLED=true`.

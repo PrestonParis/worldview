@@ -5,8 +5,10 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import * as quizDb from "../db/quizSessions";
 import { BANK_VERSION } from "../quiz/bank";
-import { computeState, ENGINE_VERSION, isValidAnswer, REFINE_STEP, type QuizAnswer } from "../quiz/engine";
+import { computeState, ENGINE_VERSION, highestCompletedMode, isValidAnswer, modeComplete, REFINE_STEP, roundLeft, type QuizAnswer, type QuizState } from "../quiz/engine";
 import { answerSnapshot, applyAnswer, runnerState, type RunnerState } from "../quiz/runner";
+import { computeResult } from "../quiz/results";
+import { planRound, ROUND_SIZES, withRound } from "../quiz/refine";
 import {
   EDIT_COOKIE_MAX_AGE,
   SLUG_PATTERN,
@@ -19,6 +21,9 @@ import {
   quizAccess,
 } from "../quiz/access";
 import { axisIds, type AxisId } from "../quiz/types";
+import { issues } from "../quiz/bank";
+import { modeRank, nextQuizMode, validQuizMode, type QuizModeId } from "../quiz/modes";
+import type { IssueId } from "../quiz/types";
 import type { ActionResult } from "./entities";
 
 // Every action re-checks access server side — these are reachable by direct
@@ -32,7 +37,21 @@ async function loadEditable(slug: string) {
   return access.canEdit ? session : null;
 }
 
-export async function startQuizAction(): Promise<void> {
+export async function startQuizAction(modeOrForm?: QuizModeId | FormData, entryTopic: IssueId | null = null): Promise<void> {
+  // Most entry points submit ordinary named fields, while the interactive
+  // landing hero binds its selected mode before submitting. Accept both so a
+  // UI refactor cannot silently turn Snapshot or Deep Map back into Profile.
+  const formData = modeOrForm instanceof FormData ? modeOrForm : undefined;
+  const rawMode = formData?.get("mode");
+  const rawTopic = entryTopic ?? formData?.get("topic");
+  const targetMode =
+    typeof modeOrForm === "string"
+      ? validQuizMode(modeOrForm)
+      : validQuizMode(typeof rawMode === "string" ? rawMode : undefined);
+  const topic =
+    typeof rawTopic === "string" && issues.some((issue) => issue.id === rawTopic)
+      ? (rawTopic as IssueId)
+      : null;
   const slug = newSlug();
   const token = newEditToken();
   await quizDb.createQuizSession({
@@ -40,7 +59,57 @@ export async function startQuizAction(): Promise<void> {
     editTokenHash: hashToken(token),
     bankVersion: BANK_VERSION,
     engineVersion: ENGINE_VERSION,
+    targetMode,
+    entryVariant: topic ? "topic" : "general",
+    entryTopic: topic,
   });
+  (await cookies()).set(editCookieName(slug), token, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: EDIT_COOKIE_MAX_AGE,
+  });
+  redirect(`/quiz/${slug}`);
+}
+
+// Starts a quiz with the statements already answered on the landing page, so
+// they count instead of being asked again. Each answer is validated and
+// snapshotted here; the client only supplies ids and values.
+export async function startQuizWithAnswersAction(mode: QuizModeId, entryTopic: IssueId | null, answers: QuizAnswer[]): Promise<void> {
+  const targetMode = validQuizMode(mode);
+  const topic = entryTopic && issues.some((issue) => issue.id === entryTopic) ? entryTopic : null;
+  const clean: QuizAnswer[] = [];
+  for (const a of Array.isArray(answers) ? answers.slice(0, 10) : []) {
+    if (a?.kind !== "statement" || typeof a.value !== "number") continue;
+    const answer: QuizAnswer = { kind: "statement", id: String(a.id), value: a.value };
+    if (!isValidAnswer(answer) || clean.some((c) => c.id === answer.id)) continue;
+    answer.shown = answerSnapshot(answer) ?? undefined;
+    clean.push(answer);
+  }
+  const slug = newSlug();
+  const token = newEditToken();
+  const session = await quizDb.createQuizSession({
+    slug,
+    editTokenHash: hashToken(token),
+    bankVersion: BANK_VERSION,
+    engineVersion: ENGINE_VERSION,
+    targetMode,
+    entryVariant: topic ? "topic" : "general",
+    entryTopic: topic,
+  });
+  if (clean.length > 0) {
+    await quizDb.saveQuizProgress(session.id, {
+      answers: clean,
+      refine: {},
+      deferred: [],
+      targetMode,
+      highestCompletedMode: null,
+      checkpointHistory: [],
+      status: "in_progress",
+      completedAt: null,
+    });
+  }
   (await cookies()).set(editCookieName(slug), token, {
     httpOnly: true,
     sameSite: "lax",
@@ -63,21 +132,92 @@ export async function submitAnswerAction(slug: string, answer: QuizAnswer): Prom
   clean.shown = answerSnapshot(clean) ?? undefined;
 
   const answers = applyAnswer(session.answers, clean);
-  const { complete } = computeState(answers, session.refine);
+  const state = computeState(answers, session.refine);
+  const complete = modeComplete(state, answers.length, session.targetMode);
+  const highest = highestCompletedMode(state, answers.length);
+  const deferred = session.deferred.filter((item) => item.kind !== clean.kind || item.id !== clean.id);
+  const checkpointHistory = complete && !session.checkpointHistory.some((checkpoint) => checkpoint.mode === session.targetMode)
+    ? [...session.checkpointHistory, { mode: session.targetMode, completedAt: new Date().toISOString(), answerCount: answers.length }]
+    : session.checkpointHistory;
   await quizDb.saveQuizProgress(session.id, {
     answers,
     refine: session.refine,
+    deferred,
+    targetMode: session.targetMode,
+    highestCompletedMode: highest,
+    checkpointHistory,
     status: complete ? "complete" : "in_progress",
     completedAt: complete ? (session.completedAt ?? new Date()) : session.completedAt,
   });
-  return { ok: true, data: runnerState(answers, session.refine, slug) };
+  return { ok: true, data: runnerState(answers, session.refine, slug, session.targetMode, deferred, session.entryTopic) };
 }
 
 // The live runner state, for a quiz page restored from the client cache.
 export async function runnerStateAction(slug: string): Promise<ActionResult<RunnerState>> {
   const session = await loadEditable(slug);
   if (!session) return { ok: false, error: "This quiz can't be edited from here." };
-  return { ok: true, data: runnerState(session.answers, session.refine, slug) };
+  return { ok: true, data: runnerState(session.answers, session.refine, slug, session.targetMode, session.deferred, session.entryTopic) };
+}
+
+export async function deferQuestionAction(
+  slug: string,
+  kind: QuizAnswer["kind"],
+  id: string,
+): Promise<ActionResult<RunnerState>> {
+  const session = await loadEditable(slug);
+  if (!session) return { ok: false, error: "This quiz can't be edited from here." };
+  const live = runnerState(session.answers, session.refine, slug, session.targetMode, session.deferred, session.entryTopic);
+  if (!live.next || live.next.kind !== kind || live.next.id !== id) return { ok: false, error: "That question is no longer current." };
+  const previous = session.deferred.find((item) => item.kind === kind && item.id === id);
+  const deferred = [
+    ...session.deferred.filter((item) => item.kind !== kind || item.id !== id),
+    { kind, id, deferredAtMode: session.targetMode, deferCount: (previous?.deferCount ?? 0) + 1 },
+  ];
+  await quizDb.saveQuizProgress(session.id, {
+    answers: session.answers,
+    refine: session.refine,
+    deferred,
+    targetMode: session.targetMode,
+    highestCompletedMode: session.highestCompletedMode,
+    checkpointHistory: session.checkpointHistory,
+    status: "in_progress",
+    completedAt: session.completedAt,
+  });
+  return { ok: true, data: runnerState(session.answers, session.refine, slug, session.targetMode, deferred, session.entryTopic) };
+}
+
+export async function reviewDeferredAction(slug: string): Promise<void> {
+  const session = await loadEditable(slug);
+  if (!session) redirect(`/quiz/${slug}`);
+  await quizDb.saveQuizProgress(session.id, {
+    answers: session.answers,
+    refine: session.refine,
+    deferred: [],
+    targetMode: session.targetMode,
+    highestCompletedMode: session.highestCompletedMode,
+    checkpointHistory: session.checkpointHistory,
+    status: "in_progress",
+    completedAt: session.completedAt,
+  });
+  redirect(`/quiz/${slug}?take=1`);
+}
+
+export async function continueQuizAction(slug: string, requested: QuizModeId): Promise<void> {
+  const session = await loadEditable(slug);
+  if (!session) redirect(`/quiz/${slug}`);
+  const next = nextQuizMode(session.targetMode);
+  if (!next || requested !== next || modeRank(requested) <= modeRank(session.targetMode)) redirect(`/quiz/${slug}?view=results`);
+  await quizDb.saveQuizProgress(session.id, {
+    answers: session.answers,
+    refine: session.refine,
+    deferred: session.deferred,
+    targetMode: requested,
+    highestCompletedMode: session.highestCompletedMode,
+    checkpointHistory: session.checkpointHistory,
+    status: "in_progress",
+    completedAt: session.completedAt,
+  });
+  redirect(`/quiz/${slug}?take=1`);
 }
 
 export async function refineAxisAction(slug: string, axis: AxisId): Promise<void> {
@@ -85,14 +225,58 @@ export async function refineAxisAction(slug: string, axis: AxisId): Promise<void
   if (!session || !axisIds.includes(axis)) redirect(`/quiz/${slug}`);
   const state = computeState(session.answers, session.refine);
   const refine = { ...session.refine, [axis]: state.axes[axis].asked + REFINE_STEP };
-  const { complete } = computeState(session.answers, refine);
+  const after = computeState(session.answers, refine);
   await quizDb.saveQuizProgress(session.id, {
     answers: session.answers,
     refine,
-    status: complete ? "complete" : "in_progress",
+    deferred: session.deferred,
+    targetMode: "deep",
+    highestCompletedMode: session.highestCompletedMode,
+    checkpointHistory: session.checkpointHistory,
+    status: after.complete ? "complete" : "in_progress",
     completedAt: session.completedAt,
   });
-  redirect(`/quiz/${slug}?take=1`);
+  redirect(roundHref(slug, session.answers, state, after));
+}
+
+// An opt-in round of extra questions on a finished quiz, aimed at what most
+// separates the respondent's top matches. The current top match rides along
+// in the URL so the reveal afterwards can show what changed.
+export async function sharpenAction(slug: string, size: number): Promise<void> {
+  const session = await loadEditable(slug);
+  if (!session || !(ROUND_SIZES as readonly number[]).includes(size)) redirect(`/quiz/${slug}`);
+  const state = computeState(session.answers, session.refine);
+  const result = computeResult(session.answers, session.refine, state);
+  const refine = withRound(session.refine, state, planRound(result, state, size));
+  const after = computeState(session.answers, refine);
+  if (after.refineLeft === 0) redirect(`/quiz/${slug}?view=results`);
+  await quizDb.saveQuizProgress(session.id, {
+    answers: session.answers,
+    refine,
+    deferred: session.deferred,
+    targetMode: "deep",
+    highestCompletedMode: session.highestCompletedMode,
+    checkpointHistory: session.checkpointHistory,
+    status: after.complete ? "complete" : "in_progress",
+    completedAt: session.completedAt,
+  });
+  redirect(roundHref(slug, session.answers, state, after, result));
+}
+
+// Into the runner for a round. On a finished quiz the current top match
+// rides along in the URL, so the reveal afterwards can show what changed.
+function roundHref(
+  slug: string,
+  answers: QuizAnswer[],
+  before: QuizState,
+  after: QuizState,
+  result = computeResult(answers, {}, before),
+): string {
+  const left = roundLeft(after);
+  if (left === 0) return `/quiz/${slug}?take=1`;
+  const top = result.ideologies[0];
+  const params = new URLSearchParams({ take: "1", round: String(left), was: top.ideology.id, wasPct: String(top.match) });
+  return `/quiz/${slug}?${params}`;
 }
 
 function parseVisibility(v: FormDataEntryValue | null): quizDb.QuizVisibility {

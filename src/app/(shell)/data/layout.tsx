@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { DataFreshness } from "@/components/legislation/data-freshness";
-import { getCurrentUserId } from "@/lib/auth/session";
+import { getCurrentUser } from "@/lib/auth/session";
+import { isEditor } from "@/lib/auth/guard";
 
 // This section always reads live data (Neo4j + Postgres) — never prerender it statically.
 export const dynamic = "force-dynamic";
@@ -17,7 +18,7 @@ const tabs = [
 ];
 
 export default async function DataLayout({ children }: LayoutProps<"/data">) {
-  const signedIn = Boolean(await getCurrentUserId());
+  const user = await getCurrentUser();
 
   return (
     <div className="max-w-3xl">
@@ -28,12 +29,16 @@ export default async function DataLayout({ children }: LayoutProps<"/data">) {
         filings, and elections (with their candidacies) live in Postgres.
       </p>
       <DataFreshness sources={["congress-bills", "congress-votes"]} className="mt-3" />
-      {!signedIn ? (
+      {!user ? (
         <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">
           <Link href="/login?next=/data" className="font-medium text-slate-700 underline underline-offset-2 dark:text-slate-200">
             Sign in
           </Link>{" "}
-          with a registered account to add or edit records.
+          with an editor account to add or edit records.
+        </p>
+      ) : !isEditor(user) ? (
+        <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">
+          Your account can view these records. Editing is limited to editors.
         </p>
       ) : null}
 

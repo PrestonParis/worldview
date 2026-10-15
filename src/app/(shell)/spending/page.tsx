@@ -84,6 +84,10 @@ export default async function SpendingPage() {
         </p>
       </header>
 
+      <ChartCard title="Receipts and outlays" subtitle="Share of GDP, since 1930" source={SOURCES.omb} table={seriesTable(d.balance, "percent")}>
+        <TimeSeriesChart series={d.balance} unit="percent" height={340} />
+      </ChartCard>
+
       <SectionNav sections={SECTIONS} />
 
       {/* ------------------------------------------------------------ Overview */}
@@ -151,9 +155,6 @@ export default async function SpendingPage() {
       {/* ------------------------------------------------------------ Over time */}
       <Section id="trends" title="Spending, taxes, and deficits over time" question="How have federal spending and revenue changed relative to the economy?">
         <div className="grid gap-6 lg:grid-cols-2">
-          <ChartCard title="Receipts and outlays" subtitle="Share of GDP, since 1930" source={SOURCES.omb} table={seriesTable(d.balance, "percent")}>
-            <TimeSeriesChart series={d.balance} unit="percent" height={280} />
-          </ChartCard>
           <ChartCard title="Deficit" subtitle="Share of GDP · negative is a surplus" source={SOURCES.omb} table={seriesTable(d.deficitShare, "percent")}>
             <TimeSeriesChart series={d.deficitShare} unit="percent" height={280} fromZero={false} reference={{ value: 0, label: "Balanced" }} />
           </ChartCard>

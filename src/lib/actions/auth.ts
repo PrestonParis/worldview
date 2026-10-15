@@ -8,18 +8,17 @@ import { createClient } from "../supabase/server";
 import { createAdminClient } from "../supabase/admin";
 import { deleteUserData, updateDisplayName } from "../db/profiles";
 import { finalizeSignIn, getCurrentUser, safeNext } from "../auth/session";
-import { grantRegistrationPass, isValidRegistrationCode } from "../auth/registration";
 import { claimAfterSignIn } from "../quiz/access";
 import type { ActionResult } from "./entities";
 
-// Sign-in and registration (docs/auth-plan.md). Everything runs server side so
-// the registration code is checked before Supabase creates an account.
-// Email + password is the main path; the emailed code is the fallback for a
-// forgotten password or an account that never set one.
+// Sign-in and registration (docs/auth-plan.md). Email + password is the main
+// path. New accounts confirm their email with a 6-digit code when Supabase's
+// "Confirm email" is on; a forgotten password is reset with an emailed code.
 
 export type AuthMode = "signin" | "register";
 
-const BAD_CODE = "That registration code isn't right.";
+// What the form shows next when an action doesn't redirect.
+export type AuthStep = "verify" | "new_password";
 
 async function requestOrigin(): Promise<string> {
   const h = await headers();
@@ -30,58 +29,9 @@ async function requestOrigin(): Promise<string> {
   return `${proto}://${host}`;
 }
 
-const sendSchema = z.object({
-  mode: z.enum(["signin", "register"]),
-  email: z.email("Enter a valid email address."),
-  registrationCode: z.string().optional(),
-  captchaToken: z.string().optional(),
-});
-
-export async function sendEmailCodeAction(input: {
-  mode: AuthMode;
-  email: string;
-  registrationCode?: string;
-  captchaToken?: string;
-}): Promise<ActionResult<null>> {
-  const parsed = sendSchema.safeParse({ ...input, email: input.email.trim().toLowerCase() });
-  if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input." };
-  const { mode, email, registrationCode, captchaToken } = parsed.data;
-
-  if (mode === "register") {
-    if (!isValidRegistrationCode(registrationCode ?? "")) return { ok: false, error: BAD_CODE };
-    await grantRegistrationPass();
-  }
-
-  const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithOtp({
-    email,
-    options: { shouldCreateUser: mode === "register", captchaToken },
-  });
-  if (error) {
-    if (mode === "signin" && /signups? not allowed/i.test(error.message)) {
-      return { ok: false, error: "No account uses that email. Create one with a registration code." };
-    }
-    return { ok: false, error: error.message };
-  }
-  return { ok: true, data: null };
-}
-
-const NOT_REGISTERED =
-  "That account isn't registered yet. Choose “Create account” and enter the registration code.";
-
-export async function verifyEmailCodeAction(input: {
-  email: string;
-  token: string;
-  next?: string;
-}): Promise<ActionResult<null>> {
-  const email = input.email.trim().toLowerCase();
-  const token = input.token.replace(/\s/g, "");
-  if (!/^\d{6,10}$/.test(token)) return { ok: false, error: "Enter the code from the email." };
-
-  const supabase = await createClient();
-  const { error } = await supabase.auth.verifyOtp({ email, token, type: "email" });
-  if (error) return { ok: false, error: "That code is wrong or has expired. Request a new one." };
-  return finishSignIn(input.next);
+function normalizeEmail(email: string): string | null {
+  const value = email.trim().toLowerCase();
+  return z.email().safeParse(value).success ? value : null;
 }
 
 const passwordSchema = z
@@ -89,10 +39,8 @@ const passwordSchema = z
   .min(8, "Use at least 8 characters for your password.")
   .max(72, "Use at most 72 characters for your password.");
 
-async function finishSignIn(next: string | undefined, registering = false): Promise<ActionResult<null>> {
-  const result = await finalizeSignIn({ registering });
-  if (result === "not_registered") return { ok: false, error: NOT_REGISTERED };
-  if (result === "no_session") return { ok: false, error: "Sign-in didn't complete. Try again." };
+async function finishSignIn(next: string | undefined): Promise<ActionResult<never>> {
+  if ((await finalizeSignIn()) === "no_session") return { ok: false, error: "Sign-in didn't complete. Try again." };
   redirect(await claimAfterSignIn(safeNext(next)));
 }
 
@@ -101,9 +49,9 @@ export async function passwordSignInAction(input: {
   password: string;
   next?: string;
   captchaToken?: string;
-}): Promise<ActionResult<null>> {
-  const email = input.email.trim().toLowerCase();
-  if (!z.email().safeParse(email).success) return { ok: false, error: "Enter a valid email address." };
+}): Promise<ActionResult<AuthStep>> {
+  const email = normalizeEmail(input.email);
+  if (!email) return { ok: false, error: "Enter a valid email address." };
   if (!input.password) return { ok: false, error: "Enter your password." };
 
   const supabase = await createClient();
@@ -114,6 +62,12 @@ export async function passwordSignInAction(input: {
   });
   if (error) {
     if (/invalid login credentials/i.test(error.message)) return { ok: false, error: "Wrong email or password." };
+    // Registered but never entered the confirmation code: send a fresh one
+    // (best effort; the first code may still be valid) and ask for it.
+    if (/email not confirmed/i.test(error.message)) {
+      await supabase.auth.resend({ type: "signup", email });
+      return { ok: true, data: "verify" };
+    }
     return { ok: false, error: error.message };
   }
   return finishSignIn(input.next);
@@ -122,13 +76,11 @@ export async function passwordSignInAction(input: {
 export async function passwordRegisterAction(input: {
   email: string;
   password: string;
-  registrationCode: string;
   next?: string;
   captchaToken?: string;
-}): Promise<ActionResult<null>> {
-  if (!isValidRegistrationCode(input.registrationCode)) return { ok: false, error: BAD_CODE };
-  const email = input.email.trim().toLowerCase();
-  if (!z.email().safeParse(email).success) return { ok: false, error: "Enter a valid email address." };
+}): Promise<ActionResult<AuthStep>> {
+  const email = normalizeEmail(input.email);
+  if (!email) return { ok: false, error: "Enter a valid email address." };
   const password = passwordSchema.safeParse(input.password);
   if (!password.success) return { ok: false, error: password.error.issues[0]?.message ?? "Invalid password." };
 
@@ -138,22 +90,81 @@ export async function passwordRegisterAction(input: {
     password: password.data,
     options: { captchaToken: input.captchaToken },
   });
-
-  if (error || !data.session) {
-    // Already has an auth account (e.g. an earlier sign-in that never got a
-    // profile): the right password still gets them in and registered.
-    const retry = await supabase.auth.signInWithPassword({ email, password: password.data });
-    if (!retry.error) return finishSignIn(input.next, true);
-    if (error && !/already registered|already exists/i.test(error.message)) return { ok: false, error: error.message };
-    if (!error && !data.session && data.user?.identities?.length) {
-      return {
-        ok: false,
-        error: "Supabase is set to require email confirmation. Turn off “Confirm email” in the Supabase Auth settings.",
-      };
+  if (error) {
+    if (/already registered|already exists/i.test(error.message)) {
+      return { ok: false, error: "An account with that email already exists. Sign in instead." };
     }
-    return { ok: false, error: "An account with that email already exists. Sign in instead." };
+    return { ok: false, error: error.message };
   }
-  return finishSignIn(input.next, true);
+  // "Confirm email" off: signed in already.
+  if (data.session) return finishSignIn(input.next);
+  // "Confirm email" on: Supabase emailed a code. An existing email comes back
+  // with no identities and no email sent; the right password still signs in.
+  if (data.user?.identities?.length) return { ok: true, data: "verify" };
+  const retry = await supabase.auth.signInWithPassword({ email, password: password.data });
+  if (!retry.error) return finishSignIn(input.next);
+  return { ok: false, error: "An account with that email already exists. Sign in instead." };
+}
+
+export async function resendSignupCodeAction(input: { email: string }): Promise<ActionResult<null>> {
+  const email = normalizeEmail(input.email);
+  if (!email) return { ok: false, error: "Enter a valid email address." };
+  const supabase = await createClient();
+  const { error } = await supabase.auth.resend({ type: "signup", email });
+  return error ? { ok: false, error: error.message } : { ok: true, data: null };
+}
+
+// Forgot password: email a code that signs the account in, then ask for a
+// new password (setNewPasswordAction).
+export async function sendResetCodeAction(input: {
+  email: string;
+  captchaToken?: string;
+}): Promise<ActionResult<null>> {
+  const email = normalizeEmail(input.email);
+  if (!email) return { ok: false, error: "Enter a valid email address." };
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.signInWithOtp({
+    email,
+    options: { shouldCreateUser: false, captchaToken: input.captchaToken },
+  });
+  if (error) {
+    if (/signups? not allowed/i.test(error.message)) return { ok: false, error: "No account uses that email." };
+    return { ok: false, error: error.message };
+  }
+  return { ok: true, data: null };
+}
+
+// Checks an emailed code: a sign-up confirmation finishes signing in; a reset
+// code moves on to choosing a new password.
+export async function verifyEmailCodeAction(input: {
+  email: string;
+  token: string;
+  purpose: "confirm" | "reset";
+  next?: string;
+}): Promise<ActionResult<AuthStep>> {
+  const email = normalizeEmail(input.email);
+  if (!email) return { ok: false, error: "Enter a valid email address." };
+  const token = input.token.replace(/\s/g, "");
+  if (!/^\d{6,10}$/.test(token)) return { ok: false, error: "Enter the code from the email." };
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.verifyOtp({ email, token, type: "email" });
+  if (error) return { ok: false, error: "That code is wrong or has expired. Request a new one." };
+  if (input.purpose === "reset") return { ok: true, data: "new_password" };
+  return finishSignIn(input.next);
+}
+
+export async function setNewPasswordAction(input: { password: string; next?: string }): Promise<ActionResult<never>> {
+  const password = passwordSchema.safeParse(input.password);
+  if (!password.success) return { ok: false, error: password.error.issues[0]?.message ?? "Invalid password." };
+  const supabase = await createClient();
+  const { error } = await supabase.auth.updateUser({ password: password.data });
+  if (error) {
+    if (/session/i.test(error.message)) return { ok: false, error: "The reset code expired. Start over." };
+    return { ok: false, error: error.message };
+  }
+  return finishSignIn(input.next);
 }
 
 export async function setPasswordAction(formData: FormData): Promise<void> {
@@ -166,16 +177,7 @@ export async function setPasswordAction(formData: FormData): Promise<void> {
   redirect(error ? "/account?error=password" : "/account?saved=password");
 }
 
-export async function googleSignInAction(input: {
-  mode: AuthMode;
-  registrationCode?: string;
-  next?: string;
-}): Promise<ActionResult<null>> {
-  if (input.mode === "register") {
-    if (!isValidRegistrationCode(input.registrationCode ?? "")) return { ok: false, error: BAD_CODE };
-    await grantRegistrationPass();
-  }
-
+export async function googleSignInAction(input: { next?: string }): Promise<ActionResult<null>> {
   const supabase = await createClient();
   const callback = `${await requestOrigin()}/auth/callback?next=${encodeURIComponent(safeNext(input.next))}`;
   const { data, error } = await supabase.auth.signInWithOAuth({

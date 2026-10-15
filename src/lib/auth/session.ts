@@ -1,14 +1,13 @@
 // Who is signed in (docs/auth-plan.md). Server-only.
 //
-// A Supabase session alone isn't enough: anyone can create an auth user with
-// the public anon key, so only users with a profiles row (i.e. who registered
-// with the registration code) count as signed in.
+// A session counts once its Supabase user has a profiles row, which
+// finalizeSignIn creates after the email is verified. What the account may
+// change is its role's business (src/lib/auth/guard.ts).
 
 import { cache } from "react";
 import type { User } from "@supabase/supabase-js";
 import { createClient } from "../supabase/server";
 import { createProfile, getProfile, type Profile } from "../db/profiles";
-import { clearRegistrationPass, hasRegistrationPass } from "./registration";
 
 export interface CurrentUser {
   id: string;
@@ -44,31 +43,23 @@ export async function getCurrentUserId(): Promise<string | null> {
   return (await getCurrentUser())?.id ?? null;
 }
 
-// Runs right after a session is established (password, email code, or the
-// OAuth callback). Existing accounts pass; new ones need the registration
-// code — checked in this same request (`registering`) or carried across the
-// OAuth redirect by the registration pass — otherwise the session is dropped.
-export async function finalizeSignIn(
-  { registering = false }: { registering?: boolean } = {},
-): Promise<"ok" | "not_registered" | "no_session"> {
+// Runs right after a session is established (password, emailed code, or the
+// OAuth callback). First sign-in creates the profile; an unverified email —
+// possible only while Supabase's "Confirm email" is off — still signs in, as
+// Supabase itself allowed it.
+export async function finalizeSignIn(): Promise<"ok" | "no_session"> {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return "no_session";
 
-  if (await getProfile(user.id)) return "ok";
-
-  if (registering || (await hasRegistrationPass())) {
+  if (!(await getProfile(user.id))) {
     const meta = user.user_metadata ?? {};
     const name = (meta.full_name ?? meta.name ?? null) as string | null;
     await createProfile(user.id, name?.trim() || null);
-    await clearRegistrationPass();
-    return "ok";
   }
-
-  await supabase.auth.signOut();
-  return "not_registered";
+  return "ok";
 }
 
 // Only same-site relative paths, so ?next= can't bounce users off-site.

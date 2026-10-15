@@ -83,6 +83,10 @@ export default async function ReligionPage() {
         </p>
       </header>
 
+      <ChartCard title="Membership and attendance" subtitle="Share of U.S. adults, yearly" source={SOURCES.gallup} table={seriesTable(d.attendance, "percent")}>
+        <TimeSeriesChart series={d.attendance} unit="percent" height={340} />
+      </ChartCard>
+
       <SectionNav sections={SECTIONS} />
 
       {/* ------------------------------------------------------------ Overview */}
@@ -151,9 +155,6 @@ export default async function ReligionPage() {
       {/* ----------------------------------------------------------- Attendance */}
       <Section id="attendance" title="Attendance at services" question="How many Americans go to religious services, and how has that changed?">
         <div className="grid gap-6 lg:grid-cols-2">
-          <ChartCard title="Membership and attendance" subtitle="Share of U.S. adults, yearly" source={SOURCES.gallup} table={seriesTable(d.attendance, "percent")}>
-            <TimeSeriesChart series={d.attendance} unit="percent" height={280} />
-          </ChartCard>
           <ChartCard
             title="Weekly attendance by tradition"
             subtitle="2023–24 · attend at least once a week"

@@ -11,6 +11,16 @@ export function o(
   return lens ? { id, text, stance, axes, lens } : { id, text, stance, axes };
 }
 
+// Checklist item: checked scores as `yes`, unchecked as `no`. Both sides
+// should load the same axes; an axis only one side loads is ignored.
+export function item(id: string, text: string, yesStance: string, yes: Loadings, noStance: string, no: Loadings): ChoiceOption {
+  return { id, text, stance: yesStance, axes: yes, unchecked: { stance: noStance, axes: no } };
+}
+
+// The exclusive "None of these" box every checklist ends with. It carries no
+// loadings of its own: choosing it just leaves every other item unchecked.
+export const noneOfThese: ChoiceOption = { id: "none", text: "None of these", stance: "none of these", axes: {}, exclusive: true };
+
 // "Question q was answered with one of these options."
 export function when(q: string, ...ids: string[]): Condition {
   return { q, in: ids };

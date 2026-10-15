@@ -1,12 +1,41 @@
-import type { IssueModule } from "../types";
-import { L, o, when } from "./helpers";
+import type { Condition, IssueModule } from "../types";
+import { item, L, noneOfThese, o, when } from "./helpers";
 
 // Economic, governance, tech, and foreign-policy issue modules.
+// Independent yes/no policies are grouped into one checklist per module.
+
+// Foundation answers that rule out a module's premise. Someone who wants
+// private enterprise abolished isn't asked to tune tax brackets or the
+// minimum wage; someone who rejects elections isn't asked about mail ballots.
+const communist: Condition = when("economic-system.system", "communism");
+const noState: Condition = when("regime.authority", "no-state");
+const undemocratic: Condition = when("regime.authority", "unelected");
 
 export const policyIssues: IssueModule[] = [
   {
+    id: "economic-system",
+    name: "Economic system",
+    foundation: true,
+    screener: {
+      id: "economic-system.system",
+      attribute: "Economic system",
+      prompt: "Which economic system comes closest to the one you want?",
+      options: [
+        o("communism", "Communism: private ownership of business abolished, with production planned in common", "Communism", L(["ownership", -1, 0.5], ["regulation", -0.9, 0.4], ["redistribution", -1, 0.4])),
+        o("socialism", "Socialism: major industries owned by the public or by their workers", "Socialism", L(["ownership", -0.7, 0.5], ["regulation", -0.6, 0.4], ["redistribution", -0.8, 0.4])),
+        o("social-democracy", "Capitalism with a large welfare state, strong unions, and tight regulation", "Social democracy", L(["ownership", -0.3, 0.5], ["regulation", -0.6, 0.4], ["redistribution", -0.7, 0.4])),
+        o("state-directed", "Private enterprise steered by the state toward national goals", "State-directed capitalism", L(["ownership", -0.2, 0.5], ["regulation", -0.5, 0.4], ["redistribution", -0.2, 0.4])),
+        o("mixed", "A market economy with moderate regulation and a basic safety net", "Mixed market economy", L(["ownership", 0.2, 0.5], ["regulation", 0, 0.4], ["redistribution", 0, 0.4])),
+        o("free-market", "Free-market capitalism with low taxes and light regulation", "Free-market capitalism", L(["ownership", 0.6, 0.5], ["regulation", 0.6, 0.4], ["redistribution", 0.6, 0.4])),
+        o("laissez-faire", "Laissez-faire: the market decides nearly everything, and government does little beyond protecting property", "Laissez-faire capitalism", L(["ownership", 0.9, 0.5], ["regulation", 0.95, 0.4], ["redistribution", 0.95, 0.4])),
+      ],
+    },
+    followUps: [],
+  },
+  {
     id: "healthcare",
     name: "Health care",
+    unless: communist,
     screener: {
       id: "healthcare.system",
       attribute: "System",
@@ -79,6 +108,7 @@ export const policyIssues: IssueModule[] = [
   {
     id: "taxes",
     name: "Taxes",
+    unless: { any: [communist, noState] },
     screener: {
       id: "taxes.top-rate",
       attribute: "Top income tax rate",
@@ -95,16 +125,6 @@ export const policyIssues: IssueModule[] = [
     },
     followUps: [
       {
-        id: "taxes.wealth",
-        attribute: "Wealth tax",
-        prompt: "Should there be an annual tax on fortunes above $50 million?",
-        when: when("taxes.top-rate", "70", "50", "40", "37"),
-        options: [
-          o("yes", "Yes", "a wealth tax", L(["redistribution", -0.8, 0.3])),
-          o("no", "No", "no wealth tax", L(["redistribution", 0, 0.3])),
-        ],
-      },
-      {
         id: "taxes.corporate",
         attribute: "Corporate tax rate",
         prompt: "What should the federal corporate tax rate be?",
@@ -117,24 +137,15 @@ export const policyIssues: IssueModule[] = [
         ],
       },
       {
-        id: "taxes.child-credit",
-        attribute: "Child tax credit",
-        prompt: "Should families receive a child tax credit even if they have no income?",
-        when: when("taxes.top-rate", "50", "40", "37", "30", "flat"),
+        id: "taxes.policies",
+        attribute: "Wealth, inheritance & child credits",
+        prompt: "Select all you support: which of these taxes and credits should the U.S. have?",
+        selection: "checklist",
         options: [
-          o("yes", "Yes", "fully refundable child tax credit", L(["redistribution", -0.6, 0.3])),
-          o("working", "Only working families", "child tax credit for working families", L(["redistribution", 0.3, 0.3])),
-          o("no", "There should be no child tax credit", "no child tax credit", L(["redistribution", 0.8, 0.3], ["social", -0.2, 0.1])),
-        ],
-      },
-      {
-        id: "taxes.estate",
-        attribute: "Estate tax",
-        prompt: "Should large inheritances be taxed?",
-        when: when("taxes.top-rate", "40", "37", "30", "flat", "none"),
-        options: [
-          o("yes", "Yes, estates above a few million dollars", "estate tax on large inheritances", L(["redistribution", -0.3, 0.3])),
-          o("no", "No", "no estate tax", L(["redistribution", 0.6, 0.3])),
+          item("wealth", "An annual tax on fortunes above $50 million", "a wealth tax", L(["redistribution", -0.8, 0.3]), "no wealth tax", L(["redistribution", 0, 0.3])),
+          item("estate", "A tax on inheritances above a few million dollars", "estate tax on large inheritances", L(["redistribution", -0.3, 0.3]), "no estate tax", L(["redistribution", 0.6, 0.3])),
+          item("child-credit", "A child tax credit paid even to families with no income", "fully refundable child tax credit", L(["redistribution", -0.6, 0.3]), "child tax credit limited to working families or none", L(["redistribution", 0.4, 0.3])),
+          noneOfThese,
         ],
       },
     ],
@@ -142,6 +153,7 @@ export const policyIssues: IssueModule[] = [
   {
     id: "labor",
     name: "Labor & minimum wage",
+    unless: communist,
     screener: {
       id: "labor.minimum-wage",
       attribute: "Minimum wage",
@@ -166,24 +178,15 @@ export const policyIssues: IssueModule[] = [
         ],
       },
       {
-        id: "labor.gig",
-        attribute: "Gig workers",
-        prompt: "Should gig workers, like rideshare drivers, be classified as employees with benefits?",
-        when: when("labor.minimum-wage", "20", "15", "12"),
+        id: "labor.benefits",
+        attribute: "Gig work & paid leave",
+        prompt: "Select all you support: which of these labor policies should the U.S. adopt?",
+        selection: "checklist",
         options: [
-          o("yes", "Yes", "gig workers as employees", L(["regulation", -0.6, 0.3])),
-          o("no", "No, they should stay independent contractors", "gig workers as contractors", L(["regulation", 0.4, 0.3])),
-        ],
-      },
-      {
-        id: "labor.paid-leave",
-        attribute: "Paid leave",
-        prompt: "How should paid family leave work?",
-        when: when("labor.minimum-wage", "20", "15", "12", "7"),
-        options: [
-          o("federal", "A national paid leave program for all workers", "national paid leave program", L(["redistribution", -0.6, 0.3], ["federalism", 0.4, 0.1])),
-          o("mandate", "Employers should be required to provide it", "employer paid-leave mandate", L(["regulation", -0.5, 0.3])),
-          o("voluntary", "Left to employers and workers", "paid leave left to employers", L(["regulation", 0.6, 0.3], ["redistribution", 0.5, 0.2])),
+          item("gig", "Classifying gig workers, like rideshare drivers, as employees with benefits", "gig workers as employees", L(["regulation", -0.6, 0.3]), "gig workers as contractors", L(["regulation", 0.4, 0.3])),
+          item("leave-program", "A national paid family leave program for all workers", "national paid leave program", L(["redistribution", -0.6, 0.3], ["federalism", 0.4, 0.1]), "no national paid leave program", L(["redistribution", 0.4, 0.3], ["federalism", -0.2, 0.1])),
+          item("leave-mandate", "Requiring employers to provide paid family leave", "employer paid-leave mandate", L(["regulation", -0.5, 0.3]), "paid leave left to employers", L(["regulation", 0.5, 0.3])),
+          noneOfThese,
         ],
       },
     ],
@@ -191,6 +194,7 @@ export const policyIssues: IssueModule[] = [
   {
     id: "entitlements",
     name: "Social Security & Medicare",
+    unless: { any: [communist, noState] },
     screener: {
       id: "entitlements.solvency",
       attribute: "Social Security solvency",
@@ -205,33 +209,15 @@ export const policyIssues: IssueModule[] = [
     },
     followUps: [
       {
-        id: "entitlements.medicare-age",
-        attribute: "Medicare age",
-        prompt: "Should the Medicare eligibility age be lowered to 60?",
-        when: when("entitlements.solvency", "expand", "taxes", "mix"),
+        id: "entitlements.changes",
+        attribute: "Eligibility & benefits",
+        prompt: "Select all you support: which of these changes to Social Security and Medicare should the U.S. make?",
+        selection: "checklist",
         options: [
-          o("yes", "Yes", "Medicare at 60", L(["redistribution", -0.6, 0.3], ["ownership", -0.3, 0.2])),
-          o("no", "No", "Medicare age kept at 65", L(["redistribution", 0.2, 0.3])),
-        ],
-      },
-      {
-        id: "entitlements.means-test",
-        attribute: "Means testing",
-        prompt: "Should wealthy retirees receive reduced Social Security benefits?",
-        when: when("entitlements.solvency", "mix", "cut", "private"),
-        options: [
-          o("yes", "Yes", "means-tested benefits", L(["redistribution", -0.2, 0.2])),
-          o("no", "No, everyone paid in and should get what they earned", "full benefits regardless of wealth", L(["redistribution", 0.3, 0.2])),
-        ],
-      },
-      {
-        id: "entitlements.retirement-age",
-        attribute: "Retirement age",
-        prompt: "Should the full retirement age rise to 70?",
-        when: when("entitlements.solvency", "mix", "cut"),
-        options: [
-          o("yes", "Yes", "retirement age of 70", L(["redistribution", 0.6, 0.3])),
-          o("no", "No", "retirement age kept below 70", L(["redistribution", -0.1, 0.3])),
+          item("medicare-60", "Lowering the Medicare eligibility age to 60", "Medicare at 60", L(["redistribution", -0.6, 0.3], ["ownership", -0.3, 0.2]), "Medicare age kept at 65", L(["redistribution", 0.2, 0.3], ["ownership", 0.1, 0.2])),
+          item("means-test", "Reducing Social Security benefits for wealthy retirees", "means-tested benefits", L(["redistribution", -0.2, 0.2]), "full benefits regardless of wealth", L(["redistribution", 0.3, 0.2])),
+          item("retire-70", "Raising the full retirement age to 70", "retirement age of 70", L(["redistribution", 0.6, 0.3]), "retirement age kept below 70", L(["redistribution", -0.1, 0.3])),
+          noneOfThese,
         ],
       },
     ],
@@ -253,43 +239,16 @@ export const policyIssues: IssueModule[] = [
     },
     followUps: [
       {
-        id: "climate.carbon-tax",
-        attribute: "Carbon tax",
-        prompt: "Should there be a tax on carbon emissions, with the money returned to households?",
-        when: when("climate.approach", "major", "innovation"),
+        id: "climate.policies",
+        attribute: "Carbon tax, nuclear, cars & Paris",
+        prompt: "Select all you support: which of these energy and climate policies should the U.S. adopt?",
+        selection: "checklist",
         options: [
-          o("yes", "Yes", "carbon tax with dividend", L(["environment", -0.4, 0.3])),
-          o("no", "No", "no carbon tax", L(["environment", 0.4, 0.3], ["redistribution", 0.3, 0.1])),
-        ],
-      },
-      {
-        id: "climate.nuclear",
-        attribute: "Nuclear power",
-        prompt: "Should the U.S. build many more nuclear power plants?",
-        when: when("climate.approach", "emergency", "major", "innovation", "all"),
-        options: [
-          o("yes", "Yes", "more nuclear power", L(["technology", 0.5, 0.3])),
-          o("no", "No", "no new nuclear power", L(["technology", -0.7, 0.3])),
-        ],
-      },
-      {
-        id: "climate.cars",
-        attribute: "Gas-car phase-out",
-        prompt: "Should sales of new gas-powered cars be phased out by 2035?",
-        when: when("climate.approach", "emergency", "major", "innovation"),
-        options: [
-          o("yes", "Yes", "phase out new gas cars by 2035", L(["environment", -0.6, 0.3], ["regulation", -0.6, 0.2])),
-          o("no", "No", "no gas-car phase-out", L(["environment", 0.2, 0.3], ["regulation", 0.4, 0.2])),
-        ],
-      },
-      {
-        id: "climate.paris",
-        attribute: "Paris agreement",
-        prompt: "Should the U.S. be part of the Paris climate agreement?",
-        when: when("climate.approach", "major", "innovation", "all"),
-        options: [
-          o("yes", "Yes", "in the Paris agreement", L(["engagement", -0.5, 0.3], ["environment", -0.3, 0.2])),
-          o("no", "No", "out of the Paris agreement", L(["engagement", 0.6, 0.3], ["environment", 0.4, 0.2])),
+          item("nuclear", "Building many more nuclear power plants", "more nuclear power", L(["technology", 0.5, 0.3]), "no new nuclear power", L(["technology", -0.7, 0.3])),
+          item("paris", "Staying in the Paris climate agreement", "in the Paris agreement", L(["engagement", -0.5, 0.3], ["environment", -0.3, 0.2]), "out of the Paris agreement", L(["engagement", 0.6, 0.3], ["environment", 0.4, 0.2])),
+          item("carbon-tax", "A tax on carbon emissions, with the money returned to households", "carbon tax with dividend", L(["environment", -0.4, 0.3]), "no carbon tax", L(["environment", 0.4, 0.3])),
+          item("gas-cars", "Phasing out sales of new gas-powered cars by 2035", "phase out new gas cars by 2035", L(["environment", -0.6, 0.3], ["regulation", -0.6, 0.2]), "no gas-car phase-out", L(["environment", 0.2, 0.3], ["regulation", 0.4, 0.2])),
+          noneOfThese,
         ],
       },
     ],
@@ -297,6 +256,7 @@ export const policyIssues: IssueModule[] = [
   {
     id: "housing",
     name: "Housing & zoning",
+    unless: communist,
     screener: {
       id: "housing.approach",
       attribute: "Affordability approach",
@@ -311,33 +271,15 @@ export const policyIssues: IssueModule[] = [
     },
     followUps: [
       {
-        id: "housing.rent-control",
-        attribute: "Rent control",
-        prompt: "Should cities be able to cap rent increases?",
-        when: when("housing.approach", "subsidy", "zoning", "character"),
+        id: "housing.policies",
+        attribute: "Rent, zoning & federal role",
+        prompt: "Select all you support: which of these housing policies should the U.S. adopt?",
+        selection: "checklist",
         options: [
-          o("yes", "Yes", "rent control allowed", L(["regulation", -0.6, 0.3])),
-          o("no", "No", "no rent control", L(["regulation", 0.6, 0.3])),
-        ],
-      },
-      {
-        id: "housing.single-family",
-        attribute: "Single-family zoning",
-        prompt: "Should apartments be allowed in neighborhoods zoned only for single-family homes?",
-        when: when("housing.approach", "public", "subsidy", "zoning", "market"),
-        options: [
-          o("yes", "Yes", "end single-family-only zoning", L(["regulation", 0.3, 0.3], ["environment", 0.2, 0.2])),
-          o("no", "No", "keep single-family zoning", L(["social", 0.3, 0.3], ["regulation", -0.2, 0.2])),
-        ],
-      },
-      {
-        id: "housing.federal-role",
-        attribute: "Federal role",
-        prompt: "Should the federal government pressure cities to allow more housing?",
-        when: when("housing.approach", "zoning", "market", "character"),
-        options: [
-          o("yes", "Yes", "federal pressure on local zoning", L(["federalism", 0.6, 0.3])),
-          o("no", "No, zoning is a local decision", "zoning left to localities", L(["federalism", -0.7, 0.3])),
+          item("rent-control", "Letting cities cap rent increases", "rent control allowed", L(["regulation", -0.6, 0.3]), "no rent control", L(["regulation", 0.6, 0.3])),
+          item("apartments", "Allowing apartments in neighborhoods zoned only for single-family homes", "end single-family-only zoning", L(["regulation", 0.3, 0.3], ["social", -0.1, 0.2]), "keep single-family zoning", L(["regulation", -0.2, 0.3], ["social", 0.3, 0.2])),
+          item("federal-pressure", "Federal pressure on cities to allow more housing", "federal pressure on local zoning", L(["federalism", 0.6, 0.3]), "zoning left to localities", L(["federalism", -0.7, 0.3])),
+          noneOfThese,
         ],
       },
     ],
@@ -345,6 +287,7 @@ export const policyIssues: IssueModule[] = [
   {
     id: "debt",
     name: "Federal debt",
+    unless: { any: [communist, noState] },
     screener: {
       id: "debt.priority",
       attribute: "Debt approach",
@@ -449,6 +392,7 @@ export const policyIssues: IssueModule[] = [
   {
     id: "voting-rules",
     name: "Voting rules",
+    unless: { any: [noState, undemocratic] },
     // Replaces the voting-rules.access checklist (bank 3.1.0), which mixed
     // access and safeguards, allowed contradictory picks, and bundled claims.
     screener: {
@@ -465,58 +409,18 @@ export const policyIssues: IssueModule[] = [
     },
     followUps: [
       {
-        id: "voting-rules.photo-id",
-        attribute: "Voter ID",
-        prompt: "Should voters have to show a photo ID to vote?",
+        id: "voting-rules.rules",
+        attribute: "Election rules",
+        prompt: "Select all you support: which of these election rules should the U.S. adopt?",
+        selection: "checklist",
         options: [
-          o("yes", "Yes", "photo ID required", L(["voting", 0.5, 0.3])),
-          o("no", "No", "no photo ID requirement", L(["voting", -0.5, 0.3])),
-        ],
-      },
-      {
-        id: "voting-rules.mail",
-        attribute: "Mail voting",
-        prompt: "Who should be able to vote by mail?",
-        options: [
-          o("anyone", "Any voter who asks", "mail voting for anyone", L(["voting", -0.5, 0.3])),
-          o("reason", "Only voters with a specific reason, such as illness or travel", "mail voting with an excuse", L(["voting", 0.4, 0.3])),
-          o("none", "No one, except voters who cannot vote in person at all", "in-person voting only", L(["voting", 0.8, 0.3])),
-        ],
-      },
-      {
-        id: "voting-rules.registration",
-        attribute: "Voter registration",
-        prompt: "Should eligible citizens be registered to vote automatically, for example when they get a driver's license?",
-        options: [
-          o("yes", "Yes", "automatic voter registration", L(["voting", -0.6, 0.3])),
-          o("no", "No, people should register themselves", "self-registration", L(["voting", 0.4, 0.3])),
-        ],
-      },
-      {
-        id: "voting-rules.ranked-choice",
-        attribute: "Ranked-choice voting",
-        prompt: "Should elections use ranked-choice voting?",
-        options: [
-          o("yes", "Yes", "ranked-choice voting", L(["voting", -0.3, 0.2])),
-          o("no", "No", "no ranked-choice voting", L(["voting", 0.3, 0.2])),
-        ],
-      },
-      {
-        id: "voting-rules.dc",
-        attribute: "D.C. statehood",
-        prompt: "Should Washington, D.C. become a state?",
-        options: [
-          o("yes", "Yes", "D.C. statehood", L(["voting", -0.6, 0.3])),
-          o("no", "No", "no D.C. statehood", L(["voting", 0.5, 0.3])),
-        ],
-      },
-      {
-        id: "voting-rules.term-limits",
-        attribute: "Congressional term limits",
-        prompt: "Should members of Congress have term limits?",
-        options: [
-          o("yes", "Yes", "congressional term limits"),
-          o("no", "No", "no congressional term limits"),
+          item("photo-id", "Requiring voters to show a photo ID", "photo ID required", L(["voting", 0.5, 0.3]), "no photo ID requirement", L(["voting", -0.5, 0.3])),
+          item("mail", "Letting any voter vote by mail without needing an excuse", "mail voting for anyone", L(["voting", -0.5, 0.3]), "mail voting limited to voters with a reason", L(["voting", 0.6, 0.3])),
+          item("registration", "Registering eligible citizens automatically, for example when they get a driver's license", "automatic voter registration", L(["voting", -0.6, 0.3]), "self-registration", L(["voting", 0.4, 0.3])),
+          item("ranked-choice", "Ranked-choice voting", "ranked-choice voting", L(["voting", -0.3, 0.2]), "no ranked-choice voting", L(["voting", 0.3, 0.2])),
+          item("dc", "Statehood for Washington, D.C.", "D.C. statehood", L(["voting", -0.6, 0.3]), "no D.C. statehood", L(["voting", 0.5, 0.3])),
+          item("term-limits", "Term limits for members of Congress", "congressional term limits", {}, "no congressional term limits", {}),
+          noneOfThese,
         ],
       },
     ],
@@ -524,6 +428,7 @@ export const policyIssues: IssueModule[] = [
   {
     id: "judiciary",
     name: "Supreme Court & judiciary",
+    unless: { any: [noState, undemocratic] },
     screener: {
       id: "judiciary.court",
       attribute: "Court structure",
@@ -644,17 +549,6 @@ export const policyIssues: IssueModule[] = [
       ],
     },
     followUps: [
-      {
-        id: "china.decouple",
-        attribute: "Economic ties",
-        prompt: "Should the U.S. cut economic ties with China?",
-        when: when("china.stance", "rival", "competitor"),
-        options: [
-          o("broad", "Broadly, across most industries", "broad decoupling from China", L(["trade", -0.9, 0.3])),
-          o("strategic", "Only in strategic sectors like chips and defense", "decoupling in strategic sectors", L(["trade", -0.2, 0.3])),
-          o("no", "No", "no decoupling", L(["trade", 0.6, 0.3])),
-        ],
-      },
       {
         id: "china.human-rights",
         attribute: "Human rights",

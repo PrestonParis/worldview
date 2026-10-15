@@ -57,6 +57,10 @@ export default async function EducationPage() {
         Report Card, the Census Bureau, and the Federal Reserve.
       </IssueHeader>
 
+      <ChartCard title="Math scores" subtitle="Average NAEP score, 0–500 scale" source={SOURCES.naep} table={seriesTable(d.math, "points")}>
+        <TimeSeriesChart series={d.math} unit="points" height={340} fromZero={false} markers={[pre]} />
+      </ChartCard>
+
       <SectionNav sections={SECTIONS} />
 
       <section id="overview" className="scroll-mt-28 space-y-6">
@@ -78,10 +82,7 @@ export default async function EducationPage() {
           </p>
         </Prose>
         <div className="grid gap-6 lg:grid-cols-2">
-          <ChartCard title="Math scores" subtitle="Average, 0–500 scale" source={SOURCES.naep} table={seriesTable(d.math, "points")}>
-            <TimeSeriesChart series={d.math} unit="points" height={280} fromZero={false} markers={[pre]} />
-          </ChartCard>
-          <ChartCard title="Reading scores" subtitle="Average, 0–500 scale" source={SOURCES.naep} table={seriesTable(d.reading, "points")}>
+          <ChartCard title="Reading scores" subtitle="Average, 0–500 scale" source={SOURCES.naep} table={seriesTable(d.reading, "points")} className="lg:col-span-2">
             <TimeSeriesChart series={d.reading} unit="points" height={280} fromZero={false} markers={[pre]} />
           </ChartCard>
         </div>

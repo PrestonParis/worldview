@@ -1,8 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { statements, issues } from "./index";
+import { statements, issues, issueOrder } from "./index";
 import { axes } from "../axes";
 import { ideologies } from "../ideologies";
 import { authorities, axisIds, lensIds, nationBases, traditions, type ChoiceQuestion, type Condition, type LensId } from "../types";
+import { COVERAGE_ORDER } from "../engine";
 import { explainQuestion, explainStatement } from "../explanations";
 
 const primaryAxis = (id: string) => id.split(".")[0];
@@ -84,9 +85,39 @@ describe("statements", () => {
 describe("issue modules", () => {
   const questions: ChoiceQuestion[] = issues.flatMap((m) => [m.screener, ...m.followUps]);
 
-  it("cover 27 distinct issues", () => {
-    expect(new Set(issues.map((m) => m.id)).size).toBe(27);
-    expect(issues.length).toBe(27);
+  it("cover 28 distinct issues", () => {
+    expect(new Set(issues.map((m) => m.id)).size).toBe(28);
+    expect(issues.length).toBe(28);
+  });
+
+  it("are ordered: every issue once, foundations first", () => {
+    expect([...issueOrder].sort()).toEqual(issues.map((m) => m.id).sort());
+    expect(new Set(issueOrder).size).toBe(issueOrder.length);
+    const firstOther = issues.findIndex((m) => !m.foundation);
+    expect(issues.slice(firstOther).some((m) => m.foundation)).toBe(false);
+    expect(issues.slice(0, firstOther).map((m) => m.id)).toEqual(["regime", "economic-system", "religion-law"]);
+  });
+
+  it("visit every axis once in coverage order", () => {
+    expect([...COVERAGE_ORDER].sort()).toEqual([...axisIds].sort());
+    expect(new Set(COVERAGE_ORDER).size).toBe(axisIds.length);
+  });
+
+  // An issue can only be ruled out by an answer that's already been given.
+  it("are ruled out only by real foundation options", () => {
+    const foundations = new Map(issues.filter((m) => m.foundation).map((m) => [m.screener.id, new Set(m.screener.options.map((o) => o.id))]));
+    const check = (c: Condition, ctx: string) => {
+      if ("all" in c) return c.all.forEach((x) => check(x, ctx));
+      if ("any" in c) return c.any.forEach((x) => check(x, ctx));
+      const opts = foundations.get(c.q);
+      expect(opts, `${ctx} → ${c.q}`).toBeDefined();
+      for (const id of c.in) expect(opts!.has(id), `${ctx} → ${c.q}/${id}`).toBe(true);
+    };
+    for (const m of issues) {
+      if (!m.unless) continue;
+      expect(m.foundation, m.id).toBeFalsy();
+      check(m.unless, m.id);
+    }
   });
 
   it("have unique question ids prefixed by their issue", () => {
@@ -134,18 +165,35 @@ describe("issue modules", () => {
   it("marks exclusive options only on multiple-selection questions", () => {
     for (const q of questions) {
       for (const option of q.options) {
-        if (option.exclusive) expect(q.selection, `${q.id}/${option.id}`).toBe("multiple");
+        if (option.exclusive) expect(["multiple", "checklist"], `${q.id}/${option.id}`).toContain(q.selection);
       }
     }
   });
 
   it("includes compact policy batteries for independent selections", () => {
-    const multiple = questions.filter((question) => question.selection === "multiple");
-    expect(multiple.map((question) => question.id)).toEqual(
-      expect.arrayContaining(["abortion.exceptions", "policing.tactics", "immigration.temp-workers"]),
-    );
+    const multiple = questions.filter((question) => question.selection === "multiple" || question.selection === "checklist");
     for (const question of multiple) {
       expect(question.options.some((option) => option.exclusive), question.id).toBe(true);
+    }
+  });
+
+  // Each checklist item is a yes/no question: both answers need a stance and
+  // the same axes, or the "no" side would silently carry no evidence.
+  it("give every checklist item a yes and a no on the same axes, ending with None of these", () => {
+    const checklists = questions.filter((q) => q.selection === "checklist");
+    expect(checklists.length).toBeGreaterThanOrEqual(10);
+    for (const q of checklists) {
+      expect(q.options.at(-1)!.exclusive, q.id).toBe(true);
+      expect(Object.keys(q.options.at(-1)!.axes), q.id).toEqual([]);
+      for (const o of q.options.slice(0, -1)) {
+        expect(o.exclusive, `${q.id}/${o.id}`).toBeFalsy();
+        expect(o.unchecked, `${q.id}/${o.id}`).toBeDefined();
+        expect(o.unchecked!.stance.length, `${q.id}/${o.id}`).toBeGreaterThan(0);
+        expect(Object.keys(o.unchecked!.axes).sort(), `${q.id}/${o.id}`).toEqual(Object.keys(o.axes).sort());
+      }
+    }
+    for (const q of questions.filter((q) => q.selection !== "checklist")) {
+      for (const o of q.options) expect(o.unchecked, `${q.id}/${o.id}`).toBeUndefined();
     }
   });
 
@@ -173,12 +221,16 @@ describe("issue modules", () => {
     }
   });
 
-  it("offer every lens value somewhere, each from a single question", () => {
+  // A lens may be split across a screener and its follow-up (form of
+  // government, then who rules), but every value is offered exactly once and
+  // within one module.
+  it("offer every lens value exactly once, within a single module", () => {
     const valid: Record<LensId, readonly string[]> = { tradition: traditions, authority: authorities, nation: nationBases };
     for (const lens of lensIds) {
-      const qs = questions.filter((q) => q.options.some((o) => o.lens?.[lens]));
-      expect(qs.length, lens).toBe(1);
-      expect(qs[0].options.flatMap((o) => (o.lens?.[lens] ? [o.lens[lens]] : [])).sort(), lens).toEqual([...valid[lens]].sort());
+      const modules = issues.filter((m) => [m.screener, ...m.followUps].some((q) => q.options.some((o) => o.lens?.[lens])));
+      expect(modules.length, lens).toBe(1);
+      const offered = [modules[0].screener, ...modules[0].followUps].flatMap((q) => q.options.flatMap((o) => (o.lens?.[lens] ? [o.lens[lens]] : [])));
+      expect([...offered].sort(), lens).toEqual([...valid[lens]].sort());
     }
   });
 

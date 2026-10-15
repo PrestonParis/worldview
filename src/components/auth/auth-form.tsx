@@ -9,15 +9,26 @@ import {
   googleSignInAction,
   passwordRegisterAction,
   passwordSignInAction,
-  sendEmailCodeAction,
+  resendSignupCodeAction,
+  sendResetCodeAction,
+  setNewPasswordAction,
   verifyEmailCodeAction,
   type AuthMode,
 } from "@/lib/actions/auth";
 
 const ERROR_MESSAGES: Record<string, string> = {
   auth: "Sign-in didn't complete. Try again.",
-  not_registered: "That account isn't registered yet. Enter the registration code to create it.",
 };
+
+// password: email + password (sign in or register)
+// confirm:  code that confirms a new account's email
+// forgot:   email to send a reset code to
+// reset:    the reset code
+// new_password: choose a new password after the reset code
+type Step = "password" | "confirm" | "forgot" | "reset" | "new_password";
+
+const linkButton =
+  "text-sm text-slate-500 hover:text-slate-900 disabled:opacity-50 dark:text-slate-400 dark:hover:text-slate-100";
 
 export function AuthForm({
   mode,
@@ -33,13 +44,9 @@ export function AuthForm({
   turnstileSiteKey: string | null;
 }) {
   const register = mode === "register";
-  // "password" is the main path; "code" is the emailed-code fallback for a
-  // forgotten password (sign-in only).
-  const [method, setMethod] = useState<"password" | "code">("password");
-  const [step, setStep] = useState<"start" | "verify">("start");
-  const [password, setPassword] = useState("");
+  const [step, setStep] = useState<Step>("password");
   const [email, setEmail] = useState("");
-  const [registrationCode, setRegistrationCode] = useState("");
+  const [password, setPassword] = useState("");
   const [otp, setOtp] = useState("");
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [captchaReset, setCaptchaReset] = useState(0);
@@ -50,69 +57,177 @@ export function AuthForm({
   const [pending, startTransition] = useTransition();
   const onToken = useCallback((token: string | null) => setCaptchaToken(token), []);
 
-  const sendCode = () => {
+  const go = (nextStep: Step, message: string | null = null) => {
+    setStep(nextStep);
     setError(null);
-    setNotice(null);
+    setNotice(message);
+    setOtp("");
+  };
+
+  // Runs a server action; actions that succeed without redirecting say which
+  // step comes next.
+  const run = (action: () => Promise<{ ok: true; data: unknown } | { ok: false; error: string } | undefined>, after?: (data: unknown) => void) => {
+    setError(null);
     startTransition(async () => {
-      const result = await sendEmailCodeAction({
-        mode,
-        email,
-        registrationCode: register ? registrationCode : undefined,
-        captchaToken: captchaToken ?? undefined,
-      });
+      const result = await action();
       setCaptchaReset((n) => n + 1);
-      if (!result.ok) {
-        setError(result.error);
-        return;
-      }
-      setStep("verify");
-      setNotice(`We sent a code to ${email.trim()}.`);
+      if (!result) return;
+      if (!result.ok) setError(result.error);
+      else after?.(result.data);
     });
   };
+
+  const sentTo = (what: string) => `We sent a 6-digit code to ${email.trim()}. Enter it to ${what}.`;
+  const token = () => captchaToken ?? undefined;
 
   const onPassword = (e: FormEvent) => {
     e.preventDefault();
-    setError(null);
-    startTransition(async () => {
-      const token = captchaToken ?? undefined;
-      // Both redirect on success.
-      const result = register
-        ? await passwordRegisterAction({ email, password, registrationCode, next, captchaToken: token })
-        : await passwordSignInAction({ email, password, next, captchaToken: token });
-      setCaptchaReset((n) => n + 1);
-      if (result && !result.ok) setError(result.error);
-    });
+    run(
+      () =>
+        register
+          ? passwordRegisterAction({ email, password, next, captchaToken: token() })
+          : passwordSignInAction({ email, password, next, captchaToken: token() }),
+      () => go("confirm", sentTo("confirm your email")),
+    );
   };
 
-  const onSend = (e: FormEvent) => {
+  const onConfirm = (e: FormEvent) => {
     e.preventDefault();
-    sendCode();
+    run(() => verifyEmailCodeAction({ email, token: otp, purpose: "confirm", next }));
   };
 
-  const onVerify = (e: FormEvent) => {
+  const onForgot = (e: FormEvent) => {
     e.preventDefault();
-    setError(null);
-    startTransition(async () => {
-      // Redirects on success.
-      const result = await verifyEmailCodeAction({ email, token: otp, next });
-      if (result && !result.ok) setError(result.error);
-    });
+    run(
+      () => sendResetCodeAction({ email, captchaToken: token() }),
+      () => go("reset", sentTo("reset your password")),
+    );
   };
 
-  const onGoogle = () => {
-    setError(null);
-    if (register && !registrationCode.trim()) {
-      setError("Enter the registration code first.");
-      return;
-    }
-    startTransition(async () => {
-      const result = await googleSignInAction({ mode, registrationCode, next });
-      if (result && !result.ok) setError(result.error);
-    });
+  const onReset = (e: FormEvent) => {
+    e.preventDefault();
+    run(
+      () => verifyEmailCodeAction({ email, token: otp, purpose: "reset", next }),
+      () => {
+        setPassword("");
+        go("new_password");
+      },
+    );
   };
+
+  const onNewPassword = (e: FormEvent) => {
+    e.preventDefault();
+    run(() => setNewPasswordAction({ password, next }));
+  };
+
+  const resend = () =>
+    run(
+      () =>
+        step === "confirm"
+          ? resendSignupCodeAction({ email })
+          : sendResetCodeAction({ email, captchaToken: token() }),
+      () => setNotice(`We sent a new code to ${email.trim()}.`),
+    );
+
+  const onGoogle = () => run(() => googleSignInAction({ next }));
 
   const switchHref = `${register ? "/login" : "/register"}${next !== "/" ? `?next=${encodeURIComponent(next)}` : ""}`;
   const captchaMissing = !!turnstileSiteKey && !captchaToken;
+  const captcha = turnstileSiteKey ? (
+    <Turnstile siteKey={turnstileSiteKey} resetKey={captchaReset} onToken={onToken} />
+  ) : null;
+  const errorLine = error ? <p className="text-sm text-red-600 dark:text-red-400">{error}</p> : null;
+  const noticeLine = notice ? <p className="text-sm text-slate-700 dark:text-slate-300">{notice}</p> : null;
+
+  const emailField = (autoFocus: boolean) => (
+    <Field label="Email" htmlFor="email">
+      <input
+        id="email"
+        type="email"
+        required
+        autoFocus={autoFocus}
+        autoComplete="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        className={inputClass}
+        placeholder="you@example.com"
+      />
+    </Field>
+  );
+
+  const passwordField = (isNew: boolean, label = "Password") => (
+    <Field label={label} htmlFor="password">
+      <input
+        id="password"
+        type="password"
+        required
+        autoFocus={step === "new_password"}
+        minLength={isNew ? 8 : undefined}
+        maxLength={72}
+        autoComplete={isNew ? "new-password" : "current-password"}
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        className={inputClass}
+        placeholder={isNew ? "At least 8 characters" : undefined}
+      />
+    </Field>
+  );
+
+  const codeForm = (onSubmit: (e: FormEvent) => void, submitLabel: string) => (
+    <form onSubmit={onSubmit} className="mt-6 flex flex-col gap-4">
+      {noticeLine}
+      <Field label="Code" htmlFor="otp">
+        <input
+          id="otp"
+          type="text"
+          inputMode="numeric"
+          autoComplete="one-time-code"
+          required
+          autoFocus
+          maxLength={12}
+          value={otp}
+          onChange={(e) => setOtp(e.target.value)}
+          className={`${inputClass} tracking-[0.3em]`}
+          placeholder="123456"
+        />
+      </Field>
+      {errorLine}
+      <Button type="submit" disabled={pending}>
+        {pending ? "Checking…" : submitLabel}
+      </Button>
+      <div className="flex justify-between">
+        <button type="button" onClick={() => go(step === "confirm" ? "password" : "forgot")} className={linkButton}>
+          Use a different email
+        </button>
+        {/* A Turnstile token is single-use and the widget isn't on this step. */}
+        {turnstileSiteKey ? null : (
+          <button type="button" onClick={resend} disabled={pending} className={linkButton}>
+            Resend code
+          </button>
+        )}
+      </div>
+    </form>
+  );
+
+  const heading =
+    step === "forgot" || step === "reset" || step === "new_password"
+      ? "Reset your password"
+      : step === "confirm"
+        ? "Confirm your email"
+        : register
+          ? "Create an account"
+          : "Sign in";
+
+  const intro =
+    step === "password"
+      ? register
+        ? "Create an account to save maps and claim your quiz results."
+        : "Sign in with your email and password."
+      : step === "forgot"
+        ? "We'll email you a 6-digit code to reset your password."
+        : step === "new_password"
+          ? "Choose a new password for your account."
+          : null;
 
   return (
     <div className="flex min-h-full items-center justify-center bg-slate-50 px-4 py-12 dark:bg-slate-950">
@@ -120,82 +235,22 @@ export function AuthForm({
         <Link href="/" className="text-xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">
           Worldview
         </Link>
-        <h1 className="mt-4 text-lg font-medium text-slate-900 dark:text-slate-100">
-          {register ? "Create an account" : "Sign in"}
-        </h1>
-        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-          {register
-            ? "You'll need a registration code to create an account."
-            : method === "code"
-              ? "We'll email you a 6-digit code to sign in with."
-              : "Sign in with your email and password."}
-        </p>
+        <h1 className="mt-4 text-lg font-medium text-slate-900 dark:text-slate-100">{heading}</h1>
+        {intro ? <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{intro}</p> : null}
 
-        {method === "password" ? (
+        {step === "password" ? (
           <form onSubmit={onPassword} className="mt-6 flex flex-col gap-4">
-            {register ? (
-              <Field label="Registration code" htmlFor="registrationCode">
-                <input
-                  id="registrationCode"
-                  type="text"
-                  required
-                  autoFocus
-                  autoComplete="off"
-                  value={registrationCode}
-                  onChange={(e) => setRegistrationCode(e.target.value)}
-                  className={inputClass}
-                />
-              </Field>
-            ) : null}
-
-            <Field label="Email" htmlFor="email">
-              <input
-                id="email"
-                type="email"
-                required
-                autoFocus={!register}
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className={inputClass}
-                placeholder="you@example.com"
-              />
-            </Field>
-
-            <Field label="Password" htmlFor="password">
-              <input
-                id="password"
-                type="password"
-                required
-                minLength={register ? 8 : undefined}
-                autoComplete={register ? "new-password" : "current-password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className={inputClass}
-                placeholder={register ? "At least 8 characters" : undefined}
-              />
-            </Field>
-
-            {turnstileSiteKey ? (
-              <Turnstile siteKey={turnstileSiteKey} resetKey={captchaReset} onToken={onToken} />
-            ) : null}
-
-            {error ? <p className="text-sm text-red-600 dark:text-red-400">{error}</p> : null}
-
+            {emailField(true)}
+            {passwordField(register)}
+            {captcha}
+            {errorLine}
             <Button type="submit" disabled={pending || captchaMissing}>
               {pending ? (register ? "Creating…" : "Signing in…") : register ? "Create account" : "Sign in"}
             </Button>
 
             {register ? null : (
-              <button
-                type="button"
-                onClick={() => {
-                  setMethod("code");
-                  setError(null);
-                }}
-                className="self-start text-sm text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
-              >
-                Forgot your password? Email me a sign-in code
+              <button type="button" onClick={() => go("forgot")} className={`self-start ${linkButton}`}>
+                Forgot your password?
               </button>
             )}
 
@@ -218,98 +273,40 @@ export function AuthForm({
               </>
             ) : null}
           </form>
-        ) : step === "start" ? (
-          <form onSubmit={onSend} className="mt-6 flex flex-col gap-4">
-            <Field label="Email" htmlFor="email">
-              <input
-                id="email"
-                type="email"
-                required
-                autoFocus
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className={inputClass}
-                placeholder="you@example.com"
-              />
-            </Field>
-
-            {turnstileSiteKey ? (
-              <Turnstile siteKey={turnstileSiteKey} resetKey={captchaReset} onToken={onToken} />
-            ) : null}
-
-            {error ? <p className="text-sm text-red-600 dark:text-red-400">{error}</p> : null}
-
+        ) : step === "confirm" ? (
+          codeForm(onConfirm, register ? "Create account" : "Sign in")
+        ) : step === "forgot" ? (
+          <form onSubmit={onForgot} className="mt-6 flex flex-col gap-4">
+            {emailField(true)}
+            {captcha}
+            {errorLine}
             <Button type="submit" disabled={pending || captchaMissing}>
               {pending ? "Sending…" : "Email me a code"}
             </Button>
-            <button
-              type="button"
-              onClick={() => {
-                setMethod("password");
-                setError(null);
-              }}
-              className="self-start text-sm text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
-            >
-              Back to password sign-in
+            <button type="button" onClick={() => go("password")} className={`self-start ${linkButton}`}>
+              Back to sign in
             </button>
           </form>
+        ) : step === "reset" ? (
+          codeForm(onReset, "Continue")
         ) : (
-          <form onSubmit={onVerify} className="mt-6 flex flex-col gap-4">
-            {notice ? <p className="text-sm text-slate-700 dark:text-slate-300">{notice}</p> : null}
-            <Field label="Code" htmlFor="otp">
-              <input
-                id="otp"
-                type="text"
-                inputMode="numeric"
-                autoComplete="one-time-code"
-                required
-                autoFocus
-                maxLength={12}
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-                className={`${inputClass} tracking-[0.3em]`}
-                placeholder="123456"
-              />
-            </Field>
-
-            {error ? <p className="text-sm text-red-600 dark:text-red-400">{error}</p> : null}
-
+          <form onSubmit={onNewPassword} className="mt-6 flex flex-col gap-4">
+            {passwordField(true, "New password")}
+            {errorLine}
             <Button type="submit" disabled={pending}>
-              {pending ? "Checking…" : register ? "Create account" : "Sign in"}
+              {pending ? "Saving…" : "Save password and sign in"}
             </Button>
-            <div className="flex justify-between text-sm">
-              <button
-                type="button"
-                onClick={() => {
-                  setStep("start");
-                  setOtp("");
-                  setError(null);
-                }}
-                className="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
-              >
-                Use a different email
-              </button>
-              {turnstileSiteKey ? null : (
-                <button
-                  type="button"
-                  onClick={sendCode}
-                  disabled={pending}
-                  className="text-slate-500 hover:text-slate-900 disabled:opacity-50 dark:text-slate-400 dark:hover:text-slate-100"
-                >
-                  Resend code
-                </button>
-              )}
-            </div>
           </form>
         )}
 
-        <p className="mt-8 text-sm text-slate-500 dark:text-slate-400">
-          {register ? "Already have an account? " : "New to Worldview? "}
-          <Link href={switchHref} className="font-medium text-slate-900 underline-offset-2 hover:underline dark:text-slate-100">
-            {register ? "Sign in" : "Create an account"}
-          </Link>
-        </p>
+        {step === "password" ? (
+          <p className="mt-8 text-sm text-slate-500 dark:text-slate-400">
+            {register ? "Already have an account? " : "New to Worldview? "}
+            <Link href={switchHref} className="font-medium text-slate-900 underline-offset-2 hover:underline dark:text-slate-100">
+              {register ? "Sign in" : "Create an account"}
+            </Link>
+          </p>
+        ) : null}
         <p className="mt-6 border-t border-slate-200 pt-5 text-xs leading-5 text-slate-500 dark:border-slate-800 dark:text-slate-400">
           {register ? "By creating an account, you agree to the " : "Review the "}
           <Link href="/terms" className="underline underline-offset-2">Terms of Use</Link>

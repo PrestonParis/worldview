@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronUp, ChevronDown, Copy, Eye, EyeOff, Lock, Redo2, Snowflake, Trash2, Undo2, Unlock } from "lucide-react";
+import { ChevronUp, ChevronDown, Copy, Eye, EyeOff, Lock, PanelRightClose, PanelRightOpen, Redo2, Snowflake, Trash2, Undo2, Unlock } from "lucide-react";
 import { layerHistoryTransactionProps, useAppStore, useTemporalStore } from "@/lib/store/useAppStore";
 import { dataLayerEndpoint } from "@/lib/map/dataLayers";
 import type { DataLayerConfig, Layer, TextStyle } from "@/lib/types";
@@ -20,6 +20,7 @@ export function LayersPanel() {
   const dataLayerStatuses = useAppStore((s) => s.dataLayerStatuses);
   const liveValues = useAppStore((s) => s.liveValues);
   const [renamingId, setRenamingId] = useState<string | null>(null);
+  const [collapsed, setCollapsed] = useState(false);
 
   const { undo, redo, canUndo, canRedo } = useTemporalStore();
 
@@ -32,8 +33,18 @@ export function LayersPanel() {
     setRenamingId(null);
   }
 
+  if (collapsed) {
+    return (
+      <aside className="hidden w-10 shrink-0 flex-col items-center border-l border-neutral-800 bg-neutral-950 py-2 lg:flex">
+        <button type="button" onClick={() => setCollapsed(false)} title="Show layers" aria-label="Show layers" className="rounded p-1.5 text-neutral-400 hover:bg-neutral-800 hover:text-neutral-100">
+          <PanelRightOpen size={15} />
+        </button>
+      </aside>
+    );
+  }
+
   return (
-    <aside className="hidden w-64 shrink-0 flex-col border-l border-neutral-800 bg-neutral-950 lg:flex">
+    <aside className="hidden w-60 shrink-0 flex-col border-l border-neutral-800 bg-neutral-950 lg:flex">
       <div className="flex items-center justify-between border-b border-neutral-800 px-3 py-2">
         <h2 className="text-xs font-medium uppercase tracking-wide text-neutral-500">
           Layers
@@ -58,6 +69,9 @@ export function LayersPanel() {
             className="rounded p-1 text-neutral-400 hover:bg-neutral-800 hover:text-neutral-100 disabled:pointer-events-none disabled:opacity-30"
           >
             <Redo2 size={14} />
+          </button>
+          <button type="button" onClick={() => setCollapsed(true)} title="Hide layers" aria-label="Hide layers" className="rounded p-1 text-neutral-400 hover:bg-neutral-800 hover:text-neutral-100">
+            <PanelRightClose size={14} />
           </button>
         </div>
       </div>

@@ -3,6 +3,7 @@ import { AXIS_GROUPS, axes as axisDefs, axisById } from "@/lib/quiz/axes";
 import {
   poleLabel,
   verdict,
+  VERDICT_CLEAR_LEAD,
   type AxisComparison,
   type AxisResult,
   type IdeologyMatch,
@@ -12,8 +13,10 @@ import { FAMILIES, familyColor } from "@/lib/quiz/families";
 import { LENS_NAMES, LENS_VALUE_LABELS } from "@/lib/quiz/lenses";
 import { ideologyMap, placeRespondent } from "@/lib/quiz/map";
 import { ideologies } from "@/lib/quiz/ideologies";
-import { refineAxisAction, startQuizAction } from "@/lib/actions/quiz";
+import { continueQuizAction, refineAxisAction, reviewDeferredAction, sharpenAction, startQuizAction } from "@/lib/actions/quiz";
+import { ROUND_SIZES, type SharpenOutcome } from "@/lib/quiz/refine";
 import type { AxisId, IdeologyFamily } from "@/lib/quiz/types";
+import { nextQuizMode, QUIZ_MODES, type QuizModeId } from "@/lib/quiz/modes";
 import { QuizShareButton } from "./quiz-share";
 
 const GROUPS = AXIS_GROUPS;
@@ -104,7 +107,7 @@ function MatchRing({ value, color, animate }: { value: number; color: string; an
         <span className="text-4xl font-bold tracking-tight text-slate-950 tabular-nums sm:text-5xl dark:text-white">
           {value}%
         </span>
-        <span className="text-xs font-medium tracking-wide text-slate-500 uppercase dark:text-slate-400">match</span>
+        <span className="text-xs font-medium tracking-wide text-slate-500 uppercase dark:text-slate-400">similarity</span>
       </div>
     </div>
   );
@@ -115,18 +118,30 @@ export function QuizHero({
   result,
   canEdit,
   reveal,
+  sharpened,
+  mode,
+  checkpointComplete,
 }: {
   slug: string;
   result: QuizResult;
   canEdit: boolean;
   reveal: boolean;
+  sharpened?: SharpenOutcome;
+  mode: QuizModeId;
+  checkpointComplete: boolean;
 }) {
   const top = result.ideologies[0];
   const color = familyColor(top.ideology.family);
   const anim = (cls: string) => (reveal ? cls : "");
+  const changed = !!sharpened && sharpened.was.id !== top.ideology.id;
+  const snapshot = mode === "quick";
   const intro = canEdit
-    ? result.complete
-      ? "Your ideology is"
+    ? checkpointComplete
+      ? changed
+        ? "Your ideology is now"
+        : mode === "quick"
+          ? "Your current political neighborhood"
+          : "Your closest political tradition"
       : "So far, your ideology is"
     : "Their ideology is";
 
@@ -138,6 +153,7 @@ export function QuizHero({
         backgroundImage: `radial-gradient(ellipse 80% 90% at 0% 0%, ${color}38, transparent 60%), radial-gradient(ellipse 60% 70% at 100% 100%, ${color}1f, transparent 65%)`,
       }}
     >
+      {canEdit && sharpened && result.complete && <SharpenedRibbon outcome={sharpened} top={top} />}
       <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
         <div className="min-w-0 flex-1">
           <p className={`text-sm font-semibold tracking-[0.2em] uppercase ${anim("quiz-reveal-intro")}`} style={{ color }}>
@@ -146,17 +162,21 @@ export function QuizHero({
           <h1
             className={`mt-3 text-5xl leading-[1.02] font-bold tracking-tight text-balance text-slate-950 sm:text-7xl dark:text-white ${anim("quiz-reveal-name")}`}
           >
-            {top.ideology.name}
+            {snapshot ? `${FAMILIES[top.ideology.family].label} neighborhood` : top.ideology.name}
           </h1>
           <div className={anim("quiz-reveal-rest")}>
             <div className="mt-5 flex flex-wrap items-center gap-3">
               <FamilyChip family={top.ideology.family} />
               <span className="text-sm text-slate-600 dark:text-slate-300">{verdictLine(result.ideologies, canEdit ? "you" : "they")}</span>
             </div>
-            <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-700 dark:text-slate-200">{top.ideology.description}</p>
+            <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-700 dark:text-slate-200">
+              {snapshot
+                ? `Your closest signals currently point toward ${result.ideologies.slice(0, 3).map((match) => match.ideology.name).join(", ")}. A longer profile can distinguish among them.`
+                : top.ideology.description}
+            </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <QuizShareButton
-                title={`${canEdit ? "I'm" : "They're"} ${top.match}% ${top.ideology.name}`}
+                title={snapshot ? `My political snapshot is in the ${FAMILIES[top.ideology.family].label} neighborhood` : `${canEdit ? "I'm" : "They're"} ${top.match}% ${top.ideology.name}`}
                 className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white shadow-lg transition-transform hover:scale-[1.03]"
                 style={{ backgroundColor: color, boxShadow: `0 10px 30px -10px ${color}` }}
               />
@@ -165,11 +185,23 @@ export function QuizHero({
                   href={`/quiz/${slug}`}
                   className="inline-flex items-center rounded-full bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-slate-700 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
                 >
-                  Continue the quiz
+                  {result.roundLeft > 0 ? `Finish sharpening · ${result.roundLeft} left` : "Continue the quiz"}
                 </Link>
+              )}
+              {canEdit && result.complete && (
+                <form action={sharpenAction.bind(null, slug, ROUND_SIZES[0])}>
+                  <button
+                    type="submit"
+                    className="inline-flex items-center rounded-full bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-slate-700 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
+                  >
+                    {sharpened ? "Go another round" : "Sharpen your result"}
+                    <span className="ml-2 font-normal opacity-70">+{ROUND_SIZES[0]} questions</span>
+                  </button>
+                </form>
               )}
               {canEdit && (
                 <form action={startQuizAction}>
+                  <input type="hidden" name="mode" value={mode} />
                   <button
                     type="submit"
                     className="rounded-full px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-900/5 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white"
@@ -182,24 +214,153 @@ export function QuizHero({
             </div>
           </div>
         </div>
-        <div className={`self-center ${anim("quiz-reveal-intro")}`}>
-          <MatchRing value={top.match} color={color} animate={reveal} />
+        {!snapshot && (
+          <div className={`self-center ${anim("quiz-reveal-intro")}`}>
+            <MatchRing value={top.match} color={color} animate={reveal} />
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+export function QuizCheckpoint({
+  slug,
+  mode,
+  complete,
+  deferredCount,
+}: {
+  slug: string;
+  mode: QuizModeId;
+  complete: boolean;
+  deferredCount: number;
+}) {
+  const next = nextQuizMode(mode);
+  if (!complete && deferredCount === 0) return null;
+  return (
+    <section className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-7 dark:border-slate-800 dark:bg-slate-950">
+      <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
+        <div>
+          <p className={eyebrowClass}>{complete ? `${QUIZ_MODES[mode].shortName} complete` : "Current result"}</p>
+          <h2 className="mt-1 text-xl font-semibold text-slate-950 dark:text-white">
+            {next ? `Keep this result or continue to the ${QUIZ_MODES[next].shortName.toLowerCase()}.` : "Your full political map is complete."}
+          </h2>
+          {deferredCount > 0 && (
+            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+              {deferredCount} skipped {deferredCount === 1 ? "question is" : "questions are"} available to review.
+            </p>
+          )}
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {deferredCount > 0 && (
+            <form action={reviewDeferredAction.bind(null, slug)}>
+              <button type="submit" className="rounded-full border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700 dark:border-slate-700 dark:text-slate-200">
+                Review skipped
+              </button>
+            </form>
+          )}
+          {complete && next && (
+            <form action={continueQuizAction.bind(null, slug, next)}>
+              <button type="submit" className="rounded-full bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white dark:bg-white dark:text-slate-900">
+                Continue · {QUIZ_MODES[next].minutes} →
+              </button>
+            </form>
+          )}
         </div>
       </div>
     </section>
   );
 }
 
-export function QuizResults({ slug, result, canEdit }: { slug: string; result: QuizResult; canEdit: boolean }) {
+// What a sharpen round changed, shown on the reveal that follows it.
+function SharpenedRibbon({ outcome, top }: { outcome: SharpenOutcome; top: IdeologyMatch }) {
+  const changed = outcome.was.id !== top.ideology.id;
+  const delta = top.match - outcome.was.match;
+  return (
+    <div className="quiz-reveal-intro mb-8 inline-flex flex-wrap items-center gap-x-3 gap-y-1 rounded-2xl border border-slate-200 bg-white/80 px-4 py-2.5 text-sm backdrop-blur dark:border-slate-800 dark:bg-slate-950/70">
+      <span className="font-semibold text-slate-950 dark:text-white">
+        {changed ? "Your result changed" : delta === 0 ? "Your result held" : `Your result ${delta > 0 ? "firmed up" : "loosened"}`}
+      </span>
+      <span className="text-slate-600 tabular-nums dark:text-slate-300">
+        {changed ? (
+          <>
+            <span className="line-through decoration-slate-400">{outcome.was.name} {outcome.was.match}%</span>
+            {" → "}
+            {top.ideology.name} {top.match}%
+          </>
+        ) : (
+          <>
+            {top.ideology.name} {outcome.was.match}% → {top.match}%
+          </>
+        )}
+      </span>
+      <span className="text-xs text-slate-400">after {outcome.round} more answers</span>
+    </div>
+  );
+}
+
+// The invitation to keep going once the quiz is done: a round of extra
+// questions aimed at whatever would most change the result.
+function SharpenCard({ slug, result }: { slug: string; result: QuizResult }) {
+  const [a, b] = result.ideologies;
+  const lead = a.match - b.match;
+  const unsure = result.axes.filter((x) => x.confidence !== "high").length;
+  const heading = {
+    torn: `${a.ideology.name} or ${b.ideology.name}? Settle it.`,
+    lean: `Close the gap between ${a.ideology.name} and ${b.ideology.name}`,
+    clear: `Sharpen your ${a.ideology.name} result`,
+  }[verdict(result.ideologies)];
+  return (
+    <section id="sharpen" className={cardClass}>
+      <p className={eyebrowClass}>Keep going</p>
+      <h2 className={`${h2Class} mt-1 text-balance`}>{heading}</h2>
+      <p className="mt-3 max-w-2xl text-slate-600 dark:text-slate-300">
+        {lead < VERDICT_CLEAR_LEAD
+          ? `Your top two are ${lead === 0 ? "tied" : `${lead} ${lead === 1 ? "point" : "points"} apart`}. `
+          : ""}
+        Extra questions go to the positions where your closest matches disagree most
+        {unsure > 0 ? `, and to the ${unsure} ${unsure === 1 ? "axis" : "axes"} where your answers are least certain` : ""}.
+        Your results update the moment you finish, and you&apos;ll see what changed.
+      </p>
+      <div className="mt-6 grid gap-3 sm:grid-cols-2">
+        {ROUND_SIZES.map((size, i) => (
+          <form key={size} action={sharpenAction.bind(null, slug, size)}>
+            <button
+              type="submit"
+              className={`flex w-full items-center justify-between gap-4 rounded-2xl border px-5 py-4 text-left transition-colors ${
+                i === 0
+                  ? "border-slate-900 bg-slate-900 text-white hover:bg-slate-700 dark:border-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
+                  : "border-slate-200 text-slate-900 hover:border-slate-400 dark:border-slate-800 dark:text-slate-100 dark:hover:border-slate-600"
+              }`}
+            >
+              <span>
+                <span className="block font-semibold">{i === 0 ? "Quick round" : "Deep round"}</span>
+                <span className="block text-sm opacity-70">
+                  {size} questions · about {Math.round(size / 4)} min
+                </span>
+              </span>
+              <span aria-hidden="true">→</span>
+            </button>
+          </form>
+        ))}
+      </div>
+      <p className="mt-4 text-sm text-slate-500 dark:text-slate-400">
+        Or open any axis under <a href="#positions" className="underline underline-offset-2 hover:text-slate-900 dark:hover:text-white">Your positions</a> to refine just that one.
+      </p>
+    </section>
+  );
+}
+
+export function QuizResults({ slug, result, canEdit, mode }: { slug: string; result: QuizResult; canEdit: boolean; mode: QuizModeId }) {
   const byAxis = new Map(result.axes.map((a) => [a.axis, a]));
   const top = result.ideologies[0];
   const accent = familyColor(top.ideology.family);
   return (
     <div className="space-y-8">
       <DefinesYou result={result} canEdit={canEdit} accent={accent} />
-      <IdeologyMapSection result={result} canEdit={canEdit} />
+      {mode === "deep" && <IdeologyMapSection result={result} canEdit={canEdit} />}
 
-      <section id="matches" className={cardClass}>
+      {mode !== "quick" && <section id="matches" className={cardClass}>
         <p className={eyebrowClass}>Closest matches</p>
         <h2 className={`${h2Class} mt-1`}>{canEdit ? "The traditions closest to you" : "The closest traditions"}</h2>
         <ol className="mt-6 space-y-3">
@@ -223,11 +384,13 @@ export function QuizResults({ slug, result, canEdit }: { slug: string; result: Q
             ))}
           </ol>
         </details>
-      </section>
+      </section>}
+
+      {canEdit && result.complete && <SharpenCard slug={slug} result={result} />}
 
       <section id="positions" className={cardClass}>
         <p className={eyebrowClass}>{canEdit ? "Your positions" : "Positions"}</p>
-        <h2 className={`${h2Class} mt-1`}>17 axes</h2>
+        <h2 className={`${h2Class} mt-1`}>18 axes</h2>
         <p className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1 text-xs text-slate-500 dark:text-slate-400">
           <span className="inline-flex items-center gap-1.5">
             <span className="size-2.5 rounded-full border-2 bg-white dark:bg-slate-950" style={{ borderColor: accent }} />
@@ -262,7 +425,7 @@ export function QuizResults({ slug, result, canEdit }: { slug: string; result: Q
         </div>
       </section>
 
-      <IssuesSection slug={slug} result={result} canEdit={canEdit} />
+      {mode !== "quick" && <IssuesSection slug={slug} result={result} canEdit={canEdit} />}
     </div>
   );
 }
@@ -776,24 +939,27 @@ function IssuesSection({ slug, result, canEdit }: { slug: string; result: QuizRe
               </summary>
               {!p.skipped && (
                 <dl className="space-y-3 border-t border-slate-100 px-4 py-4 dark:border-slate-800">
-                  {p.attributes.map((a, attributeIndex) => {
+                  {groupByQuestion(p.attributes).map((g) => {
                     const chip = "inline-block rounded-lg px-2.5 py-1 text-sm leading-snug";
                     return (
-                      <div key={`${a.questionId}:${attributeIndex}`}>
-                        <dt className="text-xs text-slate-500 dark:text-slate-400">{a.attribute}</dt>
-                        <dd className="mt-1">
-                          {canEdit ? (
-                            <Link
-                              href={`/quiz/${slug}?edit=choice:${a.questionId}`}
-                              className={`${chip} bg-slate-100 text-slate-900 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700`}
-                              title="Change this answer"
-                            >
-                              {capitalize(a.stance)}
-                            </Link>
-                          ) : (
-                            <span className={`${chip} bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-slate-100`}>
-                              {capitalize(a.stance)}
-                            </span>
+                      <div key={g.questionId}>
+                        <dt className="text-xs text-slate-500 dark:text-slate-400">{g.attribute}</dt>
+                        <dd className="mt-1 flex flex-wrap gap-1.5">
+                          {g.stances.map((stance, i) =>
+                            canEdit ? (
+                              <Link
+                                key={i}
+                                href={`/quiz/${slug}?edit=choice:${g.questionId}`}
+                                className={`${chip} bg-slate-100 text-slate-900 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700`}
+                                title="Change this answer"
+                              >
+                                {capitalize(stance)}
+                              </Link>
+                            ) : (
+                              <span key={i} className={`${chip} bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-slate-100`}>
+                                {capitalize(stance)}
+                              </span>
+                            ),
                           )}
                         </dd>
                       </div>
@@ -813,8 +979,20 @@ function capitalize(s: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
+// Checklists and multiple selections give one stance per item; show them
+// under a single label.
+function groupByQuestion(attributes: QuizResult["profiles"][number]["attributes"]) {
+  const groups: { questionId: string; attribute: string; stances: string[] }[] = [];
+  for (const a of attributes) {
+    const last = groups.at(-1);
+    if (last?.questionId === a.questionId) last.stances.push(a.stance);
+    else groups.push({ questionId: a.questionId, attribute: a.attribute, stances: [a.stance] });
+  }
+  return groups;
+}
+
 // Sticky identity card and jump nav beside the results.
-export function QuizSidebar({ result, canEdit }: { result: QuizResult; canEdit: boolean }) {
+export function QuizSidebar({ slug, result, canEdit, mode }: { slug: string; result: QuizResult; canEdit: boolean; mode: QuizModeId }) {
   const top = result.ideologies[0];
   const color = familyColor(top.ideology.family);
   return (
@@ -836,9 +1014,19 @@ export function QuizSidebar({ result, canEdit }: { result: QuizResult; canEdit: 
         className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
         style={{ backgroundColor: color }}
       />
+      {canEdit && result.complete && (
+        <form action={sharpenAction.bind(null, slug, ROUND_SIZES[0])}>
+          <button
+            type="submit"
+            className="mt-2 w-full rounded-full border border-slate-300 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-950 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-900 dark:hover:text-white"
+          >
+            Sharpen · +{ROUND_SIZES[0]} questions
+          </button>
+        </form>
+      )}
       <nav className="mt-5 border-t border-slate-100 pt-4 dark:border-slate-800">
         <ul className="space-y-0.5 text-sm">
-          {RESULT_SECTIONS.map((s) => (
+          {RESULT_SECTIONS.filter((s) => mode === "deep" || (mode === "standard" ? s.id !== "map" : ["defines", "positions"].includes(s.id))).map((s) => (
             <li key={s.id}>
               <a
                 href={`#${s.id}`}

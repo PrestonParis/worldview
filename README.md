@@ -1,15 +1,18 @@
 # Worldview
 
-Worldview is a political research and visualization platform for exploring how public officials, legislation, money, elections, geography, and institutions connect.
+Worldview is a public-data platform for understanding the United States: immigration, crime, the economy, elections, political money, Congress, and the people and institutions behind them. Every figure links back to the government record or published study it came from.
 
 ![CI](https://github.com/PrestonParis/worldview/actions/workflows/ci.yml/badge.svg) · **Live:** [worldview-tawny.vercel.app](https://worldview-tawny.vercel.app)
 
-![Worldview research dashboard](docs/images/worldview-home.png)
+![Worldview home page](docs/images/worldview-home.png)
+
+![Immigration issue hub](docs/images/worldview-immigration.png)
 
 ## Features
 
-- Browse national and state data on immigration, crime, and demographics, each with sources and methods.
-- Search a catalog of every dataset on the platform, with a keyed partner API for institutions that publish their own.
+- Browse issue hubs for immigration, crime, guns, health care, energy, the economy, housing, education, abortion, demographics, religion, family, and government spending, each with sources and methods.
+- Compare all 50 states on one page each, drawing on the same datasets as the issue hubs.
+- Search a catalog of 57 public datasets from 40 publishers, with a documented read API and a keyed partner API for institutions that publish their own.
 - Explore people and organizations as a relationship graph backed by normalized public records.
 - Follow bills, roll-call votes, committees, court cases, and executive actions.
 - Trace contributions, lobbying registrations, and independent expenditures.
@@ -23,29 +26,32 @@ Worldview is a political research and visualization platform for exploring how p
 flowchart LR
     Browser[Next.js application] --> Actions[Server actions and route handlers]
     Actions --> Postgres[(Supabase PostgreSQL)]
+    Actions --> Neon[(Neon PostgreSQL overflow)]
     Actions --> Neo4j[(Neo4j graph)]
     Imports[Idempotent public-data importers] --> Postgres
+    Imports --> Neon
     Imports --> Neo4j
     Sources[FEC, Congress.gov, Census, Voteview, SCDB and others] --> Imports
     Actions --> Maps[MapLibre visualization]
 ```
 
-Worldview uses PostgreSQL for structured records such as claims, sources, bills, votes, contributions, elections, and quiz sessions. Neo4j stores entities and relationships that benefit from traversal and graph visualization. Importers link the two stores through stable external identifiers and use upserts or `MERGE` operations so interrupted or repeated runs do not duplicate data. Server actions and shared Zod schemas keep interactive edits and batch ingestion on the same validation boundary.
+Worldview uses PostgreSQL for structured records such as claims, sources, bills, votes, contributions, elections, and quiz sessions. Area-level statistics that outgrow the Supabase plan's size cap live in a second PostgreSQL database on Neon. Each dataset sits wholly in one database, recorded in `datasets.storage`, and a rebalance script moves datasets between the two. Neo4j stores entities and relationships that benefit from traversal and graph visualization. Importers link the two stores through stable external identifiers and use upserts or `MERGE` operations so interrupted or repeated runs do not duplicate data. Server actions and shared Zod schemas keep interactive edits and batch ingestion on the same validation boundary.
 
 ## Tech stack
 
 - **Frontend:** Next.js 16, React 19, TypeScript, Tailwind CSS, MapLibre GL
 - **Backend:** Server Actions, Route Handlers, Zod, Drizzle ORM
-- **Data:** Supabase PostgreSQL and Auth, Neo4j, public government datasets and APIs
-- **Infrastructure:** Vercel-ready Next.js app, GitHub Actions data sync, Docker Compose for local services
+- **Data:** Supabase PostgreSQL and Auth, Neon PostgreSQL, Neo4j Aura, public government datasets and APIs
+- **Infrastructure:** Vercel, GitHub Actions for CI, migrations, and scheduled data sync, Docker Compose for local services
 - **Testing:** Vitest and ESLint
 
 ## Engineering highlights
 
-- **Two databases with explicit ownership.** Relational records stay queryable and constrained in PostgreSQL, while entities and edges live in Neo4j for graph traversal.
+- **Stores with explicit ownership.** Relational records stay queryable and constrained in PostgreSQL, entities and edges live in Neo4j for graph traversal, and large statistical datasets are routed between Supabase and Neon per dataset to stay inside free-tier size limits.
+- **Forward-only migrations.** Dated, idempotent SQL files are applied on every production build before `next build`, so a deploy never ships code ahead of its tables.
 - **Idempotent ingestion.** Stable source IDs, unique indexes, upserts, and Neo4j `MERGE` calls make imports resumable and safe to rerun.
 - **Source-aware public data.** Importers preserve external identifiers and provenance across FEC, Congress.gov, Census, Voteview, the Supreme Court Database, and other public sources.
-- **Guarded editing.** Public exploration is separated from authenticated data maintenance, with registration codes and server-side authorization protecting write paths.
+- **Guarded editing.** Anyone can browse or sign up; changing shared data takes an editor role checked inside every server action. The Supabase Data API is closed with row-level security on every table, partner API keys are stored only as SHA-256 hashes, and quiz edit tokens live in httpOnly cookies with only their hashes in the database.
 - **Recoverable operations.** Export, restore, dry-run, cursor, and audit-report workflows were added after real recovery incidents exposed the need for stronger operational boundaries.
 
 ## Testing
@@ -55,11 +61,27 @@ npm test
 npm run lint
 ```
 
-The current suite covers validation, money and election calculations, legislation helpers, authentication guards, demographic forecasting, government lookup, public-data utilities, and the political quiz engine.
+355 tests across 40 files. The suite covers validation, money and election calculations, legislation helpers, authentication guards, demographic forecasting, government lookup, public-data utilities, the political quiz engine, and migration safety checks.
 
 ## Deployment
 
-Production runs on Vercel against Supabase and Neo4j Aura. Database migrations run on each production deploy, followed by a dataset backfill workflow; scheduled GitHub Actions keep public data current. Browsing is open to everyone, and editing requires a registered account.
+Production runs on Vercel against Supabase, Neon, and Neo4j Aura. Browsing is open to everyone; anyone can register with email and password, confirmed by an emailed code. New accounts are members, and editing shared data requires the editor role.
+
+GitHub Actions workflows (`.github/workflows/`):
+
+- `ci.yml`: lint, tests, and typecheck on every push to `main` and every pull request.
+- `post-deploy.yml`: after each successful production deploy, applies pending migrations and loads any catalog dataset that has no rows yet.
+- `sync-legislation.yml`, `sync-money.yml`, `sync-public-data.yml`: weekly refreshes from Congress.gov, the FEC, and the agency datasets.
+- `purge-quizzes.yml`: daily cleanup of unclaimed anonymous quiz sessions.
+- `keepalive-neo4j.yml`: a daily query so the free Neo4j Aura instance doesn't pause.
+
+## Status and next steps
+
+Worldview is live at [worldview-tawny.vercel.app](https://worldview-tawny.vercel.app) and under active development. Lint, tests, typecheck, and the production build pass. Before wider promotion, sign-up needs a CAPTCHA (Cloudflare Turnstile is wired in but not yet configured in production) and anonymous quiz creation needs rate limiting. The databases run on free tiers, so large imports are size-checked first.
+
+**Demo video:** TODO — add a short product walkthrough.
+
+Built with AI-assisted development (Claude Code).
 
 ## Local development
 
@@ -80,7 +102,7 @@ Each copies a template (`.env.local.docker` / `.env.cloud`) to `.env.local`.
 `npm run env:status` shows which is active. Both stores move together — Postgres/Auth
 and Neo4j are always either both local or both cloud, never split.
 
-The graph (~14,000 entities) lives in both the local Docker Neo4j and the cloud
+The graph (~18,000 people and organizations) lives in both the local Docker Neo4j and the cloud
 Aura instance. Keep them in sync with `npm run db:migrate-neo4j`
 (see [Backups](#backups-and-recovery)). Neo4j Aura Free instances **pause after 3 days
 idle and are deleted after 30 days idle** with no point-in-time restore, so run
@@ -124,11 +146,12 @@ npm run dev
 
 ### 7. Sign in
 
-Editing and account pages require a registered session (`src/proxy.ts` — Next 16
-renamed `middleware.ts` to `proxy.ts`; the ingest API is exempt and has its own
-bearer-token authentication). Registration is intentionally closed unless a valid
-`REGISTRATION_CODE` is configured and supplied. Sign-in is email and password; an emailed
-code is used only to reset a forgotten password.
+Editing and account pages require a session. `src/proxy.ts` (Next 16 renamed
+`middleware.ts` to `proxy.ts`) refreshes it on each request; the ingest API has its
+own bearer-token authentication. Anyone can create an account with email and password,
+confirmed by an emailed code; a forgotten password is reset the same way. New accounts
+are members, who own their maps and quizzes. Changing shared data needs an editor,
+granted with `npm run auth:role -- <email> editor`.
 
 ## Adding data
 
@@ -234,10 +257,11 @@ backup. Now:
 
 ## Project layout
 
-- `src/app/(shell)/` — the tool pages (`people`, `legislation`, `money`, `elections`)
-  + `data/` admin CRUD + workspace home, sharing the header nav.
+- `src/app/(shell)/` — the issue hubs (`immigration`, `crime`, `economy`, ...), `states`,
+  `datasets`, the tool pages (`people`, `legislation`, `money`, `elections`, `quiz`,
+  `my-government`), and `data/` editor CRUD, sharing the header nav.
 - `src/app/geography/` — the map/annotation studio, deliberately outside the shell
-  (full-bleed, its own chrome).
+  (full-bleed, its own chrome) and limited to the site owner's account.
 - `src/app/api/ingest/` — the batch ingestion endpoint.
 - `src/lib/neo4j/`, `src/lib/db/` — data access for entities/edges (graph) and
   claims/sources/bills/votes/contributions/elections/candidacies (relational), respectively.
@@ -254,6 +278,8 @@ backup. Now:
 
 - `infra/docker/docker-compose.yml` — the local Neo4j container.
 - `supabase/config.toml` — local Supabase CLI config.
+- `supabase/sql/` — dated migrations, applied in order by `scripts/migrate.mjs`
+  (`supabase/sql/neon/` for the Neon database).
 - `drizzle.config.ts` — reads `DATABASE_URL` from `.env.local`; throws if it's missing
   rather than silently defaulting anywhere.
 

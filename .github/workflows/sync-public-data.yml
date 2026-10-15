@@ -18,6 +18,9 @@ concurrency:
   group: sync-public-data
   cancel-in-progress: false
 
+permissions:
+  contents: read
+
 jobs:
   sync:
     runs-on: ubuntu-latest

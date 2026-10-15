@@ -14,9 +14,12 @@ import { randomRespondent, simulate, type Respondent } from "../src/lib/quiz/sim
 import { ideologies } from "../src/lib/quiz/ideologies";
 import { acceptedLens } from "../src/lib/quiz/lenses";
 import { axisIds, lensIds, type Ideology } from "../src/lib/quiz/types";
+import { issues } from "../src/lib/quiz/bank";
+import { quizModeIds } from "../src/lib/quiz/modes";
 
 const CLOSE = 0.15;
 const RANDOM_RESPONDENTS = 30;
+const MODE_RESPONDENTS = 10;
 
 const rms = (a: Ideology, b: Ideology) =>
   Math.sqrt(axisIds.reduce((s, x) => s + (a.position[x] - b.position[x]) ** 2, 0) / axisIds.length);
@@ -82,3 +85,29 @@ console.log(
   `Distances (calibrate MATCH_FLOOR/CEILING): on self ${(dist.self / n).toFixed(3)}, top ${(dist.top / n).toFixed(3)}, 10th ${(dist.tenth / n).toFixed(3)}, median ${(dist.median / n).toFixed(3)}`,
 );
 console.log(`Random respondents: mean axis error ${(err / RANDOM_RESPONDENTS).toFixed(3)}, ${Math.round(steps / RANDOM_RESPONDENTS)} answers on average`);
+
+const questions = issues.flatMap((issue) => [issue.screener, ...issue.followUps]);
+console.log(`Question formats: ${questions.filter((q) => q.selection === "checklist").length} checklists · ${questions.filter((q) => q.selection === "multiple").length} ordinary multi-select`);
+
+console.log("\nMode checkpoints");
+for (const mode of quizModeIds) {
+  let total = 0;
+  let axisError = 0;
+  let top1 = 0;
+  let top3 = 0;
+  for (let i = 0; i < MODE_RESPONDENTS; i++) {
+    const respondent = randomRespondent(`mode-audit:${i}`);
+    const full = simulate(respondent, `mode-audit:${i}`, 400, "deep");
+    const partial = mode === "deep" ? full : simulate(respondent, `mode-audit:${i}`, 400, mode);
+    const fullResult = computeResult(full.answers);
+    const result = computeResult(partial.answers);
+    const fullTop = fullResult.ideologies[0].ideology.id;
+    total += partial.steps;
+    axisError += axisIds.reduce((sum, axis) => sum + Math.abs(result.axes.find((a) => a.axis === axis)!.mean - respondent.truth[axis]), 0) / axisIds.length;
+    if (result.ideologies[0].ideology.id === fullTop) top1++;
+    if (result.ideologies.slice(0, 3).some((match) => match.ideology.id === fullTop)) top3++;
+  }
+  console.log(
+    `  ${mode.padEnd(8)} ${Math.round(total / MODE_RESPONDENTS)} screens · axis error ${(axisError / MODE_RESPONDENTS).toFixed(3)} · full top retained top-1 ${Math.round((100 * top1) / MODE_RESPONDENTS)}%, top-3 ${Math.round((100 * top3) / MODE_RESPONDENTS)}%`,
+  );
+}

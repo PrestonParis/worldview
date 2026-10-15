@@ -17,6 +17,7 @@ import {
   type QuizAnswer,
   type QuizState,
   type RefineTargets,
+  roundLeft,
 } from "./engine";
 
 export type Confidence = "high" | "medium" | "low";
@@ -86,6 +87,7 @@ export interface QuizResult {
   answeredCount: number;
   complete: boolean;
   progress: number;
+  roundLeft: number; // questions left in a sharpen round, 0 outside one
 }
 
 const STATEMENT_LABELS: Record<number, string> = {
@@ -272,6 +274,12 @@ export function computeResult(answers: QuizAnswer[], refine: RefineTargets = {},
       attributes: [i.module.screener, ...i.module.followUps].flatMap((q) => {
         const v = i.values.get(q.id);
         if (!v) return [];
+        if (q.selection === "checklist") {
+          // Every item has a stance, checked or not.
+          return q.options.flatMap((o) =>
+            o.unchecked ? [{ questionId: q.id, attribute: q.attribute, stance: v.optionIds.includes(o.id) ? o.stance : o.unchecked.stance }] : [],
+          );
+        }
         return v.optionIds.flatMap((id) => {
           if (id === NO_FIT_OPTION_ID) {
             return [{ questionId: q.id, attribute: q.attribute, stance: "mixed / none of the listed options" }];
@@ -291,6 +299,7 @@ export function computeResult(answers: QuizAnswer[], refine: RefineTargets = {},
     answeredCount: answers.length,
     complete: st.complete,
     progress: st.progress,
+    roundLeft: roundLeft(st),
   };
 }
 

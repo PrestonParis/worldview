@@ -15,7 +15,7 @@ covers only what is still open.
 | --- | --- | --- |
 | 1 | Whole-graph loads per request | **Partly fixed.** `/money`, `/money/industries`, `/money/map` no longer call `listEntities()`, and Money payloads dropped from 11–17 MB to 0.7–3.3 MB. Search, `/people`, detail pages, and `/data/*` still load everything. |
 | 2 | No error/404 boundaries; DB outage takes down the site | **Mostly fixed.** Added `error.tsx`, `(shell)/error.tsx`, `global-error.tsx`, `not-found.tsx`. The shell and Geography layouts treat a failed profile lookup as signed out. Neo4j has 10 s connect / 15 s acquisition timeouts. There is still no `loading.tsx`. |
-| 3 | Registration code brute-forceable | **Open.** |
+| 3 | Registration code brute-forceable | **Fixed.** The registration code is gone; registration is open and shared-data writes need an editor role (`profiles.role`), which only `npm run auth:role` grants. |
 | 4 | Features advertised that don't exist | **Fixed.** `features` was removed from `pages-content.ts`, the unused `NavPage.bundles` is gone, and My Government's copy now says "votes, donors, and connections". |
 | 5 | DC offices mislabelled | **Fixed.** DC now returns Mayor, Council chair, Councilmember, and Councilmember (at-large). |
 | 6 | Stale README | **Fixed.** It links to the live site, gives the entity count as ~14,000, and no longer has the demo-video TODO. |
@@ -71,8 +71,8 @@ These are dev-mode sizes. A production build is smaller, but the ratios hold.
 
 ### P0
 
-**1. Registration code can be brute-forced.**
-This is unchanged. `sendEmailCodeAction`, `passwordRegisterAction`, and the
+**1. Registration code can be brute-forced.** *Fixed 2026-10-14: the code was
+removed; shared-data writes need an editor role.* Original finding: `sendEmailCodeAction`, `passwordRegisterAction`, and the
 OAuth registration path check `REGISTRATION_CODE`
 (`src/lib/actions/auth.ts:51`, `:129`, `:175`) before calling Supabase, and
 Supabase is where the Turnstile token is verified. A direct server-action call
@@ -197,7 +197,7 @@ with tags, and have the importers revalidate after a sync. Check
 
 1. Fix the `graph-view.tsx` lint error, commit, and deploy. That ships most of
    this revision's fixes and turns post-deploy green.
-2. Harden registration: server-side Turnstile, a rate limit, and a long code.
+2. ~~Harden registration~~ — replaced by open registration with editor roles.
 3. Replace the search API's full loads, then `/people` and the detail pages.
 4. Paginate `/data/*`.
 5. Add caching for weekly-refreshed sections and `loading.tsx` for slow ones.

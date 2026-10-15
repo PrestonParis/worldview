@@ -1,13 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, ChevronUp, Download, Loader2 } from "lucide-react";
+import { Download, Loader2 } from "lucide-react";
 import { useMapInstance } from "@/lib/map/MapContext";
 import { exportMapImage, downloadBlob, EXPORT_PRESETS, type ExportSize } from "@/lib/map/exportImage";
 
 export function ExportPanel() {
   const { map, stage } = useMapInstance();
-  const [open, setOpen] = useState(true);
   const [presetId, setPresetId] = useState<string>(EXPORT_PRESETS[0].id);
   const [customWidth, setCustomWidth] = useState("1920");
   const [customHeight, setCustomHeight] = useState("1080");
@@ -37,20 +36,7 @@ export function ExportPanel() {
 
   return (
     <>
-      <div className="absolute top-3 right-3 z-10 w-56 rounded-md border border-neutral-700 bg-neutral-950/90 text-sm text-neutral-200 shadow-lg backdrop-blur">
-        <button
-          type="button"
-          onClick={() => setOpen((o) => !o)}
-          className="flex w-full items-center justify-between px-3 py-2"
-        >
-          <span className="flex items-center gap-2 font-medium text-neutral-100">
-            <Download size={14} /> Export
-          </span>
-          {open ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-        </button>
-
-        {open && (
-          <div className="space-y-3 border-t border-neutral-800 px-3 py-3">
+      <div className="space-y-3 text-sm text-neutral-200">
             <div>
               <p className="mb-1.5 text-xs tracking-wide text-neutral-500 uppercase">Size</p>
               <div className="flex flex-col gap-1">
@@ -122,8 +108,6 @@ export function ExportPanel() {
             </button>
 
             {error ? <p className="text-xs text-red-400">{error}</p> : null}
-          </div>
-        )}
       </div>
 
       {/* Covers the workspace during export so the brief on-screen resize
@@ -131,7 +115,7 @@ export function ExportPanel() {
           for a moment, this just hides it rather than adding a second,
           off-screen map instance to avoid that. */}
       {exporting && (
-        <div className="absolute inset-0 z-20 flex items-center justify-center bg-neutral-950/80 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-950/80 backdrop-blur-sm">
           <div className="flex items-center gap-2 text-sm text-neutral-200">
             <Loader2 size={16} className="animate-spin" /> Exporting…
           </div>

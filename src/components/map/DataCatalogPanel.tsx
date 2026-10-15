@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Database, Plus, X } from "lucide-react";
+import { Plus } from "lucide-react";
 import { DATA_PROVIDERS, createDataLayer } from "@/lib/map/dataLayers";
 import { useAppStore } from "@/lib/store/useAppStore";
 
@@ -14,7 +14,6 @@ interface CatalogDataset {
 interface AisHealth { state: "healthy" | "stale" | "empty"; activeVessels: number; ageSeconds: number | null }
 
 export function DataCatalogPanel() {
-  const [open, setOpen] = useState(false);
   const [datasets, setDatasets] = useState<CatalogDataset[]>([]);
   const [datasetSlug, setDatasetSlug] = useState("");
   const [metric, setMetric] = useState("");
@@ -28,7 +27,7 @@ export function DataCatalogPanel() {
   const selectedDataset = useMemo(() => datasets.find((item) => item.slug === datasetSlug), [datasets, datasetSlug]);
 
   useEffect(() => {
-    if (!open || datasets.length) return;
+    if (datasets.length) return;
     fetch("/api/geography/catalog")
       .then(async (response) => {
         if (!response.ok) throw new Error(`Dataset catalog failed (${response.status}).`);
@@ -36,15 +35,14 @@ export function DataCatalogPanel() {
       })
       .then((body) => setDatasets(body.datasets))
       .catch((reason) => setError(reason instanceof Error ? reason.message : "Could not load datasets."));
-  }, [datasets.length, open]);
+  }, [datasets.length]);
 
   useEffect(() => {
-    if (!open) return;
     fetch("/api/geography/health")
       .then((response) => response.ok ? response.json() as Promise<{ ais: AisHealth }> : null)
       .then((body) => { if (body) setAisHealth(body.ais); })
       .catch(() => undefined);
-  }, [open]);
+  }, []);
 
   function selectDataset(slug: string) {
     const selected = datasets.find((item) => item.slug === slug);
@@ -84,22 +82,9 @@ export function DataCatalogPanel() {
     setActiveLayer(layer.id);
   }
 
-  if (!open) {
-    return (
-      <button type="button" onClick={() => setOpen(true)} className="absolute left-60 top-3 z-10 flex items-center gap-2 rounded-md border border-neutral-700 bg-neutral-950/90 px-3 py-2 text-sm text-neutral-200 shadow-lg backdrop-blur hover:bg-neutral-900">
-        <Database size={14} /> Add data
-      </button>
-    );
-  }
-
   const categories = ["Live events", "Boundaries"] as const;
   return (
-    <div className="absolute left-60 top-3 z-20 flex max-h-[calc(100vh-8rem)] w-80 flex-col rounded-md border border-neutral-700 bg-neutral-950/95 text-sm text-neutral-200 shadow-xl backdrop-blur">
-      <div className="flex items-center justify-between border-b border-neutral-800 px-3 py-2">
-        <span className="flex items-center gap-2 font-medium"><Database size={14} /> Data catalog</span>
-        <button type="button" onClick={() => setOpen(false)} aria-label="Close data catalog" className="text-neutral-500 hover:text-neutral-100"><X size={15} /></button>
-      </div>
-      <div className="space-y-4 overflow-y-auto p-3">
+    <div className="space-y-4 text-sm text-neutral-200">
         <section>
           <h3 className="mb-2 text-xs uppercase tracking-wide text-neutral-500">Worldview datasets</h3>
           <select value={datasetSlug} onChange={(event) => selectDataset(event.target.value)} className="mb-2 w-full rounded border border-neutral-700 bg-neutral-900 px-2 py-1.5 text-xs">
@@ -130,7 +115,6 @@ export function DataCatalogPanel() {
             </div>
           </section>
         ))}
-      </div>
     </div>
   );
 }

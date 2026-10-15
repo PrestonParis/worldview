@@ -1,15 +1,11 @@
 import { MapCanvas } from "@/components/map/MapCanvas";
-import { CountrySearch } from "@/components/map/CountrySearch";
-import { MapControlPanel } from "@/components/map/MapControlPanel";
-import { ExportPanel } from "@/components/map/ExportPanel";
 import { GraphicsBar } from "@/components/map/GraphicsBar";
 import { AnnotationCanvas } from "@/components/annotate/AnnotationCanvas";
 import { ToolOptionsPanel } from "@/components/annotate/ToolOptionsPanel";
 import { MapProvider } from "@/lib/map/MapContext";
 import { DataLayerRenderer } from "@/components/map/DataLayerRenderer";
-import { DataCatalogPanel } from "@/components/map/DataCatalogPanel";
 import { DataLegends } from "@/components/map/DataLegends";
-import { CompositionPanel } from "@/components/map/CompositionPanel";
+import { WorkspaceToolbar } from "@/components/map/WorkspaceToolbar";
 import Link from "next/link";
 import { PresentationSync } from "@/components/map/PresentationSync";
 
@@ -22,11 +18,8 @@ export function MapWorkspace({ signedIn, presentationToken }: { signedIn: boolea
         <DataLayerRenderer />
         <AnnotationCanvas readOnly={readOnly} />
         {presentationToken ? <PresentationSync token={presentationToken} /> : null}
-        {!readOnly && <MapControlPanel />}
-        {!readOnly && <DataCatalogPanel />}
-        {!readOnly && <CompositionPanel />}
+        {!readOnly && <WorkspaceToolbar />}
         <DataLegends />
-        {!readOnly && <ExportPanel />}
         {!readOnly && signedIn ? (
           <GraphicsBar />
         ) : !readOnly ? (
@@ -37,7 +30,6 @@ export function MapWorkspace({ signedIn, presentationToken }: { signedIn: boolea
             Sign in to save graphics
           </Link>
         ) : null}
-        {!readOnly && <CountrySearch />}
         {!readOnly && <ToolOptionsPanel />}
       </div>
     </MapProvider>

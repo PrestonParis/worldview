@@ -1,8 +1,9 @@
 // Synthetic respondents for tuning and testing the engine. Not used at runtime.
 
-import { axisIds, lensIds, type AxisId, type ChoiceOption, type LensId } from "./types";
+import { axisIds, lensIds, type AxisId, type ChoiceOption, type LensId, type Loadings } from "./types";
 import {
   computeState,
+  modeComplete,
   nextItem,
   predictedAgreement,
   primaryAxis,
@@ -10,6 +11,7 @@ import {
   CHOICE_SHARPNESS,
   type QuizAnswer,
 } from "./engine";
+import type { QuizModeId } from "./modes";
 
 export interface Respondent {
   truth: Record<AxisId, number>;
@@ -32,13 +34,13 @@ function gaussian(rand: () => number): number {
   return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * rand());
 }
 
-export function simulate(r: Respondent, seed: string, maxItems = 400): { answers: QuizAnswer[]; steps: number } {
+export function simulate(r: Respondent, seed: string, maxItems = 400, mode: QuizModeId = "deep"): { answers: QuizAnswer[]; steps: number } {
   const rand = seededRandom(`answers:${seed}`);
   const answers: QuizAnswer[] = [];
   for (let step = 0; step < maxItems; step++) {
     const state = computeState(answers);
-    if (state.complete) return { answers, steps: step };
-    const item = nextItem(answers, state, seed);
+    if (modeComplete(state, answers.length, mode)) return { answers, steps: step };
+    const item = nextItem(answers, state, seed, {}, { mode });
     if (!item) return { answers, steps: step };
     if (item.kind === "statement") {
       if (rand() < r.skipRate) {
@@ -56,12 +58,25 @@ export function simulate(r: Respondent, seed: string, maxItems = 400): { answers
         continue;
       }
       // Score each option by its distance to the respondent across the axes it loads on.
-      const scores = item.question.options.map((o) => {
-        const entries = Object.entries(o.axes) as [AxisId, { location: number; weight: number }][];
+      const fit = (axes: Loadings) => {
+        const entries = Object.entries(axes) as [AxisId, { location: number; weight: number }][];
         if (entries.length === 0) return 0;
         return -CHOICE_SHARPNESS * entries.reduce((s, [a, l]) => s + l.weight * (r.truth[a] - l.location) ** 2, 0) /
           entries.reduce((s, [, l]) => s + l.weight, 0);
-      });
+      };
+      if (item.question.selection === "checklist") {
+        // Check each item that fits better than leaving it unchecked.
+        const checked = item.question.options.filter((o) => {
+          if (!o.unchecked) return false;
+          const yes = fit(o.axes);
+          const no = fit(o.unchecked.axes);
+          return rand() < 1 / (1 + Math.exp(no - yes));
+        });
+        const none = item.question.options.find((o) => o.exclusive)!;
+        answers.push({ kind: "choice", id: item.question.id, value: checked.length ? checked.map((o) => o.id) : [none.id] });
+        continue;
+      }
+      const scores = item.question.options.map((o) => fit(o.axes));
       const max = Math.max(...scores);
       const ws = scores.map((s) => Math.exp(s - max));
       let x = rand() * ws.reduce((a, b) => a + b, 0);

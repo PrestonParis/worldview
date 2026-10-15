@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import { ChevronDown, ChevronUp, Layers } from "lucide-react";
 import { useAppStore } from "@/lib/store/useAppStore";
 import type { GeoFeatureKey, MapStyleId } from "@/lib/types";
 
@@ -26,7 +24,6 @@ const FEATURES: { id: GeoFeatureKey; label: string; supported: boolean }[] = [
 ];
 
 export function MapControlPanel() {
-  const [open, setOpen] = useState(true);
   const mapView = useAppStore((s) => s.mapView);
   const setStyle = useAppStore((s) => s.setStyle);
   const toggleLabels = useAppStore((s) => s.toggleLabels);
@@ -34,20 +31,7 @@ export function MapControlPanel() {
   const toggleFeature = useAppStore((s) => s.toggleFeature);
 
   return (
-    <div className="absolute left-3 top-3 z-10 w-56 rounded-md border border-neutral-700 bg-neutral-950/90 text-sm text-neutral-200 shadow-lg backdrop-blur">
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        className="flex w-full items-center justify-between px-3 py-2"
-      >
-        <span className="flex items-center gap-2 font-medium text-neutral-100">
-          <Layers size={14} /> Map
-        </span>
-        {open ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-      </button>
-
-      {open && (
-        <div className="max-h-[calc(100vh-8rem)] space-y-4 overflow-y-auto border-t border-neutral-800 px-3 py-3">
+    <div className="space-y-4 text-sm text-neutral-200">
           <div>
             <p className="mb-1.5 text-xs uppercase tracking-wide text-neutral-500">
               Style
@@ -115,8 +99,6 @@ export function MapControlPanel() {
               ))}
             </div>
           </div>
-        </div>
-      )}
     </div>
   );
 }

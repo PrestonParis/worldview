@@ -1,8 +1,9 @@
 # Political Quiz — an adaptive, US-specific ideology quiz
 
-**Status (2026-10-01):** v1 built in the **extensive** mode, Phases 1–5. Routes are `/quiz` and
-`/quiz/[slug]`. Engine and bank: `src/lib/quiz/`. Table: `quiz_sessions` (`supabase/sql/2026-10-01-quiz.sql`,
-applied locally). Purge job: `.github/workflows/purge-quizzes.yml`. Phases 6–7 and other modes come later.
+**Status (2026-10-14):** the shared engine now supports **Snapshot**, **Profile**, and **Deep Map**
+checkpoints plus topic/campaign entry links. Routes are `/quiz` and `/quiz/[slug]`. Engine and bank:
+`src/lib/quiz/`. Table: `quiz_sessions` (`supabase/sql/2026-10-01-quiz.sql` plus
+`2026-10-14-quiz-modes.sql`). Purge job: `.github/workflows/purge-quizzes.yml`.
 
 ## Context
 
@@ -30,15 +31,15 @@ statements are **ideal-point** (GGUM-style): people at both extremes reject them
 - [ ] US-adapted axes (below), each reported as a position with a precision.
 - [ ] Issue modules (abortion, guns, …), each reported as a structured **policy profile**:
       one stance per attribute (legality, gestational limit, exceptions, who decides, …).
-- [ ] Adaptive engine: settled axes stop early, unresolved axes and issues get more
-      questions, follow-ups only appear when the earlier answers leave the stance unclear. No fixed length; a
-      typical run is ~100–170 questions (see *Length*).
+- [x] Adaptive engine with three honest stopping points: Snapshot (~24 screens), Profile
+      (~54), and the fully adaptive Deep Map (~115 typical). Every tier shares one answer log.
 - [ ] Every quiz is saved after each answer. Anyone can resume from the browser that
       started it.
 - [ ] Signed-in users can **claim** a quiz, then set it **public** (anyone with the
       link) or **private** (owner only).
-- [ ] Results: axis chart with a confidence level per axis, policy profiles, a distance-ranked match
-      against every ideology in the catalog (never a percentage), and "why you landed here" for each axis.
+- [x] Results: axis chart with confidence, policy profiles, distance-ranked ideology
+      similarities, and "why you landed here" for each axis. Snapshot reports a political
+      neighborhood rather than overclaiming a single settled ideology.
 - [ ] Finishing isn't final: after completion, any low-confidence axis offers "answer N more
       questions to refine this", appended to the same quiz.
 - [ ] **Not in scope yet:** matching users to politicians or other real people.
@@ -133,7 +134,10 @@ immigration level, selection priority, the border wall, Dreamers, birthright cit
 asylum, interior enforcement, and temporary work visas. Broad answers never fill narrower
 attributes automatically: the quiz records only answers the respondent actually supplies.
 Compact multiple-selection batteries are used where several independent policies belong
-together; an unchecked option is not treated as opposition.
+together; an unchecked option is not treated as opposition. Independent yes/no policies
+are grouped into **checklists** ("select all you support"): each item is scored as its own
+yes/no answer and an unchecked box counts as "no", so one screen carries the same evidence
+as the separate follow-ups it replaced. Each item names a stance for both answers.
 Each screener also records whether the issue is of low, medium, or high importance. That
 modestly changes how much evidence the answer contributes without changing its direction.
 Policy answers are weighted up (`CHOICE_WEIGHT`) relative to statements, so one strong
@@ -202,14 +206,21 @@ Everything lives in `src/lib/quiz/engine.ts`, as pure functions.
   - **Ideal:** `μ(θ) = 3 − 6·min(1, |θ − location| / width)`.
   - **Choice questions:** a softmax over negative squared distance to each option's location.
   - When an item loads on several axes, each axis gets its own update, scaled by that axis's weight.
-- **Picking the next question.** Among unanswered statements on unsettled axes, take
-  the one with the greatest expected drop in posterior variance. A coverage rule
-  comes first: every axis gets 2 statements and every issue screener gets asked before
-  the engine is allowed to concentrate on any one axis. Exposure control picks randomly among
-  the top-k so everyone doesn't get identical quizzes.
-- **Branching.** Issue screeners are queued like statements, and their follow-ups
-  are inserted when their `askIf` is true. A screener answer also updates the axes
-  it loads on.
+- **Order: a funnel, broad to narrow.**
+  1. Foundations: political system, economic system, religion and law. They frame
+     everything else.
+  2. Principles: 2 statements on every axis, one axis at a time (`COVERAGE_ORDER`).
+  3. Issues in bank order (`issueOrder`, broadest first), each asked as one block:
+     screener, then its follow-ups.
+  4. Statements on whichever axis is least certain, until every axis settles.
+  Within an axis, take the statement with the greatest expected drop in posterior
+  variance; exposure control picks randomly among the top-k so everyone doesn't get
+  identical quizzes.
+- **Branching.** Follow-ups are asked when their `when` is true. A screener answer also
+  updates the axes it loads on. An issue whose premise a foundation answer rules out
+  (`unless`) is skipped: someone who wants private enterprise abolished isn't asked about
+  tax brackets or the minimum wage, and someone who rejects elections isn't asked about
+  mail ballots. Skipping or answering "none fits" on a foundation never skips an issue.
 - **Stopping rules.**
   - An axis is settled when its posterior SD is below 0.12 *and* it has at least 4 answers, or
     when it reaches 15 answers.
@@ -230,15 +241,17 @@ Everything lives in `src/lib/quiz/engine.ts`, as pure functions.
 
 ### Length
 
-Estimate:
+Current simulation (`npm run quiz:audit`):
 
-| Respondent | Axis statements | Issue questions | Total |
-|---|---|---|---|
-| Clear-cut | 18 × ~4–5 | ~27 screeners + few follow-ups | ~120 |
-| Ambivalent | 18 × ~8–12 | ~27 screeners + many follow-ups | ~180–210 |
+| Tier | Typical screens | Contract |
+|---|---:|---|
+| Snapshot | 24 (28 maximum) | Touch every axis; report a broad neighborhood |
+| Profile | 54 (64 maximum) | At least two effective observations per axis, then broad issues |
+| Deep Map | ~115 | Cover every applicable issue and settle every axis |
 
-The minimum per axis and the issue screeners set a floor of roughly 100. The point of the adaptivity is
-to spend extra questions where someone is torn, not to cut the quiz short.
+Snapshot and Profile use coverage-aware selection, not the first N questions from Deep.
+Checklist items retain distinct stances but contribute at most two effective observations to
+one axis per screen because same-screen answers are correlated.
 
 ## Persistence & sharing
 
@@ -251,8 +264,12 @@ quizSessions = pgTable("quiz_sessions", {
   visibility: quizVisibilityEnum().notNull().default("link"), // "link" | "public" | "private"
   bankVersion: text().notNull(),
   engineVersion: text().notNull(),
+  targetMode: text().notNull(),            // quick | standard | deep
+  highestCompletedMode: text(),
+  entryVariant: text().notNull(),          // general | topic
+  entryTopic: text(),
   answers: jsonb().notNull(),             // [{ itemId, value, answeredAt }] in order
-  result: jsonb(),                        // cached replay output; recomputable
+  deferred: jsonb().notNull(),            // real "Skip for now" queue
   status: quizStatusEnum().notNull(),     // "in_progress" | "complete"
   createdAt, updatedAt, completedAt,
 });
@@ -316,13 +333,16 @@ quizSessions = pgTable("quiz_sessions", {
 4. **Results page.** ✅ Charts, issue stances, ideology matching, influence breakdown, OG image.
 5. **Claiming & visibility.** ✅ Claim flow via the existing `/login`, the private-quiz 404,
    and a "Your quizzes" list on `/quiz`.
-6. **Calibration (needs real data).**
+6. **Tiered quiz and engagement.** ✅ Snapshot/Profile/Deep contracts, coverage-aware
+   selection, checkpoint transitions, topic campaign entry links, true question deferral,
+   checklist-specific semantics, and tier-specific result depth.
+7. **Calibration (needs real data).**
    - Re-fit statement locations, weights, and item models, and the ideology reference
      points, from stored answers.
    - Factor-analyze each axis to test it, revising axes as needed (decision 7).
    - Add correlation-aware question selection.
    - Bump `bankVersion`.
-7. **Population analysis (later, needs scale).** Aggregate views over completed quizzes:
+8. **Population analysis (later, needs scale).** Aggregate views over completed quizzes:
    - how positions on one issue are distributed on another axis
    - which positions cluster together
    - which issues divide people most.
@@ -340,7 +360,5 @@ quizSessions = pgTable("quiz_sessions", {
 
 ## Later
 
-- **Quiz modes.** Decided: there will be several, but v1 ships only the extensive mode.
-  Quick (~30–45) and Standard (~70–100) would use the same bank and engine with looser
-  stopping thresholds and fewer issue screeners. With "refine this axis", a short quiz can be
-  extended later. Add a `mode` column when they arrive.
+- Fit checklist correlation caps, item parameters, and tier stability from real completed
+  response logs. Internal simulation is a regression test, not external validation.

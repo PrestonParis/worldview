@@ -3,14 +3,17 @@
 import { revalidatePath } from "next/cache";
 import { mapProjectPatchSchema, mapProjectSchema, type MapProjectInput, type MapProject } from "../validation/mapProject";
 import * as mapProjectsDb from "../db/mapProjects";
-import { getCurrentUserId } from "../auth/session";
+import { getCurrentUser } from "../auth/session";
+import { isOwner } from "../auth/guard";
 import type { ActionResult } from "./entities";
 
 // Every action re-derives the owner from the authenticated session server
 // side rather than trusting a client-supplied id — the client can't spoof
-// whose graphics it's reading or writing.
+// whose graphics it's reading or writing. The studio is owner-only, so any
+// other account is treated as signed out.
 async function requireUserId(): Promise<string | null> {
-  return getCurrentUserId();
+  const user = await getCurrentUser();
+  return isOwner(user) ? user!.id : null;
 }
 
 export async function listMapProjectsAction(): Promise<ActionResult<MapProject[]>> {

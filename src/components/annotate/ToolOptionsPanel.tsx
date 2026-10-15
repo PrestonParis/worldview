@@ -102,7 +102,7 @@ export function ToolOptionsPanel() {
       : (typeof toolOptions.iconKind === "string" ? (toolOptions.iconKind as IconKind) : "flag");
 
   return (
-    <div className="absolute bottom-3 left-3 z-10 w-56 rounded-md border border-neutral-700 bg-neutral-950/90 p-3 text-sm text-neutral-200 shadow-lg backdrop-blur">
+    <div className="absolute bottom-16 left-3 z-20 max-h-[calc(100vh-9rem)] w-56 overflow-y-auto rounded-md border border-neutral-700 bg-neutral-950/90 p-3 text-sm text-neutral-200 shadow-lg backdrop-blur">
       <p className="mb-2 text-xs uppercase tracking-wide text-neutral-500">
         {editingLayer
           ? "Selected shape"

@@ -164,8 +164,15 @@ export function Header({ accountLabel, previews }: { accountLabel: string | null
     <header className="header-enter sticky top-0 z-40 border-b border-slate-200/80 bg-[#f7f8fa]/90 backdrop-blur-xl dark:border-slate-800 dark:bg-[#080b12]/90">
       <div className="grid h-14 grid-cols-[1fr_auto] items-center gap-4 px-4 sm:px-6 lg:grid-cols-[1fr_auto_1fr]">
         <Link href="/" className="flex shrink-0 items-center gap-2 justify-self-start">
-          <span className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-md bg-white ring-1 ring-slate-200">
-            <Image src="/logo.png" alt="" width={28} height={28} className="h-full w-full object-cover" />
+          <span className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-white shadow-sm ring-1 ring-slate-200/90 dark:ring-slate-700">
+            <Image
+              src="/worldview-mark.png"
+              alt=""
+              width={32}
+              height={32}
+              loading="eager"
+              className="h-full w-full object-contain"
+            />
           </span>
           <span className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">Worldview</span>
         </Link>

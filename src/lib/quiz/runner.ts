@@ -3,6 +3,7 @@
 
 import {
   computeState,
+  modeComplete,
   nextItem,
   NO_FIT_OPTION_ID,
   primaryAxis,
@@ -12,12 +13,14 @@ import {
   type NextItem,
   type QuizAnswer,
   type RefineTargets,
+  roundLeft,
 } from "./engine";
 import { explainQuestion, explainStatement } from "./explanations";
 import { axisById, groupLabel } from "./axes";
 import { CONFIDENCE_MEDIUM_SD } from "./results";
-import { axisIds } from "./types";
+import { axisIds, type IssueId } from "./types";
 import { retiredStatements } from "./bank";
+import { QUIZ_MODES, type DeferredQuestion, type QuizModeId } from "./modes";
 
 // `area` and `topic` say what a question is about (never which way an answer
 // scores): an axis group and axis for statements, an issue and its policy
@@ -33,7 +36,7 @@ export type RunnerItem =
       topic: string;
       issue: string;
       isScreener: boolean;
-      selection: "single" | "multiple";
+      selection: "single" | "multiple" | "checklist";
       options: { id: string; text: string; exclusive: boolean }[];
     };
 
@@ -54,6 +57,16 @@ export interface RunnerState {
   issuesDone: number;
   issuesTotal: number;
   complete: boolean;
+  // 0…1 toward this mode's result: share of the target screens for the
+  // shorter modes, share of axes and issues settled for the deep map.
+  progress: number;
+  mode: QuizModeId;
+  modeName: string;
+  targetScreens: number;
+  deferredCount: number;
+  // Questions left in a "sharpen your result" round: refine targets on a
+  // quiz that's otherwise finished. 0 outside one.
+  refineLeft: number;
 }
 
 const RECENT = 15;
@@ -83,7 +96,7 @@ function serializeNext(item: NextItem): RunnerItem {
     selection: item.question.selection ?? "single",
     options: [
       ...item.question.options.map((o) => ({ id: o.id, text: o.text, exclusive: o.exclusive ?? false })),
-      ...(item.question.selection === "multiple"
+      ...(item.question.selection === "multiple" || item.question.selection === "checklist"
         ? []
         : [{ id: NO_FIT_OPTION_ID, text: "Mixed / none of these fits", exclusive: false }]),
     ],
@@ -99,9 +112,17 @@ export function serializeItem(kind: QuizAnswer["kind"], id: string): RunnerItem 
   return q ? serializeNext({ kind: "choice", ...q }) : null;
 }
 
-export function runnerState(answers: QuizAnswer[], refine: RefineTargets, seed: string): RunnerState {
+export function runnerState(
+  answers: QuizAnswer[],
+  refine: RefineTargets,
+  seed: string,
+  mode: QuizModeId = "deep",
+  deferred: DeferredQuestion[] = [],
+  entryTopic: IssueId | null = null,
+): RunnerState {
   const state = computeState(answers, refine);
-  const next = state.complete ? null : nextItem(answers, state, seed, refine);
+  const complete = modeComplete(state, answers.length, mode);
+  const next = complete ? null : nextItem(answers, state, seed, refine, { mode, deferred, entryTopic });
   const recent = answers.slice(-RECENT).flatMap((a) => {
     const item = serializeItem(a.kind, a.id);
     return item ? [{ item, value: a.value, importance: a.kind === "choice" ? a.importance : undefined }] : [];
@@ -116,8 +137,14 @@ export function runnerState(answers: QuizAnswer[], refine: RefineTargets, seed: 
     }).length,
     axesTotal: axisIds.length,
     issuesDone: state.issues.filter((i) => i.screenerAnswered && i.pending.length === 0).length,
-    issuesTotal: state.issues.length,
-    complete: state.complete,
+    issuesTotal: state.issues.filter((i) => !i.excluded).length,
+    complete,
+    progress: complete ? 1 : mode === "deep" ? state.progress : Math.min(0.97, answers.length / QUIZ_MODES[mode].targetScreens),
+    mode,
+    modeName: QUIZ_MODES[mode].shortName,
+    targetScreens: mode === "deep" ? 0 : QUIZ_MODES[mode].targetScreens,
+    deferredCount: deferred.length,
+    refineLeft: roundLeft(state),
   };
 }
 

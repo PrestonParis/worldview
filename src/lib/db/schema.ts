@@ -1130,8 +1130,14 @@ export const quizSessions = pgTable(
     status: text("status").notNull().default("in_progress"), // "in_progress" | "complete"
     bankVersion: text("bank_version").notNull(),
     engineVersion: text("engine_version").notNull(),
+    targetMode: text("target_mode").notNull().default("deep"), // "quick" | "standard" | "deep"
+    highestCompletedMode: text("highest_completed_mode"),
+    entryVariant: text("entry_variant").notNull().default("general"),
+    entryTopic: text("entry_topic"),
     answers: jsonb("answers").notNull().default(sql`'[]'::jsonb`), // QuizAnswer[]
     refine: jsonb("refine").notNull().default(sql`'{}'::jsonb`), // RefineTargets
+    deferred: jsonb("deferred").notNull().default(sql`'[]'::jsonb`), // DeferredQuestion[]
+    checkpointHistory: jsonb("checkpoint_history").notNull().default(sql`'[]'::jsonb`), // QuizCheckpointRecord[]
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
     completedAt: timestamp("completed_at", { withTimezone: true }),
@@ -1143,15 +1149,22 @@ export const quizSessions = pgTable(
     index("quiz_sessions_unclaimed_created_idx").on(table.createdAt).where(sql`${table.ownerId} is null`),
     check("quiz_sessions_visibility_check", sql`${table.visibility} in ('public', 'private')`),
     check("quiz_sessions_status_check", sql`${table.status} in ('in_progress', 'complete')`),
+    check("quiz_sessions_target_mode_check", sql`${table.targetMode} in ('quick', 'standard', 'deep')`),
+    check("quiz_sessions_highest_completed_mode_check", sql`${table.highestCompletedMode} is null or ${table.highestCompletedMode} in ('quick', 'standard', 'deep')`),
   ],
 );
 
-// Registered Worldview accounts (docs/auth-plan.md). A Supabase auth user
-// only counts as signed in once it has a row here — registration requires
-// the registration code, so sessions without a profile are ignored.
-export const profiles = pgTable("profiles", {
-  // Supabase auth.users.id — no FK, map_projects convention.
-  id: uuid("id").primaryKey(),
-  displayName: text("display_name"),
-  registeredAt: timestamp("registered_at", { withTimezone: true }).notNull().defaultNow(),
-});
+// Worldview accounts (docs/auth-plan.md). finalizeSignIn creates the row the
+// first time a verified Supabase auth user signs in. Only editors may change
+// shared data (src/lib/auth/guard.ts); members own their own maps and quizzes.
+export const profiles = pgTable(
+  "profiles",
+  {
+    // Supabase auth.users.id — no FK, map_projects convention.
+    id: uuid("id").primaryKey(),
+    displayName: text("display_name"),
+    role: text("role").notNull().default("member"),
+    registeredAt: timestamp("registered_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [check("profiles_role_check", sql`${table.role} in ('member', 'editor')`)],
+);

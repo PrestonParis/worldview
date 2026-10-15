@@ -2,8 +2,9 @@
 // stored answers are the source of truth and everything here is a replay.
 // See docs/quiz-plan.md (Engine).
 
-import { axisIds, type AxisId, type ChoiceQuestion, type Condition, type IssueModule, type Lens, type Statement } from "./types";
+import { axisIds, type AxisId, type ChoiceQuestion, type Condition, type IssueModule, type Lens, type Loadings, type Statement } from "./types";
 import { statements, issues } from "./bank";
+import { QUIZ_MODES, type QuizModeId, type QuizSelectionContext } from "./modes";
 
 // ── Answers ──
 
@@ -45,6 +46,9 @@ export const CHOICE_SHARPNESS = 6;
 // Concrete policy answers are scaled up against abstract statements: a
 // strong reaction to one statement shouldn't outweigh several issue answers.
 export const CHOICE_WEIGHT = 2;
+// Answers in one checklist share wording and context, so they are correlated.
+// Preserve every stance while capping how much one screen can tighten an axis.
+export const CHECKLIST_AXIS_EVIDENCE_CAP = 2;
 // Statement and policy evidence on an axis count as conflicting when their
 // means differ by more than their combined SDs plus this margin.
 export const CONFLICT_MARGIN = 0.4;
@@ -52,10 +56,32 @@ export const MIN_PER_AXIS = 5;
 export const MAX_PER_AXIS = 15;
 export const SD_TARGET = 0.12;
 export const COVERAGE_PER_AXIS = 2;
-export const STATEMENTS_BETWEEN_SCREENERS = 3;
+// The order coverage statements visit the axes: the questions that divide
+// political systems first, institutional detail last. Matches the broad-to-
+// narrow order of the issue modules (bank/index.ts).
+export const COVERAGE_ORDER: AxisId[] = [
+  "democracy",
+  "ownership",
+  "redistribution",
+  "regulation",
+  "social",
+  "religion",
+  "immigration",
+  "justice",
+  "identity",
+  "engagement",
+  "force",
+  "trade",
+  "environment",
+  "technology",
+  "liberty",
+  "executive",
+  "federalism",
+  "voting",
+];
 export const EXPOSURE_TOP_K = 3;
 export const REFINE_STEP = 4;
-export const ENGINE_VERSION = "3.0.0";
+export const ENGINE_VERSION = "5.0.0";
 export const NO_FIT_OPTION_ID = "__none_fit__";
 
 // ── Lookups ──
@@ -72,20 +98,23 @@ export const questionById = questionIndex;
 // statements. Keeping the statements in the bank preserves adaptive coverage
 // for people who have not reached the issue module.
 export const coveredStatementsByQuestion: Record<string, string[]> = {
+  "economic-system.system": ["ownership.01", "ownership.02"],
   "healthcare.system": ["ownership.05", "ownership.07"],
   "labor.minimum-wage": ["federalism.19", "regulation.15"],
   "labor.unions": ["regulation.04", "regulation.14"],
   "entitlements.solvency": ["ownership.16", "redistribution.16"],
   "climate.approach": ["environment.02", "environment.17"],
   "ai.governance": ["technology.02", "technology.03", "technology.13"],
-  "voting-rules.photo-id": ["voting.12"],
-  "voting-rules.mail": ["voting.05", "voting.14"],
-  "voting-rules.registration": ["voting.04"],
-  "lgbtq.marriage": ["social.03"],
+  "voting-rules.rules": ["voting.04", "voting.05", "voting.12", "voting.14"],
+  "lgbtq.marriage": ["social.15"],
+  "lgbtq.policies": ["social.03", "social.12", "social.20"],
   "affirmative-action.admissions": ["identity.03", "identity.13"],
+  "affirmative-action.policies": ["identity.01"],
   "policing.direction": ["justice.02", "justice.03", "justice.09", "justice.13"],
   "immigration.undocumented": ["immigration.03", "immigration.15"],
   "immigration.levels": ["immigration.04", "immigration.20"],
+  "immigration.enforcement": ["immigration.07", "immigration.11", "immigration.13", "immigration.16"],
+  "climate.policies": ["technology.04"],
   "religious-liberty.vendors": ["religion.20"],
   "education.choice": ["ownership.15"],
 };
@@ -101,7 +130,7 @@ export function isValidAnswer(a: QuizAnswer): boolean {
   if (!q) return false;
   if (a.importance !== undefined && ![1, 2, 3].includes(a.importance)) return false;
   if (a.value === null) return true;
-  if (q.question.selection === "multiple") {
+  if (q.question.selection === "multiple" || q.question.selection === "checklist") {
     if (!Array.isArray(a.value) || a.value.length === 0 || new Set(a.value).size !== a.value.length) return false;
     const selected = a.value.map((id) => q.question.options.find((o) => o.id === id));
     if (selected.some((o) => !o)) return false;
@@ -154,17 +183,31 @@ function statementLogLik(model: Statement["model"], location: number, response: 
   });
 }
 
-// log P(chose option | θ) on one axis: softmax over negative squared distance
-// among the question's options that load on that axis.
-function choiceLogLik(question: ChoiceQuestion, chosenId: string, axis: AxisId): number[] | null {
-  const opts = question.options.filter((o) => o.axes[axis]);
-  const chosen = opts.find((o) => o.id === chosenId);
-  if (!chosen || opts.length < 2) return null;
+// log P(picked locations[chosen] | θ): softmax over negative squared distance.
+function softmaxLogLik(locations: number[], chosen: number): number[] {
   return GRID.map((t) => {
-    const scores = opts.map((o) => -CHOICE_SHARPNESS * (t - o.axes[axis]!.location) ** 2);
+    const scores = locations.map((l) => -CHOICE_SHARPNESS * (t - l) ** 2);
     const max = Math.max(...scores);
     const z = scores.reduce((a, s) => a + Math.exp(s - max), 0);
-    return -CHOICE_SHARPNESS * (t - chosen.axes[axis]!.location) ** 2 - max - Math.log(z);
+    return scores[chosen] - max - Math.log(z);
+  });
+}
+
+// log P(chose option | θ) on one axis, among the question's options that load
+// on that axis.
+function choiceLogLik(question: ChoiceQuestion, chosenId: string, axis: AxisId): number[] | null {
+  const opts = question.options.filter((o) => o.axes[axis]);
+  const chosen = opts.findIndex((o) => o.id === chosenId);
+  if (chosen === -1 || opts.length < 2) return null;
+  return softmaxLogLik(opts.map((o) => o.axes[axis]!.location), chosen);
+}
+
+// A checklist's items, each as checked or not, with the loadings that side
+// carries and the side it was picked over.
+function checklistItems(question: ChoiceQuestion, chosenIds: string[]): { picked: Loadings; other: Loadings }[] {
+  return question.options.flatMap((o) => {
+    if (!o.unchecked) return [];
+    return chosenIds.includes(o.id) ? [{ picked: o.axes, other: o.unchecked.axes }] : [{ picked: o.unchecked.axes, other: o.axes }];
   });
 }
 
@@ -187,6 +230,26 @@ export function answerEvidence(a: QuizAnswer): Partial<Record<AxisId, number[]>>
   const q = questionIndex.get(a.id);
   if (!q) return out;
   const chosenIds = Array.isArray(a.value) ? a.value : [a.value];
+  if (q.question.selection === "checklist") {
+    const parts = new Map<AxisId, number[][]>();
+    for (const { picked, other } of checklistItems(q.question, chosenIds)) {
+      for (const [axis, l] of Object.entries(picked) as [AxisId, { location: number; weight: number }][]) {
+        const alt = other[axis];
+        if (!alt) continue;
+        const ll = softmaxLogLik([l.location, alt.location], 0);
+        const list = parts.get(axis) ?? [];
+        list.push(ll.map((value) => value * l.weight));
+        parts.set(axis, list);
+      }
+    }
+    for (const [axis, list] of parts) {
+      const effective = Math.min(CHECKLIST_AXIS_EVIDENCE_CAP, list.length);
+      out[axis] = GRID.map((_, g) =>
+        (list.reduce((sum, ll) => sum + ll[g], 0) / list.length) * effective * CHOICE_WEIGHT,
+      );
+    }
+    return out;
+  }
   const chosen = chosenIds.flatMap((id) => {
     const option = q.question.options.find((o) => o.id === id);
     return option ? [option] : [];
@@ -204,9 +267,27 @@ export function answerEvidence(a: QuizAnswer): Partial<Record<AxisId, number[]>>
       out[axis] = GRID.map((_, g) => parts.reduce((sum, p) => sum + p.ll[g] * p.weight, 0) / parts.length);
     }
   }
-  const importanceWeight = a.importance === 1 ? 0.7 : a.importance === 3 ? 1.3 : 1;
-  const scale = CHOICE_WEIGHT * importanceWeight;
+  // Importance is normative salience, not measurement reliability. Results
+  // use it for emphasis; it must not make an answer statistically "truer".
+  const scale = CHOICE_WEIGHT;
   for (const axis of Object.keys(out) as AxisId[]) out[axis] = out[axis]!.map((value) => value * scale);
+  return out;
+}
+
+// Effective observations per axis. Checklist items are retained individually
+// in the policy profile but same-screen correlation is capped here as well.
+export function evidenceCounts(a: QuizAnswer): Partial<Record<AxisId, number>> {
+  const out: Partial<Record<AxisId, number>> = {};
+  if (a.kind !== "choice" || a.value === null) return out;
+  const q = questionIndex.get(a.id)?.question;
+  if (q?.selection !== "checklist") {
+    for (const axis of Object.keys(answerEvidence(a)) as AxisId[]) out[axis] = 1;
+    return out;
+  }
+  for (const { picked, other } of checklistItems(q, Array.isArray(a.value) ? a.value : [a.value])) {
+    for (const axis of Object.keys(picked) as AxisId[]) if (other[axis]) out[axis] = (out[axis] ?? 0) + 1;
+  }
+  for (const axis of Object.keys(out) as AxisId[]) out[axis] = Math.min(CHECKLIST_AXIS_EVIDENCE_CAP, out[axis]!);
   return out;
 }
 
@@ -248,6 +329,9 @@ export interface IssueState {
   module: IssueModule;
   screenerAnswered: boolean;
   skipped: boolean;
+  // Not yet asked, and a foundation answer rules out its premise (`unless`),
+  // so it won't be. Counts as done.
+  excluded: boolean;
   // Final, explicitly supplied value per question.
   values: Map<string, { optionIds: string[]; implied: false }>;
   pending: ChoiceQuestion[];
@@ -256,6 +340,9 @@ export interface IssueState {
 export function issueStates(answers: QuizAnswer[]): IssueState[] {
   const answered = new Map<string, string | string[] | null>();
   for (const a of answers) if (a.kind === "choice") answered.set(a.id, a.value);
+  // Single-choice answers across every module, for `unless`.
+  const everywhere = new Map<string, string>();
+  for (const [id, v] of answered) if (typeof v === "string") everywhere.set(id, v);
 
   return issues.map((m) => {
     const values = new Map<string, { optionIds: string[]; implied: false }>();
@@ -266,13 +353,19 @@ export function issueStates(answers: QuizAnswer[]): IssueState[] {
     }
     const screenerAnswered = answered.has(m.screener.id);
     const skipped = screenerAnswered && answered.get(m.screener.id) === null;
+    const excluded = !screenerAnswered && !!m.unless && evalCondition(m.unless, everywhere);
     const choices = new Map([...values].map(([k, v]) => [k, v.optionIds[0]]));
     const pending =
       screenerAnswered && !skipped
         ? m.followUps.filter((f) => !answered.has(f.id) && (!f.when || evalCondition(f.when, choices)))
         : [];
-    return { module: m, screenerAnswered, skipped, values, pending };
+    return { module: m, screenerAnswered, skipped, excluded, values, pending };
   });
+}
+
+// Nothing left to ask in this issue.
+export function issueDone(i: IssueState): boolean {
+  return i.excluded || (i.screenerAnswered && i.pending.length === 0);
 }
 
 // ── State ──
@@ -297,6 +390,24 @@ export interface QuizState {
   issues: IssueState[];
   complete: boolean;
   progress: number; // 0…1
+  // Statements still owed to refine targets the respondent asked for.
+  refineLeft: number;
+  // Unasked statements per axis, the ceiling for any refine target.
+  remaining: Record<AxisId, number>;
+}
+
+export function modeComplete(state: QuizState, answerCount: number, mode: QuizModeId): boolean {
+  if (mode === "deep") return state.complete;
+  const config = QUIZ_MODES[mode];
+  const covered = axisIds.every((axis) => state.axes[axis].answered >= config.minimumAxisEvidence);
+  return (covered && answerCount >= config.targetScreens) || answerCount >= config.maximumScreens;
+}
+
+export function highestCompletedMode(state: QuizState, answerCount: number): QuizModeId | null {
+  if (modeComplete(state, answerCount, "deep")) return "deep";
+  if (modeComplete(state, answerCount, "standard")) return "standard";
+  if (modeComplete(state, answerCount, "quick")) return "quick";
+  return null;
 }
 
 export function computeState(answers: QuizAnswer[], refine: RefineTargets = {}): QuizState {
@@ -316,9 +427,7 @@ export function computeState(answers: QuizAnswer[], refine: RefineTargets = {}):
     // Policy answers already update the posterior, so let them satisfy basic
     // axis coverage too. This prevents asking an abstract duplicate solely
     // because it lives in the statement bank.
-    if (a.value !== null) {
-      for (const axis of Object.keys(answerEvidence(a)) as AxisId[]) answered[axis]++;
-    }
+    for (const [axis, n] of Object.entries(evidenceCounts(a)) as [AxisId, number][]) answered[axis] += n;
   }
   const dispersion = overdispersion(answers, post);
   const split = conflicts(answers);
@@ -326,6 +435,7 @@ export function computeState(answers: QuizAnswer[], refine: RefineTargets = {}):
   for (const s of statements) if (!seen.has(s.id)) remaining[primaryAxis(s)]++;
 
   const axes = {} as Record<AxisId, AxisState>;
+  let refineLeft = 0;
   for (const a of axisIds) {
     const { mean, sd: rawSd } = moments(post[a]);
     const gap = split[a];
@@ -336,6 +446,7 @@ export function computeState(answers: QuizAnswer[], refine: RefineTargets = {}):
     const precise = answered[a] >= MIN_PER_AXIS && rawSd < SD_TARGET;
     const capped = asked[a] >= MAX_PER_AXIS || remaining[a] === 0;
     const refineOpen = (refine[a] ?? 0) > asked[a] && remaining[a] > 0;
+    if (refineOpen) refineLeft += Math.min((refine[a] ?? 0) - asked[a], remaining[a]);
     axes[a] = {
       axis: a,
       mean,
@@ -348,13 +459,22 @@ export function computeState(answers: QuizAnswer[], refine: RefineTargets = {}):
   }
 
   const iss = issueStates(answers);
-  const complete = axisIds.every((a) => axes[a].settled) && iss.every((i) => i.screenerAnswered && i.pending.length === 0);
+  const complete = axisIds.every((a) => axes[a].settled) && iss.every(issueDone);
 
   const axisProgress = axisIds.reduce((sum, a) => sum + (axes[a].settled ? 1 : Math.min(0.9, axes[a].asked / 8)), 0);
-  const issueProgress = iss.reduce((sum, i) => sum + (i.screenerAnswered && i.pending.length === 0 ? 1 : i.screenerAnswered ? 0.5 : 0), 0);
+  const issueProgress = iss.reduce((sum, i) => sum + (issueDone(i) ? 1 : i.screenerAnswered ? 0.5 : 0), 0);
   const progress = complete ? 1 : (axisProgress + issueProgress) / (axisIds.length + iss.length);
 
-  return { axes, posteriors: post, issues: iss, complete, progress };
+  return { axes, posteriors: post, issues: iss, complete, progress, refineLeft, remaining };
+}
+
+// Questions left in a "sharpen" round: refine targets once every issue is
+// done. Before that they just ride along with the rest of the quiz. An answer
+// in the round can reopen an axis, which then takes a question or two more
+// after the round's own.
+export function roundLeft(state: QuizState): number {
+  const issuesDone = state.issues.every(issueDone);
+  return issuesDone ? state.refineLeft : 0;
 }
 
 // Ratio of observed to expected residual spread on each axis's own
@@ -436,7 +556,24 @@ function expectedVariance(s: Statement, post: number[]): number {
   return expected;
 }
 
-export function nextItem(answers: QuizAnswer[], state: QuizState, seed: string, refine: RefineTargets = {}): NextItem | null {
+// The quiz runs as a funnel, broad to narrow:
+//   1. Foundations: political system, economic system, religion and law.
+//      They frame everything else and decide which issues still apply.
+//   2. Principles: COVERAGE_PER_AXIS statements on every axis, one axis at a
+//      time, in COVERAGE_ORDER.
+//   3. Issues, in bank order (broadest first), skipping any a foundation
+//      answer has ruled out. Each issue is asked as one block: its screener,
+//      then its follow-ups.
+//   4. Statements on whichever axis is least certain, until all settle.
+export function nextItem(
+  answers: QuizAnswer[],
+  state: QuizState,
+  seed: string,
+  refine: RefineTargets = {},
+  context: QuizSelectionContext = {},
+): NextItem | null {
+  const mode = context.mode ?? "deep";
+  const deferred = new Set((context.deferred ?? []).map((item) => `${item.kind}:${item.id}`));
   const rand = seededRandom(`${seed}:${answers.length}`);
   const askedIds = new Set(answers.map((a) => `${a.kind}:${a.id}`));
   for (const answer of answers) {
@@ -444,21 +581,22 @@ export function nextItem(answers: QuizAnswer[], state: QuizState, seed: string, 
     for (const statementId of coveredStatementsByQuestion[answer.id] ?? []) askedIds.add(`statement:${statementId}`);
   }
 
-  // 1. Find an open issue. Follow-ups are interleaved with statements rather
-  // than delivered as a long, repetitive block.
+  // Finish the issue in progress first: follow-ups come straight after their
+  // screener, so a topic is never left half-asked.
   const lastScreenerAt = new Map<string, number>();
   answers.forEach((a, i) => {
     if (a.kind === "choice" && questionIndex.get(a.id)?.isScreener) lastScreenerAt.set(a.id, i);
   });
   const open = state.issues
-    .filter((i) => i.pending.length > 0)
+    .filter((i) => i.pending.some((q) => !deferred.has(`choice:${q.id}`)))
     .sort((x, y) => (lastScreenerAt.get(y.module.screener.id) ?? -1) - (lastScreenerAt.get(x.module.screener.id) ?? -1));
-  if (open.length > 0 && answers.at(-1)?.kind !== "choice") {
+  if (open.length > 0) {
     const i = open[0];
-    return { kind: "choice", question: i.pending[0], module: i.module, isScreener: false };
+    return { kind: "choice", question: i.pending.find((q) => !deferred.has(`choice:${q.id}`))!, module: i.module, isScreener: false };
   }
 
-  const unasked = (axis: AxisId) => statements.filter((s) => primaryAxis(s) === axis && !askedIds.has(`statement:${s.id}`));
+  const unasked = (axis: AxisId) =>
+    statements.filter((s) => primaryAxis(s) === axis && !askedIds.has(`statement:${s.id}`) && !deferred.has(`statement:${s.id}`));
   const statementOn = (axis: AxisId): NextItem | null => {
     const pool = unasked(axis);
     if (pool.length === 0) return null;
@@ -469,7 +607,7 @@ export function nextItem(answers: QuizAnswer[], state: QuizState, seed: string, 
     return { kind: "statement", statement: pick(ranked, rand).s };
   };
 
-  // 2. Axes the respondent asked to refine.
+  // Axes the respondent asked to refine.
   for (const axis of axisIds) {
     if ((refine[axis] ?? 0) > state.axes[axis].asked) {
       const item = statementOn(axis);
@@ -477,42 +615,55 @@ export function nextItem(answers: QuizAnswer[], state: QuizState, seed: string, 
     }
   }
 
-  // 3. Interleave issue screeners with statements.
-  const screenersLeft = state.issues.filter((i) => !i.screenerAnswered).map((i) => i.module);
-  const sinceScreener = (() => {
-    let n = 0;
-    for (let i = answers.length - 1; i >= 0; i--) {
-      const a = answers[i];
-      if (a.kind === "choice" && questionIndex.get(a.id)?.isScreener) break;
-      n++;
-    }
-    return n;
-  })();
-  const unsettled = axisIds.filter((a) => !state.axes[a].settled && unasked(a).length > 0);
-  const screener = (): NextItem => {
-    const m = pick(screenersLeft, rand);
-    return { kind: "choice", question: m.screener, module: m, isScreener: true };
-  };
+  const screener = (m: IssueModule): NextItem => ({ kind: "choice", question: m.screener, module: m, isScreener: true });
+  const unscreened = state.issues
+    .filter((i) => !i.screenerAnswered && !i.excluded && !deferred.has(`choice:${i.module.screener.id}`))
+    .map((i) => i.module);
 
-  if (screenersLeft.length > 0 && (unsettled.length === 0 || sinceScreener >= STATEMENTS_BETWEEN_SCREENERS)) {
-    return screener();
+  // Advertising/topic entries start with the promised subject, then join the
+  // same shared quiz and scoring model.
+  if (answers.length === 0 && context.entryTopic) {
+    const topic = unscreened.find((m) => m.id === context.entryTopic);
+    if (topic) return screener(topic);
   }
 
-  // 4. Statements: first give every axis basic coverage, then spend
-  // questions where uncertainty is largest.
-  if (unsettled.length > 0) {
-    const uncovered = unsettled.filter((a) => state.axes[a].asked < COVERAGE_PER_AXIS);
-    const axis =
-      uncovered.length > 0
-        ? pick(uncovered, rand)
-        : unsettled.reduce((best, a) => (state.axes[a].sd > state.axes[best].sd ? a : best), unsettled[0]);
+  // 1. Foundations.
+  const foundation = unscreened.find((m) => m.foundation);
+  if (foundation) return screener(foundation);
+
+  // Quick and Standard are coverage contracts, not prefixes of Deep. Spend
+  // the early budget on the least-measured axis, using concrete answers that
+  // already supplied coverage before adding an abstract statement.
+  if (mode !== "deep") {
+    const minimum = QUIZ_MODES[mode].minimumAxisEvidence;
+    const needsCoverage = COVERAGE_ORDER.filter((axis) => state.axes[axis].answered < minimum && unasked(axis).length > 0);
+    if (needsCoverage.length > 0) {
+      const fewest = Math.min(...needsCoverage.map((axis) => state.axes[axis].answered));
+      const axis = needsCoverage.find((candidate) => state.axes[candidate].answered === fewest)!;
+      const item = statementOn(axis);
+      if (item) return item;
+    }
+
+    // Once coverage is sound, use broad issue modules until the mode reaches
+    // its screen budget. The caller stops at the checkpoint.
+    if (unscreened.length > 0) return screener(unscreened[0]);
+  }
+
+  // 2. Principles.
+  const unsettled = axisIds.filter((a) => !state.axes[a].settled && unasked(a).length > 0);
+  for (const axis of COVERAGE_ORDER) {
+    if (!unsettled.includes(axis) || state.axes[axis].asked >= COVERAGE_PER_AXIS) continue;
     const item = statementOn(axis);
     if (item) return item;
   }
 
-  if (open.length > 0) {
-    const i = open[0];
-    return { kind: "choice", question: i.pending[0], module: i.module, isScreener: false };
+  // 3. Issues.
+  if (unscreened.length > 0) return screener(unscreened[0]);
+
+  // 4. Settle what's left.
+  if (unsettled.length > 0) {
+    const axis = unsettled.reduce((best, a) => (state.axes[a].sd > state.axes[best].sd ? a : best), unsettled[0]);
+    return statementOn(axis);
   }
-  return screenersLeft.length > 0 ? screener() : null;
+  return null;
 }
