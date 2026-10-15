@@ -87,7 +87,8 @@
     "build:demographics": "node scripts/build-demographics.mjs",
     "sync:wiki-races": "node scripts/sync-wiki-races.mjs",
     "quiz:answers": "tsx scripts/quiz-answers.ts",
-    "quiz:audit": "tsx scripts/quiz-audit.ts"
+    "quiz:audit": "tsx scripts/quiz-audit.ts",
+    "quiz:trace": "tsx scripts/quiz-trace.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.7.1",

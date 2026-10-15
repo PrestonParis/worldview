@@ -9,9 +9,12 @@ vi.mock("next/navigation", () => ({
   redirect: (url: string) => {
     throw new Error(`redirect:${url}`);
   },
+  notFound: () => {
+    throw new Error("notFound");
+  },
 }));
 
-const { requireContributor, requireContributorPage, NOT_SIGNED_IN, NOT_EDITOR } = await import("./guard");
+const { requireContributor, requireContributorPage, requireOwnerPage, isOwner, NOT_SIGNED_IN, NOT_EDITOR } = await import("./guard");
 
 function user(role: "member" | "editor"): CurrentUser {
   return {
@@ -76,5 +79,36 @@ describe("shared-data server actions", () => {
     for (const [, name, firstLine] of actions) {
       expect(firstLine.trim(), `${file} → ${name}`).toBe("const denied = await requireContributor();");
     }
+  });
+});
+
+describe("owner-only Geography", () => {
+  beforeEach(() => {
+    getCurrentUser.mockReset();
+    vi.stubEnv("OWNER_EMAIL", "Owner@Example.com");
+  });
+
+  it("matches the owner email case-insensitively", () => {
+    expect(isOwner({ ...user("member"), email: "owner@example.com" })).toBe(true);
+    expect(isOwner(user("editor"))).toBe(false);
+    expect(isOwner(null)).toBe(false);
+  });
+
+  it("lets nobody in when OWNER_EMAIL is unset", () => {
+    vi.stubEnv("OWNER_EMAIL", "");
+    expect(isOwner({ ...user("editor"), email: "" })).toBe(false);
+  });
+
+  it("sends signed-out visitors to sign in and hides the page from other accounts", async () => {
+    getCurrentUser.mockResolvedValue(null);
+    await expect(requireOwnerPage("/geography")).rejects.toThrow("redirect:/login?next=%2Fgeography");
+    getCurrentUser.mockResolvedValue(user("editor"));
+    await expect(requireOwnerPage("/geography")).rejects.toThrow("notFound");
+  });
+
+  it("gates every map-project action on the owner", () => {
+    const src = readFileSync(path.join(__dirname, "../actions/mapProjects.ts"), "utf8");
+    expect(src).toContain("isOwner(user)");
+    expect(src).not.toContain("getCurrentUserId");
   });
 });

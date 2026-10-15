@@ -1,4 +1,4 @@
-import type { IssueModule, Statement } from "../types";
+import type { IssueId, IssueModule, Statement } from "../types";
 import { governanceStatements } from "./governance";
 import { economyStatements } from "./economy";
 import { foreignStatements } from "./foreign";
@@ -9,7 +9,7 @@ import { policyIssues } from "./issues-policy";
 
 // Bump when statement/option wording, locations, or weights change. Stored
 // quizzes record the version they were taken against.
-export const BANK_VERSION = "3.2.0";
+export const BANK_VERSION = "4.0.0";
 
 // Statements removed from the bank. Answers to them stay in stored logs but no
 // longer score; the wording is kept so those answers can still be displayed.
@@ -33,4 +33,45 @@ export const statements: Statement[] = [
   ...techStatements,
 ];
 
-export const issues: IssueModule[] = [...societyIssues, ...policyIssues];
+// The order issues are asked in, broadest first. Foundations frame the rest
+// and come before any statement; then issues that touch most people's lives
+// and several axes at once; then narrower institutional and foreign-policy
+// questions.
+export const issueOrder: IssueId[] = [
+  // Foundations
+  "regime",
+  "economic-system",
+  "religion-law",
+  // Broad
+  "healthcare",
+  "taxes",
+  "immigration",
+  "abortion",
+  "climate",
+  "guns",
+  "lgbtq",
+  "policing",
+  // Middle
+  "labor",
+  "entitlements",
+  "education",
+  "drugs",
+  "death-penalty",
+  "affirmative-action",
+  "religious-liberty",
+  "speech",
+  "housing",
+  "tariffs",
+  // Narrow
+  "voting-rules",
+  "judiciary",
+  "debt",
+  "ai",
+  "china",
+  "ukraine",
+  "israel",
+];
+
+export const issues: IssueModule[] = [...societyIssues, ...policyIssues].sort(
+  (a, b) => issueOrder.indexOf(a.id) - issueOrder.indexOf(b.id),
+);

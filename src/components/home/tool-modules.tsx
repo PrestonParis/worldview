@@ -218,10 +218,9 @@ function DemocracySection({ facts }: { facts: PlatformFacts }) {
 function ToolsSection() {
   return (
     <section>
-      <SectionHeading label="Tools" title="Work with the information." body="Answer questions about your political views, build geographic stories, or inspect the datasets behind the site." />
-      <div className="mt-9 grid gap-8 md:grid-cols-3">
+      <SectionHeading label="Tools" title="Work with the information." body="Answer questions about your political views or inspect the datasets behind the site." />
+      <div className="mt-9 grid gap-8 md:grid-cols-2">
         <TextLink href="/quiz" title="Political Quiz">Compare your views across 17 political axes and 25 policy issues.</TextLink>
-        <TextLink href="/geography" title="Geography Studio">Build and save maps about alliances, conflict, resources, trade, and other geographic subjects.</TextLink>
         <TextLink href="/datasets" title="Dataset catalog">Review publishers, coverage, update dates, methodology, and original sources.</TextLink>
       </div>
     </section>

@@ -53,6 +53,10 @@ export default async function GunsPage() {
         six decades of polling.
       </IssueHeader>
 
+      <ChartCard title="Firearm deaths" subtitle="By intent, since 1999" source={SOURCES.cdc} table={seriesTable(d.deaths, "deaths")}>
+        <TimeSeriesChart series={d.deaths} unit="deaths" height={340} gapOver={1} />
+      </ChartCard>
+
       <SectionNav sections={SECTIONS} />
 
       <section id="overview" className="scroll-mt-28 space-y-6">
@@ -75,9 +79,6 @@ export default async function GunsPage() {
           </p>
         </Prose>
         <div className="grid gap-6 lg:grid-cols-2">
-          <ChartCard title="Firearm deaths" subtitle="By intent, since 1999" source={SOURCES.cdc} table={seriesTable(d.deaths, "deaths")}>
-            <TimeSeriesChart series={d.deaths} unit="deaths" height={280} gapOver={1} />
-          </ChartCard>
           <ChartCard title="Firearm death rate" subtitle="Per 100,000 residents" source={SOURCES.cdc} table={seriesTable(d.rates, "per_100k")}>
             <TimeSeriesChart series={d.rates} unit="per_100k" height={280} gapOver={1} />
           </ChartCard>

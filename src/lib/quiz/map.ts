@@ -37,7 +37,9 @@ function orient(pc: number[], axis: AxisId): number[] {
   return pc[axisIds.indexOf(axis)] < 0 ? pc.map((x) => -x) : pc;
 }
 
-function buildMap(): Record<string, MapPoint> {
+// The map's two directions, plus the centring and scale that fit the
+// catalog into -1…+1.
+function buildBasis() {
   const rows = ideologies.map((i) => axisIds.map((a) => i.position[a]));
   const mean = axisIds.map((_, j) => rows.reduce((s, r) => s + r[j], 0) / rows.length);
   const centered = rows.map((r) => r.map((v, j) => v - mean[j]));
@@ -47,7 +49,24 @@ function buildMap(): Record<string, MapPoint> {
   const raw = centered.map((r) => [r.reduce((s, x, j) => s + x * px[j], 0), r.reduce((s, x, j) => s + x * py[j], 0)]);
   const sx = Math.max(...raw.map((p) => Math.abs(p[0])));
   const sy = Math.max(...raw.map((p) => Math.abs(p[1])));
-  return Object.fromEntries(ideologies.map((i, n) => [i.id, { x: raw[n][0] / sx, y: raw[n][1] / sy }]));
+  return { mean, px, py, sx, sy, raw };
+}
+
+const basis = buildBasis();
+
+function buildMap(): Record<string, MapPoint> {
+  return Object.fromEntries(ideologies.map((i, n) => [i.id, { x: basis.raw[n][0] / basis.sx, y: basis.raw[n][1] / basis.sy }]));
+}
+
+// Any set of axis positions on the same map, clamped to its edges. Moves with
+// every answer, where placeRespondent snaps to the nearest traditions.
+export function projectPosition(position: Record<AxisId, number>): MapPoint {
+  const c = axisIds.map((a, j) => position[a] - basis.mean[j]);
+  const clamp = (v: number) => Math.max(-1, Math.min(1, v));
+  return {
+    x: clamp(c.reduce((s, x, j) => s + x * basis.px[j], 0) / basis.sx),
+    y: clamp(c.reduce((s, x, j) => s + x * basis.py[j], 0) / basis.sy),
+  };
 }
 
 export const ideologyMap = buildMap();

@@ -58,6 +58,10 @@ export default async function HousingPage() {
         and by state.
       </IssueHeader>
 
+      <ChartCard title="Median sales price of houses sold" subtitle="Quarterly, new and existing, since 1975" source={SOURCES.census} table={seriesTable(d.prices, "usd")}>
+        <TimeSeriesChart series={d.prices} unit="usd" height={340} />
+      </ChartCard>
+
       <SectionNav sections={SECTIONS} />
 
       <section id="overview" className="scroll-mt-28 space-y-6">
@@ -81,10 +85,7 @@ export default async function HousingPage() {
 
       <Section id="prices" title="Home prices" question="How much do homes cost, and how fast are prices rising?">
         <div className="grid gap-6 lg:grid-cols-2">
-          <ChartCard title="Median sales price of houses sold" subtitle="Quarterly, new and existing, since 1975" source={SOURCES.census} table={seriesTable(d.prices, "usd")}>
-            <TimeSeriesChart series={d.prices} unit="usd" height={280} />
-          </ChartCard>
-          <ChartCard title="Home prices, rents, and all prices" subtitle="12-month change" source={SOURCES.cs} table={seriesTable(d.priceGrowth, "percent")}>
+          <ChartCard title="Home prices, rents, and all prices" subtitle="12-month change" source={SOURCES.cs} table={seriesTable(d.priceGrowth, "percent")} className="lg:col-span-2">
             <TimeSeriesChart series={d.priceGrowth} unit="percent" height={280} />
           </ChartCard>
         </div>

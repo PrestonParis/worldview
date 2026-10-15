@@ -1,6 +1,8 @@
+import { currentUserIsOwner } from "@/lib/auth/guard";
 import { geographicMetricCoverage, listDatasets } from "@/lib/db/stats";
 
 export async function GET() {
+  if (!(await currentUserIsOwner())) return Response.json({ error: "Not found." }, { status: 404 });
   const datasets = await listDatasets();
   const coverage = await geographicMetricCoverage(datasets.map((dataset) => dataset.slug));
   const byDataset = new Map<string, typeof coverage>();

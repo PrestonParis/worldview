@@ -5,7 +5,7 @@
 // Server actions are public POST endpoints, so hiding the edit UI is not
 // enough: each action must check this itself.
 
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getCurrentUser, type CurrentUser } from "./session";
 
 export const NOT_SIGNED_IN = "Sign in with an editor account to change data.";
@@ -13,6 +13,25 @@ export const NOT_EDITOR = "Your account can't change shared data. Ask an editor 
 
 export function isEditor(user: CurrentUser | null): boolean {
   return user?.profile.role === "editor";
+}
+
+// The site owner (OWNER_EMAIL), the only account that may use the Geography
+// studio. Unset means nobody.
+export function isOwner(user: CurrentUser | null): boolean {
+  const owner = process.env.OWNER_EMAIL?.trim().toLowerCase();
+  return Boolean(owner && user?.email?.toLowerCase() === owner);
+}
+
+export async function currentUserIsOwner(): Promise<boolean> {
+  return isOwner(await getCurrentUser().catch(() => null));
+}
+
+// For owner-only pages: signed-out visitors go to sign in, everyone else gets a 404.
+export async function requireOwnerPage(next: string): Promise<CurrentUser> {
+  const user = await getCurrentUser().catch(() => null);
+  if (!user) redirect(`/login?next=${encodeURIComponent(next)}`);
+  if (!isOwner(user)) notFound();
+  return user;
 }
 
 // For server actions: null when allowed, otherwise a failed ActionResult.

@@ -1,8 +1,9 @@
 import type { IssueModule } from "../types";
-import { L, o, when } from "./helpers";
+import { item, L, noneOfThese, o, when } from "./helpers";
 
 // Social and justice issue modules. Screener options span the full range;
 // follow-ups only appear where the screener answer leaves the stance open.
+// Independent yes/no policies are grouped into one checklist per module.
 
 export const societyIssues: IssueModule[] = [
   {
@@ -59,24 +60,15 @@ export const societyIssues: IssueModule[] = [
         ],
       },
       {
-        id: "abortion.pill",
-        attribute: "Abortion pills",
-        prompt: "Should abortion pills be available by mail with a prescription?",
-        when: when("abortion.legal", "most", "some", "most-illegal"),
+        id: "abortion.access",
+        attribute: "Pills & public funding",
+        prompt: "Select all you support: which of these should be allowed?",
+        selection: "checklist",
+        when: when("abortion.legal", "all", "most", "some"),
         options: [
-          o("yes", "Yes", "abortion pills available by mail", L(["social", -0.5, 0.3], ["regulation", -0.1, 0.1])),
-          o("in-person", "Only after an in-person visit", "abortion pills only after an in-person visit", L(["social", 0.2, 0.3])),
-          o("no", "No, they should not be available", "abortion pills banned", L(["social", 0.8, 0.3])),
-        ],
-      },
-      {
-        id: "abortion.funding",
-        attribute: "Public funding",
-        prompt: "Should public programs like Medicaid pay for abortions?",
-        when: when("abortion.legal", "all", "most"),
-        options: [
-          o("yes", "Yes", "with public funding", L(["redistribution", -0.5, 0.2], ["social", -0.7, 0.3])),
-          o("no", "No", "without public funding", L(["social", 0, 0.2])),
+          item("pill", "Abortion pills prescribed by telehealth and sent by mail", "abortion pills by mail", L(["social", -0.5, 0.3]), "no abortion pills by mail", L(["social", 0.3, 0.3])),
+          item("funding", "Medicaid and other public programs paying for abortions", "public funding for abortion", L(["social", -0.7, 0.3], ["redistribution", -0.5, 0.2]), "no public funding for abortion", L(["social", -0.1, 0.3], ["redistribution", 0.2, 0.2])),
+          noneOfThese,
         ],
       },
     ],
@@ -98,55 +90,18 @@ export const societyIssues: IssueModule[] = [
     },
     followUps: [
       {
-        id: "guns.assault",
-        attribute: "Assault-style rifles",
-        prompt: "Should semi-automatic rifles like the AR-15 be banned for civilians?",
-        when: when("guns.overall", "moderate", "rights"),
+        id: "guns.laws",
+        attribute: "Gun laws",
+        prompt: "Select all you support: which of these gun laws should apply nationwide?",
+        selection: "checklist",
         options: [
-          o("yes", "Yes", "ban AR-15-style rifles", L(["regulation", -0.4, 0.3], ["social", -0.3, 0.3])),
-          o("no", "No", "keep AR-15-style rifles legal", L(["regulation", 0.4, 0.3], ["social", 0.4, 0.3])),
-        ],
-      },
-      {
-        id: "guns.carry",
-        attribute: "Concealed carry",
-        prompt: "Should adults be allowed to carry a concealed handgun?",
-        when: when("guns.overall", "moderate", "rights", "minimal"),
-        options: [
-          o("no-permit", "Yes, without a permit", "permitless concealed carry", L(["regulation", 0.8, 0.3], ["social", 0.6, 0.2])),
-          o("permit", "Yes, with a permit and training", "concealed carry with a permit", L(["regulation", 0.1, 0.3])),
-          o("no", "No, except for law enforcement", "no civilian concealed carry", L(["regulation", -0.6, 0.3])),
-        ],
-      },
-      {
-        id: "guns.red-flag",
-        attribute: "Red-flag laws",
-        prompt: "Should courts be able to temporarily remove guns from someone they find poses a danger to themselves or others?",
-        when: when("guns.overall", "strict", "moderate", "rights"),
-        options: [
-          o("yes", "Yes", "red-flag laws", L(["liberty", 0.4, 0.3], ["regulation", -0.3, 0.2])),
-          o("no", "No", "no red-flag laws", L(["liberty", -0.5, 0.3], ["regulation", 0.4, 0.2])),
-        ],
-      },
-      {
-        id: "guns.buyback",
-        attribute: "Buybacks",
-        prompt: "Should owners of banned weapons be required to sell them to the government?",
-        when: when("guns.overall", "ban", "strict"),
-        options: [
-          o("mandatory", "Yes, a mandatory buyback", "mandatory buyback", L(["regulation", -0.9, 0.3], ["liberty", 0.5, 0.2])),
-          o("voluntary", "Only a voluntary buyback", "voluntary buyback only", L(["regulation", -0.4, 0.3])),
-          o("no", "No, existing owners should keep them", "existing owners keep their guns", L(["regulation", -0.1, 0.3])),
-        ],
-      },
-      {
-        id: "guns.age",
-        attribute: "Minimum age",
-        prompt: "What should the minimum age be to buy any gun?",
-        when: when("guns.overall", "moderate", "rights"),
-        options: [
-          o("18", "18", "buying age of 18", L(["regulation", 0.4, 0.2])),
-          o("21", "21", "buying age of 21", L(["regulation", -0.3, 0.2])),
+          item("background", "Background checks on all gun sales, including private sales", "universal background checks", L(["regulation", -0.2, 0.3]), "no universal background checks", L(["regulation", 0.7, 0.3])),
+          item("red-flag", "Courts temporarily removing guns from someone found to be a danger to themselves or others", "red-flag laws", L(["liberty", 0.4, 0.3], ["regulation", -0.3, 0.2]), "no red-flag laws", L(["liberty", -0.5, 0.3], ["regulation", 0.4, 0.2])),
+          item("age", "A minimum age of 21 to buy any gun", "buying age of 21", L(["regulation", -0.3, 0.2]), "buying age of 18", L(["regulation", 0.4, 0.2])),
+          item("carry-permit", "A permit and training to carry a concealed handgun", "concealed carry only with a permit", L(["regulation", -0.2, 0.3], ["social", -0.1, 0.2]), "permitless concealed carry", L(["regulation", 0.8, 0.3], ["social", 0.6, 0.2])),
+          item("assault", "A ban on AR-15-style semi-automatic rifles", "ban AR-15-style rifles", L(["regulation", -0.4, 0.3], ["social", -0.3, 0.3]), "keep AR-15-style rifles legal", L(["regulation", 0.4, 0.3], ["social", 0.4, 0.3])),
+          item("buyback", "A mandatory government buyback of banned weapons", "mandatory buyback", L(["regulation", -0.9, 0.3], ["liberty", 0.5, 0.2]), "no mandatory buyback", L(["regulation", -0.2, 0.3], ["liberty", -0.1, 0.2])),
+          noneOfThese,
         ],
       },
     ],
@@ -191,68 +146,18 @@ export const societyIssues: IssueModule[] = [
         ],
       },
       {
-        id: "immigration.wall",
-        attribute: "Border wall",
-        prompt: "Should there be a physical wall along the entire southern border?",
-        when: when("immigration.undocumented", "legal-status", "case", "deport-most"),
+        id: "immigration.enforcement",
+        attribute: "Enforcement & status",
+        prompt: "Select all you support: which of these immigration policies should the U.S. adopt?",
+        selection: "checklist",
         options: [
-          o("yes", "Yes", "a border wall", L(["immigration", 0.6, 0.3])),
-          o("partial", "Only in some areas, alongside technology", "barriers in some areas", L(["immigration", 0, 0.3])),
-          o("no", "No", "no border wall", L(["immigration", -0.6, 0.3])),
-        ],
-      },
-      {
-        id: "immigration.dreamers",
-        attribute: "Dreamers",
-        prompt: "How should the law treat people who were brought to the U.S. illegally as children?",
-        when: when("immigration.undocumented", "case", "deport-most", "deport-all"),
-        options: [
-          o("stay", "They should be allowed to stay permanently", "Dreamers allowed to stay", L(["immigration", -0.2, 0.4])),
-          o("leave", "They should be treated like other undocumented immigrants", "Dreamers treated like others", L(["immigration", 0.8, 0.4])),
-        ],
-      },
-      {
-        id: "immigration.birthright",
-        attribute: "Birthright citizenship",
-        prompt: "Should children born in the U.S. to undocumented parents automatically be citizens?",
-        when: when("immigration.undocumented", "case", "deport-most", "deport-all"),
-        options: [
-          o("yes", "Yes", "birthright citizenship kept", L(["immigration", -0.2, 0.3])),
-          o("no", "No", "birthright citizenship ended for children of undocumented parents", L(["immigration", 0.8, 0.3])),
-        ],
-      },
-      {
-        id: "immigration.asylum",
-        attribute: "Asylum",
-        prompt: "How should people seeking asylum at the border be handled?",
-        when: when("immigration.undocumented", "citizenship", "legal-status", "case"),
-        options: [
-          o("release", "Allowed in while their claims are decided", "asylum seekers allowed in while claims are heard", L(["immigration", -0.7, 0.3])),
-          o("detain", "Held in detention while their claims are decided", "asylum seekers detained while claims are heard", L(["immigration", 0.3, 0.3], ["justice", 0.2, 0.1])),
-          o("abroad", "Required to wait outside the U.S.", "asylum seekers wait outside the U.S.", L(["immigration", 0.6, 0.3])),
-        ],
-      },
-      {
-        id: "immigration.interior",
-        attribute: "Interior enforcement",
-        prompt: "How should immigration law be enforced inside the country?",
-        options: [
-          o("criminals", "Focus only on people who commit serious crimes", "interior enforcement limited to serious criminals", L(["immigration", -0.5, 0.4], ["justice", -0.2, 0.1])),
-          o("workplace", "Focus on criminals, plus mandatory workplace verification", "enforcement against criminals plus workplace verification", L(["immigration", 0.3, 0.4])),
-          o("broad", "Broad enforcement, including workplace raids and local police cooperation", "broad interior enforcement", L(["immigration", 0.8, 0.4], ["justice", 0.4, 0.2], ["liberty", 0.3, 0.1])),
-        ],
-      },
-      {
-        id: "immigration.temp-workers",
-        attribute: "Temporary work visas",
-        prompt: "Select all that apply: in which sectors should the U.S. admit more temporary workers?",
-        selection: "multiple",
-        when: when("immigration.undocumented", "citizenship", "legal-status", "case", "deport-most"),
-        options: [
-          o("agriculture", "Agriculture", "more agricultural work visas", L(["immigration", -0.3, 0.15], ["trade", 0.3, 0.05])),
-          o("seasonal", "Seasonal service industries", "more seasonal work visas", L(["immigration", -0.3, 0.15], ["trade", 0.3, 0.05])),
-          o("technology", "Technology", "more technology work visas", L(["immigration", -0.3, 0.15], ["trade", 0.3, 0.05])),
-          { ...o("no", "None of these", "no expansion of temporary work visas", L(["immigration", 0.5, 0.3])), exclusive: true },
+          item("dreamers", "Letting people brought here illegally as children stay permanently", "Dreamers allowed to stay", L(["immigration", -0.2, 0.4]), "Dreamers treated like other undocumented immigrants", L(["immigration", 0.8, 0.4])),
+          item("e-verify", "Requiring every employer to verify new hires' immigration status", "mandatory workplace verification", L(["immigration", 0.3, 0.3]), "no mandatory workplace verification", L(["immigration", -0.5, 0.3])),
+          item("wall", "A physical wall along the entire southern border", "a border wall", L(["immigration", 0.6, 0.3]), "no wall along the entire border", L(["immigration", -0.3, 0.3])),
+          item("asylum-abroad", "Requiring asylum seekers to wait outside the U.S. while their claims are decided", "asylum seekers wait outside the U.S.", L(["immigration", 0.6, 0.3]), "asylum seekers wait inside the U.S.", L(["immigration", -0.4, 0.3])),
+          item("birthright", "Ending automatic citizenship for children born here to undocumented parents", "birthright citizenship ended for children of undocumented parents", L(["immigration", 0.8, 0.3]), "birthright citizenship kept", L(["immigration", -0.2, 0.3])),
+          item("raids", "Workplace raids and local police helping with immigration arrests", "broad interior enforcement", L(["immigration", 0.8, 0.4], ["justice", 0.4, 0.2], ["liberty", 0.3, 0.1]), "no workplace raids or local police enforcement", L(["immigration", -0.2, 0.4], ["justice", -0.1, 0.2], ["liberty", -0.1, 0.1])),
+          noneOfThese,
         ],
       },
     ],
@@ -274,36 +179,17 @@ export const societyIssues: IssueModule[] = [
     },
     followUps: [
       {
-        id: "policing.tactics",
-        attribute: "Tactical restrictions",
-        prompt: "Select all that apply: which police tactics should federal law generally prohibit?",
-        selection: "multiple",
-        when: when("policing.direction", "reallocate", "reform", "both"),
-        options: [
-          o("chokeholds", "Chokeholds, except when deadly force is legally justified", "federal restrictions on chokeholds", L(["justice", -0.4, 0.2], ["federalism", 0.4, 0.1])),
-          o("no-knock", "No-knock warrants, except in narrowly defined emergencies", "federal restrictions on no-knock warrants", L(["justice", -0.4, 0.2], ["federalism", 0.4, 0.1])),
-          { ...o("states", "Neither; states and cities should decide", "tactics left to states and cities", L(["federalism", -0.6, 0.3])), exclusive: true },
-          { ...o("no", "Neither; these tactics should remain available nationwide", "no federal ban on these tactics", L(["justice", 0.6, 0.3])), exclusive: true },
-        ],
-      },
-      {
-        id: "policing.oversight",
-        attribute: "Federal oversight",
-        prompt: "Should the Justice Department investigate local police departments facing credible allegations of repeated misconduct?",
-        when: when("policing.direction", "reform", "both", "support"),
-        options: [
-          o("yes", "Yes", "federal oversight of local police", L(["justice", -0.4, 0.3], ["federalism", 0.5, 0.2])),
-          o("no", "No, that's for states and cities", "no federal oversight of local police", L(["justice", 0.4, 0.3], ["federalism", -0.5, 0.2])),
-        ],
-      },
-      {
-        id: "policing.military-gear",
-        attribute: "Military equipment",
-        prompt: "Should police departments be able to acquire military equipment?",
+        id: "policing.reforms",
+        attribute: "Tactics & oversight",
+        prompt: "Select all you support: which of these policing policies should the U.S. adopt?",
+        selection: "checklist",
         when: when("policing.direction", "reallocate", "reform", "both", "support"),
         options: [
-          o("yes", "Yes", "police access to military equipment", L(["justice", 0.6, 0.3], ["liberty", 0.4, 0.2])),
-          o("no", "No", "no military equipment for police", L(["justice", -0.5, 0.3], ["liberty", -0.4, 0.2])),
+          item("chokeholds", "A federal ban on chokeholds, except when deadly force is legally justified", "federal restrictions on chokeholds", L(["justice", -0.4, 0.2], ["federalism", 0.4, 0.1]), "no federal ban on chokeholds", L(["justice", 0.4, 0.2], ["federalism", -0.3, 0.1])),
+          item("no-knock", "A federal ban on no-knock warrants, except in narrowly defined emergencies", "federal restrictions on no-knock warrants", L(["justice", -0.4, 0.2], ["federalism", 0.4, 0.1]), "no federal ban on no-knock warrants", L(["justice", 0.4, 0.2], ["federalism", -0.3, 0.1])),
+          item("oversight", "Justice Department investigations of local police departments with repeated misconduct", "federal oversight of local police", L(["justice", -0.4, 0.3], ["federalism", 0.5, 0.2]), "no federal oversight of local police", L(["justice", 0.4, 0.3], ["federalism", -0.5, 0.2])),
+          item("military-gear", "Letting police departments acquire military equipment", "police access to military equipment", L(["justice", 0.6, 0.3], ["liberty", 0.4, 0.2]), "no military equipment for police", L(["justice", -0.5, 0.3], ["liberty", -0.4, 0.2])),
+          noneOfThese,
         ],
       },
     ],
@@ -362,34 +248,15 @@ export const societyIssues: IssueModule[] = [
     },
     followUps: [
       {
-        id: "drugs.marijuana-level",
-        attribute: "Marijuana jurisdiction",
-        prompt: "Who should decide whether marijuana is legal?",
-        when: when("drugs.policy", "marijuana", "medical"),
+        id: "drugs.policies",
+        attribute: "Marijuana, harm reduction & therapy",
+        prompt: "Select all you support: which of these drug policies should the U.S. adopt?",
+        selection: "checklist",
         options: [
-          o("federal-legal", "Congress should legalize it nationwide", "marijuana legalized federally", L(["federalism", 0.5, 0.3], ["justice", -0.4, 0.2])),
-          o("states", "Each state should decide", "marijuana left to the states", L(["federalism", -0.7, 0.3])),
-          o("federal-ban", "It should stay illegal under federal law", "marijuana kept federally illegal", L(["federalism", 0.5, 0.3], ["justice", 0.5, 0.2])),
-        ],
-      },
-      {
-        id: "drugs.safe-sites",
-        attribute: "Supervised use sites",
-        prompt: "Should cities be allowed to open supervised drug-use sites to prevent overdoses?",
-        when: when("drugs.policy", "legalize-all", "decriminalize", "marijuana"),
-        options: [
-          o("yes", "Yes", "supervised use sites allowed", L(["justice", -0.6, 0.3])),
-          o("no", "No", "no supervised use sites", L(["justice", 0.4, 0.3])),
-        ],
-      },
-      {
-        id: "drugs.psychedelics",
-        attribute: "Psychedelic therapy",
-        prompt: "Should psychedelics like psilocybin be legal for supervised therapy?",
-        when: when("drugs.policy", "marijuana", "medical", "prohibit"),
-        options: [
-          o("yes", "Yes", "psychedelic therapy legal", L(["technology", 0.3, 0.2], ["social", -0.3, 0.2])),
-          o("no", "No", "psychedelics kept illegal", L(["social", 0.5, 0.2])),
+          item("federal-marijuana", "Legalizing marijuana under federal law", "marijuana legalized federally", L(["justice", -0.4, 0.3]), "marijuana kept federally illegal", L(["justice", 0.3, 0.3])),
+          item("safe-sites", "Letting cities open supervised drug-use sites to prevent overdoses", "supervised use sites allowed", L(["justice", -0.6, 0.3]), "no supervised use sites", L(["justice", 0.4, 0.3])),
+          item("psychedelics", "Legal psilocybin and other psychedelics for supervised therapy", "psychedelic therapy legal", L(["social", -0.3, 0.2], ["technology", 0.3, 0.2]), "psychedelics kept illegal", L(["social", 0.5, 0.2], ["technology", -0.2, 0.2])),
+          noneOfThese,
         ],
       },
     ],
@@ -410,44 +277,16 @@ export const societyIssues: IssueModule[] = [
     },
     followUps: [
       {
-        id: "lgbtq.discrimination",
-        attribute: "Anti-discrimination law",
-        prompt: "Should federal law prohibit employment discrimination based on sexual orientation?",
+        id: "lgbtq.policies",
+        attribute: "Discrimination, sports, care & IDs",
+        prompt: "Select all you support: which of these should the law allow or require?",
+        selection: "checklist",
         options: [
-          o("yes", "Yes", "employment protections based on sexual orientation", L(["social", -0.8, 0.3], ["religion", -0.2, 0.1])),
-          o("exempt", "Yes, except for religious organizations", "employment protections with an exemption for religious organizations", L(["social", -0.3, 0.3], ["religion", 0.2, 0.2])),
-          o("no", "No", "no federal anti-discrimination protections", L(["social", 0.4, 0.3], ["regulation", 0.4, 0.2])),
-        ],
-      },
-      {
-        id: "lgbtq.sports",
-        attribute: "Transgender athletes",
-        prompt: "How should eligibility for transgender athletes in school and college sports be determined?",
-        options: [
-          o("identity", "Their gender identity", "trans athletes compete by gender identity", L(["social", -0.7, 0.3])),
-          o("case", "Case-by-case rules set by each sport", "trans athlete rules set sport by sport", L(["social", -0.1, 0.3])),
-          o("sex", "Their sex at birth", "athletes compete by sex at birth", L(["social", 0.5, 0.3])),
-        ],
-      },
-      {
-        id: "lgbtq.minors",
-        attribute: "Transition care for minors",
-        prompt: "Should minors be able to receive puberty blockers or hormones for gender transition?",
-        when: when("lgbtq.marriage", "protected", "exempt", "states"),
-        options: [
-          o("yes", "Yes, with parental consent and medical approval", "gender-transition care for minors with consent", L(["social", -0.7, 0.3])),
-          o("states", "States should decide", "minors' gender-transition care left to the states", L(["federalism", -0.6, 0.3])),
-          o("no", "No, it should be banned for minors", "gender-transition care banned for minors", L(["social", 0.7, 0.3])),
-        ],
-      },
-      {
-        id: "lgbtq.documents",
-        attribute: "ID gender markers",
-        prompt: "Should passports and IDs offer an \"X\" gender marker?",
-        when: when("lgbtq.marriage", "protected", "exempt"),
-        options: [
-          o("yes", "Yes", "\"X\" marker on IDs", L(["social", -0.8, 0.2])),
-          o("no", "No", "no \"X\" marker on IDs", L(["social", 0.3, 0.2])),
+          item("discrimination", "A federal ban on job discrimination based on sexual orientation or gender identity", "federal employment protections", L(["social", -0.6, 0.3]), "no federal anti-discrimination protections", L(["social", 0.5, 0.3])),
+          item("sports", "Transgender athletes competing on school and college teams that match their gender identity", "trans athletes compete by gender identity", L(["social", -0.7, 0.3]), "athletes compete by sex at birth", L(["social", 0.2, 0.3])),
+          item("minors", "Puberty blockers or hormones for minors, with parental consent and medical approval", "gender-transition care for minors with consent", L(["social", -0.7, 0.3]), "gender-transition care banned for minors", L(["social", 0.4, 0.3])),
+          item("x-marker", "An \"X\" gender marker on passports and IDs", "\"X\" marker on IDs", L(["social", -0.8, 0.2]), "no \"X\" marker on IDs", L(["social", 0, 0.2])),
+          noneOfThese,
         ],
       },
     ],
@@ -468,33 +307,16 @@ export const societyIssues: IssueModule[] = [
     },
     followUps: [
       {
-        id: "affirmative-action.contracts",
-        attribute: "Contract set-asides",
-        prompt: "Should some government contracts be set aside for minority-owned businesses?",
-        when: when("affirmative-action.admissions", "targets", "factor"),
+        id: "affirmative-action.policies",
+        attribute: "Set-asides, reparations & legacies",
+        prompt: "Select all you support: which of these policies should the U.S. adopt?",
+        selection: "checklist",
         options: [
-          o("yes", "Yes", "minority contracting set-asides", L(["identity", -0.6, 0.3])),
-          o("no", "No", "no contracting set-asides", L(["identity", 0.4, 0.3])),
-        ],
-      },
-      {
-        id: "affirmative-action.reparations",
-        attribute: "Reparations",
-        prompt: "Should the federal government provide reparations for slavery?",
-        when: when("affirmative-action.admissions", "targets", "factor", "class"),
-        options: [
-          o("cash", "Yes, including direct payments", "reparations including cash payments", L(["identity", -1, 0.4], ["redistribution", -0.5, 0.2])),
-          o("invest", "Yes, through investment in affected communities", "reparations through community investment", L(["identity", -0.6, 0.4])),
-          o("no", "No", "no reparations", L(["identity", 0.5, 0.4])),
-        ],
-      },
-      {
-        id: "affirmative-action.legacy",
-        attribute: "Legacy preferences",
-        prompt: "Should colleges give preference to children of alumni or donors?",
-        options: [
-          o("yes", "Yes, that's their choice", "legacy preferences allowed", L(["regulation", 0.4, 0.2])),
-          o("no", "No", "legacy preferences ended", L(["redistribution", -0.2, 0.1])),
+          item("contracts", "Setting aside some government contracts for minority-owned businesses", "minority contracting set-asides", L(["identity", -0.6, 0.3]), "no contracting set-asides", L(["identity", 0.4, 0.3])),
+          item("reparations-invest", "Reparations for slavery through investment in affected communities", "reparations through community investment", L(["identity", -0.6, 0.4]), "no reparations through community investment", L(["identity", 0.4, 0.4])),
+          item("reparations-cash", "Reparations for slavery that include direct payments", "reparations including cash payments", L(["identity", -1, 0.4], ["redistribution", -0.5, 0.2]), "no cash reparations", L(["identity", -0.2, 0.4], ["redistribution", 0, 0.2])),
+          item("legacy", "College admissions preferences for children of alumni or donors", "legacy preferences allowed", L(["regulation", 0.4, 0.2]), "legacy preferences ended", L(["regulation", -0.1, 0.2])),
+          noneOfThese,
         ],
       },
     ],
@@ -564,41 +386,16 @@ export const societyIssues: IssueModule[] = [
     },
     followUps: [
       {
-        id: "speech.hate-speech",
-        attribute: "Hate speech",
-        prompt: "Should hate speech be illegal?",
-        when: when("speech.moderation", "required", "encouraged"),
+        id: "speech.limits",
+        attribute: "Speech limits & platform liability",
+        prompt: "Select all you support: which of these should the law allow or require?",
+        selection: "checklist",
         options: [
-          o("yes", "Yes", "hate speech outlawed", L(["liberty", 0.8, 0.4], ["social", -0.5, 0.2])),
-          o("no", "No, it should stay protected by the First Amendment", "hate speech remains legal", L(["liberty", -0.5, 0.4])),
-        ],
-      },
-      {
-        id: "speech.section-230",
-        attribute: "Platform liability",
-        prompt: "Should platforms be legally liable for what users post?",
-        options: [
-          o("keep", "No, keep current protections", "platform liability protections kept", L(["regulation", 0.4, 0.2])),
-          o("narrow", "Only if they knowingly allow illegal content", "platform protections narrowed", L(["regulation", -0.2, 0.2])),
-          o("liable", "Yes, like a publisher", "platforms liable like publishers", L(["regulation", -0.6, 0.2])),
-        ],
-      },
-      {
-        id: "speech.flag",
-        attribute: "Flag burning",
-        prompt: "Should burning the American flag be illegal?",
-        options: [
-          o("yes", "Yes", "flag burning banned", L(["social", 0.6, 0.3], ["liberty", 0.5, 0.2], ["immigration", 0.3, 0.1])),
-          o("no", "No", "flag burning protected as speech", L(["liberty", -0.5, 0.3], ["social", -0.2, 0.1])),
-        ],
-      },
-      {
-        id: "speech.foreign-apps",
-        attribute: "Foreign-owned apps",
-        prompt: "Should the government be able to ban apps owned by companies in hostile countries, like TikTok?",
-        options: [
-          o("yes", "Yes", "foreign-adversary apps can be banned", L(["liberty", 0.5, 0.3], ["engagement", 0.3, 0.1])),
-          o("no", "No", "no bans on foreign-owned apps", L(["liberty", -0.5, 0.3])),
+          item("hate-speech", "Making hate speech illegal", "hate speech outlawed", L(["liberty", 0.8, 0.4], ["social", -0.5, 0.2]), "hate speech protected by the First Amendment", L(["liberty", -0.4, 0.4], ["social", 0.1, 0.2])),
+          item("flag", "Making it illegal to burn the American flag", "flag burning banned", L(["social", 0.6, 0.3], ["liberty", 0.5, 0.2]), "flag burning protected as speech", L(["social", -0.2, 0.3], ["liberty", -0.5, 0.2])),
+          item("foreign-apps", "Letting the government ban apps owned by companies in hostile countries, like TikTok", "foreign-adversary apps can be banned", L(["liberty", 0.5, 0.3]), "no bans on foreign-owned apps", L(["liberty", -0.5, 0.3])),
+          item("liability", "Making platforms legally liable for what users post, like publishers", "platforms liable like publishers", L(["regulation", -0.5, 0.2]), "platform liability protections kept", L(["regulation", 0.3, 0.2])),
+          noneOfThese,
         ],
       },
     ],
@@ -618,31 +415,15 @@ export const societyIssues: IssueModule[] = [
     },
     followUps: [
       {
-        id: "religious-liberty.vaccines",
-        attribute: "Vaccine exemptions",
-        prompt: "Should vaccine requirements include religious exemptions?",
+        id: "religious-liberty.exemptions",
+        attribute: "Exemptions & church politics",
+        prompt: "Select all you support: which of these should the law allow?",
+        selection: "checklist",
         options: [
-          o("yes", "Yes", "religious vaccine exemptions", L(["religion", 0.5, 0.3], ["liberty", -0.3, 0.2])),
-          o("no", "No", "no religious vaccine exemptions", L(["religion", -0.5, 0.3], ["liberty", 0.3, 0.2])),
-        ],
-      },
-      {
-        id: "religious-liberty.contraception",
-        attribute: "Contraception coverage",
-        prompt: "Should employers with religious objections be able to exclude contraceptive coverage from employee health plans?",
-        when: when("religious-liberty.vendors", "expressive", "yes"),
-        options: [
-          o("yes", "Yes", "employers may exclude contraception", L(["religion", 0.7, 0.3])),
-          o("no", "No", "contraception coverage required", L(["religion", -0.2, 0.3])),
-        ],
-      },
-      {
-        id: "religious-liberty.churches-politics",
-        attribute: "Church endorsements",
-        prompt: "Should tax-exempt churches be allowed to endorse political candidates?",
-        options: [
-          o("yes", "Yes", "churches may endorse candidates", L(["religion", 0.7, 0.3])),
-          o("no", "No", "churches barred from endorsing", L(["religion", -0.4, 0.3])),
+          item("vaccines", "Religious exemptions from vaccine requirements", "religious vaccine exemptions", L(["religion", 0.5, 0.3], ["liberty", -0.3, 0.2]), "no religious vaccine exemptions", L(["religion", -0.5, 0.3], ["liberty", 0.3, 0.2])),
+          item("contraception", "Employers with religious objections leaving contraception out of employee health plans", "employers may exclude contraception", L(["religion", 0.7, 0.3]), "contraception coverage required", L(["religion", -0.2, 0.3])),
+          item("endorsements", "Tax-exempt churches endorsing political candidates", "churches may endorse candidates", L(["religion", 0.7, 0.3]), "churches barred from endorsing", L(["religion", -0.4, 0.3])),
+          noneOfThese,
         ],
       },
     ],
@@ -650,6 +431,7 @@ export const societyIssues: IssueModule[] = [
   {
     id: "religion-law",
     name: "Religion & law",
+    foundation: true,
     screener: {
       id: "religion-law.tradition",
       attribute: "Tradition in law",
@@ -762,24 +544,37 @@ export const societyIssues: IssueModule[] = [
   {
     id: "regime",
     name: "Political system",
+    foundation: true,
+    // Split in two so most people see four options: the form of government
+    // first, and only those who reject elected government are asked who
+    // should rule instead. The authority lens is set by whichever answers.
     screener: {
       id: "regime.authority",
-      attribute: "Final authority",
-      prompt: "Who should hold final political authority?",
+      attribute: "Form of government",
+      prompt: "How should the country be governed?",
       options: [
-        o("elected", "Elected representatives", "elected representatives", L(["democracy", -0.7, 0.5]), { authority: "elected" }),
-        o("assemblies", "Citizens directly, through local assemblies", "citizen assemblies", L(["democracy", -0.8, 0.5], ["federalism", -0.6, 0.2]), { authority: "assemblies" }),
-        o("party", "A single ruling party", "one-party rule", L(["democracy", 0.8, 0.5]), { authority: "party" }),
-        o("leader", "A strong national leader", "a strong leader", L(["democracy", 0.8, 0.5], ["executive", 0.8, 0.2]), { authority: "leader" }),
-        o("monarch", "A hereditary monarch", "a hereditary monarch", L(["democracy", 0.8, 0.5]), { authority: "monarch" }),
-        o("clergy", "Religious leaders, or religious law itself", "religious authority", L(["democracy", 0.7, 0.5], ["religion", 0.9, 0.2]), { authority: "clergy" }),
-        o("experts", "Experts and qualified administrators", "rule by experts", L(["democracy", 0.4, 0.5]), { authority: "experts" }),
-        o("military", "The military", "military rule", L(["democracy", 0.9, 0.5]), { authority: "military" }),
-        o("owners", "Property owners, the way shareholders run a company", "rule by owners", L(["democracy", 0.6, 0.5], ["ownership", 0.8, 0.2]), { authority: "owners" }),
-        o("no-state", "No one. There should be no state", "no state", L(["democracy", -0.4, 0.5], ["federalism", -1, 0.2]), { authority: "no-state" }),
+        o("elected", "As a representative democracy: elected officials make the laws", "representative democracy", L(["democracy", -0.7, 0.5]), { authority: "elected" }),
+        o("assemblies", "As a direct democracy: citizens decide in local assemblies", "direct democracy", L(["democracy", -0.8, 0.5], ["federalism", -0.6, 0.2]), { authority: "assemblies" }),
+        o("unelected", "By a ruler or ruling group that doesn't answer to voters", "unelected rule", L(["democracy", 0.75, 0.5])),
+        o("no-state", "It shouldn't be. There should be no state", "no state", L(["democracy", -0.4, 0.5], ["federalism", -1, 0.2]), { authority: "no-state" }),
       ],
     },
     followUps: [
+      {
+        id: "regime.ruler",
+        attribute: "Who rules",
+        prompt: "Who should rule?",
+        when: when("regime.authority", "unelected"),
+        options: [
+          o("party", "A single ruling party", "one-party rule", L(["democracy", 0.8, 0.4]), { authority: "party" }),
+          o("leader", "A strong national leader", "a strong leader", L(["democracy", 0.85, 0.4], ["executive", 0.8, 0.2]), { authority: "leader" }),
+          o("monarch", "A hereditary monarch", "a hereditary monarch", L(["democracy", 0.8, 0.4]), { authority: "monarch" }),
+          o("clergy", "Religious leaders, or religious law itself", "religious authority", L(["democracy", 0.7, 0.4], ["religion", 0.9, 0.2]), { authority: "clergy" }),
+          o("experts", "Experts and qualified administrators", "rule by experts", L(["democracy", 0.4, 0.4]), { authority: "experts" }),
+          o("military", "The military", "military rule", L(["democracy", 0.9, 0.4]), { authority: "military" }),
+          o("owners", "Property owners, the way shareholders run a company", "rule by owners", L(["democracy", 0.6, 0.4], ["ownership", 0.8, 0.2]), { authority: "owners" }),
+        ],
+      },
       {
         id: "regime.nation",
         attribute: "Nation defined by",

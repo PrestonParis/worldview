@@ -48,7 +48,7 @@ export function CountrySearch() {
   }
 
   return (
-    <div ref={containerRef} className="absolute left-1/2 top-4 z-10 w-80 -translate-x-1/2">
+    <div ref={containerRef} className="w-full">
       <div className="flex items-center gap-2 rounded-md border border-neutral-700 bg-neutral-950/90 px-3 py-2 shadow-lg backdrop-blur">
         <Search size={14} className="shrink-0 text-neutral-500" />
         <input
@@ -72,7 +72,7 @@ export function CountrySearch() {
         )}
       </div>
       {open && visibleResults.length > 0 && (
-        <ul className="mt-1 max-h-72 overflow-y-auto rounded-md border border-neutral-700 bg-neutral-950/95 shadow-lg backdrop-blur">
+        <ul className="mt-2 max-h-72 overflow-y-auto rounded-md border border-neutral-700 bg-neutral-950 shadow-lg">
           {visibleResults.map((feature) => (
             <li key={countryId(feature)}>
               <button

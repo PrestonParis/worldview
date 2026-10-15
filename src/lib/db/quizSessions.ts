@@ -2,6 +2,8 @@ import { and, desc, eq, isNull } from "drizzle-orm";
 import { db } from "./client";
 import { quizSessions } from "./schema";
 import type { QuizAnswer, RefineTargets } from "../quiz/engine";
+import { validQuizMode, type DeferredQuestion, type QuizCheckpointRecord, type QuizModeId } from "../quiz/modes";
+import type { IssueId } from "../quiz/types";
 
 export type QuizVisibility = "public" | "private";
 export type QuizStatus = "in_progress" | "complete";
@@ -18,8 +20,14 @@ export interface QuizSession {
   status: QuizStatus;
   bankVersion: string;
   engineVersion: string;
+  targetMode: QuizModeId;
+  highestCompletedMode: QuizModeId | null;
+  entryVariant: "general" | "topic";
+  entryTopic: IssueId | null;
   answers: QuizAnswer[];
   refine: RefineTargets;
+  deferred: DeferredQuestion[];
+  checkpointHistory: QuizCheckpointRecord[];
   createdAt: Date;
   updatedAt: Date;
   completedAt: Date | null;
@@ -33,6 +41,12 @@ function toSession(row: typeof quizSessions.$inferSelect): QuizSession {
     status: row.status as QuizStatus,
     answers: row.answers as QuizAnswer[],
     refine: row.refine as RefineTargets,
+    targetMode: validQuizMode(row.targetMode, "deep"),
+    highestCompletedMode: row.highestCompletedMode ? validQuizMode(row.highestCompletedMode, "quick") : null,
+    entryVariant: row.entryVariant === "topic" ? "topic" : "general",
+    entryTopic: row.entryTopic as IssueId | null,
+    deferred: row.deferred as DeferredQuestion[],
+    checkpointHistory: row.checkpointHistory as QuizCheckpointRecord[],
   };
 }
 
@@ -45,6 +59,9 @@ export async function createQuizSession(input: {
   editTokenHash: string;
   bankVersion: string;
   engineVersion: string;
+  targetMode?: QuizModeId;
+  entryVariant?: "general" | "topic";
+  entryTopic?: IssueId | null;
 }): Promise<QuizSession> {
   const [row] = await db.insert(quizSessions).values(input).returning();
   return toSession(row);
@@ -61,7 +78,16 @@ export async function getQuizSession(slug: string): Promise<QuizSession | null> 
 
 export async function saveQuizProgress(
   id: string,
-  patch: { answers: QuizAnswer[]; refine: RefineTargets; status: QuizStatus; completedAt: Date | null },
+  patch: {
+    answers: QuizAnswer[];
+    refine: RefineTargets;
+    deferred: DeferredQuestion[];
+    targetMode: QuizModeId;
+    highestCompletedMode: QuizModeId | null;
+    checkpointHistory: QuizCheckpointRecord[];
+    status: QuizStatus;
+    completedAt: Date | null;
+  },
 ): Promise<void> {
   await db
     .update(quizSessions)

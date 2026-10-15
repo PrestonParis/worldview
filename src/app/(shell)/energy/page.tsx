@@ -55,6 +55,10 @@ export default async function EnergyPage() {
         world, and how temperatures have changed since 1895.
       </IssueHeader>
 
+      <ChartCard title="U.S. electricity by source" subtitle="Share of generation, since 1985" source={SOURCES.owid} table={seriesTable(d.mix, "percent")}>
+        <TimeSeriesChart series={d.mix} unit="percent" height={340} />
+      </ChartCard>
+
       <SectionNav sections={SECTIONS} />
 
       <section id="overview" className="scroll-mt-28 space-y-6">
@@ -105,10 +109,7 @@ export default async function EnergyPage() {
 
       <Section id="electricity" title="Electricity" question="Where does American electricity come from?">
         <div className="grid gap-6 lg:grid-cols-2">
-          <ChartCard title="U.S. electricity by source" subtitle="Share of generation, since 1985" source={SOURCES.owid} table={seriesTable(d.mix, "percent")}>
-            <TimeSeriesChart series={d.mix} unit="percent" height={280} />
-          </ChartCard>
-          <ChartCard title="Wind and solar" subtitle="Share of generation, since 2000" source={SOURCES.owid} table={seriesTable(d.windSolar, "percent")}>
+          <ChartCard title="Wind and solar" subtitle="Share of generation, since 2000" source={SOURCES.owid} table={seriesTable(d.windSolar, "percent")} className="lg:col-span-2">
             <TimeSeriesChart series={d.windSolar} unit="percent" height={280} />
           </ChartCard>
         </div>

@@ -10,10 +10,10 @@ export const FAMILIES: Record<IdeologyFamily, { label: string; color: string }> 
   center: { label: "Center", color: "#8b5cf6" },
   conservative: { label: "Conservative", color: "#ef4444" },
   right: { label: "Right", color: "#f97316" },
-  libertarian: { label: "Libertarian", color: "#eab308" },
+  libertarian: { label: "Libertarian", color: "#ca8a04" },
   populist: { label: "Populist", color: "#14b8a6" },
   religious: { label: "Religious", color: "#84cc16" },
-  other: { label: "Other", color: "#10b981" },
+  other: { label: "Other", color: "#64748b" },
 };
 
 export const familyColor = (family: IdeologyFamily) => FAMILIES[family].color;

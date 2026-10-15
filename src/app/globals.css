@@ -105,8 +105,105 @@ body {
   animation: quiz-ring 1400ms cubic-bezier(0.16, 1, 0.3, 1) 1100ms both;
 }
 
+/* One question giving way to the next, in the quiz and its landing demo. */
+@keyframes quiz-step {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.quiz-step {
+  animation: quiz-step 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Scale only: dots are centred by Tailwind's translate property, and a
+   translate here would apply on top of it, shifting every dot off its spot. */
+@keyframes quiz-dot-in {
+  from { transform: scale(0.35); }
+  to { transform: none; }
+}
+
+.quiz-map-dot {
+  animation: quiz-dot-in 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Landing page: blocks rise in turn on load (delay in --d). */
+.quiz-enter {
+  /* "backwards", not "both": once finished, no transform is left applied,
+     which would make these blocks a containing block for fixed children. */
+  animation: quiz-rise 600ms cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0ms) backwards;
+}
+
+/* Worldview Atlas mark: the traditions appear, then "you" settles among them. */
+@keyframes atlas-star-in {
+  from { opacity: 0; transform: scale(0.2); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes atlas-you-in {
+  from { opacity: 0; transform: scale(1.6); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.atlas-star,
+.atlas-you {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.atlas-star {
+  animation: atlas-star-in 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.atlas-you {
+  animation: atlas-you-in 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Tradition panel: a bottom sheet on small screens, sliding in from the
+   right over the map on large ones. */
+@keyframes quiz-sheet-in {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes quiz-side-in {
+  from { opacity: 0; transform: translateX(16px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes quiz-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.quiz-panel {
+  animation: quiz-sheet-in 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (min-width: 64rem) {
+  .quiz-panel {
+    animation-name: quiz-side-in;
+  }
+}
+
+.quiz-fade {
+  animation: quiz-fade-in 200ms ease-out both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .header-enter,
+  .quiz-step,
+  .quiz-map-dot,
+  .quiz-enter,
+  .atlas-star,
+  .atlas-you,
+  .quiz-panel,
+  .quiz-fade,
   .quiz-reveal-intro,
   .quiz-reveal-name,
   .quiz-reveal-rest,

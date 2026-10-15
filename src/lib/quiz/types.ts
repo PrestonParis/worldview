@@ -140,7 +140,8 @@ export type IssueId =
   | "housing"
   | "debt"
   | "religion-law"
-  | "regime";
+  | "regime"
+  | "economic-system";
 
 export interface ChoiceOption {
   id: string; // unique within its question
@@ -155,6 +156,10 @@ export interface ChoiceOption {
   exclusive?: boolean;
   // Categorical preference this option records (see Lens).
   lens?: Lens;
+  // Checklist options only: what leaving the box unchecked means. Each
+  // checklist option is its own yes/no item, scored as a choice between
+  // `axes` (checked) and these loadings (unchecked).
+  unchecked?: { stance: string; axes: Loadings };
 }
 
 export interface ChoiceQuestion {
@@ -165,7 +170,10 @@ export interface ChoiceQuestion {
   prompt: string;
   // Multiple-selection questions are submitted once, as a single compact
   // policy battery. Unchecked options are not treated as opposition.
-  selection?: "single" | "multiple";
+  // A checklist ("select all you support") is shown the same way, but every
+  // option is a separate yes/no item and an unchecked box counts as "no":
+  // one screen in place of several yes/no follow-ups.
+  selection?: "single" | "multiple" | "checklist";
   options: ChoiceOption[];
 }
 
@@ -183,6 +191,13 @@ export interface FollowUp extends ChoiceQuestion {
 export interface IssueModule {
   id: IssueId;
   name: string;
+  // Foundations frame everything else (political system, economic system,
+  // religion's place in law) and are asked before anything else.
+  foundation?: boolean;
+  // Not asked when a foundation answer already rules out the premise, e.g.
+  // minimum-wage levels for someone who wants private enterprise abolished.
+  // Leaving the foundation unanswered never skips a module.
+  unless?: Condition;
   screener: ChoiceQuestion;
   followUps: FollowUp[];
 }

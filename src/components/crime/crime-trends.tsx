@@ -21,7 +21,7 @@ export function CrimeTrends({
   flaggedYears: { year: string; coverage: number | null }[];
   baseYear: string;
 }) {
-  const [mode, setMode] = useState<Mode>("rate");
+  const [mode, setMode] = useState<Mode>("index");
   const [view, setView] = useState<"chart" | "table">("chart");
   const [picked, setPicked] = useState<OffenseKey[]>(["violent_crime", "homicide", "property_crime"]);
 

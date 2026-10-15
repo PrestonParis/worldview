@@ -8,7 +8,7 @@ const GROUPS = [
   },
   {
     title: "Data and tools",
-    links: [["Dataset catalog", "/datasets"], ["Publish data", "/datasets/publish"], ["Political Quiz", "/quiz"], ["Geography Studio", "/geography"]],
+    links: [["Dataset catalog", "/datasets"], ["Publish data", "/datasets/publish"], ["Political Quiz", "/quiz"]],
   },
   {
     title: "Worldview",

@@ -10,7 +10,6 @@ export const generalPages: NavPage[] = [
   { label: "Money & Influence", navLabel: "Money", href: "/money" },
   { label: "Elections & Maps", navLabel: "Elections", href: "/elections" },
   { label: "Political Quiz", navLabel: "Quiz", href: "/quiz" },
-  { label: "Geography", navLabel: "Geography", href: "/geography" },
 ];
 
 export const primaryPages: NavPage[] = [
@@ -100,8 +99,7 @@ export const navGroups: NavGroup[] = [
     id: "tools",
     label: "Tools",
     items: [
-      { page: page("/quiz"), blurb: "Map your views on 17 axes and 25 issues" },
-      { page: page("/geography"), blurb: "Annotated map graphics for broadcast and social" },
+      { page: page("/quiz"), blurb: "Map your views on 18 axes and 28 issues" },
     ],
   },
 ];

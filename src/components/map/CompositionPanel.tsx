@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { ImagePlus, LayoutTemplate, Plus, X } from "lucide-react";
+import { ImagePlus, Plus } from "lucide-react";
 import { useAppStore } from "@/lib/store/useAppStore";
 import { createDefaultLayers } from "@/lib/store/layersSlice";
 import { createDefaultMapView } from "@/lib/store/mapViewSlice";
@@ -16,7 +16,6 @@ const ROLES: Array<{ id: CompositionRole; label: string }> = [
 ];
 
 export function CompositionPanel() {
-  const [open, setOpen] = useState(false);
   const [showSafeArea, setShowSafeArea] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -82,19 +81,12 @@ export function CompositionPanel() {
 
   return (
     <>
-      {showSafeArea && <div className="pointer-events-none absolute inset-[5%] z-10 hidden border border-dashed border-amber-300/80 lg:block"><div className="absolute inset-[5%] border border-dashed border-amber-300/40" /></div>}
-      {!open ? (
-        <button type="button" onClick={() => setOpen(true)} className="absolute left-[23rem] top-3 z-10 hidden items-center gap-2 rounded-md border border-neutral-700 bg-neutral-950/90 px-3 py-2 text-sm text-neutral-200 shadow-lg backdrop-blur hover:bg-neutral-900 lg:flex"><LayoutTemplate size={14} /> Compose</button>
-      ) : (
-        <div className="absolute left-[23rem] top-3 z-20 hidden w-72 rounded-md border border-neutral-700 bg-neutral-950/95 text-sm text-neutral-200 shadow-xl backdrop-blur lg:block">
-          <div className="flex items-center justify-between border-b border-neutral-800 px-3 py-2"><span className="flex items-center gap-2 font-medium"><LayoutTemplate size={14} /> Compose</span><button type="button" onClick={() => setOpen(false)} aria-label="Close composition panel"><X size={15} /></button></div>
-          <div className="space-y-4 p-3">
+      {showSafeArea && <div className="pointer-events-none fixed inset-[5%] z-10 hidden border border-dashed border-amber-300/80 lg:block"><div className="absolute inset-[5%] border border-dashed border-amber-300/40" /></div>}
+          <div className="space-y-4 text-sm text-neutral-200">
             <section><p className="mb-2 text-xs uppercase tracking-wide text-neutral-500">Text elements</p><div className="grid grid-cols-2 gap-1.5">{ROLES.map((role) => <button key={role.id} type="button" onClick={() => addComposition(role.id)} className="flex items-center gap-1 rounded border border-neutral-800 px-2 py-1.5 text-xs hover:bg-neutral-900"><Plus size={11} /> {role.label}</button>)}</div></section>
             <section><p className="mb-2 text-xs uppercase tracking-wide text-neutral-500">Assets & guides</p><input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={(event) => loadImage(event.target.files?.[0])} /><button type="button" onClick={() => fileRef.current?.click()} className="mb-1.5 flex w-full items-center gap-2 rounded border border-neutral-800 px-2 py-1.5 text-xs hover:bg-neutral-900"><ImagePlus size={13} /> Add image or logo</button><label className="flex items-center justify-between text-xs"><span>Broadcast safe area</span><input type="checkbox" checked={showSafeArea} onChange={(event) => setShowSafeArea(event.target.checked)} /></label>{error ? <p className="mt-1 text-xs text-red-400">{error}</p> : null}</section>
             <section><p className="mb-2 text-xs uppercase tracking-wide text-neutral-500">Templates</p><div className="space-y-1">{[["breaking", "Breaking-news locator"], ["shipping", "Live shipping"], ["disaster", "Disaster monitor"]].map(([id, label]) => <button key={id} type="button" onClick={() => applyTemplate(id as "breaking" | "shipping" | "disaster")} className="w-full rounded border border-neutral-800 px-2 py-1.5 text-left text-xs hover:bg-neutral-900">{label}</button>)}</div></section>
           </div>
-        </div>
-      )}
     </>
   );
 }

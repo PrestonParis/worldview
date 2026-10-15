@@ -193,7 +193,7 @@ const TOPICS: Record<Topic, { label: string; href: string; blurb: string; terms:
   quiz: {
     label: "Political Quiz",
     href: "/quiz",
-    blurb: "Map your views on 17 axes and 25 issues",
+    blurb: "Map your views on 18 axes and 28 issues",
     terms: ["quiz", "political quiz"],
   },
   datasets: {

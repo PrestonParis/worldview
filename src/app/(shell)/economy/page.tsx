@@ -60,6 +60,10 @@ export default async function EconomyPage() {
         Census Bureau, and the Federal Reserve, nationally since the 1940s and by state.
       </IssueHeader>
 
+      <ChartCard title="Unemployment rate since 1948" subtitle="Monthly, seasonally adjusted · shaded: recessions" source={SOURCES.bls} table={seriesTable(d.unemployment, "percent")}>
+        <TimeSeriesChart series={d.unemployment} unit="percent" height={340} markers={d.recessions(1948)} />
+      </ChartCard>
+
       <SectionNav sections={SECTIONS} />
 
       <section id="overview" className="scroll-mt-28 space-y-6">
@@ -112,9 +116,6 @@ export default async function EconomyPage() {
           </p>
         </Prose>
         <div className="grid gap-6 lg:grid-cols-2">
-          <ChartCard title="Unemployment rate since 1948" subtitle="Monthly, seasonally adjusted · shaded: recessions" source={SOURCES.bls} table={seriesTable(d.unemployment, "percent")} className="lg:col-span-2">
-            <TimeSeriesChart series={d.unemployment} unit="percent" height={300} markers={d.recessions(1948)} />
-          </ChartCard>
           <ChartCard title="Nonfarm payroll jobs" subtitle="Seasonally adjusted, since 1970" source={SOURCES.bls} table={seriesTable(d.payrolls, "jobs")}>
             <TimeSeriesChart series={d.payrolls} unit="jobs" height={280} markers={d.recessions(1970)} endLabels={false} />
           </ChartCard>

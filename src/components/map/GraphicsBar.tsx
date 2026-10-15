@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Check, ChevronDown, FilePlus, Link2, Loader2, Plus, Radio, Trash2, X } from "lucide-react";
+import { Braces, Check, ChevronDown, FilePlus, FolderOpen, Link2, Loader2, Plus, Radio, Trash2, X } from "lucide-react";
 import { useAppStore } from "@/lib/store/useAppStore";
 import { useMapInstance } from "@/lib/map/MapContext";
 import { createDefaultMapView } from "@/lib/store/mapViewSlice";
@@ -180,17 +180,17 @@ export function GraphicsBar() {
   }
 
   return (
-    <div className="absolute bottom-3 left-3 z-10 flex items-center gap-2 rounded-md border border-neutral-700 bg-neutral-950/90 px-2 py-1.5 text-sm text-neutral-200 shadow-lg backdrop-blur">
+    <div className="absolute bottom-3 left-1/2 z-20 flex max-w-[calc(100%-1.5rem)] -translate-x-1/2 items-center gap-1 rounded-lg border border-neutral-700 bg-neutral-950/90 px-1.5 py-1 text-sm text-neutral-200 shadow-lg backdrop-blur">
       <input
         type="text"
         value={projectName}
         onChange={(e) => renameProject(e.target.value)}
         onBlur={(e) => handleRenameCommit(e.target.value)}
         aria-label="Graphic name"
-        className="w-40 rounded bg-transparent px-1.5 py-1 text-neutral-100 focus:bg-neutral-900 focus:outline-none"
+        className="w-28 rounded bg-transparent px-1.5 py-1 text-neutral-100 focus:bg-neutral-900 focus:outline-none sm:w-40"
       />
 
-      <span className="flex w-16 items-center gap-1 text-xs text-neutral-500">
+      <span className="hidden w-16 items-center gap-1 text-xs text-neutral-500 md:flex">
         {saveState === "saving" && (
           <>
             <Loader2 size={12} className="animate-spin" /> Saving
@@ -216,13 +216,13 @@ export function GraphicsBar() {
       )}
 
       {projectId && (
-        <button type="button" onClick={copyPresentationLink} className="flex items-center gap-1 rounded px-2 py-1 text-xs text-neutral-300 transition hover:bg-neutral-800" title="Copy a read-only link for OBS or another display">
-          {currentProject?.isPublished ? <Radio size={12} className="text-emerald-400" /> : <Link2 size={12} />} {currentProject?.isPublished ? "Copy live link" : "Enable live link"}
+        <button type="button" onClick={copyPresentationLink} className="flex items-center gap-1 rounded p-1.5 text-xs text-neutral-300 transition hover:bg-neutral-800" title={currentProject?.isPublished ? "Copy live presentation link" : "Enable live presentation link"} aria-label={currentProject?.isPublished ? "Copy live presentation link" : "Enable live presentation link"}>
+          {currentProject?.isPublished ? <Radio size={14} className="text-emerald-400" /> : <Link2 size={14} />} <span className="hidden xl:inline">{currentProject?.isPublished ? "Copy live link" : "Enable live link"}</span>
         </button>
       )}
 
       <div className="relative">
-        <button type="button" onClick={() => setLiveOpen((value) => !value)} className="rounded px-2 py-1 text-xs text-neutral-300 transition hover:bg-neutral-800">Live values</button>
+        <button type="button" onClick={() => setLiveOpen((value) => !value)} className="flex items-center gap-1 rounded p-1.5 text-xs text-neutral-300 transition hover:bg-neutral-800" title="Live values" aria-label="Live values"><Braces size={14} /><span className="hidden xl:inline">Live values</span></button>
         {liveOpen && (
           <div className="absolute bottom-full left-0 mb-2 w-72 rounded-md border border-neutral-700 bg-neutral-950 p-3 shadow-xl">
             <div className="mb-2 flex items-center justify-between"><span className="font-medium">Live values</span>{currentProject?.isPublished ? <button type="button" onClick={disablePresentation} className="text-[11px] text-red-400 hover:underline">Revoke public link</button> : null}</div>
@@ -245,9 +245,10 @@ export function GraphicsBar() {
         <button
           type="button"
           onClick={() => setMenuOpen((o) => !o)}
-          className="flex items-center gap-1 rounded px-2 py-1 text-xs text-neutral-300 transition hover:bg-neutral-800"
+          className="flex items-center gap-1 rounded p-1.5 text-xs text-neutral-300 transition hover:bg-neutral-800"
+          title="My graphics"
         >
-          My Graphics <ChevronDown size={12} />
+          <FolderOpen size={14} /><span className="hidden xl:inline">My graphics</span> <ChevronDown size={12} />
         </button>
 
         {menuOpen && (

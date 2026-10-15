@@ -653,7 +653,7 @@ export const ideologies: Ideology[] = [
     description: "A hereditary monarch reigns as a unifying head of state, while an elected parliament governs.",
     position: { federalism: 0, executive: 0, liberty: 0.2, voting: 0.3, democracy: -0.5, ownership: 0.3, regulation: 0.1, redistribution: 0.1, trade: 0.2, engagement: -0.2, force: -0.1, social: 0.5, religion: 0.4, immigration: 0.3, justice: 0.4, identity: 0.3, environment: 0, technology: 0 },
     core: ["democracy", "executive", "voting", "social"],
-    authority: ["monarch"], nation: ["civic", "civilizational"],
+    authority: ["elected", "monarch"], nation: ["civic", "civilizational"],
   },
   {
     id: "eco-fascism",
