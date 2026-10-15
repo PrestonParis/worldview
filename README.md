@@ -2,7 +2,7 @@
 
 Worldview is a public-data platform for understanding the United States: immigration, crime, the economy, elections, political money, Congress, and the people and institutions behind them. Every figure links back to the government record or published study it came from.
 
-![CI](https://github.com/PrestonParis/worldview/actions/workflows/ci.yml/badge.svg) · **Live:** [worldview-tawny.vercel.app](https://worldview-tawny.vercel.app)
+![CI](https://github.com/PrestonParis/worldview/actions/workflows/ci.yml/badge.svg) · **Live:** [worldviewpolitics.com](https://www.worldviewpolitics.com)
 
 ![Worldview home page](docs/images/worldview-home.png)
 
@@ -77,7 +77,7 @@ GitHub Actions workflows (`.github/workflows/`):
 
 ## Status and next steps
 
-Worldview is live at [worldview-tawny.vercel.app](https://worldview-tawny.vercel.app) and under active development. Lint, tests, typecheck, and the production build pass. Before wider promotion, sign-up needs a CAPTCHA (Cloudflare Turnstile is wired in but not yet configured in production) and anonymous quiz creation needs rate limiting. The databases run on free tiers, so large imports are size-checked first.
+Worldview is live at [worldviewpolitics.com](https://www.worldviewpolitics.com) and under active development. Lint, tests, typecheck, and the production build pass. Before wider promotion, sign-up needs a CAPTCHA (Cloudflare Turnstile is wired in but not yet configured in production) and anonymous quiz creation needs rate limiting. The databases run on free tiers, so large imports are size-checked first.
 
 **Demo video:** TODO — add a short product walkthrough.
 
