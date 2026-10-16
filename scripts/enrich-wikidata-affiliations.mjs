@@ -17,7 +17,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { connectPg } from "./lib/bulk.mjs";
-import { addIdentifiers, upsertEdges, upsertEntities } from "./lib/entities.mjs";
+import { addIdentifiers, describeConflict, upsertEdges, upsertEntities } from "./lib/entities.mjs";
 
 const DRY_RUN = process.argv.includes("--dry-run");
 const LIMIT_ARG = process.argv.indexOf("--limit");
@@ -167,7 +167,7 @@ async function main() {
       pg,
       [...qidByPerson].map(([qid, person]) => ({ entityId: person.id, scheme: "wikidata", value: qid })),
     );
-    for (const c of conflicts) console.log(`  wikidata ${c.value} already belongs to entity ${c.held_by}`);
+    for (const c of conflicts) console.log(`  ${describeConflict(c)}`);
 
     let orgsCreated = 0;
     for (const { person, orgName, relType, label } of writes) {

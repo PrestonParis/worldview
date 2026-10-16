@@ -44,6 +44,57 @@ tables, stays in Supabase.
 - The Neon CLI (`neon link` / `neon deploy`) writes its variables to `.env`.
   The app never reads that file's `DATABASE_URL`.
 
+## The lake: files outside the databases
+
+Supabase Storage holds files the databases don't need to: it has its own
+quota, separate from the 500 MB database cap.
+
+- `raw` (private): source files as downloaded. An importer that calls
+  `fetchArchived(pg, source, url)` (`scripts/lib/lake.mjs`) keeps each
+  distinct version once, by content hash, in `source_snapshots`, so a past
+  import can be replayed. It's skipped when Storage credentials aren't set.
+- `lake` (public): Parquet extracts, catalogued in `lake_files`.
+  `npm run data:lake` exports every published dataset
+  (`area-stats/<slug>.parquet`) and the public record tables
+  (`tables/<table>.parquet`); accounts, quizzes, saved maps and partner keys
+  never leave. Unchanged files aren't re-uploaded. `/datasets/<slug>` and the
+  dataset API link them, and DuckDB, pandas, R or Polars read them straight
+  from the URL. The weekly `export-lake.yml` workflow rebuilds them.
+- Detail too large for Postgres (individual donations, precinct returns)
+  goes to the lake as Parquet via `exportParquet`; Postgres keeps only the
+  aggregates pages read. Supabase's free plan caps one upload at 50 MB, so
+  split larger extracts.
+
+## Data health
+
+`npm run data:health` lists importers whose latest run failed or never
+finished, and datasets whose newest period is older than their cadence
+allows. The weekly `export-lake.yml` workflow runs it into the run summary
+and goes red when an importer failed.
+
+## Entity cleanup
+
+- `npm run data:merge-entities` reports duplicate entities. Those proven by
+  a shared FEC id merge with `-- --apply`; name-only matches are listed for
+  review and merged with `-- --merge=<from>:<into>`. Entities with different
+  ids in a one-per-person scheme (Bioguide, ICPSR, Open States, ...) are never
+  merged; a unique index enforces one such id per entity. Each merge records
+  a snapshot in `entity_merges`, `-- --unmerge=<id>` reverses it, and old
+  links to a merged id redirect.
+- `npm run data:repair-donors` restores donors that contributions point at
+  but the graph lost, from OpenFEC.
+- `npm run db:validate-fks` validates each entity foreign key once no row
+  breaks it. Repair and validation run after every production deploy.
+
+## Room for new records
+
+- State legislatures: `bills.jurisdiction` and `roll_calls.jurisdiction`
+  are `us` for Congress or a state's postal code; state roll calls have no
+  `congress`.
+- Polls: `polls` (pollster, field dates, population, sample, the race
+  polled, where the sample was drawn) and `poll_results` (one row per choice,
+  linked to an entity when it's a candidate).
+
 ## Places and breakdowns
 
 `area_stats.geo_level` covers three kinds of thing, recorded in the

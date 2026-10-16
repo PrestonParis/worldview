@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { getMergedInto } from "@/lib/db/entities";
 import { getOrgProfile } from "@/lib/db/graph";
 import { entityColorFor } from "@/lib/entity-colors";
 import { relationshipCategoryColors } from "@/lib/relationships";
@@ -28,7 +29,11 @@ const CATEGORY_LABEL: Record<string, string> = {
 export default async function OrgProfilePage({ params }: PageProps<"/people/orgs/[id]">) {
   const { id } = await params;
   const profile = await getOrgProfile(id);
-  if (!profile) notFound();
+  if (!profile) {
+    const merged = await getMergedInto(id);
+    if (merged) permanentRedirect(`/people/orgs/${merged.id}`);
+    notFound();
+  }
 
   const { entity, connectionsByCategory, total } = profile;
   const c = entityColorFor(entity.type);

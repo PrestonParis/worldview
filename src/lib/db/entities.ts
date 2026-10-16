@@ -1,6 +1,6 @@
 import { and, asc, count, desc, eq, gte, ilike, inArray, sql } from "drizzle-orm";
 import { db } from "./client";
-import { entities, entityIdentifiers } from "./schema";
+import { entities, entityIdentifiers, entityMerges } from "./schema";
 import type { Entity, EntityInput, EntityType } from "../validation/entity";
 import { publicEntitySlug } from "../people/public";
 
@@ -173,6 +173,20 @@ export async function getEntityByPublicSlug(slug: string): Promise<Entity | null
     .where(sql`${entities.id}::text like ${`${shortId}%`}`)
     .limit(10);
   return rows.map(toEntity).find((entity) => publicEntitySlug(entity) === slug) ?? null;
+}
+
+// The entity a merged duplicate was folded into (scripts/merge-entities.mjs),
+// so links that still carry the old id can redirect. Accepts a full id or
+// the 8-character prefix public profile slugs end in.
+export async function getMergedInto(idOrPrefix: string): Promise<Entity | null> {
+  const prefix = idOrPrefix.toLowerCase();
+  if (!/^[0-9a-f-]{8,36}$/.test(prefix)) return null;
+  const [row] = await db
+    .select({ intoId: entityMerges.intoId })
+    .from(entityMerges)
+    .where(sql`${entityMerges.mergedId}::text like ${`${prefix}%`}`)
+    .limit(2);
+  return row ? getEntity(row.intoId) : null;
 }
 
 function entityValues(input: EntityInput) {

@@ -15,7 +15,7 @@ import { entityColorFor } from "@/lib/entity-colors";
 import { leanLabels, leanOf } from "@/lib/graph/lean";
 import { isDonorEdge } from "@/lib/money";
 import { listEdgesForEntity } from "@/lib/db/edges";
-import { getEntitiesByIds, getEntityByPublicSlug } from "@/lib/db/entities";
+import { getEntitiesByIds, getEntityByPublicSlug, getMergedInto } from "@/lib/db/entities";
 import { buildEgoPreview } from "@/lib/people/ego-preview";
 import { entityPartyAndPlace, parseEntityMetadata, publicEntitySlug, typeLabels } from "@/lib/people/public";
 import { parseHighlights } from "@/lib/validation/entity";
@@ -43,7 +43,11 @@ const initials = (name: string) => name.split(/\s+/).slice(0, 2).map((part) => p
 export default async function PublicEntityPage({ params }: ProfilePageProps) {
   const { slug } = await params;
   const entity = await getEntityByPublicSlug(slug);
-  if (!entity) notFound();
+  if (!entity) {
+    const merged = await getMergedInto(slug.match(/-([0-9a-f]{8})$/i)?.[1] ?? "");
+    if (merged) permanentRedirect(`/people/${publicEntitySlug(merged)}`);
+    notFound();
+  }
   const canonical = publicEntitySlug(entity);
   if (slug !== canonical) permanentRedirect(`/people/${canonical}`);
 

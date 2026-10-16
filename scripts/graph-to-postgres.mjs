@@ -11,7 +11,7 @@
 //   ... --dry-run                                           # read and report only
 
 import { connectNeo4j, connectPg, flag, loadEnv, upsertRows } from "./lib/bulk.mjs";
-import { addIdentifiers, ENTITY_TEXT_COLUMNS, identifierRows, OFFICE_PROPS, upsertOffices } from "./lib/entities.mjs";
+import { ENTITY_TEXT_COLUMNS, OFFICE_PROPS, addIdentifiers, describeConflict, identifierRows, upsertOffices } from "./lib/entities.mjs";
 
 const DRY = flag("dry-run");
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -115,7 +115,7 @@ try {
     const edgeCols = ["id", "source_entity_id", "target_entity_id", "label", "rel_type", "role", "valid_from", "valid_to", "notes", "source_record_id", "source_key", "created_at", "updated_at"];
     await upsertRows(pg, "entity_edges", edgeCols, validEdges, ["id"], { touchUpdatedAt: false });
 
-    for (const c of conflicts) console.log(`  identifier ${c.scheme}=${c.value} on ${c.entity_id} already belongs to ${c.held_by}`);
+    for (const c of conflicts) console.log(`  ${describeConflict(c)}`);
     const counts = await pg.query(
       `select (select count(*) from entities)::int as entities, (select count(*) from entity_edges)::int as edges,
               (select count(*) from entity_identifiers)::int as identifiers, (select count(*) from entity_offices)::int as offices`,

@@ -97,6 +97,10 @@ export const entityIdentifiers = pgTable(
   (table) => [
     primaryKey({ name: "entity_identifiers_pkey", columns: [table.scheme, table.value] }),
     index("entity_identifiers_entity_idx").on(table.entityId, table.scheme),
+    // One id per entity in each one-per-person scheme; FEC and LDA ids repeat.
+    uniqueIndex("entity_identifiers_single_valued_idx")
+      .on(table.entityId, table.scheme)
+      .where(sql`${table.scheme} not in ('fec_candidate', 'fec_committee', 'lda_client', 'lda_registrant')`),
   ],
 );
 
@@ -157,6 +161,24 @@ export const entityEdges = pgTable(
       .where(sql`${table.sourceKey} is not null`),
     check("entity_edges_not_self", sql`${table.sourceEntityId} <> ${table.targetEntityId}`),
   ],
+);
+
+// Duplicate entities folded into another by scripts/merge-entities.mjs, so
+// links that still carry the merged id can redirect.
+export const entityMerges = pgTable(
+  "entity_merges",
+  {
+    mergedId: uuid("merged_id").primaryKey(),
+    intoId: uuid("into_id")
+      .notNull()
+      .references(() => entities.id, { onDelete: "cascade" }),
+    mergedName: text("merged_name").notNull(),
+    reason: text("reason").notNull(),
+    // Everything the merge moved or dropped, for scripts/merge-entities.mjs --unmerge.
+    snapshot: jsonb("snapshot").notNull().default({}),
+    mergedAt: timestamp("merged_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [index("entity_merges_into_idx").on(table.intoId)],
 );
 
 export const claims = pgTable("claims", {
@@ -328,6 +350,8 @@ export const bills = pgTable(
   {
     id: uuid("id").primaryKey().defaultRandom(),
     billNumber: text("bill_number").notNull(),
+    // "us" for Congress, or a state's postal code for a state legislature.
+    jurisdiction: text("jurisdiction").notNull().default("us"),
     title: text("title").notNull(),
     summary: text("summary"),
     status: billStatusEnum("status").notNull().default("introduced"),
@@ -380,7 +404,9 @@ export const rollCalls = pgTable(
     // nomination votes aren't. Cascade so removing a bill removes its roll
     // calls (and, in turn, their votes).
     billId: uuid("bill_id").references(() => bills.id, { onDelete: "cascade" }),
-    congress: integer("congress").notNull(),
+    // "us" for Congress, or a state's postal code; congress is null for states.
+    jurisdiction: text("jurisdiction").notNull().default("us"),
+    congress: integer("congress"),
     // "House" | "Senate" — free text, like bills.chamber.
     chamber: text("chamber").notNull(),
     session: integer("session"),
@@ -1367,4 +1393,87 @@ export const profiles = pgTable(
     registeredAt: timestamp("registered_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [check("profiles_role_check", sql`${table.role} in ('member', 'editor')`)],
+);
+
+// ── Data lake catalog and polls (supabase/sql/2026-10-16-data-lake.sql) ──
+// Source files and Parquet extracts live in Supabase Storage (`raw` and
+// `lake` buckets), outside the database's size cap; these tables catalog
+// them (scripts/lib/lake.mjs).
+
+export const sourceSnapshots = pgTable(
+  "source_snapshots",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    source: text("source").notNull(),
+    url: text("url").notNull(),
+    sha256: text("sha256").notNull(),
+    bytes: bigint("bytes", { mode: "number" }).notNull(),
+    contentType: text("content_type"),
+    storagePath: text("storage_path").notNull(),
+    fetchedAt: timestamp("fetched_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("source_snapshots_content_idx").on(table.source, table.url, table.sha256),
+    index("source_snapshots_source_idx").on(table.source, table.fetchedAt),
+  ],
+);
+
+export const lakeFiles = pgTable(
+  "lake_files",
+  {
+    path: text("path").primaryKey(), // object path in the `lake` bucket
+    source: text("source").notNull(),
+    format: text("format").notNull().default("parquet"),
+    rows: bigint("rows", { mode: "number" }).notNull(),
+    bytes: bigint("bytes", { mode: "number" }).notNull(),
+    columns: jsonb("columns").notNull().default([]),
+    sha256: text("sha256").notNull(),
+    builtAt: timestamp("built_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [index("lake_files_source_idx").on(table.source)],
+);
+
+export const polls = pgTable(
+  "polls",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    externalId: text("external_id"),
+    pollster: text("pollster").notNull(),
+    sponsor: text("sponsor"),
+    electionId: uuid("election_id").references(() => elections.id, { onDelete: "set null" }),
+    question: text("question").notNull().default(""),
+    geoLevel: text("geo_level").notNull().default("nation"),
+    geoid: text("geoid").notNull().default("US"),
+    // "lv" likely voters | "rv" registered voters | "a" adults | "v" voters
+    population: text("population"),
+    sampleSize: integer("sample_size"),
+    method: text("method"),
+    startDate: date("start_date"),
+    endDate: date("end_date").notNull(),
+    sourceUrl: text("source_url"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("polls_external_id_idx").on(table.externalId),
+    index("polls_election_idx").on(table.electionId, table.endDate),
+    index("polls_geo_idx").on(table.geoLevel, table.geoid, table.endDate),
+  ],
+);
+
+export const pollResults = pgTable(
+  "poll_results",
+  {
+    pollId: uuid("poll_id")
+      .notNull()
+      .references(() => polls.id, { onDelete: "cascade" }),
+    choice: text("choice").notNull(), // candidate name or answer
+    entityId: uuid("entity_id").references(() => entities.id, { onDelete: "set null" }),
+    party: text("party"),
+    pct: doublePrecision("pct").notNull(),
+  },
+  (table) => [
+    primaryKey({ name: "poll_results_pkey", columns: [table.pollId, table.choice] }),
+    index("poll_results_entity_idx").on(table.entityId),
+  ],
 );

@@ -6,7 +6,9 @@ import { z } from "zod";
 export const rollCallImportSchema = z.object({
   externalId: z.string().min(1),
   billId: z.uuid().nullable().optional(),
-  congress: z.number().int().positive(),
+  // "us" for Congress, or a state's postal code; state roll calls have no congress.
+  jurisdiction: z.string().min(2).max(10).optional().default("us"),
+  congress: z.number().int().positive().nullable(),
   chamber: z.string().min(1).max(60),
   session: z.number().int().positive().nullable().optional(),
   rollNumber: z.number().int().nonnegative(),
@@ -22,7 +24,8 @@ export type RollCallImportInput = z.infer<typeof rollCallImportSchema>;
 export interface RollCall {
   id: string;
   billId: string | null;
-  congress: number;
+  jurisdiction: string;
+  congress: number | null;
   chamber: string;
   session: number | null;
   rollNumber: number;

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ContributorOnly } from "@/components/auth/can-edit";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import {
   AtSign,
   BriefcaseBusiness,
@@ -12,7 +12,7 @@ import {
   Play,
   Users,
 } from "lucide-react";
-import { getEntity, listEntities } from "@/lib/db/entities";
+import { getEntity, getMergedInto, listEntities } from "@/lib/db/entities";
 import { listEdgesForEntity } from "@/lib/db/edges";
 import { getEntityContributionSummary } from "@/lib/db/contributions";
 import { listLobbyingForEntity } from "@/lib/db/lobbying";
@@ -56,7 +56,11 @@ export default async function EntityProfilePage({
     getEntityContributionSummary(id),
     listLobbyingForEntity(id),
   ]);
-  if (!entity) notFound();
+  if (!entity) {
+    const merged = await getMergedInto(id);
+    if (merged) permanentRedirect(`/data/entities/${merged.id}`);
+    notFound();
+  }
 
   const hasStructuredMoney =
     moneySummary.raised.length > 0 || moneySummary.given.length > 0;

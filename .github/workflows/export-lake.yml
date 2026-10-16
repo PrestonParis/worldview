@@ -1,0 +1,63 @@
+name: Export lake and check data health
+
+# After the weekly syncs: rebuilds the Parquet downloads in the `lake`
+# Storage bucket (scripts/export-lake.mjs; unchanged files aren't
+# re-uploaded), and reports failing importers and datasets behind their
+# cadence in the run summary (scripts/data-health.mjs, red when an importer
+# failed).
+on:
+  schedule:
+    - cron: "0 12 * * 1" # Mondays 12:00 UTC, after sync-public-data
+  workflow_dispatch:
+
+concurrency:
+  group: export-lake
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Write .env.local
+        run: |
+          {
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}"
+            echo "NEON_DATABASE_URL=${{ secrets.NEON_DATABASE_URL }}"
+            echo "NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}"
+            echo "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}"
+          } > .env.local
+
+      - run: node scripts/export-lake.mjs
+
+  health:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Write .env.local
+        run: |
+          {
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}"
+            echo "NEON_DATABASE_URL=${{ secrets.NEON_DATABASE_URL }}"
+          } > .env.local
+
+      - run: node scripts/data-health.mjs

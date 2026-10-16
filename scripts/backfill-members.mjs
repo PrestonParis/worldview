@@ -34,7 +34,7 @@ process.loadEnvFile(process.env.ENV_FILE || ".env.local");
 import { randomUUID } from "node:crypto";
 import { load as loadYaml } from "js-yaml";
 import { chunk, connectPg } from "./lib/bulk.mjs";
-import { addIdentifiers, identifierRows, upsertEntities } from "./lib/entities.mjs";
+import { addIdentifiers, describeConflict, identifierRows, upsertEntities } from "./lib/entities.mjs";
 import {
   servedInCongresses,
   displayName,
@@ -225,7 +225,7 @@ async function main() {
         rows.flatMap((row) => identifierRows(row.id, { bioguideId: row.bioguideId, ...row.ids })),
         { replace: true },
       );
-      for (const c of conflicts) console.log(`  ${c.scheme} ${c.value} already belongs to entity ${c.held_by}`);
+      for (const c of conflicts) console.log(`  ${describeConflict(c)}`);
       for (const batch of chunk(rows, 500)) {
         await pg.query(
           `update entities e set

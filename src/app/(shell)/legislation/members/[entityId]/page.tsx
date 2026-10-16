@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { getEntity } from "@/lib/db/entities";
+import { notFound, permanentRedirect } from "next/navigation";
+import { getEntity, getMergedInto } from "@/lib/db/entities";
 import { listVoterRollCallVotes, votesByRollCall } from "@/lib/db/votingRecord";
 import { brokeWithParty, normalizeParty } from "@/lib/legislation/votingRecord";
 import { MemberVotingRecord } from "@/components/legislation/member-voting-record";
@@ -21,7 +21,11 @@ export default async function MemberVotingRecordPage({
     getEntity(entityId),
     listVoterRollCallVotes(entityId),
   ]);
-  if (!entity) notFound();
+  if (!entity) {
+    const merged = await getMergedInto(entityId);
+    if (merged) permanentRedirect(`/legislation/members/${merged.id}`);
+    notFound();
+  }
 
   const rollCallVotes = await votesByRollCall(votes.map((v) => v.rollCallId));
 

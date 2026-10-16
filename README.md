@@ -60,7 +60,7 @@ npm test
 npm run lint
 ```
 
-369 tests across 42 files. The suite covers validation, money and election calculations, legislation helpers, authentication guards, demographic forecasting, government lookup, public-data utilities, the political quiz engine, and migration safety checks.
+371 tests across 42 files. The suite covers validation, money and election calculations, legislation helpers, authentication guards, demographic forecasting, government lookup, public-data utilities, the political quiz engine, and migration safety checks.
 
 ## Deployment
 
@@ -73,6 +73,7 @@ GitHub Actions workflows (`.github/workflows/`):
 - `sync-legislation.yml`, `sync-money.yml`, `sync-public-data.yml`: weekly refreshes from Congress.gov, the FEC, and the agency datasets.
 - `purge-quizzes.yml`: daily cleanup of unclaimed anonymous quiz sessions.
 - `sync-graph.yml`: a daily rebuild of the Neo4j graph copy from PostgreSQL, which also keeps the free Aura instance from pausing.
+- `export-lake.yml`: weekly Parquet exports to the data lake and a data health report (failing importers, datasets behind their cadence).
 
 ## Status and next steps
 
@@ -238,6 +239,9 @@ backup. The graph has since moved into Postgres, so Neo4j holds nothing that
 - **`npm run db:restore-postgres -- <dir>`** — replays `sources` / `claims` /
   `contributions` from a dump directory, idempotently (`ON CONFLICT DO NOTHING`).
 - **`npm run graph:sync`** — rebuilds Neo4j from Postgres.
+- **`npm run data:lake`** — Parquet copies of every dataset and record table in the
+  public `lake` Storage bucket; raw source files can be kept in `raw`. See
+  `docs/data-sources.md`.
 - **`npm run db:seed`** — the floor: a known-good minimal fixture for a from-empty
   database (see step 5).
 
