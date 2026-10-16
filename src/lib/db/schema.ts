@@ -1046,6 +1046,42 @@ export const areaStats = pgTable(
   ],
 );
 
+// What each area_stats.geo_level is: a geography, a breakdown of a place
+// (citizenship, age group, ...), or a named site (police agency, detention
+// facility). Seeded by supabase/sql/2026-10-16-geographies.sql.
+export const geoLevels = pgTable(
+  "geo_levels",
+  {
+    level: text("level").primaryKey(),
+    kind: text("kind").notNull(), // "geography" | "breakdown" | "site"
+    label: text("label").notNull(),
+    parentLevel: text("parent_level"),
+    description: text("description").notNull().default(""),
+  },
+  (table) => [check("geo_levels_kind_check", sql`${table.kind} in ('geography', 'breakdown', 'site')`)],
+);
+
+// Canonical places (FIPS hierarchy) with one name each, for joining and
+// labeling area_stats across datasets. Filled by scripts/build-geographies.mjs.
+export const geographies = pgTable(
+  "geographies",
+  {
+    level: text("level")
+      .notNull()
+      .references(() => geoLevels.level),
+    geoid: text("geoid").notNull(),
+    name: text("name").notNull(),
+    state: text("state"), // postal code of the containing state
+    parentLevel: text("parent_level"),
+    parentGeoid: text("parent_geoid"),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    primaryKey({ name: "geographies_pkey", columns: [table.level, table.geoid] }),
+    index("geographies_parent_idx").on(table.parentLevel, table.parentGeoid),
+  ],
+);
+
 // Institutions (universities, think tanks, agencies, newsrooms) approved to
 // publish their own datasets onto the platform (docs/data-hosting.md).
 // Only `approved` partners' keys are accepted by the partner API.

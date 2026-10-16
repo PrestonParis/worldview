@@ -44,13 +44,42 @@ tables, stays in Supabase.
 - The Neon CLI (`neon link` / `neon deploy`) writes its variables to `.env`.
   The app never reads that file's `DATABASE_URL`.
 
+## Places and breakdowns
+
+`area_stats.geo_level` covers three kinds of thing, recorded in the
+`geo_levels` table:
+
+- **geography**: places with boundaries or a FIPS code (`nation`, `state`,
+  `county`, `cd`, `sldu`, `sldl`, `eavs_jurisdiction`, `region`, `country`,
+  `border_region`).
+- **breakdown**: categories of a place (`citizenship`, `class`,
+  `entry_period`, `age_group`, `group`, `flow`). A breakdown scoped to one
+  place uses geoid `<place>:<value>`, e.g. `01:afghanistan`.
+- **site**: named units (`agency`, `facility`, `aor`).
+
+A new importer that adds a level registers it in `geo_levels` in its
+migration. `geographies` holds one canonical name and parent state per
+place, so datasets that spell names differently still line up. Rebuild it
+with `npm run data:geographies`; it runs after every production deploy.
+`compareByGeo` (`src/lib/db/stats.ts`) and the public
+`GET /api/data/v1/compare?level=county&series=source:metric,...&within=06`
+put any published metrics side by side by place.
+
 ## Identity spine (run first)
+
+People and organizations live in Postgres (`entities`, `entity_edges`); their
+external ids are in the `entity_identifiers` crosswalk, keyed by scheme. Every
+importer resolves people through it (`scripts/lib/entities.mjs`), and
+`npm run graph:sync` copies the graph to Neo4j.
 
 | Script | Source | Writes |
 |---|---|---|
-| `backfill:members -- --congresses=95-119` | unitedstates/congress-legislators | politician entities keyed by `bioguideId`, plus `icpsrId`, `wikidataId`, `fecCandidateIds`, `govtrackId`, `opensecretsId`, `votesmartId`, `ballotpediaId`, `thomasId`, `lisId`; blank website/social/portrait fields filled |
-| `import:committees` | congress-legislators committees + membership | committee/subcommittee org entities (`committeeId`), `sits-on-committee` / `chairs` edges; dropped seats get `validTo` |
-| `import:openstates` | Open States people CSVs + openstates/people executive YAML | state legislators + statewide executives (`openstatesId`, `govLevel='state'`, `govState`, `govChamber`, `govDistrict`, `govOffice`), `serves-in` / `holds-office` edges. Feeds My Government (`src/lib/my-government/state.ts`) |
+| `backfill:members -- --congresses=95-119` | unitedstates/congress-legislators | politician entities; crosswalk schemes `bioguide`, `icpsr`, `wikidata`, `fec_candidate`, `govtrack`, `opensecrets`, `votesmart`, `ballotpedia`, `thomas`, `lis`; blank website/social/portrait fields filled |
+| `import:committees` | congress-legislators committees + membership | committee/subcommittee org entities (scheme `congress_committee`), `sits-on-committee` / `chairs` edges; dropped seats get `valid_to` |
+| `import:openstates` | Open States people CSVs + openstates/people executive YAML | state legislators + statewide executives (scheme `openstates`), their current office in `entity_offices` (source `openstates`), `serves-in` / `holds-office` edges. Feeds My Government (`src/lib/my-government/state.ts`) |
+
+FEC and lobbying importers add `fec_candidate`, `fec_committee`, `lda_client`
+and `lda_registrant` ids as they match or create entities.
 
 ## Datasets
 

@@ -79,6 +79,7 @@
     "db:rebalance": "node scripts/db-rebalance.mjs",
     "db:migrate": "node scripts/migrate.mjs",
     "graph:sync": "node scripts/sync-graph.mjs",
+    "data:geographies": "node scripts/build-geographies.mjs",
     "graph:import-neo4j": "node scripts/graph-to-postgres.mjs",
     "auth:role": "node scripts/set-role.mjs",
     "data:backfill": "node scripts/backfill-datasets.mjs",

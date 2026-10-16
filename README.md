@@ -60,7 +60,7 @@ npm test
 npm run lint
 ```
 
-368 tests across 42 files. The suite covers validation, money and election calculations, legislation helpers, authentication guards, demographic forecasting, government lookup, public-data utilities, the political quiz engine, and migration safety checks.
+369 tests across 42 files. The suite covers validation, money and election calculations, legislation helpers, authentication guards, demographic forecasting, government lookup, public-data utilities, the political quiz engine, and migration safety checks.
 
 ## Deployment
 
