@@ -1,5 +1,5 @@
-import { listEdges } from "@/lib/neo4j/edges";
-import { listEntities } from "@/lib/neo4j/entities";
+import { listEdges } from "@/lib/db/edges";
+import { listEntities } from "@/lib/db/entities";
 import { listSources } from "@/lib/db/sources";
 import { EdgeForm } from "@/components/forms/edge-form";
 import { AddPanel } from "@/components/forms/add-panel";

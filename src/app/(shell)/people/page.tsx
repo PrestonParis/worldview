@@ -4,8 +4,8 @@ import { PeopleDirectory, type DirectoryParams } from "@/components/graph/people
 import { PeopleExplore } from "@/components/graph/people-explore";
 import { PeopleViewNav, type PeopleView } from "@/components/graph/people-view-nav";
 import { degreeById, withoutStructuralEdges } from "@/lib/graph/scope";
-import { listEdges } from "@/lib/neo4j/edges";
-import { getEntity, listEntities } from "@/lib/neo4j/entities";
+import { listEdges } from "@/lib/db/edges";
+import { getEntity, listEntities } from "@/lib/db/entities";
 import { publicEntityPath } from "@/lib/people/public";
 import { loadCongressAtlas } from "@/lib/people/atlas";
 
@@ -18,6 +18,28 @@ export const dynamic = "force-dynamic";
 
 const first = (value: string | string[] | undefined) => Array.isArray(value) ? value[0] : value;
 
+// The whole graph loads on every view, so warm instances reuse it for a few
+// minutes. Edits show up once it expires.
+const TTL_MS = 10 * 60 * 1000;
+let graph: { at: number; data: Promise<[Awaited<ReturnType<typeof listEntities>>, Awaited<ReturnType<typeof listEdges>>]> } | null = null;
+let atlasCache: { at: number; data: ReturnType<typeof loadCongressAtlas> } | null = null;
+
+function loadGraph() {
+  if (!graph || Date.now() - graph.at > TTL_MS) {
+    const data = Promise.all([listEntities(), listEdges()]);
+    graph = { at: Date.now(), data };
+    data.catch(() => { graph = null; });
+  }
+  return graph.data;
+}
+
+function loadAtlas() {
+  if (!atlasCache || Date.now() - atlasCache.at > TTL_MS) {
+    atlasCache = { at: Date.now(), data: loadCongressAtlas().catch(() => null) };
+  }
+  return atlasCache.data;
+}
+
 export default async function Page({ searchParams }: PageProps<"/people">) {
   const raw = await searchParams;
   const requested = first(raw.view);
@@ -29,10 +51,9 @@ export default async function Page({ searchParams }: PageProps<"/people">) {
     redirect(entity ? `${publicEntityPath(entity)}#relationships` : "/people");
   }
   const view: PeopleView = requested === "directory" ? "directory" : "explore";
-  const [entities, edges, atlas] = await Promise.all([
-    listEntities(),
-    listEdges(),
-    view === "explore" ? loadCongressAtlas().catch(() => null) : Promise.resolve(null),
+  const [[entities, edges], atlas] = await Promise.all([
+    loadGraph(),
+    view === "explore" ? loadAtlas() : Promise.resolve(null),
   ]);
   // Direct ties only: seats and party cards would rank every legislature first.
   const degree = new Map(Object.entries(degreeById(withoutStructuralEdges(edges))));

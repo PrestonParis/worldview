@@ -2,7 +2,7 @@ import { requireContributorPage } from "@/lib/auth/guard";
 import { notFound } from "next/navigation";
 import { getElection, listElections } from "@/lib/db/elections";
 import { listCandidaciesForElection } from "@/lib/db/candidacies";
-import { listEntities } from "@/lib/neo4j/entities";
+import { listEntities } from "@/lib/db/entities";
 import { ElectionForm } from "@/components/forms/election-form";
 import { CandidaciesEditor } from "@/components/forms/candidacies-editor";
 

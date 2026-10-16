@@ -12,8 +12,8 @@ import {
   Play,
   Users,
 } from "lucide-react";
-import { getEntity, listEntities } from "@/lib/neo4j/entities";
-import { listEdgesForEntity } from "@/lib/neo4j/edges";
+import { getEntity, listEntities } from "@/lib/db/entities";
+import { listEdgesForEntity } from "@/lib/db/edges";
 import { getEntityContributionSummary } from "@/lib/db/contributions";
 import { listLobbyingForEntity } from "@/lib/db/lobbying";
 import { parseHighlights } from "@/lib/validation/entity";

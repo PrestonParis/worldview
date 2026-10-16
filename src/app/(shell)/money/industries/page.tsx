@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { listIndustryBreakdown } from "@/lib/db/contributions";
-import { getEntitiesByIds } from "@/lib/neo4j/entities";
+import { getEntitiesByIds } from "@/lib/db/entities";
 import { IndustryExplorer } from "@/components/money/industry-explorer";
 
 export const metadata: Metadata = {
@@ -8,7 +8,8 @@ export const metadata: Metadata = {
   description: "Campaign contributions grouped by donor industry, from FEC filings.",
 };
 
-export const dynamic = "force-dynamic";
+// Rebuilt at most hourly; crawlers and visitors share the cached render.
+export const revalidate = 3600;
 
 export default async function Page() {
   const rows = await listIndustryBreakdown();

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { listStateBreakdown } from "@/lib/db/contributions";
-import { getEntitiesByIds } from "@/lib/neo4j/entities";
+import { getEntitiesByIds } from "@/lib/db/entities";
 import { DonorMap } from "@/components/money/donor-map";
 
 export const metadata: Metadata = {
@@ -8,7 +8,8 @@ export const metadata: Metadata = {
   description: "Where campaign contributions come from, state by state, from FEC filings.",
 };
 
-export const dynamic = "force-dynamic";
+// Rebuilt at most hourly; crawlers and visitors share the cached render.
+export const revalidate = 3600;
 
 export default async function Page() {
   const rows = await listStateBreakdown();

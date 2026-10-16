@@ -5,11 +5,12 @@
 //   node scripts/db-pull.mjs                 # snapshot cloud, then mirror it locally
 //   node scripts/db-pull.mjs --from=<dir>    # mirror an existing snapshot (no cloud access)
 //
-// A snapshot dir holds cloud-public.dump (pg_dump -Fc of the public schema),
-// neon-area-stats.ndjson.gz (the area_stats rows kept in the Neon overflow
-// database, src/lib/db/stores.ts) and entities.json / edges.json
-// (scripts/export-db.mjs format). Local has no size cap, so both clouds'
-// area_stats land in the one local table.
+// A snapshot dir holds cloud-public.dump (pg_dump -Fc of the public schema)
+// and neon-area-stats.ndjson.gz (the area_stats rows kept in the Neon
+// overflow database, src/lib/db/stores.ts). Local has no size cap, so both
+// clouds' area_stats land in the one local table. The People & Power graph
+// comes over with the Postgres tables; the local Neo4j copy is then rebuilt
+// from them (scripts/sync-graph.mjs).
 //
 // Only reads from cloud. Locally it overwrites every public-data table and
 // the whole Neo4j graph; user/account tables (profiles, quiz_sessions,
@@ -23,7 +24,6 @@ import fs from "node:fs";
 import path from "node:path";
 import readline from "node:readline";
 import zlib from "node:zlib";
-import neo4j from "neo4j-driver";
 import pg from "pg";
 
 const KEEP_LOCAL = new Set([
@@ -47,13 +47,11 @@ if (!container) throw new Error("Local Supabase DB container is not running (sup
 
 const dir = fromArg ?? (await snapshotCloud());
 const dumpFile = path.join(dir, "cloud-public.dump");
-for (const f of [dumpFile, path.join(dir, "entities.json"), path.join(dir, "edges.json")]) {
-  if (!fs.existsSync(f)) throw new Error(`Snapshot is missing ${f}`);
-}
+if (!fs.existsSync(dumpFile)) throw new Error(`Snapshot is missing ${dumpFile}`);
 
 await mirrorPostgres();
 await mirrorNeon();
-await mirrorNeo4j();
+mirrorNeo4j();
 console.log("\nLocal now mirrors", dir);
 
 function loadEnv(file) {
@@ -93,25 +91,6 @@ async function snapshotCloud() {
   fs.writeFileSync(path.join(out, "cloud-public.dump"), r.stdout);
   await snapshotNeon(cloud.NEON_DATABASE_URL, path.join(out, "neon-area-stats.ndjson.gz"));
 
-  const driver = neo4j.driver(cloud.NEO4J_URI, neo4j.auth.basic(cloud.NEO4J_USER, cloud.NEO4J_PASSWORD));
-  const session = driver.session();
-  try {
-    // Same shape as export-db.mjs: ints as numbers, temporals as ISO strings.
-    const str = (v) => (neo4j.isInt(v) ? v.toNumber() : neo4j.isDateTime(v) ? v.toString() : v);
-    const clean = (p) => Object.fromEntries(Object.entries(p).map(([k, v]) => [k, str(v)]));
-    const ents = await session.run("MATCH (e:Entity) RETURN properties(e) AS p");
-    fs.writeFileSync(path.join(out, "entities.json"), JSON.stringify(ents.records.map((r) => clean(r.get("p")))));
-    const edges = await session.run(
-      "MATCH (a:Entity)-[r:RELATED_TO]->(b:Entity) RETURN properties(r) AS p, a.id AS s, b.id AS t",
-    );
-    fs.writeFileSync(
-      path.join(out, "edges.json"),
-      JSON.stringify(edges.records.map((r) => ({ ...clean(r.get("p")), sourceEntityId: r.get("s"), targetEntityId: r.get("t") }))),
-    );
-  } finally {
-    await session.close();
-    await driver.close();
-  }
   return out;
 }
 
@@ -254,38 +233,8 @@ async function mirrorNeon() {
   if (n) console.log(`Postgres: mirrored ${n.toLocaleString()} Neon area_stats rows (${[...seen].join(", ")})`);
 }
 
-async function mirrorNeo4j() {
-  const entities = JSON.parse(fs.readFileSync(path.join(dir, "entities.json"), "utf8"));
-  const edges = JSON.parse(fs.readFileSync(path.join(dir, "edges.json"), "utf8"));
-  const driver = neo4j.driver(local.NEO4J_URI, neo4j.auth.basic(local.NEO4J_USER, local.NEO4J_PASSWORD));
-  const session = driver.session();
-  const batch = async (rows, cypher) => {
-    for (let i = 0; i < rows.length; i += 1000) await session.run(cypher, { rows: rows.slice(i, i + 1000) });
-  };
-  try {
-    console.log("Neo4j: clearing local graph");
-    await session.run("MATCH (n) CALL (n) { DETACH DELETE n } IN TRANSACTIONS OF 5000 ROWS");
-    console.log(`Neo4j: loading ${entities.length} entities, ${edges.length} edges`);
-    await batch(
-      entities,
-      `UNWIND $rows AS row
-       CREATE (e:Entity) SET e = row, e.createdAt = datetime(row.createdAt), e.updatedAt = datetime(row.updatedAt)`,
-    );
-    await session.run("CREATE INDEX entity_id IF NOT EXISTS FOR (e:Entity) ON (e.id)");
-    await session.run("CALL db.awaitIndexes()");
-    await batch(
-      edges,
-      `UNWIND $rows AS row
-       MATCH (a:Entity {id: row.sourceEntityId}), (b:Entity {id: row.targetEntityId})
-       CREATE (a)-[r:RELATED_TO]->(b)
-       SET r = row {.*, sourceEntityId: null, targetEntityId: null},
-           r.createdAt = datetime(row.createdAt), r.updatedAt = datetime(row.updatedAt)`,
-    );
-    const n = (await session.run("MATCH (n:Entity) RETURN count(n) AS c")).records[0].get("c").toNumber();
-    const r = (await session.run("MATCH ()-[r:RELATED_TO]->() RETURN count(r) AS c")).records[0].get("c").toNumber();
-    console.log(`Neo4j: local now has ${n} entities, ${r} edges`);
-  } finally {
-    await session.close();
-    await driver.close();
-  }
+function mirrorNeo4j() {
+  console.log("Neo4j: rebuilding the local graph from Postgres");
+  const r = spawnSync("node", ["scripts/sync-graph.mjs"], { stdio: "inherit", env: { ...process.env, ENV_FILE: ".env.local" } });
+  if (r.status !== 0) throw new Error("sync-graph failed");
 }

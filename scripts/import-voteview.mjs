@@ -12,8 +12,6 @@
 
 import {
   arg,
-  connectNeo4j,
-  entityIdMap,
   fetchRetry,
   int,
   num,
@@ -22,6 +20,7 @@ import {
   str,
   upsertRows,
 } from "./lib/bulk.mjs";
+import { entityIdMap } from "./lib/entities.mjs";
 
 const URL = "https://voteview.com/static/data/out/members/HSall_members.csv";
 const FROM = Number(arg("from", "95"));
@@ -35,12 +34,8 @@ await runImport("voteview-members", async (pg) => {
   );
   console.log(`  ${rows.length} member-congress rows`);
 
-  const driver = connectNeo4j();
-  const [byBioguide, byIcpsr] = await Promise.all([
-    entityIdMap(driver, "bioguideId"),
-    entityIdMap(driver, "icpsrId"),
-  ]);
-  await driver.close();
+  const byBioguide = await entityIdMap(pg, "bioguide");
+  const byIcpsr = await entityIdMap(pg, "icpsr");
 
   const out = rows.map((r) => ({
     congress: int(r.congress),

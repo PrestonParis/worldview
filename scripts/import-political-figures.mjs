@@ -118,19 +118,11 @@ async function main() {
   if (DOCS) return writeDocs();
 
   process.loadEnvFile(process.env.ENV_FILE || ".env.local");
-  const { default: neo4j } = await import("neo4j-driver");
-  const driver = neo4j.driver(
-    process.env.NEO4J_URI,
-    neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD),
-  );
-  const session = driver.session();
+  const { connectPg } = await import("./lib/bulk.mjs");
+  const { upsertEdges, upsertEntities } = await import("./lib/entities.mjs");
+  const pg = await connectPg();
   try {
-    const existing = (
-      await session.run(
-        `MATCH (e:Entity) RETURN e.id AS id, e.name AS name, e.description AS description,
-           e.biography AS biography, e.highlights AS highlights, e.metadata AS metadata`,
-      )
-    ).records.map((r) => r.toObject());
+    const { rows: existing } = await pg.query("select id, name, description, biography, highlights, metadata from entities");
     const byLowerName = new Map(existing.map((e) => [e.name.toLowerCase(), e]));
     const idByLowerName = new Map(existing.map((e) => [e.name.toLowerCase(), e.id]));
     const stats = { created: 0, updated: 0, edges: 0, skipped: [] };
@@ -141,15 +133,9 @@ async function main() {
       if (!current) {
         const id = randomUUID();
         if (!DRY_RUN) {
-          await session.run(
-            `CREATE (e:Entity {
-               id: $id, type: $type, name: $name, description: $description,
-               biography: $biography, imageUrl: '', websiteUrl: '', xUrl: '', facebookUrl: '',
-               instagramUrl: '', youtubeUrl: '', linkedinUrl: '', highlights: $highlights,
-               metadata: $metadata, createdAt: datetime(), updatedAt: datetime()
-             })`,
+          await upsertEntities(pg, [
             { id, type: profile.type, name: profile.name, description, biography, highlights, metadata: JSON.stringify(metadata) },
-          );
+          ]);
         }
         idByLowerName.set(profile.name.toLowerCase(), id);
         stats.created++;
@@ -162,17 +148,15 @@ async function main() {
       } catch {}
       const pick = (field, value) => (FORCE || !current[field] ? value : current[field]);
       if (!DRY_RUN) {
-        await session.run(
-          `MATCH (e:Entity {id: $id})
-           SET e.description = $description, e.biography = $biography,
-               e.highlights = $highlights, e.metadata = $metadata, e.updatedAt = datetime()`,
-          {
-            id: current.id,
-            description: pick("description", description),
-            biography: pick("biography", biography),
-            highlights: pick("highlights", highlights),
-            metadata: JSON.stringify({ ...mergedMeta, ...metadata }),
-          },
+        await pg.query(
+          "update entities set description = $2, biography = $3, highlights = $4, metadata = $5, updated_at = now() where id = $1",
+          [
+            current.id,
+            pick("description", description),
+            pick("biography", biography),
+            pick("highlights", highlights),
+            JSON.stringify({ ...mergedMeta, ...metadata }),
+          ],
         );
       }
       stats.updated++;
@@ -187,24 +171,21 @@ async function main() {
       }
       stats.edges++;
       if (DRY_RUN) continue;
-      await session.run(
-        `MATCH (a:Entity {id: $sourceId}), (b:Entity {id: $targetId})
-         MERGE (a)-[r:RELATED_TO {sourceKey: $key}]->(b)
-         ON CREATE SET r.id = $edgeId, r.createdAt = datetime()
-         SET r.label = $label, r.relType = $relType, r.role = $role,
-             r.validFrom = $validFrom, r.validTo = $validTo,
-             r.notes = '', r.sourceRecordId = '', r.updatedAt = datetime()`,
-        {
-          sourceId,
-          targetId,
-          key: `${DATA.collection}:${sourceId}:${c.relType}:${targetId}`,
-          edgeId: randomUUID(),
-          label: c.relType === "former-role" ? "formerly worked for" : c.relType.replaceAll("-", " "),
-          relType: c.relType,
-          role: c.role ?? "",
-          validFrom: c.from ?? "",
-          validTo: c.until ?? "",
-        },
+      await upsertEdges(
+        pg,
+        [
+          {
+            source_key: `${DATA.collection}:${sourceId}:${c.relType}:${targetId}`,
+            source_entity_id: sourceId,
+            target_entity_id: targetId,
+            label: c.relType === "former-role" ? "formerly worked for" : c.relType.replaceAll("-", " "),
+            rel_type: c.relType,
+            role: c.role ?? "",
+            valid_from: c.from ?? "",
+            valid_to: c.until ?? "",
+          },
+        ],
+        { keepValidFrom: false },
       );
     }
 
@@ -215,8 +196,7 @@ async function main() {
         (DRY_RUN ? "\n  DRY RUN — no writes." : ""),
     );
   } finally {
-    await session.close();
-    await driver.close();
+    await pg.end();
   }
 }
 

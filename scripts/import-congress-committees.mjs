@@ -1,8 +1,9 @@
 // Imports current congressional committees + subcommittees and their
 // membership from the public-domain unitedstates/congress-legislators repo.
 //
-//   committee      -> `organization` entity, keyed by `committeeId` (THOMAS
-//                     id, e.g. "HSAG", subcommittee "HSAG15")
+//   committee      -> `organization` entity, keyed by its THOMAS id in the
+//                     crosswalk (scheme congress_committee, e.g. "HSAG",
+//                     subcommittee "HSAG15")
 //   subcommittee   --member-of--> parent committee
 //   member         --sits-on-committee / chairs--> committee (role = title)
 //
@@ -17,8 +18,9 @@
 
 process.loadEnvFile(process.env.ENV_FILE || ".env.local");
 
-import neo4j from "neo4j-driver";
 import { load as loadYaml } from "js-yaml";
+import { connectPg } from "./lib/bulk.mjs";
+import { addIdentifiers, entityIdMap, newEntity, upsertEdges, upsertEntities } from "./lib/entities.mjs";
 
 const DRY_RUN = process.argv.includes("--dry-run");
 const BASE = "https://raw.githubusercontent.com/unitedstates/congress-legislators/main";
@@ -76,67 +78,81 @@ async function main() {
   console.log(`  ${orgs.length} committees/subcommittees, ${seats.length} seats`);
   if (DRY_RUN) return;
 
-  const driver = neo4j.driver(
-    process.env.NEO4J_URI,
-    neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD),
-  );
-  const session = driver.session();
+  const pg = await connectPg();
   try {
-    await session.run(
-      "CREATE INDEX entity_committeeId IF NOT EXISTS FOR (e:Entity) ON (e.committeeId)",
+    // Committees are found by their crosswalk id; new ones are created.
+    let committees = await entityIdMap(pg, "congress_committee");
+    const { rows: current } = committees.size
+      ? await pg.query("select id, website_url from entities where id = any($1::uuid[])", [[...committees.values()]])
+      : { rows: [] };
+    const websiteById = new Map(current.map((r) => [r.id, r.website_url]));
+    const created = orgs.filter((o) => !committees.has(o.committeeId)).map((o) => ({ ...o, id: newEntity({}).id }));
+    await upsertEntities(pg, [
+      ...created.map((o) => ({
+        id: o.id,
+        type: "organization",
+        name: o.name,
+        description: o.description,
+        website_url: o.websiteUrl ?? "",
+        metadata: '{"source":"unitedstates/congress-legislators"}',
+      })),
+      ...orgs
+        .filter((o) => committees.has(o.committeeId))
+        .map((o) => {
+          const id = committees.get(o.committeeId);
+          return { id, type: "organization", name: o.name, description: o.description, website_url: websiteById.get(id) || (o.websiteUrl ?? "") };
+        }),
+    ]);
+    await addIdentifiers(pg, created.map((o) => ({ entityId: o.id, scheme: "congress_committee", value: o.committeeId })));
+    committees = await entityIdMap(pg, "congress_committee");
+
+    await upsertEdges(
+      pg,
+      orgs
+        .filter((o) => o.parent && committees.has(o.parent))
+        .map((o) => ({
+          source_key: `committee-parent:${o.committeeId}`,
+          source_entity_id: committees.get(o.committeeId),
+          target_entity_id: committees.get(o.parent),
+          rel_type: "member-of",
+          label: "subcommittee of",
+          role: "Subcommittee",
+        })),
+      { keepValidFrom: false },
     );
-    await session.run(
-      `UNWIND $orgs AS o
-       MERGE (e:Entity {committeeId: o.committeeId})
-       ON CREATE SET e.id = randomUUID(), e.type = 'organization', e.biography = '',
-         e.imageUrl = '', e.xUrl = '', e.facebookUrl = '', e.instagramUrl = '',
-         e.youtubeUrl = '', e.linkedinUrl = '', e.highlights = '',
-         e.metadata = '{"source":"unitedstates/congress-legislators"}',
-         e.createdAt = datetime()
-       SET e.name = o.name, e.description = o.description,
-           e.websiteUrl = CASE WHEN coalesce(e.websiteUrl, '') = '' THEN o.websiteUrl ELSE e.websiteUrl END,
-           e.updatedAt = datetime()`,
-      { orgs },
+
+    const members = await entityIdMap(pg, "bioguide");
+    const linkedSeats = seats.filter((s) => members.has(s.bioguide) && committees.has(s.committeeId));
+    await upsertEdges(
+      pg,
+      linkedSeats.map((s) => ({
+        source_key: `committee-seat:${s.committeeId}:${s.bioguide}`,
+        source_entity_id: members.get(s.bioguide),
+        target_entity_id: committees.get(s.committeeId),
+        rel_type: s.relType,
+        label: s.label,
+        role: s.role,
+        valid_from: TODAY,
+        valid_to: "",
+        notes: s.rank === null ? "" : JSON.stringify({ rank: s.rank }),
+      })),
     );
-    await session.run(
-      `UNWIND $orgs AS o
-       WITH o WHERE o.parent IS NOT NULL
-       MATCH (s:Entity {committeeId: o.committeeId}), (p:Entity {committeeId: o.parent})
-       MERGE (s)-[r:RELATED_TO {sourceKey: 'committee-parent:' + o.committeeId}]->(p)
-       ON CREATE SET r.id = randomUUID(), r.createdAt = datetime()
-       SET r.relType = 'member-of', r.label = 'subcommittee of', r.role = 'Subcommittee',
-           r.validFrom = '', r.validTo = '', r.notes = '', r.sourceRecordId = '',
-           r.updatedAt = datetime()`,
-      { orgs },
-    );
-    const res = await session.run(
-      `UNWIND $seats AS s
-       MATCH (m:Entity {bioguideId: s.bioguide}), (c:Entity {committeeId: s.committeeId})
-       MERGE (m)-[r:RELATED_TO {sourceKey: 'committee-seat:' + s.committeeId + ':' + s.bioguide}]->(c)
-       ON CREATE SET r.id = randomUUID(), r.createdAt = datetime(), r.validFrom = $today
-       SET r.relType = s.relType, r.label = s.label, r.role = s.role, r.validTo = '',
-           r.notes = CASE WHEN s.rank IS NULL THEN '' ELSE '{"rank":' + toString(s.rank) + '}' END,
-           r.sourceRecordId = '', r.updatedAt = datetime()
-       RETURN count(r) AS n`,
-      { seats, today: TODAY },
-    );
-    const linked = res.records[0].get("n").toNumber();
+    const linked = linkedSeats.length;
     // Seats that dropped out of the current file: close them, don't delete.
     const keys = seats.map((s) => `committee-seat:${s.committeeId}:${s.bioguide}`);
-    const closed = await session.run(
-      `MATCH ()-[r:RELATED_TO]->() WHERE r.sourceKey STARTS WITH 'committee-seat:'
-         AND NOT r.sourceKey IN $keys AND coalesce(r.validTo, '') = ''
-       SET r.validTo = $today RETURN count(r) AS n`,
-      { keys, today: TODAY },
+    const closed = await pg.query(
+      `update entity_edges set valid_to = $2, updated_at = now()
+       where source_key like 'committee-seat:%' and not (source_key = any($1::text[])) and valid_to = ''`,
+      [keys, TODAY],
     );
+    console.log(`  ${created.length} committees created`);
     console.log(`  ${linked}/${seats.length} seats linked to member entities`);
-    console.log(`  ${closed.records[0].get("n").toNumber()} former seats closed`);
+    console.log(`  ${closed.rowCount} former seats closed`);
     if (linked < seats.length) {
       console.log("  (unlinked seats = members without a bioguideId entity — run backfill:members)");
     }
   } finally {
-    await session.close();
-    await driver.close();
+    await pg.end();
   }
 }
 

@@ -1,12 +1,18 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { getOrgProfile } from "@/lib/neo4j/graph";
+import { getOrgProfile } from "@/lib/db/graph";
 import { entityColorFor } from "@/lib/entity-colors";
 import { relationshipCategoryColors } from "@/lib/relationships";
 import { publicEntityPath } from "@/lib/people/public";
 
-export const dynamic = "force-dynamic";
+// Rebuilt at most hourly; crawlers and visitors share the cached render.
+export const revalidate = 3600;
+
+// Nothing prebuilt; each page is rendered on first request, then cached.
+export async function generateStaticParams() {
+  return [];
+}
 
 const CATEGORY_LABEL: Record<string, string> = {
   institutional: "Institutional",

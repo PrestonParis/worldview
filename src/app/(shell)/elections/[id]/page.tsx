@@ -6,7 +6,7 @@ import { listResultsForElection, areaBreakdowns } from "@/lib/db/electionResults
 import { getCandidateFinanceForEntity, type CandidateFinance } from "@/lib/db/candidateFinance";
 import { outsideSpendingByCandidate, type CandidateOutsideSpending } from "@/lib/db/independentExpenditures";
 import { ratingHistory } from "@/lib/db/raceRatings";
-import { listEntities } from "@/lib/neo4j/entities";
+import { getEntitiesByIds } from "@/lib/db/entities";
 import { summarizeCandidacies, type Candidacy } from "@/lib/validation/candidacy";
 import { partyColorFor } from "@/lib/party-colors";
 import { formatAmount } from "@/lib/money";
@@ -20,7 +20,13 @@ import { partyColor as fecPartyColor, partyLetter as fecPartyLetter } from "@/li
 import { ResultsSection } from "@/components/elections/results-section";
 import type { Entity } from "@/lib/validation/entity";
 
-export const dynamic = "force-dynamic";
+// Rebuilt at most hourly; crawlers and visitors share the cached render.
+export const revalidate = 3600;
+
+// Nothing prebuilt; each page is rendered on first request, then cached.
+export async function generateStaticParams() {
+  return [];
+}
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
@@ -52,15 +58,15 @@ function dedupeCandidacies(candidacies: Candidacy[], entityById: Map<string, Ent
 
 export default async function ElectionDetailPage({ params }: PageProps<"/elections/[id]">) {
   const { id } = await params;
-  const [election, candidacyRows, entities, resultRows, ratings] = await Promise.all([
+  const [election, candidacyRows, resultRows, ratings] = await Promise.all([
     getElection(id),
     listCandidaciesForElection(id),
-    listEntities(),
     listResultsForElection(id),
     ratingHistory(id),
   ]);
   if (!election) notFound();
 
+  const entities = await getEntitiesByIds(candidacyRows.map((candidacy) => candidacy.candidateEntityId));
   const entityById = new Map(entities.map((entity) => [entity.id, entity]));
   const candidacies = dedupeCandidacies(candidacyRows, entityById);
   const upcomingGeneral = election.status === "scheduled" && election.electionType === "general";

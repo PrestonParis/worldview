@@ -36,7 +36,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { Client } from "pg";
-import neo4j from "neo4j-driver";
+import { upsertEntities } from "./lib/entities.mjs";
 
 const DATA_DIR = "data/elections";
 const CACHE_DIR = path.join(DATA_DIR, "cache");
@@ -286,11 +286,6 @@ async function main() {
 
   const pg = new Client({ connectionString: process.env.DATABASE_URL });
   await pg.connect();
-  const driver = neo4j.driver(
-    process.env.NEO4J_URI,
-    neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD),
-  );
-  const session = driver.session();
 
   const report = {
     startedAt: new Date().toISOString(),
@@ -308,15 +303,13 @@ async function main() {
     // deliberately not attempted: "Jill Stein" must not resolve to an
     // existing "Josh Stein". Near-misses (nicknames the map misses) are
     // created as new entities and listed in the report for a human to merge.
-    const res = await session.run(
-      "MATCH (e:Entity {type: 'politician'}) RETURN e.id AS id, e.name AS name",
-    );
+    const { rows: politicians } = await pg.query("select id, name from entities where type = 'politician'");
     const byKey = new Map();
-    for (const rec of res.records) {
-      const parsed = parseCandidate(rec.get("name"));
-      if (parsed?.key) bucket(byKey, parsed.key).push(rec.get("id"));
+    for (const rec of politicians) {
+      const parsed = parseCandidate(rec.name);
+      if (parsed?.key) bucket(byKey, parsed.key).push(rec.id);
     }
-    console.log(`  ${res.records.length} politician entities loaded`);
+    console.log(`  ${politicians.length} politician entities loaded`);
 
     const decisionCache = new Map(); // raw candidate string -> id | "AMBIGUOUS"
 
@@ -334,21 +327,15 @@ async function main() {
       if (!id) {
         id = randomUUID();
         if (!DRY_RUN) {
-          await session.run(
-            `CREATE (e:Entity {
-               id: $id, type: 'politician', name: $name,
-               description: $description, biography: '', imageUrl: '',
-               websiteUrl: '', xUrl: '', facebookUrl: '', instagramUrl: '',
-               youtubeUrl: '', linkedinUrl: '', highlights: '',
-               metadata: $metadata, createdAt: datetime(), updatedAt: datetime()
-             })`,
+          await upsertEntities(pg, [
             {
               id,
+              type: "politician",
               name: parsed.display,
               description: "Election candidate — imported from MIT Election Lab.",
               metadata: JSON.stringify({ source: "medsl", party }),
             },
-          );
+          ]);
         }
         // keep the local index consistent within the run
         if (parsed.key) byKey.set(parsed.key, [id]);
@@ -533,8 +520,6 @@ async function main() {
     }
     if (DRY_RUN) console.log("\nDRY RUN — nothing written.");
   } finally {
-    await session.close();
-    await driver.close();
     await pg.end();
   }
 }

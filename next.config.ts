@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
     serverActions: {
       bodySizeLimit: "7mb",
     },
+    // Prerendering opens a Postgres pool per build worker, and the Supabase
+    // session pooler caps clients (shared with live traffic) at 15.
+    cpus: 2,
   },
 };
 

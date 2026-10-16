@@ -14,21 +14,16 @@ process.loadEnvFile(process.env.ENV_FILE || ".env.local");
 
 import fs from "node:fs";
 import { randomUUID } from "node:crypto";
-import neo4j from "neo4j-driver";
+import { connectPg } from "./lib/bulk.mjs";
+import { upsertEdges, upsertEntities } from "./lib/entities.mjs";
 
 const DRY_RUN = process.argv.includes("--dry-run");
 const DATA = JSON.parse(fs.readFileSync("data/administration.json", "utf8"));
 
 async function main() {
-  const driver = neo4j.driver(
-    process.env.NEO4J_URI,
-    neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD),
-  );
-  const session = driver.session();
+  const pg = await connectPg();
   try {
-    const entities = (
-      await session.run("MATCH (e:Entity) RETURN e.id AS id, e.name AS name, e.type AS type")
-    ).records.map((r) => ({ id: r.get("id"), name: r.get("name"), type: r.get("type") }));
+    const { rows: entities } = await pg.query("select id, name, type from entities");
     const idByLowerName = new Map(entities.map((e) => [e.name.toLowerCase(), e.id]));
 
     const created = { people: 0, orgs: 0 };
@@ -39,15 +34,7 @@ async function main() {
       if (existing) return existing;
       const id = randomUUID();
       if (!DRY_RUN) {
-        await session.run(
-          `CREATE (e:Entity {
-             id: $id, type: $type, name: $name, description: $description,
-             biography: '', imageUrl: '', websiteUrl: '', xUrl: '', facebookUrl: '',
-             instagramUrl: '', youtubeUrl: '', linkedinUrl: '', highlights: '',
-             metadata: '{}', createdAt: datetime(), updatedAt: datetime()
-           })`,
-          { id, type, name, description },
-        );
+        await upsertEntities(pg, [{ id, type, name, description, metadata: "{}" }]);
       }
       idByLowerName.set(name.toLowerCase(), id);
       created[type === "organization" ? "orgs" : "people"]++;
@@ -58,24 +45,22 @@ async function main() {
       const key = `admin:${DATA.term}:${sourceId}:${relType}:${targetId}`;
       edgePlan.push({ relType, label });
       if (DRY_RUN) return;
-      await session.run(
-        `MATCH (a:Entity {id: $sourceId}), (b:Entity {id: $targetId})
-         MERGE (a)-[r:RELATED_TO {sourceKey: $key}]->(b)
-         ON CREATE SET r.id = $edgeId, r.createdAt = datetime()
-         SET r.label = $label, r.relType = $relType, r.role = $role,
-             r.validFrom = $validFrom, r.validTo = '',
-             r.notes = $notes, r.sourceRecordId = '', r.updatedAt = datetime()`,
-        {
-          sourceId,
-          targetId,
-          key,
-          edgeId: randomUUID(),
-          label,
-          relType,
-          role,
-          validFrom: DATA.startDate ?? "",
-          notes: meta ? JSON.stringify(meta) : "",
-        },
+      await upsertEdges(
+        pg,
+        [
+          {
+            source_key: key,
+            source_entity_id: sourceId,
+            target_entity_id: targetId,
+            label,
+            rel_type: relType,
+            role,
+            valid_from: DATA.startDate ?? "",
+            valid_to: "",
+            notes: meta ? JSON.stringify(meta) : "",
+          },
+        ],
+        { keepValidFrom: false },
       );
     }
 
@@ -102,8 +87,7 @@ async function main() {
         (DRY_RUN ? "\n  DRY RUN — no writes." : ""),
     );
   } finally {
-    await session.close();
-    await driver.close();
+    await pg.end();
   }
 }
 

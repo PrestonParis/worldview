@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useSession } from "@/components/auth/can-edit";
 import {
   ArrowRight,
   Baby,
@@ -80,7 +81,11 @@ const GROUP_FEATURES: Record<string, { eyebrow: string; title: string; body: str
   tools: { eyebrow: "Work with Worldview", title: "Explore it your way", body: "Map your politics or build a geographic view from the platform's underlying tools.", href: "/quiz" },
 };
 
-export function Header({ accountLabel, previews }: { accountLabel: string | null; previews?: NavPreviews }) {
+// accountLabel overrides the client session for pages outside the shell that
+// already know who is signed in.
+export function Header({ accountLabel: knownLabel, previews }: { accountLabel?: string | null; previews?: NavPreviews }) {
+  const session = useSession();
+  const accountLabel = knownLabel ?? session.accountLabel;
   const pathname = usePathname();
   const navRef = useRef<HTMLDivElement>(null);
   const triggerRefs = useRef<Map<string, HTMLElement>>(new Map());
@@ -166,7 +171,7 @@ export function Header({ accountLabel, previews }: { accountLabel: string | null
         <Link href="/" className="flex shrink-0 items-center gap-2 justify-self-start">
           <span className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-white shadow-sm ring-1 ring-slate-200/90 dark:ring-slate-700">
             <Image
-              src="/worldview-mark.png"
+              src="/worldview-mark-red.png"
               alt=""
               width={32}
               height={32}

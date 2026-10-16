@@ -3,16 +3,17 @@
 // "host and executive producer of Democracy Now!" -> a `hosts` edge to a
 // Democracy Now! organization node (created if missing).
 //
-// Idempotent: edges are MERGEd on (person, org, relType); orgs are matched
+// Idempotent: edges upsert on (person, org, relType); orgs are matched
 // case-insensitively before creating. Anything whose description names no
 // outlet stays isolated — a later Wikidata pass can pick those up.
 //
 // Usage: node scripts/enrich-media-affiliations.mjs [--dry-run]
 
-process.loadEnvFile(".env.local");
+process.loadEnvFile(process.env.ENV_FILE || ".env.local");
 
 import { randomUUID } from "node:crypto";
-import neo4j from "neo4j-driver";
+import { connectPg } from "./lib/bulk.mjs";
+import { upsertEdges, upsertEntities } from "./lib/entities.mjs";
 
 const DRY_RUN = process.argv.includes("--dry-run");
 
@@ -44,28 +45,16 @@ function normalizeOrg(raw) {
 }
 
 async function main() {
-  const driver = neo4j.driver(
-    process.env.NEO4J_URI,
-    neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD),
-  );
-  const session = driver.session();
+  const pg = await connectPg();
   try {
-    const isolated = (
-      await session.run(
-        `MATCH (e:Entity)
-         WHERE e.type IN ['pundit','journalist'] AND COUNT{(e)--()} = 0
-         RETURN e.id AS id, e.name AS name, e.description AS description`,
-      )
-    ).records.map((r) => ({
-      id: r.get("id"),
-      name: r.get("name"),
-      description: r.get("description") ?? "",
-    }));
+    const { rows: isolated } = await pg.query(
+      `select e.id, e.name, e.description from entities e
+         where e.type in ('pundit', 'journalist')
+           and not exists (select 1 from entity_edges r where r.source_entity_id = e.id or r.target_entity_id = e.id)`,
+    );
     console.log(`${isolated.length} isolated pundits/journalists`);
 
-    const existingOrgs = (
-      await session.run("MATCH (e:Entity {type: 'organization'}) RETURN e.id AS id, e.name AS name")
-    ).records.map((r) => ({ id: r.get("id"), name: r.get("name") }));
+    const { rows: existingOrgs } = await pg.query("select id, name from entities where type = 'organization'");
     const orgIdByLower = new Map(existingOrgs.map((o) => [o.name.toLowerCase(), o.id]));
 
     let matched = 0;
@@ -103,54 +92,38 @@ async function main() {
       let orgId = orgIdByLower.get(org.toLowerCase());
       if (!orgId) {
         orgId = randomUUID();
-        await session.run(
-          `CREATE (e:Entity {
-             id: $id, type: 'organization', name: $name,
-             description: 'Media outlet / show.', biography: '', imageUrl: '',
-             websiteUrl: '', xUrl: '', facebookUrl: '', instagramUrl: '',
-             youtubeUrl: '', linkedinUrl: '', highlights: '', metadata: '{}',
-             createdAt: datetime(), updatedAt: datetime()
-           })`,
-          { id: orgId, name: org },
-        );
+        await upsertEntities(pg, [{ id: orgId, type: "organization", name: org, description: "Media outlet / show.", metadata: "{}" }]);
         orgIdByLower.set(org.toLowerCase(), orgId);
         orgsCreated++;
       }
-      await session.run(
-        `MATCH (p:Entity {id: $personId}), (o:Entity {id: $orgId})
-         MERGE (p)-[r:RELATED_TO {sourceKey: $key}]->(o)
-         ON CREATE SET r.id = $edgeId, r.createdAt = datetime()
-         SET r.label = $label, r.relType = $relType, r.role = '',
-             r.validFrom = '', r.validTo = '', r.notes = 'Inferred from profile description.',
-             r.sourceRecordId = '', r.updatedAt = datetime()`,
-        {
-          personId: person.id,
-          orgId,
-          key: `${person.id}:${relType}:${org.toLowerCase()}`,
-          edgeId: randomUUID(),
-          label,
-          relType,
-        },
+      await upsertEdges(
+        pg,
+        [
+          {
+            source_key: `${person.id}:${relType}:${org.toLowerCase()}`,
+            source_entity_id: person.id,
+            target_entity_id: orgId,
+            label,
+            rel_type: relType,
+            notes: "Inferred from profile description.",
+          },
+        ],
+        { keepValidFrom: false },
       );
     }
 
-    const stillIsolated = (
-      await session.run(
-        `MATCH (e:Entity)
-         WHERE e.type IN ['pundit','journalist'] AND COUNT{(e)--()} = 0
-         RETURN count(e) AS c`,
-      )
-    ).records[0]
-      .get("c")
-      .toNumber();
+    const stillIsolated = (await pg.query(`select count(*)::int as c from (
+         select e.id, e.name, e.description from entities e
+         where e.type in ('pundit', 'journalist')
+           and not exists (select 1 from entity_edges r where r.source_entity_id = e.id or r.target_entity_id = e.id)
+       ) t`)).rows[0].c;
 
     console.log(
       `\nConnected ${plan.length} people (${orgsCreated} new outlet nodes). ` +
         `Still isolated: ${stillIsolated}.`,
     );
   } finally {
-    await session.close();
-    await driver.close();
+    await pg.end();
   }
 }
 

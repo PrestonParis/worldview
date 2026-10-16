@@ -6,7 +6,13 @@ import { SortableTable } from "@/components/data/sortable-table";
 import { RECORD_DATASETS, recordPreview } from "@/lib/db/records";
 import { datasetCoverage, getDataset } from "@/lib/db/stats";
 
-export const dynamic = "force-dynamic";
+// Rebuilt at most hourly; crawlers and visitors share the cached render.
+export const revalidate = 3600;
+
+// Nothing prebuilt; each page is rendered on first request, then cached.
+export async function generateStaticParams() {
+  return [];
+}
 
 type Props = { params: Promise<{ slug: string }> };
 

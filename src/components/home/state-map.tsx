@@ -116,7 +116,7 @@ export function StateMap({ width, height, states, measures }: {
         )}
       </svg>
 
-      <div className="mt-4 grid gap-5 sm:grid-cols-[1fr_auto] sm:items-start">
+      <div className="mt-4 grid gap-5 sm:grid-cols-[1fr_12rem] sm:items-start">
         <div>
           <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400" aria-hidden>
             <span>{formatValue(Math.min(...Object.values(measure.values).filter((v): v is number => v !== null)), measure.unit, { compact: true })}</span>
@@ -125,7 +125,7 @@ export function StateMap({ width, height, states, measures }: {
             </span>
             <span>{formatValue(Math.max(...Object.values(measure.values).filter((v): v is number => v !== null)), measure.unit, { compact: true })}</span>
           </div>
-          <p className="mt-3 min-h-6 text-sm text-slate-600 dark:text-slate-300" aria-live="polite">
+          <p className="mt-3 line-clamp-2 min-h-10 text-sm text-slate-600 dark:text-slate-300" aria-live="polite">
             {cur ? (
               <><span className="font-semibold text-slate-950 dark:text-white">{cur.name}</span> · {formatValue(measure.values[cur.abbr], measure.unit)}</>
             ) : (
@@ -133,7 +133,7 @@ export function StateMap({ width, height, states, measures }: {
             )}
           </p>
         </div>
-        <div className="min-w-48">
+        <div className="min-w-0">
           <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">Highest</p>
           <ol className="mt-1.5 space-y-1 text-sm">
             {top.map(([abbr, value], i) => (

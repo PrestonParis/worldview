@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getAdministration } from "@/lib/neo4j/graph";
+import { getAdministration } from "@/lib/db/graph";
 import { entityColorFor } from "@/lib/entity-colors";
 import { publicEntityPath } from "@/lib/people/public";
 
@@ -9,7 +9,8 @@ export const metadata: Metadata = {
   description: "The current presidential administration's personnel and how they connect.",
 };
 
-export const dynamic = "force-dynamic";
+// Rebuilt at most hourly; crawlers and visitors share the cached render.
+export const revalidate = 3600;
 
 const SECTOR_LABEL: Record<string, string> = {
   elected: "Former elected official",

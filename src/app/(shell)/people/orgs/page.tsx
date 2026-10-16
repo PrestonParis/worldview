@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { listOrgDirectory } from "@/lib/neo4j/graph";
+import { listOrgDirectory } from "@/lib/db/graph";
 import { entityColorFor } from "@/lib/entity-colors";
 import { publicEntityPath } from "@/lib/people/public";
 
@@ -9,7 +9,8 @@ export const metadata: Metadata = {
   description: "Organizations and companies in the Worldview graph and the people connected to them.",
 };
 
-export const dynamic = "force-dynamic";
+// Rebuilt at most hourly; crawlers and visitors share the cached render.
+export const revalidate = 3600;
 
 const TYPE_LABEL: Record<string, string> = {
   politician: "politicians",

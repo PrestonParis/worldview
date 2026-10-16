@@ -29,6 +29,18 @@ async function requestOrigin(): Promise<string> {
   return `${proto}://${host}`;
 }
 
+// Supabase's own wording for mail failures ("Error sending magic link email")
+// means nothing to users; everything else it returns reads fine as-is.
+function authErrorMessage(error: { message: string }): string {
+  if (/error sending .*email/i.test(error.message)) {
+    return "We couldn't send the email just now. Try again in a few minutes.";
+  }
+  if (/email rate limit exceeded/i.test(error.message)) {
+    return "Too many emails sent recently. Wait a bit and try again.";
+  }
+  return error.message;
+}
+
 function normalizeEmail(email: string): string | null {
   const value = email.trim().toLowerCase();
   return z.email().safeParse(value).success ? value : null;
@@ -68,7 +80,7 @@ export async function passwordSignInAction(input: {
       await supabase.auth.resend({ type: "signup", email });
       return { ok: true, data: "verify" };
     }
-    return { ok: false, error: error.message };
+    return { ok: false, error: authErrorMessage(error) };
   }
   return finishSignIn(input.next);
 }
@@ -94,7 +106,7 @@ export async function passwordRegisterAction(input: {
     if (/already registered|already exists/i.test(error.message)) {
       return { ok: false, error: "An account with that email already exists. Sign in instead." };
     }
-    return { ok: false, error: error.message };
+    return { ok: false, error: authErrorMessage(error) };
   }
   // "Confirm email" off: signed in already.
   if (data.session) return finishSignIn(input.next);
@@ -111,7 +123,7 @@ export async function resendSignupCodeAction(input: { email: string }): Promise<
   if (!email) return { ok: false, error: "Enter a valid email address." };
   const supabase = await createClient();
   const { error } = await supabase.auth.resend({ type: "signup", email });
-  return error ? { ok: false, error: error.message } : { ok: true, data: null };
+  return error ? { ok: false, error: authErrorMessage(error) } : { ok: true, data: null };
 }
 
 // Forgot password: email a code that signs the account in, then ask for a
@@ -130,7 +142,7 @@ export async function sendResetCodeAction(input: {
   });
   if (error) {
     if (/signups? not allowed/i.test(error.message)) return { ok: false, error: "No account uses that email." };
-    return { ok: false, error: error.message };
+    return { ok: false, error: authErrorMessage(error) };
   }
   return { ok: true, data: null };
 }
@@ -162,7 +174,7 @@ export async function setNewPasswordAction(input: { password: string; next?: str
   const { error } = await supabase.auth.updateUser({ password: password.data });
   if (error) {
     if (/session/i.test(error.message)) return { ok: false, error: "The reset code expired. Start over." };
-    return { ok: false, error: error.message };
+    return { ok: false, error: authErrorMessage(error) };
   }
   return finishSignIn(input.next);
 }

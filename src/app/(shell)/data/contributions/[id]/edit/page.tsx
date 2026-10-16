@@ -2,7 +2,7 @@ import { requireContributorPage } from "@/lib/auth/guard";
 import { notFound } from "next/navigation";
 import { getContribution } from "@/lib/db/contributions";
 import { listSources } from "@/lib/db/sources";
-import { listEntities } from "@/lib/neo4j/entities";
+import { listEntities } from "@/lib/db/entities";
 import { ContributionForm } from "@/components/forms/contribution-form";
 
 export default async function EditContributionPage({

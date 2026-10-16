@@ -5,18 +5,19 @@
 // organizations. Complements enrich-media-affiliations.mjs (description
 // text only).
 //
-// Idempotent: edges MERGE on (person, org, relType); orgs match
+// Idempotent: edges upsert on (person, org, relType); orgs match
 // case-insensitively before creating. QID lookups cached under
 // backups/.wikidata-cache.json.
 //
 // Usage: node scripts/enrich-wikidata-affiliations.mjs [--dry-run] [--limit N]
 
-process.loadEnvFile(".env.local");
+process.loadEnvFile(process.env.ENV_FILE || ".env.local");
 
 import fs from "node:fs";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
-import neo4j from "neo4j-driver";
+import { connectPg } from "./lib/bulk.mjs";
+import { addIdentifiers, upsertEdges, upsertEntities } from "./lib/entities.mjs";
 
 const DRY_RUN = process.argv.includes("--dry-run");
 const LIMIT_ARG = process.argv.indexOf("--limit");
@@ -118,26 +119,15 @@ async function sparqlOrgs(qids) {
 }
 
 async function main() {
-  const driver = neo4j.driver(
-    process.env.NEO4J_URI,
-    neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD),
-  );
-  const session = driver.session();
+  const pg = await connectPg();
   try {
-    const isolated = (
-      await session.run(
-        `MATCH (e:Entity)
-         WHERE e.type IN ['pundit','journalist'] AND COUNT{(e)--()} = 0
-         RETURN e.id AS id, e.name AS name ORDER BY e.name`,
-      )
-    ).records
-      .map((r) => ({ id: r.get("id"), name: r.get("name") }))
-      .slice(0, LIMIT);
+    const isolated = (await pg.query(`select e.id, e.name from entities e
+       where e.type in ('pundit', 'journalist')
+         and not exists (select 1 from entity_edges r where r.source_entity_id = e.id or r.target_entity_id = e.id)
+       order by e.name`)).rows.slice(0, LIMIT);
     console.log(`${isolated.length} isolated pundits/journalists`);
 
-    const existingOrgs = (
-      await session.run("MATCH (e:Entity {type: 'organization'}) RETURN e.id AS id, e.name AS name")
-    ).records.map((r) => ({ id: r.get("id"), name: r.get("name") }));
+    const { rows: existingOrgs } = await pg.query("select id, name from entities where type = 'organization'");
     const orgIdByLower = new Map(existingOrgs.map((o) => [o.name.toLowerCase(), o.id]));
 
     const qidByPerson = new Map();
@@ -173,57 +163,47 @@ async function main() {
       return;
     }
 
+    const conflicts = await addIdentifiers(
+      pg,
+      [...qidByPerson].map(([qid, person]) => ({ entityId: person.id, scheme: "wikidata", value: qid })),
+    );
+    for (const c of conflicts) console.log(`  wikidata ${c.value} already belongs to entity ${c.held_by}`);
+
     let orgsCreated = 0;
     for (const { person, orgName, relType, label } of writes) {
       let orgId = orgIdByLower.get(orgName.toLowerCase());
       if (!orgId) {
         orgId = randomUUID();
-        await session.run(
-          `CREATE (e:Entity {
-             id: $id, type: 'organization', name: $name,
-             description: 'Organization (Wikidata).', biography: '', imageUrl: '',
-             websiteUrl: '', xUrl: '', facebookUrl: '', instagramUrl: '',
-             youtubeUrl: '', linkedinUrl: '', highlights: '', metadata: '{}',
-             createdAt: datetime(), updatedAt: datetime()
-           })`,
-          { id: orgId, name: orgName },
-        );
+        await upsertEntities(pg, [{ id: orgId, type: "organization", name: orgName, description: "Organization (Wikidata).", metadata: "{}" }]);
         orgIdByLower.set(orgName.toLowerCase(), orgId);
         orgsCreated++;
       }
-      await session.run(
-        `MATCH (p:Entity {id: $personId}), (o:Entity {id: $orgId})
-         MERGE (p)-[r:RELATED_TO {sourceKey: $key}]->(o)
-         ON CREATE SET r.id = $edgeId, r.createdAt = datetime()
-         SET r.label = $label, r.relType = $relType, r.role = '',
-             r.validFrom = '', r.validTo = '', r.notes = 'From Wikidata.',
-             r.sourceRecordId = '', r.updatedAt = datetime()`,
-        {
-          personId: person.id,
-          orgId,
-          key: `${person.id}:${relType}:${orgName.toLowerCase()}`,
-          edgeId: randomUUID(),
-          label,
-          relType,
-        },
+      await upsertEdges(
+        pg,
+        [
+          {
+            source_key: `${person.id}:${relType}:${orgName.toLowerCase()}`,
+            source_entity_id: person.id,
+            target_entity_id: orgId,
+            label,
+            rel_type: relType,
+            notes: "From Wikidata.",
+          },
+        ],
+        { keepValidFrom: false },
       );
     }
 
-    const stillIsolated = (
-      await session.run(
-        `MATCH (e:Entity)
-         WHERE e.type IN ['pundit','journalist'] AND COUNT{(e)--()} = 0
-         RETURN count(e) AS c`,
-      )
-    ).records[0]
-      .get("c")
-      .toNumber();
+    const stillIsolated = (await pg.query(`select count(*)::int as c from (
+       select e.id, e.name from entities e
+       where e.type in ('pundit', 'journalist')
+         and not exists (select 1 from entity_edges r where r.source_entity_id = e.id or r.target_entity_id = e.id)
+     ) t`)).rows[0].c;
     console.log(
       `\nCreated ${writes.length} edges (${orgsCreated} new org nodes). Still isolated: ${stillIsolated}.`,
     );
   } finally {
-    await session.close();
-    await driver.close();
+    await pg.end();
   }
 }
 

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ContributorOnly } from "@/components/auth/can-edit";
 import { listLobbyingRegistrations } from "@/lib/db/lobbying";
-import { listEntities } from "@/lib/neo4j/entities";
+import { listEntities } from "@/lib/db/entities";
 import { LobbyingForm } from "@/components/forms/lobbying-form";
 import { AddPanel } from "@/components/forms/add-panel";
 import { DeleteButton } from "@/components/forms/delete-button";

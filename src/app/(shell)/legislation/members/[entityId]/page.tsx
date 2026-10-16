@@ -1,11 +1,17 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getEntity } from "@/lib/neo4j/entities";
+import { getEntity } from "@/lib/db/entities";
 import { listVoterRollCallVotes, votesByRollCall } from "@/lib/db/votingRecord";
 import { brokeWithParty, normalizeParty } from "@/lib/legislation/votingRecord";
 import { MemberVotingRecord } from "@/components/legislation/member-voting-record";
 
-export const dynamic = "force-dynamic";
+// Rebuilt at most hourly; crawlers and visitors share the cached render.
+export const revalidate = 3600;
+
+// Nothing prebuilt; each page is rendered on first request, then cached.
+export async function generateStaticParams() {
+  return [];
+}
 
 export default async function MemberVotingRecordPage({
   params,

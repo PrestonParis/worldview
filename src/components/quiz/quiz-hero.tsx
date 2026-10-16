@@ -10,18 +10,12 @@ import { ideologies } from "@/lib/quiz/ideologies";
 import { CELL, FAMILY_ORDER, familyLayout, type Spot } from "@/lib/quiz/family-layout";
 import { FAMILIES, familyColor } from "@/lib/quiz/families";
 import { QUIZ_MODES, quizModeIds, type QuizModeId } from "@/lib/quiz/modes";
+import { OPENERS, type OpenerAnswer } from "@/lib/quiz/openers";
 import { axisIds, type IdeologyFamily, type IssueId } from "@/lib/quiz/types";
 import { AgreeScale } from "./agree-scale";
 import { AtlasMark } from "./atlas-mark";
 import { TraditionPanel } from "./tradition-panel";
 import { card, ghostButton, primaryButton } from "./styles";
-
-// The opening questions: one economic, one social, one on how a country should
-// be governed, so each answer moves the map in a different direction. They're
-// real bank statements and carry over into the quiz. Chosen to hook: concrete,
-// genuinely contested, and something people have a gut reaction to, with the
-// most arresting one first.
-const OPENERS = ["redistribution.02", "social.13", "democracy.12"];
 
 // How sharply traditions fade as answers rule them out (squared distance on
 // the answered axes).
@@ -58,6 +52,36 @@ export function QuizHero({ mode, topic, topicName }: { mode: QuizModeId; topic: 
   const step = values.length;
   const done = step >= OPENERS.length;
   const answers: QuizAnswer[] = useMemo(() => values.map((value, i) => ({ kind: "statement", id: OPENERS[i], value })), [values]);
+
+  // Anonymous visit log for the quiz stats: the opener answers with their
+  // timing, sent once, when the visitor starts the quiz or leaves the page.
+  // Client-side navigation away without answering isn't logged.
+  const loadedAt = useRef(0);
+  const log = useRef<OpenerAnswer[]>([]);
+  const logSent = useRef(false);
+  const sendLog = useCallback((started: boolean, mode: QuizModeId | null = null) => {
+    if (logSent.current) return;
+    logSent.current = true;
+    const body = JSON.stringify({ answers: log.current, started, mode });
+    navigator.sendBeacon?.("/api/quiz/opener", new Blob([body], { type: "application/json" }));
+  }, []);
+  useEffect(() => {
+    loadedAt.current = performance.now();
+    const leave = () => sendLog(false);
+    window.addEventListener("pagehide", leave);
+    return () => {
+      window.removeEventListener("pagehide", leave);
+      if (log.current.length) sendLog(false);
+    };
+  }, [sendLog]);
+  const pick = (v: number) => {
+    log.current = [...log.current.slice(0, values.length), { id: OPENERS[values.length], value: v, ms: Math.round(performance.now() - loadedAt.current) }];
+    setValues((xs) => [...xs, v]);
+  };
+  const resetOpeners = () => {
+    log.current = [];
+    setValues([]);
+  };
 
   // Fit of each tradition on the axes answered so far (1 = best).
   const fit = useMemo(() => {
@@ -104,7 +128,10 @@ export function QuizHero({ mode, topic, topicName }: { mode: QuizModeId; topic: 
   }, []);
 
   // Starting the quiz from anywhere on the page keeps any opener answers.
-  const start = (m: QuizModeId) => () => (answers.length ? startQuizWithAnswersAction(m, topic, answers) : startQuizAction(m, topic));
+  const start = (m: QuizModeId) => () => {
+    sendLog(true, m);
+    return answers.length ? startQuizWithAnswersAction(m, topic, answers) : startQuizAction(m, topic);
+  };
 
   return (
     <section>
@@ -150,7 +177,7 @@ export function QuizHero({ mode, topic, topicName }: { mode: QuizModeId; topic: 
                     <ArrowRight size={17} aria-hidden="true" className="transition-transform group-hover:translate-x-0.5" />
                   </Submit>
                 </form>
-                <button type="button" onClick={() => setValues([])} className={ghostButton}>
+                <button type="button" onClick={resetOpeners} className={ghostButton}>
                   <RotateCcw size={14} aria-hidden="true" />
                   Start over
                 </button>
@@ -173,7 +200,7 @@ export function QuizHero({ mode, topic, topicName }: { mode: QuizModeId; topic: 
                 {statementById.get(OPENERS[step])!.text}
               </h2>
               <div className="mt-7 max-w-xl">
-                <AgreeScale value={null} onPick={(v) => setValues((xs) => [...xs, v])} />
+                <AgreeScale value={null} onPick={pick} />
               </div>
               <ModeLinks label="Or skip ahead to" current={null} render={start} />
             </div>

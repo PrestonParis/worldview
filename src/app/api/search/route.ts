@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { listEntities } from "@/lib/neo4j/entities";
+import { searchEntities } from "@/lib/db/entities";
 import { listClaims } from "@/lib/db/claims";
 import { listSources } from "@/lib/db/sources";
 import { listDatasets } from "@/lib/db/stats";
@@ -59,7 +59,7 @@ export async function GET(request: Request) {
   }
 
   const [entities, claims, sources, datasets] = await Promise.all([
-    listEntities(),
+    searchEntities(q, MAX_PER_GROUP),
     listClaims(),
     listSources(),
     listDatasets().catch(() => []),
@@ -86,7 +86,7 @@ export async function GET(request: Request) {
     href: `/datasets/${d.slug}`,
   }));
 
-  const entityResults: SearchResult[] = byRank(q, entities, (e) => e.name).map((e) => ({
+  const entityResults: SearchResult[] = entities.map((e) => ({
     id: e.id,
     label: e.name,
     meta: e.type,

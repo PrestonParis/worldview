@@ -30,11 +30,9 @@ export const entitySchema = z.object({
   highlights: z.string().max(2000).optional().or(z.literal("")),
   metadata: z.string().max(4000).optional().or(z.literal("")),
   // Stable external crosswalk key for a legislator — the Congress
-  // "Bioguide" id (e.g. "P000197"). First-class, indexed, and
-  // unique-constrained in Neo4j so importers can resolve a member by id
-  // instead of fuzzy name matching. Empty for every non-member entity;
-  // never written as "" (a uniqueness constraint treats "" as a real
-  // value), so `createEntity`/`updateEntity` pass null when it's blank.
+  // "Bioguide" id (e.g. "P000197"), stored in entity_identifiers, where it
+  // is unique, so importers can resolve a member by id instead of fuzzy
+  // name matching. Empty for every non-member entity.
   bioguideId: z.string().max(20).optional().or(z.literal("")),
 });
 

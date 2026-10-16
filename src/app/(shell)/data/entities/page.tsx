@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ContributorOnly } from "@/components/auth/can-edit";
-import { listEntities } from "@/lib/neo4j/entities";
+import { listEntities } from "@/lib/db/entities";
 import { EntityForm } from "@/components/forms/entity-form";
 import { AddPanel } from "@/components/forms/add-panel";
 import { DeleteButton } from "@/components/forms/delete-button";

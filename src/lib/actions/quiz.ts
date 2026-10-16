@@ -25,6 +25,7 @@ import { issues } from "../quiz/bank";
 import { modeRank, nextQuizMode, validQuizMode, type QuizModeId } from "../quiz/modes";
 import type { IssueId } from "../quiz/types";
 import type { ActionResult } from "./entities";
+import { currentUserIsOwner } from "../auth/guard";
 
 // Every action re-checks access server side — these are reachable by direct
 // POST, not just through the quiz UI.
@@ -62,6 +63,7 @@ export async function startQuizAction(modeOrForm?: QuizModeId | FormData, entryT
     targetMode,
     entryVariant: topic ? "topic" : "general",
     entryTopic: topic,
+    isTest: await currentUserIsOwner(),
   });
   (await cookies()).set(editCookieName(slug), token, {
     httpOnly: true,
@@ -97,6 +99,7 @@ export async function startQuizWithAnswersAction(mode: QuizModeId, entryTopic: I
     targetMode,
     entryVariant: topic ? "topic" : "general",
     entryTopic: topic,
+    isTest: await currentUserIsOwner(),
   });
   if (clean.length > 0) {
     await quizDb.saveQuizProgress(session.id, {
@@ -311,4 +314,12 @@ export async function deleteQuizAction(slug: string): Promise<void> {
   }
   revalidatePath("/quiz");
   redirect("/quiz");
+}
+
+// /quiz/stats: mark a session as a test so analytics leave it out.
+export async function setQuizTestFlagAction(id: string, isTest: boolean): Promise<void> {
+  if (!(await currentUserIsOwner())) return;
+  if (!/^[0-9a-f-]{36}$/i.test(id)) return;
+  await quizDb.setQuizTestFlag(id, isTest);
+  revalidatePath("/quiz/stats");
 }

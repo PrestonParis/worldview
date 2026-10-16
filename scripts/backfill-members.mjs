@@ -1,4 +1,4 @@
-// Backfills a `politician` Neo4j entity for every member of Congress who
+// Backfills a `politician` entity for every member of Congress who
 // served in the target Congress range (default 118th–119th), keyed on the
 // stable Bioguide id so downstream importers (bills, roll-call votes) can
 // resolve sponsors and voters by id instead of fuzzy name matching.
@@ -22,8 +22,8 @@
 //   --dry-run          fetch + match + report counts, write nothing
 //   --congresses=A,B   override the target Congress range (ranges ok: 95-119)
 //
-// Every matched member also gets the full id crosswalk (icpsrId, wikidataId,
-// fecCandidateIds, govtrackId, opensecretsId, ...) as entity properties, and
+// Every matched member also gets the full id crosswalk (icpsr, wikidata,
+// fec_candidate, govtrack, opensecrets, ...) in entity_identifiers, and
 // blank website / social / portrait fields are filled from the
 // legislators-social-media file and unitedstates/images.
 //
@@ -32,8 +32,9 @@
 process.loadEnvFile(process.env.ENV_FILE || ".env.local");
 
 import { randomUUID } from "node:crypto";
-import neo4j from "neo4j-driver";
 import { load as loadYaml } from "js-yaml";
+import { chunk, connectPg } from "./lib/bulk.mjs";
+import { addIdentifiers, identifierRows, upsertEntities } from "./lib/entities.mjs";
 import {
   servedInCongresses,
   displayName,
@@ -113,11 +114,7 @@ async function main() {
   // entityId -> legislator, applied in UNWIND batches at the end.
   const crosswalk = new Map();
 
-  const driver = neo4j.driver(
-    process.env.NEO4J_URI,
-    neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD),
-  );
-  const session = driver.session();
+  const pg = await connectPg();
 
   const counts = {
     created: 0,
@@ -129,25 +126,19 @@ async function main() {
   const ambiguous = [];
 
   try {
-    if (!DRY_RUN) {
-      await session.run(
-        "CREATE CONSTRAINT entity_bioguide_unique IF NOT EXISTS FOR (e:Entity) REQUIRE e.bioguideId IS UNIQUE",
-      );
-    }
-
-    // One read of every politician entity up front — the graph is ~1k
-    // nodes, so this beats a round trip per member for the name-match
+    // One read of every politician entity up front, for the name-match
     // fallback.
-    const existingRes = await session.run(
-      `MATCH (e:Entity {type: 'politician'})
-       RETURN e.id AS id, e.name AS name,
-              e.bioguideId AS bioguideId, e.metadata AS metadata`,
+    const { rows: existingRows } = await pg.query(
+      `select e.id, e.name, e.metadata, i.value as bioguide_id
+       from entities e
+       left join entity_identifiers i on i.entity_id = e.id and i.scheme = 'bioguide'
+       where e.type = 'politician'`,
     );
-    const existing = existingRes.records.map((r) => ({
-      id: r.get("id"),
-      name: r.get("name"),
-      bioguideId: r.get("bioguideId") ?? "",
-      metadata: r.get("metadata") ?? "",
+    const existing = existingRows.map((r) => ({
+      id: r.id,
+      name: r.name,
+      bioguideId: r.bioguide_id ?? "",
+      metadata: r.metadata ?? "",
     }));
     const byBioguide = new Map(
       existing.filter((e) => e.bioguideId).map((e) => [e.bioguideId, e]),
@@ -166,10 +157,7 @@ async function main() {
         const refreshable =
           !linked.metadata || priorMetadataSource(linked.metadata) === METADATA_SOURCE;
         if (!DRY_RUN && refreshable && linked.metadata !== metadata) {
-          await session.run(
-            "MATCH (e:Entity {id: $id}) SET e.metadata = $metadata, e.updatedAt = datetime()",
-            { id: linked.id, metadata },
-          );
+          await pg.query("update entities set metadata = $2, updated_at = now() where id = $1", [linked.id, metadata]);
           counts.metadataRefreshed++;
         }
         continue;
@@ -195,12 +183,10 @@ async function main() {
       if (nameMatches.length === 1) {
         const match = nameMatches[0];
         if (!DRY_RUN) {
-          await session.run(
-            `MATCH (e:Entity {id: $id})
-             SET e.bioguideId = $bioguideId,
-                 e.metadata = CASE WHEN coalesce(e.metadata, '') = '' THEN $metadata ELSE e.metadata END,
-                 e.updatedAt = datetime()`,
-            { id: match.id, bioguideId, metadata },
+          // The Bioguide id itself is written with the rest of the crosswalk below.
+          await pg.query(
+            "update entities set metadata = $2, updated_at = now() where id = $1 and metadata = ''",
+            [match.id, metadata],
           );
         }
         // Keep the local view consistent so a second legislator sharing
@@ -215,24 +201,13 @@ async function main() {
       const newId = randomUUID();
       crosswalk.set(newId, legislator);
       if (!DRY_RUN) {
-        await session.run(
-          `CREATE (e:Entity {
-             id: $id, type: 'politician', name: $name,
-             description: $description, biography: '', imageUrl: '',
-             websiteUrl: '', xUrl: '', facebookUrl: '', instagramUrl: '',
-             youtubeUrl: '', linkedinUrl: '', highlights: '',
-             metadata: $metadata, bioguideId: $bioguideId,
-             createdAt: datetime(), updatedAt: datetime()
-           })`,
-          {
-            id: newId,
-            name,
-            description:
-              "Member of the United States Congress — imported from the congress-legislators crosswalk.",
-            metadata,
-            bioguideId,
-          },
-        );
+        await upsertEntities(pg, [{
+          id: newId,
+          type: "politician",
+          name,
+          description: "Member of the United States Congress — imported from the congress-legislators crosswalk.",
+          metadata,
+        }]);
       }
       counts.created++;
     }
@@ -240,25 +215,42 @@ async function main() {
     // Crosswalk ids are always (re)written; profile URLs only fill blanks.
     const rows = [...crosswalk].map(([id, leg]) => ({
       id,
+      bioguideId: leg.id?.bioguide,
       ids: crosswalkIds(leg),
       urls: profileUrls(leg, social.get(leg.id?.bioguide)),
     }));
     if (!DRY_RUN) {
-      for (const idx of ["icpsrId", "wikidataId", "govtrackId"]) {
-        await session.run(`CREATE INDEX entity_${idx} IF NOT EXISTS FOR (e:Entity) ON (e.${idx})`);
-      }
-      for (let i = 0; i < rows.length; i += 500) {
-        await session.run(
-          `UNWIND $rows AS row
-           MATCH (e:Entity {id: row.id})
-           SET e += row.ids,
-               e.websiteUrl = CASE WHEN coalesce(e.websiteUrl, '') = '' THEN row.urls.websiteUrl ELSE e.websiteUrl END,
-               e.xUrl = CASE WHEN coalesce(e.xUrl, '') = '' THEN row.urls.xUrl ELSE e.xUrl END,
-               e.facebookUrl = CASE WHEN coalesce(e.facebookUrl, '') = '' THEN row.urls.facebookUrl ELSE e.facebookUrl END,
-               e.instagramUrl = CASE WHEN coalesce(e.instagramUrl, '') = '' THEN row.urls.instagramUrl ELSE e.instagramUrl END,
-               e.youtubeUrl = CASE WHEN coalesce(e.youtubeUrl, '') = '' THEN row.urls.youtubeUrl ELSE e.youtubeUrl END,
-               e.imageUrl = CASE WHEN coalesce(e.imageUrl, '') = '' THEN row.urls.imageUrl ELSE e.imageUrl END`,
-          { rows: rows.slice(i, i + 500) },
+      const conflicts = await addIdentifiers(
+        pg,
+        rows.flatMap((row) => identifierRows(row.id, { bioguideId: row.bioguideId, ...row.ids })),
+        { replace: true },
+      );
+      for (const c of conflicts) console.log(`  ${c.scheme} ${c.value} already belongs to entity ${c.held_by}`);
+      for (const batch of chunk(rows, 500)) {
+        await pg.query(
+          `update entities e set
+             website_url = case when e.website_url = '' then coalesce(u.website_url, '') else e.website_url end,
+             x_url = case when e.x_url = '' then coalesce(u.x_url, '') else e.x_url end,
+             facebook_url = case when e.facebook_url = '' then coalesce(u.facebook_url, '') else e.facebook_url end,
+             instagram_url = case when e.instagram_url = '' then coalesce(u.instagram_url, '') else e.instagram_url end,
+             youtube_url = case when e.youtube_url = '' then coalesce(u.youtube_url, '') else e.youtube_url end,
+             image_url = case when e.image_url = '' then coalesce(u.image_url, '') else e.image_url end,
+             updated_at = now()
+           from jsonb_to_recordset($1::jsonb) as u(id uuid, website_url text, x_url text, facebook_url text,
+                                                    instagram_url text, youtube_url text, image_url text)
+           where e.id = u.id
+             and ((e.website_url = '' and u.website_url is not null) or (e.x_url = '' and u.x_url is not null)
+               or (e.facebook_url = '' and u.facebook_url is not null) or (e.instagram_url = '' and u.instagram_url is not null)
+               or (e.youtube_url = '' and u.youtube_url is not null) or (e.image_url = '' and u.image_url is not null))`,
+          [JSON.stringify(batch.map((row) => ({
+            id: row.id,
+            website_url: row.urls.websiteUrl || null,
+            x_url: row.urls.xUrl || null,
+            facebook_url: row.urls.facebookUrl || null,
+            instagram_url: row.urls.instagramUrl || null,
+            youtube_url: row.urls.youtubeUrl || null,
+            image_url: row.urls.imageUrl || null,
+          })))],
         );
       }
     }
@@ -276,8 +268,7 @@ async function main() {
     for (const a of ambiguous) console.log(`  - ${a}`);
     if (DRY_RUN) console.log("\nDRY RUN — no changes written.");
   } finally {
-    await session.close();
-    await driver.close();
+    await pg.end();
   }
 }
 

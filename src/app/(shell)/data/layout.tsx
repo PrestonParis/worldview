@@ -3,7 +3,7 @@ import { DataFreshness } from "@/components/legislation/data-freshness";
 import { getCurrentUser } from "@/lib/auth/session";
 import { isEditor } from "@/lib/auth/guard";
 
-// This section always reads live data (Neo4j + Postgres) — never prerender it statically.
+// This section always reads live data — never prerender it statically.
 export const dynamic = "force-dynamic";
 
 const tabs = [
@@ -24,9 +24,9 @@ export default async function DataLayout({ children }: LayoutProps<"/data">) {
     <div className="max-w-3xl">
       <h1 className="text-2xl font-semibold tracking-tight">Manage Data</h1>
       <p className="mt-1 text-slate-500 dark:text-slate-400">
-        The primitives every page draws from. Entities and relationships live in
-        Neo4j; claims, sources, bills (with their votes), contributions, lobbying
-        filings, and elections (with their candidacies) live in Postgres.
+        The primitives every page draws from: entities and their relationships,
+        claims, sources, bills (with their votes), contributions, lobbying filings,
+        and elections (with their candidacies).
       </p>
       <DataFreshness sources={["congress-bills", "congress-votes"]} className="mt-3" />
       {!user ? (

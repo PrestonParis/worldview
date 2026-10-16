@@ -5,7 +5,7 @@ import { claims as claimsTable } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { listClaims } from "@/lib/db/claims";
 import { listSources } from "@/lib/db/sources";
-import { listEntities } from "@/lib/neo4j/entities";
+import { listEntities } from "@/lib/db/entities";
 import { ClaimForm } from "@/components/forms/claim-form";
 
 export default async function EditClaimPage({

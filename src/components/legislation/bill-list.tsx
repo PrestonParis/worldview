@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { listPolicyAreas, searchBills } from "@/lib/db/bills";
 import { listRollCallCountsByBill } from "@/lib/db/rollCalls";
-import { getEntityNames } from "@/lib/neo4j/entities";
-import { findMemberIdsByName } from "@/lib/neo4j/members";
+import { findMemberIdsByName, getEntityNames } from "@/lib/db/entities";
 import { billStatuses } from "@/lib/validation/bill";
 import { EmptyState } from "@/components/empty-state";
 import { DataFreshness } from "./data-freshness";

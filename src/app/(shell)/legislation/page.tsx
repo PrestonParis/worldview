@@ -14,7 +14,8 @@ import { formatValue } from "@/lib/format";
 import { loadLegislation } from "@/lib/legislation/overview";
 import { FeatureList } from "@/components/ui/feature-list";
 
-export const dynamic = "force-dynamic";
+// Rebuilt at most hourly; crawlers and visitors share the cached render.
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Legislation & Courts | Worldview",

@@ -289,7 +289,11 @@ quizSessions = pgTable("quiz_sessions", {
 - **Retention:** unclaimed quizzes are deleted 7 days after `createdAt`:
   - The app treats them as missing from that moment.
   - `scripts/purge-quizzes.mjs`, run daily by `.github/workflows/purge-quizzes.yml` with
-    `secrets.DATABASE_URL`, deletes the rows.
+    `secrets.DATABASE_URL`, copies each answer log to `quiz_responses` (no slug, edit token,
+    owner, or session id) and then deletes the rows. User-deleted quizzes are not archived.
+  - Owner-only analytics over live and archived logs: `/quiz/stats` and `npm run quiz:stats`
+    (`src/lib/quiz/analytics.ts`). Landing-page opener answers are logged anonymously to
+    `quiz_opener_events` by `src/app/api/quiz/opener/route.ts`.
   - The result page for an unclaimed quiz shows its deletion date next to the claim button.
 
 ## Results page
@@ -355,7 +359,7 @@ quizSessions = pgTable("quiz_sessions", {
 
 - 18 axes (technology split into environment + technology after review; democracy added in bank 3.0.0); issue list as drafted; the bank's v1 is up for review.
 - No matching to politicians or other real people yet; ideology labels only, with the full ranking shown.
-- Unclaimed quizzes are kept for 7 days.
+- Unclaimed quizzes are kept for 7 days; their answers are then kept anonymously for analytics.
 - "Quiz" sits at the top level next to Demographics.
 
 ## Later

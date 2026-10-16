@@ -3,17 +3,18 @@
 // attorney general, secretary of state, ... (openstates/people YAML) — as
 // `politician` entities.
 //
-//   entity props   openstatesId (unique), wikidataId, and the office keys
-//                  govLevel='state', govState, govChamber ('upper' | 'lower' |
-//                  'legislature' | 'executive'), govDistrict, govOffice —
-//                  what src/lib/my-government/state.ts queries.
+//   crosswalk      openstates (unique) and wikidata ids
+//   entity_offices source 'openstates', level 'state', with state, chamber
+//                  ('upper' | 'lower' | 'legislature' | 'executive'),
+//                  district, office, party, email, phone — what
+//                  src/lib/my-government/state.ts queries.
 //   edges          person --serves-in--> "<State> Senate"/"House" org
 //                  person --holds-office--> "Governor of <State>" etc.
 //
 // Matching: by openstatesId, then wikidataId. Never by name — state
 // legislators share names with members of Congress and each other.
 // A person no longer in the current files keeps their entity; only their
-// edges' validTo and govOffice are cleared.
+// edges' validTo and their office row's office/chamber/district are cleared.
 //
 // Source: Open States (CC0), https://open.pluralpolicy.com/data/ — no key.
 //
@@ -22,16 +23,17 @@
 //   ENV_FILE=.env.cloud node scripts/import-openstates-people.mjs
 
 import { load as loadYaml } from "js-yaml";
+import { randomUUID } from "node:crypto";
 import {
   arg,
   chunk,
-  connectNeo4j,
   fetchJson,
   fetchRetry,
   flag,
   parseCsv,
   runImport,
 } from "./lib/bulk.mjs";
+import { addIdentifiers, entityIdMap, upsertEdges, upsertEntities, upsertOffices } from "./lib/entities.mjs";
 
 const STATES = {
   al: "Alabama", ak: "Alaska", az: "Arizona", ar: "Arkansas", ca: "California",
@@ -71,11 +73,6 @@ const ONLY = arg("states", "")
   .filter(Boolean);
 const STATE_CODES = Object.keys(STATES).filter((s) => !ONLY.length || ONLY.includes(s));
 const TODAY = new Date().toISOString().slice(0, 10);
-
-const blankProfile = {
-  biography: "", imageUrl: "", websiteUrl: "", xUrl: "", facebookUrl: "",
-  instagramUrl: "", youtubeUrl: "", linkedinUrl: "", highlights: "",
-};
 
 function legislatorRow(st, r) {
   const firstLink = (r.links || "").split(";").filter(Boolean)[0] ?? "";
@@ -157,7 +154,7 @@ async function fetchExecutives(states) {
   return out;
 }
 
-await runImport("openstates-people", async () => {
+await runImport("openstates-people", async (pg) => {
   console.log(`Open States people — ${STATE_CODES.length} jurisdictions`);
   const people = [];
   for (const st of STATE_CODES) {
@@ -173,82 +170,150 @@ await runImport("openstates-people", async () => {
   if (!flag("skip-executives")) people.push(...(await fetchExecutives(STATE_CODES)));
   console.log(`  ${people.length} people total`);
 
-  const driver = connectNeo4j();
-  const session = driver.session();
-  try {
-    await session.run(
-      "CREATE CONSTRAINT entity_openstates_unique IF NOT EXISTS FOR (e:Entity) REQUIRE e.openstatesId IS UNIQUE",
-    );
-    await session.run("CREATE INDEX entity_govState IF NOT EXISTS FOR (e:Entity) ON (e.govState)");
-
-    // Link to an existing entity by wikidataId first (e.g. a governor who
-    // was already in the graph), so the MERGE below doesn't duplicate them.
-    await session.run(
-      `UNWIND $rows AS p
-       WITH p WHERE p.wikidataId IS NOT NULL
-       MATCH (e:Entity {wikidataId: p.wikidataId}) WHERE e.openstatesId IS NULL
-       SET e.openstatesId = p.openstatesId`,
-      { rows: people },
-    );
-
-    // Clear current-office keys first; the upsert re-sets them for everyone
-    // still current, so departed officials drop out of My Government.
-    await session.run(
-      `MATCH (e:Entity) WHERE e.govLevel = 'state'
-       SET e.govOffice = null, e.govChamber = null, e.govDistrict = null`,
-    );
-
-    let n = 0;
-    for (const batch of chunk(people, 500)) {
-      await session.run(
-        `UNWIND $rows AS p
-         MERGE (e:Entity {openstatesId: p.openstatesId})
-         ON CREATE SET e.id = randomUUID(), e.type = 'politician', e.createdAt = datetime(),
-           e += $blank, e.name = p.name, e.description = p.description
-         SET e.govLevel = 'state', e.govState = p.govState, e.govChamber = p.govChamber,
-             e.govDistrict = p.govDistrict, e.govOffice = p.govOffice,
-             e.wikidataId = coalesce(e.wikidataId, p.wikidataId),
-             e.metadata = CASE WHEN coalesce(e.metadata, '') = '' OR e.metadata CONTAINS '"source":"openstates"'
-               THEN p.metadata ELSE e.metadata END,
-             e.imageUrl = CASE WHEN coalesce(e.imageUrl, '') = '' THEN p.imageUrl ELSE e.imageUrl END,
-             e.websiteUrl = CASE WHEN coalesce(e.websiteUrl, '') = '' THEN p.websiteUrl ELSE e.websiteUrl END,
-             e.xUrl = CASE WHEN coalesce(e.xUrl, '') = '' THEN p.xUrl ELSE e.xUrl END,
-             e.facebookUrl = CASE WHEN coalesce(e.facebookUrl, '') = '' THEN p.facebookUrl ELSE e.facebookUrl END,
-             e.instagramUrl = CASE WHEN coalesce(e.instagramUrl, '') = '' THEN p.instagramUrl ELSE e.instagramUrl END,
-             e.youtubeUrl = CASE WHEN coalesce(e.youtubeUrl, '') = '' THEN p.youtubeUrl ELSE e.youtubeUrl END,
-             e.govEmail = p.email, e.govPhone = p.phone, e.govParty = p.party,
-             e.updatedAt = datetime()
-         MERGE (o:Entity {type: 'organization', name: p.org})
-         ON CREATE SET o.id = randomUUID(), o.createdAt = datetime(), o += $blank,
-           o.description = 'U.S. state government body.', o.metadata = '{"source":"openstates"}'
-         SET o.updatedAt = datetime()
-         MERGE (e)-[r:RELATED_TO {sourceKey: 'openstates:' + p.openstatesId + ':' + p.relType + ':' + p.org}]->(o)
-         ON CREATE SET r.id = randomUUID(), r.createdAt = datetime(),
-           r.validFrom = coalesce(p.validFrom, $today)
-         SET r.relType = p.relType, r.label = p.label, r.role = p.role, r.validTo = '',
-             r.notes = '', r.sourceRecordId = '', r.updatedAt = datetime()`,
-        {
-          rows: batch.map((p) => ({ ...p, metadata: JSON.stringify({ source: "openstates", party: p.party }) })),
-          blank: blankProfile,
-          today: TODAY,
-        },
-      );
-      n += batch.length;
-      process.stdout.write(`\r  upserted ${n}/${people.length}`);
+  // Match by Open States id, then by Wikidata id for an entity that has no
+  // Open States id yet (e.g. a governor who was already in the graph).
+  const byOpenstates = await entityIdMap(pg, "openstates");
+  const byWikidata = await entityIdMap(pg, "wikidata");
+  const linked = new Set(byOpenstates.values());
+  const ids = new Map();
+  for (const p of people) {
+    let id = byOpenstates.get(p.openstatesId);
+    if (!id && p.wikidataId) {
+      const candidate = byWikidata.get(p.wikidataId);
+      if (candidate && !linked.has(candidate)) id = candidate;
     }
-    console.log();
-
-    const keys = people.map((p) => `openstates:${p.openstatesId}:${p.relType}:${p.org}`);
-    const closed = await session.run(
-      `MATCH ()-[r:RELATED_TO]->() WHERE r.sourceKey STARTS WITH 'openstates:'
-         AND NOT r.sourceKey IN $keys AND coalesce(r.validTo, '') = ''
-       SET r.validTo = $today RETURN count(r) AS n`,
-      { keys, today: TODAY },
-    );
-    console.log(`  ${closed.records[0].get("n").toNumber()} former seats closed`);
-    return { inserted: people.length };
-  } finally {
-    await session.close();
-    await driver.close();
+    if (id) linked.add(id);
+    ids.set(p.openstatesId, id ?? null);
   }
+
+  const metadataOf = (p) => JSON.stringify({ source: "openstates", party: p.party });
+  const created = people.filter((p) => !ids.get(p.openstatesId));
+  for (const p of created) ids.set(p.openstatesId, randomUUID());
+  await upsertEntities(
+    pg,
+    created.map((p) => ({
+      id: ids.get(p.openstatesId),
+      type: "politician",
+      name: p.name,
+      description: p.description,
+      image_url: p.imageUrl,
+      website_url: p.websiteUrl,
+      x_url: p.xUrl,
+      facebook_url: p.facebookUrl,
+      instagram_url: p.instagramUrl,
+      youtube_url: p.youtubeUrl,
+      metadata: metadataOf(p),
+    })),
+  );
+  // Existing entities: refresh metadata this importer wrote and fill blank
+  // profile links; hand-edited values stay.
+  const existing = people.filter((p) => !created.includes(p));
+  for (const batch of chunk(existing, 500)) {
+    await pg.query(
+      `update entities e set
+         metadata = case when e.metadata = '' or e.metadata like '%"source":"openstates"%' then u.metadata else e.metadata end,
+         image_url = case when e.image_url = '' then u.image_url else e.image_url end,
+         website_url = case when e.website_url = '' then u.website_url else e.website_url end,
+         x_url = case when e.x_url = '' then u.x_url else e.x_url end,
+         facebook_url = case when e.facebook_url = '' then u.facebook_url else e.facebook_url end,
+         instagram_url = case when e.instagram_url = '' then u.instagram_url else e.instagram_url end,
+         youtube_url = case when e.youtube_url = '' then u.youtube_url else e.youtube_url end,
+         updated_at = now()
+       from jsonb_to_recordset($1::jsonb) as u(id uuid, metadata text, image_url text, website_url text,
+                                                x_url text, facebook_url text, instagram_url text, youtube_url text)
+       where e.id = u.id
+         and (e.metadata, e.image_url, e.website_url, e.x_url, e.facebook_url, e.instagram_url, e.youtube_url)
+             is distinct from (
+               case when e.metadata = '' or e.metadata like '%"source":"openstates"%' then u.metadata else e.metadata end,
+               case when e.image_url = '' then u.image_url else e.image_url end,
+               case when e.website_url = '' then u.website_url else e.website_url end,
+               case when e.x_url = '' then u.x_url else e.x_url end,
+               case when e.facebook_url = '' then u.facebook_url else e.facebook_url end,
+               case when e.instagram_url = '' then u.instagram_url else e.instagram_url end,
+               case when e.youtube_url = '' then u.youtube_url else e.youtube_url end)`,
+      [JSON.stringify(batch.map((p) => ({
+        id: ids.get(p.openstatesId),
+        metadata: metadataOf(p),
+        image_url: p.imageUrl,
+        website_url: p.websiteUrl,
+        x_url: p.xUrl,
+        facebook_url: p.facebookUrl,
+        instagram_url: p.instagramUrl,
+        youtube_url: p.youtubeUrl,
+      })))],
+    );
+  }
+  await addIdentifiers(pg, people.flatMap((p) => [
+    { entityId: ids.get(p.openstatesId), scheme: "openstates", value: p.openstatesId },
+    { entityId: ids.get(p.openstatesId), scheme: "wikidata", value: p.wikidataId },
+  ]));
+
+  // Only the states imported this run are cleared and closed (--states).
+  const importedStates = STATE_CODES.map((st) => st.toUpperCase());
+
+  // Clear current-office keys and re-set them for everyone still current in
+  // one transaction, so departed officials drop out of My Government
+  // without the lookup ever seeing an empty state.
+  await pg.query("begin");
+  try {
+    await pg.query(
+      "update entity_offices set office = null, chamber = null, district = null where source = 'openstates' and state = any($1::text[])",
+      [importedStates],
+    );
+    await upsertOffices(pg, "openstates", people.map((p) => ({
+      entity_id: ids.get(p.openstatesId),
+      level: "state",
+      state: p.govState,
+      chamber: p.govChamber,
+      district: p.govDistrict,
+      office: p.govOffice,
+      party: p.party,
+      email: p.email,
+      phone: p.phone,
+    })));
+    await pg.query("commit");
+  } catch (err) {
+    await pg.query("rollback");
+    throw err;
+  }
+
+  // Chamber and office organizations, found by name.
+  const orgNames = [...new Set(people.map((p) => p.org))];
+  const { rows: orgRows } = await pg.query(
+    "select distinct on (name) id, name from entities where type = 'organization' and name = any($1::text[]) order by name, created_at",
+    [orgNames],
+  );
+  const orgs = new Map(orgRows.map((r) => [r.name, r.id]));
+  const newOrgs = orgNames.filter((name) => !orgs.has(name)).map((name) => ({ id: randomUUID(), name }));
+  await upsertEntities(pg, newOrgs.map((o) => ({
+    id: o.id,
+    type: "organization",
+    name: o.name,
+    description: "U.S. state government body.",
+    metadata: '{"source":"openstates"}',
+  })));
+  for (const o of newOrgs) orgs.set(o.name, o.id);
+
+  const edges = people.map((p) => ({
+    source_key: `openstates:${p.openstatesId}:${p.relType}:${p.org}`,
+    source_entity_id: ids.get(p.openstatesId),
+    target_entity_id: orgs.get(p.org),
+    rel_type: p.relType,
+    label: p.label,
+    role: p.role,
+    valid_from: p.validFrom || TODAY,
+    valid_to: "",
+  }));
+  await upsertEdges(pg, edges);
+  console.log(`  ${created.length} people and ${newOrgs.length} organizations created, ${existing.length} updated`);
+
+  const closed = await pg.query(
+    `update entity_edges set valid_to = $2, updated_at = now()
+     where source_key like 'openstates:%' and not (source_key = any($1::text[])) and valid_to = ''
+       and source_entity_id in (
+         select entity_id from entity_offices where source = 'openstates' and state = any($3::text[]))`,
+    [edges.map((e) => e.source_key), TODAY, importedStates],
+  );
+  console.log(`  ${closed.rowCount} former seats closed`);
+  return { inserted: created.length, updated: existing.length };
 });

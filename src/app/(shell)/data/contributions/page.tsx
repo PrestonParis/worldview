@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ContributorOnly } from "@/components/auth/can-edit";
 import { listContributions } from "@/lib/db/contributions";
 import { listSources } from "@/lib/db/sources";
-import { listEntities } from "@/lib/neo4j/entities";
+import { listEntities } from "@/lib/db/entities";
 import { ContributionForm } from "@/components/forms/contribution-form";
 import { AddPanel } from "@/components/forms/add-panel";
 import { DeleteButton } from "@/components/forms/delete-button";

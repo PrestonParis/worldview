@@ -12,7 +12,8 @@ import { SectionNav } from "@/components/data/section-nav";
 import { formatPeriod, pctChange } from "@/lib/format";
 import { loadHousing } from "@/lib/housing/data";
 
-export const dynamic = "force-dynamic";
+// Rebuilt at most hourly; crawlers and visitors share the cached render.
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Housing | Worldview",
