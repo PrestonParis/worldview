@@ -5,7 +5,7 @@
 
 import { sql } from "drizzle-orm";
 import { db } from "@/lib/db/client";
-import { getEntitiesByIds } from "@/lib/neo4j/entities";
+import { getEntitiesByIds } from "@/lib/db/entities";
 import { publicEntityPath } from "./public";
 
 export type AtlasParty = "D" | "R" | "I";

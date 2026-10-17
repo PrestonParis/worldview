@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { listContributions } from "@/lib/db/contributions";
 import { listSources } from "@/lib/db/sources";
-import { getEntitiesByIds } from "@/lib/neo4j/entities";
+import { getEntitiesByIds } from "@/lib/db/entities";
 import { ContributionsListView } from "./contributions-list-view";
 
 // Callers (page.tsx files) must also export `dynamic = "force-dynamic"`.

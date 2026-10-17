@@ -4,8 +4,8 @@ import { loadImmigration } from "@/lib/immigration/data";
 import { loadCrime } from "@/lib/crime/data";
 import { listDatasets } from "@/lib/db/stats";
 import { getDemographicSeries } from "@/lib/demographics/forecast";
-import { countEntities, listRecentEntities } from "@/lib/neo4j/entities";
-import { countEdges } from "@/lib/neo4j/edges";
+import { countEntities, listRecentEntities } from "@/lib/db/entities";
+import { countEdges } from "@/lib/db/edges";
 import { countContributions, listContributionTotalsByCurrency } from "@/lib/db/contributions";
 import { countBills } from "@/lib/db/bills";
 import { countRollCalls } from "@/lib/db/rollCalls";
@@ -16,7 +16,8 @@ import { Hero, type SnapshotMetric } from "@/components/home/hero";
 import type { StateMeasure } from "@/components/home/state-map";
 import { ToolModules, type PlatformFacts } from "@/components/home/tool-modules";
 
-export const dynamic = "force-dynamic";
+// Rebuilt at most daily; crawlers and visitors share the cached render.
+export const revalidate = 86400;
 
 const settle = <T,>(promise: Promise<T>) => promise.then((value) => value, () => null);
 

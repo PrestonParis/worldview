@@ -1,11 +1,17 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { getEntity } from "@/lib/neo4j/entities";
+import { notFound, permanentRedirect } from "next/navigation";
+import { getEntity, getMergedInto } from "@/lib/db/entities";
 import { listVoterRollCallVotes, votesByRollCall } from "@/lib/db/votingRecord";
 import { brokeWithParty, normalizeParty } from "@/lib/legislation/votingRecord";
 import { MemberVotingRecord } from "@/components/legislation/member-voting-record";
 
-export const dynamic = "force-dynamic";
+// Rebuilt at most daily; crawlers and visitors share the cached render.
+export const revalidate = 86400;
+
+// Nothing prebuilt; each page is rendered on first request, then cached.
+export async function generateStaticParams() {
+  return [];
+}
 
 export default async function MemberVotingRecordPage({
   params,
@@ -15,7 +21,11 @@ export default async function MemberVotingRecordPage({
     getEntity(entityId),
     listVoterRollCallVotes(entityId),
   ]);
-  if (!entity) notFound();
+  if (!entity) {
+    const merged = await getMergedInto(entityId);
+    if (merged) permanentRedirect(`/legislation/members/${merged.id}`);
+    notFound();
+  }
 
   const rollCallVotes = await votesByRollCall(votes.map((v) => v.rollCallId));
 

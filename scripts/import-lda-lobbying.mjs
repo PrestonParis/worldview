@@ -25,7 +25,7 @@ process.loadEnvFile(process.env.ENV_FILE || ".env.local");
 
 import { randomUUID } from "node:crypto";
 import { Client } from "pg";
-import neo4j from "neo4j-driver";
+import { addIdentifiers, entityIdMap, upsertEntities } from "./lib/entities.mjs";
 
 const DRY_RUN = process.argv.includes("--dry-run");
 const yearsArg = process.argv.find((a) => a.startsWith("--years="));
@@ -147,21 +147,17 @@ async function main() {
 
   const pg = new Client({ connectionString: process.env.DATABASE_URL });
   await pg.connect();
-  const driver = neo4j.driver(
-    process.env.NEO4J_URI,
-    neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD),
-  );
-  const session = driver.session();
-
   try {
     // Entity name → id lookup (orgs + companies + lobbyist firms all live as
     // `organization`/`company` here).
-    const entRes = await session.run(
-      "MATCH (e:Entity) WHERE e.type IN ['organization','company','lobbyist'] RETURN e.id AS id, e.name AS name",
+    const { rows: orgRows } = await pg.query(
+      "select id, name from entities where type in ('organization', 'company', 'lobbyist')",
     );
     const byNorm = new Map();
-    for (const r of entRes.records) byNorm.set(normName(r.get("name")), r.get("id"));
-    console.log(`  ${byNorm.size} candidate entities loaded from Neo4j`);
+    for (const r of orgRows) byNorm.set(normName(r.name), r.id);
+    // LDA's own client / registrant ids, matched before names.
+    const byLdaId = { client: await entityIdMap(pg, "lda_client"), registrant: await entityIdMap(pg, "lda_registrant") };
+    console.log(`  ${byNorm.size} candidate entities loaded`);
 
     // Known bills for linking.
     const billRes = await pg.query("select id, bill_number from bills");
@@ -181,36 +177,38 @@ async function main() {
     );
     const sourceId = srcRes.rows[0].id;
 
-    async function resolveEntity(name, kind) {
-      const id = byNorm.get(normName(name));
-      if (id) return id;
-      if (DRY_RUN) return null;
-      const newId = randomUUID();
-      await session.run(
-        `CREATE (e:Entity {
-           id: $id, type: 'organization', name: $name,
-           description: $description, biography: '', imageUrl: '', websiteUrl: '',
-           xUrl: '', facebookUrl: '', instagramUrl: '', youtubeUrl: '', linkedinUrl: '',
-           highlights: '', metadata: $metadata, createdAt: datetime(), updatedAt: datetime()
-         })`,
-        {
-          id: newId,
-          name,
-          description:
-            kind === "registrant"
-              ? "Lobbying firm — created from Senate LDA filing data."
-              : "Lobbying client — created from Senate LDA filing data.",
-          metadata: JSON.stringify({ importedFrom: "senate-lda", ldaRole: kind }),
-        },
-      );
-      byNorm.set(normName(name), newId);
-      entitiesCreated++;
-      return newId;
+    async function resolveEntity(name, kind, ldaId) {
+      const scheme = `lda_${kind}`;
+      const key = ldaId === undefined || ldaId === null ? null : String(ldaId);
+      let id = (key && byLdaId[kind].get(key)) || byNorm.get(normName(name));
+      if (!id) {
+        if (DRY_RUN) return null;
+        id = randomUUID();
+        await upsertEntities(pg, [
+          {
+            id,
+            type: "organization",
+            name,
+            description:
+              kind === "registrant"
+                ? "Lobbying firm — created from Senate LDA filing data."
+                : "Lobbying client — created from Senate LDA filing data.",
+            metadata: JSON.stringify({ importedFrom: "senate-lda", ldaRole: kind }),
+          },
+        ]);
+        byNorm.set(normName(name), id);
+        entitiesCreated++;
+      }
+      if (key && !byLdaId[kind].has(key)) {
+        await addIdentifiers(pg, [{ entityId: id, scheme, value: key }]);
+        byLdaId[kind].set(key, id);
+      }
+      return id;
     }
 
     for (const f of allFilings) {
-      const clientEntityId = await resolveEntity(f.client?.name || "Unknown client", "client");
-      const registrantEntityId = await resolveEntity(f.registrant?.name || "Unknown firm", "registrant");
+      const clientEntityId = await resolveEntity(f.client?.name || "Unknown client", "client", f.client?.id);
+      const registrantEntityId = await resolveEntity(f.registrant?.name || "Unknown firm", "registrant", f.registrant?.id);
       if (!clientEntityId || !registrantEntityId) continue;
 
       const income = f.income != null ? Math.round(Number(f.income)) : null;
@@ -272,8 +270,6 @@ async function main() {
       for (const p of problems) console.log(`  - ${p}`);
     }
   } finally {
-    await session.close();
-    await driver.close();
     await pg.end();
   }
 }

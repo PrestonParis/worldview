@@ -1,12 +1,12 @@
 // Assigns a `relType` slug (src/lib/relationships.ts vocabulary) to every
-// RELATED_TO edge that doesn't have one, inferred from its free-text
+// entity_edges row that doesn't have one, inferred from its free-text
 // `label`. Idempotent — only touches edges where relType is missing.
 //
 // Usage: node scripts/backfill-relationships.mjs [--dry-run]
 
-process.loadEnvFile(".env.local");
+process.loadEnvFile(process.env.ENV_FILE || ".env.local");
 
-import neo4j from "neo4j-driver";
+import { connectPg } from "./lib/bulk.mjs";
 import { inferRelType } from "../src/lib/relationships.ts";
 
 const DRY_RUN = process.argv.includes("--dry-run");
@@ -24,27 +24,20 @@ function refineByEndpoints(relType, targetName) {
 }
 
 async function main() {
-  const driver = neo4j.driver(
-    process.env.NEO4J_URI,
-    neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD),
-  );
-  const session = driver.session();
+  const pg = await connectPg();
   try {
-    const res = await session.run(
-      `MATCH ()-[r:RELATED_TO]->(b:Entity)
-       WHERE r.relType IS NULL OR r.relType = ''
-       RETURN r.id AS id, r.label AS label, b.name AS targetName`,
+    const { rows } = await pg.query(
+      `select r.id, r.label, b.name as target_name from entity_edges r
+       join entities b on b.id = r.target_entity_id
+       where r.rel_type = ''`,
     );
-    console.log(`${res.records.length} edges without a relType`);
+    console.log(`${rows.length} edges without a relType`);
 
-    const assignments = res.records.map((rec) => {
-      const label = rec.get("label") ?? "";
-      return {
-        id: rec.get("id"),
-        label,
-        relType: refineByEndpoints(inferRelType(label), rec.get("targetName") ?? ""),
-      };
-    });
+    const assignments = rows.map((row) => ({
+      id: row.id,
+      label: row.label,
+      relType: refineByEndpoints(inferRelType(row.label), row.target_name),
+    }));
 
     const hist = {};
     for (const a of assignments) hist[a.relType] = (hist[a.relType] ?? 0) + 1;
@@ -58,20 +51,15 @@ async function main() {
       return;
     }
 
-    for (let i = 0; i < assignments.length; i += 500) {
-      await session.run(
-        `UNWIND $rows AS row
-         MATCH ()-[r:RELATED_TO {id: row.id}]->()
-         SET r.relType = row.relType,
-             r.role = coalesce(r.role, ''),
-             r.updatedAt = datetime()`,
-        { rows: assignments.slice(i, i + 500) },
-      );
-    }
+    await pg.query(
+      `update entity_edges r set rel_type = a.rel_type, updated_at = now()
+       from unnest($1::uuid[], $2::text[]) as a(id, rel_type)
+       where r.id = a.id`,
+      [assignments.map((a) => a.id), assignments.map((a) => a.relType)],
+    );
     console.log(`\nSet relType on ${assignments.length} edges.`);
   } finally {
-    await session.close();
-    await driver.close();
+    await pg.end();
   }
 }
 

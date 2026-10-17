@@ -4,10 +4,11 @@
 // through here.
 
 import { and, asc, desc, eq, gte, inArray, isNotNull, lte, sql } from "drizzle-orm";
+import { unstable_cache } from "next/cache";
 import { db, type Db } from "./client";
 import { recordCoverage, type RecordTableCoverage } from "./records";
 import { bySource, dbFor } from "./stores";
-import { areaStats, dataPartners, datasets, syncRuns } from "./schema";
+import { areaStats, dataPartners, datasets, geographies, geoLevels, syncRuns } from "./schema";
 import { periodEnd, periodStart, type ObservationInput } from "@/lib/validation/observation";
 
 export interface MetricDefinition {
@@ -202,7 +203,7 @@ export async function geographicMetricCoverage(slugs: string[]): Promise<Geograp
 }
 
 // One metric for one place over time, oldest first.
-export async function getSeries(source: string, metric: string, geoLevel = "nation", geoid = "US"): Promise<Point[]> {
+async function getSeriesQuery(source: string, metric: string, geoLevel = "nation", geoid = "US"): Promise<Point[]> {
   const rows = await (await dbFor(source))
     .select({
       period: areaStats.period,
@@ -230,7 +231,7 @@ export async function getSeries(source: string, metric: string, geoLevel = "nati
 }
 
 // Several metrics for one place, keyed by metric.
-export async function getSeriesMany(source: string, metrics: string[], geoLevel = "nation", geoid = "US") {
+async function getSeriesManyQuery(source: string, metrics: string[], geoLevel = "nation", geoid = "US") {
   const rows = await (await dbFor(source))
     .select({
       metric: areaStats.metric,
@@ -256,7 +257,7 @@ export async function getSeriesMany(source: string, metrics: string[], geoLevel 
 }
 
 // One metric's series for every area at a level, keyed by geoid.
-export async function getSeriesByGeo(source: string, metric: string, geoLevel: string) {
+async function getSeriesByGeoQuery(source: string, metric: string, geoLevel: string) {
   const rows = await (await dbFor(source))
     .select({ geoid: areaStats.geoid, period: areaStats.period, periodStart: areaStats.periodStart, value: areaStats.value })
     .from(areaStats)
@@ -267,7 +268,7 @@ export async function getSeriesByGeo(source: string, metric: string, geoLevel: s
   return out;
 }
 
-export async function latestPeriod(source: string, metric: string, geoLevel: string): Promise<string | null> {
+async function latestPeriodQuery(source: string, metric: string, geoLevel: string): Promise<string | null> {
   const [row] = await (await dbFor(source))
     .select({ period: areaStats.period })
     .from(areaStats)
@@ -287,7 +288,7 @@ export async function latestPeriod(source: string, metric: string, geoLevel: str
 // Every place at one geography level for one period (the latest, unless
 // given), largest value first. `geoidPrefix` narrows scoped breakdowns
 // (e.g. "US:" for national country-of-birth rows).
-export async function getCrossSection(
+async function getCrossSectionQuery(
   source: string,
   metric: string,
   geoLevel: string,
@@ -322,7 +323,7 @@ export async function getCrossSection(
 
 // Each place's total over a window of periods (inclusive period_start
 // bounds) — e.g. the trailing 12 months of monthly encounters.
-export async function sumByGeo(
+async function sumByGeoQuery(
   source: string,
   metric: string,
   geoLevel: string,
@@ -367,7 +368,7 @@ export interface YearlyValue {
   minCoverage: number | null;
 }
 
-export async function yearlySumsByGeo(
+async function yearlySumsByGeoQuery(
   source: string,
   metrics: string[],
   geoLevel: string,
@@ -596,3 +597,113 @@ export async function seriesForGeo(keys: SeriesKey[], geoLevel: string, geoid: s
   }
   return out;
 }
+
+export interface CompareSeries {
+  source: string;
+  metric: string;
+  /** A specific period; the latest one at this level when omitted. */
+  period?: string;
+}
+
+export interface CompareResult {
+  level: string;
+  series: { source: string; metric: string; period: string | null; label: string; unit: string | null }[];
+  /** One row per place, values in `series` order; null where a dataset has no value. */
+  rows: { geoid: string; name: string; state: string | null; values: (number | null)[] }[];
+}
+
+// Several datasets' metrics side by side for every place at one geography
+// level, labeled with the canonical names in `geographies`. `within` limits
+// the places to those inside one parent (a state FIPS for counties or
+// districts). Throws on a level that isn't a geography or an unpublished
+// dataset.
+async function compareByGeoQuery(level: string, series: CompareSeries[], { within }: { within?: string } = {}): Promise<CompareResult> {
+  const [kind] = await db.select({ kind: geoLevels.kind }).from(geoLevels).where(eq(geoLevels.level, level));
+  if (kind?.kind !== "geography") throw new Error(`"${level}" is not a geography level.`);
+  const sources = [...new Set(series.map((s) => s.source))];
+  const meta = new Map(
+    (await db.select({ slug: datasets.slug, metrics: datasets.metrics }).from(datasets)
+      .where(and(inArray(datasets.slug, sources), eq(datasets.status, "published"))))
+      .map((d) => [d.slug, d.metrics as Record<string, MetricDefinition>]),
+  );
+  const missing = sources.find((source) => !meta.has(source));
+  if (missing) throw new Error(`No published dataset "${missing}".`);
+
+  const sections = await Promise.all(
+    series.map((s) => getCrossSection(s.source, s.metric, level, { period: s.period, geoidPrefix: within })),
+  );
+  const geoids = [...new Set(sections.flatMap((section) => section.values.map((v) => v.geoid)))];
+  const places = new Map(
+    geoids.length
+      ? (await db.select({ geoid: geographies.geoid, name: geographies.name, state: geographies.state }).from(geographies)
+          .where(and(eq(geographies.level, level), inArray(geographies.geoid, geoids))))
+          .map((g) => [g.geoid, g])
+      : [],
+  );
+  const valueMaps = sections.map((section) => new Map(section.values.map((v) => [v.geoid, v])));
+
+  const rows = geoids.map((geoid) => {
+    const place = places.get(geoid);
+    const fallbackName = valueMaps.map((m) => m.get(geoid)?.geoName).find(Boolean);
+    return {
+      geoid,
+      name: place?.name ?? fallbackName ?? geoid,
+      state: place?.state ?? null,
+      values: valueMaps.map((m) => m.get(geoid)?.value ?? null),
+    };
+  });
+  rows.sort((a, b) => (b.values[0] ?? -Infinity) - (a.values[0] ?? -Infinity) || a.name.localeCompare(b.name));
+
+  return {
+    level,
+    series: series.map((s, i) => {
+      const def = meta.get(s.source)?.[s.metric];
+      return { source: s.source, metric: s.metric, period: sections[i].period, label: def?.label ?? s.metric, unit: def?.unit ?? null };
+    }),
+    rows,
+  };
+}
+
+// The read helpers above, cached for a day across requests and tagged so a
+// partner upload (src/app/api/data/v1/datasets/[slug]/observations) can mark
+// them stale. Importers write straight to the database; their data appears
+// within the day.
+export const AREA_STATS_TAG = "area-stats";
+
+function cached<A extends unknown[], R>(name: string, fn: (...args: A) => Promise<R>) {
+  return unstable_cache(fn, ["area-stats", name], { tags: [AREA_STATS_TAG], revalidate: 86400 });
+}
+
+export const getSeries = cached("getSeries", getSeriesQuery);
+export const getSeriesMany = cached("getSeriesMany", getSeriesManyQuery);
+export const getSeriesByGeo = cached("getSeriesByGeo", getSeriesByGeoQuery);
+export const latestPeriod = cached("latestPeriod", latestPeriodQuery);
+export const getCrossSection = cached("getCrossSection", getCrossSectionQuery);
+export const sumByGeo = cached("sumByGeo", sumByGeoQuery);
+// Next refuses cache entries over 2MB, and the state- and agency-level crime
+// calls run past that as row objects. Each metric is cached on its own, as
+// bare tuples, and expanded on the way out.
+type YearlyTuple = [geoid: string, year: string, value: number, months: number, reportedMonths: number, coverage: number | null, minCoverage: number | null];
+
+const yearlySumsForMetric = cached(
+  "yearlySumsForMetric",
+  async (source: string, metric: string, geoLevel: string, opts: { geoidPrefix?: string } = {}): Promise<YearlyTuple[]> =>
+    (await yearlySumsByGeoQuery(source, [metric], geoLevel, opts)).map((r) => [
+      r.geoid, r.year, r.value, r.months, r.reportedMonths, r.coverage, r.minCoverage,
+    ]),
+);
+
+export async function yearlySumsByGeo(
+  source: string,
+  metrics: string[],
+  geoLevel: string,
+  opts: { geoidPrefix?: string } = {},
+): Promise<YearlyValue[]> {
+  const parts = await Promise.all(metrics.map((m) => yearlySumsForMetric(source, m, geoLevel, opts)));
+  return parts.flatMap((rows, i) =>
+    rows.map(([geoid, year, value, months, reportedMonths, coverage, minCoverage]) => ({
+      metric: metrics[i], geoid, year, value, months, reportedMonths, coverage, minCoverage,
+    })),
+  );
+}
+export const compareByGeo = cached("compareByGeo", compareByGeoQuery);

@@ -11,7 +11,13 @@ import { loadState, type StateFact } from "@/lib/states/data";
 import { stateBySlug } from "@/lib/states/slug";
 import { ratingLabel } from "@/lib/validation/raceRating";
 
-export const dynamic = "force-dynamic";
+// Rebuilt at most daily; crawlers and visitors share the cached render.
+export const revalidate = 86400;
+
+// Nothing prebuilt; each page is rendered on first request, then cached.
+export async function generateStaticParams() {
+  return [];
+}
 
 type Props = { params: Promise<{ slug: string }> };
 

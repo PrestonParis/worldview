@@ -3,7 +3,7 @@
 import { requireContributor } from "../auth/guard";
 import { revalidatePath } from "next/cache";
 import { entitySchema, type EntityInput } from "../validation/entity";
-import * as entitiesDb from "../neo4j/entities";
+import * as entitiesDb from "../db/entities";
 
 export type ActionResult<T> =
   | { ok: true; data: T }
@@ -21,6 +21,7 @@ export async function createEntityAction(
   try {
     const entity = await entitiesDb.createEntity(parsed.data);
     revalidatePath("/data");
+    revalidatePath("/people", "layout");
     return { ok: true, data: { id: entity.id } };
   } catch (err) {
     return { ok: false, error: (err as Error).message };
@@ -41,6 +42,7 @@ export async function updateEntityAction(
     const entity = await entitiesDb.updateEntity(id, parsed.data);
     if (!entity) return { ok: false, error: "Entity not found" };
     revalidatePath("/data");
+    revalidatePath("/people", "layout");
     return { ok: true, data: { id: entity.id } };
   } catch (err) {
     return { ok: false, error: (err as Error).message };
@@ -55,6 +57,7 @@ export async function deleteEntityAction(
   try {
     await entitiesDb.deleteEntity(id);
     revalidatePath("/data");
+    revalidatePath("/people", "layout");
     return { ok: true, data: null };
   } catch (err) {
     return { ok: false, error: (err as Error).message };

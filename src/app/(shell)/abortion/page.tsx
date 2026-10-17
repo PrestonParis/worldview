@@ -17,7 +17,8 @@ import { formatValue } from "@/lib/format";
 import { loadStatePaths } from "@/lib/geo/state-paths";
 import { FeatureList } from "@/components/ui/feature-list";
 
-export const dynamic = "force-dynamic";
+// Rebuilt at most daily; crawlers and visitors share the cached render.
+export const revalidate = 86400;
 
 export const metadata: Metadata = {
   title: "Abortion | Worldview",

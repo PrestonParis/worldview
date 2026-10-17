@@ -1,6 +1,7 @@
-// Point-in-time dump of both stores to backups/<timestamp>/ as plain JSON
-// — one file per Postgres table plus entities.json / edges.json from
-// Neo4j, and a manifest.json with row counts.
+// Point-in-time dump to backups/<timestamp>/ as plain JSON — one file per
+// Postgres table, including the People & Power graph (entities,
+// entity_edges, ...), and a manifest.json with row counts. Neo4j holds only
+// a copy of the graph (scripts/sync-graph.mjs), so it isn't exported.
 //
 // This is the backup that did NOT exist when the graph was wiped. Run it
 // before any destructive change, and on a schedule. Output lands under
@@ -9,20 +10,22 @@
 //
 // Usage: node scripts/export-db.mjs
 //   Restore Postgres from a dump:  node scripts/restore-postgres-backup.mjs <dir>
-//   Restore Neo4j: no generic restore yet — reconstruct-fec-graph.mjs and
-//   seed.mjs are the current paths.
+//   Then rebuild Neo4j:            node scripts/sync-graph.mjs
 
 process.loadEnvFile(process.env.ENV_FILE || ".env.local");
 
 import fs from "node:fs";
 import path from "node:path";
 import { Client } from "pg";
-import neo4j from "neo4j-driver";
 
 // NOTE: hand-maintained. Add new tables here as they're created (Elections
 // and Legislation tables are also missing — worth switching this to an
 // information_schema enumeration).
 const PG_TABLES = [
+  "entities",
+  "entity_identifiers",
+  "entity_offices",
+  "entity_edges",
   "sources",
   "claims",
   "contributions",
@@ -33,26 +36,6 @@ const PG_TABLES = [
   "votes",
   "map_projects",
 ];
-
-function serialize(value) {
-  if (value == null) return value;
-  if (neo4j.isInt(value)) return value.toNumber();
-  if (
-    neo4j.isDateTime(value) ||
-    neo4j.isDate(value) ||
-    neo4j.isLocalDateTime(value) ||
-    neo4j.isLocalTime(value) ||
-    neo4j.isTime(value) ||
-    neo4j.isDuration(value)
-  ) {
-    return value.toString();
-  }
-  if (Array.isArray(value)) return value.map(serialize);
-  if (typeof value === "object") {
-    return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, serialize(v)]));
-  }
-  return value;
-}
 
 async function main() {
   const stamp = new Date().toISOString().slice(0, 19).replace(/:/g, "-");
@@ -69,7 +52,7 @@ async function main() {
     for (const table of PG_TABLES) {
       let rows;
       try {
-        ({ rows } = await pg.query(`select * from ${table} order by created_at nulls last`));
+        ({ rows } = await pg.query(`select * from ${table}`));
       } catch (err) {
         console.log(`  ${table}: skipped (${err.message.split("\n")[0]})`);
         continue;
@@ -80,37 +63,6 @@ async function main() {
     }
   } finally {
     await pg.end();
-  }
-
-  // --- Neo4j ---
-  const driver = neo4j.driver(
-    process.env.NEO4J_URI,
-    neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD),
-  );
-  const session = driver.session();
-  try {
-    const entityRes = await session.run("MATCH (e:Entity) RETURN properties(e) AS p ORDER BY e.name");
-    const entities = entityRes.records.map((r) => serialize(r.get("p")));
-    fs.writeFileSync(path.join(outDir, "entities.json"), JSON.stringify(entities, null, 2));
-    counts.entities = entities.length;
-    console.log(`  entities: ${entities.length}`);
-
-    const edgeRes = await session.run(
-      `MATCH (a:Entity)-[r:RELATED_TO]->(b:Entity)
-       RETURN properties(r) AS p, a.id AS sourceEntityId, b.id AS targetEntityId
-       ORDER BY r.createdAt`,
-    );
-    const edges = edgeRes.records.map((r) => ({
-      ...serialize(r.get("p")),
-      sourceEntityId: r.get("sourceEntityId"),
-      targetEntityId: r.get("targetEntityId"),
-    }));
-    fs.writeFileSync(path.join(outDir, "edges.json"), JSON.stringify(edges, null, 2));
-    counts.edges = edges.length;
-    console.log(`  edges: ${edges.length}`);
-  } finally {
-    await session.close();
-    await driver.close();
   }
 
   fs.writeFileSync(

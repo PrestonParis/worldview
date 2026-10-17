@@ -3,10 +3,17 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { coverageLabel } from "@/components/data/dataset-list";
 import { SortableTable } from "@/components/data/sortable-table";
+import { datasetDownloads } from "@/lib/db/lake";
 import { RECORD_DATASETS, recordPreview } from "@/lib/db/records";
 import { datasetCoverage, getDataset } from "@/lib/db/stats";
 
-export const dynamic = "force-dynamic";
+// Rebuilt at most daily; crawlers and visitors share the cached render.
+export const revalidate = 86400;
+
+// Nothing prebuilt; each page is rendered on first request, then cached.
+export async function generateStaticParams() {
+  return [];
+}
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -21,6 +28,10 @@ const UNITS: Record<string, string> = {
   facilities: "Facilities", count: "Count", years: "Years",
 };
 
+function formatBytes(bytes: number): string {
+  return bytes >= 1_048_576 ? `${(bytes / 1_048_576).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1024))} KB`;
+}
+
 export default async function DatasetPage({ params }: Props) {
   const { slug } = await params;
   const dataset = await getDataset(slug);
@@ -30,6 +41,7 @@ export default async function DatasetPage({ params }: Props) {
   const example = metrics[0]?.[0];
   const record = RECORD_DATASETS[slug];
   const preview = record ? await recordPreview(slug) : null;
+  const downloads = await datasetDownloads(slug).catch(() => []);
 
   const facts = [
     ["Publisher", dataset.publisher],
@@ -140,6 +152,30 @@ export default async function DatasetPage({ params }: Props) {
               }))}
             />
           </div>
+        </section>
+      )}
+
+      {downloads.length > 0 && (
+        <section>
+          <h2 className="text-lg font-semibold text-slate-950 dark:text-white">Bulk download</h2>
+          <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+            Every row as Parquet, rebuilt weekly. DuckDB, pandas, R, and Polars read it directly from the link.
+          </p>
+          <ul className="mt-3 divide-y divide-slate-200 rounded-xl border border-slate-200 text-sm dark:divide-slate-800 dark:border-slate-800">
+            {downloads.map((d) => (
+              <li key={d.url} className="flex flex-wrap items-baseline justify-between gap-2 px-4 py-3">
+                <a href={d.url} className="font-medium text-slate-900 underline underline-offset-2 dark:text-white">
+                  {d.label}
+                </a>
+                <span className="text-slate-500 tabular-nums dark:text-slate-400">
+                  {d.rows.toLocaleString()} rows · {formatBytes(d.bytes)} · Parquet
+                </span>
+              </li>
+            ))}
+          </ul>
+          <pre className="mt-3 overflow-x-auto rounded-xl bg-slate-950 p-4 text-xs leading-6 text-slate-100">
+            {`-- DuckDB\nSELECT * FROM '${downloads[0].url}' LIMIT 10;`}
+          </pre>
         </section>
       )}
 

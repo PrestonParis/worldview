@@ -122,6 +122,8 @@ export async function connectPg() {
   return pg;
 }
 
+// Only scripts/sync-graph.mjs and graph-to-postgres.mjs talk to Neo4j; the
+// graph's record is Postgres (scripts/lib/entities.mjs).
 export function connectNeo4j() {
   return neo4j.driver(
     process.env.NEO4J_URI,
@@ -195,24 +197,6 @@ export async function finishRun(pg, id, { status = "ok", inserted = 0, updated =
      where id = $1`,
     [id, status, inserted, updated, skipped, error, cursor],
   );
-}
-
-// Map of a crosswalk property -> entity id, for resolving imported rows.
-export async function entityIdMap(driver, prop, where = "") {
-  const session = driver.session();
-  try {
-    const res = await session.run(
-      `MATCH (e:Entity) WHERE e.${prop} IS NOT NULL ${where} RETURN e.${prop} AS key, e.id AS id`,
-    );
-    const map = new Map();
-    for (const r of res.records) {
-      const key = r.get("key");
-      for (const k of Array.isArray(key) ? key : [key]) map.set(String(k), r.get("id"));
-    }
-    return map;
-  } finally {
-    await session.close();
-  }
 }
 
 // Runs an importer's main with uniform error handling + sync_runs bookkeeping.

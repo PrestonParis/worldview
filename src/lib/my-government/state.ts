@@ -1,9 +1,10 @@
-import { getDriver } from "../neo4j/client";
+import { and, eq, isNotNull } from "drizzle-orm";
+import { entities, entityOffices } from "../db/schema";
 import type { CensusGeography, GovernmentOfficial } from "./types";
 
-// State legislators and statewide executives, imported into the graph by
-// scripts/import-openstates-people.mjs (govLevel='state' + govState /
-// govChamber / govDistrict / govOffice on each politician entity).
+// State legislators and statewide executives, imported by
+// scripts/import-openstates-people.mjs as entity_offices rows (source
+// 'openstates', level 'state').
 export const OPEN_STATES_SOURCE = "https://open.pluralpolicy.com/data/";
 
 export interface StateOfficialRow {
@@ -84,24 +85,39 @@ export function selectStateOfficials(
 }
 
 export async function getStateOfficials(geography: CensusGeography): Promise<GovernmentOfficial[]> {
-  const session = getDriver().session();
-  try {
-    const result = await session.run(
-      `MATCH (e:Entity {govLevel: 'state', govState: $state})
-       WHERE e.govOffice IS NOT NULL
-       RETURN e.id AS id, e.name AS name, e.govChamber AS govChamber,
-              coalesce(e.govDistrict, '') AS govDistrict, e.govOffice AS govOffice,
-              e.govParty AS govParty, e.govPhone AS govPhone, e.websiteUrl AS websiteUrl`,
-      { state: geography.stateCode },
-    );
-    const rows = result.records.map((record) => record.toObject() as StateOfficialRow);
-    // Governor (or DC's Mayor) first, then the rest alphabetically.
-    const officials = selectStateOfficials(rows, geography);
-    const head = (office: string) => office === "Governor" || office === "Mayor";
-    return officials.sort((a, b) =>
-      head(a.office) ? -1 : head(b.office) ? 1 : a.office.localeCompare(b.office),
-    );
-  } finally {
-    await session.close();
-  }
+  // Loaded here so the pure helpers above can be imported without a database.
+  const { db } = await import("../db/client");
+  const rows: StateOfficialRow[] = (
+    await db
+      .select({
+        id: entities.id,
+        name: entities.name,
+        govChamber: entityOffices.chamber,
+        govDistrict: entityOffices.district,
+        govOffice: entityOffices.office,
+        govParty: entityOffices.party,
+        govPhone: entityOffices.phone,
+        websiteUrl: entities.websiteUrl,
+      })
+      .from(entityOffices)
+      .innerJoin(entities, eq(entities.id, entityOffices.entityId))
+      .where(
+        and(
+          eq(entityOffices.level, "state"),
+          eq(entityOffices.state, geography.stateCode),
+          isNotNull(entityOffices.office),
+        ),
+      )
+  ).map((row) => ({
+    ...row,
+    govChamber: row.govChamber ?? "",
+    govDistrict: row.govDistrict ?? "",
+    govOffice: row.govOffice ?? "",
+  }));
+  // Governor (or DC's Mayor) first, then the rest alphabetically.
+  const officials = selectStateOfficials(rows, geography);
+  const head = (office: string) => office === "Governor" || office === "Mayor";
+  return officials.sort((a, b) =>
+    head(a.office) ? -1 : head(b.office) ? 1 : a.office.localeCompare(b.office),
+  );
 }

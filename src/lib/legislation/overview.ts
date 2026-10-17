@@ -6,7 +6,7 @@
 import { sql } from "drizzle-orm";
 import { db } from "@/lib/db/client";
 import { searchBills } from "@/lib/db/bills";
-import { getEntityNames } from "@/lib/neo4j/entities";
+import { getEntityNames } from "@/lib/db/entities";
 import type { Series, SeriesPoint } from "@/components/charts/time-series-chart";
 import type { RankedItem } from "@/components/charts/ranked-bars";
 

@@ -4,7 +4,7 @@
 // run's cursor (max `updateDate` seen) unless `--full`. Writes a
 // `sync_runs` row.
 //
-// Self-contained (raw pg + neo4j-driver), matching scripts/import-fec-donors.mjs
+// Self-contained (raw pg), matching scripts/import-fec-donors.mjs
 // — plain Node can't import the app's bundler-resolved `src/lib` tree. The
 // shared, tested mapping helpers come from src/lib/legislation/congress.ts.
 //
@@ -17,7 +17,7 @@
 process.loadEnvFile(process.env.ENV_FILE || ".env.local");
 
 import { Client } from "pg";
-import neo4j from "neo4j-driver";
+import { entityIdMap } from "./lib/entities.mjs";
 import {
   billExternalId,
   billNumberLabel,
@@ -195,11 +195,6 @@ async function importBillDetails(pg, api, bioguideMap, { billId, congress, type,
 async function main() {
   const pg = new Client({ connectionString: process.env.DATABASE_URL });
   await pg.connect();
-  const driver = neo4j.driver(
-    process.env.NEO4J_URI,
-    neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD),
-  );
-  const session = driver.session();
 
   let inserted = 0;
   let updated = 0;
@@ -215,10 +210,7 @@ async function main() {
   const runId = runRows[0].id;
 
   try {
-    const entityRes = await session.run(
-      "MATCH (e:Entity {type: 'politician'}) WHERE e.bioguideId IS NOT NULL RETURN e.bioguideId AS b, e.id AS id",
-    );
-    const bioguideMap = new Map(entityRes.records.map((r) => [String(r.get("b")), String(r.get("id"))]));
+    const bioguideMap = await entityIdMap(pg, "bioguide", { type: "politician" });
     console.log(`${bioguideMap.size} politician entities carry a bioguideId`);
 
     const cursorRes = await pg.query(
@@ -347,8 +339,6 @@ async function main() {
          rows_updated = $4, rows_skipped = $5, error = $6, cursor = $7 where id = $1`,
       [runId, status, inserted, updated, skipped, errorMessage, newCursor],
     );
-    await session.close();
-    await driver.close();
     await pg.end();
   }
 

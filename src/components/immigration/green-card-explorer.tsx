@@ -78,10 +78,12 @@ interface ExplorerState {
 
 const ExplorerContext = createContext<ExplorerState | null>(null);
 
-export function ImmigrationExplorerProvider({ initialFocus, initialView, children }: { initialFocus: ImmigrationFocus | null; initialView: string; children: ReactNode }) {
-  const [focus, setFocusState] = useState<ImmigrationFocus | null>(initialFocus);
+// The page is cached as one static render, so ?focus= and ?view= are read
+// here after hydration rather than on the server.
+export function ImmigrationExplorerProvider({ children }: { children: ReactNode }) {
+  const [focus, setFocusState] = useState<ImmigrationFocus | null>(null);
   const [views, setViews] = useState<TopicViews>(() =>
-    Object.fromEntries(IMMIGRATION_FOCI.map((topic) => [topic, topic === initialFocus ? initialView : defaultFocusView(topic)])),
+    Object.fromEntries(IMMIGRATION_FOCI.map((topic) => [topic, defaultFocusView(topic)])),
   );
   const getView = (topic: ImmigrationFocus) => views[topic] ?? defaultFocusView(topic);
   const syncUrl = (nextFocus: ImmigrationFocus | null, nextView?: string) => {
@@ -116,6 +118,7 @@ export function ImmigrationExplorerProvider({ initialFocus, initialView, childre
       setFocusState(nextFocus);
       if (focusHasView(nextFocus, nextView)) setViews((current) => ({ ...current, [nextFocus]: nextView }));
     };
+    onPopState();
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
   }, []);

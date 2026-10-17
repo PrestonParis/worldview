@@ -44,13 +44,93 @@ tables, stays in Supabase.
 - The Neon CLI (`neon link` / `neon deploy`) writes its variables to `.env`.
   The app never reads that file's `DATABASE_URL`.
 
+## The lake: files outside the databases
+
+Supabase Storage holds files the databases don't need to: it has its own
+quota, separate from the 500 MB database cap.
+
+- `raw` (private): source files as downloaded. An importer that calls
+  `fetchArchived(pg, source, url)` (`scripts/lib/lake.mjs`) keeps each
+  distinct version once, by content hash, in `source_snapshots`, so a past
+  import can be replayed. It's skipped when Storage credentials aren't set.
+- `lake` (public): Parquet extracts, catalogued in `lake_files`.
+  `npm run data:lake` exports every published dataset
+  (`area-stats/<slug>.parquet`) and the public record tables
+  (`tables/<table>.parquet`); accounts, quizzes, saved maps and partner keys
+  never leave. Unchanged files aren't re-uploaded. `/datasets/<slug>` and the
+  dataset API link them, and DuckDB, pandas, R or Polars read them straight
+  from the URL. The weekly `export-lake.yml` workflow rebuilds them.
+- Detail too large for Postgres (individual donations, precinct returns)
+  goes to the lake as Parquet via `exportParquet`; Postgres keeps only the
+  aggregates pages read. Supabase's free plan caps one upload at 50 MB, so
+  split larger extracts.
+
+## Data health
+
+`npm run data:health` lists importers whose latest run failed or never
+finished, and datasets whose newest period is older than their cadence
+allows. The weekly `export-lake.yml` workflow runs it into the run summary
+and goes red when an importer failed.
+
+## Entity cleanup
+
+- `npm run data:merge-entities` reports duplicate entities. Those proven by
+  a shared FEC id merge with `-- --apply`; name-only matches are listed for
+  review and merged with `-- --merge=<from>:<into>`. Entities with different
+  ids in a one-per-person scheme (Bioguide, ICPSR, Open States, ...) are never
+  merged; a unique index enforces one such id per entity. Each merge records
+  a snapshot in `entity_merges`, `-- --unmerge=<id>` reverses it, and old
+  links to a merged id redirect.
+- `npm run data:repair-donors` restores donors that contributions point at
+  but the graph lost, from OpenFEC.
+- `npm run db:validate-fks` validates each entity foreign key once no row
+  breaks it. Repair and validation run after every production deploy.
+
+## Room for new records
+
+- State legislatures: `bills.jurisdiction` and `roll_calls.jurisdiction`
+  are `us` for Congress or a state's postal code; state roll calls have no
+  `congress`.
+- Polls: `polls` (pollster, field dates, population, sample, the race
+  polled, where the sample was drawn) and `poll_results` (one row per choice,
+  linked to an entity when it's a candidate).
+
+## Places and breakdowns
+
+`area_stats.geo_level` covers three kinds of thing, recorded in the
+`geo_levels` table:
+
+- **geography**: places with boundaries or a FIPS code (`nation`, `state`,
+  `county`, `cd`, `sldu`, `sldl`, `eavs_jurisdiction`, `region`, `country`,
+  `border_region`).
+- **breakdown**: categories of a place (`citizenship`, `class`,
+  `entry_period`, `age_group`, `group`, `flow`). A breakdown scoped to one
+  place uses geoid `<place>:<value>`, e.g. `01:afghanistan`.
+- **site**: named units (`agency`, `facility`, `aor`).
+
+A new importer that adds a level registers it in `geo_levels` in its
+migration. `geographies` holds one canonical name and parent state per
+place, so datasets that spell names differently still line up. Rebuild it
+with `npm run data:geographies`; it runs after every production deploy.
+`compareByGeo` (`src/lib/db/stats.ts`) and the public
+`GET /api/data/v1/compare?level=county&series=source:metric,...&within=06`
+put any published metrics side by side by place.
+
 ## Identity spine (run first)
+
+People and organizations live in Postgres (`entities`, `entity_edges`); their
+external ids are in the `entity_identifiers` crosswalk, keyed by scheme. Every
+importer resolves people through it (`scripts/lib/entities.mjs`), and
+`npm run graph:sync` copies the graph to Neo4j.
 
 | Script | Source | Writes |
 |---|---|---|
-| `backfill:members -- --congresses=95-119` | unitedstates/congress-legislators | politician entities keyed by `bioguideId`, plus `icpsrId`, `wikidataId`, `fecCandidateIds`, `govtrackId`, `opensecretsId`, `votesmartId`, `ballotpediaId`, `thomasId`, `lisId`; blank website/social/portrait fields filled |
-| `import:committees` | congress-legislators committees + membership | committee/subcommittee org entities (`committeeId`), `sits-on-committee` / `chairs` edges; dropped seats get `validTo` |
-| `import:openstates` | Open States people CSVs + openstates/people executive YAML | state legislators + statewide executives (`openstatesId`, `govLevel='state'`, `govState`, `govChamber`, `govDistrict`, `govOffice`), `serves-in` / `holds-office` edges. Feeds My Government (`src/lib/my-government/state.ts`) |
+| `backfill:members -- --congresses=95-119` | unitedstates/congress-legislators | politician entities; crosswalk schemes `bioguide`, `icpsr`, `wikidata`, `fec_candidate`, `govtrack`, `opensecrets`, `votesmart`, `ballotpedia`, `thomas`, `lis`; blank website/social/portrait fields filled |
+| `import:committees` | congress-legislators committees + membership | committee/subcommittee org entities (scheme `congress_committee`), `sits-on-committee` / `chairs` edges; dropped seats get `valid_to` |
+| `import:openstates` | Open States people CSVs + openstates/people executive YAML | state legislators + statewide executives (scheme `openstates`), their current office in `entity_offices` (source `openstates`), `serves-in` / `holds-office` edges. Feeds My Government (`src/lib/my-government/state.ts`) |
+
+FEC and lobbying importers add `fec_candidate`, `fec_committee`, `lda_client`
+and `lda_registrant` ids as they match or create entities.
 
 ## Datasets
 

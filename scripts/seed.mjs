@@ -1,10 +1,11 @@
 // Idempotent seed. Running it on an empty database yields a small,
-// coherent, non-broken app: a few Neo4j entities, and one certified
-// election with two candidacies in Postgres so /elections renders.
+// coherent, non-broken app: a few entities, and one certified election with
+// two candidacies so /elections renders. Run scripts/sync-graph.mjs after
+// to copy the entities into Neo4j.
 //
-// Every Neo4j write is a MERGE keyed on a fixed UUID and every Postgres
-// write is ON CONFLICT DO NOTHING on a fixed UUID, so re-running never
-// duplicates and never overwrites hand-edited data.
+// Entities are upserted on a fixed UUID (name, description, and metadata
+// refreshed); every other write is ON CONFLICT DO NOTHING on a fixed UUID,
+// so re-running never duplicates and never overwrites hand-edited data.
 //
 // The Donald Trump entity id here is the exact speaker_entity_id used by
 // the recovered claims in backups/ — keep it stable.
@@ -13,7 +14,6 @@
 
 process.loadEnvFile(".env.local");
 
-import neo4j from "neo4j-driver";
 import pg from "pg";
 
 const TRUMP_ID = "959fad0d-0edb-4c1e-9c56-c9a1696e443b";
@@ -51,55 +51,26 @@ const ENTITIES = [
 
 const EDGES = [];
 
-async function seedNeo4j() {
-  const driver = neo4j.driver(
-    process.env.NEO4J_URI,
-    neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD),
-  );
-  const session = driver.session();
-  try {
-    for (const e of ENTITIES) {
-      await session.run(
-        `MERGE (n:Entity {id: $id})
-         ON CREATE SET n.type = $type, n.createdAt = datetime()
-         SET n.name = $name,
-             n.description = $description,
-             n.biography = coalesce(n.biography, ''),
-             n.imageUrl = coalesce(n.imageUrl, ''),
-             n.websiteUrl = coalesce(n.websiteUrl, ''),
-             n.xUrl = coalesce(n.xUrl, ''),
-             n.facebookUrl = coalesce(n.facebookUrl, ''),
-             n.instagramUrl = coalesce(n.instagramUrl, ''),
-             n.youtubeUrl = coalesce(n.youtubeUrl, ''),
-             n.linkedinUrl = coalesce(n.linkedinUrl, ''),
-             n.highlights = coalesce(n.highlights, ''),
-             n.metadata = $metadata,
-             n.updatedAt = datetime()`,
-        { ...e, metadata: JSON.stringify(e.metadata ?? {}) },
-      );
-    }
-    for (const edge of EDGES) {
-      await session.run(
-        `MATCH (a:Entity {id: $sourceEntityId}), (b:Entity {id: $targetEntityId})
-         MERGE (a)-[r:RELATED_TO {id: $id}]->(b)
-         ON CREATE SET r.createdAt = datetime()
-         SET r.label = $label,
-             r.validFrom = $validFrom,
-             r.validTo = coalesce(r.validTo, ''),
-             r.notes = $notes,
-             r.sourceRecordId = coalesce(r.sourceRecordId, ''),
-             r.updatedAt = datetime()`,
-        { validFrom: "", notes: "", ...edge },
-      );
-    }
-    const { records } = await session.run(
-      "MATCH (e:Entity) RETURN count(e) AS c",
+async function seedEntities(client) {
+  for (const e of ENTITIES) {
+    await client.query(
+      `insert into entities (id, type, name, description, metadata) values ($1, $2, $3, $4, $5)
+       on conflict (id) do update set name = excluded.name, description = excluded.description,
+         metadata = excluded.metadata, updated_at = now()`,
+      [e.id, e.type, e.name, e.description, JSON.stringify(e.metadata ?? {})],
     );
-    console.log(`  Neo4j: ${ENTITIES.length} entities + ${EDGES.length} edges merged (${records[0].get("c").toNumber()} total)`);
-  } finally {
-    await session.close();
-    await driver.close();
   }
+  for (const edge of EDGES) {
+    await client.query(
+      `insert into entity_edges (id, source_entity_id, target_entity_id, label, valid_from, notes)
+       values ($1, $2, $3, $4, $5, $6)
+       on conflict (id) do update set label = excluded.label, valid_from = excluded.valid_from,
+         notes = excluded.notes, updated_at = now()`,
+      [edge.id, edge.sourceEntityId, edge.targetEntityId, edge.label, edge.validFrom ?? "", edge.notes ?? ""],
+    );
+  }
+  const { rows } = await client.query("select count(*)::int as c from entities");
+  console.log(`  entities: ${ENTITIES.length} entities + ${EDGES.length} edges upserted (${rows[0].c} total)`);
 }
 
 // One certified past race so /elections and its detail page render without
@@ -117,6 +88,7 @@ async function seedPostgres() {
   const client = new pg.Client({ connectionString: process.env.DATABASE_URL });
   await client.connect();
   try {
+    await seedEntities(client);
     await client.query(
       `INSERT INTO elections
          (id, name, office, jurisdiction, level, election_type, status, election_date, total_votes, external_id)
@@ -152,11 +124,10 @@ async function seedPostgres() {
 
 async function main() {
   console.log("Seeding...");
-  await seedNeo4j();
   try {
     await seedPostgres();
   } catch (err) {
-    console.warn(`  Postgres: skipped (${err.message}). Run \`npm run db:push\` first.`);
+    console.warn(`  Postgres: skipped (${err.message}). Run \`npm run db:migrate\` first.`);
   }
   console.log("Done.");
 }

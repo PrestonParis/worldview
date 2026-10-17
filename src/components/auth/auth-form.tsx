@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useState, useTransition, type FormEvent } from "react";
+import { useCallback, useState, useTransition, type FormEvent, type KeyboardEvent, type ReactNode } from "react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { Field, inputClass } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
+import { AuthLayout } from "@/components/auth/auth-layout";
 import { Turnstile } from "@/components/auth/turnstile";
 import {
   googleSignInAction,
@@ -28,7 +30,39 @@ const ERROR_MESSAGES: Record<string, string> = {
 type Step = "password" | "confirm" | "forgot" | "reset" | "new_password";
 
 const linkButton =
-  "text-sm text-slate-500 hover:text-slate-900 disabled:opacity-50 dark:text-slate-400 dark:hover:text-slate-100";
+  "text-sm text-slate-500 underline-offset-4 decoration-red-600 hover:text-slate-900 hover:underline " +
+  "disabled:opacity-50 dark:text-slate-400 dark:decoration-red-500 dark:hover:text-slate-100";
+
+// Brand red on focus; the rest of the input styling is shared site-wide.
+const authInput =
+  `${inputClass} h-11 focus:border-red-600 focus:ring-2 focus:ring-red-600/15 ` +
+  "dark:focus:border-red-500 dark:focus:ring-red-500/20";
+
+const primaryButton = "h-11 w-full gap-2 font-semibold";
+
+const secondaryButton =
+  "flex h-11 w-full items-center justify-center rounded-md border border-slate-300 text-sm font-semibold " +
+  "text-slate-900 transition-colors hover:border-slate-400 hover:bg-white dark:border-slate-700 " +
+  "dark:text-slate-100 dark:hover:border-slate-500 dark:hover:bg-slate-900";
+
+function Divider({ children }: { children: ReactNode }) {
+  return (
+    <div className="flex items-center gap-3 text-xs text-slate-400 dark:text-slate-500">
+      <span className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
+      {children}
+      <span className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
+    </div>
+  );
+}
+
+function SubmitButton({ pending, disabled, idle, busy }: { pending: boolean; disabled: boolean; idle: string; busy: string }) {
+  return (
+    <Button type="submit" disabled={pending || disabled} className={primaryButton}>
+      {pending ? <Loader2 aria-hidden className="h-4 w-4 animate-spin text-red-500" /> : null}
+      {pending ? busy : idle}
+    </Button>
+  );
+}
 
 export function AuthForm({
   mode,
@@ -48,6 +82,8 @@ export function AuthForm({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [otp, setOtp] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [capsLock, setCapsLock] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [captchaReset, setCaptchaReset] = useState(0);
   const [error, setError] = useState<string | null>(
@@ -136,49 +172,75 @@ export function AuthForm({
   const captcha = turnstileSiteKey ? (
     <Turnstile siteKey={turnstileSiteKey} resetKey={captchaReset} onToken={onToken} />
   ) : null;
-  const errorLine = error ? <p className="text-sm text-red-600 dark:text-red-400">{error}</p> : null;
+  const errorLine = error ? (
+    <p role="alert" className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-300">
+      {error}
+    </p>
+  ) : null;
   const noticeLine = notice ? <p className="text-sm text-slate-700 dark:text-slate-300">{notice}</p> : null;
 
   const emailField = (autoFocus: boolean) => (
     <Field label="Email" htmlFor="email">
       <input
         id="email"
+        name="email"
         type="email"
         required
         autoFocus={autoFocus}
-        autoComplete="email"
+        // On sign-in the email is the login identifier; "username" lets password
+        // managers pair it with the current-password field and offer saved logins.
+        autoComplete={step === "password" && !register ? "username" : "email"}
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className={inputClass}
+        className={authInput}
         placeholder="you@example.com"
       />
     </Field>
   );
 
+  const trackCapsLock = (e: KeyboardEvent<HTMLInputElement>) => setCapsLock(e.getModifierState("CapsLock"));
+
   const passwordField = (isNew: boolean, label = "Password") => (
     <Field label={label} htmlFor="password">
-      <input
-        id="password"
-        type="password"
-        required
-        autoFocus={step === "new_password"}
-        minLength={isNew ? 8 : undefined}
-        maxLength={72}
-        autoComplete={isNew ? "new-password" : "current-password"}
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        className={inputClass}
-        placeholder={isNew ? "At least 8 characters" : undefined}
-      />
+      <div className="relative">
+        <input
+          id="password"
+          name="password"
+          type={showPassword ? "text" : "password"}
+          required
+          autoFocus={step === "new_password"}
+          minLength={isNew ? 8 : undefined}
+          maxLength={72}
+          autoComplete={isNew ? "new-password" : "current-password"}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          onKeyDown={trackCapsLock}
+          onKeyUp={trackCapsLock}
+          onBlur={() => setCapsLock(false)}
+          className={`${authInput} pr-11`}
+          placeholder={isNew ? "At least 8 characters" : undefined}
+        />
+        <button
+          type="button"
+          onClick={() => setShowPassword((v) => !v)}
+          aria-label={showPassword ? "Hide password" : "Show password"}
+          aria-pressed={showPassword}
+          className="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-slate-400 hover:text-slate-700 dark:text-slate-500 dark:hover:text-slate-200"
+        >
+          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+        </button>
+      </div>
+      {capsLock ? <p className="text-xs text-amber-600 dark:text-amber-400">Caps Lock is on.</p> : null}
     </Field>
   );
 
   const codeForm = (onSubmit: (e: FormEvent) => void, submitLabel: string) => (
-    <form onSubmit={onSubmit} className="mt-6 flex flex-col gap-4">
+    <form onSubmit={onSubmit} className="flex flex-col gap-4">
       {noticeLine}
       <Field label="Code" htmlFor="otp">
         <input
           id="otp"
+          name="otp"
           type="text"
           inputMode="numeric"
           autoComplete="one-time-code"
@@ -187,14 +249,12 @@ export function AuthForm({
           maxLength={12}
           value={otp}
           onChange={(e) => setOtp(e.target.value)}
-          className={`${inputClass} tracking-[0.3em]`}
+          className={`${authInput} tracking-[0.3em]`}
           placeholder="123456"
         />
       </Field>
       {errorLine}
-      <Button type="submit" disabled={pending}>
-        {pending ? "Checking…" : submitLabel}
-      </Button>
+      <SubmitButton pending={pending} disabled={!otp.trim()} idle={submitLabel} busy="Checking…" />
       <div className="flex justify-between">
         <button type="button" onClick={() => go(step === "confirm" ? "password" : "forgot")} className={linkButton}>
           Use a different email
@@ -221,8 +281,8 @@ export function AuthForm({
   const intro =
     step === "password"
       ? register
-        ? "Create an account to save maps and claim your quiz results."
-        : "Sign in with your email and password."
+        ? "Save maps and claim your quiz results."
+        : "Access your Worldview account."
       : step === "forgot"
         ? "We'll email you a 6-digit code to reset your password."
         : step === "new_password"
@@ -230,90 +290,65 @@ export function AuthForm({
           : null;
 
   return (
-    <div className="flex min-h-full items-center justify-center bg-slate-50 px-4 py-12 dark:bg-slate-950">
-      <div className="w-full max-w-sm">
-        <Link href="/" className="text-xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">
-          Worldview
-        </Link>
-        <h1 className="mt-4 text-lg font-medium text-slate-900 dark:text-slate-100">{heading}</h1>
-        {intro ? <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{intro}</p> : null}
-
-        {step === "password" ? (
-          <form onSubmit={onPassword} className="mt-6 flex flex-col gap-4">
+    <AuthLayout title={heading} intro={intro}>
+      {step === "password" ? (
+        <>
+          <form onSubmit={onPassword} className="flex flex-col gap-4">
             {emailField(true)}
             {passwordField(register)}
-            {captcha}
-            {errorLine}
-            <Button type="submit" disabled={pending || captchaMissing}>
-              {pending ? (register ? "Creating…" : "Signing in…") : register ? "Create account" : "Sign in"}
-            </Button>
-
             {register ? null : (
-              <button type="button" onClick={() => go("forgot")} className={`self-start ${linkButton}`}>
-                Forgot your password?
+              <button type="button" onClick={() => go("forgot")} className={`-mt-1 self-end ${linkButton}`}>
+                Forgot password?
               </button>
             )}
-
+            {captcha}
+            {errorLine}
+            <SubmitButton
+              pending={pending}
+              disabled={captchaMissing || !email.trim() || !password}
+              idle={register ? "Create account" : "Sign in"}
+              busy={register ? "Creating account…" : "Signing in…"}
+            />
             {googleEnabled ? (
               <>
-                <div className="flex items-center gap-3 text-xs text-slate-400">
-                  <span className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
-                  or
-                  <span className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
-                </div>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  onClick={onGoogle}
-                  disabled={pending}
-                  className="border border-slate-300 dark:border-slate-700"
-                >
+                <Divider>or</Divider>
+                <button type="button" onClick={onGoogle} disabled={pending} className={`${secondaryButton} disabled:opacity-50`}>
                   Continue with Google
-                </Button>
+                </button>
               </>
             ) : null}
           </form>
-        ) : step === "confirm" ? (
-          codeForm(onConfirm, register ? "Create account" : "Sign in")
-        ) : step === "forgot" ? (
-          <form onSubmit={onForgot} className="mt-6 flex flex-col gap-4">
-            {emailField(true)}
-            {captcha}
-            {errorLine}
-            <Button type="submit" disabled={pending || captchaMissing}>
-              {pending ? "Sending…" : "Email me a code"}
-            </Button>
-            <button type="button" onClick={() => go("password")} className={`self-start ${linkButton}`}>
-              Back to sign in
-            </button>
-          </form>
-        ) : step === "reset" ? (
-          codeForm(onReset, "Continue")
-        ) : (
-          <form onSubmit={onNewPassword} className="mt-6 flex flex-col gap-4">
-            {passwordField(true, "New password")}
-            {errorLine}
-            <Button type="submit" disabled={pending}>
-              {pending ? "Saving…" : "Save password and sign in"}
-            </Button>
-          </form>
-        )}
 
-        {step === "password" ? (
-          <p className="mt-8 text-sm text-slate-500 dark:text-slate-400">
-            {register ? "Already have an account? " : "New to Worldview? "}
-            <Link href={switchHref} className="font-medium text-slate-900 underline-offset-2 hover:underline dark:text-slate-100">
+          <div className="mt-8 flex flex-col gap-3">
+            <p className="text-center text-sm text-slate-500 dark:text-slate-400">
+              {register ? "Already have an account?" : "New to Worldview?"}
+            </p>
+            <Link href={switchHref} className={secondaryButton}>
               {register ? "Sign in" : "Create an account"}
             </Link>
-          </p>
-        ) : null}
-        <p className="mt-6 border-t border-slate-200 pt-5 text-xs leading-5 text-slate-500 dark:border-slate-800 dark:text-slate-400">
-          {register ? "By creating an account, you agree to the " : "Review the "}
-          <Link href="/terms" className="underline underline-offset-2">Terms of Use</Link>
-          {register ? " and acknowledge the " : " and "}
-          <Link href="/privacy" className="underline underline-offset-2">Privacy Policy</Link>.
-        </p>
-      </div>
-    </div>
+          </div>
+        </>
+      ) : step === "confirm" ? (
+        codeForm(onConfirm, register ? "Create account" : "Sign in")
+      ) : step === "forgot" ? (
+        <form onSubmit={onForgot} className="flex flex-col gap-4">
+          {emailField(true)}
+          {captcha}
+          {errorLine}
+          <SubmitButton pending={pending} disabled={captchaMissing || !email.trim()} idle="Email me a code" busy="Sending…" />
+          <button type="button" onClick={() => go("password")} className={`self-start ${linkButton}`}>
+            Back to sign in
+          </button>
+        </form>
+      ) : step === "reset" ? (
+        codeForm(onReset, "Continue")
+      ) : (
+        <form onSubmit={onNewPassword} className="flex flex-col gap-4">
+          {passwordField(true, "New password")}
+          {errorLine}
+          <SubmitButton pending={pending} disabled={!password} idle="Save password and sign in" busy="Saving…" />
+        </form>
+      )}
+    </AuthLayout>
   );
 }

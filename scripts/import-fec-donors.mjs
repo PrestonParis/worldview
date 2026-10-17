@@ -25,7 +25,7 @@ process.loadEnvFile(process.env.ENV_FILE || ".env.local");
 
 import { randomUUID } from "node:crypto";
 import { Client } from "pg";
-import neo4j from "neo4j-driver";
+import { addIdentifiers, upsertEntities } from "./lib/entities.mjs";
 import { load as loadYaml } from "js-yaml";
 import {
   classifyCommitteeName,
@@ -45,7 +45,7 @@ const REFRESH = process.argv.includes("--refresh");
 
 // Edit this list to import donor data for different politicians. Matched
 // by last name against the legislators crosswalk, then by first+last name
-// tokens against existing `politician` entities in Neo4j.
+// tokens against existing `politician` entities.
 const PILOT_NAMES = [
   "Chuck Schumer",
   "Nancy Pelosi",
@@ -91,12 +91,6 @@ async function main() {
   const pg = new Client({ connectionString: process.env.DATABASE_URL });
   await pg.connect();
 
-  const driver = neo4j.driver(
-    process.env.NEO4J_URI,
-    neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD),
-  );
-  const session = driver.session();
-
   const unmatched = [];
   let totalInserted = 0;
   let totalSkipped = 0;
@@ -110,12 +104,8 @@ async function main() {
     const legislators = loadYaml(legislatorsYaml);
     console.log(`  ${legislators.length} legislators loaded`);
 
-    console.log("Fetching existing politician entities from Neo4j...");
-    const entityResult = await session.run("MATCH (e:Entity {type: 'politician'}) RETURN e");
-    const politicianEntities = entityResult.records.map((r) => {
-      const p = r.get("e").properties;
-      return { id: p.id, name: p.name };
-    });
+    console.log("Fetching existing politician entities...");
+    const { rows: politicianEntities } = await pg.query("select id, name from entities where type = 'politician'");
     console.log(`  ${politicianEntities.length} politician entities found`);
 
     const sourceRes = await pg.query(
@@ -160,7 +150,7 @@ async function main() {
       });
       if (!entity) {
         unmatched.push(
-          `${pilotName} — resolved to ${legislator.name.first} ${legislator.name.last}, but no matching politician entity in Neo4j`,
+          `${pilotName} — resolved to ${legislator.name.first} ${legislator.name.last}, but no matching politician entity`,
         );
         continue;
       }
@@ -219,35 +209,35 @@ async function main() {
         const amount = Math.round(c.contribution_receipt_amount || 0);
         if (!donorName || amount <= 0 || !c.contribution_receipt_date) continue;
 
-        const existingDonor = await session.run(
-          "MATCH (e:Entity {type: 'company'}) WHERE toLower(e.name) = toLower($name) RETURN e LIMIT 1",
-          { name: donorName },
+        const { rows: existingDonor } = await pg.query(
+          `select e.id from entities e
+           left join entity_identifiers i on i.entity_id = e.id and i.scheme = 'fec_committee'
+           where e.type = 'company' and (i.value = $2 or lower(e.name) = lower($1))
+           order by (i.value = $2) desc nulls last limit 1`,
+          [donorName, c.contributor_id || null],
         );
 
         let donorEntityId;
-        if (existingDonor.records.length > 0) {
-          donorEntityId = existingDonor.records[0].get("e").properties.id;
+        if (existingDonor.length > 0) {
+          donorEntityId = existingDonor[0].id;
         } else {
           donorEntityId = randomUUID();
           const metadata = JSON.stringify({
             fecCommitteeId: c.contributor_id || null,
             importedFrom: "openfec-schedule_a",
           });
-          await session.run(
-            `CREATE (e:Entity {
-               id: $id, type: 'company', name: $name,
-               description: $description, biography: '', imageUrl: '',
-               websiteUrl: '', xUrl: '', facebookUrl: '', instagramUrl: '',
-               youtubeUrl: '', linkedinUrl: '', highlights: '',
-               metadata: $metadata, createdAt: datetime(), updatedAt: datetime()
-             })`,
+          await upsertEntities(pg, [
             {
               id: donorEntityId,
+              type: "company",
               name: donorName,
               description: "Political committee — imported from FEC Schedule A data.",
               metadata,
             },
-          );
+          ]);
+          if (c.contributor_id) {
+            await addIdentifiers(pg, [{ entityId: donorEntityId, scheme: "fec_committee", value: c.contributor_id }]);
+          }
           entitiesCreated++;
         }
 
@@ -310,8 +300,6 @@ async function main() {
       for (const m of unmatched) console.log(`  - ${m}`);
     }
   } finally {
-    await session.close();
-    await driver.close();
     await pg.end();
   }
 }

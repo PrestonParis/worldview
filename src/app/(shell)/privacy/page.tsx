@@ -23,7 +23,7 @@ export default function PrivacyPage() {
       <h2 className={heading}>Information we process</h2>
       <ul className={list}>
         <li><strong>Account information.</strong> If you register, Worldview processes your email address, authentication provider information, an optional display name, and account timestamps. Passwords and authentication sessions are managed by Supabase Auth.</li>
-        <li><strong>Content you create.</strong> Saved Geography Studio projects include the project name, map view, and layers. Political Quiz sessions include answers, refinements, status, visibility, and timestamps.</li>
+        <li><strong>Content you create.</strong> Saved Geography Studio projects include the project name, map view, and layers. Political Quiz sessions include answers, refinements, status, visibility, and timestamps. The quiz landing page also records its opening answers, their timing, and whether a quiz was started, with no cookie, account, IP address, or browser details attached.</li>
         <li><strong>Address lookups.</strong> When you use My Government, the address you enter is sent through Worldview&apos;s server to geocoding and civic-data services so the site can determine relevant jurisdictions and offices.</li>
         <li><strong>Technical information.</strong> Hosting, authentication, security, and other service providers may process IP address, browser, device, request, cookie, and diagnostic information needed to deliver and protect the service.</li>
         <li><strong>Public records.</strong> Worldview republishes and organizes government and other public-interest data. Some source records, such as campaign finance filings, can include names, location, employer, occupation, and transaction details that are already public.</li>
@@ -38,11 +38,12 @@ export default function PrivacyPage() {
       <h2 className={heading}>How we use information</h2>
       <ul className={list}>
         <li>Provide search, account access, saved maps, quiz results, address lookup, and dataset publishing features.</li>
+        <li>Measure and improve the Political Quiz from anonymized answers: how its questions perform and how results are distributed.</li>
         <li>Maintain, secure, debug, and improve the service.</li>
         <li>Respond to support, privacy, data correction, and publisher requests.</li>
         <li>Prevent misuse and comply with applicable legal obligations.</li>
       </ul>
-      <p className={paragraph}>Worldview does not sell personal information and does not use behavioral advertising. The current application does not include a behavioral analytics product.</p>
+      <p className={paragraph}>Worldview does not sell personal information and does not use behavioral advertising. The current application does not include a behavioral analytics product; quiz statistics come only from the anonymized quiz answers described above.</p>
 
       <h2 className={heading}>Service providers and external services</h2>
       <p className={paragraph}>Worldview relies on service providers only as needed to operate particular features:</p>
@@ -68,7 +69,7 @@ export default function PrivacyPage() {
 
       <h2 className={heading}>Retention and deletion</h2>
       <p className={paragraph}>
-        Account information and saved content are kept while the account is active or as needed to provide the service. Unclaimed quiz sessions expire and may later be removed. Security and operational records may be retained for a reasonable period. The account page lets you permanently delete your account, saved map projects, and claimed quizzes. Backups and provider logs may take additional time to expire.
+        Account information and saved content are kept while the account is active or as needed to provide the service. Unclaimed quiz sessions expire and are later removed; their answers are kept without the quiz link, edit token, or any account to improve the quiz. Security and operational records may be retained for a reasonable period. The account page lets you permanently delete your account, saved map projects, and claimed quizzes. Backups and provider logs may take additional time to expire.
       </p>
 
       <h2 className={heading}>Your choices</h2>

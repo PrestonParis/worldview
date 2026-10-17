@@ -11,7 +11,8 @@ import { IssueEmpty, IssueHeader, KeyFindings, Prose, Section } from "@/componen
 import { SectionNav } from "@/components/data/section-nav";
 import { loadGuns } from "@/lib/guns/data";
 
-export const dynamic = "force-dynamic";
+// Rebuilt at most daily; crawlers and visitors share the cached render.
+export const revalidate = 86400;
 
 export const metadata: Metadata = {
   title: "Guns | Worldview",

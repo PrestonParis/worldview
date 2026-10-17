@@ -1,5 +1,5 @@
-import { listEntities } from "@/lib/neo4j/entities";
-import { listEdges } from "@/lib/neo4j/edges";
+import { listEntities } from "@/lib/db/entities";
+import { listEdges } from "@/lib/db/edges";
 import { EmptyState } from "@/components/empty-state";
 import { EntityTypeSection } from "./entity-type-section";
 import type { PageContent } from "@/lib/pages-content";

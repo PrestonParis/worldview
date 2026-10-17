@@ -32,6 +32,7 @@ export interface QuizSession {
   updatedAt: Date;
   completedAt: Date | null;
   claimedAt: Date | null;
+  isTest: boolean;
 }
 
 function toSession(row: typeof quizSessions.$inferSelect): QuizSession {
@@ -62,6 +63,7 @@ export async function createQuizSession(input: {
   targetMode?: QuizModeId;
   entryVariant?: "general" | "topic";
   entryTopic?: IssueId | null;
+  isTest?: boolean;
 }): Promise<QuizSession> {
   const [row] = await db.insert(quizSessions).values(input).returning();
   return toSession(row);
@@ -109,6 +111,10 @@ export async function setQuizVisibility(id: string, ownerId: string, visibility:
     .update(quizSessions)
     .set({ visibility, updatedAt: new Date() })
     .where(and(eq(quizSessions.id, id), eq(quizSessions.ownerId, ownerId)));
+}
+
+export async function setQuizTestFlag(id: string, isTest: boolean): Promise<void> {
+  await db.update(quizSessions).set({ isTest }).where(eq(quizSessions.id, id));
 }
 
 export async function deleteQuizSession(id: string, ownerId: string): Promise<void> {

@@ -7,6 +7,7 @@ function toRollCall(row: typeof rollCalls.$inferSelect): RollCall {
   return {
     id: row.id,
     billId: row.billId,
+    jurisdiction: row.jurisdiction,
     congress: row.congress,
     chamber: row.chamber,
     session: row.session,
@@ -103,6 +104,7 @@ export async function upsertRollCallFromImport(
     .values({
       ...mutable,
       externalId: input.externalId,
+      jurisdiction: input.jurisdiction,
       congress: input.congress,
       chamber: input.chamber,
       session: input.session ?? null,

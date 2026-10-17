@@ -27,7 +27,7 @@ process.loadEnvFile(".env.local");
 import fs from "node:fs";
 import { randomUUID } from "node:crypto";
 import { Client } from "pg";
-import neo4j from "neo4j-driver";
+import { addIdentifiers, upsertEntities } from "./lib/entities.mjs";
 import { load as loadYaml } from "js-yaml";
 
 const arg = (name, def) => {
@@ -149,11 +149,6 @@ async function main() {
 
   const pg = new Client({ connectionString: process.env.DATABASE_URL });
   await pg.connect();
-  const driver = neo4j.driver(
-    process.env.NEO4J_URI,
-    neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD),
-  );
-  const session = driver.session();
 
   const report = {
     elections: 0,
@@ -165,15 +160,17 @@ async function main() {
   };
 
   // Entity index: by bioguide, and by name key.
-  const eres = await session.run(
-    "MATCH (e:Entity {type:'politician'}) RETURN e.id AS id, e.name AS name, e.bioguideId AS bio",
+  const { rows: politicians } = await pg.query(
+    `select e.id, e.name, i.value as bio from entities e
+     left join entity_identifiers i on i.entity_id = e.id and i.scheme = 'bioguide'
+     where e.type = 'politician'`,
   );
   const byBio = new Map();
   const byName = new Map();
-  for (const r of eres.records) {
-    const id = r.get("id");
-    if (r.get("bio")) byBio.set(r.get("bio"), id);
-    const k = nameKey(r.get("name"));
+  for (const r of politicians) {
+    const id = r.id;
+    if (r.bio) byBio.set(r.bio, id);
+    const k = nameKey(r.name);
     if (k) (byName.get(k) ?? byName.set(k, []).get(k)).push(id);
   }
 
@@ -188,22 +185,16 @@ async function main() {
     }
     const id = randomUUID();
     if (!DRY_RUN) {
-      await session.run(
-        `CREATE (e:Entity {
-           id:$id, type:'politician', name:$name, description:$desc,
-           biography:'', imageUrl:'', websiteUrl:'', xUrl:'', facebookUrl:'',
-           instagramUrl:'', youtubeUrl:'', linkedinUrl:'', highlights:'',
-           metadata:$meta, ${bioguide ? "bioguideId:$bio," : ""}
-           createdAt:datetime(), updatedAt:datetime()
-         })`,
+      await upsertEntities(pg, [
         {
           id,
+          type: "politician",
           name,
-          desc: `${YEAR} candidate — imported by scaffold-cycle.`,
-          meta: JSON.stringify({ source: "scaffold-cycle", party, ...meta }),
-          ...(bioguide ? { bio: bioguide } : {}),
+          description: `${YEAR} candidate — imported by scaffold-cycle.`,
+          metadata: JSON.stringify({ source: "scaffold-cycle", party, ...meta }),
         },
-      );
+      ]);
+      if (bioguide) await addIdentifiers(pg, [{ entityId: id, scheme: "bioguide", value: bioguide }]);
     }
     if (bioguide) byBio.set(bioguide, id);
     (byName.get(k) ?? byName.set(k, []).get(k)).push(id);
@@ -427,8 +418,6 @@ async function main() {
   }
   if (DRY_RUN) console.log("\nDRY RUN — nothing written.");
 
-  await session.close();
-  await driver.close();
   await pg.end();
 }
 

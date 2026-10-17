@@ -105,10 +105,11 @@ export function buildDirectory(entities: Entity[], degree: Map<string, number>, 
 
 // Directory URL with `patch` applied; any filter change resets the page.
 export function directoryHref(params: DirectoryParams, patch: Partial<DirectoryParams>): string {
-  const next = new URLSearchParams({ view: "directory" });
+  const next = new URLSearchParams();
   const merged = { ...params, ...("page" in patch ? {} : { page: undefined }), ...patch };
   for (const [key, value] of Object.entries(merged)) {
     if (value) next.set(key, value);
   }
-  return `/people?${next.toString()}`;
+  const query = next.toString();
+  return query ? `/people/directory?${query}` : "/people/directory";
 }

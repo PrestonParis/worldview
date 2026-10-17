@@ -3,7 +3,7 @@
 import { requireContributor } from "../auth/guard";
 import { revalidatePath } from "next/cache";
 import { edgeSchema, type EdgeInput } from "../validation/edge";
-import * as edgesDb from "../neo4j/edges";
+import * as edgesDb from "../db/edges";
 import type { ActionResult } from "./entities";
 
 export async function createEdgeAction(
@@ -18,6 +18,7 @@ export async function createEdgeAction(
   try {
     const edge = await edgesDb.createEdge(parsed.data);
     revalidatePath("/data");
+    revalidatePath("/people", "layout");
     return { ok: true, data: { id: edge.id } };
   } catch (err) {
     return { ok: false, error: (err as Error).message };
@@ -32,6 +33,7 @@ export async function deleteEdgeAction(
   try {
     await edgesDb.deleteEdge(id);
     revalidatePath("/data");
+    revalidatePath("/people", "layout");
     return { ok: true, data: null };
   } catch (err) {
     return { ok: false, error: (err as Error).message };

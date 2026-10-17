@@ -1,7 +1,7 @@
 import { and, desc, eq, inArray, sql } from "drizzle-orm";
 import { db } from "./client";
 import { candidacies, elections, raceRatings } from "./schema";
-import { getEntityNames } from "../neo4j/entities";
+import { getEntityNames } from "./entities";
 import {
   consensusRating,
   OFFICES,

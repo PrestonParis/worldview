@@ -14,13 +14,19 @@ import { listLobbyingForEntity } from "@/lib/db/lobbying";
 import { entityColorFor } from "@/lib/entity-colors";
 import { leanLabels, leanOf } from "@/lib/graph/lean";
 import { isDonorEdge } from "@/lib/money";
-import { listEdgesForEntity } from "@/lib/neo4j/edges";
-import { getEntityByPublicSlug, listEntities } from "@/lib/neo4j/entities";
+import { listEdgesForEntity } from "@/lib/db/edges";
+import { getEntitiesByIds, getEntityByPublicSlug, getMergedInto } from "@/lib/db/entities";
 import { buildEgoPreview } from "@/lib/people/ego-preview";
 import { entityPartyAndPlace, parseEntityMetadata, publicEntitySlug, typeLabels } from "@/lib/people/public";
 import { parseHighlights } from "@/lib/validation/entity";
 
-export const dynamic = "force-dynamic";
+// Rebuilt at most daily; crawlers and visitors share the cached render.
+export const revalidate = 86400;
+
+// Nothing prebuilt; each page is rendered on first request, then cached.
+export async function generateStaticParams() {
+  return [];
+}
 
 type ProfilePageProps = { params: Promise<{ slug: string }> };
 
@@ -37,14 +43,24 @@ const initials = (name: string) => name.split(/\s+/).slice(0, 2).map((part) => p
 export default async function PublicEntityPage({ params }: ProfilePageProps) {
   const { slug } = await params;
   const entity = await getEntityByPublicSlug(slug);
-  if (!entity) notFound();
+  if (!entity) {
+    const merged = await getMergedInto(slug.match(/-([0-9a-f]{8})$/i)?.[1] ?? "");
+    if (merged) permanentRedirect(`/people/${publicEntitySlug(merged)}`);
+    notFound();
+  }
   const canonical = publicEntitySlug(entity);
   if (slug !== canonical) permanentRedirect(`/people/${canonical}`);
 
-  const [entities, connections, moneySummary, lobbying] = await Promise.all([
-    listEntities(), listEdgesForEntity(entity.id), getEntityContributionSummary(entity.id), listLobbyingForEntity(entity.id),
+  const [connections, moneySummary, lobbying] = await Promise.all([
+    listEdgesForEntity(entity.id), getEntityContributionSummary(entity.id), listLobbyingForEntity(entity.id),
   ]);
-  const byId = new Map(entities.map((item) => [item.id, item]));
+  const related = await getEntitiesByIds([
+    entity.id,
+    ...connections.flatMap((edge) => [edge.sourceEntityId, edge.targetEntityId]),
+    ...[...moneySummary.topDonors, ...moneySummary.topRecipients].map((row) => row.entityId),
+    ...lobbying.flatMap((row) => [row.clientEntityId, row.registrantEntityId]),
+  ]);
+  const byId = new Map(related.map((item) => [item.id, item]));
   const metadata = parseEntityMetadata(entity.metadata);
   const { party, place } = entityPartyAndPlace(entity);
   const lean = leanOf(entity);

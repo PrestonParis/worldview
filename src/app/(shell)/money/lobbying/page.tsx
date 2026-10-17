@@ -9,14 +9,15 @@ import { listBills } from "@/lib/db/bills";
 import { listLobbyingRegistrations } from "@/lib/db/lobbying";
 import { loadLobbyingSummary } from "@/lib/db/moneyOverview";
 import { MONEY_COLORS } from "@/lib/money/semantic";
-import { getEntitiesByIds } from "@/lib/neo4j/entities";
+import { getEntitiesByIds } from "@/lib/db/entities";
 
 export const metadata: Metadata = {
   title: "Lobbying | Money & Influence | Worldview",
   description: "Senate Lobbying Disclosure Act filings: clients, firms, spending, issues, and the bills they lobbied on.",
 };
 
-export const dynamic = "force-dynamic";
+// Rebuilt at most daily; crawlers and visitors share the cached render.
+export const revalidate = 86400;
 
 export default async function Page() {
   const [summary, registrations, allBills] = await Promise.all([loadLobbyingSummary(), listLobbyingRegistrations(), listBills()]);

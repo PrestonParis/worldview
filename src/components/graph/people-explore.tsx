@@ -3,7 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { PeopleSearch } from "./people-search";
 import { CongressAtlas } from "@/components/people/congress-atlas";
 import { MovementLandscape, type LandscapeItem } from "@/components/people/movement-landscape";
-import { NetworkPreview } from "@/components/people/network-preview";
+import { FeaturedNetworks, type FeaturedNetwork } from "@/components/people/featured-networks";
 import { roleGroups, publicEntityPath } from "@/lib/people/public";
 import { familyOf, leanOf } from "@/lib/graph/lean";
 import { degreeById, withoutStructuralEdges } from "@/lib/graph/scope";
@@ -31,12 +31,10 @@ export function PeopleExplore({
   entities,
   edges,
   atlas,
-  featuredId,
 }: {
   entities: Entity[];
   edges: Edge[];
   atlas: CongressAtlasData | null;
-  featuredId?: string;
 }) {
   const searchItems = entities.map((entity) => ({
     id: entity.id,
@@ -64,16 +62,18 @@ export function PeopleExplore({
   const people = entities
     .filter((entity) => PERSON_TYPES.has(entity.type) && (directDegree[entity.id] ?? 0) >= 4)
     .sort((a, b) => (directDegree[b.id] ?? 0) - (directDegree[a.id] ?? 0));
-  const featured = (featuredId ? byId.get(featuredId) : undefined) ?? people[0];
-  const others = [
+  const networks: FeaturedNetwork[] = [
+    ...people.slice(0, 1),
     ...people.filter((p) => familyOf(p) === "liberal").slice(0, 3),
     ...people.filter((p) => familyOf(p) === "conservative").slice(0, 3),
     ...entities
       .filter((e) => e.type === "organization" && (directDegree[e.id] ?? 0) >= 4)
       .sort((a, b) => (directDegree[b.id] ?? 0) - (directDegree[a.id] ?? 0))
       .slice(0, 2),
-  ].filter((e) => e.id !== featured?.id);
-  const preview = featured ? buildEgoPreview(featured, byId, edges) : null;
+  ]
+    .filter((entity, i, list) => list.findIndex((e) => e.id === entity.id) === i)
+    .map((entity) => ({ id: entity.id, name: entity.name, fill: FAMILY_FILL[familyOf(entity)], preview: buildEgoPreview(entity, byId, edges) }))
+    .filter((network) => network.preview.nodes.length > 0);
 
   return (
     <div className="space-y-16 pb-10">
@@ -87,7 +87,7 @@ export function PeopleExplore({
         </div>
         <nav aria-label="Browse" className="mt-4 flex flex-wrap justify-center gap-x-4 gap-y-2 text-sm">
           {roleGroups.map((group) => (
-            <Link key={group.key} href={`/people?view=directory&group=${group.key}`} className="text-slate-500 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white">
+            <Link key={group.key} href={`/people/directory?group=${group.key}`} className="text-slate-500 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white">
               {group.label}
             </Link>
           ))}
@@ -109,9 +109,10 @@ export function PeopleExplore({
         </section>
       ) : null}
 
-      {preview && preview.nodes.length > 0 ? (
-        <section className="grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
-          <div>
+      <FeaturedNetworks
+        networks={networks}
+        intro={
+          <>
             <SectionHeading eyebrow="Networks" title="Follow the connections">
               Every line is a documented relationship: who hired, appointed, funded, hosts or founded whom. Open any
               network to inspect each tie and its source.
@@ -134,30 +135,9 @@ export function PeopleExplore({
                   </span>
                 ))}
             </p>
-            {others.length ? (
-              <div className="mt-6">
-                <p className="text-xs font-semibold tracking-[0.14em] text-slate-400 uppercase">More networks</p>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {others.map((entity) => (
-                    <Link
-                      key={entity.id}
-                      href={`/people?featured=${entity.id}#networks`}
-                      scroll={false}
-                      className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-3 py-1.5 text-sm font-medium hover:border-slate-400 dark:border-slate-700 dark:hover:border-slate-500"
-                    >
-                      <span className="h-2.5 w-2.5 rounded-full" style={{ background: FAMILY_FILL[familyOf(entity)] }} />
-                      {entity.name}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            ) : null}
-          </div>
-          <div id="networks" className="scroll-mt-24">
-            <NetworkPreview preview={preview} moreHref={`${preview.root.href}#relationships`} />
-          </div>
-        </section>
-      ) : null}
+          </>
+        }
+      />
 
       <section>
         <SectionHeading eyebrow="Media and movement" title="Who shapes the conversation">
@@ -174,7 +154,7 @@ export function PeopleExplore({
           <h2 className="text-lg font-semibold">Browse everyone</h2>
           <p className="mt-1 text-sm text-slate-300">Filter and sort all {entities.length.toLocaleString("en-US")} people and organizations.</p>
         </div>
-        <Link href="/people?view=directory" className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-slate-100">
+        <Link href="/people/directory" className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-slate-100">
           Open the directory <ArrowRight className="h-4 w-4" />
         </Link>
       </section>

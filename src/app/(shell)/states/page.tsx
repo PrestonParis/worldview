@@ -6,7 +6,8 @@ import { formatValue } from "@/lib/format";
 import { STATES_51 } from "@/lib/geo/states";
 import { stateSlug } from "@/lib/states/slug";
 
-export const dynamic = "force-dynamic";
+// Rebuilt at most daily; crawlers and visitors share the cached render.
+export const revalidate = 86400;
 
 export const metadata: Metadata = {
   title: "States | Worldview",

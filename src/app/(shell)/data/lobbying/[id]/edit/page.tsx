@@ -1,7 +1,7 @@
 import { requireContributorPage } from "@/lib/auth/guard";
 import { notFound } from "next/navigation";
 import { getLobbyingRegistration } from "@/lib/db/lobbying";
-import { listEntities } from "@/lib/neo4j/entities";
+import { listEntities } from "@/lib/db/entities";
 import { LobbyingForm } from "@/components/forms/lobbying-form";
 
 export default async function EditLobbyingPage({

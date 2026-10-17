@@ -6,7 +6,7 @@ import { listResultsForElection, areaBreakdowns } from "@/lib/db/electionResults
 import { getCandidateFinanceForEntity, type CandidateFinance } from "@/lib/db/candidateFinance";
 import { outsideSpendingByCandidate, type CandidateOutsideSpending } from "@/lib/db/independentExpenditures";
 import { ratingHistory } from "@/lib/db/raceRatings";
-import { listEntities } from "@/lib/neo4j/entities";
+import { getEntitiesByIds } from "@/lib/db/entities";
 import { summarizeCandidacies, type Candidacy } from "@/lib/validation/candidacy";
 import { partyColorFor } from "@/lib/party-colors";
 import { formatAmount } from "@/lib/money";
@@ -19,8 +19,15 @@ import { FollowMoneyMenu } from "@/components/money/follow-money-menu";
 import { partyColor as fecPartyColor, partyLetter as fecPartyLetter } from "@/lib/money/semantic";
 import { ResultsSection } from "@/components/elections/results-section";
 import type { Entity } from "@/lib/validation/entity";
+import { publicEntityPath } from "@/lib/people/public";
 
-export const dynamic = "force-dynamic";
+// Rebuilt at most daily; crawlers and visitors share the cached render.
+export const revalidate = 86400;
+
+// Nothing prebuilt; each page is rendered on first request, then cached.
+export async function generateStaticParams() {
+  return [];
+}
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
@@ -52,15 +59,15 @@ function dedupeCandidacies(candidacies: Candidacy[], entityById: Map<string, Ent
 
 export default async function ElectionDetailPage({ params }: PageProps<"/elections/[id]">) {
   const { id } = await params;
-  const [election, candidacyRows, entities, resultRows, ratings] = await Promise.all([
+  const [election, candidacyRows, resultRows, ratings] = await Promise.all([
     getElection(id),
     listCandidaciesForElection(id),
-    listEntities(),
     listResultsForElection(id),
     ratingHistory(id),
   ]);
   if (!election) notFound();
 
+  const entities = await getEntitiesByIds(candidacyRows.map((candidacy) => candidacy.candidateEntityId));
   const entityById = new Map(entities.map((entity) => [entity.id, entity]));
   const candidacies = dedupeCandidacies(candidacyRows, entityById);
   const upcomingGeneral = election.status === "scheduled" && election.electionType === "general";
@@ -188,7 +195,7 @@ function CandidateCard({ candidate, entity, finance, spending }: { candidate: Ca
     <article className="border-t-4 pt-4" style={{ borderColor: color.border }}>
       <div className="flex items-start justify-between gap-4">
         <div>
-          <Link href={`/people?root=${candidate.candidateEntityId}`} className="text-xl font-semibold text-slate-950 hover:underline dark:text-white">{normalizeCandidateName(entity?.name ?? "Unknown")}</Link>
+          <Link href={entity ? publicEntityPath(entity) : `/people/network?root=${candidate.candidateEntityId}`} className="text-xl font-semibold text-slate-950 hover:underline dark:text-white">{normalizeCandidateName(entity?.name ?? "Unknown")}</Link>
           <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">{normalizePartyName(candidate.party)}{candidate.incumbent ? " · Incumbent" : ""}</p>
         </div>
         <span className="rounded-full px-2 py-1 text-xs font-semibold" style={{ background: color.bg, color: color.text }}>{partyLetter(candidate.party) ?? "Other"}</span>
@@ -213,7 +220,7 @@ function Money({ label, value }: { label: string; value: number | null | undefin
 function ResultCandidate({ candidate, entity, total }: { candidate: Candidacy; entity?: Entity; total: number }) {
   const color = partyColorFor(candidate.party);
   const percent = total > 0 && candidate.votes != null ? (candidate.votes / total) * 100 : null;
-  return <article className="border-t-4 pt-3" style={{ borderColor: color.border }}><div className="flex justify-between gap-4"><div><Link href={`/people?root=${candidate.candidateEntityId}`} className="font-semibold hover:underline">{normalizeCandidateName(entity?.name ?? "Unknown")}</Link><p className="text-sm text-slate-500">{normalizePartyName(candidate.party)}{candidate.incumbent ? " · Incumbent" : ""}</p></div><div className="text-right"><p className="font-semibold tabular-nums">{candidate.votes == null ? "Votes not reported" : candidate.votes.toLocaleString()}</p>{percent != null ? <p className="text-sm tabular-nums text-slate-500">{percent.toFixed(1)}%</p> : null}</div></div>{candidate.won ? <p className="mt-2 text-sm font-semibold text-emerald-700 dark:text-emerald-300">Winner</p> : null}</article>;
+  return <article className="border-t-4 pt-3" style={{ borderColor: color.border }}><div className="flex justify-between gap-4"><div><Link href={entity ? publicEntityPath(entity) : `/people/network?root=${candidate.candidateEntityId}`} className="font-semibold hover:underline">{normalizeCandidateName(entity?.name ?? "Unknown")}</Link><p className="text-sm text-slate-500">{normalizePartyName(candidate.party)}{candidate.incumbent ? " · Incumbent" : ""}</p></div><div className="text-right"><p className="font-semibold tabular-nums">{candidate.votes == null ? "Votes not reported" : candidate.votes.toLocaleString()}</p>{percent != null ? <p className="text-sm tabular-nums text-slate-500">{percent.toFixed(1)}%</p> : null}</div></div>{candidate.won ? <p className="mt-2 text-sm font-semibold text-emerald-700 dark:text-emerald-300">Winner</p> : null}</article>;
 }
 
 function FinanceComparison({ candidates, entityById, financeByEntity, outsideSpending }: { candidates: Candidacy[]; entityById: Map<string, Entity>; financeByEntity: Map<string, CandidateFinance>; outsideSpending: Map<string, CandidateOutsideSpending> }) {

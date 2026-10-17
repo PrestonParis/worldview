@@ -12,7 +12,8 @@ import { SectionNav } from "@/components/data/section-nav";
 import { formatPeriod, pctChange } from "@/lib/format";
 import { loadHealth } from "@/lib/health/data";
 
-export const dynamic = "force-dynamic";
+// Rebuilt at most daily; crawlers and visitors share the cached render.
+export const revalidate = 86400;
 
 export const metadata: Metadata = {
   title: "Health Care | Worldview",

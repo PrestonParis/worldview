@@ -10,12 +10,18 @@ import {
   listRelations,
   listTextVersions,
 } from "@/lib/db/billDetails";
-import { listEntities } from "@/lib/neo4j/entities";
+import { getEntitiesByIds } from "@/lib/db/entities";
 import { StatusPill } from "@/components/legislation/bill-status";
 import { votePositions, type Vote } from "@/lib/validation/vote";
 import type { Entity } from "@/lib/validation/entity";
 
-export const dynamic = "force-dynamic";
+// Rebuilt at most daily; crawlers and visitors share the cached render.
+export const revalidate = 86400;
+
+// Nothing prebuilt; each page is rendered on first request, then cached.
+export async function generateStaticParams() {
+  return [];
+}
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString(undefined, {
@@ -91,7 +97,7 @@ export default async function BillDetailPage({
   params,
 }: PageProps<"/legislation/[id]">) {
   const { id } = await params;
-  const [bill, billVotes, rollCalls, cosponsors, actions, committees, relations, textVersions, entities] =
+  const [bill, billVotes, rollCalls, cosponsors, actions, committees, relations, textVersions] =
     await Promise.all([
       getBill(id),
       listVotesForBill(id),
@@ -101,7 +107,6 @@ export default async function BillDetailPage({
       listCommittees(id),
       listRelations(id),
       listTextVersions(id),
-      listEntities(),
     ]);
   if (!bill) notFound();
 
@@ -109,6 +114,12 @@ export default async function BillDetailPage({
     rollCalls.map((rc) => listVotesForRollCall(rc.id)),
   );
 
+  const entities = await getEntitiesByIds([
+    bill.sponsorEntityId ?? "",
+    ...cosponsors.map((c) => c.entityId),
+    ...billVotes.map((v) => v.voterEntityId),
+    ...rollCallVotes.flat().map((v) => v.voterEntityId),
+  ]);
   const entityById = new Map(entities.map((e) => [e.id, e]));
   const sponsor = bill.sponsorEntityId
     ? entityById.get(bill.sponsorEntityId)

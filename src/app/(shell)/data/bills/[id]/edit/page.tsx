@@ -9,7 +9,7 @@ import {
   listRelations,
   listTextVersions,
 } from "@/lib/db/billDetails";
-import { listEntities } from "@/lib/neo4j/entities";
+import { listEntities } from "@/lib/db/entities";
 import { BillForm } from "@/components/forms/bill-form";
 import { VotesEditor } from "@/components/forms/votes-editor";
 import { BillChildEditor } from "@/components/forms/bill-child-editor";

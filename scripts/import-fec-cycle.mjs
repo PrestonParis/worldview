@@ -28,7 +28,7 @@ process.loadEnvFile(process.env.ENV_FILE || ".env.local");
 
 import { randomUUID } from "node:crypto";
 import { Client } from "pg";
-import neo4j from "neo4j-driver";
+import { addIdentifiers, entityIdMap, upsertEntities } from "./lib/entities.mjs";
 import { load as loadYaml } from "js-yaml";
 import {
   classifyCommitteeName,
@@ -131,11 +131,6 @@ async function main() {
 
   const pg = new Client({ connectionString: process.env.DATABASE_URL });
   await pg.connect();
-  const driver = neo4j.driver(
-    process.env.NEO4J_URI,
-    neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD),
-  );
-  const session = driver.session();
 
   const counts = { candidates: 0, financeUpserts: 0, contribInserted: 0, contribSkipped: 0, contribRefreshed: 0, entitiesCreated: 0, entitiesLinked: 0 };
   const problems = [];
@@ -172,20 +167,16 @@ async function main() {
     }
 
     // Politician entities, indexed for resolution.
-    const entRes = await session.run(
-      "MATCH (e:Entity {type: 'politician'}) RETURN e.id AS id, e.name AS name, e.metadata AS metadata",
-    );
-    const byFecId = new Map();
-    const byBioguide = new Map();
+    const { rows: politicians } = await pg.query("select id, name, metadata from entities where type = 'politician'");
+    const byFecId = await entityIdMap(pg, "fec_candidate", { type: "politician" });
+    const byBioguide = await entityIdMap(pg, "bioguide", { type: "politician" });
     const byName = new Map();
-    for (const rec of entRes.records) {
-      const id = rec.get("id");
-      const name = rec.get("name") || "";
+    for (const rec of politicians) {
+      const id = rec.id;
+      const name = rec.name || "";
       let meta = {};
-      try { meta = JSON.parse(rec.get("metadata") || "{}"); } catch { /* ignore */ }
-      if (meta.fecCandidateId) byFecId.set(meta.fecCandidateId, id);
-      const bg = meta.bioguide || meta.bioguideId;
-      if (bg) byBioguide.set(bg, id);
+      try { meta = JSON.parse(rec.metadata || "{}"); } catch { /* ignore */ }
+      if (meta.fecCandidateId && !byFecId.has(meta.fecCandidateId)) byFecId.set(meta.fecCandidateId, id);
       // Keyed on the full first name: an initial alone merged different
       // people (Sherrod, Scott, and Shontel Brown all became "brown|s").
       const toks = normTokens(name);
@@ -194,14 +185,13 @@ async function main() {
         byName.set(`${toks[toks.length - 1]}|${toks[0]}|`, id); // state-less fallback
       }
     }
-    console.log(`  ${entRes.records.length} politician entities (${byFecId.size} already FEC-linked)`);
+    console.log(`  ${politicians.length} politician entities (${byFecId.size} already FEC-linked)`);
 
-    // Companies (PAC donors) index.
-    const coRes = await session.run(
-      "MATCH (e:Entity) WHERE e.type IN ['company','organization'] RETURN e.id AS id, e.name AS name",
-    );
+    // Companies (PAC donors) index: FEC committee id first, then name.
+    const { rows: companies } = await pg.query("select id, name from entities where type in ('company', 'organization')");
     const companyByName = new Map();
-    for (const r of coRes.records) companyByName.set((r.get("name") || "").toLowerCase(), r.get("id"));
+    for (const r of companies) companyByName.set((r.name || "").toLowerCase(), r.id);
+    const companyByFecId = await entityIdMap(pg, "fec_committee");
     // Donors (individuals) index — populated lazily as we go.
     const donorByKey = new Map();
 
@@ -241,15 +231,10 @@ async function main() {
       const newId = randomUUID();
       const [last, first] = (cand.name || "").split(",").map((s) => s.trim());
       const display = first ? `${first} ${last}` : cand.name;
-      await session.run(
-        `CREATE (e:Entity {
-           id: $id, type: 'politician', name: $name, description: $description,
-           biography: '', imageUrl: '', websiteUrl: '', xUrl: '', facebookUrl: '',
-           instagramUrl: '', youtubeUrl: '', linkedinUrl: '', highlights: '',
-           metadata: $metadata, createdAt: datetime(), updatedAt: datetime()
-         })`,
+      await upsertEntities(pg, [
         {
           id: newId,
+          type: "politician",
           name: display,
           description: [cand.party, cand.office_full || cand.office, cand.state, cand.district && `District ${cand.district}`]
             .filter(Boolean)
@@ -264,7 +249,8 @@ async function main() {
             importedFrom: "openfec-candidates",
           }),
         },
-      );
+      ]);
+      await addIdentifiers(pg, [{ entityId: newId, scheme: "fec_candidate", value: fid }]);
       byFecId.set(fid, newId);
       counts.entitiesCreated++;
       return { id: newId, created: true, needsLink: false };
@@ -272,16 +258,14 @@ async function main() {
 
     async function linkFecId(entityId, fid, cand) {
       if (DRY_RUN) return;
-      const r = await session.run("MATCH (e:Entity {id:$id}) RETURN e.metadata AS m", { id: entityId });
+      const { rows } = await pg.query("select metadata from entities where id = $1", [entityId]);
       let m = {};
-      try { m = JSON.parse(r.records[0]?.get("m") || "{}"); } catch { /* ignore */ }
+      try { m = JSON.parse(rows[0]?.metadata || "{}"); } catch { /* ignore */ }
       m.fecCandidateId = fid;
       if (cand.state && !m.state) m.state = cand.state;
       if (cand.district && !m.district) m.district = cand.district;
-      await session.run("MATCH (e:Entity {id:$id}) SET e.metadata=$m, e.updatedAt=datetime()", {
-        id: entityId,
-        m: JSON.stringify(m),
-      });
+      await pg.query("update entities set metadata = $2, updated_at = now() where id = $1", [entityId, JSON.stringify(m)]);
+      await addIdentifiers(pg, [{ entityId, scheme: "fec_candidate", value: fid }]);
       counts.entitiesLinked++;
     }
 
@@ -294,15 +278,10 @@ async function main() {
         if (donorByKey.has(key)) return donorByKey.get(key);
         if (DRY_RUN) return null;
         const id = randomUUID();
-        await session.run(
-          `CREATE (e:Entity {
-             id: $id, type: 'donor', name: $name, description: $description,
-             biography: '', imageUrl: '', websiteUrl: '', xUrl: '', facebookUrl: '',
-             instagramUrl: '', youtubeUrl: '', linkedinUrl: '', highlights: '',
-             metadata: $metadata, createdAt: datetime(), updatedAt: datetime()
-           })`,
+        await upsertEntities(pg, [
           {
             id,
+            type: "donor",
             name,
             description: [c.contributor_occupation, c.contributor_employer, c.contributor_state]
               .filter(Boolean)
@@ -314,26 +293,35 @@ async function main() {
               occupation: c.contributor_occupation || undefined,
             }),
           },
-        );
+        ]);
         donorByKey.set(key, id);
         counts.entitiesCreated++;
         return id;
       }
       // PAC / committee
-      const existing = companyByName.get(name.toLowerCase());
-      if (existing) return existing;
+      const existing = (c.contributor_id && companyByFecId.get(c.contributor_id)) || companyByName.get(name.toLowerCase());
+      if (existing) {
+        if (c.contributor_id && !companyByFecId.has(c.contributor_id) && !DRY_RUN) {
+          await addIdentifiers(pg, [{ entityId: existing, scheme: "fec_committee", value: c.contributor_id }]);
+          companyByFecId.set(c.contributor_id, existing);
+        }
+        return existing;
+      }
       if (DRY_RUN) return null;
       const id = randomUUID();
-      await session.run(
-        `CREATE (e:Entity {
-           id: $id, type: 'company', name: $name,
-           description: 'Political committee — imported from FEC Schedule A data.',
-           biography: '', imageUrl: '', websiteUrl: '', xUrl: '', facebookUrl: '',
-           instagramUrl: '', youtubeUrl: '', linkedinUrl: '', highlights: '',
-           metadata: $metadata, createdAt: datetime(), updatedAt: datetime()
-         })`,
-        { id, name, metadata: JSON.stringify({ fecCommitteeId: c.contributor_id || null, importedFrom: "openfec-schedule_a" }) },
-      );
+      await upsertEntities(pg, [
+        {
+          id,
+          type: "company",
+          name,
+          description: "Political committee — imported from FEC Schedule A data.",
+          metadata: JSON.stringify({ fecCommitteeId: c.contributor_id || null, importedFrom: "openfec-schedule_a" }),
+        },
+      ]);
+      if (c.contributor_id) {
+        await addIdentifiers(pg, [{ entityId: id, scheme: "fec_committee", value: c.contributor_id }]);
+        companyByFecId.set(c.contributor_id, id);
+      }
       companyByName.set(name.toLowerCase(), id);
       counts.entitiesCreated++;
       return id;
@@ -508,8 +496,6 @@ async function main() {
     }
     throw err;
   } finally {
-    await session.close();
-    await driver.close();
     await pg.end();
   }
 }

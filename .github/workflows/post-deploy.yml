@@ -44,3 +44,6 @@ jobs:
 
       - run: node scripts/migrate.mjs
       - run: node scripts/backfill-datasets.mjs
+      - run: node scripts/build-geographies.mjs
+      - run: node scripts/repair-orphan-donors.mjs
+      - run: node scripts/validate-entity-fks.mjs

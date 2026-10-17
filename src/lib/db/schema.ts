@@ -44,11 +44,148 @@ export const sources = pgTable("sources", {
     .defaultNow(),
 });
 
+// ── People & Power graph (supabase/sql/2026-10-16-entities.sql) ──────────
+// Postgres is the record for entities and relationships. Neo4j holds a
+// read-only copy rebuilt by scripts/sync-graph.mjs for path queries.
+// Every `*_entity_id` column below references entities.id; those foreign keys
+// (2026-10-16-entity-foreign-keys.sql) are NOT VALID, so rows that predate
+// them aren't checked.
+
+export const entities = pgTable(
+  "entities",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    // src/lib/validation/entity.ts `entityTypes`; enforced by a CHECK.
+    type: text("type").notNull(),
+    name: text("name").notNull(),
+    description: text("description").notNull().default(""),
+    biography: text("biography").notNull().default(""),
+    imageUrl: text("image_url").notNull().default(""),
+    websiteUrl: text("website_url").notNull().default(""),
+    xUrl: text("x_url").notNull().default(""),
+    facebookUrl: text("facebook_url").notNull().default(""),
+    instagramUrl: text("instagram_url").notNull().default(""),
+    youtubeUrl: text("youtube_url").notNull().default(""),
+    linkedinUrl: text("linkedin_url").notNull().default(""),
+    highlights: text("highlights").notNull().default(""),
+    metadata: text("metadata").notNull().default(""),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("entities_type_idx").on(table.type),
+    index("entities_name_lower_idx").on(sql`lower(${table.name})`),
+    check(
+      "entities_type_check",
+      sql`${table.type} in ('politician', 'pundit', 'journalist', 'organization', 'company', 'lobbyist', 'donor')`,
+    ),
+  ],
+);
+
+// The ID crosswalk: every external id an entity is known by. One entity per
+// (scheme, value). Schemes are listed in src/lib/db/entities.ts.
+export const entityIdentifiers = pgTable(
+  "entity_identifiers",
+  {
+    entityId: uuid("entity_id")
+      .notNull()
+      .references(() => entities.id, { onDelete: "cascade" }),
+    scheme: text("scheme").notNull(),
+    value: text("value").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    primaryKey({ name: "entity_identifiers_pkey", columns: [table.scheme, table.value] }),
+    index("entity_identifiers_entity_idx").on(table.entityId, table.scheme),
+    // One id per entity in each one-per-person scheme; FEC and LDA ids repeat.
+    uniqueIndex("entity_identifiers_single_valued_idx")
+      .on(table.entityId, table.scheme)
+      .where(sql`${table.scheme} not in ('fec_candidate', 'fec_committee', 'lda_client', 'lda_registrant')`),
+  ],
+);
+
+// The office an entity currently holds according to one source (Open States).
+export const entityOffices = pgTable(
+  "entity_offices",
+  {
+    entityId: uuid("entity_id")
+      .notNull()
+      .references(() => entities.id, { onDelete: "cascade" }),
+    source: text("source").notNull(),
+    level: text("level").notNull(),
+    state: text("state"),
+    chamber: text("chamber"),
+    district: text("district"),
+    office: text("office"),
+    party: text("party"),
+    email: text("email"),
+    phone: text("phone"),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    primaryKey({ name: "entity_offices_pkey", columns: [table.entityId, table.source] }),
+    index("entity_offices_state_idx").on(table.level, table.state),
+  ],
+);
+
+export const entityEdges = pgTable(
+  "entity_edges",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    sourceEntityId: uuid("source_entity_id")
+      .notNull()
+      .references(() => entities.id, { onDelete: "cascade" }),
+    targetEntityId: uuid("target_entity_id")
+      .notNull()
+      .references(() => entities.id, { onDelete: "cascade" }),
+    label: text("label").notNull(),
+    // Slug from src/lib/relationships.ts.
+    relType: text("rel_type").notNull().default(""),
+    role: text("role").notNull().default(""),
+    validFrom: text("valid_from").notNull().default(""),
+    validTo: text("valid_to").notNull().default(""),
+    notes: text("notes").notNull().default(""),
+    sourceRecordId: uuid("source_record_id").references(() => sources.id, { onDelete: "set null" }),
+    // Importer idempotency key ("committee-seat:HSAG:P000197"); null for
+    // hand-made edges.
+    sourceKey: text("source_key"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("entity_edges_source_idx").on(table.sourceEntityId),
+    index("entity_edges_target_idx").on(table.targetEntityId),
+    index("entity_edges_rel_type_idx").on(table.relType),
+    uniqueIndex("entity_edges_source_key_idx")
+      .on(table.sourceKey)
+      .where(sql`${table.sourceKey} is not null`),
+    check("entity_edges_not_self", sql`${table.sourceEntityId} <> ${table.targetEntityId}`),
+  ],
+);
+
+// Duplicate entities folded into another by scripts/merge-entities.mjs, so
+// links that still carry the merged id can redirect.
+export const entityMerges = pgTable(
+  "entity_merges",
+  {
+    mergedId: uuid("merged_id").primaryKey(),
+    intoId: uuid("into_id")
+      .notNull()
+      .references(() => entities.id, { onDelete: "cascade" }),
+    mergedName: text("merged_name").notNull(),
+    reason: text("reason").notNull(),
+    // Everything the merge moved or dropped, for scripts/merge-entities.mjs --unmerge.
+    snapshot: jsonb("snapshot").notNull().default({}),
+    mergedAt: timestamp("merged_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [index("entity_merges_into_idx").on(table.intoId)],
+);
+
 export const claims = pgTable("claims", {
   id: uuid("id").primaryKey().defaultRandom(),
-  // References an Entity node in Neo4j by id. Not a foreign key —
-  // entities live in a different store, see ARCHITECTURE notes.
-  speakerEntityId: uuid("speaker_entity_id").notNull(),
+  speakerEntityId: uuid("speaker_entity_id")
+    .notNull()
+    .references(() => entities.id),
   date: timestamp("date", { withTimezone: true }).notNull(),
   venue: text("venue"),
   quote: text("quote").notNull(),
@@ -87,10 +224,12 @@ export const contributions = pgTable(
   "contributions",
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    // Both reference Entity nodes in Neo4j by id — same non-FK convention
-    // as bills.sponsorEntityId / claims.speakerEntityId.
-    donorEntityId: uuid("donor_entity_id").notNull(),
-    recipientEntityId: uuid("recipient_entity_id").notNull(),
+    donorEntityId: uuid("donor_entity_id")
+      .notNull()
+      .references(() => entities.id),
+    recipientEntityId: uuid("recipient_entity_id")
+      .notNull()
+      .references(() => entities.id),
     // Whole currency units (e.g. dollars), not cents — political donation
     // data is reported in whole units in practice, avoiding both float
     // precision issues and numeric-as-string plumbing for a scale where
@@ -139,13 +278,15 @@ export const contributions = pgTable(
 // Per-candidate, per-cycle campaign-finance totals from FEC
 // `/candidate/{id}/totals/`. One cheap call each; powers the /money
 // leaderboard (Phase 8) without needing the contribution graph legible.
-// `entityId` is a `politician` Entity ref (non-FK, same convention).
+// `entityId` is a `politician` entity.
 // Amounts are whole USD as `bigint` — a hot Senate race clears int4.
 export const candidateFinance = pgTable(
   "candidate_finance",
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    entityId: uuid("entity_id").notNull(),
+    entityId: uuid("entity_id")
+      .notNull()
+      .references(() => entities.id, { onDelete: "cascade" }),
     cycle: integer("cycle").notNull(),
     fecCandidateId: text("fec_candidate_id"),
     party: text("party"),
@@ -209,6 +350,8 @@ export const bills = pgTable(
   {
     id: uuid("id").primaryKey().defaultRandom(),
     billNumber: text("bill_number").notNull(),
+    // "us" for Congress, or a state's postal code for a state legislature.
+    jurisdiction: text("jurisdiction").notNull().default("us"),
     title: text("title").notNull(),
     summary: text("summary"),
     status: billStatusEnum("status").notNull().default("introduced"),
@@ -216,12 +359,10 @@ export const bills = pgTable(
     // unicameral assemblies, etc.), not worth a fixed enum.
     chamber: text("chamber"),
     introducedDate: timestamp("introduced_date", { withTimezone: true }).notNull(),
-    // References a `politician`-type Entity node in Neo4j. Not a foreign
-    // key — entities live in a different store, same convention as
-    // claims.speakerEntityId. Nullable: the Congress.gov importer keeps a
+    // A `politician` entity. Nullable: the Congress.gov importer keeps a
     // bill whose sponsor didn't resolve to an entity rather than dropping
     // it (at full-Congress scope a silent skip distorts every count).
-    sponsorEntityId: uuid("sponsor_entity_id"),
+    sponsorEntityId: uuid("sponsor_entity_id").references(() => entities.id, { onDelete: "set null" }),
     // Congress number (e.g. 119) and the identifiers behind `externalId`
     // ("{congress}-{type}-{number}", e.g. "119-hr-1234"). `externalId` is
     // the idempotency key for the importer's upsert — null for bills added
@@ -263,7 +404,9 @@ export const rollCalls = pgTable(
     // nomination votes aren't. Cascade so removing a bill removes its roll
     // calls (and, in turn, their votes).
     billId: uuid("bill_id").references(() => bills.id, { onDelete: "cascade" }),
-    congress: integer("congress").notNull(),
+    // "us" for Congress, or a state's postal code; congress is null for states.
+    jurisdiction: text("jurisdiction").notNull().default("us"),
+    congress: integer("congress"),
     // "House" | "Senate" — free text, like bills.chamber.
     chamber: text("chamber").notNull(),
     session: integer("session"),
@@ -305,8 +448,9 @@ export const votes = pgTable(
     rollCallId: uuid("roll_call_id").references(() => rollCalls.id, {
       onDelete: "cascade",
     }),
-    // Same convention — references a politician Entity in Neo4j.
-    voterEntityId: uuid("voter_entity_id").notNull(),
+    voterEntityId: uuid("voter_entity_id")
+      .notNull()
+      .references(() => entities.id),
     position: votePositionEnum("position").notNull(),
     // The voter's party at the time of the vote — snapshot from the
     // congress-legislators crosswalk by the roll-call importer. Null for
@@ -341,8 +485,7 @@ export const votes = pgTable(
 // ── Bill Explorer detail tables (Legislation & Courts, Phase 2) ───────────
 // All hang off a bill with onDelete cascade; all populated by the
 // Congress.gov importer (which replaces a bill's rows wholesale on each
-// run) and hand-editable via /data/bills/[id]/edit. Same Neo4j-entity-by-
-// -uuid convention for member references as bills.sponsorEntityId.
+// run) and hand-editable via /data/bills/[id]/edit.
 
 export const billCosponsors = pgTable(
   "bill_cosponsors",
@@ -351,7 +494,9 @@ export const billCosponsors = pgTable(
     billId: uuid("bill_id")
       .notNull()
       .references(() => bills.id, { onDelete: "cascade" }),
-    entityId: uuid("entity_id").notNull(),
+    entityId: uuid("entity_id")
+      .notNull()
+      .references(() => entities.id),
     date: timestamp("date", { withTimezone: true }),
     isOriginal: boolean("is_original").notNull().default(false),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
@@ -477,8 +622,7 @@ export const billTextVersionsRelations = relations(billTextVersions, ({ one }) =
 
 // ── Lobbying (Money & Influence, Phase 5) ─────────────────────────────────
 // One Senate LDA filing = one registration. `client` (the org that hired
-// lobbyists) and `registrant` (the lobbying firm) are Neo4j Entity refs,
-// same non-FK convention as contributions.donorEntityId. `amount` is the
+// lobbyists) and `registrant` (the lobbying firm) are entities. `amount` is the
 // filing's reported income OR expenses in whole USD (which one is in
 // `amountKind`); nullable because many filings report neither or "less than
 // $5,000".
@@ -486,8 +630,12 @@ export const lobbyingRegistrations = pgTable(
   "lobbying_registrations",
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    clientEntityId: uuid("client_entity_id").notNull(),
-    registrantEntityId: uuid("registrant_entity_id").notNull(),
+    clientEntityId: uuid("client_entity_id")
+      .notNull()
+      .references(() => entities.id),
+    registrantEntityId: uuid("registrant_entity_id")
+      .notNull()
+      .references(() => entities.id),
     year: integer("year").notNull(),
     // LDA filing_period, e.g. "first_quarter", "year_end" — free text.
     period: text("period"),
@@ -656,9 +804,10 @@ export const candidacies = pgTable(
     electionId: uuid("election_id")
       .notNull()
       .references(() => elections.id, { onDelete: "cascade" }),
-    // References a `politician`-type Entity node in Neo4j. Not a foreign key
-    // — same convention as bills.sponsorEntityId / votes.voterEntityId.
-    candidateEntityId: uuid("candidate_entity_id").notNull(),
+    // A `politician` entity.
+    candidateEntityId: uuid("candidate_entity_id")
+      .notNull()
+      .references(() => entities.id),
     // Free text, like elections.office — party systems vary by country and era.
     party: text("party"),
     incumbent: boolean("incumbent").notNull().default(false),
@@ -812,8 +961,7 @@ export const mapProjects = pgTable(
   {
     id: uuid("id").primaryKey().defaultRandom(),
     // Supabase auth.users.id — a different schema Drizzle doesn't model, so
-    // no FK constraint, just an indexed plain uuid (same convention as the
-    // Neo4j entity references elsewhere in this file).
+    // no FK constraint, just an indexed plain uuid.
     ownerId: uuid("owner_id").notNull(),
     name: text("name").notNull().default("Untitled graphic"),
     documentVersion: integer("document_version").notNull().default(1),
@@ -862,8 +1010,7 @@ export const aisVesselPositions = pgTable(
 
 // ---------------------------------------------------------------------------
 // Bulk public-data imports (scripts/import-*.mjs). Entity references are
-// plain uuids into Neo4j, resolved through the crosswalk ids that
-// scripts/backfill-members.mjs stamps on politician entities.
+// resolved through the entity_identifiers crosswalk.
 // ---------------------------------------------------------------------------
 
 // Voteview DW-NOMINATE scores, one row per member per Congress per chamber.
@@ -876,7 +1023,7 @@ export const memberIdeology = pgTable(
     chamber: text("chamber").notNull(), // "House" | "Senate" | "President"
     icpsr: integer("icpsr").notNull(),
     bioguideId: text("bioguide_id"),
-    entityId: uuid("entity_id"),
+    entityId: uuid("entity_id").references(() => entities.id, { onDelete: "set null" }),
     bioname: text("bioname"),
     partyCode: integer("party_code"),
     stateAbbrev: text("state_abbrev"),
@@ -922,6 +1069,42 @@ export const areaStats = pgTable(
       name: "area_stats_pkey",
       columns: [table.source, table.metric, table.geoLevel, table.geoid, table.period],
     }),
+  ],
+);
+
+// What each area_stats.geo_level is: a geography, a breakdown of a place
+// (citizenship, age group, ...), or a named site (police agency, detention
+// facility). Seeded by supabase/sql/2026-10-16-geographies.sql.
+export const geoLevels = pgTable(
+  "geo_levels",
+  {
+    level: text("level").primaryKey(),
+    kind: text("kind").notNull(), // "geography" | "breakdown" | "site"
+    label: text("label").notNull(),
+    parentLevel: text("parent_level"),
+    description: text("description").notNull().default(""),
+  },
+  (table) => [check("geo_levels_kind_check", sql`${table.kind} in ('geography', 'breakdown', 'site')`)],
+);
+
+// Canonical places (FIPS hierarchy) with one name each, for joining and
+// labeling area_stats across datasets. Filled by scripts/build-geographies.mjs.
+export const geographies = pgTable(
+  "geographies",
+  {
+    level: text("level")
+      .notNull()
+      .references(() => geoLevels.level),
+    geoid: text("geoid").notNull(),
+    name: text("name").notNull(),
+    state: text("state"), // postal code of the containing state
+    parentLevel: text("parent_level"),
+    parentGeoid: text("parent_geoid"),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    primaryKey({ name: "geographies_pkey", columns: [table.level, table.geoid] }),
+    index("geographies_parent_idx").on(table.parentLevel, table.parentGeoid),
   ],
 );
 
@@ -1043,10 +1226,10 @@ export const independentExpenditures = pgTable(
     cycle: integer("cycle").notNull(),
     committeeId: text("committee_id"),
     committeeName: text("committee_name"),
-    spenderEntityId: uuid("spender_entity_id"),
+    spenderEntityId: uuid("spender_entity_id").references(() => entities.id, { onDelete: "set null" }),
     candidateId: text("candidate_id"),
     candidateName: text("candidate_name"),
-    candidateEntityId: uuid("candidate_entity_id"),
+    candidateEntityId: uuid("candidate_entity_id").references(() => entities.id, { onDelete: "set null" }),
     candidateOffice: text("candidate_office"),
     candidateState: text("candidate_state"),
     candidateDistrict: text("candidate_district"),
@@ -1102,7 +1285,7 @@ export const caseVotes = pgTable(
       .notNull()
       .references(() => courtCases.id, { onDelete: "cascade" }),
     justice: text("justice").notNull(), // SCDB justiceName, e.g. "CThomas"
-    justiceEntityId: uuid("justice_entity_id"),
+    justiceEntityId: uuid("justice_entity_id").references(() => entities.id, { onDelete: "set null" }),
     inMajority: boolean("in_majority"),
     direction: text("direction"), // "conservative" | "liberal"
     vote: text("vote"),
@@ -1142,6 +1325,8 @@ export const quizSessions = pgTable(
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
     completedAt: timestamp("completed_at", { withTimezone: true }),
     claimedAt: timestamp("claimed_at", { withTimezone: true }),
+    // Started by the site owner, or marked as a test on /quiz/stats.
+    isTest: boolean("is_test").notNull().default(false),
   },
   (table) => [
     uniqueIndex("quiz_sessions_slug_idx").on(table.slug),
@@ -1152,6 +1337,47 @@ export const quizSessions = pgTable(
     check("quiz_sessions_target_mode_check", sql`${table.targetMode} in ('quick', 'standard', 'deep')`),
     check("quiz_sessions_highest_completed_mode_check", sql`${table.highestCompletedMode} is null or ${table.highestCompletedMode} in ('quick', 'standard', 'deep')`),
   ],
+);
+
+// Anonymized answer logs of unclaimed quizzes, copied by the purge job
+// (scripts/purge-quizzes.mjs) before the session is deleted. Nothing links a
+// row back to its quiz link or a person.
+export const quizResponses = pgTable(
+  "quiz_responses",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    bankVersion: text("bank_version").notNull(),
+    engineVersion: text("engine_version").notNull(),
+    targetMode: text("target_mode").notNull(),
+    highestCompletedMode: text("highest_completed_mode"),
+    status: text("status").notNull(),
+    entryVariant: text("entry_variant").notNull(),
+    entryTopic: text("entry_topic"),
+    answers: jsonb("answers").notNull().default(sql`'[]'::jsonb`),
+    refine: jsonb("refine").notNull().default(sql`'{}'::jsonb`),
+    deferred: jsonb("deferred").notNull().default(sql`'[]'::jsonb`),
+    checkpointHistory: jsonb("checkpoint_history").notNull().default(sql`'[]'::jsonb`),
+    isTest: boolean("is_test").notNull().default(false),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull(),
+    completedAt: timestamp("completed_at", { withTimezone: true }),
+    archivedAt: timestamp("archived_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [index("quiz_responses_created_idx").on(table.createdAt)],
+);
+
+// Landing-page visits that answered openers or picked a mode
+// (src/app/api/quiz/opener/route.ts). No cookies, IPs, or user agents.
+export const quizOpenerEvents = pgTable(
+  "quiz_opener_events",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    answers: jsonb("answers").notNull().default(sql`'[]'::jsonb`), // OpenerAnswer[]
+    started: boolean("started").notNull().default(false),
+    mode: text("mode"),
+  },
+  (table) => [index("quiz_opener_events_created_idx").on(table.createdAt)],
 );
 
 // Worldview accounts (docs/auth-plan.md). finalizeSignIn creates the row the
@@ -1167,4 +1393,87 @@ export const profiles = pgTable(
     registeredAt: timestamp("registered_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [check("profiles_role_check", sql`${table.role} in ('member', 'editor')`)],
+);
+
+// ── Data lake catalog and polls (supabase/sql/2026-10-16-data-lake.sql) ──
+// Source files and Parquet extracts live in Supabase Storage (`raw` and
+// `lake` buckets), outside the database's size cap; these tables catalog
+// them (scripts/lib/lake.mjs).
+
+export const sourceSnapshots = pgTable(
+  "source_snapshots",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    source: text("source").notNull(),
+    url: text("url").notNull(),
+    sha256: text("sha256").notNull(),
+    bytes: bigint("bytes", { mode: "number" }).notNull(),
+    contentType: text("content_type"),
+    storagePath: text("storage_path").notNull(),
+    fetchedAt: timestamp("fetched_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("source_snapshots_content_idx").on(table.source, table.url, table.sha256),
+    index("source_snapshots_source_idx").on(table.source, table.fetchedAt),
+  ],
+);
+
+export const lakeFiles = pgTable(
+  "lake_files",
+  {
+    path: text("path").primaryKey(), // object path in the `lake` bucket
+    source: text("source").notNull(),
+    format: text("format").notNull().default("parquet"),
+    rows: bigint("rows", { mode: "number" }).notNull(),
+    bytes: bigint("bytes", { mode: "number" }).notNull(),
+    columns: jsonb("columns").notNull().default([]),
+    sha256: text("sha256").notNull(),
+    builtAt: timestamp("built_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [index("lake_files_source_idx").on(table.source)],
+);
+
+export const polls = pgTable(
+  "polls",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    externalId: text("external_id"),
+    pollster: text("pollster").notNull(),
+    sponsor: text("sponsor"),
+    electionId: uuid("election_id").references(() => elections.id, { onDelete: "set null" }),
+    question: text("question").notNull().default(""),
+    geoLevel: text("geo_level").notNull().default("nation"),
+    geoid: text("geoid").notNull().default("US"),
+    // "lv" likely voters | "rv" registered voters | "a" adults | "v" voters
+    population: text("population"),
+    sampleSize: integer("sample_size"),
+    method: text("method"),
+    startDate: date("start_date"),
+    endDate: date("end_date").notNull(),
+    sourceUrl: text("source_url"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("polls_external_id_idx").on(table.externalId),
+    index("polls_election_idx").on(table.electionId, table.endDate),
+    index("polls_geo_idx").on(table.geoLevel, table.geoid, table.endDate),
+  ],
+);
+
+export const pollResults = pgTable(
+  "poll_results",
+  {
+    pollId: uuid("poll_id")
+      .notNull()
+      .references(() => polls.id, { onDelete: "cascade" }),
+    choice: text("choice").notNull(), // candidate name or answer
+    entityId: uuid("entity_id").references(() => entities.id, { onDelete: "set null" }),
+    party: text("party"),
+    pct: doublePrecision("pct").notNull(),
+  },
+  (table) => [
+    primaryKey({ name: "poll_results_pkey", columns: [table.pollId, table.choice] }),
+    index("poll_results_entity_idx").on(table.entityId),
+  ],
 );

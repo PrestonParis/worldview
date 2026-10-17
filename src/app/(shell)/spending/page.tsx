@@ -11,7 +11,8 @@ import { DatasetList } from "@/components/data/dataset-list";
 import { SectionNav } from "@/components/data/section-nav";
 import { loadSpending } from "@/lib/spending/data";
 
-export const dynamic = "force-dynamic";
+// Rebuilt at most daily; crawlers and visitors share the cached render.
+export const revalidate = 86400;
 
 export const metadata: Metadata = {
   title: "Government Spending | Worldview",

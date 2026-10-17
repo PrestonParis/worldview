@@ -1,23 +1,23 @@
-name: Keep Neo4j Aura awake
+name: Sync Neo4j graph
 
-# Aura Free auto-pauses an instance after 3 days of inactivity (and it can
-# be deleted after a further stretch paused). sync-legislation/sync-money
-# only run weekly, which isn't often enough to prevent that on their own —
-# this pings daily, well inside the 3-day window. Read-only.
+# Rebuilds the Neo4j copy of the People & Power graph from Postgres
+# (scripts/sync-graph.mjs), so editor changes and importer runs reach it
+# within a day. Running daily also keeps Aura Free from auto-pausing, which
+# it does after 3 days of inactivity.
 on:
   schedule:
     - cron: "0 6 * * *" # daily, 06:00 UTC
   workflow_dispatch:
 
 concurrency:
-  group: keepalive-neo4j
+  group: sync-graph
   cancel-in-progress: false
 
 permissions:
   contents: read
 
 jobs:
-  ping:
+  sync:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,14 +27,15 @@ jobs:
           node-version: 24
           cache: npm
 
-      - run: npm install --no-save neo4j-driver
+      - run: npm ci
 
       - name: Write .env.local
         run: |
           {
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}"
             echo "NEO4J_URI=${{ secrets.NEO4J_URI }}"
             echo "NEO4J_USER=${{ secrets.NEO4J_USER }}"
             echo "NEO4J_PASSWORD=${{ secrets.NEO4J_PASSWORD }}"
           } > .env.local
 
-      - run: node scripts/neo4j-keepalive.mjs
+      - run: node scripts/sync-graph.mjs

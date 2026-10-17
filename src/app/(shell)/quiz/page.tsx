@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowRight, ArrowUpRight, ChevronDown } from "lucide-react";
 import { startQuizAction } from "@/lib/actions/quiz";
 import { currentUserId } from "@/lib/quiz/access";
+import { currentUserIsOwner } from "@/lib/auth/guard";
 import { listQuizSessions, UNCLAIMED_TTL_DAYS } from "@/lib/db/quizSessions";
 import { statements, issues } from "@/lib/quiz/bank";
 import { AXIS_GROUPS, axes } from "@/lib/quiz/axes";
@@ -33,12 +34,19 @@ export default async function QuizPage({ searchParams }: { searchParams: SearchP
   const requestedMode = validQuizMode(typeof sp.mode === "string" ? sp.mode : undefined);
   const requestedTopic = typeof sp.topic === "string" && issues.some((issue) => issue.id === sp.topic) ? (sp.topic as IssueId) : null;
   const userId = await currentUserId();
-  const mine = userId ? await listQuizSessions(userId) : [];
+  const [mine, isOwner] = await Promise.all([userId ? listQuizSessions(userId) : [], currentUserIsOwner()]);
   const inProgress = mine.find((q) => q.status !== "complete");
   const issueQuestions = issues.reduce((n, m) => n + 1 + m.followUps.length, 0);
 
   return (
     <div className="mx-auto max-w-6xl pt-2 pb-10 lg:pt-6">
+      {isOwner && (
+        <p className="mb-3 text-right text-sm">
+          <Link href="/quiz/stats" className="text-slate-500 underline decoration-slate-300 underline-offset-2 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200">
+            Quiz stats
+          </Link>
+        </p>
+      )}
       <QuizHero
         mode={requestedMode}
         topic={requestedTopic}
@@ -312,7 +320,7 @@ function PrivacyPanel() {
         No name or email is required. A random editing key stays in the browser that created the quiz.
       </Point>
       <Point title="Resume, then expire">
-        Answers are saved so the link can resume. Unclaimed quizzes are deleted after {UNCLAIMED_TTL_DAYS} days.
+        Answers are saved so the link can resume. Unclaimed quizzes are deleted after {UNCLAIMED_TTL_DAYS} days; their answers are kept anonymously, without the link, to improve the quiz.
       </Point>
       <Point title="Claim on your terms">
         Sign in only if you want to keep it. Then choose public or private, or delete the result entirely.

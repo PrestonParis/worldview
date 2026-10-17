@@ -16,8 +16,6 @@
 
 import {
   arg,
-  connectNeo4j,
-  entityIdMap,
   fetchJson,
   num,
   runImport,
@@ -25,6 +23,7 @@ import {
   str,
   upsertRows,
 } from "./lib/bulk.mjs";
+import { entityIdMap } from "./lib/entities.mjs";
 
 const now = new Date();
 const CYCLE = Number(arg("cycle", String(now.getFullYear() + (now.getFullYear() % 2))));
@@ -35,27 +34,9 @@ await runImport(`fec-schedule-e-${CYCLE}`, async (pg) => {
   const delay = key === "DEMO_KEY" ? 4000 : 250;
   console.log(`FEC Schedule E, cycle ${CYCLE}${key === "DEMO_KEY" ? " (DEMO_KEY — slow)" : ""}`);
 
-  const driver = connectNeo4j();
-  const byFec = await entityIdMap(driver, "fecCandidateIds");
-  const session = driver.session();
-  try {
-    // fec-cycle stores its candidate id inside the metadata JSON.
-    const res = await session.run(
-      `MATCH (e:Entity {type: 'politician'}) WHERE e.metadata CONTAINS 'fecCandidateId'
-       RETURN e.id AS id, e.metadata AS m`,
-    );
-    for (const r of res.records) {
-      try {
-        const fid = JSON.parse(r.get("m")).fecCandidateId;
-        if (fid && !byFec.has(fid)) byFec.set(fid, r.get("id"));
-      } catch {
-        /* hand-edited metadata */
-      }
-    }
-  } finally {
-    await session.close();
-    await driver.close();
-  }
+  // Includes the ids fec-cycle used to keep in metadata (moved to the
+  // crosswalk by scripts/graph-to-postgres.mjs).
+  const byFec = await entityIdMap(pg, "fec_candidate", { type: "politician" });
 
   let lastIndex = null;
   let lastDate = null;

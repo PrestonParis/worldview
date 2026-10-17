@@ -1,5 +1,6 @@
+import { revalidateTag } from "next/cache";
 import { authenticatePartner } from "@/lib/data/partner-keys";
-import { getDataset, getPartnerDataset, queryObservations, upsertObservations } from "@/lib/db/stats";
+import { AREA_STATS_TAG, getDataset, getPartnerDataset, queryObservations, upsertObservations } from "@/lib/db/stats";
 import { observationBatchSchema } from "@/lib/validation/observation";
 
 type Context = { params: Promise<{ slug: string }> };
@@ -87,5 +88,6 @@ export async function POST(request: Request, { params }: Context) {
   }
 
   const result = await upsertObservations({ id: dataset.id, slug }, parsed.data.observations, parsed.data.metrics);
+  revalidateTag(AREA_STATS_TAG, "max");
   return Response.json({ ok: true, dataset: slug, status: dataset.status, ...result });
 }

@@ -1,6 +1,6 @@
 import { requireContributorPage } from "@/lib/auth/guard";
 import { notFound } from "next/navigation";
-import { getEntity } from "@/lib/neo4j/entities";
+import { getEntity } from "@/lib/db/entities";
 import { EntityForm } from "@/components/forms/entity-form";
 
 export default async function EditEntityPage({

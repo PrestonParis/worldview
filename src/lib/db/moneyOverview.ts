@@ -2,7 +2,7 @@ import { sql } from "drizzle-orm";
 import { db } from "./client";
 import { industryLabel } from "../money/industries";
 import { US_STATE_GRID } from "../money/us-states";
-import { getEntitiesByIds } from "../neo4j/entities";
+import { getEntitiesByIds } from "./entities";
 import type { Entity } from "../validation/entity";
 
 // Every aggregate behind the /money views, as grouped SQL. Campaign money

@@ -1,12 +1,19 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { getOrgProfile } from "@/lib/neo4j/graph";
+import { getMergedInto } from "@/lib/db/entities";
+import { getOrgProfile } from "@/lib/db/graph";
 import { entityColorFor } from "@/lib/entity-colors";
 import { relationshipCategoryColors } from "@/lib/relationships";
 import { publicEntityPath } from "@/lib/people/public";
 
-export const dynamic = "force-dynamic";
+// Rebuilt at most daily; crawlers and visitors share the cached render.
+export const revalidate = 86400;
+
+// Nothing prebuilt; each page is rendered on first request, then cached.
+export async function generateStaticParams() {
+  return [];
+}
 
 const CATEGORY_LABEL: Record<string, string> = {
   institutional: "Institutional",
@@ -22,7 +29,11 @@ const CATEGORY_LABEL: Record<string, string> = {
 export default async function OrgProfilePage({ params }: PageProps<"/people/orgs/[id]">) {
   const { id } = await params;
   const profile = await getOrgProfile(id);
-  if (!profile) notFound();
+  if (!profile) {
+    const merged = await getMergedInto(id);
+    if (merged) permanentRedirect(`/people/orgs/${merged.id}`);
+    notFound();
+  }
 
   const { entity, connectionsByCategory, total } = profile;
   const c = entityColorFor(entity.type);
@@ -53,10 +64,10 @@ export default async function OrgProfilePage({ params }: PageProps<"/people/orgs
           </p>
         </div>
         <Link
-          href={`/people?root=${entity.id}&depth=1`}
+          href={`${publicEntityPath(entity)}#relationships`}
           className="shrink-0 rounded-md border border-slate-200 px-3 py-1.5 text-sm text-slate-600 hover:border-slate-400 hover:text-slate-900 dark:border-slate-700 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:text-slate-100"
         >
-          View in graph →
+          View connections →
         </Link>
       </div>
 
