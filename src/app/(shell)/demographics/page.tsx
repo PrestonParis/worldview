@@ -10,8 +10,8 @@ import { TimeSeriesChart } from "@/components/charts/time-series-chart";
 import { DemographicsForecast } from "@/components/demographics/demographics-forecast";
 import { loadPopulationProfile } from "@/lib/demographics/profile";
 
-// Rebuilt at most hourly; crawlers and visitors share the cached render.
-export const revalidate = 3600;
+// Rebuilt at most daily; crawlers and visitors share the cached render.
+export const revalidate = 86400;
 
 export const metadata: Metadata = {
   title: "Demographics | Worldview",

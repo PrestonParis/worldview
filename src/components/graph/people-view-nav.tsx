@@ -13,7 +13,7 @@ export function PeopleViewNav({ active }: { active: PeopleView }) {
       {views.map((view) => (
         <Link
           key={view.key}
-          href={view.key === "explore" ? "/people" : `/people?view=${view.key}`}
+          href={view.key === "explore" ? "/people" : `/people/${view.key}`}
           aria-current={active === view.key ? "page" : undefined}
           className={`rounded-full px-4 py-2 text-sm font-medium transition ${
             active === view.key

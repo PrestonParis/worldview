@@ -14,8 +14,8 @@ import { formatValue } from "@/lib/format";
 import { loadLegislation } from "@/lib/legislation/overview";
 import { FeatureList } from "@/components/ui/feature-list";
 
-// Rebuilt at most hourly; crawlers and visitors share the cached render.
-export const revalidate = 3600;
+// Rebuilt at most daily; crawlers and visitors share the cached render.
+export const revalidate = 86400;
 
 export const metadata: Metadata = {
   title: "Legislation & Courts | Worldview",

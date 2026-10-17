@@ -8,8 +8,8 @@ export const metadata: Metadata = {
   description: "Where campaign contributions come from, state by state, from FEC filings.",
 };
 
-// Rebuilt at most hourly; crawlers and visitors share the cached render.
-export const revalidate = 3600;
+// Rebuilt at most daily; crawlers and visitors share the cached render.
+export const revalidate = 86400;
 
 export default async function Page() {
   const rows = await listStateBreakdown();

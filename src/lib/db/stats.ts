@@ -664,14 +664,14 @@ async function compareByGeoQuery(level: string, series: CompareSeries[], { withi
   };
 }
 
-// The read helpers above, cached for an hour across requests and tagged so a
+// The read helpers above, cached for a day across requests and tagged so a
 // partner upload (src/app/api/data/v1/datasets/[slug]/observations) can mark
 // them stale. Importers write straight to the database; their data appears
-// within the hour.
+// within the day.
 export const AREA_STATS_TAG = "area-stats";
 
 function cached<A extends unknown[], R>(name: string, fn: (...args: A) => Promise<R>) {
-  return unstable_cache(fn, ["area-stats", name], { tags: [AREA_STATS_TAG], revalidate: 3600 });
+  return unstable_cache(fn, ["area-stats", name], { tags: [AREA_STATS_TAG], revalidate: 86400 });
 }
 
 export const getSeries = cached("getSeries", getSeriesQuery);
@@ -680,5 +680,30 @@ export const getSeriesByGeo = cached("getSeriesByGeo", getSeriesByGeoQuery);
 export const latestPeriod = cached("latestPeriod", latestPeriodQuery);
 export const getCrossSection = cached("getCrossSection", getCrossSectionQuery);
 export const sumByGeo = cached("sumByGeo", sumByGeoQuery);
-export const yearlySumsByGeo = cached("yearlySumsByGeo", yearlySumsByGeoQuery);
+// Next refuses cache entries over 2MB, and the state- and agency-level crime
+// calls run past that as row objects. Each metric is cached on its own, as
+// bare tuples, and expanded on the way out.
+type YearlyTuple = [geoid: string, year: string, value: number, months: number, reportedMonths: number, coverage: number | null, minCoverage: number | null];
+
+const yearlySumsForMetric = cached(
+  "yearlySumsForMetric",
+  async (source: string, metric: string, geoLevel: string, opts: { geoidPrefix?: string } = {}): Promise<YearlyTuple[]> =>
+    (await yearlySumsByGeoQuery(source, [metric], geoLevel, opts)).map((r) => [
+      r.geoid, r.year, r.value, r.months, r.reportedMonths, r.coverage, r.minCoverage,
+    ]),
+);
+
+export async function yearlySumsByGeo(
+  source: string,
+  metrics: string[],
+  geoLevel: string,
+  opts: { geoidPrefix?: string } = {},
+): Promise<YearlyValue[]> {
+  const parts = await Promise.all(metrics.map((m) => yearlySumsForMetric(source, m, geoLevel, opts)));
+  return parts.flatMap((rows, i) =>
+    rows.map(([geoid, year, value, months, reportedMonths, coverage, minCoverage]) => ({
+      metric: metrics[i], geoid, year, value, months, reportedMonths, coverage, minCoverage,
+    })),
+  );
+}
 export const compareByGeo = cached("compareByGeo", compareByGeoQuery);

@@ -4,8 +4,8 @@ import { DatasetList } from "@/components/data/dataset-list";
 import { datasetCoverage, listDatasets } from "@/lib/db/stats";
 import { FeatureList } from "@/components/ui/feature-list";
 
-// Rebuilt at most hourly; crawlers and visitors share the cached render.
-export const revalidate = 3600;
+// Rebuilt at most daily; crawlers and visitors share the cached render.
+export const revalidate = 86400;
 
 export const metadata: Metadata = {
   title: "Datasets | Worldview",

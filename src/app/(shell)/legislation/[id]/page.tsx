@@ -15,8 +15,8 @@ import { StatusPill } from "@/components/legislation/bill-status";
 import { votePositions, type Vote } from "@/lib/validation/vote";
 import type { Entity } from "@/lib/validation/entity";
 
-// Rebuilt at most hourly; crawlers and visitors share the cached render.
-export const revalidate = 3600;
+// Rebuilt at most daily; crawlers and visitors share the cached render.
+export const revalidate = 86400;
 
 // Nothing prebuilt; each page is rendered on first request, then cached.
 export async function generateStaticParams() {

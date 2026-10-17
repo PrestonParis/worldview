@@ -12,8 +12,8 @@ import { SectionNav } from "@/components/data/section-nav";
 import { DemographicsForecast } from "@/components/demographics/demographics-forecast";
 import { loadReligion, type GroupProfile } from "@/lib/religion/data";
 
-// Rebuilt at most hourly; crawlers and visitors share the cached render.
-export const revalidate = 3600;
+// Rebuilt at most daily; crawlers and visitors share the cached render.
+export const revalidate = 86400;
 
 export const metadata: Metadata = {
   title: "Religion | Worldview",

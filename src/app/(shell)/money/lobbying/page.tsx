@@ -16,8 +16,8 @@ export const metadata: Metadata = {
   description: "Senate Lobbying Disclosure Act filings: clients, firms, spending, issues, and the bills they lobbied on.",
 };
 
-// Rebuilt at most hourly; crawlers and visitors share the cached render.
-export const revalidate = 3600;
+// Rebuilt at most daily; crawlers and visitors share the cached render.
+export const revalidate = 86400;
 
 export default async function Page() {
   const [summary, registrations, allBills] = await Promise.all([loadLobbyingSummary(), listLobbyingRegistrations(), listBills()]);

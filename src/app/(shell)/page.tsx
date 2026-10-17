@@ -16,8 +16,8 @@ import { Hero, type SnapshotMetric } from "@/components/home/hero";
 import type { StateMeasure } from "@/components/home/state-map";
 import { ToolModules, type PlatformFacts } from "@/components/home/tool-modules";
 
-// Rebuilt at most hourly; crawlers and visitors share the cached render.
-export const revalidate = 3600;
+// Rebuilt at most daily; crawlers and visitors share the cached render.
+export const revalidate = 86400;
 
 const settle = <T,>(promise: Promise<T>) => promise.then((value) => value, () => null);
 

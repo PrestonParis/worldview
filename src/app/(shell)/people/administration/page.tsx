@@ -9,8 +9,8 @@ export const metadata: Metadata = {
   description: "The current presidential administration's personnel and how they connect.",
 };
 
-// Rebuilt at most hourly; crawlers and visitors share the cached render.
-export const revalidate = 3600;
+// Rebuilt at most daily; crawlers and visitors share the cached render.
+export const revalidate = 86400;
 
 const SECTOR_LABEL: Record<string, string> = {
   elected: "Former elected official",
@@ -59,10 +59,10 @@ export default async function AdministrationPage() {
           </p>
         </div>
         <Link
-          href={`/people?root=${president.id}&depth=1`}
+          href={`${publicEntityPath(president)}#relationships`}
           className="shrink-0 rounded-md border border-slate-200 px-3 py-1.5 text-sm text-slate-600 hover:border-slate-400 hover:text-slate-900 dark:border-slate-700 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:text-slate-100"
         >
-          View in graph →
+          View connections →
         </Link>
       </div>
 

@@ -7,8 +7,8 @@ import { entityColorFor } from "@/lib/entity-colors";
 import { relationshipCategoryColors } from "@/lib/relationships";
 import { publicEntityPath } from "@/lib/people/public";
 
-// Rebuilt at most hourly; crawlers and visitors share the cached render.
-export const revalidate = 3600;
+// Rebuilt at most daily; crawlers and visitors share the cached render.
+export const revalidate = 86400;
 
 // Nothing prebuilt; each page is rendered on first request, then cached.
 export async function generateStaticParams() {
@@ -64,10 +64,10 @@ export default async function OrgProfilePage({ params }: PageProps<"/people/orgs
           </p>
         </div>
         <Link
-          href={`/people?root=${entity.id}&depth=1`}
+          href={`${publicEntityPath(entity)}#relationships`}
           className="shrink-0 rounded-md border border-slate-200 px-3 py-1.5 text-sm text-slate-600 hover:border-slate-400 hover:text-slate-900 dark:border-slate-700 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:text-slate-100"
         >
-          View in graph →
+          View connections →
         </Link>
       </div>
 

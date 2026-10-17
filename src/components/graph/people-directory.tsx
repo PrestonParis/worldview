@@ -126,8 +126,7 @@ export function PeopleDirectory({
             {filtered ? " match" : ""}
           </p>
         </div>
-        <form action="/people" className="relative w-full sm:w-96">
-          <input type="hidden" name="view" value="directory" />
+        <form action="/people/directory" className="relative w-full sm:w-96">
           {(["group", "side", "state", "ties", "sort", "layout"] as const).map((key) =>
             params[key] ? <input key={key} type="hidden" name={key} value={params[key]} /> : null,
           )}

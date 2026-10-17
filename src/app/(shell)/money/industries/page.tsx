@@ -8,8 +8,8 @@ export const metadata: Metadata = {
   description: "Campaign contributions grouped by donor industry, from FEC filings.",
 };
 
-// Rebuilt at most hourly; crawlers and visitors share the cached render.
-export const revalidate = 3600;
+// Rebuilt at most daily; crawlers and visitors share the cached render.
+export const revalidate = 86400;
 
 export default async function Page() {
   const rows = await listIndustryBreakdown();

@@ -15,12 +15,6 @@ import {
   ImmigrationExplorerProvider,
   ImmigrationOverviewExplorer,
 } from "@/components/immigration/green-card-explorer";
-import {
-  defaultFocusView,
-  focusHasView,
-  isImmigrationFocus,
-  type ImmigrationFocus,
-} from "@/components/immigration/green-card-views";
 import { StateFlows } from "@/components/immigration/state-flows";
 import { Disclosure } from "@/components/ui/disclosure";
 import { Term } from "@/components/ui/term";
@@ -29,7 +23,7 @@ import { GLOSSARY } from "@/lib/glossary";
 import { loadImmigration } from "@/lib/immigration/data";
 import { FeatureList } from "@/components/ui/feature-list";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 86400;
 
 export const metadata: Metadata = {
   title: "Immigration | Worldview",
@@ -151,19 +145,12 @@ function SubHeading({ id, title, question }: { id?: string; title: string; quest
   );
 }
 
-export default async function ImmigrationPage(props: PageProps<"/immigration">) {
-  const query = await props.searchParams;
+export default async function ImmigrationPage() {
   const d = await loadImmigration();
   const { stats: s } = d;
   const lastMonth = d.border.lastMonth;
   const yearbookYear = s.lpr ? year(s.lpr.period) : "";
   const removalsYear = s.removals ? year(s.removals.period) : "";
-  const requestedFocus = typeof query.focus === "string" ? query.focus : null;
-  const initialFocus: ImmigrationFocus | null = isImmigrationFocus(requestedFocus) ? requestedFocus : null;
-  const requestedView = typeof query.view === "string" ? query.view : null;
-  const initialView = initialFocus && focusHasView(initialFocus, requestedView)
-    ? requestedView
-    : defaultFocusView(initialFocus ?? "green-cards");
 
   const faq: { q: string; a: ReactNode }[] = [
     {
@@ -470,7 +457,7 @@ export default async function ImmigrationPage(props: PageProps<"/immigration">) 
   };
 
   return (
-    <ImmigrationExplorerProvider initialFocus={initialFocus} initialView={initialView}>
+    <ImmigrationExplorerProvider>
     <div className="mx-auto max-w-7xl space-y-14">
       <header className="max-w-3xl">
         <p className="text-sm font-semibold tracking-[0.14em] text-blue-700 uppercase dark:text-blue-400">United States</p>
