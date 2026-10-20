@@ -14,7 +14,7 @@ export const economyStatements: Statement[] = [
   st("ownership.07", -0.25, "There should be a public option, like a government-run health plan, competing alongside private ones."),
   st("ownership.08", -0.25, "Some essential services work better when run by government than by private companies."),
   st("ownership.09", 0, "A mix of public and private ownership, with private firms dominant, is the right model for the economy."),
-  st("ownership.10", 0, "Whether a service should be public or private depends on the service, not on principle."),
+  st("ownership.25", 0, "Government should run some services, like water systems, and leave others, like airlines, to private companies."),
   st("ownership.11", 0.25, "Private companies usually deliver services more efficiently than government does."),
   st("ownership.12", 0.25, "Local governments should contract out garbage collection when a private provider can do it more cheaply."),
   st("ownership.13", 0.5, "The Postal Service should be privatized."),
@@ -25,6 +25,10 @@ export const economyStatements: Statement[] = [
   st("ownership.18", 1, "Taxation is a form of theft."),
   st("ownership.19", -0.75, "Large banks should be nationalized or converted into public banks."),
   st("ownership.20", 0.75, "Public broadcasting like PBS and NPR should not receive government funding."),
+  st("ownership.21", -1, "Workers and owners have opposed interests that no reform can reconcile."),
+  st("ownership.22", -1, "Housing should be taken off the market and provided as public or cooperative property.", on("redistribution", -0.8, 0.3)),
+  st("ownership.23", 0.75, "Government-owned housing should be sold to its tenants or to private buyers."),
+  st("ownership.24", 1, "Owners should be free to use their property however they like, short of harming others.", on("regulation", 0.8, 0.3)),
 
   // ── Regulation: Regulated (-1) ↔ Laissez-faire (+1) ──
   st("regulation.01", -1, "The government should cap the prices of essential medicines."),

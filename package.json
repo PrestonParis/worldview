@@ -92,6 +92,8 @@
     "sync:wiki-races": "node scripts/sync-wiki-races.mjs",
     "quiz:answers": "tsx scripts/quiz-answers.ts",
     "quiz:audit": "tsx scripts/quiz-audit.ts",
+    "quiz:claim": "node scripts/claim-quiz.mjs",
+    "quiz:funnel": "tsx scripts/quiz-funnel.ts",
     "quiz:stats": "tsx scripts/quiz-stats.ts",
     "quiz:trace": "tsx scripts/quiz-trace.ts"
   },

@@ -1,12 +1,15 @@
 // Labels for the categorical lenses (types.ts) and the values an ideology
 // accepts when its catalog entry leaves a lens unset.
 
-import type { Authority, Ideology, LensId, NationBasis, Tradition } from "./types";
+import type { Authority, Change, Ideology, Legacy, LensId, NationBasis, People, Tradition } from "./types";
 
 export const LENS_NAMES: Record<LensId, string> = {
   tradition: "Tradition in law",
   authority: "Final authority",
   nation: "Nation defined by",
+  people: "People first",
+  change: "Aim for the existing order",
+  legacy: "Verdict on communist states",
 };
 
 export const LENS_VALUE_LABELS: Record<LensId, Record<string, string>> = {
@@ -44,6 +47,28 @@ export const LENS_VALUE_LABELS: Record<LensId, Record<string, string>> = {
     civilizational: "Culture",
     class: "Class over nation",
   } satisfies Record<NationBasis, string>,
+  people: {
+    none: "No racial group",
+    white: "White Americans",
+    black: "Black Americans",
+    indigenous: "Native nations",
+    hispanic: "Chicano and Hispanic Americans",
+    jewish: "The Jewish people",
+    every: "Each people its own",
+    other: "Another people",
+  } satisfies Record<People, string>,
+  change: {
+    restore: "Restore an earlier order",
+    conserve: "Conserve what exists",
+    reform: "Reform it steadily",
+    transform: "Replace it with a new order",
+  } satisfies Record<Change, string>,
+  legacy: {
+    achievement: "Socialist achievements",
+    degenerated: "Revolutions taken over by bureaucracy",
+    "state-capitalist": "State capitalism, not socialism",
+    dictatorship: "Dictatorships that discredited socialism",
+  } satisfies Record<Legacy, string>,
 };
 
 // Values an untagged ideology accepts, read from its axis positions, so a
@@ -60,6 +85,11 @@ export function acceptedLens(ideology: Ideology, lens: LensId): string[] | null 
   const p = ideology.position;
   if (lens === "tradition") return p.religion < LEAN ? ["none", "pluralist"] : [...CHRISTIAN, "pluralist"];
   if (lens === "nation") return p.immigration < LEAN ? ["civic", "class"] : ["civic", "civilizational"];
+  // An untagged ideology puts no racial people first.
+  if (lens === "people") return p.race < LEAN ? ["none"] : null;
+  // Change and legacy are tagged where a tradition takes a clear position;
+  // an untagged one takes none.
+  if (lens === "change" || lens === "legacy") return null;
   // An untagged autocratic ideology takes no position on who should rule.
   return p.democracy < LEAN ? ["elected", "assemblies"] : null;
 }

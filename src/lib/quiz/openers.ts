@@ -8,7 +8,7 @@ import { quizModeIds, type QuizModeId } from "./modes";
 // and carry over into the quiz. Chosen to hook: concrete, genuinely contested,
 // and something people have a gut reaction to, with the most arresting one
 // first.
-export const OPENERS = ["redistribution.02", "social.13", "democracy.12"];
+export const OPENERS = ["redistribution.02", "social.13", "democracy.22"];
 
 // ms: time since the landing page loaded.
 export interface OpenerAnswer {

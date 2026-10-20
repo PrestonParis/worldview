@@ -73,7 +73,7 @@ export const governanceStatements: Statement[] = [
   st("liberty.20", 0.5, "A national ID card would be a reasonable security measure."),
   st("liberty.21", 0, "Some surveillance programs are necessary, but each should be reviewed regularly and scaled back once it is no longer needed."),
 
-  // ── Voting: Majoritarian (-1) ↔ Safeguarded (+1) ──
+  // ── Elections: Broad access (-1) ↔ Restricted (+1) ──
   st("voting.01", -1, "The Senate should be abolished or radically reformed so that each state no longer gets equal representation."),
   st("voting.02", -1, "Voting should be mandatory for every eligible citizen."),
   st("voting.03", -0.75, "The president should be chosen by national popular vote instead of the Electoral College."),
@@ -107,7 +107,7 @@ export const governanceStatements: Statement[] = [
   st("democracy.09", -0.5, "Limits on how long a leader can stay in power are essential."),
   st("democracy.10", 0, "How well a government performs matters about as much as how it was chosen."),
   st("democracy.11", 0.25, "Democracy suits some countries better than others."),
-  st("democracy.12", 0.25, "Some decisions are too important to leave to elected politicians and should rest with independent experts."),
+  st("democracy.22", 0.25, "Some decisions are too important to be left to elected politicians."),
   st("democracy.13", 0.25, "Stability and order matter more than holding frequent elections."),
   st("democracy.14", 0.5, "In a national crisis, a leader should be able to postpone elections until order is restored."),
   st("democracy.15", 0.5, "The government should be able to shut down media outlets that spread division.", on("liberty", 0.5, 0.3)),
@@ -117,4 +117,26 @@ export const governanceStatements: Statement[] = [
   st("democracy.19", 1, "Political parties that oppose the state's founding principles should be banned."),
   st("democracy.20", 1, "Final authority should rest with a ruler who does not answer to voters."),
   st("democracy.21", 0, "Democracy is the best system in principle, but it often moves too slowly to solve urgent problems."),
+
+  // ── Violence: Nonviolent (-1) ↔ Force-accepting (+1) ──
+  st("violence.01", -1, "Violence is never justified to achieve political goals, whatever the cause."),
+  st("violence.02", -1, "Even a government that abolishes elections should be resisted only by nonviolent means."),
+  st("violence.03", -0.75, "Destroying property is never an acceptable form of protest."),
+  st("violence.04", -0.75, "Political violence by one's own side should be condemned as loudly as violence by the other side."),
+  st("violence.05", -0.75, "Police should never use force against protesters who are peaceful, even when they block roads or buildings.", on("justice", -0.4, 0.3)),
+  st("violence.06", -0.5, "Torture is wrong even when it might stop a terrorist attack.", on("liberty", -0.5, 0.3)),
+  st("violence.07", -0.5, "Armed citizen militias have no place in a modern democracy."),
+  st("violence.08", -0.25, "Nonviolent movements usually achieve more than violent ones."),
+  st("violence.09", -0.25, "Leaders who use violent rhetoric bear some responsibility for violence that follows."),
+  st("violence.10", 0, "Violence can be justified against a tyrannical government, but America's government is not one."),
+  st("violence.11", 0, "Riots are wrong, but they are often an understandable response to real grievances."),
+  st("violence.12", 0.25, "Rioters and looters should be stopped with whatever force it takes.", on("justice", 0.7, 0.3)),
+  st("violence.13", 0.25, "Americans have a right to armed self-defense against a government that violates the Constitution."),
+  st("violence.14", 0.5, "Sometimes violence is the only way to make the powerful listen."),
+  st("violence.15", 0.5, "Harsh interrogation, including methods many call torture, is justified to stop terrorist attacks.", on("liberty", 0.6, 0.3)),
+  st("violence.16", 0.75, "Assassinating a leader can be justified when the leader causes great harm."),
+  st("violence.17", 0.75, "Destroying the property of corporations that harm the planet is a legitimate form of protest.", on("environment", -0.6, 0.3)),
+  st("violence.18", 0.75, "Citizens should be ready to take up arms if an election is stolen."),
+  st("violence.19", 1, "Armed revolution will be necessary to fix this country."),
+  st("violence.20", 1, "Political opponents who threaten the nation should be dealt with by force, not debate."),
 ];

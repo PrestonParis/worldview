@@ -31,15 +31,11 @@ export function QuizOwnership({
   slug,
   access,
   visibility,
-  expires,
 }: {
   slug: string;
   access: QuizAccess;
   visibility: QuizVisibility;
-  expires: Date | null; // set while unclaimed
 }) {
-  const expiry = expires?.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
-
   if (access.isOwner) {
     return (
       <aside className={panelClass}>
@@ -71,7 +67,7 @@ export function QuizOwnership({
       <aside className={panelClass}>
         <p className="font-semibold text-slate-900 dark:text-slate-100">Keep this quiz</p>
         <p className="mt-1 text-slate-500 dark:text-slate-400">
-          It&apos;s saved at this link until {expiry}. Claim it to keep it permanently and choose who can see it.
+          This result stays available at this link. Claim it to manage its visibility and deletion from your account.
         </p>
         {access.canClaim ? (
           <form action={claimQuizAction.bind(null, slug)} className="mt-3 space-y-3">
@@ -104,13 +100,12 @@ export function QuizOwnership({
 
 // Slim banner for an unclaimed quiz the viewer can edit; claims as public
 // (switchable afterwards from the owner panel).
-export function QuizClaimBanner({ slug, access, expires }: { slug: string; access: QuizAccess; expires: Date }) {
-  const expiry = expires.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+export function QuizClaimBanner({ slug, access }: { slug: string; access: QuizAccess }) {
   return (
     <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white px-5 py-3.5 text-sm sm:flex-row sm:items-center sm:justify-between dark:border-slate-800 dark:bg-slate-950">
       <p className="text-slate-600 dark:text-slate-300">
-        Saved at this link until {expiry}.{" "}
-        <span className="text-slate-900 dark:text-slate-100">Claim it to keep it for good.</span>
+        This result stays available at this link.{" "}
+        <span className="text-slate-900 dark:text-slate-100">Claim it to manage privacy and deletion.</span>
       </p>
       {access.canClaim ? (
         <form action={claimQuizAction.bind(null, slug)} className="flex items-center gap-3">

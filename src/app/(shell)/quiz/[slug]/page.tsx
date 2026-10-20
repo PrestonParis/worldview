@@ -1,14 +1,18 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getQuizSession, expiresAt } from "@/lib/db/quizSessions";
+import { getQuizSession } from "@/lib/db/quizSessions";
 import { quizAccess, SLUG_PATTERN } from "@/lib/quiz/access";
 import { computeState, modeComplete, type QuizAnswer } from "@/lib/quiz/engine";
 import { computeResult } from "@/lib/quiz/results";
-import { runnerState, serializeItem, type AnsweredItem } from "@/lib/quiz/runner";
+import { modeRank } from "@/lib/quiz/modes";
+import { priorityItems, runnerState, serializeItem, type AnsweredItem } from "@/lib/quiz/runner";
 import { ideologies } from "@/lib/quiz/ideologies";
 import type { SharpenOutcome } from "@/lib/quiz/refine";
 import { QuizRunner } from "@/components/quiz/quiz-runner";
-import { QuizCheckpoint, QuizHero, QuizResults, QuizSidebar } from "@/components/quiz/quiz-results";
+import { PrioritiesBoard } from "@/components/quiz/priorities-board";
+import { QuizCheckpoint, QuizHero, QuizResults, resultNav, shareTitle } from "@/components/quiz/quiz-results";
+import { ResultsNav } from "@/components/quiz/results-nav";
+import { FAMILIES, familyColor } from "@/lib/quiz/families";
 import { QuizClaimBanner, QuizOwnership } from "@/components/quiz/quiz-ownership";
 
 export const dynamic = "force-dynamic";
@@ -57,9 +61,25 @@ export default async function QuizSessionPage({
   if (!access.canView) notFound();
 
   const state = computeState(session.answers, session.refine);
-  const targetComplete = modeComplete(state, session.answers.length, session.targetMode);
+  // A checkpoint once reached stays reached: new bank items (the race axis in
+  // bank 5) never reopen a finished quiz; they're asked if the quiz continues.
+  const reached =
+    session.checkpointHistory.some((c) => c.mode === session.targetMode) ||
+    (session.highestCompletedMode !== null && modeRank(session.highestCompletedMode) >= modeRank(session.targetMode));
+  const targetComplete = reached || modeComplete(state, session.answers.length, session.targetMode);
   const edit = access.canEdit ? parseEdit(sp.edit, session.answers) : undefined;
   const round = parseRound(sp);
+  // "?view=priorities": the importance board, at the end of a checkpoint or
+  // from the results page. Continuing drops `view` and keeps the rest, so a
+  // finished quiz still lands on its reveal.
+  if (access.canEdit && sp.view === "priorities") {
+    const rest = new URLSearchParams(
+      Object.entries(sp).flatMap(([k, v]) => (k !== "view" && typeof v === "string" ? [[k, v]] : [])),
+    );
+    if (!rest.has("reveal")) rest.set("view", "results");
+    return <PrioritiesBoard slug={slug} items={priorityItems(session.answers)} continueHref={`/quiz/${slug}?${rest}`} />;
+  }
+
   const showRunner = access.canEdit && sp.view !== "results" && (!targetComplete || sp.take === "1" || !!edit);
 
   if (showRunner) {
@@ -78,9 +98,12 @@ export default async function QuizSessionPage({
   const reveal = access.canEdit && sp.reveal === "1";
   const unclaimedEditable = access.canEdit && !access.isOwner && !session.ownerId;
 
+  const top = result.ideologies[0];
+  const snapshot = session.targetMode === "quick";
+
   return (
-    <div className="mx-auto max-w-6xl space-y-6">
-      {unclaimedEditable && <QuizClaimBanner slug={slug} access={access} expires={expiresAt(session)} />}
+    <div className="mx-auto max-w-7xl space-y-4">
+      {unclaimedEditable && <QuizClaimBanner slug={slug} access={access} />}
       <QuizHero
         slug={slug}
         result={result}
@@ -89,32 +112,28 @@ export default async function QuizSessionPage({
         sharpened={reveal ? round : undefined}
         mode={session.targetMode}
         checkpointComplete={targetComplete}
+        footer={
+          access.canEdit && (
+            <QuizCheckpoint slug={slug} mode={session.targetMode} complete={targetComplete} deferredCount={session.deferred.length} />
+          )
+        }
       />
 
-      {access.canEdit && (
-        <QuizCheckpoint
-          slug={slug}
-          mode={session.targetMode}
-          complete={targetComplete}
-          deferredCount={session.deferred.length}
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-8">
+        <ResultsNav
+          groups={resultNav(result, access.canEdit, session.targetMode)}
+          name={snapshot ? `${FAMILIES[top.ideology.family].label} neighborhood` : top.ideology.name}
+          match={snapshot ? null : top.match}
+          color={familyColor(top.ideology.family)}
+          shareTitle={shareTitle(result, access.canEdit, session.targetMode)}
         />
-      )}
-
-      <div className={`grid gap-8 ${session.targetMode === "quick" ? "" : "lg:grid-cols-[minmax(0,1fr)_16rem]"}`}>
-        <div className="min-w-0 space-y-8">
-          <QuizResults slug={slug} result={result} canEdit={access.canEdit} mode={session.targetMode} />
-          {access.isOwner && (
-            <QuizOwnership slug={slug} access={access} visibility={session.visibility} expires={null} />
-          )}
-        </div>
-        {session.targetMode !== "quick" && <div className="space-y-4 lg:sticky lg:top-24 lg:self-start">
-          <div className="hidden lg:block">
-            <QuizSidebar slug={slug} result={result} canEdit={access.canEdit} mode={session.targetMode} />
-          </div>
-          {!access.canEdit && (
-            <QuizOwnership slug={slug} access={access} visibility={session.visibility} expires={null} />
-          )}
-        </div>}
+        <QuizResults
+          slug={slug}
+          result={result}
+          canEdit={access.canEdit}
+          mode={session.targetMode}
+          ownership={(access.isOwner || !access.canEdit) && <QuizOwnership slug={slug} access={access} visibility={session.visibility} />}
+        />
       </div>
     </div>
   );

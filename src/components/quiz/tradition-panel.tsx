@@ -2,11 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import Link from "next/link";
 import { X } from "lucide-react";
 import { ideologies } from "@/lib/quiz/ideologies";
 import { axisById } from "@/lib/quiz/axes";
 import { FAMILIES, familyColor } from "@/lib/quiz/families";
 import { AXIS_HUBS, type Hub } from "@/lib/quiz/hubs";
+import { LENS_VALUE_LABELS } from "@/lib/quiz/lenses";
 import { axisIds, type AxisId, type Ideology } from "@/lib/quiz/types";
 
 const LENS_LABELS: Record<string, string> = {
@@ -82,8 +84,11 @@ export function TraditionPanel({
       ["Governed by", ideology.authority],
       ["Nation defined by", ideology.nation],
       ["Law shaped by", ideology.tradition],
+      ["Existing order", ideology.change?.map((v) => LENS_VALUE_LABELS.change[v])],
+      ["Communist states", ideology.legacy?.map((v) => LENS_VALUE_LABELS.legacy[v])],
     ] as const
   ).filter(([, v]) => v && v.length);
+  const people = ideology.people?.filter((v) => v !== "none").map((v) => LENS_VALUE_LABELS.people[v]);
 
   const panel = (
     <>
@@ -115,6 +120,13 @@ export function TraditionPanel({
         <div key={ideology.id} className="quiz-step min-h-0 flex-1 overflow-y-auto px-5 pt-2 pb-5">
           <p className="text-sm leading-6 text-slate-600 dark:text-slate-300">{ideology.description}</p>
 
+          <Link
+            href={`/atlas/philosophies/${ideology.id}`}
+            className="mt-3 inline-flex text-sm font-semibold text-slate-950 underline decoration-slate-300 underline-offset-4 dark:text-white dark:decoration-slate-600"
+          >
+            Open full philosophy page →
+          </Link>
+
           <p className="mt-5 text-xs font-medium text-slate-500 dark:text-slate-400">Defined by</p>
           <div className="mt-2 space-y-3">
             {core.map((a) => (
@@ -135,7 +147,7 @@ export function TraditionPanel({
             </details>
           )}
 
-          {lenses.length > 0 && (
+          {(lenses.length > 0 || !!people?.length) && (
             <dl className="mt-5 space-y-1.5 text-sm">
               {lenses.map(([label, values]) => (
                 <div key={label} className="flex gap-3">
@@ -143,6 +155,12 @@ export function TraditionPanel({
                   <dd className="text-slate-800 dark:text-slate-200">{values!.map(lensLabel).join(", ")}</dd>
                 </div>
               ))}
+              {!!people?.length && (
+                <div className="flex gap-3">
+                  <dt className="w-32 shrink-0 text-slate-500 dark:text-slate-400">People first</dt>
+                  <dd className="text-slate-800 dark:text-slate-200">{people.join(", ")}</dd>
+                </div>
+              )}
             </dl>
           )}
 

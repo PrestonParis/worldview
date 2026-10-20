@@ -12,6 +12,7 @@ import {
   type AnswerSnapshot,
   type NextItem,
   type QuizAnswer,
+  type QuizState,
   type RefineTargets,
   roundLeft,
 } from "./engine";
@@ -19,7 +20,7 @@ import { explainQuestion, explainStatement } from "./explanations";
 import { axisById, groupLabel } from "./axes";
 import { CONFIDENCE_MEDIUM_SD } from "./results";
 import { axisIds, type IssueId } from "./types";
-import { retiredStatements } from "./bank";
+import { issues, retiredStatements } from "./bank";
 import { QUIZ_MODES, type DeferredQuestion, type QuizModeId } from "./modes";
 
 // `area` and `topic` say what a question is about (never which way an answer
@@ -67,10 +68,63 @@ export interface RunnerState {
   // Questions left in a "sharpen your result" round: refine targets on a
   // quiz that's otherwise finished. 0 outside one.
   refineLeft: number;
+  // Forecast to the end of this checkpoint (or sharpen round): questions
+  // left, and minutes at the respondent's own pace. 0 once complete.
+  questionsLeft: number;
+  minutesLeft: number;
+  // Some answered issue has no importance yet: the respondent ranks them on
+  // one board at the end instead of one question at a time.
+  needsPriorities: boolean;
+}
+
+export interface PriorityItem {
+  issueId: IssueId;
+  name: string;
+  screenerId: string;
+  importance: 1 | 2 | 3 | null;
+}
+
+// Answered issues for the importance board, in the order they were asked.
+// Skipped issues carry no position, so there's nothing to weigh.
+export function priorityItems(answers: QuizAnswer[]): PriorityItem[] {
+  const modules = new Map(issues.map((m) => [m.screener.id, m]));
+  return answers.flatMap((a) => {
+    const m = a.kind === "choice" && a.value !== null ? modules.get(a.id) : undefined;
+    if (!m || a.kind !== "choice") return [];
+    return [{ issueId: m.id, name: m.name, screenerId: m.screener.id, importance: a.importance ?? null }];
+  });
 }
 
 const RECENT = 15;
 const MEASURED_MIN_ANSWERS = 3;
+// Pace: the median gap between recent answers, ignoring breaks. Until there
+// are enough gaps, each mode's published timing.
+const PACE_GAPS = 12;
+const PACE_MIN_GAPS = 3;
+const PACE_BREAK_SECONDS = 300;
+const DEFAULT_SECONDS: Record<QuizModeId, number> = { quick: 12.5, standard: 12, deep: 14.5 };
+
+export function secondsPerAnswer(answers: QuizAnswer[], mode: QuizModeId): number {
+  const times = answers.flatMap((a) => (a.shown?.at ? [Date.parse(a.shown.at)] : [])).filter(Number.isFinite);
+  const gaps = times
+    .slice(1)
+    .map((t, i) => (t - times[i]) / 1000)
+    .filter((g) => g > 0 && g < PACE_BREAK_SECONDS)
+    .slice(-PACE_GAPS)
+    .sort((a, b) => a - b);
+  if (gaps.length < PACE_MIN_GAPS) return DEFAULT_SECONDS[mode];
+  return gaps[Math.floor(gaps.length / 2)];
+}
+
+// Questions left before this checkpoint: the screen target for Snapshot and
+// Profile; for the open-ended Deep map, extrapolated from progress so far.
+export function questionsLeft(answered: number, progress: number, mode: QuizModeId, refineLeft: number): number {
+  if (refineLeft > 0) return refineLeft;
+  const config = QUIZ_MODES[mode];
+  if (mode !== "deep") return Math.max(1, config.targetScreens - answered);
+  const extrapolated = progress >= 0.15 ? (answered * (1 - progress)) / progress : config.targetScreens - answered;
+  return Math.round(Math.max(1, Math.min(config.maximumScreens - answered, extrapolated)));
+}
 
 function serializeNext(item: NextItem): RunnerItem {
   if (item.kind === "statement") {
@@ -145,7 +199,16 @@ export function runnerState(
     targetScreens: mode === "deep" ? 0 : QUIZ_MODES[mode].targetScreens,
     deferredCount: deferred.length,
     refineLeft: roundLeft(state),
+    needsPriorities: priorityItems(answers).some((p) => p.importance === null),
+    ...forecast(answers, state, complete, mode),
   };
+}
+
+function forecast(answers: QuizAnswer[], state: QuizState, complete: boolean, mode: QuizModeId) {
+  const refineLeft = roundLeft(state);
+  if (complete && refineLeft === 0) return { questionsLeft: 0, minutesLeft: 0 };
+  const left = questionsLeft(answers.length, state.progress, mode, refineLeft);
+  return { questionsLeft: left, minutesLeft: Math.max(1, Math.ceil((left * secondsPerAnswer(answers, mode)) / 60)) };
 }
 
 const RESPONSE_LABELS: Record<number, string> = {
@@ -157,7 +220,7 @@ const RESPONSE_LABELS: Record<number, string> = {
   2: "Agree",
   3: "Strongly agree",
 };
-const IMPORTANCE_LABELS = { 1: "Low", 2: "Medium", 3: "High" } as const;
+export const IMPORTANCE_LABELS = { 1: "Low", 2: "Medium", 3: "High" } as const;
 
 // What the respondent saw and picked, rendered from the bank as it stands
 // when the answer is saved. Null for an item no longer in the bank (retired

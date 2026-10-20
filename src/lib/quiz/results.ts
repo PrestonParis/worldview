@@ -2,23 +2,11 @@
 // answers that moved each axis, per-issue policy profiles, and distance to
 // every ideology in the catalog. Pure; recomputed on every view.
 
-import { axisIds, lensIds, type AxisId, type Ideology, type Lens, type LensId } from "./types";
-import { acceptedLens } from "./lenses";
+import { axisIds, internalSignalIds, lensIds, type AxisId, type Ideology, type InternalSignalId, type InternalSignals, type Lens, type LensId } from "./types";
+import { acceptedLens, LENS_VALUE_LABELS } from "./lenses";
 import { axisById } from "./axes";
 import { ideologies } from "./ideologies";
-import {
-  answerEvidence,
-  computeState,
-  lensAnswers,
-  moments,
-  NO_FIT_OPTION_ID,
-  questionById,
-  statementById,
-  type QuizAnswer,
-  type QuizState,
-  type RefineTargets,
-  roundLeft,
-} from "./engine";
+import { answerEvidence, computeState, itemWasShown, lensAnswers, moments, NO_FIT_OPTION_ID, questionById, statementById, type QuizAnswer, type QuizState, type RefineTargets, roundLeft } from "./engine";
 
 export type Confidence = "high" | "medium" | "low";
 
@@ -90,15 +78,7 @@ export interface QuizResult {
   roundLeft: number; // questions left in a sharpen round, 0 outside one
 }
 
-const STATEMENT_LABELS: Record<number, string> = {
-  [-3]: "Strongly disagreed",
-  [-2]: "Disagreed",
-  [-1]: "Somewhat disagreed",
-  0: "Neutral",
-  1: "Somewhat agreed",
-  2: "Agreed",
-  3: "Strongly agreed",
-};
+const STATEMENT_LABELS: Record<number, string> = { [-3]: "Strongly disagreed", [-2]: "Disagreed", [-1]: "Somewhat disagreed", 0: "Neutral", 1: "Somewhat agreed", 2: "Agreed", 3: "Strongly agreed" };
 
 export const CONFIDENCE_HIGH_SD = 0.15;
 export const CONFIDENCE_MEDIUM_SD = 0.25;
@@ -114,6 +94,29 @@ const SECONDARY_WEIGHT = 0.5;
 // core axis. Categorical answers are explicit, so they're treated as precise.
 const LENS_GAP = 1.2;
 const LENS_SD = 0.1;
+// A match is worth less the more values a tradition accepts: one that takes
+// almost any answer learns little by matching yours. The matched gap grows
+// with log(accepted) / log(possible), from 0 for a tradition that accepts a
+// single value to this for one that accepts every value.
+const LENS_BREADTH_GAP = 0.5;
+const breadthGap = (lens: LensId, accepted: number) => {
+  const n = Object.keys(LENS_VALUE_LABELS[lens]).length;
+  return (LENS_BREADTH_GAP * Math.log(Math.min(accepted, n))) / Math.log(n);
+};
+// A tradition defined by a strong stand the respondent was never asked about
+// (the race axis after a skipped Race & nation module, or in a Snapshot) can't
+// claim the match by default: the unmeasured core axis counts as a moderate
+// gap, at the weight of a moderately measured axis. Likewise a tradition that
+// puts a particular people first, when the respondent never said whose
+// interests come first.
+const MISSING_MIN = 0.5;
+const MISSING_GAP = 0.5;
+const MISSING_SD = CONFIDENCE_MEDIUM_SD;
+const MISSING_LENS_GAP = LENS_GAP / 2;
+// Internal match signals behave like one moderately precise, non-public axis.
+// They refine tradition ranking without appearing in result charts or copy.
+const INTERNAL_SIGNAL_SD = 0.2;
+const INTERNAL_IDEOLOGY_SIGNALS: Partial<Record<string, InternalSignals>> = { ethnonationalism: { antisemitism: 0.3 }, "white-nationalism": { antisemitism: 0.55 }, "national-socialism": { antisemitism: 1 }, coughlinism: { antisemitism: 0.9 }, groyper: { antisemitism: 1 } };
 const TOP_INFLUENCES = 3;
 
 // Match percentage from distance, linear between two calibrated ends
@@ -179,14 +182,7 @@ function influences(answers: QuizAnswer[], full: Record<AxisId, number[]>): Reco
       const z = w.reduce((x, y) => x + y, 0);
       const shift = fullMeans[axis] - moments(w.map((x) => x / z)).mean;
       if (Math.abs(shift) < 1e-4) continue;
-      out[axis].push({
-        answerIndex: i,
-        kind: a.kind,
-        itemId: a.id,
-        ...describe(a),
-        toward: shift < 0 ? "negative" : "positive",
-        shift: Math.abs(shift),
-      });
+      out[axis].push({ answerIndex: i, kind: a.kind, itemId: a.id, ...describe(a), toward: shift < 0 ? "negative" : "positive", shift: Math.abs(shift) });
     }
   });
   for (const axis of axisIds) {
@@ -207,7 +203,30 @@ function lowReason(sd: number, answered: number, infl: Influence[], conflict: bo
   return neg > 0 && pos > 0 ? "mixed" : "few";
 }
 
-export function ideologyMatches(axes: AxisResult[], lenses: Lens = {}): IdeologyMatch[] {
+export function internalSignalAnswers(answers: QuizAnswer[]): InternalSignals {
+  const values = new Map<InternalSignalId, number[]>();
+  for (const answer of answers) {
+    if (answer.kind === "statement" && answer.value !== null) {
+      const value = answer.id === "race.16" ? (answer.value + 3) / 6 : answer.id === "race.21" ? (3 - answer.value) / 6 : undefined;
+      if (value !== undefined) values.set("antisemitism", [...(values.get("antisemitism") ?? []), value]);
+      continue;
+    }
+    if (answer.kind !== "choice" || answer.value === null) continue;
+    const question = questionById.get(answer.id)?.question;
+    const ids = Array.isArray(answer.value) ? answer.value : [answer.value];
+    for (const id of ids) {
+      const internal = question?.options.find((option) => option.id === id)?.internal;
+      for (const signal of internalSignalIds) {
+        const value = internal?.[signal];
+        if (value === undefined) continue;
+        values.set(signal, [...(values.get(signal) ?? []), value]);
+      }
+    }
+  }
+  return Object.fromEntries([...values].map(([signal, observations]) => [signal, observations.reduce((sum, value) => sum + value, 0) / observations.length]));
+}
+
+export function ideologyMatches(axes: AxisResult[], lenses: Lens = {}, internal: InternalSignals = {}): IdeologyMatch[] {
   const byAxis = new Map(axes.map((a) => [a.axis, a]));
   return ideologies
     .map((ideology) => {
@@ -218,7 +237,16 @@ export function ideologyMatches(axes: AxisResult[], lenses: Lens = {}): Ideology
       for (const axis of axisIds) {
         const them = ideology.position[axis];
         const you = byAxis.get(axis);
-        if (!you) continue;
+        // Unmeasured (the race axis in a Snapshot): nothing to compare, but a
+        // defining stand left unasked counts against the tradition.
+        if (!you || you.answered === 0) {
+          if (core.has(axis) && Math.abs(them) >= MISSING_MIN) {
+            const w = 1 / (MISSING_SD ** 2 + 0.1 ** 2) / 100;
+            num += w * MISSING_GAP ** 2;
+            den += w;
+          }
+          continue;
+        }
         // Precision weighting: well-measured axes count more.
         const w = (core.has(axis) ? 1 : SECONDARY_WEIGHT) / (you.sd ** 2 + 0.1 ** 2) / 100;
         const gap = Math.abs(you.mean - them);
@@ -231,12 +259,25 @@ export function ideologyMatches(axes: AxisResult[], lenses: Lens = {}): Ideology
       for (const lens of lensIds) {
         const you = lenses[lens];
         const accepted = acceptedLens(ideology, lens);
+        const w = 1 / (LENS_SD ** 2 + 0.1 ** 2) / 100;
+        if (!you && lens === "people" && ideology.people && !ideology.people.includes("none")) {
+          num += w * MISSING_LENS_GAP ** 2;
+          den += w;
+          continue;
+        }
         if (!you || !accepted) continue;
         const match = accepted.includes(you);
-        const w = 1 / (LENS_SD ** 2 + 0.1 ** 2) / 100;
-        num += w * (match ? 0 : LENS_GAP ** 2);
+        num += w * (match ? breadthGap(lens, accepted.length) ** 2 : LENS_GAP ** 2);
         den += w;
         lensRows.push({ lens, you, accepted, match });
+      }
+      for (const signal of internalSignalIds) {
+        const you = internal[signal];
+        if (you === undefined) continue;
+        const them = INTERNAL_IDEOLOGY_SIGNALS[ideology.id]?.[signal] ?? 0;
+        const w = 1 / (INTERNAL_SIGNAL_SD ** 2 + 0.1 ** 2) / 100;
+        num += w * (you - them) ** 2;
+        den += w;
       }
       const distance = Math.sqrt(num / den);
       return { ideology, distance, match: matchPercent(distance), comparisons, lenses: lensRows };
@@ -250,15 +291,7 @@ export function computeResult(answers: QuizAnswer[], refine: RefineTargets = {},
 
   const axes: AxisResult[] = axisIds.map((axis) => {
     const s = st.axes[axis];
-    return {
-      axis,
-      mean: s.mean,
-      sd: s.sd,
-      answered: s.answered,
-      confidence: confidenceFor(s.sd),
-      lowReason: lowReason(s.sd, s.answered, infl[axis], s.conflict),
-      influences: infl[axis],
-    };
+    return { axis, mean: s.mean, sd: s.sd, answered: s.answered, confidence: confidenceFor(s.sd), lowReason: lowReason(s.sd, s.answered, infl[axis], s.conflict), influences: infl[axis] };
   });
 
   const profiles: IssueProfile[] = st.issues
@@ -267,18 +300,18 @@ export function computeResult(answers: QuizAnswer[], refine: RefineTargets = {},
       issueId: i.module.id,
       name: i.module.name,
       skipped: i.skipped,
-      importance:
-        (answers.find((answer) => answer.kind === "choice" && answer.id === i.module.screener.id) as
-          | Extract<QuizAnswer, { kind: "choice" }>
-          | undefined)?.importance ?? null,
+      importance: (answers.find((answer) => answer.kind === "choice" && answer.id === i.module.screener.id) as Extract<QuizAnswer, { kind: "choice" }> | undefined)?.importance ?? null,
       attributes: [i.module.screener, ...i.module.followUps].flatMap((q) => {
         const v = i.values.get(q.id);
         if (!v) return [];
         if (q.selection === "checklist") {
-          // Every item has a stance, checked or not.
-          return q.options.flatMap((o) =>
-            o.unchecked ? [{ questionId: q.id, attribute: q.attribute, stance: v.optionIds.includes(o.id) ? o.stance : o.unchecked.stance }] : [],
-          );
+          // Every item shown has a stance, checked or not.
+          const answer = answers.find((x) => x.kind === "choice" && x.id === q.id)!;
+          return q.options.flatMap((o) => {
+            if (!o.unchecked) return [];
+            if (v.optionIds.includes(o.id)) return [{ questionId: q.id, attribute: q.attribute, stance: o.stance }];
+            return itemWasShown(answer, o) ? [{ questionId: q.id, attribute: q.attribute, stance: o.unchecked.stance }] : [];
+          });
         }
         return v.optionIds.flatMap((id) => {
           if (id === NO_FIT_OPTION_ID) {
@@ -291,16 +324,8 @@ export function computeResult(answers: QuizAnswer[], refine: RefineTargets = {},
     }));
 
   const lenses = lensAnswers(answers);
-  return {
-    axes,
-    profiles,
-    lenses,
-    ideologies: ideologyMatches(axes, lenses),
-    answeredCount: answers.length,
-    complete: st.complete,
-    progress: st.progress,
-    roundLeft: roundLeft(st),
-  };
+  const internal = internalSignalAnswers(answers);
+  return { axes, profiles, lenses, ideologies: ideologyMatches(axes, lenses, internal), answeredCount: answers.length, complete: st.complete, progress: st.progress, roundLeft: roundLeft(st) };
 }
 
 export function poleLabel(axis: AxisId, toward: "negative" | "positive"): string {

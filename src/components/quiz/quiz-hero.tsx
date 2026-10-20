@@ -21,7 +21,7 @@ import { card, ghostButton, primaryButton } from "./styles";
 // the answered axes).
 const FIT_WIDTH = 0.08;
 
-// "54 questions · 10–12 min", from the mode's own settings. The deep map is
+// "76 questions · 14–16 min", from the mode's own settings. The deep map is
 // adaptive, so its count is approximate.
 const length = (m: QuizModeId) =>
   `${m === "deep" ? "~" : ""}${QUIZ_MODES[m].targetScreens} questions · ${QUIZ_MODES[m].minutes.replace(/^about /, "").replace(/minutes$/, "min")}`;
@@ -47,7 +47,24 @@ const fromHash = () => {
 // Page-load entrance: each block rises in turn (.quiz-enter, globals.css).
 const delay = (ms: number) => ({ "--d": `${ms}ms` }) as React.CSSProperties;
 
-export function QuizHero({ mode, topic, topicName }: { mode: QuizModeId; topic: IssueId | null; topicName: string | null }) {
+// A returning visitor's latest finished result.
+export interface LastResult {
+  slug: string;
+  when: string;
+  top: string[]; // closest tradition ids, best first
+}
+
+export function QuizHero({
+  mode,
+  topic,
+  topicName,
+  last = null,
+}: {
+  mode: QuizModeId;
+  topic: IssueId | null;
+  topicName: string | null;
+  last?: LastResult | null;
+}) {
   const [values, setValues] = useState<number[]>([]);
   const step = values.length;
   const done = step >= OPENERS.length;
@@ -101,6 +118,9 @@ export function QuizHero({ mode, topic, topicName }: { mode: QuizModeId; topic: 
   );
   const positions = useMemo(() => familyLayout(ranked ? ranked.map(({ i }) => i.id) : null), [ranked]);
   const closest = ranked ? ranked.slice(0, 3) : [];
+  // Before any answers, a returning visitor's map rings their last result.
+  const lastTop = last ? last.top.flatMap((id) => ideologies.filter((i) => i.id === id)) : [];
+  const ringed = ranked ? closest.map(({ i }) => i) : lastTop;
 
   // The open tradition panel, kept in step with the URL hash.
   const [selected, setSelected] = useState<string | null>(null);
@@ -143,6 +163,15 @@ export function QuizHero({ mode, topic, topicName }: { mode: QuizModeId; topic: 
           </h1>
         </div>
       </header>
+      {last && lastTop[0] && (
+        <p style={delay(40)} className="quiz-enter mt-4 max-w-2xl text-[15px] leading-6 text-slate-950 dark:text-white">
+          Welcome back. On {last.when} you landed nearest{" "}
+          <a href={`/quiz/${last.slug}?view=results`} className="font-semibold underline decoration-slate-300 underline-offset-4 hover:decoration-current dark:decoration-slate-600">
+            {lastTop[0].name}
+          </a>
+          . Answer again to see what&rsquo;s moved; every result stays saved.
+        </p>
+      )}
       <p style={delay(60)} className="quiz-enter mt-3 max-w-2xl text-[15px] leading-6 text-slate-600 dark:text-slate-300">
         {topicName ? `Start with three quick reactions, then the quiz picks up with ${topicName}.` : "Three quick reactions put you on the map. They count toward the full quiz."}{" "}
         <span className="text-slate-500 dark:text-slate-400">
@@ -169,20 +198,11 @@ export function QuizHero({ mode, topic, topicName }: { mode: QuizModeId; topic: 
               <p className="mt-4 max-w-lg text-[15px] leading-6 text-slate-600 dark:text-slate-300">
                 That&rsquo;s three answers on three of {axisIds.length} dimensions. Keep going to place yourself on all of them, issue by issue.
               </p>
-              <div className="mt-7 flex flex-wrap items-center gap-3">
-                <form action={start(mode)}>
-                  <Submit className={primaryButton} pendingLabel="Starting…">
-                    Continue with the {QUIZ_MODES[mode].shortName.toLowerCase()}
-                    <span className="font-normal opacity-60">· {length(mode)}</span>
-                    <ArrowRight size={17} aria-hidden="true" className="transition-transform group-hover:translate-x-0.5" />
-                  </Submit>
-                </form>
-                <button type="button" onClick={resetOpeners} className={ghostButton}>
-                  <RotateCcw size={14} aria-hidden="true" />
-                  Start over
-                </button>
-              </div>
-              <ModeLinks label="Or go" current={mode} render={start} />
+              <ModeStack current={mode} render={start} />
+              <button type="button" onClick={resetOpeners} className={`${ghostButton} mt-3 -ml-3`}>
+                <RotateCcw size={14} aria-hidden="true" />
+                Start over
+              </button>
             </div>
           ) : (
             <div key={step} className="quiz-step">
@@ -211,8 +231,9 @@ export function QuizHero({ mode, topic, topicName }: { mode: QuizModeId; topic: 
           <IdeologyMap
             positions={positions}
             fit={fit}
-            closest={closest.map(({ i }) => i.id)}
-            leading={closest[0]?.i.family ?? null}
+            closest={ringed.map((i) => i.id)}
+            leading={ringed[0]?.family ?? null}
+            showingLast={!ranked && lastTop.length > 0}
             selected={selected}
             onSelect={openTradition}
             panel={
@@ -258,6 +279,33 @@ function ModeLinks({ label, current, render }: { label: string; current: QuizMod
   );
 }
 
+// Every checkpoint as one same-size row, the default first and filled.
+function ModeStack({ current, render }: { current: QuizModeId; render: (m: QuizModeId) => () => Promise<void> }) {
+  const order = [current, ...quizModeIds.filter((m) => m !== current)];
+  return (
+    <div className="mt-7 grid max-w-md gap-2.5">
+      {order.map((m) => (
+        <form key={m} action={render(m)}>
+          <Submit
+            pendingLabel="Starting…"
+            className={`group flex w-full items-center justify-between gap-4 rounded-xl border px-5 py-3.5 text-left text-[15px] transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
+              m === current
+                ? "border-slate-950 bg-slate-950 text-white hover:bg-slate-800 dark:border-white dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200"
+                : "border-slate-200 bg-white text-slate-950 hover:border-slate-400 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:hover:border-slate-600"
+            }`}
+          >
+            <span className="font-semibold">{m === current ? `Continue with the ${QUIZ_MODES[m].shortName.toLowerCase()}` : QUIZ_MODES[m].shortName}</span>
+            <span className="flex items-center gap-2 text-sm opacity-60">
+              {length(m)}
+              <ArrowRight size={16} aria-hidden="true" className="transition-transform group-hover:translate-x-0.5" />
+            </span>
+          </Submit>
+        </form>
+      ))}
+    </div>
+  );
+}
+
 function Submit({ className, pendingLabel, children }: { className: string; pendingLabel: string; children: React.ReactNode }) {
   const { pending } = useFormStatus();
   return (
@@ -275,6 +323,7 @@ function IdeologyMap({
   fit,
   closest,
   leading,
+  showingLast,
   selected,
   onSelect,
   panel,
@@ -283,6 +332,7 @@ function IdeologyMap({
   fit: number[];
   closest: string[];
   leading: IdeologyFamily | null;
+  showingLast: boolean;
   selected: string | null;
   onSelect: (id: string) => void;
   panel: React.ReactNode;
@@ -293,7 +343,7 @@ function IdeologyMap({
     <div className={`${card} relative p-3 sm:p-4`}>
       <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 px-1 pb-3">
         <p className="text-sm font-medium text-slate-950 dark:text-white">{ideologies.length} political traditions, grouped by family</p>
-        <p className="text-xs text-slate-500 dark:text-slate-400">Click any dot to read about it</p>
+        <p className="text-xs text-slate-500 dark:text-slate-400">{showingLast ? "Rings mark your last result" : "Click any dot to read about it"}</p>
       </div>
       <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-slate-50 dark:bg-slate-950/60">
         {/* Family cells: a label, and a soft tint on the family you're closest to. */}
