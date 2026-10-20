@@ -90,6 +90,24 @@ export async function claimIfAllowed(slug: string, visibility: QuizVisibility): 
   return claimed;
 }
 
+// Every quiz this visitor can call theirs, newest first: claimed by their
+// account, or unclaimed and started in this browser (it holds the edit cookie).
+export async function viewerQuizSessions(): Promise<{ session: QuizSession; claimed: boolean }[]> {
+  const userId = await currentUserId();
+  const prefix = editCookieName("");
+  const held = (await cookies())
+    .getAll()
+    .filter((c) => c.name.startsWith(prefix) && SLUG_PATTERN.test(c.name.slice(prefix.length)))
+    .map((c) => c.name.slice(prefix.length))
+    .slice(0, 50);
+  const [owned, browser] = await Promise.all([userId ? quizDb.listQuizSessions(userId) : [], quizDb.getQuizSessionsBySlugs(held)]);
+  const unclaimed: QuizSession[] = [];
+  for (const s of browser) if (!s.ownerId && (await holdsEditCookie(s))) unclaimed.push(s);
+  return [...owned.map((session) => ({ session, claimed: true })), ...unclaimed.map((session) => ({ session, claimed: false }))].sort(
+    (a, b) => b.session.updatedAt.getTime() - a.session.updatedAt.getTime(),
+  );
+}
+
 // Where "Sign in to claim" sends a signed-out visitor: sign in (or register),
 // then claim automatically and land on the results.
 export function signInToClaimHref(slug: string): string {

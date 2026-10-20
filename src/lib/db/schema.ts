@@ -1339,9 +1339,8 @@ export const quizSessions = pgTable(
   ],
 );
 
-// Anonymized answer logs of unclaimed quizzes, copied by the purge job
-// (scripts/purge-quizzes.mjs) before the session is deleted. Nothing links a
-// row back to its quiz link or a person.
+// Anonymized historical answer logs. Nothing links a row back to its quiz
+// result URL or a person. Live URL-addressable sessions remain in quizSessions.
 export const quizResponses = pgTable(
   "quiz_responses",
   {
@@ -1394,6 +1393,20 @@ export const profiles = pgTable(
   },
   (table) => [check("profiles_role_check", sql`${table.role} in ('member', 'editor')`)],
 );
+
+// The durable, user-owned layer above individual quiz sessions. Political
+// answers remain in quiz_sessions; this only stores explicit saves and the
+// results of smaller Atlas assessments.
+export const atlasProfiles = pgTable("atlas_profiles", {
+  ownerId: uuid("owner_id")
+    .primaryKey()
+    .references(() => profiles.id, { onDelete: "cascade" }),
+  savedPhilosophies: jsonb("saved_philosophies").notNull().default(sql`'[]'::jsonb`),
+  economicResult: jsonb("economic_result"),
+  authorityResult: jsonb("authority_result"),
+  foreignPolicyResult: jsonb("foreign_policy_result"),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
 
 // ── Data lake catalog and polls (supabase/sql/2026-10-16-data-lake.sql) ──
 // Source files and Parquet extracts live in Supabase Storage (`raw` and

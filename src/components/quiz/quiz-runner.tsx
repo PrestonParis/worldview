@@ -4,10 +4,17 @@ import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Check, ChevronDown, CircleHelp } from "lucide-react";
-import { deferQuestionAction, reviewDeferredAction, runnerStateAction, sharpenAction, submitAnswerAction } from "@/lib/actions/quiz";
+import {
+  deferQuestionAction,
+  reviewDeferredAction,
+  runnerStateAction,
+  sharpenAction,
+  submitAnswerAction,
+} from "@/lib/actions/quiz";
 import type { AnsweredItem, RunnerItem, RunnerState } from "@/lib/quiz/runner";
 import type { QuizAnswer } from "@/lib/quiz/engine";
 import { ROUND_SIZES, type SharpenOutcome } from "@/lib/quiz/refine";
+import { readStoredNumber, writeStoredNumber } from "@/lib/browser/storage";
 import { AgreeScale, SCALE } from "./agree-scale";
 import { card, ghostButton, kbd, primaryButton, segmented, segmentedItem } from "./styles";
 
@@ -15,16 +22,10 @@ import { card, ghostButton, kbd, primaryButton, segmented, segmentedItem } from 
 // restored with an older state than the one last seen.
 const seenKey = (slug: string) => `quiz-answered:${slug}`;
 function readSeen(slug: string): number {
-  try {
-    return Number(sessionStorage.getItem(seenKey(slug)) ?? 0);
-  } catch {
-    return 0;
-  }
+  return readStoredNumber("session", seenKey(slug));
 }
 function writeSeen(slug: string, count: number) {
-  try {
-    sessionStorage.setItem(seenKey(slug), String(count));
-  } catch {}
+  writeStoredNumber("session", seenKey(slug), count);
 }
 
 // Showing an earlier answer to change it: either stepped back to from the
@@ -48,15 +49,21 @@ export function QuizRunner({
   const revealHref = round
     ? `/quiz/${slug}?${new URLSearchParams({ reveal: "1", round: String(round.round), was: round.was.id, wasPct: String(round.was.match) })}`
     : `/quiz/${slug}?reveal=1`;
+  // Issue importance is ranked on one board before the results.
+  const finishHref = useCallback(
+    (needsPriorities: boolean) => (needsPriorities ? `${revealHref}&view=priorities` : revealHref),
+    [revealHref],
+  );
   // A round resumed later arrives without its URL params; its size is then
   // whatever was left on arrival.
   const [roundTotal] = useState(() => Math.max(round?.round ?? 0, initial.refineLeft));
   const [state, setState] = useState(initial);
-  const [editing, setEditing] = useState<Editing | null>(initialEdit ? { answered: initialEdit, recentIndex: null } : null);
+  const [editing, setEditing] = useState<Editing | null>(
+    initialEdit ? { answered: initialEdit, recentIndex: null } : null,
+  );
   const [error, setError] = useState<string | null>(null);
   const [multi, setMulti] = useState<string[]>([]);
   const [single, setSingle] = useState<string | null>(null);
-  const [importance, setImportance] = useState<1 | 2 | 3 | null>(null);
   const [submitting, startTransition] = useTransition();
   // Known stale only on a client-side restore; a fresh server render is
   // current, so this is false during hydration.
@@ -80,7 +87,7 @@ export function QuizRunner({
         if (res.data.answeredCount === initial.answeredCount) return;
         setState(res.data);
         if (res.data.complete && !res.data.next) {
-          router.replace(round ? revealHref : `/quiz/${slug}`);
+          router.replace(round ? finishHref(res.data.needsPriorities) : `/quiz/${slug}`);
           router.refresh();
         }
       })
@@ -90,18 +97,18 @@ export function QuizRunner({
     return () => {
       cancelled = true;
     };
-  }, [slug, initial.answeredCount, initialEdit, router, round, revealHref]);
+  }, [slug, initial.answeredCount, initialEdit, router, round, finishHref]);
 
   const item: RunnerItem | null = editing ? editing.answered.item : state.next;
   const current = editing ? editing.answered.value : undefined;
 
   const submit = useCallback(
-    (value: number | string | string[] | null, answerImportance?: 1 | 2 | 3) => {
+    (value: number | string | string[] | null) => {
       if (!item || pending) return;
       const answer: QuizAnswer =
         item.kind === "statement"
           ? { kind: "statement", id: item.id, value: value as number | null }
-          : { kind: "choice", id: item.id, value: value as string | string[] | null, importance: answerImportance };
+          : { kind: "choice", id: item.id, value: value as string | string[] | null };
       setError(null);
       answeredHere.current = true;
       startTransition(async () => {
@@ -115,15 +122,14 @@ export function QuizRunner({
         setEditing(null);
         setMulti([]);
         setSingle(null);
-        setImportance(null);
         setState(res.data);
         if (res.data.complete && (!res.data.next || wasDirectEdit)) {
-          router.replace(wasDirectEdit ? `/quiz/${slug}` : revealHref);
+          router.replace(wasDirectEdit ? `/quiz/${slug}` : finishHref(res.data.needsPriorities));
           router.refresh();
         }
       });
     },
-    [item, pending, slug, editing, router, revealHref],
+    [item, pending, slug, editing, router, finishHref],
   );
 
   const defer = useCallback(() => {
@@ -136,7 +142,6 @@ export function QuizRunner({
       setEditing(null);
       setMulti([]);
       setSingle(null);
-      setImportance(null);
       setState(res.data);
     });
   }, [item, pending, slug]);
@@ -146,7 +151,6 @@ export function QuizRunner({
     if (idx < 0) return;
     setMulti([]);
     setSingle(null);
-    setImportance(null);
     setEditing({ answered: state.recent[idx], recentIndex: idx });
   }, [editing, state.recent]);
   const canGoBack = editing ? (editing.recentIndex ?? state.recent.length) > 0 : state.recent.length > 0;
@@ -187,15 +191,16 @@ export function QuizRunner({
       : [];
   const selectedSingle =
     item?.kind === "choice" && item.selection === "single"
-      ? single ?? (typeof current === "string" ? current : null)
+      ? (single ?? (typeof current === "string" ? current : null))
       : null;
-  const selectedImportance = importance ?? editing?.answered.importance ?? 2;
 
   const toggleMultiple = (id: string, exclusive: boolean) => {
     const base = selectedMultiple;
     if (base.includes(id)) return setMulti(base.filter((value) => value !== id));
     if (exclusive) return setMulti([id]);
-    const exclusiveIds = new Set(item?.kind === "choice" ? item.options.filter((o) => o.exclusive).map((o) => o.id) : []);
+    const exclusiveIds = new Set(
+      item?.kind === "choice" ? item.options.filter((o) => o.exclusive).map((o) => o.id) : [],
+    );
     setMulti([...base.filter((value) => !exclusiveIds.has(value)), id]);
   };
 
@@ -204,7 +209,7 @@ export function QuizRunner({
   const canConfirm = !pending && (multiChoice ? selectedMultiple.length > 0 : !!selectedSingle);
   const confirm = () => {
     if (!needsConfirm || !canConfirm) return;
-    submit(multiChoice ? selectedMultiple : selectedSingle!, item?.kind === "choice" && item.isScreener ? selectedImportance : undefined);
+    submit(multiChoice ? selectedMultiple : selectedSingle!);
   };
   useEffect(() => {
     confirmRef.current = confirm;
@@ -218,10 +223,12 @@ export function QuizRunner({
   // so the question is the whole page. Follows the site theme.
   return (
     <div className="-mx-4 -my-8 min-h-[calc(100dvh-3.5rem)] text-slate-900 sm:-mx-8 dark:text-slate-100">
-      <header className="sticky top-0 z-10 border-b border-slate-950/6 bg-[#f7f8fa]/85 backdrop-blur-md dark:border-white/6 dark:bg-[#080b12]/85">
+      <header className="sticky top-14 z-10 border-b border-slate-950/6 bg-[#f7f8fa]/85 backdrop-blur-md dark:border-white/6 dark:bg-[#080b12]/85">
         <div className="mx-auto flex max-w-2xl items-center gap-4 px-4 py-3 sm:px-6">
           <p className="shrink-0 text-sm">
-            <span className="font-medium text-slate-950 dark:text-white">{inRound ? "Sharpening" : state.modeName}</span>
+            <span className="font-medium text-slate-950 dark:text-white">
+              {inRound ? "Sharpening" : state.modeName}
+            </span>
             <span className="ml-2 font-mono text-xs text-slate-500 tabular-nums dark:text-slate-400">
               {inRound
                 ? `${Math.min(roundDone + 1, roundTotal)}/${roundTotal}`
@@ -229,6 +236,14 @@ export function QuizRunner({
                   ? `${state.answeredCount}/${state.targetScreens}`
                   : `${state.answeredCount} answered`}
             </span>
+            {state.minutesLeft > 0 && (
+              <span
+                className="ml-2 text-xs text-slate-500 dark:text-slate-400"
+                title={`About ${state.questionsLeft} more ${state.questionsLeft === 1 ? "question" : "questions"} at your pace`}
+              >
+                · ~{state.minutesLeft} min left
+              </span>
+            )}
           </p>
           <div
             className="h-1 min-w-0 flex-1 overflow-hidden rounded-full bg-slate-950/8 dark:bg-white/10"
@@ -239,7 +254,10 @@ export function QuizRunner({
             aria-valuenow={Math.round(progress * 100)}
             title={`${state.axesMeasured}/${state.axesTotal} dimensions measured · ${state.issuesDone}/${state.issuesTotal} issues covered`}
           >
-            <div className="h-full rounded-full bg-slate-950 transition-[width] duration-500 ease-out dark:bg-white" style={{ width: `${Math.max(2, progress * 100)}%` }} />
+            <div
+              className="h-full rounded-full bg-slate-950 transition-[width] duration-500 ease-out dark:bg-white"
+              style={{ width: `${Math.max(2, progress * 100)}%` }}
+            />
           </div>
           {inRound ? (
             <Link href={`/quiz/${slug}?view=results`} className={`${ghostButton} shrink-0`}>
@@ -255,10 +273,17 @@ export function QuizRunner({
 
       <div className="mx-auto max-w-2xl px-4 pt-10 pb-10 sm:px-6 sm:pt-16">
         {item ? (
-          <section key={`${item.kind}:${item.id}`} aria-busy={pending} className={`quiz-step transition-opacity ${pending ? "opacity-60" : ""}`}>
+          <section
+            key={`${item.kind}:${item.id}`}
+            aria-busy={pending}
+            className={`quiz-step transition-opacity ${pending ? "opacity-60" : ""}`}
+          >
             <div className="flex flex-wrap items-center justify-between gap-3">
               <p className="text-sm text-slate-500 dark:text-slate-400">
-                {item.area} <span aria-hidden="true" className="text-slate-300 dark:text-slate-700">·</span>{" "}
+                {item.area}{" "}
+                <span aria-hidden="true" className="text-slate-300 dark:text-slate-700">
+                  ·
+                </span>{" "}
                 <span className="font-medium text-slate-700 dark:text-slate-300">{item.topic}</span>
               </p>
               {editing && (
@@ -281,7 +306,11 @@ export function QuizRunner({
 
             {item.kind === "statement" ? (
               <div className={`${card} mt-8 px-4 py-6 sm:px-8 sm:py-8`}>
-                <AgreeScale value={typeof current === "number" ? current : null} onPick={(v) => submit(v)} disabled={pending} />
+                <AgreeScale
+                  value={typeof current === "number" ? current : null}
+                  onPick={(v) => submit(v)}
+                  disabled={pending}
+                />
               </div>
             ) : (
               <div className="mt-8 flex flex-col gap-2">
@@ -307,7 +336,9 @@ export function QuizRunner({
                       {multiChoice ? (
                         <span
                           className={`flex size-5 shrink-0 items-center justify-center rounded-md transition-colors ${
-                            selected ? "bg-slate-950 text-white dark:bg-white dark:text-slate-950" : "ring-1 ring-slate-950/20 group-hover:ring-slate-950/40 dark:ring-white/25"
+                            selected
+                              ? "bg-slate-950 text-white dark:bg-white dark:text-slate-950"
+                              : "ring-1 ring-slate-950/20 group-hover:ring-slate-950/40 dark:ring-white/25"
                           }`}
                         >
                           {selected && <Check size={13} strokeWidth={3} aria-hidden="true" />}
@@ -324,38 +355,26 @@ export function QuizRunner({
                     </button>
                   );
                 })}
-                {item.isScreener && (
-                  <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-                    <p className="text-sm text-slate-600 dark:text-slate-300">How important is this issue to you?</p>
-                    <div className={segmented} role="radiogroup" aria-label="Importance">
-                      {([1, 2, 3] as const).map((level) => (
-                        <button
-                          key={level}
-                          type="button"
-                          role="radio"
-                          aria-checked={selectedImportance === level}
-                          onClick={() => setImportance(level)}
-                          className={segmentedItem(selectedImportance === level)}
-                        >
-                          {level === 1 ? "Low" : level === 2 ? "Medium" : "High"}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
                 {item.selection === "checklist" && (
                   <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
                     Checked policies count as support. Policies left unchecked count as opposition.
                   </p>
                 )}
                 {needsConfirm && (
-                  <button type="button" disabled={!canConfirm} onClick={confirm} className={`${primaryButton} mt-3 w-full`}>
+                  <button
+                    type="button"
+                    disabled={!canConfirm}
+                    onClick={confirm}
+                    className={`${primaryButton} mt-3 w-full`}
+                  >
                     {item.selection === "checklist"
                       ? `Save ${selectedMultiple.some((id) => item.options.find((o) => o.id === id)?.exclusive) ? "no supported policies" : `${selectedMultiple.length} supported`}`
                       : item.selection === "multiple"
                         ? `Continue with ${selectedMultiple.length} ${selectedMultiple.length === 1 ? "selection" : "selections"}`
                         : "Continue"}
-                    <kbd className="ml-1 rounded bg-white/15 px-1.5 py-0.5 font-mono text-[11px] font-medium dark:bg-slate-950/10">↵</kbd>
+                    <kbd className="ml-1 rounded bg-white/15 px-1.5 py-0.5 font-mono text-[11px] font-medium dark:bg-slate-950/10">
+                      ↵
+                    </kbd>
                   </button>
                 )}
               </div>
@@ -409,15 +428,21 @@ export function QuizRunner({
               <span className="inline-flex items-center gap-1.5">
                 <span className={kbd}>←</span> back
               </span>
-              {item.kind === "statement" && <span className="text-slate-400 dark:text-slate-500">Neutral is a position; Not sure records no opinion.</span>}
+              {item.kind === "statement" && (
+                <span className="text-slate-400 dark:text-slate-500">
+                  Neutral is a position; Not sure records no opinion.
+                </span>
+              )}
             </p>
           </section>
         ) : (
           <section className={`${card} quiz-step px-6 py-10 text-center sm:px-10`}>
             <p className="text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">
-              {state.complete ? `Your ${state.modeName.toLowerCase()} is ready.` : "You’ve deferred the remaining questions."}
+              {state.complete
+                ? `Your ${state.modeName.toLowerCase()} is ready.`
+                : "You’ve deferred the remaining questions."}
             </p>
-            <Link href={state.complete ? revealHref : `/quiz/${slug}?view=results`} className={`${primaryButton} mt-6`}>
+            <Link href={state.complete ? finishHref(state.needsPriorities) : `/quiz/${slug}?view=results`} className={`${primaryButton} mt-6`}>
               {state.complete ? "See your results" : "See your current result"}
               <span aria-hidden="true">→</span>
             </Link>
@@ -428,18 +453,20 @@ export function QuizRunner({
                 </button>
               </form>
             )}
-            {state.mode === "deep" && <div className="mt-8 border-t border-slate-950/6 pt-6 dark:border-white/6">
-              <p className="text-sm text-slate-600 dark:text-slate-300">Want a sharper read first?</p>
-              <div className={`${segmented} mt-3`}>
-                {ROUND_SIZES.map((size) => (
-                  <form key={size} action={sharpenAction.bind(null, slug, size)}>
-                    <button type="submit" className={segmentedItem(false)}>
-                      +{size} questions
-                    </button>
-                  </form>
-                ))}
+            {state.mode === "deep" && (
+              <div className="mt-8 border-t border-slate-950/6 pt-6 dark:border-white/6">
+                <p className="text-sm text-slate-600 dark:text-slate-300">Want a sharper read first?</p>
+                <div className={`${segmented} mt-3`}>
+                  {ROUND_SIZES.map((size) => (
+                    <form key={size} action={sharpenAction.bind(null, slug, size)}>
+                      <button type="submit" className={segmentedItem(false)}>
+                        +{size} questions
+                      </button>
+                    </form>
+                  ))}
+                </div>
               </div>
-            </div>}
+            )}
           </section>
         )}
 

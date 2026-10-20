@@ -1,21 +1,11 @@
 import { describe, it, expect } from "vitest";
-import {
-  answerEvidence,
-  computeState,
-  COVERAGE_ORDER,
-  COVERAGE_PER_AXIS,
-  coveredStatementsByQuestion,
-  issueStates,
-  isValidAnswer,
-  nextItem,
-  predictedAgreement,
-  REFINE_STEP,
-  type QuizAnswer,
-} from "./engine";
-import { computeResult, matchPercent, verdict, MATCH_CEILING, MATCH_FLOOR, type IdeologyMatch } from "./results";
+import { answerEvidence, computeState, COVERAGE_ORDER, COVERAGE_PER_AXIS, coveredStatementsByQuestion, issueStates, isValidAnswer, lensAnswers, nextItem, predictedAgreement, REFINE_STEP, type QuizAnswer } from "./engine";
+import { computeResult, internalSignalAnswers, matchPercent, verdict, MATCH_CEILING, MATCH_FLOOR, type IdeologyMatch } from "./results";
 import { randomRespondent, simulate } from "./sim";
+import { candidateWeights, splitScore } from "./funnel";
 import { axisIds, lensIds } from "./types";
 import { acceptedLens } from "./lenses";
+import { modeAxes, QUIZ_MODES } from "./modes";
 import { issues } from "./bank";
 import { ideologies } from "./ideologies";
 import { answerSnapshot } from "./runner";
@@ -93,7 +83,10 @@ describe("issue branching", () => {
   });
 
   it("skips issues whose premise a foundation answer rules out", () => {
-    const communist = issueStates([{ kind: "choice", id: "economic-system.system", value: "communism" }]);
+    const communist = issueStates([
+      { kind: "choice", id: "economic-system.ownership", value: "common" },
+      { kind: "choice", id: "economic-system.scope", value: "all" },
+    ]);
     const excluded = communist.filter((i) => i.excluded).map((i) => i.module.id);
     expect(excluded).toEqual(expect.arrayContaining(["taxes", "labor", "entitlements", "debt"]));
     expect(excluded).not.toContain("abortion");
@@ -103,7 +96,7 @@ describe("issue branching", () => {
 
   it("never skips an issue because a foundation was skipped or answered 'none fits'", () => {
     for (const value of [null, "__none_fit__"]) {
-      const states = issueStates([{ kind: "choice", id: "economic-system.system", value }]);
+      const states = issueStates([{ kind: "choice", id: "economic-system.ownership", value }]);
       expect(states.some((i) => i.excluded)).toBe(false);
     }
   });
@@ -111,7 +104,8 @@ describe("issue branching", () => {
   it("keeps an issue already answered even if a later edit would rule it out", () => {
     const states = issueStates([
       { kind: "choice", id: "taxes.top-rate", value: "70" },
-      { kind: "choice", id: "economic-system.system", value: "communism" },
+      { kind: "choice", id: "economic-system.ownership", value: "common" },
+      { kind: "choice", id: "economic-system.scope", value: "all" },
     ]);
     const taxes = states.find((i) => i.module.id === "taxes")!;
     expect(taxes.excluded).toBe(false);
@@ -154,10 +148,13 @@ describe("checklists", () => {
       { kind: "choice", id: "lgbtq.marriage", value: "protected" },
       { kind: "choice", id: "lgbtq.policies", value: ["sports"] },
     ]);
-    const stances = res.profiles.find((p) => p.issueId === "lgbtq")!.attributes.filter((a) => a.questionId === "lgbtq.policies").map((a) => a.stance);
+    const stances = res.profiles
+      .find((p) => p.issueId === "lgbtq")!
+      .attributes.filter((a) => a.questionId === "lgbtq.policies")
+      .map((a) => a.stance);
     expect(stances).toHaveLength(4);
     expect(stances).toContain("trans athletes compete by gender identity");
-    expect(stances).toContain("no \"X\" marker on IDs");
+    expect(stances).toContain('no "X" marker on IDs');
   });
 });
 
@@ -172,28 +169,72 @@ describe("order", () => {
     const firstStatement = run.findIndex((a) => a.kind === "statement");
     const foundations = run.slice(0, firstStatement).map((_, i) => kindAt(i));
     expect(foundations.every((m) => m !== "statement" && m.foundation)).toBe(true);
-    expect(new Set(foundations.map((m) => (m as (typeof issues)[number]).id))).toEqual(
-      new Set(issues.filter((m) => m.foundation).map((m) => m.id)),
-    );
+    expect(new Set(foundations.map((m) => (m as (typeof issues)[number]).id))).toEqual(new Set(issues.filter((m) => m.foundation).map((m) => m.id)));
   });
 
-  it("then covers every axis in order, before any other issue", () => {
+  it("then covers every axis, before any other issue", () => {
     const firstStatement = run.findIndex((a) => a.kind === "statement");
     const coverage = run.slice(firstStatement, firstStatement + axisIds.length * COVERAGE_PER_AXIS);
     expect(coverage.every((a) => a.kind === "statement")).toBe(true);
-    const axesInOrder = [...new Set(coverage.map((a) => a.id.split(".")[0]))];
-    expect(axesInOrder).toEqual(COVERAGE_ORDER);
+    expect(new Set(coverage.map((a) => a.id.split(".")[0]))).toEqual(new Set(COVERAGE_ORDER));
   });
 
-  it("asks issues in bank order, each as one block", () => {
+  it("asks each issue as one block", () => {
     const modules = run.flatMap((_, i) => {
       const k = kindAt(i);
       return k === "statement" ? [] : [k.id];
     });
     const blocks = modules.filter((id, i) => id !== modules[i - 1]);
     expect(new Set(blocks).size).toBe(blocks.length);
-    const order = issues.map((m) => m.id);
-    expect(blocks).toEqual([...blocks].sort((a, b) => order.indexOf(a) - order.indexOf(b)));
+  });
+
+  // The funnel: after the foundations, a respondent on the left and one on
+  // the right are asked different things, each about what divides their
+  // own neighbours.
+  it("narrows toward the respondent's own group", () => {
+    const firstAfterFoundations = (id: string) => {
+      const t = ideologies.find((i) => i.id === id)!;
+      const lens = Object.fromEntries(
+        lensIds.flatMap((l) => {
+          const v = acceptedLens(t, l);
+          return v ? [[l, v]] : [];
+        }),
+      );
+      const answers = simulate({ truth: { ...t.position }, noise: 1, skipRate: 0, lens }, `funnel:${id}`, 400, "quick").answers;
+      const start = answers.findIndex((a) => a.kind === "statement");
+      return answers
+        .slice(start, start + 6)
+        .map((a) => a.id)
+        .join();
+    };
+    expect(firstAfterFoundations("marxism-leninism")).not.toEqual(firstAfterFoundations("groyper"));
+  });
+});
+
+describe("funnel", () => {
+  const blank = computeState([]).axes;
+
+  it("keeps every tradition in play before any answer", () => {
+    const w = candidateWeights(blank, {});
+    expect(Math.max(...w) / Math.min(...w)).toBeCloseTo(1, 5);
+  });
+
+  it("concentrates on the traditions a respondent's answers fit", () => {
+    const groyper = ideologies.findIndex((i) => i.id === "groyper");
+    const answers: QuizAnswer[] = [
+      { kind: "choice", id: "regime.authority", value: "unelected" },
+      { kind: "choice", id: "regime.ruler", value: "clergy" },
+      { kind: "choice", id: "religion-law.tradition", value: "catholic" },
+    ];
+    const w = candidateWeights(computeState(answers).axes, lensAnswers(answers));
+    expect(w[groyper]).toBeGreaterThan(1 / ideologies.length);
+  });
+
+  it("scores an axis by how much the traditions in play disagree on it", () => {
+    const only = (ids: string[]) => ideologies.map((i) => (ids.includes(i.id) ? 1 / ids.length : 0));
+    // Marxism-Leninism and Maoism agree on ownership but not on everything.
+    const w = only(["marxism-leninism", "groyper"]);
+    expect(splitScore("ownership", w, blank)).toBeGreaterThan(splitScore("ownership", only(["marxism-leninism", "maoism"]), blank));
   });
 });
 
@@ -219,9 +260,7 @@ describe("selection", () => {
       const item = nextItem(log, state, "dedupe");
       if (!item) break;
       if (item.kind === "statement") expect(blocked.has(item.statement.id)).toBe(false);
-      log.push(item.kind === "statement"
-        ? { kind: "statement", id: item.statement.id, value: 0 }
-        : { kind: "choice", id: item.question.id, value: null });
+      log.push(item.kind === "statement" ? { kind: "statement", id: item.statement.id, value: 0 } : { kind: "choice", id: item.question.id, value: null });
       state = computeState(log);
     }
   });
@@ -232,10 +271,7 @@ describe("selection", () => {
     const first = nextItem(answers, state, "defer", {}, { mode: "quick" });
     expect(first).not.toBeNull();
     const id = first!.kind === "statement" ? first!.statement.id : first!.question.id;
-    const second = nextItem(answers, state, "defer", {}, {
-      mode: "quick",
-      deferred: [{ kind: first!.kind, id, deferredAtMode: "quick", deferCount: 1 }],
-    });
+    const second = nextItem(answers, state, "defer", {}, { mode: "quick", deferred: [{ kind: first!.kind, id, deferredAtMode: "quick", deferCount: 1 }] });
     const secondId = second!.kind === "statement" ? second!.statement.id : second!.question.id;
     expect(secondId).not.toBe(id);
   });
@@ -244,8 +280,20 @@ describe("selection", () => {
     for (const mode of ["quick", "standard"] as const) {
       const { answers, steps } = simulate(randomRespondent(`mode:${mode}`), `mode:${mode}`, 200, mode);
       const state = computeState(answers);
-      expect(steps).toBe(mode === "quick" ? 24 : 54);
-      expect(axisIds.every((axis) => state.axes[axis].answered >= (mode === "quick" ? 1 : 2))).toBe(true);
+      expect(steps).toBe(QUIZ_MODES[mode].targetScreens);
+      expect(modeAxes(mode).every((axis) => state.axes[axis].answered >= QUIZ_MODES[mode].minimumAxisEvidence)).toBe(true);
+    }
+  });
+
+  it("asks about race and violence only from the Profile checkpoint on", () => {
+    const quick = simulate(randomRespondent("race:quick"), "race:quick", 200, "quick").answers;
+    expect(quick.some((a) => a.id.startsWith("race.") || a.id.startsWith("violence."))).toBe(false);
+    for (const seed of ["race:a", "race:b", "race:c"]) {
+      const standard = simulate(randomRespondent(seed), seed, 200, "standard").answers;
+      expect(
+        standard.some((a) => a.id === "race.vision"),
+        seed,
+      ).toBe(true);
     }
   });
 });
@@ -314,15 +362,10 @@ describe("verdict", () => {
 });
 
 describe("statement and policy conflict", () => {
-  const statementsFor = (value: number): QuizAnswer[] =>
-    ["federalism.15", "federalism.16", "federalism.17", "federalism.18", "federalism.20", "federalism.11"].map((id) => ({
-      kind: "statement",
-      id,
-      value,
-    }));
+  const statementsFor = (value: number): QuizAnswer[] => ["federalism.15", "federalism.16", "federalism.17", "federalism.18", "federalism.20", "federalism.11"].map((id) => ({ kind: "statement", id, value }));
   const statesPolicies: QuizAnswer[] = [
     { kind: "choice", id: "abortion.level", value: "states" },
-    { kind: "choice", id: "education.department", value: "yes" },
+    { kind: "choice", id: "education.control", value: "states" },
     { kind: "choice", id: "housing.federal-role", value: "no" },
     { kind: "choice", id: "healthcare.medicaid", value: "states" },
     { kind: "choice", id: "ai.states", value: "yes" },
@@ -387,5 +430,47 @@ describe("lenses", () => {
       const { answers } = simulate({ truth: { ...ideology.position }, noise: 1, skipRate: 0, lens }, id);
       expect(computeResult(answers).ideologies[0].ideology.id, id).toBe(id);
     }
+  });
+});
+
+describe("internal match signals", () => {
+  it("keeps antisemitism out of public axes while using both relevant answers", () => {
+    const answers: QuizAnswer[] = [
+      { kind: "choice", id: "race.jewish", value: "central" },
+      { kind: "choice", id: "race.holocaust", value: "revised" },
+    ];
+    expect(answerEvidence(answers[0]).race).toBeUndefined();
+    expect(answerEvidence(answers[1]).race).toBeUndefined();
+    expect(internalSignalAnswers(answers).antisemitism).toBeCloseTo(0.925);
+    expect(JSON.stringify(computeResult(answers))).not.toContain("antisemitism");
+  });
+
+  it("distinguishes traditions without adding a result axis", () => {
+    const accepting: QuizAnswer[] = [
+      { kind: "choice", id: "race.jewish", value: "central" },
+      { kind: "choice", id: "race.holocaust", value: "untrue" },
+    ];
+    const rejecting: QuizAnswer[] = [
+      { kind: "choice", id: "race.jewish", value: "myth" },
+      { kind: "choice", id: "race.holocaust", value: "history" },
+    ];
+    const score = (answers: QuizAnswer[], id: string) => computeResult(answers).ideologies.find((match) => match.ideology.id === id)!.match;
+    expect(score(accepting, "groyper")).toBeGreaterThan(score(rejecting, "groyper"));
+    expect(computeResult(accepting).axes).toHaveLength(axisIds.length);
+  });
+});
+
+describe("checklists that grow after an answer", () => {
+  it("count only items that were on screen as unchecked", () => {
+    const q = issues.find((m) => m.id === "speech")!.followUps.find((f) => f.id === "speech.limits")!;
+    const before = q.options.filter((o) => o.id !== "ban-parties").map((o) => o.text);
+    const old: QuizAnswer = { kind: "choice", id: "speech.limits", value: ["none"], shown: { text: q.prompt, options: before, answer: "None of these", at: "2026-10-01T00:00:00.000Z" } };
+    const fresh: QuizAnswer = { ...old, shown: { ...old.shown!, options: q.options.map((o) => o.text) } };
+    expect(answerEvidence(old).democracy).toBeUndefined();
+    expect(answerEvidence(fresh).democracy).toBeDefined();
+    const screener: QuizAnswer = { kind: "choice", id: "speech.moderation", value: "neutral" };
+    const stances = (a: QuizAnswer) => computeResult([screener, a]).profiles.flatMap((p) => p.attributes.map((x) => x.stance));
+    expect(stances(old)).not.toContain("revolutionary parties allowed");
+    expect(stances(fresh)).toContain("revolutionary parties allowed");
   });
 });

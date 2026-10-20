@@ -68,7 +68,7 @@ describe("shared-data server actions", () => {
   const dir = path.join(__dirname, "../actions");
   // These manage the caller's own account, quizzes, and map projects, and
   // check ownership themselves.
-  const ownerScoped = new Set(["auth.ts", "quiz.ts", "mapProjects.ts"]);
+  const ownerScoped = new Set(["auth.ts", "atlas.ts", "quiz.ts", "mapProjects.ts"]);
   const files = readdirSync(dir).filter((f) => f.endsWith(".ts") && !f.endsWith(".test.ts") && !ownerScoped.has(f));
 
   it.each(files)("%s guards every exported action", (file) => {

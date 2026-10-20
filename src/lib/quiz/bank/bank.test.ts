@@ -1,8 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { statements, issues, issueOrder } from "./index";
 import { axes } from "../axes";
-import { ideologies } from "../ideologies";
-import { authorities, axisIds, lensIds, nationBases, traditions, type ChoiceQuestion, type Condition, type LensId } from "../types";
+import { allTraditions, ideologies, umbrellaTraditions } from "../ideologies";
+import { authorities, axisIds, changes, legacies, lensIds, nationBases, peoples, traditions, type ChoiceQuestion, type Condition, type LensId } from "../types";
 import { COVERAGE_ORDER } from "../engine";
 import { explainQuestion, explainStatement } from "../explanations";
 
@@ -85,9 +85,9 @@ describe("statements", () => {
 describe("issue modules", () => {
   const questions: ChoiceQuestion[] = issues.flatMap((m) => [m.screener, ...m.followUps]);
 
-  it("cover 28 distinct issues", () => {
-    expect(new Set(issues.map((m) => m.id)).size).toBe(28);
-    expect(issues.length).toBe(28);
+  it("cover 31 distinct issues", () => {
+    expect(new Set(issues.map((m) => m.id)).size).toBe(31);
+    expect(issues.length).toBe(31);
   });
 
   it("are ordered: every issue once, foundations first", () => {
@@ -103,9 +103,15 @@ describe("issue modules", () => {
     expect(new Set(COVERAGE_ORDER).size).toBe(axisIds.length);
   });
 
-  // An issue can only be ruled out by an answer that's already been given.
+  // An issue can only be ruled out by an answer that's already been given:
+  // a foundation screener, or a follow-up asked straight after it.
   it("are ruled out only by real foundation options", () => {
-    const foundations = new Map(issues.filter((m) => m.foundation).map((m) => [m.screener.id, new Set(m.screener.options.map((o) => o.id))]));
+    const foundations = new Map(
+      issues
+        .filter((m) => m.foundation)
+        .flatMap((m) => [m.screener, ...m.followUps.filter((f) => !f.later)])
+        .map((q) => [q.id, new Set(q.options.map((o) => o.id))]),
+    );
     const check = (c: Condition, ctx: string) => {
       if ("all" in c) return c.all.forEach((x) => check(x, ctx));
       if ("any" in c) return c.any.forEach((x) => check(x, ctx));
@@ -225,7 +231,7 @@ describe("issue modules", () => {
   // government, then who rules), but every value is offered exactly once and
   // within one module.
   it("offer every lens value exactly once, within a single module", () => {
-    const valid: Record<LensId, readonly string[]> = { tradition: traditions, authority: authorities, nation: nationBases };
+    const valid: Record<LensId, readonly string[]> = { tradition: traditions, authority: authorities, nation: nationBases, people: peoples, change: changes, legacy: legacies };
     for (const lens of lensIds) {
       const modules = issues.filter((m) => [m.screener, ...m.followUps].some((q) => q.options.some((o) => o.lens?.[lens])));
       expect(modules.length, lens).toBe(1);
@@ -247,6 +253,18 @@ describe("issue modules", () => {
 });
 
 describe("ideologies", () => {
+  it("keep umbrella labels out of matching, each covering real traditions", () => {
+    const matchable = new Set(ideologies.map((i) => i.id));
+    expect(new Set(allTraditions.map((i) => i.id)).size).toBe(allTraditions.length);
+    const covered = umbrellaTraditions.flatMap((u) => u.covers ?? []);
+    for (const u of umbrellaTraditions) {
+      expect(matchable.has(u.id), u.id).toBe(false);
+      expect(u.covers?.length ?? 0, u.id).toBeGreaterThanOrEqual(2);
+      for (const id of u.covers ?? []) expect(matchable.has(id), `${u.id} covers ${id}`).toBe(true);
+    }
+    expect(new Set(covered).size, "a tradition sits under one umbrella").toBe(covered.length);
+  });
+
   it("number at least 50 with unique ids and names", () => {
     expect(ideologies.length).toBeGreaterThanOrEqual(50);
     expect(new Set(ideologies.map((i) => i.id)).size).toBe(ideologies.length);
@@ -268,7 +286,7 @@ describe("ideologies", () => {
   });
 
   it("tag lenses only with known values", () => {
-    const valid: Record<LensId, readonly string[]> = { tradition: traditions, authority: authorities, nation: nationBases };
+    const valid: Record<LensId, readonly string[]> = { tradition: traditions, authority: authorities, nation: nationBases, people: peoples, change: changes, legacy: legacies };
     for (const i of ideologies) {
       for (const lens of lensIds) {
         for (const v of i[lens] ?? []) expect(valid[lens], `${i.id} ${lens}`).toContain(v);

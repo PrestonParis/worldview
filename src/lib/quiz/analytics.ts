@@ -35,7 +35,7 @@ import {
   type RefineTargets,
 } from "./engine";
 import { ideologyMatches, verdict, type AxisResult, type Verdict } from "./results";
-import { ideologies } from "./ideologies";
+import { allTraditions, ideologies } from "./ideologies";
 import { modeRank, quizModeIds, type DeferredQuestion, type QuizCheckpointRecord, type QuizModeId } from "./modes";
 import { OPENERS, type OpenerAnswer } from "./openers";
 
@@ -96,7 +96,7 @@ export const OUTFIT_HIGH = 1.5;
 export const OUTFIT_LOW = 0.5;
 const CHI2_95 = 3.84; // profile-likelihood 95% interval: ΔLL ≤ 1.92
 const MAX_GAP_SECONDS = 600; // longer pauses are breaks, not answer time
-const SURVIVAL_POINTS = [1, 3, 5, 10, 15, 20, 24, 30, 40, 54, 64, 80, 110, 140, 170];
+const SURVIVAL_POINTS = [1, 3, 5, 10, 15, 20, 24, 30, 40, 54, 64, 80, 110, 140, 170, 200];
 const DAILY_MAX = 90;
 
 // ── Outputs ──
@@ -984,7 +984,7 @@ export function analyzeQuiz(allSessions: AnalyticsSession[], allOpeners: OpenerE
       lensCounts.set(key, (lensCounts.get(key) ?? 0) + 1);
     }
   }
-  const named = (id: string) => ideologies.find((i) => i.id === id)!;
+  const named = (id: string) => allTraditions.find((i) => i.id === id)!;
   const centroid: Partial<Record<AxisId, number>> = {};
   if (far.length) {
     for (const axis of axisIds) {

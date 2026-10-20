@@ -3,23 +3,23 @@
 **Status (2026-10-14):** the shared engine now supports **Snapshot**, **Profile**, and **Deep Map**
 checkpoints plus topic/campaign entry links. Routes are `/quiz` and `/quiz/[slug]`. Engine and bank:
 `src/lib/quiz/`. Table: `quiz_sessions` (`supabase/sql/2026-10-01-quiz.sql` plus
-`2026-10-14-quiz-modes.sql`). Purge job: `.github/workflows/purge-quizzes.yml`.
+`2026-10-14-quiz-modes.sql`). Result URLs are retained unless explicitly deleted by an owner.
 
 ## Context
 
 Existing quizzes, and what they get wrong. These are the patterns to copy or avoid:
 
-| Quiz | Model | Keep | Avoid |
-|---|---|---|---|
-| 12axes | 12 axes; statements graded by intensity (±1…±4) per axis; 5 random per axis, agree/disagree | The graded-intensity statement bank | Scoring ignores the intensity: every answer is ±1 (`50 + 5·score`) |
-| 8values | 4 axes; each question has a weight per axis; score = total / max; nearest hand-placed ideology | One question moving several axes | Fixed 70 questions; percentages that read as precise |
-| Political Compass | 2 axes | — | 36 right-coded vs 20 left-coded items (people who tend to agree drift right); statements that make two claims at once |
-| Pew Typology | 9 clusters fit on survey data; nearest group profile | Clusters fitted on real data | Forced fit: everyone gets put in a group |
-| iSideWith | Issue questions + importance + "other stances" | Detailed answers per issue; importance | Long, with no underlying axes |
-| smartvote / Wahl-O-Mat | Distance-based matching | Published methodology | Research shows the choice of statements changes who people get matched to |
+| Quiz                   | Model                                                                                          | Keep                                   | Avoid                                                                                                                 |
+| ---------------------- | ---------------------------------------------------------------------------------------------- | -------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| 12axes                 | 12 axes; statements graded by intensity (±1…±4) per axis; 5 random per axis, agree/disagree    | The graded-intensity statement bank    | Scoring ignores the intensity: every answer is ±1 (`50 + 5·score`)                                                    |
+| 8values                | 4 axes; each question has a weight per axis; score = total / max; nearest hand-placed ideology | One question moving several axes       | Fixed 70 questions; percentages that read as precise                                                                  |
+| Political Compass      | 2 axes                                                                                         | —                                      | 36 right-coded vs 20 left-coded items (people who tend to agree drift right); statements that make two claims at once |
+| Pew Typology           | 9 clusters fit on survey data; nearest group profile                                           | Clusters fitted on real data           | Forced fit: everyone gets put in a group                                                                              |
+| iSideWith              | Issue questions + importance + "other stances"                                                 | Detailed answers per issue; importance | Long, with no underlying axes                                                                                         |
+| smartvote / Wahl-O-Mat | Distance-based matching                                                                        | Published methodology                  | Research shows the choice of statements changes who people get matched to                                             |
 
 The "smart" part comes from **computerized adaptive testing** (Montgomery & Cutler,
-*Political Analysis* 2013). The engine keeps a running estimate of each axis
+_Political Analysis_ 2013). The engine keeps a running estimate of each axis
 plus its uncertainty, asks whatever narrows that uncertainty most, and stops an
 axis once it's settled. It uses two response models. Most policy statements are
 **directional**: the further toward a pole you are, the more you agree. Compromise
@@ -47,7 +47,7 @@ statements are **ideal-point** (GGUM-style): people at both extremes reject them
 ## Design decisions taken up front
 
 1. **Two layers: axes and issues.** Axes are the abstract ideology. Issues are the
-   concrete US fights. Issue answers *also* feed the axes, so one answer does
+   concrete US fights. Issue answers _also_ feed the axes, so one answer does
    double duty. That's the main reason 100+ questions can still feel efficient.
 2. **Branching per issue.** Each issue opens with one multiple-choice question
    that spans the whole range ("legal in all cases … illegal in all cases").
@@ -55,8 +55,8 @@ statements are **ideal-point** (GGUM-style): people at both extremes reject them
    answer appear. Someone who answers "illegal in all cases" isn't asked about
    trimester limits.
 3. **Score each axis on its own.** One axis's answers never set another
-   axis's score. Correlations between axes can later help *choose* questions,
-   never *score* them, so results don't turn into stereotypes.
+   axis's score. Correlations between axes can later help _choose_ questions,
+   never _score_ them, so results don't turn into stereotypes.
 4. **Pure engine, pure data.** `src/lib/quiz/` holds the engine as pure TS with no I/O,
    tested like `votingRecord.ts`, plus the question bank as versioned TS data.
    Results are recomputed by replaying stored answers, so engine fixes apply to old quizzes.
@@ -69,35 +69,37 @@ statements are **ideal-point** (GGUM-style): people at both extremes reject them
    `-- --backfill` fills snapshots on older answers (run it before changing wording).
    Retired statement ids stay listed in `retiredStatements` and no longer score.
 6. **Postgres (Drizzle) + Supabase auth**, same ownership pattern as `map_projects`.
-7. **The axes are a hypothesis, not a fixed map of politics.** The 18 axes are versioned
+7. **The axes are a hypothesis, not a fixed map of politics.** The 20 axes are versioned
    with the bank. Once there is response data, factor analysis tests whether each axis's
    statements really move together, and axes get split, merged, or redrawn when they don't.
    Raw answers plus `bankVersion` make old quizzes re-scorable under a new axis set.
 
 ## Axes (US-adapted, v1)
 
-Poles are named so that both sides would accept the description. 18 axes in 5 groups:
+Poles are named so that both sides would accept the description. 20 axes in 5 groups:
 
-| # | Group | Axis (− pole ↔ + pole) | Covers | 12axes origin |
-|---|---|---|---|---|
-| 1 | Governance | States ↔ Federal | Federal preemption, state experimentation | Federal–Unitary |
-| 2 | Governance | Checks & balances ↔ Strong executive | Executive orders, independent agencies, filibuster | Democratic–Autocratic (reframed; pro-democracy statements get near-universal agreement in the US) |
-| 3 | Governance | Civil liberty ↔ Security | Surveillance, emergency powers, policing powers | Security–Freedom |
-| 4 | Governance | Majoritarian ↔ Safeguarded | Electoral College, Senate, filibuster, voter ID, mail voting | new (*watch: ballot access and counter-majoritarian structure may prove to be two dimensions*) |
-| 4b | Governance | Democratic ↔ Autocratic | Whether government must be chosen in free elections; opposition, press, term limits | Democratic–Autocratic (added in bank 3.0.0, worded without US references so non-democratic views can be stated directly) |
-| 5 | Economy | Public ownership ↔ Private ownership | Public option, utilities, nationalization | Collectivize–Privatize |
-| 6 | Economy | Regulated ↔ Laissez-faire | Business, finance, labor regulation | Planned–Laissez-Faire |
-| 7 | Economy | Redistributive ↔ Self-reliant | Taxes, welfare, entitlements | new (split out of 5/6) |
-| 8 | Economy | Protectionist ↔ Free trade | Tariffs, offshoring, industrial policy | Isolationism–Globalism |
-| 9 | Foreign | Internationalist ↔ America First | Alliances, UN, foreign aid | Nationalism–Internationalism |
-| 10 | Foreign | Interventionist ↔ Restraint | Use of force, defense spending | Militarist–Pacifist |
-| 11 | Society | Progressive ↔ Traditional | Gender, sexuality, family norms | Progressive–Traditional |
-| 12 | Society | Secular ↔ Religious | Religion and the state, from a state that discourages religion to one governed by religious law; statements are tradition-neutral | Irreligious–Religious |
-| 13 | Society | Open/pluralist ↔ Restrictive/assimilationist | Immigration levels, language, national identity | Assimilationist–Multiculturalist |
-| 14 | Society | Reform ↔ Law & order | Sentencing, policing, drugs, death penalty | new |
-| 15 | Society | Group-conscious ↔ Colorblind | Affirmative action, disparate impact, DEI | new |
-| 16 | Tech & nature | Environmental ↔ Growth-first | Climate, fossil fuels, conservation, energy | new |
-| 17 | Tech & nature | Precautionary ↔ Accelerationist | AI, biotech, nuclear, automation | Acceleration–Bioconservative |
+| #   | Group         | Axis (− pole ↔ + pole)                       | Covers                                                                                                                                                                             | 12axes origin                                                                                                                                                                              |
+| --- | ------------- | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1   | Governance    | States ↔ Federal                             | Federal preemption, state experimentation                                                                                                                                          | Federal–Unitary                                                                                                                                                                            |
+| 2   | Governance    | Checks & balances ↔ Strong executive         | Executive orders, independent agencies, filibuster                                                                                                                                 | Democratic–Autocratic (reframed; pro-democracy statements get near-universal agreement in the US)                                                                                          |
+| 3   | Governance    | Civil liberty ↔ Security                     | Surveillance, emergency powers, policing powers                                                                                                                                    | Security–Freedom                                                                                                                                                                           |
+| 4   | Governance    | Broad access ↔ Restricted                    | Franchise eligibility, election safeguards, Electoral College, Senate, and filibuster                                                                                              | new. The positive label explicitly covers restrictions on who may vote rather than describing them euphemistically as safeguards                                                           |
+| 4b  | Governance    | Democratic ↔ Autocratic                      | Whether government must be chosen in free elections; opposition, press, term limits                                                                                                | Democratic–Autocratic (added in bank 3.0.0, worded without US references so non-democratic views can be stated directly)                                                                   |
+| 4c  | Governance    | Nonviolent ↔ Force-accepting                 | When force is a legitimate political tool: insurrection, assassination, riots, armed resistance, and the state's own force (torture, troops in cities, lethal force at the border) | new (bank 6.0.0). Who uses force is read from democracy, liberty, and justice; this axis measures whether force is acceptable at all                                                       |
+| 5   | Economy       | Public ownership ↔ Private ownership         | Public option, utilities, nationalization                                                                                                                                          | Collectivize–Privatize                                                                                                                                                                     |
+| 6   | Economy       | Regulated ↔ Laissez-faire                    | Business, finance, labor regulation                                                                                                                                                | Planned–Laissez-Faire                                                                                                                                                                      |
+| 7   | Economy       | Redistributive ↔ Self-reliant                | Taxes, welfare, entitlements                                                                                                                                                       | new (split out of 5/6)                                                                                                                                                                     |
+| 8   | Economy       | Protectionist ↔ Free trade                   | Tariffs, offshoring, industrial policy                                                                                                                                             | Isolationism–Globalism                                                                                                                                                                     |
+| 9   | Foreign       | Internationalist ↔ America First             | Alliances, UN, foreign aid                                                                                                                                                         | Nationalism–Internationalism                                                                                                                                                               |
+| 10  | Foreign       | Interventionist ↔ Restraint                  | Military posture, use of force, defense spending                                                                                                                                   | Militarist–Pacifist. Conflict-specific aid choices load mainly on Global engagement and only lightly here                                                                                  |
+| 11  | Society       | Progressive ↔ Traditional                    | Gender, sexuality, family norms                                                                                                                                                    | Progressive–Traditional                                                                                                                                                                    |
+| 12  | Society       | Secular ↔ Religious                          | Religion and the state, from a state that discourages religion to one governed by religious law; statements are tradition-neutral                                                  | Irreligious–Religious                                                                                                                                                                      |
+| 13  | Society       | Open/pluralist ↔ Restrictive/assimilationist | Immigration levels, language, national identity                                                                                                                                    | Assimilationist–Multiculturalist                                                                                                                                                           |
+| 14  | Society       | Reform ↔ Law & order                         | Sentencing, policing, drugs, death penalty                                                                                                                                         | new                                                                                                                                                                                        |
+| 15  | Society       | Group-conscious ↔ Colorblind                 | Affirmative action, disparate impact, DEI                                                                                                                                          | new                                                                                                                                                                                        |
+| 15b | Society       | Integrationist ↔ Racial nationalist          | Whether races are one people or separate nations: separatism, race in immigration and association law, hereditarian claims, racial supremacy                                       | new (bank 5.0.0). Remedy policy and racial nationhood are separate questions: on one line, Black nationalism sat with DEI progressives and white nationalism near colorblind conservatives |
+| 16  | Tech & nature | Environmental ↔ Growth-first                 | Climate, fossil fuels, conservation, energy                                                                                                                                        | new                                                                                                                                                                                        |
+| 17  | Tech & nature | Precautionary ↔ Accelerationist              | AI, biotech, nuclear, automation                                                                                                                                                   | Acceleration–Bioconservative                                                                                                                                                               |
 
 Axis 2 (executive) and axis 4 (elections) keep their US meaning; whether there should be
 elections at all is the democracy axis, so a strong-president populist no longer sits with
@@ -106,20 +108,52 @@ monarchism and fascism.
 ### Lenses
 
 Some differences are categorical, not positions on a line: which religious tradition should
-shape the law, who should hold final authority, and what defines the nation. These are
-recorded as **lenses** (`types.ts`, `lenses.ts`) from the Religion & law and Political
-system modules. Lenses never move an axis (decision 3). In matching, each lens the
-respondent answered adds one well-measured pseudo-axis per ideology: no gap if the
-ideology accepts the answer, `LENS_GAP` if not. Ideologies list accepted values (Islamism:
+shape the law, who should hold final authority, what defines the nation, and which racial or
+ethnic people, if any, comes first, whether the existing order should be restored, conserved,
+reformed, or replaced, and (for communists and socialists) how to judge the 20th-century
+communist states. These are recorded as **lenses** (`types.ts`, `lenses.ts`)
+from the Religion & law, Political system, Race & nation, and Economic system modules. The
+change lens separates reactionaries from conservatives and from revolutionaries; the legacy
+lens separates Marxist-Leninists, Trotskyists, left communists, and democratic socialists. The people lens is what
+separates white from Black nationalism, which sit close together on the race axis. Lenses never move an axis (decision 3). In matching, each lens the
+respondent answered adds one well-measured pseudo-axis per ideology: `LENS_GAP` if the
+ideology rejects the answer, and a small breadth gap if it accepts it, growing with how many
+values it accepts (`LENS_BREADTH_GAP` × log accepted / log possible), so a tradition that takes
+almost any answer earns less from matching yours. Ideologies list accepted values (Islamism:
 Sunni or Shia, clerical rule); untagged ones get defaults from their positions (secular
 ones accept no tradition, democratic ones accept elected rule, and untagged religious
-Western entries accept the Christian traditions).
+Western entries accept the Christian traditions; untagged entries below the race-axis lean
+put no people first; untagged entries take no position on change or legacy).
+
+**Umbrella labels.** Some catalog names span several traditions and sit at their centre:
+Reactionism (monarchism, integralism, the Groyper movement, …) and Libertarian socialism
+(anarcho-communism, syndicalism, left communism, …). They would win on vagueness rather than
+fit, so they live in `umbrellaTraditions`: they keep Atlas pages, list the traditions they
+cover, and are named on a result whose top match falls under them, but they never rank as a match.
 
 `npm run quiz:audit` checks that the catalog stays separable. It reports close pairs that
 no lens separates, whether a simulated respondent placed on each ideology (answering lens
-questions as it would) ranks it first, match calibration distances, and simulated accuracy.
-Bank 3.0.0: 80/80 rank first, no unseparated close pairs, mean axis error 0.07,
-~144 answers on average.
+questions as it would) ranks it first, the margin over the runner-up, centroids (a tradition
+within 10 points of first for three or more other traditions' adherents), match calibration
+distances, and simulated accuracy. Bank 6.1.0: 103/103 rank first, no unseparated close pairs,
+20.0-point mean margin, one centroid (Modern American liberalism), mean axis error 0.082,
+~147 answers on average.
+
+**Growing checklists.** A checklist item added after an answer was saved never counts as
+"no" for that answer: unchecked items score only if they appear in the answer's `shown`
+snapshot (`itemWasShown`). Appending options to a single-choice question is always safe.
+
+**Internal match signals.** Some answers distinguish specific traditions without defining a
+useful public political axis. Antisemitism is handled this way from bank 6.2.0: the relevant
+answers refine tradition distance in `results.ts`, but never move Race & nationhood, appear in
+the result payload, become an axis, or count toward quiz coverage. The former public-axis
+statements `race.16` and `race.21` are retired and retained only for saved-answer compatibility.
+
+**Mode-gated content.** The race and violence axes and the Race & nation and Political violence modules (`minMode: "standard"`)
+are left out of Snapshot entirely: Snapshot neither asks them nor requires coverage on the
+race axis (`modeAxes` in `modes.ts`), and matching skips any axis with no evidence. A
+checkpoint a quiz has already reached stays complete when the bank grows, so older
+quizzes are not reopened; the new items are asked if the quiz continues.
 
 Environment and technology are separate because people combine them freely
 (pro-nuclear but AI-cautious; green but pro-biotech). Term limits doesn't count toward
@@ -150,7 +184,7 @@ Modules:
 
 Abortion · Guns · Immigration & border · Health care · Taxes · Labor &
 minimum wage · Social Security & Medicare · Climate & energy · Policing ·
-Death penalty · Drugs · LGBTQ rights · Affirmative action · Education & school
+Death penalty · Drugs · LGBTQ rights · Sex, family & life · Political violence (Profile and Deep map only; reached in practice only in Deep map) · Race & nation (Profile and Deep map only) · Affirmative action · Education & school
 choice · Speech & content moderation · Voting rules · Supreme Court & judiciary
 · Israel/Gaza · Ukraine/Russia · China · Trade & tariffs · AI & tech regulation
 · Religious liberty · Housing & zoning · Federal debt · Religion & law · Political system
@@ -161,15 +195,29 @@ Implemented in `src/lib/quiz/types.ts`. In short:
 
 ```ts
 interface Statement {
-  id: string;                    // stable forever; answers reference it
+  id: string; // stable forever; answers reference it
   text: string;
   model: "directional" | "ideal";
   axes: Partial<Record<AxisId, { location: number; weight: number }>>;
 }
 
-interface ChoiceQuestion { id; attribute; prompt; selection?: "single" | "multiple"; options: ChoiceOption[] }
-interface ChoiceOption  { id; text; stance; axes; exclusive?: boolean }
-interface FollowUp extends ChoiceQuestion { when?: Condition }   // serializable branching
+interface ChoiceQuestion {
+  id;
+  attribute;
+  prompt;
+  selection?: "single" | "multiple";
+  options: ChoiceOption[];
+}
+interface ChoiceOption {
+  id;
+  text;
+  stance;
+  axes;
+  exclusive?: boolean;
+}
+interface FollowUp extends ChoiceQuestion {
+  when?: Condition;
+} // serializable branching
 ```
 
 - **Directional** (most statements): agreement rises toward the pole on the side of
@@ -184,6 +232,7 @@ Answer scale for statements: 7 points (Strongly disagree … Strongly agree) plu
 Skip is "no answer" and carries no information. It never counts as neutral.
 
 **Writing rules (checked in tests where possible):**
+
 - One claim per statement.
 - No statements everyone agrees with ("corruption is bad").
 - No "more/less than currently" (people disagree about what "currently" is). State the policy itself.
@@ -213,16 +262,16 @@ Everything lives in `src/lib/quiz/engine.ts`, as pure functions.
   3. Issues in bank order (`issueOrder`, broadest first), each asked as one block:
      screener, then its follow-ups.
   4. Statements on whichever axis is least certain, until every axis settles.
-  Within an axis, take the statement with the greatest expected drop in posterior
-  variance; exposure control picks randomly among the top-k so everyone doesn't get
-  identical quizzes.
+     Within an axis, take the statement with the greatest expected drop in posterior
+     variance; exposure control picks randomly among the top-k so everyone doesn't get
+     identical quizzes.
 - **Branching.** Follow-ups are asked when their `when` is true. A screener answer also
   updates the axes it loads on. An issue whose premise a foundation answer rules out
   (`unless`) is skipped: someone who wants private enterprise abolished isn't asked about
   tax brackets or the minimum wage, and someone who rejects elections isn't asked about
   mail ballots. Skipping or answering "none fits" on a foundation never skips an issue.
 - **Stopping rules.**
-  - An axis is settled when its posterior SD is below 0.12 *and* it has at least 4 answers, or
+  - An axis is settled when its posterior SD is below 0.12 _and_ it has at least 4 answers, or
     when it reaches 15 answers.
   - An issue is settled when its follow-up tree has nowhere left to go.
   - The quiz ends when everything is settled.
@@ -243,11 +292,11 @@ Everything lives in `src/lib/quiz/engine.ts`, as pure functions.
 
 Current simulation (`npm run quiz:audit`):
 
-| Tier | Typical screens | Contract |
-|---|---:|---|
-| Snapshot | 24 (28 maximum) | Touch every axis; report a broad neighborhood |
-| Profile | 54 (64 maximum) | At least two effective observations per axis, then broad issues |
-| Deep Map | ~115 | Cover every applicable issue and settle every axis |
+| Tier     | Typical screens | Contract                                                        |
+| -------- | --------------: | --------------------------------------------------------------- |
+| Snapshot | 24 (28 maximum) | Touch every axis; report a broad neighborhood                   |
+| Profile  | 54 (64 maximum) | At least two effective observations per axis, then broad issues |
+| Deep Map |            ~115 | Cover every applicable issue and settle every axis              |
 
 Snapshot and Profile use coverage-aware selection, not the first N questions from Deep.
 Checklist items retain distinct stances but contribute at most two effective observations to
@@ -258,20 +307,22 @@ one axis per screen because same-screen answers are correlated.
 ```ts
 quizSessions = pgTable("quiz_sessions", {
   id: uuid().primaryKey().defaultRandom(),
-  slug: text().notNull().unique(),        // 12-char base62 random: the URL hash, unguessable
-  editToken: text().notNull(),            // hashed; raw value is set as an httpOnly cookie on the starting browser
-  ownerId: uuid(),                        // null until claimed (Supabase auth.users.id, no FK — map_projects convention)
+  slug: text().notNull().unique(), // 12-char base62 random: the URL hash, unguessable
+  editToken: text().notNull(), // hashed; raw value is set as an httpOnly cookie on the starting browser
+  ownerId: uuid(), // null until claimed (Supabase auth.users.id, no FK — map_projects convention)
   visibility: quizVisibilityEnum().notNull().default("link"), // "link" | "public" | "private"
   bankVersion: text().notNull(),
   engineVersion: text().notNull(),
-  targetMode: text().notNull(),            // quick | standard | deep
+  targetMode: text().notNull(), // quick | standard | deep
   highestCompletedMode: text(),
-  entryVariant: text().notNull(),          // general | topic
+  entryVariant: text().notNull(), // general | topic
   entryTopic: text(),
-  answers: jsonb().notNull(),             // [{ itemId, value, answeredAt }] in order
-  deferred: jsonb().notNull(),            // real "Skip for now" queue
-  status: quizStatusEnum().notNull(),     // "in_progress" | "complete"
-  createdAt, updatedAt, completedAt,
+  answers: jsonb().notNull(), // [{ itemId, value, answeredAt }] in order
+  deferred: jsonb().notNull(), // real "Skip for now" queue
+  status: quizStatusEnum().notNull(), // "in_progress" | "complete"
+  createdAt,
+  updatedAt,
+  completedAt,
 });
 ```
 
@@ -286,15 +337,14 @@ quizSessions = pgTable("quiz_sessions", {
 - Server actions in `src/lib/actions/quiz.ts` (`startQuiz`, `answer`, `editAnswer`,
   `claimQuiz`, `setVisibility`), following `src/lib/actions/mapProjects.ts`.
 - "My quizzes" list for signed-in users (retakes over time come free).
-- **Retention:** unclaimed quizzes are deleted 7 days after `createdAt`:
-  - The app treats them as missing from that moment.
-  - `scripts/purge-quizzes.mjs`, run daily by `.github/workflows/purge-quizzes.yml` with
-    `secrets.DATABASE_URL`, copies each answer log to `quiz_responses` (no slug, edit token,
-    owner, or session id) and then deletes the rows. User-deleted quizzes are not archived.
-  - Owner-only analytics over live and archived logs: `/quiz/stats` and `npm run quiz:stats`
+- **Retention:** quiz result URLs remain available unless an owner explicitly deletes the
+  quiz or deletes the owning account. This includes unclaimed quizzes so old shared URLs
+  remain valid.
+  - Owner-only analytics over live and historical logs: `/quiz/stats` and `npm run quiz:stats`
     (`src/lib/quiz/analytics.ts`). Landing-page opener answers are logged anonymously to
     `quiz_opener_events` by `src/app/api/quiz/opener/route.ts`.
-  - The result page for an unclaimed quiz shows its deletion date next to the claim button.
+  - Claiming a quiz adds account management and public/private visibility; it is not required
+    to preserve the result URL.
 
 ## Results page
 
@@ -333,7 +383,7 @@ quizSessions = pgTable("quiz_sessions", {
    - 55 ideologies.
 3. **Persistence + routes.** ✅ Schema migration, actions, `/quiz`, `/quiz/[hash]`
    (read `node_modules/next/dist/docs/` before writing routes), a top-level "Quiz" nav entry in
-   `primaryPages` next to Demographics, a tool-modules card, and the 7-day purge job.
+   `primaryPages` next to Demographics and a tool-modules card.
 4. **Results page.** ✅ Charts, issue stances, ideology matching, influence breakdown, OG image.
 5. **Claiming & visibility.** ✅ Claim flow via the existing `/login`, the private-quiz 404,
    and a "Your quizzes" list on `/quiz`.
@@ -357,9 +407,9 @@ quizSessions = pgTable("quiz_sessions", {
 
 ## Decided
 
-- 18 axes (technology split into environment + technology after review; democracy added in bank 3.0.0); issue list as drafted; the bank's v1 is up for review.
+- 19 axes (race added in bank 5.0.0; technology split into environment + technology after review; democracy added in bank 3.0.0); issue list as drafted; the bank's v1 is up for review.
 - No matching to politicians or other real people yet; ideology labels only, with the full ranking shown.
-- Unclaimed quizzes are kept for 7 days; their answers are then kept anonymously for analytics.
+- Quiz result URLs are retained until an owner explicitly deletes the quiz or account.
 - "Quiz" sits at the top level next to Demographics.
 
 ## Later

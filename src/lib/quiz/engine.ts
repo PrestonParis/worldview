@@ -2,9 +2,10 @@
 // stored answers are the source of truth and everything here is a replay.
 // See docs/quiz-plan.md (Engine).
 
-import { axisIds, type AxisId, type ChoiceQuestion, type Condition, type IssueModule, type Lens, type Loadings, type Statement } from "./types";
+import { axisIds, type AxisId, type ChoiceOption, type ChoiceQuestion, type Condition, type FollowUp, type IssueModule, type Lens, type Loadings, type Statement } from "./types";
 import { statements, issues } from "./bank";
-import { QUIZ_MODES, type QuizModeId, type QuizSelectionContext } from "./modes";
+import { inMode, modeAxes, QUIZ_MODES, type QuizModeId, type QuizSelectionContext } from "./modes";
+import { candidateWeights, questionScore, splitScore } from "./funnel";
 
 // ── Answers ──
 
@@ -56,6 +57,10 @@ export const MIN_PER_AXIS = 5;
 export const MAX_PER_AXIS = 15;
 export const SD_TARGET = 0.12;
 export const COVERAGE_PER_AXIS = 2;
+// In the shorter checkpoints, an axis this uncertain still earns a direct
+// statement when it divides the traditions in play, even if a side loading
+// already counted toward its coverage.
+export const WEAK_SD = 0.3;
 // The order coverage statements visit the axes: the questions that divide
 // political systems first, institutional detail last. Matches the broad-to-
 // narrow order of the issue modules (bank/index.ts).
@@ -69,6 +74,8 @@ export const COVERAGE_ORDER: AxisId[] = [
   "immigration",
   "justice",
   "identity",
+  "race",
+  "violence",
   "engagement",
   "force",
   "trade",
@@ -81,7 +88,7 @@ export const COVERAGE_ORDER: AxisId[] = [
 ];
 export const EXPOSURE_TOP_K = 3;
 export const REFINE_STEP = 4;
-export const ENGINE_VERSION = "5.0.0";
+export const ENGINE_VERSION = "5.3.0";
 export const NO_FIT_OPTION_ID = "__none_fit__";
 
 // ── Lookups ──
@@ -98,7 +105,7 @@ export const questionById = questionIndex;
 // statements. Keeping the statements in the bank preserves adaptive coverage
 // for people who have not reached the issue module.
 export const coveredStatementsByQuestion: Record<string, string[]> = {
-  "economic-system.system": ["ownership.01", "ownership.02"],
+  "economic-system.ownership": ["ownership.01", "ownership.02"],
   "healthcare.system": ["ownership.05", "ownership.07"],
   "labor.minimum-wage": ["federalism.19", "regulation.15"],
   "labor.unions": ["regulation.04", "regulation.14"],
@@ -117,6 +124,10 @@ export const coveredStatementsByQuestion: Record<string, string[]> = {
   "climate.policies": ["technology.04"],
   "religious-liberty.vendors": ["religion.20"],
   "education.choice": ["ownership.15"],
+  "race.differences": ["race.14"],
+  "race.jewish": ["race.21", "race.16"],
+  "race.marriage": ["race.09"],
+  "race.association": ["identity.18"],
 };
 
 export const primaryAxis = (s: Statement) => s.id.split(".")[0] as AxisId;
@@ -202,12 +213,21 @@ function choiceLogLik(question: ChoiceQuestion, chosenId: string, axis: AxisId):
   return softmaxLogLik(opts.map((o) => o.axes[axis]!.location), chosen);
 }
 
+// Whether a checklist item was on screen when this answer was given. Items
+// added to the bank later were never seen, so leaving them unchecked says
+// nothing; answers saved without a snapshot predate any additions.
+export function itemWasShown(a: QuizAnswer, option: ChoiceOption): boolean {
+  return !a.shown?.options || a.shown.options.includes(option.text);
+}
+
 // A checklist's items, each as checked or not, with the loadings that side
-// carries and the side it was picked over.
-function checklistItems(question: ChoiceQuestion, chosenIds: string[]): { picked: Loadings; other: Loadings }[] {
+// carries and the side it was picked over. Unchecked items count as "no" only
+// if they were shown.
+function checklistItems(question: ChoiceQuestion, chosenIds: string[], a: QuizAnswer): { picked: Loadings; other: Loadings }[] {
   return question.options.flatMap((o) => {
     if (!o.unchecked) return [];
-    return chosenIds.includes(o.id) ? [{ picked: o.axes, other: o.unchecked.axes }] : [{ picked: o.unchecked.axes, other: o.axes }];
+    if (chosenIds.includes(o.id)) return [{ picked: o.axes, other: o.unchecked.axes }];
+    return itemWasShown(a, o) ? [{ picked: o.unchecked.axes, other: o.axes }] : [];
   });
 }
 
@@ -232,7 +252,7 @@ export function answerEvidence(a: QuizAnswer): Partial<Record<AxisId, number[]>>
   const chosenIds = Array.isArray(a.value) ? a.value : [a.value];
   if (q.question.selection === "checklist") {
     const parts = new Map<AxisId, number[][]>();
-    for (const { picked, other } of checklistItems(q.question, chosenIds)) {
+    for (const { picked, other } of checklistItems(q.question, chosenIds, a)) {
       for (const [axis, l] of Object.entries(picked) as [AxisId, { location: number; weight: number }][]) {
         const alt = other[axis];
         if (!alt) continue;
@@ -284,7 +304,7 @@ export function evidenceCounts(a: QuizAnswer): Partial<Record<AxisId, number>> {
     for (const axis of Object.keys(answerEvidence(a)) as AxisId[]) out[axis] = 1;
     return out;
   }
-  for (const { picked, other } of checklistItems(q, Array.isArray(a.value) ? a.value : [a.value])) {
+  for (const { picked, other } of checklistItems(q, Array.isArray(a.value) ? a.value : [a.value], a)) {
     for (const axis of Object.keys(picked) as AxisId[]) if (other[axis]) out[axis] = (out[axis] ?? 0) + 1;
   }
   for (const axis of Object.keys(out) as AxisId[]) out[axis] = Math.min(CHECKLIST_AXIS_EVIDENCE_CAP, out[axis]!);
@@ -399,7 +419,7 @@ export interface QuizState {
 export function modeComplete(state: QuizState, answerCount: number, mode: QuizModeId): boolean {
   if (mode === "deep") return state.complete;
   const config = QUIZ_MODES[mode];
-  const covered = axisIds.every((axis) => state.axes[axis].answered >= config.minimumAxisEvidence);
+  const covered = modeAxes(mode).every((axis) => state.axes[axis].answered >= config.minimumAxisEvidence);
   return (covered && answerCount >= config.targetScreens) || answerCount >= config.maximumScreens;
 }
 
@@ -443,7 +463,10 @@ export function computeState(answers: QuizAnswer[], refine: RefineTargets = {}):
     // Mixed views across a broad axis are meaningful, not a request for an
     // endless tie-breaker. Use model precision for stopping while retaining
     // the widened SD in results as an honest confidence signal.
-    const precise = answered[a] >= MIN_PER_AXIS && rawSd < SD_TARGET;
+    // Policy answers count toward precision, but an axis also needs its own
+    // statements: choices alone can't catch a reading that only one abstract
+    // answer contradicts.
+    const precise = answered[a] >= MIN_PER_AXIS && asked[a] >= COVERAGE_PER_AXIS && rawSd < SD_TARGET;
     const capped = asked[a] >= MAX_PER_AXIS || remaining[a] === 0;
     const refineOpen = (refine[a] ?? 0) > asked[a] && remaining[a] > 0;
     if (refineOpen) refineLeft += Math.min((refine[a] ?? 0) - asked[a], remaining[a]);
@@ -556,14 +579,18 @@ function expectedVariance(s: Statement, post: number[]): number {
   return expected;
 }
 
+const setsLens = (m: IssueModule) => [m.screener, ...m.followUps].some((q) => q.options.some((o) => o.lens));
+
 // The quiz runs as a funnel, broad to narrow:
 //   1. Foundations: political system, economic system, religion and law.
 //      They frame everything else and decide which issues still apply.
 //   2. Principles: COVERAGE_PER_AXIS statements on every axis, one axis at a
-//      time, in COVERAGE_ORDER.
-//   3. Issues, in bank order (broadest first), skipping any a foundation
-//      answer has ruled out. Each issue is asked as one block: its screener,
-//      then its follow-ups.
+//      time, the axis that best splits the traditions still in play first
+//      (funnel.ts): family-level divides while many are, then the divides
+//      within the respondent's group.
+//   3. Issues, the one that best splits the remaining traditions first,
+//      skipping any a foundation answer has ruled out. Each issue is asked as
+//      one block: its screener, then its follow-ups.
 //   4. Statements on whichever axis is least certain, until all settle.
 export function nextItem(
   answers: QuizAnswer[],
@@ -587,12 +614,22 @@ export function nextItem(
   answers.forEach((a, i) => {
     if (a.kind === "choice" && questionIndex.get(a.id)?.isScreener) lastScreenerAt.set(a.id, i);
   });
+  // Specialist follow-ups (`later`) wait until the broad pass has placed
+  // the respondent: coverage met in the shorter checkpoints, the principle
+  // statements done in Deep.
+  const statementsLeft = (axis: AxisId) => statements.some((s) => primaryAxis(s) === axis && !askedIds.has(`statement:${s.id}`) && !deferred.has(`statement:${s.id}`));
+  const placed = modeAxes(mode).every((axis) =>
+    mode === "deep"
+      ? state.axes[axis].settled || state.axes[axis].asked >= COVERAGE_PER_AXIS || !statementsLeft(axis)
+      : state.axes[axis].answered >= QUIZ_MODES[mode].minimumAxisEvidence || !statementsLeft(axis),
+  );
+  const askable = (q: ChoiceQuestion) => !deferred.has(`choice:${q.id}`) && (placed || !(q as FollowUp).later);
   const open = state.issues
-    .filter((i) => i.pending.some((q) => !deferred.has(`choice:${q.id}`)))
+    .filter((i) => i.pending.some(askable))
     .sort((x, y) => (lastScreenerAt.get(y.module.screener.id) ?? -1) - (lastScreenerAt.get(x.module.screener.id) ?? -1));
   if (open.length > 0) {
     const i = open[0];
-    return { kind: "choice", question: i.pending.find((q) => !deferred.has(`choice:${q.id}`))!, module: i.module, isScreener: false };
+    return { kind: "choice", question: i.pending.find(askable)!, module: i.module, isScreener: false };
   }
 
   const unasked = (axis: AxisId) =>
@@ -607,8 +644,29 @@ export function nextItem(
     return { kind: "statement", statement: pick(ranked, rand).s };
   };
 
+  const axesInMode = modeAxes(mode);
+
+  // Funnel scores, computed once per step and only when needed.
+  let split: Partial<Record<AxisId, number>> | null = null;
+  const splits = () => {
+    if (!split) {
+      const weights = candidateWeights(state.axes, lensAnswers(answers));
+      split = Object.fromEntries(axesInMode.map((a) => [a, splitScore(a, weights, state.axes)]));
+    }
+    return split;
+  };
+  // Most informative first; COVERAGE_ORDER breaks ties.
+  const bySplit = (axes: AxisId[]) => [...axes].sort((a, b) => (splits()[b] ?? 0) - (splits()[a] ?? 0) || COVERAGE_ORDER.indexOf(a) - COVERAGE_ORDER.indexOf(b));
+  // Modules that set a lens (who comes first, which tradition) are
+  // narrowing questions: they go before ordinary issues once in the mode.
+  const bestModule = (modules: IssueModule[]) => {
+    const lensFirst = modules.filter(setsLens);
+    const pool = lensFirst.length > 0 ? lensFirst : modules;
+    return pool.reduce((best, m) => (questionScore(m.screener.options, splits()) > questionScore(best.screener.options, splits()) ? m : best), pool[0]);
+  };
+
   // Axes the respondent asked to refine.
-  for (const axis of axisIds) {
+  for (const axis of axesInMode) {
     if ((refine[axis] ?? 0) > state.axes[axis].asked) {
       const item = statementOn(axis);
       if (item) return item;
@@ -617,7 +675,7 @@ export function nextItem(
 
   const screener = (m: IssueModule): NextItem => ({ kind: "choice", question: m.screener, module: m, isScreener: true });
   const unscreened = state.issues
-    .filter((i) => !i.screenerAnswered && !i.excluded && !deferred.has(`choice:${i.module.screener.id}`))
+    .filter((i) => !i.screenerAnswered && !i.excluded && inMode(i.module.minMode, mode) && !deferred.has(`choice:${i.module.screener.id}`))
     .map((i) => i.module);
 
   // Advertising/topic entries start with the promised subject, then join the
@@ -636,29 +694,39 @@ export function nextItem(
   // already supplied coverage before adding an abstract statement.
   if (mode !== "deep") {
     const minimum = QUIZ_MODES[mode].minimumAxisEvidence;
-    const needsCoverage = COVERAGE_ORDER.filter((axis) => state.axes[axis].answered < minimum && unasked(axis).length > 0);
+    const needsCoverage = COVERAGE_ORDER.filter((axis) => axesInMode.includes(axis) && state.axes[axis].answered < minimum && unasked(axis).length > 0);
     if (needsCoverage.length > 0) {
       const fewest = Math.min(...needsCoverage.map((axis) => state.axes[axis].answered));
-      const axis = needsCoverage.find((candidate) => state.axes[candidate].answered === fewest)!;
+      const axis = bySplit(needsCoverage.filter((candidate) => state.axes[candidate].answered === fewest))[0];
       const item = statementOn(axis);
       if (item) return item;
     }
 
-    // Once coverage is sound, use broad issue modules until the mode reaches
-    // its screen budget. The caller stops at the checkpoint.
-    if (unscreened.length > 0) return screener(unscreened[0]);
+    // Once coverage is sound, spend the rest of the budget on whatever best
+    // splits the traditions still in play: a direct statement on an axis
+    // that's still uncertain (often one only a side loading has touched), or
+    // an issue module. The caller stops at the checkpoint.
+    const open = axesInMode.filter((axis) => state.axes[axis].sd > WEAK_SD && unasked(axis).length > 0);
+    const axis = open.length > 0 ? bySplit(open)[0] : null;
+    const best = unscreened.length > 0 ? bestModule(unscreened) : null;
+    const moduleValue = best ? questionScore(best.screener.options, splits()) : -1;
+    if (axis && (splits()[axis] ?? 0) > moduleValue) {
+      const item = statementOn(axis);
+      if (item) return item;
+    }
+    if (best) return screener(best);
   }
 
   // 2. Principles.
-  const unsettled = axisIds.filter((a) => !state.axes[a].settled && unasked(a).length > 0);
-  for (const axis of COVERAGE_ORDER) {
-    if (!unsettled.includes(axis) || state.axes[axis].asked >= COVERAGE_PER_AXIS) continue;
+  const unsettled = axesInMode.filter((a) => !state.axes[a].settled && unasked(a).length > 0);
+  for (const axis of bySplit(unsettled)) {
+    if (state.axes[axis].asked >= COVERAGE_PER_AXIS) continue;
     const item = statementOn(axis);
     if (item) return item;
   }
 
   // 3. Issues.
-  if (unscreened.length > 0) return screener(unscreened[0]);
+  if (unscreened.length > 0) return screener(bestModule(unscreened));
 
   // 4. Settle what's left.
   if (unsettled.length > 0) {
