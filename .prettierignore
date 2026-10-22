@@ -3,6 +3,5 @@ node_modules
 coverage
 public/maplibre-gl-csp-worker.js
 public/**/*.json
-*.lock
 *.sql
 supabase/templates

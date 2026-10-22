@@ -40,10 +40,9 @@ yarn-error.log*
 # vercel
 .vercel
 
-# database backups — local dumps written by scripts/export-db.mjs and
-# scripts/migrate-neo4j.mjs, plus the reconstruct script's FEC response
-# cache. Two snapshots are committed as the recovery record: the pre-wipe
-# Postgres backup and the full Neo4j graph (see each dir's manifest).
+# database backups — local dumps written by scripts/export-db.mjs. Two
+# snapshots are committed as the recovery record: the pre-wipe Postgres
+# backup and the full Neo4j graph (see each dir's manifest).
 /backups/*
 !/backups/2026-09-06T21-05-25/
 !/backups/2026-09-07T00-12-neo4j-full/
@@ -65,7 +64,12 @@ next-env.d.ts
 /.cache/
 .neon
 
-# AI agent instructions — kept local, not published
+# AI agent instructions and tooling — kept local, not published
 CLAUDE.md
 AGENTS.md
+skills-lock.json
+
+# local exports, private planning notes, generated work queues
 /exports/
+/notes/
+/data/profiles/lookup-queue.json
