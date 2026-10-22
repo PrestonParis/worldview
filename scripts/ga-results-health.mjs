@@ -15,7 +15,7 @@ try {
     `select source_election_id, election_name, heartbeat_at, mode,
             extract(epoch from now() - heartbeat_at) / 60 as minutes
        from tracked_ingest_status
-      where not is_official and election_date >= current_date - 45 and election_date <= current_date`,
+      where not is_official and election_date >= current_date - 60 and election_date <= current_date`,
   );
   for (const r of rows) {
     const minutes = r.minutes == null ? Infinity : Number(r.minutes);

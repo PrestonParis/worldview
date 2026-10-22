@@ -1,0 +1,102 @@
+name: GA results watch
+
+# Election-night ingest for Writ's close-races report (docs/writ-close-races-runbook.md).
+# Started by hand before polls close. Each run polls the Georgia SOS results
+# feed for up to 5h45m, then starts the next run while results are still
+# unofficial. A laptop can take over at any time with the same command; the
+# ingest is idempotent.
+on:
+  workflow_dispatch:
+    inputs:
+      election:
+        description: "SOS election id, or auto (uses date)"
+        default: auto
+      date:
+        description: "Election date for auto (YYYY-MM-DD)"
+        default: "2026-11-03"
+      every:
+        description: "Seconds between polls"
+        default: "180"
+      until:
+        description: "Run length before handing off"
+        default: 5h45m
+      chain:
+        description: "Start another run when this one ends and results are still unofficial"
+        type: boolean
+        default: true
+
+concurrency:
+  group: ga-results-watch
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Write .env.local
+        run: |
+          {
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}"
+            echo "NEON_DATABASE_URL=${{ secrets.NEON_DATABASE_URL }}"
+            echo "NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}"
+            echo "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}"
+            echo "ALERT_WEBHOOK_URL=${{ secrets.ALERT_WEBHOOK_URL }}"
+            echo "SITE_URL=${{ secrets.SITE_URL }}"
+            echo "REVALIDATE_SECRET=${{ secrets.REVALIDATE_SECRET }}"
+          } > .env.local
+
+      - name: Watch
+        env:
+          ELECTION: ${{ inputs.election }}
+          DATE: ${{ inputs.date }}
+          EVERY: ${{ inputs.every }}
+          UNTIL: ${{ inputs.until }}
+        run: npm run sync:ga-results -- --election="$ELECTION" --date="$DATE" --watch --every="$EVERY" --until="$UNTIL"
+
+      # Chains only while the date has tracked contests that aren't all
+      # official. No rows at all (a wrong date, or an ingest that never
+      # wrote) stops the chain and fails the run so the alert below fires.
+      - name: Hand off to the next run
+        if: success() && inputs.chain
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          ELECTION: ${{ inputs.election }}
+          DATE: ${{ inputs.date }}
+          EVERY: ${{ inputs.every }}
+          UNTIL: ${{ inputs.until }}
+        run: |
+          state=$(node -e '
+            const { Client } = require("pg");
+            const c = new Client({ connectionString: process.env.DATABASE_URL });
+            c.connect()
+              .then(() => c.query("select bool_and(is_official) as done from tracked_ingest_status where election_date = $1", [process.env.DATE]))
+              .then((r) => { const done = r.rows[0].done; console.log(done === null ? "none" : done ? "official" : "open"); return c.end(); })
+              .catch((err) => { console.error(err.message); process.exit(1); });')
+          case "$state" in
+            official) echo "Results are official; not chaining." ;;
+            none) echo "No tracked contests for $DATE; not chaining."; exit 1 ;;
+            *) gh workflow run ga-results-watch.yml --ref "${{ github.ref_name }}" \
+                 -f election="$ELECTION" -f date="$DATE" -f every="$EVERY" -f until="$UNTIL" -f chain=true ;;
+          esac
+
+      - name: Alert on failure
+        if: failure()
+        env:
+          ALERT_WEBHOOK_URL: ${{ secrets.ALERT_WEBHOOK_URL }}
+        run: |
+          node -e 'import("./scripts/lib/alerts.mjs").then((m) => m.sendWebhook("🚨 GA results watch run failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"))'
