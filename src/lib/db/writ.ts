@@ -6,7 +6,7 @@ import { listActions, listCommittees, listCosponsors, listRelations, listTextVer
 import { countRollCalls, listRollCallsForBill } from "./rollCalls";
 import { listVotesForRollCall } from "./votes";
 import { listVoterRollCallVotes, votesByRollCall, type VoterRollCallVote } from "./votingRecord";
-import { getEntitiesByIds, getEntity } from "./entities";
+import { escapeLike, getEntitiesByIds, getEntity } from "./entities";
 import { getElection, latestCycle } from "./elections";
 import { listCandidaciesForElection, listCandidaciesForEntity, type EntityCandidacy } from "./candidacies";
 import { areaBreakdowns, listResultsForElection } from "./electionResults";
@@ -118,10 +118,6 @@ export interface WritDiscovery {
   cycle: number | null;
   members: { entity: Entity; votes: number }[];
   counts: { bills: number; rollCalls: number };
-}
-
-function escapeLike(value: string): string {
-  return value.replace(/[%_\\]/g, (c) => `\\${c}`);
 }
 
 function partyKey(party: string | null | undefined): PartyKey {

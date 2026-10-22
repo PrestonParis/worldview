@@ -1,6 +1,5 @@
 import Image from "next/image";
-
-export type ToolId = "subpoena" | "writ" | "issueview" | "atlas";
+import type { ProductId } from "@/lib/tools/catalog";
 
 interface LogoProps {
   size?: number;
@@ -65,7 +64,7 @@ export function ToolLogo({
   size = 48,
   className = "",
   priority = false,
-}: LogoProps & { tool: ToolId | string }) {
+}: LogoProps & { tool: ProductId | string }) {
   switch (tool) {
     case "subpoena":
       return <SubpoenaLogo size={size} className={className} priority={priority} />;

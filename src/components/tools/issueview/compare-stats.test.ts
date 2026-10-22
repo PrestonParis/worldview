@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { correlationMatrix, linearFit, pairStats, pairs, pearson, ranks, spearman } from "./compare-stats";
+import { pearson, ranks, spearman } from "@/lib/stats/correlation";
+import { correlationMatrix, linearFit, pairStats, pairs } from "./compare-stats";
 
 const row = (geoid: string, ...values: (number | null)[]) => ({ geoid, values });
 

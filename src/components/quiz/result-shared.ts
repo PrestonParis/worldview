@@ -2,7 +2,7 @@
 
 import { axes as axisDefs } from "@/lib/quiz/axes";
 import { FAMILIES } from "@/lib/quiz/families";
-import { verdict, type IdeologyMatch, type QuizResult } from "@/lib/quiz/results";
+import { type QuizResult } from "@/lib/quiz/results";
 import type { QuizModeId } from "@/lib/quiz/modes";
 
 // Whose result the page speaks of. Editing rights decide the voice only in
@@ -11,20 +11,6 @@ import type { QuizModeId } from "@/lib/quiz/modes";
 export const marker = (self: boolean) => (self ? "You" : "Profile");
 
 export const BREAK_GAP = 0.35;
-
-export function verdictLine(matches: IdeologyMatch[], self: boolean): string {
-  const [top, second] = matches;
-  if (!second) return "";
-  const lead = top.match - second.match;
-  switch (verdict(matches)) {
-    case "clear":
-      return `A clear fit, ${lead} points ahead of ${second.ideology.name}.`;
-    case "lean":
-      return `${self ? "You lean" : "Leans"} ${top.ideology.name}, with ${second.ideology.name} close behind.`;
-    case "torn":
-      return `${self ? "You're torn" : "Torn"} between ${top.ideology.name} and ${second.ideology.name}.`;
-  }
-}
 
 export const VERDICT_LABEL = { clear: "Clear lead", lean: "Narrow lead", torn: "Close call" } as const;
 

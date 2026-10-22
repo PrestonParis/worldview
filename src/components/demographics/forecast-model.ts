@@ -20,11 +20,6 @@ export const DEFAULT_FOCUS: Record<DemographicDimensionId, string> = {
   orientation: "bisexual",
 };
 
-export const MEASURE_LABEL = {
-  census: "Census population estimates",
-  survey: "Survey estimates",
-} as const;
-
 export const TOPIC_PAGES: Partial<Record<DemographicDimensionId, { href: string; label: string; blurb: string }>> = {
   religion: {
     href: "/religion",

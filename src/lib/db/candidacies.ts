@@ -1,12 +1,7 @@
 import { desc, eq } from "drizzle-orm";
 import { db } from "./client";
 import { candidacies, elections } from "./schema";
-import {
-  summarizeCandidacies,
-  type Candidacy,
-  type CandidacyInput,
-  type ElectionSummary,
-} from "../validation/candidacy";
+import { type Candidacy, type CandidacyInput } from "../validation/candidacy";
 
 function toCandidacy(row: typeof candidacies.$inferSelect): Candidacy {
   return {
@@ -83,41 +78,9 @@ export async function listCandidaciesForEntity(entityId: string): Promise<Entity
   }));
 }
 
-// One query for every election's roll-up, rather than one per election —
-// used by the list view, which shows a summary per row (mirrors
-// listVoteTalliesByBill).
-export async function listElectionSummariesByElection(): Promise<
-  Map<string, ElectionSummary>
-> {
-  const rows = await db.select().from(candidacies);
-  const byElection = new Map<string, Candidacy[]>();
-  for (const row of rows) {
-    const list = byElection.get(row.electionId) ?? [];
-    list.push(toCandidacy(row));
-    byElection.set(row.electionId, list);
-  }
-  const summaries = new Map<string, ElectionSummary>();
-  for (const [electionId, list] of byElection) {
-    summaries.set(electionId, summarizeCandidacies(list));
-  }
-  return summaries;
-}
-
 export async function createCandidacy(input: CandidacyInput): Promise<Candidacy> {
   const [row] = await db.insert(candidacies).values(toRow(input)).returning();
   return toCandidacy(row);
-}
-
-export async function updateCandidacy(
-  id: string,
-  input: CandidacyInput,
-): Promise<Candidacy | null> {
-  const [row] = await db
-    .update(candidacies)
-    .set(toRow(input))
-    .where(eq(candidacies.id, id))
-    .returning();
-  return row ? toCandidacy(row) : null;
 }
 
 export async function deleteCandidacy(id: string): Promise<void> {

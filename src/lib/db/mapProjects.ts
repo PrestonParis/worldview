@@ -33,16 +33,6 @@ export async function listMapProjects(ownerId: string): Promise<MapProject[]> {
   return rows.map(toMapProject);
 }
 
-export async function getMapProject(
-  id: string,
-  ownerId: string,
-): Promise<MapProject | null> {
-  const row = await db.query.mapProjects.findFirst({
-    where: and(eq(mapProjects.id, id), eq(mapProjects.ownerId, ownerId)),
-  });
-  return row ? toMapProject(row) : null;
-}
-
 export async function createMapProject(
   ownerId: string,
   input: MapProjectInput,

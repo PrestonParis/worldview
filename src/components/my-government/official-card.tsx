@@ -3,7 +3,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { ArrowUpRight, BadgeDollarSign, ExternalLink, FileText, Phone, UserRound, Vote } from "lucide-react";
-import { formatValue } from "@/lib/format";
+import { formatValue, initials } from "@/lib/format";
 import { partyColor, partyLetter } from "@/lib/money/semantic";
 import type { GovernmentOfficial, OfficialRecord } from "@/lib/my-government/types";
 
@@ -12,11 +12,6 @@ import type { GovernmentOfficial, OfficialRecord } from "@/lib/my-government/typ
 // card first renders (records.ts), so everything it adds is optional.
 
 const usd = (v: number) => formatValue(v, "usd", { compact: true });
-
-function initials(name: string): string {
-  const parts = name.replace(/\b(Jr|Sr|II|III|IV)\.?$/i, "").split(/\s+/).filter((p) => /^[A-Za-z]/.test(p));
-  return ((parts[0]?.[0] ?? "") + (parts.length > 1 ? parts.at(-1)![0] : "")).toUpperCase();
-}
 
 function raceDate(iso: string): string {
   return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });

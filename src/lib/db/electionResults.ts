@@ -1,4 +1,4 @@
-import { eq, sql } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { db } from "./client";
 import { electionResults, candidacies } from "./schema";
 import type {
@@ -35,20 +35,6 @@ export async function listResultsForElection(
     party: r.party ?? "",
     votes: r.votes,
   }));
-}
-
-export async function electionIdsWithResults(): Promise<Set<string>> {
-  const rows = await db
-    .selectDistinct({ id: electionResults.electionId })
-    .from(electionResults);
-  return new Set(rows.map((r) => r.id));
-}
-
-export async function countElectionResults(): Promise<number> {
-  const [row] = await db
-    .select({ value: sql<number>`count(*)::int` })
-    .from(electionResults);
-  return row?.value ?? 0;
 }
 
 function toRow(input: ElectionResultInput) {

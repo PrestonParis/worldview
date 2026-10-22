@@ -1,4 +1,3 @@
-import { formatValue } from "@/lib/format";
 import { MONEY_COLORS, partyColor as partyColorOf } from "@/lib/money/semantic";
 
 export interface FlowCandidate {
@@ -38,14 +37,6 @@ export const PARTIES = [
 ] as const;
 
 export type PartyCode = (typeof PARTIES)[number]["code"];
-
-export const usd = (value: number) => formatValue(value, "usd", { compact: true });
-
-export function pct(part: number, whole: number): string {
-  if (!(whole > 0)) return "—";
-  const percentage = (part / whole) * 100;
-  return percentage > 0 && percentage < 0.5 ? "<1%" : `${Math.round(percentage)}%`;
-}
 
 export const otherOf = (candidate: FlowCandidate) =>
   Math.max(0, candidate.receipts - candidate.individual - candidate.pac - candidate.party_);

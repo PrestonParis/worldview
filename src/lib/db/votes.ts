@@ -59,17 +59,6 @@ export async function listVoteTalliesByBill(): Promise<Map<string, VoteTally>> {
   return tallies;
 }
 
-export async function tallyForRollCall(rollCallId: string): Promise<VoteTally> {
-  const rows = await db
-    .select({ position: votes.position, value: count() })
-    .from(votes)
-    .where(eq(votes.rollCallId, rollCallId))
-    .groupBy(votes.position);
-  const tally = emptyTally();
-  for (const row of rows) tally[row.position] = row.value;
-  return tally;
-}
-
 export async function createVote(input: VoteInput): Promise<Vote> {
   const [row] = await db
     .insert(votes)

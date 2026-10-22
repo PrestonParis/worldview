@@ -5,6 +5,7 @@ import { ArrowRight, Briefcase } from "lucide-react";
 import type { Entity } from "@/lib/validation/entity";
 import { Surface } from "@/components/ui/surface";
 import { parseEntityMetadata, publicEntityPath, typeLabels } from "@/lib/people/public";
+import { initials } from "@/lib/format";
 
 interface Props {
   featuredEntities: Entity[];
@@ -46,15 +47,6 @@ const DISCOVERY_SECTIONS = [
     limit: 8,
   },
 ] as const;
-
-function initials(name: string): string {
-  return name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((part) => part[0])
-    .join("")
-    .toUpperCase();
-}
 
 function influenceAreas(entity: Entity): string[] {
   const value = parseEntityMetadata(entity.metadata).influenceAreas;

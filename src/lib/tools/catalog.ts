@@ -1,5 +1,7 @@
+export type ProductId = "subpoena" | "writ" | "issueview" | "atlas";
+
 export interface ToolMetadata {
-  id: "subpoena" | "writ" | "issueview" | "atlas";
+  id: ProductId;
   name: string;
   tagline: string;
   badge: string;

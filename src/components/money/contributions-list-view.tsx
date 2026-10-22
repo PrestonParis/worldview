@@ -12,6 +12,7 @@ import { publicEntityPath } from "@/lib/people/public";
 import type { Contribution } from "@/lib/validation/contribution";
 import type { Entity } from "@/lib/validation/entity";
 import type { Source } from "@/lib/validation/source";
+import { csvCell } from "@/lib/csv";
 
 const PAGE_SIZE = 50;
 
@@ -23,11 +24,6 @@ function formatDate(iso: string): string {
     timeZone: "UTC",
   });
 }
-
-const csvCell = (v: string | number) => {
-  const s = String(v);
-  return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
-};
 
 const selectClass =
   "rounded-md border border-slate-300 bg-white px-2 py-1.5 text-sm text-slate-800 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100";

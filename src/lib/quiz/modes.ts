@@ -86,11 +86,3 @@ const AXIS_MIN_MODE: Partial<Record<AxisId, QuizModeId>> = { race: "standard", v
 export const inMode = (minMode: QuizModeId | undefined, mode: QuizModeId) => !minMode || modeRank(mode) >= modeRank(minMode);
 
 export const modeAxes = (mode: QuizModeId): AxisId[] => axisIds.filter((axis) => inMode(AXIS_MIN_MODE[axis], mode));
-
-export function missingCoverage(
-  answered: Record<AxisId, number>,
-  mode: QuizModeId,
-): AxisId[] {
-  const minimum = QUIZ_MODES[mode].minimumAxisEvidence;
-  return modeAxes(mode).filter((axis) => answered[axis] < minimum);
-}

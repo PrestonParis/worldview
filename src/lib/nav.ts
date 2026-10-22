@@ -116,9 +116,3 @@ export const navGroups: NavGroup[] = [
 export const ownerNavItems: Record<string, NavGroup["items"]> = {
   tools: [{ page: { label: "Geography", navLabel: "Geography", href: "/geography" }, blurb: "Annotated map graphics for broadcast and social" }],
 };
-
-export const dataAdminPage: NavPage = {
-  label: "Manage Data",
-  navLabel: "Manage Data",
-  href: "/data",
-};

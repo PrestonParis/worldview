@@ -23,24 +23,6 @@ export async function createCandidacyAction(input: CandidacyInput): Promise<Acti
   }
 }
 
-export async function updateCandidacyAction(id: string, input: CandidacyInput): Promise<ActionResult<{ id: string }>> {
-  const denied = await requireContributor();
-  if (denied) return denied;
-  const parsed = candidacySchema.safeParse(input);
-  if (!parsed.success) {
-    return validationFailure(parsed.error);
-  }
-  try {
-    const candidacy = await candidaciesDb.updateCandidacy(id, parsed.data);
-    if (!candidacy) return { ok: false, error: "Candidacy not found" };
-    revalidatePath("/data");
-    revalidatePath("/elections");
-    return { ok: true, data: { id: candidacy.id } };
-  } catch (err) {
-    return actionFailure("candidacies.update", err);
-  }
-}
-
 export async function deleteCandidacyAction(id: string): Promise<ActionResult<null>> {
   const denied = await requireContributor();
   if (denied) return denied;

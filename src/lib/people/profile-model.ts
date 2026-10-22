@@ -69,15 +69,6 @@ export interface RelationshipRecord {
 export const eventCategories = ["career", "finance", "politics", "ideas", "legal", "personal"] as const;
 export type EventCategory = (typeof eventCategories)[number];
 
-export const eventCategoryLabels: Record<EventCategory, string> = {
-  career: "Career",
-  finance: "Money",
-  politics: "Politics",
-  ideas: "Ideas",
-  legal: "Legal",
-  personal: "Personal",
-};
-
 export interface EventRecord {
   id: string;
   key: string;
@@ -214,7 +205,7 @@ export interface ProfileEditorial {
   sourcesVerifiedAt: string;
 }
 
-const isRecord = (v: unknown): v is Record<string, unknown> => Boolean(v) && typeof v === "object" && !Array.isArray(v);
+export const isRecord = (v: unknown): v is Record<string, unknown> => Boolean(v) && typeof v === "object" && !Array.isArray(v);
 const str = (v: unknown) => (typeof v === "string" ? v : "");
 const strs = (v: unknown) => (Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : []);
 const list = <T>(v: unknown, map: (r: Record<string, unknown>) => T | null): T[] =>

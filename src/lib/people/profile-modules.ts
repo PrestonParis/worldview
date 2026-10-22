@@ -5,7 +5,6 @@
 
 import { highlightEvents, summarizeGiving, type EventRecord } from "./profile-model";
 import { parseHighlights } from "../validation/entity";
-import { relationshipCategoryOf } from "../relationships";
 import type { ProfileBundle } from "../db/profile-records";
 
 export const profileTabs = [
@@ -16,12 +15,6 @@ export const profileTabs = [
 ] as const;
 
 export type ProfileTabId = (typeof profileTabs)[number]["id"];
-
-/** Edges that describe political activity rather than business or family. */
-export function isPoliticalEdge(relType: string): boolean {
-  const category = relationshipCategoryOf(relType);
-  return category === "political" || category === "institutional" || relType === "party-member" || relType === "campaign-role";
-}
 
 /** Editorial events plus, for profiles without them, dated legacy highlights. */
 export function profileEvents(bundle: ProfileBundle): EventRecord[] {

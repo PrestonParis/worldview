@@ -18,11 +18,6 @@ export const leanLabels: Record<Lean, string> = {
   liberal: "Liberal",
 };
 
-export const leanColors: Record<Lean, string> = {
-  conservative: "#dc2626",
-  liberal: "#2563eb",
-};
-
 // The People graph's tabs: one per side, plus everyone neither list nor
 // party places — so every entity is on exactly one tab.
 export const graphSides = [...leans, "uncharacterized"] as const;
@@ -32,15 +27,6 @@ export const sideLabels: Record<GraphSide, string> = {
   ...leanLabels,
   uncharacterized: "Not classified",
 };
-
-export const sideColors: Record<GraphSide, string> = {
-  ...leanColors,
-  uncharacterized: "#94a3b8",
-};
-
-export function parseSide(value: string | undefined): GraphSide {
-  return graphSides.includes(value as GraphSide) ? (value as GraphSide) : graphSides[0];
-}
 
 // Trump administration officials (data/administration.json) whose records
 // carry no party field.
@@ -840,7 +826,7 @@ export function leanOf(entity: Pick<Entity, "name" | "type" | "metadata">): Lean
 }
 
 // Placed by hand on the curated lists above, as opposed to by party or
-// FEC money — the movement landscape shows only these organizations.
+// FEC money.
 export function isCurated(entity: Pick<Entity, "name">): boolean {
   return LEAN_BY_NAME.has(entity.name);
 }
@@ -860,11 +846,6 @@ export function leanBasisOf(entity: Pick<Entity, "name" | "type" | "metadata">):
   return metadataField(entity.metadata, "leanBasis");
 }
 
-// People are the thing being split: a politician, pundit or journalist
-// shows only on their side's tab, or on "uncharacterized" if they have
-// none. Institutions without a side (chambers, committees, state offices,
-// donors, neutral outlets) appear on every tab, since they're what
-// connects each side's people to each other.
 const PERSON_TYPES = new Set<string>(["politician", "judge", "pundit", "journalist"]);
 
 // What a node's colour means in the network: people by political family,
@@ -875,10 +856,4 @@ export function familyOf(entity: Pick<Entity, "name" | "type" | "metadata">): No
   const lean = leanOf(entity);
   if (lean) return lean;
   return PERSON_TYPES.has(entity.type) ? "unplaced" : "institution";
-}
-
-export function belongsOnSide(entity: Pick<Entity, "name" | "type" | "metadata">, side: GraphSide): boolean {
-  const lean = leanOf(entity);
-  if (lean) return lean === side;
-  return side === "uncharacterized" || !PERSON_TYPES.has(entity.type);
 }

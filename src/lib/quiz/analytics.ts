@@ -38,6 +38,8 @@ import { ideologyMatches, verdict, type AxisResult, type Verdict } from "./resul
 import { allTraditions, ideologies } from "./ideologies";
 import { modeRank, quizModeIds, type DeferredQuestion, type QuizCheckpointRecord, type QuizModeId } from "./modes";
 import { OPENERS, type OpenerAnswer } from "./openers";
+import { csvCell } from "../csv";
+import { pearson, spearman } from "../stats/correlation";
 
 // ── Inputs ──
 
@@ -325,35 +327,6 @@ function variance(xs: number[]): number | null {
   const s = stdev(xs);
   return s === null ? null : s * s;
 }
-
-export function pearson(xs: number[], ys: number[]): number | null {
-  if (xs.length < 3) return null;
-  const mx = mean(xs)!;
-  const my = mean(ys)!;
-  let sxy = 0;
-  let sxx = 0;
-  let syy = 0;
-  for (let i = 0; i < xs.length; i++) {
-    sxy += (xs[i] - mx) * (ys[i] - my);
-    sxx += (xs[i] - mx) ** 2;
-    syy += (ys[i] - my) ** 2;
-  }
-  return sxx > 0 && syy > 0 ? sxy / Math.sqrt(sxx * syy) : null;
-}
-
-function ranks(xs: number[]): number[] {
-  const order = xs.map((x, i) => [x, i] as const).sort((a, b) => a[0] - b[0]);
-  const r = new Array<number>(xs.length);
-  for (let i = 0; i < order.length; ) {
-    let j = i;
-    while (j + 1 < order.length && order[j + 1][0] === order[i][0]) j++;
-    for (let k = i; k <= j; k++) r[order[k][1]] = (i + j) / 2;
-    i = j + 1;
-  }
-  return r;
-}
-
-const spearman = (xs: number[], ys: number[]) => pearson(ranks(xs), ranks(ys));
 
 function histogram(xs: number[], bins: number, lo: number, hi: number): number[] {
   const out = new Array<number>(bins).fill(0);
@@ -1072,11 +1045,6 @@ export function analyzeQuiz(allSessions: AnalyticsSession[], allOpeners: OpenerE
 }
 
 // ── Exports ──
-
-function csvCell(v: unknown): string {
-  const s = v === null || v === undefined ? "" : String(v);
-  return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
-}
 
 export function toCsv<T extends object>(rows: T[], columns: (keyof T)[]): string {
   return [columns.join(","), ...rows.map((r) => columns.map((c) => csvCell(r[c])).join(","))].join("\n") + "\n";

@@ -25,7 +25,6 @@ describe("money flow model", () => {
     const sum = (["individual", "pac", "party_", "other"] as const).reduce((s, k) => s + valueOf(candidate, k), 0);
     expect(sum).toBe(candidate.receipts);
   });
-
 });
 
 describe("scatter helpers", () => {

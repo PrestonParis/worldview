@@ -2,6 +2,7 @@ import Link from "next/link";
 import { PortraitImage } from "@/components/people/portrait-image";
 import { benchOrder } from "@/lib/people/bench";
 import type { AppointingParty, CourtComposition, CourtJustice } from "@/lib/people/court";
+import { initials } from "@/lib/format";
 
 // The Supreme Court in three views: the bench as it sits, who appointed
 // whom, and each justice's voting record on a shared axis.
@@ -16,11 +17,6 @@ const PARTY_NAME: Record<AppointingParty, string> = { R: "Republican", D: "Democ
 const color = (party: AppointingParty | null) => PARTY_COLOR[party ?? "none"];
 const lastName = (name: string) => name.split(" ").at(-1) ?? name;
 const year = (date: string) => date.slice(0, 4);
-
-function initials(name: string): string {
-  const words = name.replace(/[^\p{L}\s]/gu, " ").split(/\s+/).filter(Boolean);
-  return ((words[0]?.[0] ?? "") + (words.length > 1 ? words[words.length - 1][0] : "")).toUpperCase() || "?";
-}
 
 function Seat({ justice }: { justice: CourtJustice }) {
   const chief = justice.seat === "chief";

@@ -26,27 +26,6 @@ export const billSchema = z.object({
 
 export type BillInput = z.infer<typeof billSchema>;
 
-// What the Congress.gov importer upserts, keyed on `externalId`. Sponsor is
-// optional; the extra structured fields the form doesn't collect are here.
-export const billImportSchema = z.object({
-  externalId: z.string().min(1),
-  congress: z.number().int().positive(),
-  billNumber: z.string().min(1).max(50),
-  title: z.string().min(1).max(600),
-  summary: z.string().optional().default(""),
-  status: z.enum(billStatuses),
-  chamber: z.string().max(100).optional().default(""),
-  introducedDate: z.string().min(1),
-  sponsorEntityId: z.uuid().nullable().optional(),
-  policyArea: z.string().optional().default(""),
-  subjects: z.string().optional().default(""),
-  latestActionDate: z.string().optional().default(""),
-  latestActionText: z.string().optional().default(""),
-  sourceId: z.uuid().nullable().optional(),
-});
-
-export type BillImportInput = z.infer<typeof billImportSchema>;
-
 export interface Bill extends Omit<BillInput, "sponsorEntityId"> {
   id: string;
   sponsorEntityId: string | null;

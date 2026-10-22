@@ -1,4 +1,4 @@
-import { eq, count, gte } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { db } from "./client";
 import { sources } from "./schema";
 import type { Source, SourceInput } from "../validation/source";
@@ -22,26 +22,6 @@ export async function listSources(): Promise<Source[]> {
     orderBy: (s, { desc }) => desc(s.createdAt),
   });
   return rows.map(toSource);
-}
-
-export async function getSourcesByIds(ids: string[]): Promise<Source[]> {
-  const unique = [...new Set(ids.filter(Boolean))];
-  if (unique.length === 0) return [];
-  const rows = await db.query.sources.findMany({ where: (s, { inArray }) => inArray(s.id, unique) });
-  return rows.map(toSource);
-}
-
-export async function countSources(): Promise<number> {
-  const [row] = await db.select({ value: count() }).from(sources);
-  return row.value;
-}
-
-export async function countSourcesCreatedSince(since: Date): Promise<number> {
-  const [row] = await db
-    .select({ value: count() })
-    .from(sources)
-    .where(gte(sources.createdAt, since));
-  return row.value;
 }
 
 export async function getSource(id: string): Promise<Source | null> {

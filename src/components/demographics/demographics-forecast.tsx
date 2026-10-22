@@ -510,9 +510,7 @@ export function DemographicsForecast({ lockedDimension }: { lockedDimension?: De
                       name: item.name,
                       disabled: !item.series[dimension],
                     }))}
-                    onChange={(value) =>
-                      value ? selectCity(value) : navigate({ state: state!.id, city: null })
-                    }
+                    onChange={(value) => (value ? selectCity(value) : navigate({ state: state!.id, city: null }))}
                   />
                 ) : null
               ) : (
@@ -560,64 +558,64 @@ export function DemographicsForecast({ lockedDimension }: { lockedDimension?: De
               />
 
               <div className="flex flex-wrap items-center gap-x-5 gap-y-2 px-5 py-3 text-[10px] text-slate-500 dark:text-slate-400">
-            {legendHasData ? (
-              <span className="inline-flex items-center gap-2">
-                <span className="font-semibold text-slate-600 dark:text-slate-300">Color</span>
-                {mode === "change" ? (
-                  <>
-                    <span className="font-mono tabular-nums">−{divergingExtent(legendValues).toFixed(1)} pp</span>
-                    <span
-                      className="h-2 w-40 rounded-full"
-                      style={{
-                        background: `linear-gradient(to right, ${NEGATIVE_COLOR}, color-mix(in srgb, ${NEGATIVE_COLOR} 10%, transparent), color-mix(in srgb, ${focusCategory.color} 10%, transparent), ${focusCategory.color})`,
-                      }}
-                    />
-                    <span className="font-mono tabular-nums">+{divergingExtent(legendValues).toFixed(1)} pp</span>
-                    <span>
-                      change in {focusCategory.label} share since {mapBaseline}
-                    </span>
-                  </>
+                {legendHasData ? (
+                  <span className="inline-flex items-center gap-2">
+                    <span className="font-semibold text-slate-600 dark:text-slate-300">Color</span>
+                    {mode === "change" ? (
+                      <>
+                        <span className="font-mono tabular-nums">−{divergingExtent(legendValues).toFixed(1)} pp</span>
+                        <span
+                          className="h-2 w-40 rounded-full"
+                          style={{
+                            background: `linear-gradient(to right, ${NEGATIVE_COLOR}, color-mix(in srgb, ${NEGATIVE_COLOR} 10%, transparent), color-mix(in srgb, ${focusCategory.color} 10%, transparent), ${focusCategory.color})`,
+                          }}
+                        />
+                        <span className="font-mono tabular-nums">+{divergingExtent(legendValues).toFixed(1)} pp</span>
+                        <span>
+                          change in {focusCategory.label} share since {mapBaseline}
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="font-mono tabular-nums">{valueExtent(legendValues)[0].toFixed(1)}%</span>
+                        <span
+                          className="h-2 w-40 rounded-full"
+                          style={{
+                            background: `linear-gradient(to right, color-mix(in srgb, ${focusCategory.color} 12%, transparent), ${focusCategory.color})`,
+                          }}
+                        />
+                        <span className="font-mono tabular-nums">{valueExtent(legendValues)[1].toFixed(1)}%</span>
+                        <span>
+                          {focusCategory.label}, {showCities ? "by city" : "by state"}
+                        </span>
+                      </>
+                    )}
+                  </span>
                 ) : (
-                  <>
-                    <span className="font-mono tabular-nums">{valueExtent(legendValues)[0].toFixed(1)}%</span>
-                    <span
-                      className="h-2 w-40 rounded-full"
-                      style={{
-                        background: `linear-gradient(to right, color-mix(in srgb, ${focusCategory.color} 12%, transparent), ${focusCategory.color})`,
-                      }}
-                    />
-                    <span className="font-mono tabular-nums">{valueExtent(legendValues)[1].toFixed(1)}%</span>
-                    <span>
-                      {focusCategory.label}, {showCities ? "by city" : "by state"}
-                    </span>
-                  </>
+                  <span>
+                    No {showCities ? "city" : "state"} figures for {selectedYear}.
+                  </span>
                 )}
-              </span>
-            ) : (
-              <span>
-                No {showCities ? "city" : "state"} figures for {selectedYear}.
-              </span>
-            )}
-            {showCities ? (
-              <>
-                <span className="inline-flex items-center gap-1.5">
-                  <span className="font-semibold text-slate-600 dark:text-slate-300">Size</span>
-                  <svg width="34" height="16" aria-hidden="true">
-                    <circle cx="5" cy="10" r="4" fill="none" stroke="currentColor" />
-                    <circle cx="23" cy="8" r="7.5" fill="none" stroke="currentColor" />
-                  </svg>
-                  city population (2024)
-                </span>
-                <span className="inline-flex items-center gap-1.5">
-                  <span className="h-2.5 w-2.5 rounded-full bg-slate-300" /> not published for this city
-                </span>
-                <InfoTip label="Why only cities of 65,000+" align="right">
-                  The Census Bureau&apos;s American Community Survey publishes 1-year estimates only for places with
-                  65,000 or more residents. Smaller places have 5-year estimates only, which aren&apos;t comparable year
-                  to year, so they&apos;re left off.
-                </InfoTip>
-              </>
-            ) : null}
+                {showCities ? (
+                  <>
+                    <span className="inline-flex items-center gap-1.5">
+                      <span className="font-semibold text-slate-600 dark:text-slate-300">Size</span>
+                      <svg width="34" height="16" aria-hidden="true">
+                        <circle cx="5" cy="10" r="4" fill="none" stroke="currentColor" />
+                        <circle cx="23" cy="8" r="7.5" fill="none" stroke="currentColor" />
+                      </svg>
+                      city population (2024)
+                    </span>
+                    <span className="inline-flex items-center gap-1.5">
+                      <span className="h-2.5 w-2.5 rounded-full bg-slate-300" /> not published for this city
+                    </span>
+                    <InfoTip label="Why only cities of 65,000+" align="right">
+                      The Census Bureau&apos;s American Community Survey publishes 1-year estimates only for places with
+                      65,000 or more residents. Smaller places have 5-year estimates only, which aren&apos;t comparable
+                      year to year, so they&apos;re left off.
+                    </InfoTip>
+                  </>
+                ) : null}
               </div>
             </div>
           </div>

@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  useMemo,
-  useState,
-  useSyncExternalStore,
-  type CSSProperties,
-  type PointerEvent,
-} from "react";
+import { useMemo, useState, useSyncExternalStore, type CSSProperties, type PointerEvent } from "react";
 import Link from "next/link";
 import { Search, X } from "lucide-react";
 import { ChartCard } from "@/components/charts/chart-card";
@@ -18,11 +12,9 @@ import {
   logDomain,
   otherOf,
   PARTIES,
-  pct,
   placeLabels,
   race,
   SOURCES,
-  usd,
   valueOf,
   type FlowCandidate,
   type FlowDonor,
@@ -30,6 +22,7 @@ import {
   type PartyCode,
   type SourceKey,
 } from "./money-flow-model";
+import { pct, usd } from "@/lib/money";
 import { publicEntityPath } from "@/lib/people/public";
 
 export type { FlowCandidate, FlowDonor } from "./money-flow-model";
@@ -130,9 +123,13 @@ export function MoneyFlow({
   const height = narrow ? 340 : 460;
   const plotR = width - M.right;
   const plotB = height - M.bottom;
-  const { lo, hi, ticks } = useMemo(() => logDomain(Math.max(1000, all.at(-1)?.receipts ?? 1000), all[0]?.receipts ?? 1e6), [all]);
+  const { lo, hi, ticks } = useMemo(
+    () => logDomain(Math.max(1000, all.at(-1)?.receipts ?? 1000), all[0]?.receipts ?? 1e6),
+    [all],
+  );
   const share = (c: FlowCandidate) => Math.min(1, Math.max(0, valueOf(c, metric) / c.receipts));
-  const sx = (v: number) => M.left + ((Math.log10(Math.max(lo, v)) - Math.log10(lo)) / (Math.log10(hi) - Math.log10(lo))) * (plotR - M.left);
+  const sx = (v: number) =>
+    M.left + ((Math.log10(Math.max(lo, v)) - Math.log10(lo)) / (Math.log10(hi) - Math.log10(lo))) * (plotR - M.left);
   const sy = (s: number) => plotB - s * (plotB - M.top);
 
   const points = all.map((c) => ({ c, x: sx(c.receipts), y: sy(share(c)), on: isOn(c) }));
@@ -228,7 +225,12 @@ export function MoneyFlow({
             );
           })}
         </div>
-        <select aria-label="Office" value={office} onChange={(e) => setOffice(e.target.value as Office)} className={field}>
+        <select
+          aria-label="Office"
+          value={office}
+          onChange={(e) => setOffice(e.target.value as Office)}
+          className={field}
+        >
           <option value="all">Senate &amp; House</option>
           <option value="S">Senate</option>
           <option value="H">House</option>
@@ -386,7 +388,10 @@ export function MoneyFlow({
                 }}
               >
                 <p className="flex items-center gap-1.5 font-medium text-slate-900 dark:text-white">
-                  <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: partyColorOf(hovered.c.party) }} />
+                  <span
+                    className="h-2 w-2 shrink-0 rounded-full"
+                    style={{ background: partyColorOf(hovered.c.party) }}
+                  />
                   <span className="truncate">{hovered.c.name}</span>
                 </p>
                 <p className="mt-0.5 text-slate-500 dark:text-slate-400">

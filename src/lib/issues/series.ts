@@ -6,7 +6,6 @@ import { datasetCoverage, getCrossSection, listDatasets, type Point } from "@/li
 import { formatPeriod, periodToX } from "@/lib/format";
 import { STATES_51 } from "@/lib/geo/states";
 import type { DatasetWithCoverage } from "@/components/data/dataset-list";
-import type { RankedItem } from "@/components/charts/ranked-bars";
 import type { StateMetric, StateRow } from "@/components/charts/state-explorer";
 import type { Marker, SeriesPoint } from "@/components/charts/time-series-chart";
 
@@ -93,15 +92,6 @@ export async function stateTable(specs: StateSpec[]): Promise<{ metrics: StateMe
     values: Object.fromEntries(specs.map((s, i) => [keyOf(s), maps[i].get(st.fips) ?? null])),
   }));
   return { metrics, rows };
-}
-
-/** Top (or, with `low`, bottom) states on one StateExplorer column. */
-export function rankStates(rows: StateRow[], key: string, { n = 10, low = false } = {}): RankedItem[] {
-  return rows
-    .filter((r) => r.values[key] !== null && r.values[key] !== undefined)
-    .sort((a, b) => (low ? a.values[key]! - b.values[key]! : b.values[key]! - a.values[key]!))
-    .slice(0, n)
-    .map((r) => ({ label: r.name, value: r.values[key]! }));
 }
 
 // ---- Sources ----

@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { citeSources, type SourceSpec } from "@/components/charts/citation";
 import Link from "next/link";
-import { ChartCard, type TableView } from "@/components/charts/chart-card";
-import { RankedBars, type RankedItem } from "@/components/charts/ranked-bars";
+import { ChartCard } from "@/components/charts/chart-card";
+import { RankedBars } from "@/components/charts/ranked-bars";
 import { StatTile } from "@/components/charts/stat-tile";
-import { TimeSeriesChart, type Series } from "@/components/charts/time-series-chart";
+import { TimeSeriesChart } from "@/components/charts/time-series-chart";
 import { SortableTable } from "@/components/data/sortable-table";
 import { StatusPill } from "@/components/legislation/bill-status";
 import { DataFreshness } from "@/components/legislation/data-freshness";
@@ -13,6 +13,7 @@ import { datasetCoverage, listDatasets } from "@/lib/db/stats";
 import { formatValue } from "@/lib/format";
 import { loadLegislation } from "@/lib/legislation/overview";
 import { IssueHeader } from "@/components/data/issue-layout";
+import { rankedTable, seriesTable } from "@/components/charts/tables";
 
 // Rebuilt at most daily; crawlers and visitors share the cached render.
 export const revalidate = 86400;
@@ -42,19 +43,6 @@ const DATASET_SLUGS = ["congress-bills", "congress-votes", "voteview", "scdb", "
 
 const shortDate = (iso: string | null) =>
   iso ? new Date(iso.length === 10 ? `${iso}T12:00:00` : iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "";
-
-function seriesTable(series: Series[], unit: string): TableView {
-  const xs = [...new Map(series.flatMap((s) => s.points.map((p) => [p.x, p.label] as const))).entries()].sort((a, b) => b[0] - a[0]);
-  const maps = series.map((s) => new Map(s.points.map((p) => [p.x, p.value])));
-  return {
-    columns: ["Period", ...series.map((s) => s.label)],
-    rows: xs.map(([x, label]) => [label, ...maps.map((m) => formatValue(m.get(x), unit))]),
-  };
-}
-
-function rankedTable(items: RankedItem[], label: string, unit: string): TableView {
-  return { columns: [label, "Value", ""], rows: items.map((i) => [i.label, formatValue(i.value, unit), i.note ?? ""]) };
-}
 
 function Section({ id, title, intro, children }: { id: string; title: string; intro: string; children: React.ReactNode }) {
   return (

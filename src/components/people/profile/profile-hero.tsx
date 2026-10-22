@@ -4,17 +4,10 @@ import { RepresentsYou } from "@/components/my-government/highlights";
 import { PortraitImage } from "@/components/people/portrait-image";
 import { ProfileActions } from "./profile-actions";
 import { entityColorFor } from "@/lib/entity-colors";
+import { initials } from "@/lib/format";
 import { formatPartialDate } from "@/lib/people/profile-model";
 import type { HeroRole, KeyFact } from "@/lib/people/profile-view";
 import type { Entity } from "@/lib/validation/entity";
-
-const initials = (name: string) =>
-  name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((part) => part[0])
-    .join("")
-    .toUpperCase();
 
 // The first screen: who this is, why they matter, and what Worldview holds
 // on them, in one compact block.

@@ -10,6 +10,7 @@ import type { AtlasMember } from "@/lib/people/atlas";
 import type { CourtComposition } from "@/lib/people/court";
 import type { ExecutiveMapData } from "@/lib/people/executive";
 import type { SpectrumItem, SpectrumRow, SpectrumSide } from "@/lib/people/spectrum";
+import { initials } from "@/lib/format";
 
 // The People page's lead visual: a rail of every group split left and
 // right, and the selected group drawn in full beside it.
@@ -36,11 +37,6 @@ function SplitBar({ counts, className = "h-1.5" }: { counts: SpectrumRow["counts
       )}
     </span>
   );
-}
-
-function initials(name: string): string {
-  const words = name.replace(/[^\p{L}\s]/gu, "").split(/\s+/).filter(Boolean);
-  return ((words[0]?.[0] ?? "") + (words.length > 1 ? words[words.length - 1][0] : "")).toUpperCase();
 }
 
 function Chip({ item }: { item: SpectrumItem }) {

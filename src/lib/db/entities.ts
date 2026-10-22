@@ -1,4 +1,4 @@
-import { and, asc, count, desc, eq, gte, ilike, inArray, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, ilike, inArray, sql } from "drizzle-orm";
 import { db } from "./client";
 import { entities, entityIdentifiers, entityMerges } from "./schema";
 import type { Entity, EntityInput, EntityType } from "../validation/entity";
@@ -119,12 +119,6 @@ export async function getIdentifierMap(scheme: IdentifierScheme): Promise<Map<st
   return new Map(rows.map((r) => [r.value, r.entityId]));
 }
 
-// bioguideId -> entity id, for the legislation importers to resolve
-// sponsors and voters in one round trip.
-export function listPoliticianBioguideMap(): Promise<Map<string, string>> {
-  return getIdentifierMap("bioguide");
-}
-
 // Entities whose name contains `query`, case-insensitive, best matches
 // first: names starting with the query, then a word starting with it.
 export async function searchEntities(query: string, limit: number): Promise<Entity[]> {
@@ -159,17 +153,12 @@ export async function findMemberIdsByName(query: string, limit = 50): Promise<st
   return rows.map((r) => r.id);
 }
 
-function escapeLike(s: string): string {
+export function escapeLike(s: string): string {
   return s.replace(/[\\%_]/g, (c) => `\\${c}`);
 }
 
 export async function countEntities(): Promise<number> {
   const [row] = await db.select({ value: count() }).from(entities);
-  return row.value;
-}
-
-export async function countEntitiesCreatedSince(since: Date): Promise<number> {
-  const [row] = await db.select({ value: count() }).from(entities).where(gte(entities.createdAt, since));
   return row.value;
 }
 

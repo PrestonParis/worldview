@@ -12,6 +12,7 @@ import { formatSigned, formatValue } from "@/lib/format";
 import { CompareScatter } from "./compare-scatter";
 import { CorrelationMatrix } from "./correlation-matrix";
 import { correlationMatrix, pairStats, strength } from "./compare-stats";
+import { csvCell } from "@/lib/csv";
 
 interface Props {
   catalog: IssueViewCatalog;
@@ -24,9 +25,7 @@ type SortKey = number | "trend" | "name";
 
 const ROW_CAP = 500;
 
-const csvCell = (value: string) => `"${value.replace(/"/g, '""')}"`;
-
-function StatTile({ label, value, note }: { label: string; value: string; note?: string }) {
+function StatReadout({ label, value, note }: { label: string; value: string; note?: string }) {
   return (
     <div className="min-w-0">
       <div className="text-xs font-medium text-slate-500">{label}</div>
@@ -416,22 +415,22 @@ export function IssueViewWorkspace({ catalog, initialResult, initialLevel, initi
                 </div>
 
                 <div className="mt-5 grid grid-cols-2 gap-4 border-y border-slate-100 py-4 sm:grid-cols-4 dark:border-slate-800">
-                  <StatTile
+                  <StatReadout
                     label="Pearson r"
                     value={stats.r === null ? "—" : formatSigned(stats.r, "score")}
                     note={stats.r === null ? "not defined" : `${strength(stats.r)} ${stats.r >= 0 ? "positive" : "negative"}`}
                   />
-                  <StatTile
+                  <StatReadout
                     label="r²"
                     value={stats.r === null ? "—" : `${Math.round(stats.r * stats.r * 100)}%`}
                     note="of Y's spread tracks X"
                   />
-                  <StatTile
+                  <StatReadout
                     label="Spearman ρ"
                     value={stats.rho === null ? "—" : formatSigned(stats.rho, "score")}
                     note="rank order, outlier-resistant"
                   />
-                  <StatTile label="Places" value={stats.n.toLocaleString("en-US")} note={`of ${rows.length.toLocaleString("en-US")} loaded`} />
+                  <StatReadout label="Places" value={stats.n.toLocaleString("en-US")} note={`of ${rows.length.toLocaleString("en-US")} loaded`} />
                 </div>
                 {stats.fit && xStep && (
                   <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">

@@ -1,3 +1,4 @@
+import { isRecord } from "./profile-model";
 import { parseEntityMetadata } from "./public";
 import type { Entity } from "../validation/entity";
 
@@ -27,9 +28,6 @@ export interface EditorialProfile {
   sections: ProfileSection[];
   reviewedAt?: string;
 }
-
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  Boolean(value) && typeof value === "object" && !Array.isArray(value);
 
 const citation = (value: unknown): ProfileCitation | null => {
   if (!isRecord(value) || typeof value.label !== "string" || typeof value.url !== "string") return null;
@@ -100,8 +98,4 @@ export function ageOnDate(birthDate: string, onDate: Date): number | null {
     onDate.getUTCMonth() + 1 < month || (onDate.getUTCMonth() + 1 === month && onDate.getUTCDate() < day);
   if (beforeBirthday) age -= 1;
   return age >= 0 ? age : null;
-}
-
-export function biographyFromSections(sections: ProfileSection[]): string {
-  return sections.map((section) => `${section.heading}\n${section.body}`).join("\n\n");
 }

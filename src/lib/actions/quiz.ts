@@ -16,7 +16,14 @@ import {
   type QuizAnswer,
   type QuizState,
 } from "../quiz/engine";
-import { answerSnapshot, applyAnswer, IMPORTANCE_LABELS, priorityItems, runnerState, type RunnerState } from "../quiz/runner";
+import {
+  answerSnapshot,
+  applyAnswer,
+  IMPORTANCE_LABELS,
+  priorityItems,
+  runnerState,
+  type RunnerState,
+} from "../quiz/runner";
 import { computeResult } from "../quiz/results";
 import { planRound, ROUND_SIZES, withRound } from "../quiz/refine";
 import {
@@ -195,7 +202,11 @@ export async function setPrioritiesAction(
   const answers = session.answers.map((a): QuizAnswer => {
     const level = levels?.[a.id];
     if (a.kind !== "choice" || !ranked.has(a.id) || ![1, 2, 3].includes(level)) return a;
-    return { ...a, importance: level, ...(a.shown ? { shown: { ...a.shown, importance: IMPORTANCE_LABELS[level] } } : {}) };
+    return {
+      ...a,
+      importance: level,
+      ...(a.shown ? { shown: { ...a.shown, importance: IMPORTANCE_LABELS[level] } } : {}),
+    };
   });
   await quizDb.saveQuizProgress(session.id, {
     answers,

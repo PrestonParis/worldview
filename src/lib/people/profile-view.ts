@@ -13,10 +13,6 @@ export function sourcesFor(bundle: ProfileBundle, ids: string[]): SourceRecord[]
   return [...new Set(ids)].flatMap((id) => bundle.sources.get(id) ?? []);
 }
 
-export function sourcesForKeys(bundle: ProfileBundle, keys: string[]): SourceRecord[] {
-  return sourcesFor(bundle, keys.flatMap((k) => bundle.sourceIdByKey.get(k) ?? []));
-}
-
 export function sourcesByKey(bundle: ProfileBundle): Map<string, SourceRecord> {
   return new Map([...bundle.sources.values()].filter((s) => s.key).map((s) => [s.key, s]));
 }

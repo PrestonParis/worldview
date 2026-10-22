@@ -1,4 +1,7 @@
-export type SuiteToolId = "issueview" | "subpoena" | "writ";
+import type { ProductId } from "./catalog";
+
+// The tools with a workspace shell; Atlas has its own pages.
+export type SuiteToolId = Exclude<ProductId, "atlas">;
 
 export interface ToolView {
   id: string;
@@ -138,8 +141,3 @@ export const TOOL_VIEWS: Record<SuiteToolId, ToolView[]> = {
     },
   ],
 };
-
-export function toolView(tool: SuiteToolId, requested: string | string[] | undefined): ToolView {
-  const id = Array.isArray(requested) ? requested[0] : requested;
-  return TOOL_VIEWS[tool].find((view) => view.id === id) ?? TOOL_VIEWS[tool][0];
-}

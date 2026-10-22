@@ -1,4 +1,4 @@
-import { eq, and, count, desc } from "drizzle-orm";
+import { eq, and, desc } from "drizzle-orm";
 import { db } from "./client";
 import { candidateFinance } from "./schema";
 
@@ -46,15 +46,6 @@ function toCandidateFinance(row: typeof candidateFinance.$inferSelect): Candidat
   };
 }
 
-export async function listCandidateFinance(cycle: number): Promise<CandidateFinance[]> {
-  const rows = await db
-    .select()
-    .from(candidateFinance)
-    .where(eq(candidateFinance.cycle, cycle))
-    .orderBy(desc(candidateFinance.totalReceipts));
-  return rows.map(toCandidateFinance);
-}
-
 export async function getCandidateFinanceForEntity(
   entityId: string,
   cycle?: number,
@@ -76,7 +67,3 @@ export async function listCycles(): Promise<number[]> {
   return rows.map((r) => r.cycle);
 }
 
-export async function countCandidateFinance(): Promise<number> {
-  const [row] = await db.select({ value: count() }).from(candidateFinance);
-  return row.value;
-}

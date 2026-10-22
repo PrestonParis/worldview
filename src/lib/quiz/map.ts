@@ -58,17 +58,6 @@ function buildMap(): Record<string, MapPoint> {
   return Object.fromEntries(ideologies.map((i, n) => [i.id, { x: basis.raw[n][0] / basis.sx, y: basis.raw[n][1] / basis.sy }]));
 }
 
-// Any set of axis positions on the same map, clamped to its edges. Moves with
-// every answer, where placeRespondent snaps to the nearest traditions.
-export function projectPosition(position: Record<AxisId, number>): MapPoint {
-  const c = axisIds.map((a, j) => position[a] - basis.mean[j]);
-  const clamp = (v: number) => Math.max(-1, Math.min(1, v));
-  return {
-    x: clamp(c.reduce((s, x, j) => s + x * basis.px[j], 0) / basis.sx),
-    y: clamp(c.reduce((s, x, j) => s + x * basis.py[j], 0) / basis.sy),
-  };
-}
-
 export const ideologyMap = buildMap();
 
 // The respondent sits among their closest matches (inverse-distance weighted),

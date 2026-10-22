@@ -13,6 +13,7 @@ import { FAMILY_FILL } from "@/lib/people/family-colors";
 import { roleGroups } from "@/lib/people/public";
 import { SPECTRUM_ROWS } from "@/lib/people/spectrum";
 import { NOT_RECORDED, bornLabels, generations, raceLabels, religionLabels, sexLabels } from "@/lib/people/traits";
+import { initials } from "@/lib/format";
 
 // The People page's attribute explorer. Filters live in the query string
 // (written with replaceState, so the cached page never re-renders per
@@ -102,11 +103,6 @@ function chipLabel(key: keyof AttributeParams, value: string): string {
 const CHIP_PREFIX: Partial<Record<keyof AttributeParams, string>> = {
   sex: "Sex", race: "Race", religion: "Religion", ancestry: "Ancestry", born: "Birthplace", gen: "Generation",
 };
-
-function initials(name: string): string {
-  const words = name.replace(/[^\p{L}\s]/gu, " ").split(/\s+/).filter(Boolean);
-  return ((words[0]?.[0] ?? "") + (words.length > 1 ? words[words.length - 1][0] : "")).toUpperCase() || "?";
-}
 
 function Match({ match }: { match: AttributeMatch }) {
   const fill = FAMILY_FILL[match.family];

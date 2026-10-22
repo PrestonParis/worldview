@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { formatValue } from "@/lib/format";
+import { pct, usd } from "@/lib/money";
 import { FollowMoneyMenu } from "@/components/money/follow-money-menu";
 import type { CampaignCandidate, Race } from "@/lib/db/moneyOverview";
 import { FUNDING_SOURCES, MONEY_COLORS, partyColor, partyLetter } from "@/lib/money/semantic";
@@ -12,12 +13,7 @@ import { publicEntityPath } from "@/lib/people/public";
 // visual form: headline numbers are unboxed, rankings are compact lists,
 // investigations get a framed canvas, and raw records get their own page.
 
-export const usd = (v: number) => formatValue(v, "usd", { compact: true });
-export function pct(part: number, whole: number): string {
-  if (!(whole > 0)) return "—";
-  const p = (part / whole) * 100;
-  return p > 0 && p < 0.5 ? "<1%" : `${Math.round(p)}%`;
-}
+export { pct, usd };
 export function shortDate(iso: string): string {
   return iso ? new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" }) : "";
 }

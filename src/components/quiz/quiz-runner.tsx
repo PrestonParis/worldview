@@ -442,7 +442,10 @@ export function QuizRunner({
                 ? `Your ${state.modeName.toLowerCase()} is ready.`
                 : "You’ve deferred the remaining questions."}
             </p>
-            <Link href={state.complete ? finishHref(state.needsPriorities) : `/quiz/${slug}?view=results`} className={`${primaryButton} mt-6`}>
+            <Link
+              href={state.complete ? finishHref(state.needsPriorities) : `/quiz/${slug}?view=results`}
+              className={`${primaryButton} mt-6`}
+            >
               {state.complete ? "See your results" : "See your current result"}
               <span aria-hidden="true">→</span>
             </Link>

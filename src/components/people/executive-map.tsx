@@ -2,15 +2,11 @@ import Link from "next/link";
 import { PortraitImage } from "@/components/people/portrait-image";
 import { FAMILY_FILL } from "@/lib/people/family-colors";
 import { SECTOR_LABEL, monthYear, type ExecutiveCard, type ExecutiveMapData } from "@/lib/people/executive";
+import { initials } from "@/lib/format";
 
 // The executive branch as an org chart: the President and Vice President,
 // then the White House, the departments in line-of-succession order, and
 // the cabinet-level agencies. Every person and office links to its profile.
-
-function initials(name: string): string {
-  const words = name.replace(/[^\p{L}\s]/gu, " ").split(/\s+/).filter(Boolean);
-  return ((words[0]?.[0] ?? "") + (words.length > 1 ? words[words.length - 1][0] : "")).toUpperCase() || "?";
-}
 
 function Portrait({ person, size }: { person: ExecutiveCard; size: string }) {
   return (

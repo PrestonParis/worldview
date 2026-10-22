@@ -113,7 +113,7 @@ export function CrimeTrends({
           </p>
           <TimeSeriesChart
             series={picked.map(
-              (k, i): Series => {
+              (k): Series => {
                 const o = offenses.find((x) => x.key === k)!;
                 return { id: k, label: o.label, slot: slotOf(k), points: points(o) };
               },

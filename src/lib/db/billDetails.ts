@@ -1,4 +1,4 @@
-import { eq, asc, desc, count } from "drizzle-orm";
+import { eq, asc, desc } from "drizzle-orm";
 import { db } from "./client";
 import {
   billCosponsors,
@@ -39,15 +39,6 @@ export async function listCosponsors(billId: string): Promise<BillCosponsor[]> {
     orderBy: [desc(billCosponsors.isOriginal), asc(billCosponsors.date)],
   });
   return rows.map(toCosponsor);
-}
-
-// bill id -> cosponsor count, one grouped query (the bill list could show it).
-export async function countCosponsorsByBill(): Promise<Map<string, number>> {
-  const rows = await db
-    .select({ billId: billCosponsors.billId, value: count() })
-    .from(billCosponsors)
-    .groupBy(billCosponsors.billId);
-  return new Map(rows.map((r) => [r.billId, r.value]));
 }
 
 export async function createCosponsor(
