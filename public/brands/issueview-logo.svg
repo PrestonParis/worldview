@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <defs>
+    <linearGradient id="issueview-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0d9488" />
+      <stop offset="50%" stop-color="#0f766e" />
+      <stop offset="100%" stop-color="#115e59" />
+    </linearGradient>
+    <linearGradient id="issueview-cyan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a5f3fc" />
+      <stop offset="100%" stop-color="#22d3ee" />
+    </linearGradient>
+    <linearGradient id="issueview-emerald" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6ee7b7" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+    <linearGradient id="issueview-amber" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+    <filter id="issueview-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0f766e" flood-opacity="0.4" />
+    </filter>
+  </defs>
+
+  <!-- Base Rounded Container -->
+  <rect x="10" y="10" width="100" height="100" rx="28" fill="url(#issueview-bg)" filter="url(#issueview-glow)" />
+
+  <!-- Multi-Metric Coordinate Grid -->
+  <line x1="28" y1="88" x2="92" y2="88" stroke="#5eead4" stroke-width="2.5" stroke-linecap="round" opacity="0.6" />
+  <line x1="28" y1="28" x2="28" y2="88" stroke="#5eead4" stroke-width="2.5" stroke-linecap="round" opacity="0.6" />
+
+  <!-- Overlapping Comparative Bars (Variable 1 & Variable 2) -->
+  <!-- Bar 1 (Left) -->
+  <rect x="36" y="58" width="10" height="30" rx="4" fill="url(#issueview-cyan)" />
+  <!-- Bar 2 (Mid-Left) -->
+  <rect x="50" y="42" width="10" height="46" rx="4" fill="url(#issueview-emerald)" />
+  <!-- Bar 3 (Mid-Right) -->
+  <rect x="64" y="32" width="10" height="56" rx="4" fill="url(#issueview-cyan)" />
+  <!-- Bar 4 (Right) -->
+  <rect x="78" y="50" width="10" height="38" rx="4" fill="url(#issueview-emerald)" />
+
+  <!-- Trend Curve / Comparative Overlay Spline -->
+  <path d="M38 52 Q 54 28, 68 36 T 88 26" fill="none" stroke="url(#issueview-amber)" stroke-width="3.5" stroke-linecap="round" />
+  <circle cx="88" cy="26" r="4.5" fill="#fef08a" stroke="#b45309" stroke-width="1.5" />
+  <circle cx="68" cy="36" r="3.5" fill="#fef08a" />
+  <circle cx="38" cy="52" r="3.5" fill="#fef08a" />
+
+  <!-- Bivariate Correlation Aperture Lens (Floating Reticle) -->
+  <circle cx="68" cy="62" r="16" fill="none" stroke="#ffffff" stroke-width="2" stroke-dasharray="2 3" opacity="0.8" />
+  <circle cx="68" cy="62" r="2.5" fill="#ffffff" />
+</svg>

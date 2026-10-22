@@ -3,14 +3,11 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { ArrowLeft, ArrowUpRight, ChevronLeft, ChevronRight, Info, MapPin, X } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, ChevronLeft, ChevronRight, Info, X } from "lucide-react";
 import {
-  demographicSeries,
   getDemographicSeries,
   nationalPopulation,
   type DemographicDimensionId,
-  type DemographicPoint,
-  type DemographicSeries,
   type GeoLevel,
 } from "@/lib/demographics/forecast";
 import {
@@ -20,135 +17,43 @@ import {
   rangeExplanation,
   yearProvenance,
 } from "@/lib/demographics/provenance";
+import { packedRange, packedValue, regionCount, type RegionFile, type RegionRecord } from "@/lib/demographics/regional";
 import {
-  packedRange,
-  packedValue,
-  regionCount,
-  unpackSeries,
-  type RegionFile,
-  type RegionRecord,
-} from "@/lib/demographics/regional";
-import { DemographicsMap, NEGATIVE_COLOR, divergingExtent, valueExtent, type MapArea, type MapCity } from "./demographics-map";
+  DemographicsMap,
+  NEGATIVE_COLOR,
+  divergingExtent,
+  valueExtent,
+  type MapArea,
+  type MapCity,
+} from "./demographics-map";
 import { formatPoints } from "./format";
 import { GroupPicker } from "./group-picker";
+import { PlacePicker } from "./place-picker";
 import { RegionTable, type TableRow } from "./region-table";
 import { InfoTip, StatusBadge } from "./status-badge";
 import { TrendChart, isProjected } from "./trend-chart";
+import {
+  changeBaseline,
+  cityNotice,
+  DEFAULT_FOCUS,
+  DEFAULT_YEAR,
+  END_YEAR,
+  fitRange,
+  initialViewRanges,
+  isDimension,
+  isMode,
+  loadRegions,
+  pointAt,
+  rangeAround,
+  regionSeries,
+  seriesBounds,
+  TOPIC_PAGES,
+  writeParams,
+  type MapMode,
+  type ViewRange,
+} from "./forecast-model";
 
-type MapMode = "share" | "change";
-
-const DEFAULT_YEAR = 2025;
-const END_YEAR = 2050;
-
-// Which group the map shows first: the one whose geography varies most.
-const DEFAULT_FOCUS: Record<DemographicDimensionId, string> = {
-  age: "age65plus",
-  sex: "female",
-  race: "hispanic",
-  religion: "unaffiliated",
-  orientation: "bisexual",
-};
-
-const MEASURE_LABEL = { census: "Census population estimates", survey: "Survey estimates" } as const;
-
-const isDimension = (value: string | null): value is DemographicDimensionId =>
-  demographicSeries.some((series) => series.id === value);
-const isMode = (value: string | null): value is MapMode =>
-  value === "share" || value === "change";
-
-// Patch the query string without a navigation; Next keeps useSearchParams
-// in sync with the native history API.
-function writeParams(patch: Record<string, string | null>, push = false) {
-  const params = new URLSearchParams(window.location.search);
-  for (const [key, value] of Object.entries(patch)) {
-    if (value === null) params.delete(key);
-    else params.set(key, value);
-  }
-  const query = params.toString();
-  const url = query ? `?${query}` : window.location.pathname;
-  if (push) window.history.pushState(null, "", url);
-  else window.history.replaceState(null, "", url);
-}
-
-interface ViewRange {
-  start: number;
-  end: number;
-}
-
-function seriesBounds(series: DemographicSeries): [number, number] {
-  const first = series.points[0].year;
-  return [first, series.points.at(-1)?.year ?? first];
-}
-
-function rangeAround(series: DemographicSeries, center: number, span: number): ViewRange {
-  const [first, last] = seriesBounds(series);
-  const boundedSpan = Math.min(span, last - first);
-  const start = Math.min(last - boundedSpan, Math.max(first, Math.round(center - boundedSpan / 2)));
-  return { start, end: start + boundedSpan };
-}
-
-// Keep a stored view inside a (possibly shorter) geography's years.
-function fitRange(range: ViewRange, series: DemographicSeries): ViewRange {
-  const [first, last] = seriesBounds(series);
-  const span = Math.min(range.end - range.start, last - first);
-  const start = Math.min(last - span, Math.max(first, range.start));
-  return { start, end: start + span };
-}
-
-function initialViewRanges(year: number): Record<DemographicDimensionId, ViewRange> {
-  return Object.fromEntries(
-    demographicSeries.map((item) => [item.id, rangeAround(item, year, 25)]),
-  ) as Record<DemographicDimensionId, ViewRange>;
-}
-
-// Changes are measured from the first annual figure since 2000.
-function changeBaseline(series: DemographicSeries): DemographicPoint | null {
-  return series.points.find((point) => point.year >= 2000) ?? null;
-}
-
-const pointAt = (series: DemographicSeries, year: number) => series.points.find((point) => point.year === year);
-
-function regionSeries(
-  region: RegionRecord,
-  file: RegionFile,
-  dimension: DemographicDimensionId,
-): DemographicSeries | null {
-  const packed = region.series[dimension];
-  const meta = file.dimensions[dimension];
-  if (!packed || !meta) return null;
-  const national = getDemographicSeries(dimension);
-  const who = national.universe === "adults" ? "Adults" : "Residents";
-  return unpackSeries(packed, national, meta, `${who} of ${region.name}`);
-}
-
-function cityNotice(series: DemographicSeries, cityName: string | null, stateName: string): string {
-  const label = series.label.toLowerCase();
-  if (!series.geographies.includes("city")) {
-    return `City-level ${label} estimates aren't available. Showing ${stateName} instead.`;
-  }
-  return cityName
-    ? `${series.label} figures aren't published for ${cityName}. Showing ${stateName} instead.`
-    : `That city isn't in the data. Showing ${stateName} instead.`;
-}
-
-async function loadRegions(url: string): Promise<RegionFile | null> {
-  try {
-    const res = await fetch(url);
-    return res.ok ? ((await res.json()) as RegionFile) : null;
-  } catch {
-    return null;
-  }
-}
-
-// Dimensions with their own topic page, which opens the same view (state,
-// group, year, map mode) with more data on that subject.
-const TOPIC_PAGES: Partial<Record<DemographicDimensionId, { href: string; label: string; blurb: string }>> = {
-  religion: {
-    href: "/religion",
-    label: "Religion",
-    blurb: "Attendance at services, religious traditions, beliefs, and party lean by state",
-  },
-};
+const DIMENSION_ORDER: DemographicDimensionId[] = ["race", "religion", "orientation", "age", "sex"];
 
 // `lockedDimension` pins the explorer to one dimension (a topic page's
 // copy of it): no dimension tabs, and no `dim` in the URL.
@@ -199,7 +104,7 @@ export function DemographicsForecast({ lockedDimension }: { lockedDimension?: De
   // Geography is never finer than the active dimension supports: a city is
   // only in view when this dimension is published for it.
   const state = statesFile?.regions.find((region) => region.id === requestedState) ?? null;
-  const cityFile = state ? cityFiles[state.id] ?? null : null;
+  const cityFile = state ? (cityFiles[state.id] ?? null) : null;
   const cityCandidate = cityFile?.regions.find((region) => region.id === requestedCity) ?? null;
   const city = citySupported && cityCandidate?.series[dimension] ? cityCandidate : null;
 
@@ -383,7 +288,9 @@ export function DemographicsForecast({ lockedDimension }: { lockedDimension?: De
     const end = pointAt(parent, END_YEAR);
     const share = now?.values[focus] ?? null;
     const count = showCities
-      ? state ? regionCount(state, universe, selectedYear) : null
+      ? state
+        ? regionCount(state, universe, selectedYear)
+        : null
       : nationalPopulation(universe, selectedYear);
     return {
       id: "reference",
@@ -399,7 +306,7 @@ export function DemographicsForecast({ lockedDimension }: { lockedDimension?: De
   // ---- comparison with the parent geography ----------------------------
 
   const parent = level === "city" ? stateSeries : level === "state" ? national : null;
-  const parentLabel = level === "city" ? state?.abbr ?? "State" : "U.S.";
+  const parentLabel = level === "city" ? (state?.abbr ?? "State") : "U.S.";
   const population =
     level === "national"
       ? nationalPopulation(universe, selectedYear)
@@ -411,7 +318,7 @@ export function DemographicsForecast({ lockedDimension }: { lockedDimension?: De
   // figures for, so the map, the group line and the table agree.
   const changeFrom = (mapBaseline !== null ? pointAt(series, mapBaseline) : null) ?? changeBaseline(series);
 
-  const placeName = city ? `${city.name}, ${state?.abbr}` : state?.name ?? "United States";
+  const placeName = city ? `${city.name}, ${state?.abbr}` : (state?.name ?? "United States");
 
   // The current view as a query string for the matching page: the topic
   // page from here, or back to this dimension on /demographics.
@@ -430,10 +337,13 @@ export function DemographicsForecast({ lockedDimension }: { lockedDimension?: De
 
   return (
     <div className="space-y-5">
-      <section className="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-950">
-        <div className="flex flex-wrap items-center justify-between gap-4 p-2.5">
+      <section
+        aria-label="Demographic view controls"
+        className="rounded-2xl border border-slate-200 bg-white px-3 py-2.5 shadow-sm dark:border-slate-800 dark:bg-slate-950"
+      >
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
           {lockedDimension ? (
-            <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 px-2.5 py-1.5">
+            <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
               <span className="text-sm font-semibold text-slate-950 dark:text-white">{national.label}</span>
               <Link
                 href={`/demographics${viewQuery(true)}`}
@@ -444,119 +354,28 @@ export function DemographicsForecast({ lockedDimension }: { lockedDimension?: De
               </Link>
             </div>
           ) : (
-            <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2">
-              {(["census", "survey"] as const).map((measure) => (
-                <div key={measure} role="group" aria-label={MEASURE_LABEL[measure]} className="flex items-center gap-1">
-                  <span className="hidden pr-1 pl-2 text-[9px] font-semibold tracking-[0.14em] text-slate-400 uppercase lg:inline">
-                    {measure === "census" ? "Census" : "Surveys"}
-                  </span>
-                  {demographicSeries
-                    .filter((item) => item.measure === measure)
-                    .map((item) => (
-                      <button
-                        key={item.id}
-                        type="button"
-                        onClick={() => chooseDimension(item.id)}
-                        aria-pressed={dimension === item.id}
-                        className={`rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all ${
-                          dimension === item.id
-                            ? "bg-slate-950 text-white shadow-sm dark:bg-white dark:text-slate-950"
-                            : "text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-slate-100"
-                        }`}
-                      >
-                        {item.label}
-                      </button>
-                    ))}
-                  {measure === "census" ? (
-                    <span className="ml-2 hidden h-6 w-px bg-slate-200 sm:block dark:bg-slate-800" aria-hidden="true" />
-                  ) : null}
-                </div>
+            <div
+              className="flex min-w-0 basis-full flex-nowrap items-center gap-1 overflow-x-auto sm:basis-auto"
+              aria-label="Demographic measure"
+            >
+              {DIMENSION_ORDER.map(getDemographicSeries).map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => chooseDimension(item.id)}
+                  aria-pressed={dimension === item.id}
+                  className={`shrink-0 rounded-lg px-2.5 py-1.5 text-sm font-medium transition-all ${
+                    dimension === item.id
+                      ? "bg-slate-950 text-white shadow-sm dark:bg-white dark:text-slate-950"
+                      : "text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-slate-100"
+                  }`}
+                >
+                  {item.label}
+                </button>
               ))}
             </div>
           )}
-
-          <nav aria-label="Geography" className="flex items-center gap-1.5 px-2 text-xs text-slate-500 dark:text-slate-400">
-            <MapPin size={14} className="shrink-0" />
-            {state ? (
-              <button type="button" onClick={goNational} className="hover:text-slate-950 hover:underline dark:hover:text-white">
-                United States
-              </button>
-            ) : (
-              <span className="font-medium text-slate-900 dark:text-slate-100">United States</span>
-            )}
-            {state ? (
-              <>
-                <ChevronRight size={12} className="text-slate-300 dark:text-slate-600" />
-                {city ? (
-                  <button
-                    type="button"
-                    onClick={() => navigate({ state: state.id, city: null })}
-                    className="hover:text-slate-950 hover:underline dark:hover:text-white"
-                  >
-                    {state.name}
-                  </button>
-                ) : (
-                  <span className="font-medium text-slate-900 dark:text-slate-100">{state.name}</span>
-                )}
-              </>
-            ) : null}
-            {city ? (
-              <>
-                <ChevronRight size={12} className="text-slate-300 dark:text-slate-600" />
-                <span className="font-medium text-slate-900 dark:text-slate-100">{city.name}</span>
-              </>
-            ) : null}
-          </nav>
-        </div>
-
-        <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-2 border-t border-slate-200 px-5 py-3 dark:border-slate-800">
-          <p className="max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-300">{national.definition}</p>
-          <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
-            <span
-              className={`rounded-full px-2 py-0.5 font-medium ring-1 ring-inset ${
-                national.measure === "census"
-                  ? "bg-emerald-50 text-emerald-700 ring-emerald-600/20 dark:bg-emerald-500/10 dark:text-emerald-300 dark:ring-emerald-400/20"
-                  : "bg-amber-50 text-amber-800 ring-amber-600/25 dark:bg-amber-500/10 dark:text-amber-300 dark:ring-amber-400/25"
-              }`}
-            >
-              {MEASURE_LABEL[national.measure]}
-            </span>
-            <span className="rounded-full bg-slate-100 px-2 py-0.5 font-medium text-slate-600 dark:bg-slate-900 dark:text-slate-300">
-              {universe === "adults" ? "Adults 18+" : "All residents"}
-            </span>
-            <span className="inline-flex items-center gap-1 text-slate-500 dark:text-slate-400">
-              Available for
-              {(["national", "state", "city"] as const).map((geo) => {
-                const has = national.geographies.includes(geo);
-                return (
-                  <span
-                    key={geo}
-                    className={has ? "font-medium text-slate-700 dark:text-slate-200" : "text-slate-300 line-through dark:text-slate-600"}
-                  >
-                    {GEO_LABEL[geo]}
-                  </span>
-                );
-              })}
-            </span>
-          </div>
-        </div>
-
-        {topicPage ? (
-          <Link
-            href={`${topicPage.href}${viewQuery(false)}`}
-            className="group flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-slate-200 bg-blue-50/60 px-5 py-2.5 text-sm transition-colors hover:bg-blue-50 dark:border-slate-800 dark:bg-blue-500/5 dark:hover:bg-blue-500/10"
-          >
-            <span className="text-slate-600 dark:text-slate-300">{topicPage.blurb}</span>
-            <span className="inline-flex items-center gap-1 font-semibold text-blue-700 group-hover:underline dark:text-blue-300">
-              Open this view in {topicPage.label}
-              <ArrowUpRight size={14} />
-            </span>
-          </Link>
-        ) : null}
-
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-slate-200 px-5 py-3 dark:border-slate-800">
-          <span className="text-[10px] font-semibold tracking-[0.14em] text-slate-400 uppercase">Year</span>
-          <div className="flex min-w-60 flex-1 items-center gap-2">
+          <div className="flex min-w-64 flex-1 items-center gap-2 lg:max-w-xl">
             <button
               type="button"
               onClick={() => selectYear(selectedYear - 1)}
@@ -595,8 +414,10 @@ export function DemographicsForecast({ lockedDimension }: { lockedDimension?: De
               <ChevronRight size={15} />
             </button>
           </div>
-          <div className="flex items-center gap-3">
-            <span className="font-mono text-2xl font-semibold tabular-nums text-slate-950 dark:text-white">{selectedYear}</span>
+          <div className="flex items-center gap-2 pl-1">
+            <span className="font-mono text-lg font-semibold tabular-nums text-slate-950 dark:text-white">
+              {selectedYear}
+            </span>
             <StatusBadge provenance={provenance} align="right" />
           </div>
         </div>
@@ -611,14 +432,19 @@ export function DemographicsForecast({ lockedDimension }: { lockedDimension?: De
             <Info size={15} className="mt-0.5 shrink-0" />
             {shownNotice}
           </span>
-          <button type="button" onClick={dismissNotice} aria-label="Dismiss" className="shrink-0 opacity-70 hover:opacity-100">
+          <button
+            type="button"
+            onClick={dismissNotice}
+            aria-label="Dismiss"
+            className="shrink-0 opacity-70 hover:opacity-100"
+          >
             <X size={15} />
           </button>
         </div>
       ) : null}
 
       <div className="space-y-5">
-        <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-950">
+        <section className="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-950">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-5 py-3 dark:border-slate-800">
             <div className="flex min-w-0 items-center gap-3">
               {state ? (
@@ -645,7 +471,11 @@ export function DemographicsForecast({ lockedDimension }: { lockedDimension?: De
               </div>
             </div>
             <div className="flex flex-wrap items-center gap-2">
-              <div role="group" aria-label="Map by" className="flex items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-slate-900">
+              <div
+                role="group"
+                aria-label="Map by"
+                className="flex items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-slate-900"
+              >
                 {(
                   [
                     ["share", "Share"],
@@ -669,74 +499,67 @@ export function DemographicsForecast({ lockedDimension }: { lockedDimension?: De
               </div>
               {showCities ? (
                 cityFile && cityFile.regions.length ? (
-                  <>
-                    <label className="sr-only" htmlFor="demographics-city">City</label>
-                    <select
-                      id="demographics-city"
-                      value={city?.id ?? ""}
-                      onChange={(event) =>
-                        event.target.value ? selectCity(event.target.value) : navigate({ state: state!.id, city: null })
-                      }
-                      className="max-w-56 rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200"
-                    >
-                      <option value="">{city ? `All of ${state?.name}` : "Jump to a city…"}</option>
-                      {cityFile.regions.map((item) => (
-                        <option key={item.id} value={item.id} disabled={!item.series[dimension]}>
-                          {item.name}
-                          {item.series[dimension] ? "" : " (not published)"}
-                        </option>
-                      ))}
-                    </select>
-                  </>
+                  <PlacePicker
+                    id="demographics-city"
+                    label="City"
+                    value={city?.id ?? ""}
+                    placeholder="Jump to a city…"
+                    clearLabel={city ? `All of ${state?.name}` : undefined}
+                    options={cityFile.regions.map((item) => ({
+                      id: item.id,
+                      name: item.name,
+                      disabled: !item.series[dimension],
+                    }))}
+                    onChange={(value) =>
+                      value ? selectCity(value) : navigate({ state: state!.id, city: null })
+                    }
+                  />
                 ) : null
               ) : (
-                <>
-                  <label className="sr-only" htmlFor="demographics-state">State</label>
-                  <select
-                    id="demographics-state"
-                    value={state?.id ?? ""}
-                    onChange={(event) => (event.target.value ? selectState(event.target.value) : goNational())}
-                    className="rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200"
-                  >
-                    <option value="">{state ? "All states" : "Jump to a state…"}</option>
-                    {[...(statesFile?.regions ?? [])]
-                      .sort((a, b) => a.name.localeCompare(b.name))
-                      .map((item) => (
-                        <option key={item.id} value={item.id}>{item.name}</option>
-                      ))}
-                  </select>
-                </>
+                <PlacePicker
+                  id="demographics-state"
+                  label="State"
+                  value={state?.id ?? ""}
+                  placeholder="Jump to a state…"
+                  clearLabel="All states"
+                  options={[...(statesFile?.regions ?? [])]
+                    .sort((a, b) => a.name.localeCompare(b.name))
+                    .map((item) => ({ id: item.id, name: item.name, short: item.abbr }))}
+                  onChange={(value) => (value ? selectState(value) : goNational())}
+                />
               )}
             </div>
           </div>
 
-          <GroupPicker
-            series={series}
-            point={point}
-            baseline={changeFrom}
-            focus={focus}
-            onFocus={(category) => setGroups((current) => ({ ...current, [dimension]: category }))}
-            compare={parent ? { label: parentLabel, point: pointAt(parent, selectedYear) ?? null } : null}
-            population={population}
-            projected={isProjected(series, point)}
-          />
+          <div className="flex flex-col lg:grid lg:grid-cols-[minmax(0,1fr)_18rem]">
+            <GroupPicker
+              series={series}
+              point={point}
+              baseline={changeFrom}
+              focus={focus}
+              onFocus={(category) => setGroups((current) => ({ ...current, [dimension]: category }))}
+              compare={parent ? { label: parentLabel, point: pointAt(parent, selectedYear) ?? null } : null}
+              population={population}
+              projected={isProjected(series, point)}
+            />
 
-          <DemographicsMap
-            states={mapStates}
-            cities={mapCities}
-            selectedStateId={state?.id ?? null}
-            selectedCityId={city?.id ?? null}
-            cityLevel={showCities}
-            color={focusCategory.color}
-            scale={mode === "change" ? "diverging" : "sequential"}
-            formatValue={formatValue}
-            onSelectState={selectState}
-            onSelectCity={selectCity}
-            onBack={goUp}
-            onNational={goNational}
-          />
+            <div className="order-2 min-w-0 lg:order-1">
+              <DemographicsMap
+                states={mapStates}
+                cities={mapCities}
+                selectedStateId={state?.id ?? null}
+                selectedCityId={city?.id ?? null}
+                cityLevel={showCities}
+                color={focusCategory.color}
+                scale={mode === "change" ? "diverging" : "sequential"}
+                formatValue={formatValue}
+                onSelectState={selectState}
+                onSelectCity={selectCity}
+                onBack={goUp}
+                onNational={goNational}
+              />
 
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 px-5 py-3 text-[10px] text-slate-500 dark:text-slate-400">
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-2 px-5 py-3 text-[10px] text-slate-500 dark:text-slate-400">
             {legendHasData ? (
               <span className="inline-flex items-center gap-2">
                 <span className="font-semibold text-slate-600 dark:text-slate-300">Color</span>
@@ -750,22 +573,20 @@ export function DemographicsForecast({ lockedDimension }: { lockedDimension?: De
                       }}
                     />
                     <span className="font-mono tabular-nums">+{divergingExtent(legendValues).toFixed(1)} pp</span>
-                    <span>change in {focusCategory.label} share since {mapBaseline}</span>
+                    <span>
+                      change in {focusCategory.label} share since {mapBaseline}
+                    </span>
                   </>
                 ) : (
                   <>
-                    <span className="font-mono tabular-nums">
-                      {valueExtent(legendValues)[0].toFixed(1)}%
-                    </span>
+                    <span className="font-mono tabular-nums">{valueExtent(legendValues)[0].toFixed(1)}%</span>
                     <span
                       className="h-2 w-40 rounded-full"
                       style={{
                         background: `linear-gradient(to right, color-mix(in srgb, ${focusCategory.color} 12%, transparent), ${focusCategory.color})`,
                       }}
                     />
-                    <span className="font-mono tabular-nums">
-                      {valueExtent(legendValues)[1].toFixed(1)}%
-                    </span>
+                    <span className="font-mono tabular-nums">{valueExtent(legendValues)[1].toFixed(1)}%</span>
                     <span>
                       {focusCategory.label}, {showCities ? "by city" : "by state"}
                     </span>
@@ -773,7 +594,9 @@ export function DemographicsForecast({ lockedDimension }: { lockedDimension?: De
                 )}
               </span>
             ) : (
-              <span>No {showCities ? "city" : "state"} figures for {selectedYear}.</span>
+              <span>
+                No {showCities ? "city" : "state"} figures for {selectedYear}.
+              </span>
             )}
             {showCities ? (
               <>
@@ -795,6 +618,8 @@ export function DemographicsForecast({ lockedDimension }: { lockedDimension?: De
                 </InfoTip>
               </>
             ) : null}
+              </div>
+            </div>
           </div>
         </section>
 
@@ -816,14 +641,18 @@ export function DemographicsForecast({ lockedDimension }: { lockedDimension?: De
                 projected by {futureProvenance.by} to {lastYear}
               </p>
             </div>
-            <p className="font-mono text-2xl font-semibold tabular-nums text-slate-950 dark:text-white">{selectedYear}</p>
+            <p className="font-mono text-2xl font-semibold tabular-nums text-slate-950 dark:text-white">
+              {selectedYear}
+            </p>
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-3 px-5 pt-4">
             <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
               <button
                 type="button"
-                onClick={() => moveView(viewRange.start - Math.max(1, Math.round((viewRange.end - viewRange.start) / 3)))}
+                onClick={() =>
+                  moveView(viewRange.start - Math.max(1, Math.round((viewRange.end - viewRange.start) / 3)))
+                }
                 className="rounded-lg p-1.5 hover:bg-slate-100 hover:text-slate-950 dark:hover:bg-slate-900 dark:hover:text-white"
                 aria-label="Show earlier years"
               >
@@ -834,20 +663,25 @@ export function DemographicsForecast({ lockedDimension }: { lockedDimension?: De
               </span>
               <button
                 type="button"
-                onClick={() => moveView(viewRange.start + Math.max(1, Math.round((viewRange.end - viewRange.start) / 3)))}
+                onClick={() =>
+                  moveView(viewRange.start + Math.max(1, Math.round((viewRange.end - viewRange.start) / 3)))
+                }
                 className="rounded-lg p-1.5 hover:bg-slate-100 hover:text-slate-950 dark:hover:bg-slate-900 dark:hover:text-white"
                 aria-label="Show later years"
               >
                 <ChevronRight size={15} />
               </button>
-              <span className="ml-2 hidden text-[10px] tracking-wide uppercase sm:inline">Click a year · drag to pan</span>
+              <span className="ml-2 hidden text-[10px] tracking-wide uppercase sm:inline">
+                Click a year · drag to pan
+              </span>
             </div>
 
             <div className="flex items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-slate-900">
               {([10, 25, 50, "all"] as const).map((span) => {
-                const active = span === "all"
-                  ? viewRange.start === firstYear && viewRange.end === lastYear
-                  : viewRange.end - viewRange.start === span;
+                const active =
+                  span === "all"
+                    ? viewRange.start === firstYear && viewRange.end === lastYear
+                    : viewRange.end - viewRange.start === span;
                 const fits = span === "all" || span <= lastYear - firstYear;
                 return (
                   <button
@@ -888,15 +722,25 @@ export function DemographicsForecast({ lockedDimension }: { lockedDimension?: De
             <span className="inline-flex items-center gap-1.5">
               <svg width="22" height="6" aria-hidden="true">
                 <line
-                  x1="1" x2="21" y1="3" y2="3" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"
+                  x1="1"
+                  x2="21"
+                  y1="3"
+                  y2="3"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
                   strokeDasharray={published?.length === 0 ? "2 4" : undefined}
                 />
               </svg>
-              {published?.length === 0 ? "Modeled by Worldview" : `${STATUS_LABEL[pastProvenance.status]} (${pastProvenance.by})`}
+              {published?.length === 0
+                ? "Modeled by Worldview"
+                : `${STATUS_LABEL[pastProvenance.status]} (${pastProvenance.by})`}
             </span>
             {published && published.length ? (
               <span className="inline-flex items-center gap-1.5">
-                <svg width="8" height="8" aria-hidden="true"><circle cx="4" cy="4" r="3.5" fill="currentColor" /></svg>
+                <svg width="8" height="8" aria-hidden="true">
+                  <circle cx="4" cy="4" r="3.5" fill="currentColor" />
+                </svg>
                 Survey year; lines between are interpolated
               </span>
             ) : null}
@@ -918,13 +762,32 @@ export function DemographicsForecast({ lockedDimension }: { lockedDimension?: De
             {parent ? (
               <span className="inline-flex items-center gap-1.5">
                 <svg width="22" height="6" aria-hidden="true">
-                  <line x1="1" x2="21" y1="3" y2="3" stroke="#64748b" strokeWidth="1.75" strokeDasharray="1 4" strokeLinecap="round" />
+                  <line
+                    x1="1"
+                    x2="21"
+                    y1="3"
+                    y2="3"
+                    stroke="#64748b"
+                    strokeWidth="1.75"
+                    strokeDasharray="1 4"
+                    strokeLinecap="round"
+                  />
                 </svg>
                 {parentLabel} {focusCategory.label}, for comparison
               </span>
             ) : null}
           </div>
         </section>
+
+        {topicPage ? (
+          <Link
+            href={`${topicPage.href}${viewQuery(false)}`}
+            className="inline-flex items-center gap-1 text-xs font-semibold text-blue-700 hover:underline dark:text-blue-300"
+          >
+            {topicPage.blurb}
+            <ArrowUpRight size={13} />
+          </Link>
+        ) : null}
 
         <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-950">
           <div className="border-b border-slate-200 px-5 py-3 dark:border-slate-800">
@@ -944,7 +807,7 @@ export function DemographicsForecast({ lockedDimension }: { lockedDimension?: De
             baselineYear={mapBaseline}
             endYear={END_YEAR}
             peopleLabel={universe === "adults" ? "Adults" : "People"}
-            selectedId={showCities ? city?.id ?? null : state?.id ?? null}
+            selectedId={showCities ? (city?.id ?? null) : (state?.id ?? null)}
             onSelect={showCities ? selectCity : selectState}
           />
         </section>
@@ -961,13 +824,16 @@ export function DemographicsForecast({ lockedDimension }: { lockedDimension?: De
           <div>
             <dt className="font-semibold text-slate-900 dark:text-white">What&apos;s measured</dt>
             <dd className="mt-1">
-              {national.definition} Shares are of {universe === "adults" ? "adults 18 and over" : "all residents, every age"}.
+              {national.definition} Shares are of{" "}
+              {universe === "adults" ? "adults 18 and over" : "all residents, every age"}.
             </dd>
           </div>
           <div>
             <dt className="font-semibold text-slate-900 dark:text-white">Through {series.observedThrough}</dt>
             <dd className="mt-1">
-              <span className="font-medium">{STATUS_LABEL[pastProvenance.status]} · {pastProvenance.by}.</span>{" "}
+              <span className="font-medium">
+                {STATUS_LABEL[pastProvenance.status]} · {pastProvenance.by}.
+              </span>{" "}
               {pastProvenance.detail}
             </dd>
           </div>
@@ -997,7 +863,9 @@ export function DemographicsForecast({ lockedDimension }: { lockedDimension?: De
                   <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: category.color }} />
                   <div>
                     <dt className="inline font-semibold text-slate-900 dark:text-white">{category.label}: </dt>
-                    <dd className="inline text-slate-600 dark:text-slate-300">{national.categoryNotes?.[category.id]}</dd>
+                    <dd className="inline text-slate-600 dark:text-slate-300">
+                      {national.categoryNotes?.[category.id]}
+                    </dd>
                   </div>
                 </div>
               ))}

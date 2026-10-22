@@ -1,0 +1,139 @@
+{
+ "jurisdiction": {
+  "shortName": "Georgia",
+  "name": [
+   {
+    "languageId": "en",
+    "text": "Georgia"
+   }
+  ],
+  "childLocalities": []
+ },
+ "election": {
+  "id": "01000000-2354-7f03-5255-08dee1c2e128",
+  "jurisdictionId": "09378a07-e6cf-4f66-be7c-ca4aa534f99a",
+  "name": [
+   {
+    "languageId": "en",
+    "text": "July 28th, 2026 - Special Election"
+   }
+  ],
+  "electionDate": "2026-07-28",
+  "isOfficialResults": true,
+  "isPrimary": false,
+  "asOf": "2026-08-10T18:40:15.4934785Z",
+  "lastUpdated": "2026-08-03T21:50:48.9115895Z"
+ },
+ "localityElections": [],
+ "ballotItems": [
+  {
+   "id": "01000000-b4e2-8516-bbdc-08dee1c2e26d",
+   "parentId": null,
+   "name": [
+    {
+     "languageId": "en",
+     "text": "US House of Representatives - District 13"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 1"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": "",
+   "reportingStatus": {
+    "reportingUnits": 6,
+    "totalUnits": 6,
+    "asOf": "2026-08-10T18:40:15.4934785Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 20510,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-b4e2-8516-bc14-08dee1c2e26d",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Everton \"EJ\" Blair (Dem)"
+       }
+      ],
+      "voteCount": 7680,
+      "party": {
+       "abbreviation": "Dem"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-b4e2-8516-bc30-08dee1c2e26d",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Caesar Gonzales (Rep)"
+       }
+      ],
+      "voteCount": 1778,
+      "party": {
+       "abbreviation": "Rep"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-b4e2-8516-bc36-08dee1c2e26d",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Carlos Moore (Dem)"
+       }
+      ],
+      "voteCount": 639,
+      "party": {
+       "abbreviation": "Dem"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-b4e2-8516-bc3b-08dee1c2e26d",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Fayth Park (Rep)"
+       }
+      ],
+      "voteCount": 972,
+      "party": {
+       "abbreviation": "Rep"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-b4e2-8516-bc43-08dee1c2e26d",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Marcye Scott (Dem)"
+       }
+      ],
+      "voteCount": 9441,
+      "party": {
+       "abbreviation": "Dem"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     }
+    ]
+   }
+  }
+ ]
+}

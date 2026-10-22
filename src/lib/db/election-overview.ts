@@ -69,6 +69,28 @@ export async function listRaces(cycle: number, officeKey: OfficeKey): Promise<Ra
     .select()
     .from(elections)
     .where(and(eq(elections.cycle, cycle), eq(elections.office, office)));
+  return summarizeRaces(races);
+}
+
+// One cycle's races on a single address's ballot, every office: president,
+// the state's Senate and governor races, and its House district.
+export async function listRacesForPlace(cycle: number, stateName: string, houseCode: string | null): Promise<RaceSummary[]> {
+  const jurisdictions = ["united states", stateName.toLowerCase(), ...(houseCode ? [houseCode.toLowerCase()] : [])];
+  const races = await db
+    .select()
+    .from(elections)
+    .where(
+      and(
+        eq(elections.cycle, cycle),
+        inArray(elections.office, OFFICES.map((item) => item.office)),
+        inArray(sql`lower(${elections.jurisdiction})`, jurisdictions),
+      ),
+    );
+  const order = (race: RaceSummary) => OFFICES.findIndex((item) => item.office === race.office);
+  return (await summarizeRaces(races)).sort((a, b) => order(a) - order(b) || Number(a.special) - Number(b.special));
+}
+
+async function summarizeRaces(races: Array<typeof elections.$inferSelect>): Promise<RaceSummary[]> {
   if (races.length === 0) return [];
   const ids = races.map((race) => race.id);
 
@@ -139,6 +161,7 @@ export async function listRaces(cycle: number, officeKey: OfficeKey): Promise<Ra
       return {
         id: race.id,
         name: race.name,
+        office: race.office,
         ...raceCode(race.jurisdiction),
         special: race.electionType === "special",
         openSeat: race.openSeat,

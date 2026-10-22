@@ -64,10 +64,10 @@ export default async function OrgProfilePage({ params }: PageProps<"/people/orgs
           </p>
         </div>
         <Link
-          href={`${publicEntityPath(entity)}#relationships`}
+          href={publicEntityPath(entity)}
           className="shrink-0 rounded-md border border-slate-200 px-3 py-1.5 text-sm text-slate-600 hover:border-slate-400 hover:text-slate-900 dark:border-slate-700 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:text-slate-100"
         >
-          View connections →
+          View profile →
         </Link>
       </div>
 

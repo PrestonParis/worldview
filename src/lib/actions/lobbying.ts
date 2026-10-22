@@ -2,12 +2,9 @@
 
 import { requireContributor } from "../auth/guard";
 import { revalidatePath } from "next/cache";
-import {
-  lobbyingRegistrationSchema,
-  type LobbyingRegistrationInput,
-} from "../validation/lobbying";
+import { lobbyingRegistrationSchema, type LobbyingRegistrationInput } from "../validation/lobbying";
 import * as lobbyingDb from "../db/lobbying";
-import type { ActionResult } from "./entities";
+import { actionFailure, validationFailure, type ActionResult } from "./result";
 
 function revalidate() {
   revalidatePath("/data");
@@ -22,14 +19,14 @@ export async function createLobbyingRegistrationAction(
   if (denied) return denied;
   const parsed = lobbyingRegistrationSchema.safeParse(input);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+    return validationFailure(parsed.error);
   }
   try {
     const reg = await lobbyingDb.createLobbyingRegistration(parsed.data);
     revalidate();
     return { ok: true, data: { id: reg.id } };
   } catch (err) {
-    return { ok: false, error: (err as Error).message };
+    return actionFailure("lobbying.create", err);
   }
 }
 
@@ -41,7 +38,7 @@ export async function updateLobbyingRegistrationAction(
   if (denied) return denied;
   const parsed = lobbyingRegistrationSchema.safeParse(input);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+    return validationFailure(parsed.error);
   }
   try {
     const reg = await lobbyingDb.updateLobbyingRegistration(id, parsed.data);
@@ -49,13 +46,11 @@ export async function updateLobbyingRegistrationAction(
     revalidate();
     return { ok: true, data: { id: reg.id } };
   } catch (err) {
-    return { ok: false, error: (err as Error).message };
+    return actionFailure("lobbying.update", err);
   }
 }
 
-export async function deleteLobbyingRegistrationAction(
-  id: string,
-): Promise<ActionResult<null>> {
+export async function deleteLobbyingRegistrationAction(id: string): Promise<ActionResult<null>> {
   const denied = await requireContributor();
   if (denied) return denied;
   try {
@@ -63,6 +58,6 @@ export async function deleteLobbyingRegistrationAction(
     revalidate();
     return { ok: true, data: null };
   } catch (err) {
-    return { ok: false, error: (err as Error).message };
+    return actionFailure("lobbying.delete", err);
   }
 }

@@ -10,8 +10,8 @@ import { ideologies } from "@/lib/quiz/ideologies";
 import type { SharpenOutcome } from "@/lib/quiz/refine";
 import { QuizRunner } from "@/components/quiz/quiz-runner";
 import { PrioritiesBoard } from "@/components/quiz/priorities-board";
-import { QuizCheckpoint, QuizHero, QuizResults, resultNav, shareTitle } from "@/components/quiz/quiz-results";
-import { ResultsNav } from "@/components/quiz/results-nav";
+import { QuizCheckpoint, QuizHero, QuizResults, QuizResultView, resultViews, shareTitle } from "@/components/quiz/quiz-results";
+import { ResultsViewHeader } from "@/components/quiz/results-nav";
 import { FAMILIES, familyColor } from "@/lib/quiz/families";
 import { QuizClaimBanner, QuizOwnership } from "@/components/quiz/quiz-ownership";
 
@@ -80,7 +80,10 @@ export default async function QuizSessionPage({
     return <PrioritiesBoard slug={slug} items={priorityItems(session.answers)} continueHref={`/quiz/${slug}?${rest}`} />;
   }
 
-  const showRunner = access.canEdit && sp.view !== "results" && (!targetComplete || sp.take === "1" || !!edit);
+  // "?view=traditions|map|axes|issues": one drill-down view of the result.
+  // Like "?view=results", any view shows the result over the runner.
+  const viewing = sp.view === "results" || sp.view === "traditions" || sp.view === "map" || sp.view === "axes" || sp.view === "issues";
+  const showRunner = access.canEdit && !viewing && (!targetComplete || sp.take === "1" || !!edit);
 
   if (showRunner) {
     return (
@@ -100,6 +103,26 @@ export default async function QuizSessionPage({
 
   const top = result.ideologies[0];
   const snapshot = session.targetMode === "quick";
+  const name = snapshot ? `${FAMILIES[top.ideology.family].label} neighborhood` : top.ideology.name;
+  const views = resultViews(result, session.targetMode);
+  const view = views.find((v) => v.id === sp.view);
+
+  if (view) {
+    return (
+      <div className="mx-auto max-w-7xl space-y-4">
+        <ResultsViewHeader
+          slug={slug}
+          views={views}
+          current={view.id}
+          name={name}
+          match={snapshot ? null : top.match}
+          color={familyColor(top.ideology.family)}
+          shareTitle={shareTitle(result, access.canEdit, session.targetMode)}
+        />
+        <QuizResultView slug={slug} result={result} canEdit={access.canEdit} view={view.id} />
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-7xl space-y-4">
@@ -119,22 +142,13 @@ export default async function QuizSessionPage({
         }
       />
 
-      <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-8">
-        <ResultsNav
-          groups={resultNav(result, access.canEdit, session.targetMode)}
-          name={snapshot ? `${FAMILIES[top.ideology.family].label} neighborhood` : top.ideology.name}
-          match={snapshot ? null : top.match}
-          color={familyColor(top.ideology.family)}
-          shareTitle={shareTitle(result, access.canEdit, session.targetMode)}
-        />
-        <QuizResults
-          slug={slug}
-          result={result}
-          canEdit={access.canEdit}
-          mode={session.targetMode}
-          ownership={(access.isOwner || !access.canEdit) && <QuizOwnership slug={slug} access={access} visibility={session.visibility} />}
-        />
-      </div>
+      <QuizResults
+        slug={slug}
+        result={result}
+        canEdit={access.canEdit}
+        mode={session.targetMode}
+        ownership={(access.isOwner || !access.canEdit) && <QuizOwnership slug={slug} access={access} visibility={session.visibility} />}
+      />
     </div>
   );
 }

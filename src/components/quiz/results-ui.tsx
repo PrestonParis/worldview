@@ -17,9 +17,9 @@ export const strip =
   "flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm dark:border-slate-800 dark:bg-slate-900/50";
 
 export const kicker = "text-sm font-medium text-slate-600 dark:text-slate-400";
-export const h2 = "text-xl font-semibold tracking-tight text-slate-950 sm:text-2xl dark:text-white";
+export const h2 = "text-2xl leading-tight font-semibold tracking-tight text-slate-950 dark:text-white";
 export const h3 = "text-base font-semibold text-slate-950 dark:text-white";
-export const body = "text-[15px] leading-6 text-slate-700 dark:text-slate-300";
+export const body = "text-base leading-7 text-slate-700 dark:text-slate-300";
 export const meta = "text-sm text-slate-600 dark:text-slate-400";
 export const small = "text-xs text-slate-600 dark:text-slate-400";
 

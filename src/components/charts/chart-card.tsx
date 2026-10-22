@@ -3,6 +3,11 @@
 import { useState, type ReactNode } from "react";
 import { SortableTable } from "@/components/data/sortable-table";
 
+export interface ChartSource {
+  label: ReactNode;
+  href?: string;
+}
+
 export interface TableView {
   columns: string[];
   rows: (string | number)[][];
@@ -16,13 +21,15 @@ export function ChartCard({
   subtitle,
   source,
   table,
+  controls,
   children,
   className = "",
 }: {
   title: string;
   subtitle?: string;
-  source?: { label: string; href?: string };
+  source?: ChartSource | ChartSource[];
   table?: TableView;
+  controls?: ReactNode; // extra toggles shown before the Chart/Table switch
   children: ReactNode;
   className?: string;
 }) {
@@ -34,26 +41,35 @@ export function ChartCard({
           <h3 className="text-base font-semibold text-slate-950 dark:text-white">{title}</h3>
           {subtitle && <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{subtitle}</p>}
         </div>
-        {table && (
-          <div className="flex shrink-0 rounded-lg bg-slate-100 p-0.5 text-xs font-medium dark:bg-slate-900" role="group" aria-label="View">
-            {["Chart", "Table"].map((label) => {
-              const active = (label === "Table") === showTable;
-              return (
-                <button
-                  key={label}
-                  type="button"
-                  aria-pressed={active}
-                  onClick={() => setShowTable(label === "Table")}
-                  className={`rounded-md px-2.5 py-1 ${
-                    active ? "bg-white text-slate-900 shadow-sm dark:bg-slate-700 dark:text-white" : "text-slate-500 dark:text-slate-400"
-                  }`}
-                >
-                  {label}
-                </button>
-              );
-            })}
-          </div>
-        )}
+        <div className="flex shrink-0 flex-wrap justify-end gap-2">
+          {controls}
+          {table && (
+            <div
+              className="flex shrink-0 rounded-lg bg-slate-100 p-0.5 text-xs font-medium dark:bg-slate-900"
+              role="group"
+              aria-label="View"
+            >
+              {["Chart", "Table"].map((label) => {
+                const active = (label === "Table") === showTable;
+                return (
+                  <button
+                    key={label}
+                    type="button"
+                    aria-pressed={active}
+                    onClick={() => setShowTable(label === "Table")}
+                    className={`rounded-md px-2.5 py-1 ${
+                      active
+                        ? "bg-white text-slate-900 shadow-sm dark:bg-slate-700 dark:text-white"
+                        : "text-slate-500 dark:text-slate-400"
+                    }`}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </figcaption>
       <div className="mt-4">
         {showTable && table ? (
@@ -74,18 +90,30 @@ export function ChartCard({
           children
         )}
       </div>
-      {source && (
-        <p className="mt-3 text-xs text-slate-400">
-          Source:{" "}
-          {source.href ? (
-            <a href={source.href} className="underline decoration-slate-300 underline-offset-2 hover:text-slate-600 dark:hover:text-slate-200">
-              {source.label}
+      {source && <SourceLines sources={Array.isArray(source) ? source : [source]} />}
+    </figure>
+  );
+}
+
+export function SourceLines({ sources }: { sources: ChartSource[] }) {
+  if (!sources.length) return null;
+  return (
+    <div className="mt-3 space-y-0.5 text-xs text-slate-400">
+      {sources.map((src, i) => (
+        <p key={i}>
+          {i === 0 && (sources.length > 1 ? "Sources: " : "Source: ")}
+          {src.href ? (
+            <a
+              href={src.href}
+              className="underline decoration-slate-300 underline-offset-2 hover:text-slate-600 dark:hover:text-slate-200"
+            >
+              {src.label}
             </a>
           ) : (
-            source.label
+            src.label
           )}
         </p>
-      )}
-    </figure>
+      ))}
+    </div>
   );
 }

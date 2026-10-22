@@ -24,6 +24,7 @@ export function isDonorEdge(edge: { label: string; relType?: string }): boolean 
 
 export const individualEntityTypes = new Set<EntityType>([
   "politician",
+  "judge",
   "pundit",
   "journalist",
 ]);

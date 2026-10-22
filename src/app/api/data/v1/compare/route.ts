@@ -1,4 +1,5 @@
 import { compareByGeo, type CompareSeries } from "@/lib/db/stats";
+import { PublicDataInputError } from "@/lib/data/public-error";
 
 const MAX_SERIES = 8;
 
@@ -11,7 +12,10 @@ const MAX_SERIES = 8;
 export async function GET(request: Request) {
   const q = new URL(request.url).searchParams;
   const level = q.get("level");
-  const raw = (q.get("series") ?? "").split(",").map((s) => s.trim()).filter(Boolean);
+  const raw = (q.get("series") ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
   if (!level || raw.length === 0) {
     return Response.json({ error: "Pass level and series=source:metric[@period],..." }, { status: 400 });
   }
@@ -21,13 +25,18 @@ export async function GET(request: Request) {
   const series: CompareSeries[] = [];
   for (const item of raw) {
     const match = item.match(/^([^:@]+):([^@]+)(?:@(.+))?$/);
-    if (!match) return Response.json({ error: `Bad series "${item}"; expected source:metric[@period].` }, { status: 400 });
+    if (!match)
+      return Response.json({ error: `Bad series "${item}"; expected source:metric[@period].` }, { status: 400 });
     series.push({ source: match[1], metric: match[2], ...(match[3] ? { period: match[3] } : {}) });
   }
   const within = q.get("within") ?? undefined;
   try {
     return Response.json(await compareByGeo(level, series, within ? { within } : {}));
-  } catch (err) {
-    return Response.json({ error: (err as Error).message }, { status: 400 });
+  } catch (error) {
+    if (error instanceof PublicDataInputError) {
+      return Response.json({ error: error.message }, { status: 400 });
+    }
+    console.error("[api:data:compare]", error);
+    return Response.json({ error: "Comparison data is temporarily unavailable." }, { status: 500 });
   }
 }

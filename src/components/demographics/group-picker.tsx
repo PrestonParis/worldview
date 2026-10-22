@@ -39,8 +39,8 @@ export function GroupPicker({
   const residents = series.universe === "adults" ? "adults" : "residents";
 
   return (
-    <div className="space-y-3 border-b border-slate-200 px-5 py-3 dark:border-slate-800">
-      <div role="group" aria-label="Group to map" className="flex flex-wrap gap-1.5">
+    <div className="order-1 space-y-3 border-b border-slate-200 px-5 py-3 lg:order-2 lg:border-b-0 lg:border-l lg:px-4 lg:py-4 dark:border-slate-800">
+      <div role="group" aria-label="Group to map" className="flex flex-wrap gap-1.5 lg:flex-col">
         {series.categories.map((category) => {
           const selected = category.id === active.id;
           return (
@@ -50,14 +50,14 @@ export function GroupPicker({
               onClick={() => onFocus(category.id)}
               aria-pressed={selected}
               title={category.label}
-              className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs transition-colors ${
+              className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs transition-colors lg:w-full lg:justify-between lg:rounded-lg lg:px-3 lg:py-2 ${
                 selected
                   ? "border-slate-900 bg-slate-900 text-white dark:border-white dark:bg-white dark:text-slate-950"
                   : "border-slate-200 text-slate-600 hover:border-slate-400 hover:text-slate-950 dark:border-slate-800 dark:text-slate-300 dark:hover:border-slate-600 dark:hover:text-white"
               }`}
             >
               <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: category.color }} />
-              {category.short ?? category.label}
+              <span className="min-w-0 flex-1 truncate text-left">{category.short ?? category.label}</span>
               <span className="font-mono font-semibold tabular-nums">{formatShare(point.values[category.id] ?? 0)}</span>
             </button>
           );
@@ -80,27 +80,27 @@ export function GroupPicker({
         ))}
       </div>
 
-      <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-slate-500 dark:text-slate-400">
-        <span className="inline-flex items-center gap-1 font-semibold text-slate-900 dark:text-white">
+      <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-slate-500 lg:block lg:space-y-1 dark:text-slate-400">
+        <span className="inline-flex items-center gap-1 font-semibold text-slate-900 lg:flex dark:text-white">
           {active.label}
           {note ? (
             <InfoTip label={`What “${active.label}” includes`}>{note}</InfoTip>
           ) : null}
         </span>
-        <span className="font-mono font-semibold tabular-nums text-slate-900 dark:text-white">
+        <span className="font-mono font-semibold tabular-nums text-slate-900 lg:block lg:text-lg dark:text-white">
           {projected ? formatRange(low, high) : formatShare(value)}
         </span>
         {change !== null && baseline ? (
-          <span className={`font-mono tabular-nums ${changeTone(change)}`}>
+          <span className={`font-mono tabular-nums lg:block ${changeTone(change)}`}>
             {formatPoints(change)} since {baseline.year}
             {projected ? " (middle path)" : ""}
           </span>
         ) : null}
         {parent !== undefined && compare ? (
-          <span className="font-mono tabular-nums">{compare.label} {formatShare(parent)}</span>
+          <span className="font-mono tabular-nums lg:block">{compare.label} {formatShare(parent)}</span>
         ) : null}
         {people !== null && population !== null ? (
-          <span className="font-mono tabular-nums">
+          <span className="font-mono tabular-nums lg:block">
             ≈{formatPeople(people)} of {formatPeople(population)} {residents}
           </span>
         ) : null}

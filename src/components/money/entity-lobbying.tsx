@@ -24,7 +24,7 @@ function Row({
   entitiesById,
 }: {
   rows: ReturnType<typeof summarize>;
-  entitiesById: Map<string, Entity>;
+  entitiesById: Map<string, Pick<Entity, "id" | "name">>;
 }) {
   return (
     <ul className="mt-2 divide-y divide-slate-100 dark:divide-slate-800">
@@ -60,7 +60,7 @@ export function EntityLobbying({
 }: {
   registrations: LobbyingRegistration[];
   entityId: string;
-  entitiesById: Map<string, Entity>;
+  entitiesById: Map<string, Pick<Entity, "id" | "name">>;
 }) {
   if (registrations.length === 0) return null;
   const asClient = registrations.filter((r) => r.clientEntityId === entityId);

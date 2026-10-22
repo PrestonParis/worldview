@@ -1,0 +1,873 @@
+{
+  "note": "Curated baseline profiles for wealthy people with substantial, publicly documented influence on U.S. elections, parties, policy networks, media, or government. These are starting points, not wealth rankings. Political activity is described factually and linked to sources.",
+  "collection": "political-influence-wealth",
+  "organizations": [],
+  "people": [
+    {
+      "name": "Elon Musk",
+      "type": "donor",
+      "description": "Technology executive who leads SpaceX and Tesla and owns X; the largest disclosed individual political donor of the 2024 federal election cycle.",
+      "biography": "Elon Musk built his wealth through technology companies including PayPal, SpaceX and Tesla, and acquired Twitter, now X, in 2022. In 2024 he created and largely financed America PAC, backed Donald Trump and Republican candidates, and became the cycle's largest disclosed individual political donor. His political influence also comes from ownership of X and from companies with major federal contracts and regulatory interests.",
+      "highlights": [
+        "2022 — Acquires Twitter, later renamed X",
+        "2024 — Creates and funds America PAC",
+        "2024 — Becomes the largest disclosed individual donor of the federal election cycle"
+      ],
+      "metadata": {
+        "country": "United States",
+        "born": "1971-06-28",
+        "influenceAreas": [
+          "campaign finance",
+          "technology policy",
+          "media",
+          "federal contracting"
+        ]
+      },
+      "sources": [
+        "https://apnews.com/article/d248547966bf9c6daf6f5d332bc4be66",
+        "https://www.opensecrets.org/elections-overview/biggest-donors"
+      ]
+    },
+    {
+      "name": "Peter Thiel",
+      "type": "donor",
+      "description": "Co-founder of PayPal and Palantir, Founders Fund partner and Republican donor; financed the 2022 Senate campaigns of former employees JD Vance and Blake Masters.",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Peter%20Thiel%20by%20Gage%20Skidmore.jpg?width=800",
+      "websiteUrl": "https://foundersfund.com/team/peter-thiel/",
+      "identifiers": {
+        "wikidata": "Q705525"
+      },
+      "highlights": [
+        "1987 — Co-founds the Stanford Review while an undergraduate at Stanford",
+        "1998 — Co-founds Confinity, the company that becomes PayPal",
+        "2002 — PayPal is acquired by eBay",
+        "2003 — Co-founds Palantir and becomes chairman",
+        "2004 — Makes Facebook's first major outside investment",
+        "2005 — Helps launch Founders Fund",
+        "2016 — Endorses Donald Trump and speaks at the Republican National Convention",
+        "2022 — Spends most of $35 million in federal giving on Senate candidates JD Vance and Blake Masters",
+        "2024 — His former employee and political protégé JD Vance becomes the Republican vice-presidential nominee",
+        "2025 — Vance takes office as vice president, making Thiel's political network newly consequential"
+      ],
+      "metadata": {
+        "country": "United States",
+        "born": "1967-10-11",
+        "influenceAreas": [
+          "campaign finance",
+          "venture capital",
+          "defense technology",
+          "conservative networks"
+        ]
+      },
+      "sources": [
+        "https://www.britannica.com/money/Peter-Thiel",
+        "https://foundersfund.com/team/peter-thiel/",
+        "https://investors.palantir.com/board.html",
+        "https://www.wikidata.org/wiki/Q705525",
+        "https://www.dia.govt.nz/Citizenship-of-Mr-Peter-Thiel",
+        "https://www.americamagazine.org/all-things/2014/10/01/faith-technology-qa-peter-thiel/",
+        "https://www.cato-unbound.org/2009/04/13/peter-thiel/education-libertarian/",
+        "https://www.investing.com/news/world-news/exclusivepeter-thiel-republican-megadonor-wont-fund-candidates-in-2024--sources-3064715",
+        "https://www.washingtonpost.com/technology/2024/07/28/jd-vance-peter-thiel-donors-big-tech-trump-vp/",
+        "https://apnews.com/article/italy-peter-thiel-paypal-pope-vatican-c3a6c7d2daba501caf8152558ac2d743",
+        "https://www.forbes.com/profile/peter-thiel/"
+      ],
+      "biography": "Co-founder of PayPal and Palantir and Facebook's first outside investor. Since 2000 he has made more than $50 million in itemized federal political contributions, nearly all to Republican candidates and committees, including $35 million to two super PACs that backed the 2022 Senate campaigns of former employees JD Vance and Blake Masters. The full structured profile lives in data/profiles/peter-thiel.json (scripts/import-profile.mjs)."
+    },
+    {
+      "name": "Timothy Mellon",
+      "type": "donor",
+      "description": "Banking-family heir and transportation businessman who became one of the largest disclosed donors in the 2024 election, principally supporting Donald Trump and Robert F. Kennedy Jr.",
+      "biography": "Timothy Mellon is an heir to the Mellon banking fortune and founded the rail company Guilford Transportation Industries, later Pan Am Systems. He has funded conservative causes for years and emerged as one of the largest donors of the 2024 cycle through major gifts to super PACs supporting Donald Trump and Robert F. Kennedy Jr.",
+      "highlights": [
+        "1981 — Founds Guilford Transportation Industries",
+        "2020 — Becomes a major donor to a pro-Trump super PAC",
+        "2024 — Ranks among the cycle's largest disclosed individual donors"
+      ],
+      "metadata": {
+        "country": "United States",
+        "born": "1942-07-22",
+        "influenceAreas": [
+          "campaign finance",
+          "transportation"
+        ]
+      },
+      "sources": [
+        "https://www.investing.com/news/politics/factboxwho-are-the-megarich-donors-backing-trump-3400286",
+        "https://www.opensecrets.org/elections-overview/biggest-donors"
+      ]
+    },
+    {
+      "name": "Miriam Adelson",
+      "type": "donor",
+      "description": "Physician, controlling shareholder of Las Vegas Sands, and one of the Republican Party's largest donors through election groups including Preserve America.",
+      "biography": "Miriam Adelson is a physician and the widow of casino executive Sheldon Adelson. Together they became central funders of Republican candidates, the Republican Jewish Coalition and pro-Israel political causes. After her husband's death, she continued as a major donor and served as the principal financier of Preserve America during the 2024 presidential election.",
+      "highlights": [
+        "1991 — Marries Las Vegas Sands founder Sheldon Adelson",
+        "2018 — Receives the Presidential Medal of Freedom",
+        "2024 — Leads financing for the pro-Trump Preserve America super PAC"
+      ],
+      "metadata": {
+        "country": "United States",
+        "born": "1945-10-10",
+        "influenceAreas": [
+          "campaign finance",
+          "Republican politics",
+          "U.S.-Israel policy"
+        ]
+      },
+      "sources": [
+        "https://www.investing.com/news/world-news/republican-mega-donor-adelson-to-back-major-protrump-spending-group-3464039",
+        "https://www.opensecrets.org/elections-overview/biggest-donors"
+      ]
+    },
+    {
+      "name": "Richard Uihlein",
+      "type": "donor",
+      "description": "Co-founder of the shipping-supplies company Uline and a major financier of Republican candidates and conservative outside groups.",
+      "biography": "Richard Uihlein co-founded Uline with his wife, Elizabeth, in 1980. The couple built the company into a large privately held distributor and became among the most prolific funders of Republican candidates, super PACs and conservative organizations. Their giving has supported both national races and state-level political networks.",
+      "highlights": [
+        "1980 — Co-founds Uline",
+        "2010s — Becomes a leading funder of conservative outside groups",
+        "2024 — Richard and Elizabeth Uihlein rank among the election cycle's largest donor households"
+      ],
+      "metadata": {
+        "country": "United States",
+        "born": "1945",
+        "influenceAreas": [
+          "campaign finance",
+          "conservative organizations",
+          "state politics"
+        ]
+      },
+      "sources": [
+        "https://www.washingtonpost.com/elections/interactive/2024/biggest-campaign-donors-election-2024/",
+        "https://www.opensecrets.org/elections-overview/biggest-donors"
+      ]
+    },
+    {
+      "name": "Elizabeth Uihlein",
+      "type": "donor",
+      "description": "President and co-founder of Uline and, with Richard Uihlein, a major donor to Republican candidates and conservative political organizations.",
+      "biography": "Elizabeth Uihlein co-founded Uline with her husband, Richard, and serves as its president. She participates directly in the couple's extensive political giving and has supported Republican candidates and conservative advocacy groups at the federal and state levels.",
+      "highlights": [
+        "1980 — Co-founds Uline",
+        "2024 — Richard and Elizabeth Uihlein rank among the election cycle's largest donor households"
+      ],
+      "metadata": {
+        "country": "United States",
+        "born": "1945",
+        "influenceAreas": [
+          "campaign finance",
+          "conservative organizations",
+          "state politics"
+        ]
+      },
+      "sources": [
+        "https://www.washingtonpost.com/elections/interactive/2024/biggest-campaign-donors-election-2024/",
+        "https://www.opensecrets.org/elections-overview/biggest-donors"
+      ]
+    },
+    {
+      "name": "Ken Griffin",
+      "type": "donor",
+      "description": "Founder and chief executive of Citadel and one of the largest Republican donors in recent federal election cycles.",
+      "biography": "Ken Griffin founded the hedge fund Citadel and later the market-making firm Citadel Securities. He has become a leading donor to Republican congressional candidates, party committees and outside groups, while also funding education, public safety, museums and universities. His support has often favored establishment-oriented Republican candidates.",
+      "highlights": [
+        "1990 — Founds Citadel",
+        "2022 — Ranks among the largest individual donors in the midterm cycle",
+        "2024 — Again ranks among the largest disclosed federal political donors"
+      ],
+      "metadata": {
+        "country": "United States",
+        "born": "1968-10-15",
+        "influenceAreas": [
+          "campaign finance",
+          "financial regulation",
+          "education",
+          "public safety"
+        ]
+      },
+      "sources": [
+        "https://www.washingtonpost.com/elections/interactive/2024/biggest-campaign-donors-election-2024/",
+        "https://www.opensecrets.org/elections-overview/biggest-donors"
+      ]
+    },
+    {
+      "name": "Jeff Yass",
+      "type": "donor",
+      "description": "Co-founder of Susquehanna International Group, major Republican and libertarian donor, and a prominent investor in TikTok parent ByteDance.",
+      "biography": "Jeff Yass co-founded the trading firm Susquehanna International Group after working as a professional poker player. He has directed large contributions to Republican candidates, the Club for Growth and school-choice organizations. His investment in ByteDance has also placed him near congressional debates over TikTok.",
+      "highlights": [
+        "1987 — Co-founds Susquehanna International Group",
+        "2024 — Emerges as one of the election cycle's largest Republican donors",
+        "2024 — Draws scrutiny as Congress debates restrictions affecting TikTok"
+      ],
+      "metadata": {
+        "country": "United States",
+        "born": "1958",
+        "influenceAreas": [
+          "campaign finance",
+          "libertarian politics",
+          "school choice",
+          "technology policy"
+        ]
+      },
+      "sources": [
+        "https://www.investing.com/news/stock-market-news/republican-hedge-fund-owner-and-tiktok-investor-yass-emerges-as-top-donor-in-us-election-3347498",
+        "https://www.opensecrets.org/elections-overview/biggest-donors"
+      ]
+    },
+    {
+      "name": "Charles Koch",
+      "type": "donor",
+      "description": "Chairman of Koch, Inc. and principal builder of a large libertarian and conservative policy, advocacy, academic and electoral network.",
+      "biography": "Charles Koch has led Koch Industries, now Koch, Inc., since 1967. With his late brother David, he funded a durable network of think tanks, university programs, advocacy organizations and election groups organized around limited government, free markets and deregulation. The network now operates largely through Stand Together and Americans for Prosperity.",
+      "highlights": [
+        "1967 — Becomes leader of the family business later known as Koch Industries",
+        "1977 — Helps found the Cato Institute",
+        "2004 — Helps establish Americans for Prosperity",
+        "2019 — Consolidates much of the network under the Stand Together name"
+      ],
+      "metadata": {
+        "country": "United States",
+        "born": "1935-11-01",
+        "influenceAreas": [
+          "policy advocacy",
+          "campaign finance",
+          "think tanks",
+          "higher education"
+        ]
+      },
+      "sources": [
+        "https://www.britannica.com/biography/Charles-Koch",
+        "https://standtogether.org/about-us/charles-koch"
+      ]
+    },
+    {
+      "name": "Paul Singer",
+      "type": "donor",
+      "description": "Founder of Elliott Investment Management and a major Republican donor with longstanding influence in conservative policy and pro-Israel organizations.",
+      "biography": "Paul Singer founded Elliott Investment Management in 1977. He has financed Republican candidates and committees, policy organizations including the Manhattan Institute, and pro-Israel advocacy. Singer has also supported same-sex marriage campaigns, making his political giving broader than a single conservative faction.",
+      "highlights": [
+        "1977 — Founds Elliott Management",
+        "2012 — Helps finance Republican efforts to legalize same-sex marriage in New York",
+        "2020s — Remains a major donor to Republican candidates and outside groups"
+      ],
+      "metadata": {
+        "country": "United States",
+        "born": "1944-08-22",
+        "influenceAreas": [
+          "campaign finance",
+          "conservative policy",
+          "U.S.-Israel policy"
+        ]
+      },
+      "sources": [
+        "https://www.washingtonpost.com/elections/interactive/2024/biggest-campaign-donors-election-2024/",
+        "https://www.opensecrets.org/elections-overview/biggest-donors"
+      ]
+    },
+    {
+      "name": "Stephen Schwarzman",
+      "type": "donor",
+      "description": "Co-founder and chief executive of Blackstone and a major Republican donor with influence in business, education and U.S.-China policy circles.",
+      "biography": "Stephen Schwarzman co-founded the private-equity firm Blackstone in 1985. He has been a major donor to Republican candidates and committees and served as chair of a business advisory forum during Donald Trump's first administration. His philanthropy has also funded major university and public-library projects.",
+      "highlights": [
+        "1985 — Co-founds Blackstone",
+        "2016 — Chairs the incoming Trump administration's Strategic and Policy Forum",
+        "2024 — Supports Donald Trump's return to the presidency"
+      ],
+      "metadata": {
+        "country": "United States",
+        "born": "1947-02-14",
+        "influenceAreas": [
+          "campaign finance",
+          "business policy",
+          "higher education",
+          "U.S.-China relations"
+        ]
+      },
+      "sources": [
+        "https://www.britannica.com/biography/Stephen-A-Schwarzman",
+        "https://www.washingtonpost.com/elections/interactive/2024/biggest-campaign-donors-election-2024/"
+      ]
+    },
+    {
+      "name": "Larry Ellison",
+      "type": "donor",
+      "description": "Oracle co-founder and longtime Republican donor whose influence spans technology, national security contracting, media investments and electoral politics.",
+      "biography": "Larry Ellison co-founded Oracle in 1977 and remains its chairman and chief technology officer. He has contributed to Republican candidates and super PACs and has hosted political fundraisers. Oracle's role in government computing and Ellison's investments in media and technology give him influence beyond direct campaign contributions.",
+      "highlights": [
+        "1977 — Co-founds Oracle",
+        "2020 — Hosts a fundraiser for Donald Trump",
+        "2020s — Continues supporting Republican candidates and political groups"
+      ],
+      "metadata": {
+        "country": "United States",
+        "born": "1944-08-17",
+        "influenceAreas": [
+          "campaign finance",
+          "technology policy",
+          "government contracting",
+          "media"
+        ]
+      },
+      "sources": [
+        "https://www.britannica.com/biography/Larry-Ellison",
+        "https://www.opensecrets.org/elections-overview/biggest-donors"
+      ]
+    },
+    {
+      "name": "George Soros",
+      "type": "donor",
+      "description": "Investor and founder of the Open Society Foundations, with decades of major giving to Democratic candidates, civil-society organizations and progressive causes.",
+      "biography": "George Soros built a fortune in investment management and established the Open Society Foundations, which fund civil society, human rights and democratic institutions internationally. In U.S. politics he has financed Democratic candidates and outside groups, voting-rights work and criminal-justice reform. His political role is frequently exaggerated by conspiracy theories, but his disclosed giving and institutional network are substantial and public.",
+      "highlights": [
+        "1979 — Begins large-scale philanthropy",
+        "1993 — Establishes the Open Society Foundations network",
+        "2004 — Becomes a major donor in Democratic opposition to George W. Bush",
+        "2023 — Alex Soros succeeds him as chair of Open Society Foundations"
+      ],
+      "metadata": {
+        "country": "United States",
+        "born": "1930-08-12",
+        "influenceAreas": [
+          "campaign finance",
+          "civil society",
+          "criminal justice",
+          "democracy"
+        ]
+      },
+      "sources": [
+        "https://www.opensocietyfoundations.org/george-soros",
+        "https://www.opensecrets.org/elections-overview/biggest-donors"
+      ]
+    },
+    {
+      "name": "Alex Soros",
+      "type": "donor",
+      "description": "Chair of the Open Society Foundations and political donor who now leads much of the Soros family's institutional and electoral activity.",
+      "biography": "Alex Soros is the son of investor and philanthropist George Soros. He was elected chair of the Open Society Foundations in 2022 and publicly assumed leadership of the network in 2023. He has met frequently with Democratic officials and directs giving across democracy, rights and progressive political causes.",
+      "highlights": [
+        "2012 — Establishes the Alexander Soros Foundation",
+        "2022 — Elected chair of Open Society Foundations",
+        "2023 — Publicly succeeds George Soros as leader of the family network"
+      ],
+      "metadata": {
+        "country": "United States",
+        "born": "1985-10-27",
+        "influenceAreas": [
+          "philanthropy",
+          "Democratic politics",
+          "civil society",
+          "human rights"
+        ]
+      },
+      "sources": [
+        "https://www.opensocietyfoundations.org/who-we-are/leadership/alex-soros",
+        "https://www.opensocietyfoundations.org/newsroom/open-society-foundations-announce-new-leadership"
+      ]
+    },
+    {
+      "name": "Michael Bloomberg",
+      "type": "politician",
+      "description": "Bloomberg LP founder, former New York City mayor, presidential candidate, and major Democratic donor focused on gun policy, climate and public health.",
+      "biography": "Michael Bloomberg founded the financial-information company Bloomberg LP and served three terms as mayor of New York City. He has spent heavily on his own campaigns and on Democratic candidates and outside groups. Through Bloomberg Philanthropies and advocacy organizations, he has built national networks around gun regulation, climate policy and public health.",
+      "highlights": [
+        "1981 — Founds the company later named Bloomberg LP",
+        "2002–2013 — Serves as mayor of New York City",
+        "2020 — Self-finances a presidential primary campaign",
+        "2020s — Continues major funding of Democratic campaigns, climate work and gun-policy advocacy"
+      ],
+      "metadata": {
+        "country": "United States",
+        "state": "New York",
+        "born": "1942-02-14",
+        "party": "Democratic",
+        "influenceAreas": [
+          "campaign finance",
+          "gun policy",
+          "climate",
+          "public health"
+        ]
+      },
+      "sources": [
+        "https://www.bloomberg.org/about/mike-bloomberg/",
+        "https://www.opensecrets.org/elections-overview/biggest-donors"
+      ]
+    },
+    {
+      "name": "Reid Hoffman",
+      "type": "donor",
+      "description": "LinkedIn co-founder and venture capitalist who is one of the technology industry's most active funders of Democratic candidates and political organizations.",
+      "biography": "Reid Hoffman co-founded LinkedIn and became a partner at Greylock. He has funded Democratic presidential and congressional campaigns, candidate-recruitment groups and organizations working on elections and civic participation. He is also a prominent participant in debates over artificial intelligence and technology regulation.",
+      "highlights": [
+        "2002 — Co-founds LinkedIn",
+        "2016 — Expands large-scale support for Democratic candidates and organizations",
+        "2024 — Remains a leading technology-sector donor to Democratic efforts"
+      ],
+      "metadata": {
+        "country": "United States",
+        "born": "1967-08-05",
+        "influenceAreas": [
+          "campaign finance",
+          "technology policy",
+          "artificial intelligence",
+          "venture capital"
+        ]
+      },
+      "sources": [
+        "https://www.forbes.com/sites/leokamin/2024/06/27/here-are-bidens-top-10-biggest-billionaire-donors-bloomberg-reid-hoffman/",
+        "https://apnews.com/article/7c6b78b6a8ded9ad253be9ef491e0284"
+      ]
+    },
+    {
+      "name": "Dustin Moskovitz",
+      "type": "donor",
+      "description": "Facebook and Asana co-founder whose political giving and Open Philanthropy funding make him a major Democratic and policy donor.",
+      "biography": "Dustin Moskovitz co-founded Facebook and later Asana. With Cari Tuna, he established Good Ventures, the principal funder of Open Philanthropy. He has also made large contributions to Democratic candidates and outside groups, while his philanthropy focuses on global health, biosecurity, science and long-term risks.",
+      "highlights": [
+        "2004 — Co-founds Facebook",
+        "2008 — Co-founds Asana",
+        "2011 — Establishes Good Ventures with Cari Tuna",
+        "2024 — Ranks among the largest disclosed Democratic donors"
+      ],
+      "metadata": {
+        "country": "United States",
+        "born": "1984-05-22",
+        "influenceAreas": [
+          "campaign finance",
+          "philanthropy",
+          "global health",
+          "science policy"
+        ]
+      },
+      "sources": [
+        "https://www.forbes.com/sites/leokamin/2024/06/27/here-are-bidens-top-10-biggest-billionaire-donors-bloomberg-reid-hoffman/",
+        "https://www.openphilanthropy.org/about-us/our-story/"
+      ]
+    },
+    {
+      "name": "Laurene Powell Jobs",
+      "type": "donor",
+      "description": "Founder of Emerson Collective, using philanthropy, investment and media ownership to influence immigration, education, climate and civic policy.",
+      "biography": "Laurene Powell Jobs founded Emerson Collective, a hybrid philanthropy and investment organization. Its work spans immigration reform, education, climate, journalism and civic engagement. She is also the owner of The Atlantic, giving her a significant role in national media alongside her political and philanthropic giving.",
+      "highlights": [
+        "2004 — Founds Emerson Collective",
+        "2017 — Acquires a majority stake in The Atlantic",
+        "2020s — Expands investment and grantmaking across immigration, education, climate and journalism"
+      ],
+      "metadata": {
+        "country": "United States",
+        "born": "1963-11-06",
+        "influenceAreas": [
+          "philanthropy",
+          "media",
+          "immigration",
+          "education",
+          "climate"
+        ]
+      },
+      "sources": [
+        "https://www.emersoncollective.com/about",
+        "https://www.theatlantic.com/press-releases/archive/2017/07/emerson-collective-acquires-majority-ownership-of-the-atlantic/535132/"
+      ]
+    },
+    {
+      "name": "Pierre Omidyar",
+      "type": "donor",
+      "description": "eBay founder whose Democracy Fund, Omidyar Network and media investments support election administration, journalism and civic institutions.",
+      "biography": "Pierre Omidyar founded eBay and later built a network of philanthropic and investment organizations. Democracy Fund works on election administration, democratic institutions and journalism, while First Look Media launched The Intercept. His influence is exercised more through institutions and grants than candidate-centered giving alone.",
+      "highlights": [
+        "1995 — Founds eBay",
+        "2004 — Establishes Omidyar Network",
+        "2011 — Establishes Democracy Fund",
+        "2013 — Creates First Look Media"
+      ],
+      "metadata": {
+        "country": "United States",
+        "born": "1967-06-21",
+        "influenceAreas": [
+          "democracy",
+          "elections",
+          "journalism",
+          "philanthropy"
+        ]
+      },
+      "sources": [
+        "https://democracyfund.org/who-we-are/",
+        "https://omidyargroup.com/"
+      ]
+    },
+    {
+      "name": "Donald Sussman",
+      "type": "donor",
+      "description": "Founder of Paloma Partners and a longstanding major donor to Democratic candidates, party committees and progressive outside groups.",
+      "biography": "Donald Sussman founded the investment firm Paloma Partners. For multiple election cycles he has ranked among the Democratic Party's largest individual donors, supporting presidential and congressional campaigns, party committees and super PACs. He has also funded policy and civil-society organizations.",
+      "highlights": [
+        "1981 — Founds Paloma Partners",
+        "2016 — Becomes one of the largest individual donors supporting Democratic federal candidates",
+        "2020s — Continues major giving to Democratic committees and outside groups"
+      ],
+      "metadata": {
+        "country": "United States",
+        "born": "1946-06-08",
+        "influenceAreas": [
+          "campaign finance",
+          "Democratic politics",
+          "civil society"
+        ]
+      },
+      "sources": [
+        "https://www.opensecrets.org/elections-overview/biggest-donors",
+        "https://www.washingtonpost.com/elections/interactive/2024/biggest-campaign-donors-election-2024/"
+      ]
+    },
+    {
+      "name": "Marc Andreessen",
+      "type": "donor",
+      "description": "Venture capitalist and Andreessen Horowitz co-founder whose money and public advocacy shape technology, cryptocurrency, defense and Republican policy debates.",
+      "biography": "Marc Andreessen co-created the Mosaic web browser and co-founded Netscape before establishing Andreessen Horowitz with Ben Horowitz. The firm has become a major investor and policy advocate in cryptocurrency, artificial intelligence and defense technology. Andreessen endorsed Donald Trump in 2024 and became a prominent voice in the technology industry's move toward Republican politics.",
+      "highlights": [
+        "1993 — Helps create the Mosaic web browser",
+        "2009 — Co-founds Andreessen Horowitz",
+        "2023 — Publishes The Techno-Optimist Manifesto",
+        "2024 — Endorses Donald Trump"
+      ],
+      "metadata": {
+        "country": "United States",
+        "born": "1971-07-09",
+        "influenceAreas": [
+          "technology policy",
+          "venture capital",
+          "cryptocurrency",
+          "defense technology"
+        ]
+      },
+      "sources": [
+        "https://a16z.com/the-techno-optimist-manifesto/",
+        "https://www.theatlantic.com/newsletters/archive/2024/08/the-tech-trump-alliance/679656/"
+      ]
+    },
+    {
+      "name": "David Sacks",
+      "type": "donor",
+      "description": "Venture capitalist, former PayPal executive, political fundraiser, and White House special adviser for artificial intelligence and cryptocurrency.",
+      "biography": "David Sacks was PayPal's chief operating officer, founded Yammer and later founded Craft Ventures. He became an active Republican donor and fundraiser, hosting a major event for Donald Trump in 2024. In 2025 he entered the White House as a special government employee advising on artificial intelligence and cryptocurrency policy.",
+      "highlights": [
+        "2008 — Founds Yammer",
+        "2017 — Co-founds Craft Ventures",
+        "2024 — Hosts a major fundraiser for Donald Trump",
+        "2025 — Begins serving as White House special adviser for AI and cryptocurrency"
+      ],
+      "metadata": {
+        "country": "United States",
+        "born": "1972-05-25",
+        "influenceAreas": [
+          "campaign finance",
+          "artificial intelligence",
+          "cryptocurrency",
+          "venture capital"
+        ]
+      },
+      "sources": [
+        "https://www.whitehouse.gov/wp-content/uploads/2025/06/David-Sacks.pdf",
+        "https://www.govinfo.gov/content/pkg/DCPD-202500166/pdf/DCPD-202500166.pdf"
+      ]
+    },
+    {
+      "name": "Harlan Crow",
+      "type": "donor",
+      "description": "Texas real-estate executive and Republican donor whose undisclosed gifts and financial ties to Justice Clarence Thomas drew national scrutiny.",
+      "biography": "Harlan Crow is the former chairman and chief executive of Crow Holdings, a Dallas real-estate company founded by his father. He has donated to Republican candidates and conservative organizations and served on boards of policy institutions. Reporting beginning in 2023 documented extensive gifts, travel and financial transactions involving Supreme Court Justice Clarence Thomas.",
+      "highlights": [
+        "1988 — Takes leadership of the family real-estate business",
+        "2023 — ProPublica reports undisclosed luxury travel and property transactions involving Justice Clarence Thomas"
+      ],
+      "metadata": {
+        "country": "United States",
+        "born": "1949",
+        "influenceAreas": [
+          "campaign finance",
+          "conservative institutions",
+          "judicial politics"
+        ]
+      },
+      "sources": [
+        "https://www.propublica.org/article/clarence-thomas-scotus-undisclosed-luxury-travel-gifts-crow",
+        "https://www.propublica.org/article/clarence-thomas-harlan-crow-real-estate-scotus"
+      ]
+    },
+    {
+      "name": "Barre Seid",
+      "type": "donor",
+      "description": "Industrialist whose transfer of a company worth roughly $1.6 billion created one of the largest known political donations, funding the Marble Freedom Trust.",
+      "biography": "Barre Seid built his wealth through electronics manufacturer Tripp Lite. In 2020 he transferred ownership of the company to the Marble Freedom Trust, a nonprofit led by conservative legal activist Leonard Leo; the subsequent sale generated approximately $1.6 billion for the trust. The transaction created a major long-term funding source for conservative legal and political organizations.",
+      "highlights": [
+        "2020 — Transfers Tripp Lite ownership to Marble Freedom Trust",
+        "2021 — Sale of Tripp Lite produces roughly $1.6 billion for the trust",
+        "2022 — The transaction becomes public through reporting and tax records"
+      ],
+      "metadata": {
+        "country": "United States",
+        "born": "1932",
+        "influenceAreas": [
+          "conservative legal movement",
+          "dark money",
+          "policy advocacy"
+        ]
+      },
+      "sources": [
+        "https://www.propublica.org/article/dark-money-leonard-leo-barre-seid",
+        "https://www.nytimes.com/2022/08/22/us/politics/republican-dark-money.html"
+      ]
+    },
+    {
+      "name": "John Arnold",
+      "type": "donor",
+      "description": "Former energy trader and co-founder of Arnold Ventures, a major policy philanthropy working on criminal justice, health care, public finance and evidence-based government.",
+      "biography": "John Arnold made his fortune as an energy trader at Enron and through the hedge fund Centaurus Advisors. With Laura Arnold he created Arnold Ventures, which funds research, advocacy and ballot campaigns across criminal justice, health care, public finance and government effectiveness. Their giving is structured around policy outcomes rather than a single party identity.",
+      "highlights": [
+        "2002 — Founds Centaurus Advisors",
+        "2010 — Begins full-time philanthropy with Laura Arnold",
+        "2019 — The Laura and John Arnold Foundation becomes Arnold Ventures"
+      ],
+      "metadata": {
+        "country": "United States",
+        "born": "1974",
+        "influenceAreas": [
+          "criminal justice",
+          "health policy",
+          "public finance",
+          "evidence-based policy"
+        ]
+      },
+      "sources": [
+        "https://www.arnoldventures.org/about",
+        "https://www.arnoldventures.org/stories/our-founders"
+      ]
+    },
+    {
+      "name": "Laura Arnold",
+      "type": "donor",
+      "description": "Attorney and co-founder of Arnold Ventures, directing major policy funding in criminal justice, health care, public finance and government effectiveness.",
+      "biography": "Laura Arnold is an attorney and former energy-company executive who co-founded Arnold Ventures with her husband, John Arnold. She helps direct its research, grantmaking and advocacy across criminal justice, health care, public finance and evidence-based policy. The organization supports work associated with both major parties and with nonpartisan institutions.",
+      "highlights": [
+        "2010 — Begins full-time philanthropy with John Arnold",
+        "2019 — The Laura and John Arnold Foundation becomes Arnold Ventures"
+      ],
+      "metadata": {
+        "country": "United States",
+        "influenceAreas": [
+          "criminal justice",
+          "health policy",
+          "public finance",
+          "evidence-based policy"
+        ]
+      },
+      "sources": [
+        "https://www.arnoldventures.org/about",
+        "https://www.arnoldventures.org/stories/our-founders"
+      ]
+    },
+    {
+      "name": "Robert Mercer",
+      "type": "donor",
+      "description": "Computer scientist and former Renaissance Technologies executive who financed conservative campaigns, Breitbart and data firm Cambridge Analytica.",
+      "biography": "Robert Mercer made his fortune at the hedge fund Renaissance Technologies. With his daughter Rebekah, he became a major funder of conservative candidates and institutions, including Breitbart and Cambridge Analytica. The Mercer network played a prominent role in Republican politics during the 2016 presidential election.",
+      "highlights": [
+        "1993 — Joins Renaissance Technologies",
+        "2011 — Begins a period of major giving to conservative super PACs",
+        "2016 — Mercer-backed organizations support Donald Trump's presidential campaign",
+        "2017 — Steps down from Renaissance Technologies"
+      ],
+      "metadata": {
+        "country": "United States",
+        "born": "1946-07-11",
+        "influenceAreas": [
+          "campaign finance",
+          "conservative media",
+          "political data"
+        ]
+      },
+      "sources": [
+        "https://www.opensecrets.org/elections-overview/biggest-donors",
+        "https://www.newyorker.com/magazine/2017/03/27/the-reclusive-hedge-fund-tycoon-behind-the-trump-presidency"
+      ]
+    },
+    {
+      "name": "Rebekah Mercer",
+      "type": "donor",
+      "description": "Conservative donor and foundation director who helped steer Mercer-family funding to campaigns, Breitbart and political organizations.",
+      "biography": "Rebekah Mercer directs the Mercer Family Foundation and became an important organizer and donor in conservative politics during the 2016 election. She served on the executive committee of Donald Trump's transition team and has backed candidates, think tanks and media organizations including Breitbart.",
+      "highlights": [
+        "2012 — Becomes active in directing Mercer-family political giving",
+        "2016 — Supports Donald Trump's campaign and joins the presidential transition executive committee"
+      ],
+      "metadata": {
+        "country": "United States",
+        "born": "1973",
+        "influenceAreas": [
+          "campaign finance",
+          "conservative media",
+          "political organizations"
+        ]
+      },
+      "sources": [
+        "https://www.newyorker.com/magazine/2017/03/27/the-reclusive-hedge-fund-tycoon-behind-the-trump-presidency",
+        "https://www.opensecrets.org/elections-overview/biggest-donors"
+      ]
+    },
+    {
+      "name": "Tom Steyer",
+      "type": "politician",
+      "description": "Former hedge-fund manager, climate activist, Democratic megadonor and 2020 presidential candidate.",
+      "biography": "Tom Steyer founded the investment firm Farallon Capital and later left finance for politics and philanthropy. Through NextGen America he funded climate advocacy, voter mobilization and Democratic candidates. He ran for the Democratic presidential nomination in 2020 and has continued financing climate and clean-energy work.",
+      "highlights": [
+        "1986 — Founds Farallon Capital",
+        "2013 — Establishes NextGen America",
+        "2019–2020 — Campaigns for the Democratic presidential nomination"
+      ],
+      "metadata": {
+        "country": "United States",
+        "born": "1957-06-27",
+        "party": "Democratic",
+        "influenceAreas": [
+          "campaign finance",
+          "climate",
+          "youth turnout",
+          "clean energy"
+        ]
+      },
+      "sources": [
+        "https://www.britannica.com/biography/Tom-Steyer",
+        "https://www.nextgenamerica.org/about/"
+      ]
+    },
+    {
+      "name": "Eric Schmidt",
+      "type": "donor",
+      "description": "Former Google chief executive and major technology-policy philanthropist with influence in artificial intelligence, national security and Democratic politics.",
+      "biography": "Eric Schmidt led Google from 2001 to 2011 and later chaired its parent company. He has advised the federal government on defense and artificial intelligence, funded policy organizations and scientific research, and donated largely to Democratic candidates. His network connects Silicon Valley capital with national-security and technology policy.",
+      "highlights": [
+        "2001–2011 — Serves as Google chief executive",
+        "2018–2021 — Chairs the National Security Commission on Artificial Intelligence",
+        "2020s — Funds AI, science and national-security policy initiatives"
+      ],
+      "metadata": {
+        "country": "United States",
+        "born": "1955-04-27",
+        "influenceAreas": [
+          "artificial intelligence",
+          "national security",
+          "science policy",
+          "campaign finance"
+        ]
+      },
+      "sources": [
+        "https://www.schmidtfutures.com/our-story/",
+        "https://apnews.com/article/7c6b78b6a8ded9ad253be9ef491e0284"
+      ]
+    },
+    {
+      "name": "Vinod Khosla",
+      "type": "donor",
+      "description": "Sun Microsystems co-founder and venture capitalist active in Democratic fundraising and policy debates over climate, health and artificial intelligence.",
+      "biography": "Vinod Khosla co-founded Sun Microsystems and later established Khosla Ventures. He has supported Democratic candidates and used his investment platform to advocate for clean technology, biotechnology and aggressive development of artificial intelligence. He is a frequent participant in political fundraising and technology-policy discussions.",
+      "highlights": [
+        "1982 — Co-founds Sun Microsystems",
+        "2004 — Founds Khosla Ventures",
+        "2024 — Campaigns and raises money for the Democratic presidential ticket"
+      ],
+      "metadata": {
+        "country": "United States",
+        "born": "1955-01-28",
+        "influenceAreas": [
+          "campaign finance",
+          "climate technology",
+          "biotechnology",
+          "artificial intelligence"
+        ]
+      },
+      "sources": [
+        "https://www.britannica.com/biography/Vinod-Khosla",
+        "https://apnews.com/article/7c6b78b6a8ded9ad253be9ef491e0284"
+      ]
+    },
+    {
+      "name": "Joe Lonsdale",
+      "type": "donor",
+      "description": "Palantir and 8VC co-founder who funds Republican candidates and organizations connecting Silicon Valley, defense technology and conservative policy.",
+      "biography": "Joe Lonsdale co-founded Palantir and the venture firm 8VC. He has donated to Republican candidates, supported technology-focused conservative networks and helped organize donors around defense, industrial and government-reform priorities. His investments and political activity place him within the broader Peter Thiel-aligned technology network.",
+      "highlights": [
+        "2003 — Co-founds Palantir",
+        "2015 — Founds venture firm 8VC",
+        "2024 — Helps organize and fund technology-industry support for Republican candidates"
+      ],
+      "metadata": {
+        "country": "United States",
+        "born": "1982-09-12",
+        "influenceAreas": [
+          "campaign finance",
+          "defense technology",
+          "venture capital",
+          "government reform"
+        ]
+      },
+      "sources": [
+        "https://www.washingtonpost.com/technology/2024/07/28/jd-vance-peter-thiel-donors-big-tech-trump-vp/",
+        "https://www.8vc.com/team/joe-lonsdale"
+      ]
+    },
+    {
+      "name": "Palmer Luckey",
+      "type": "donor",
+      "description": "Founder of Oculus and Anduril Industries, Republican donor, and influential advocate for defense technology and military procurement reform.",
+      "biography": "Palmer Luckey founded the virtual-reality company Oculus and sold it to Facebook before founding defense contractor Anduril Industries. He is a major Republican donor and an outspoken advocate for expanding the role of venture-backed technology companies in national defense. Anduril's growth has made him an increasingly important figure in military procurement debates.",
+      "highlights": [
+        "2012 — Founds Oculus VR",
+        "2014 — Sells Oculus to Facebook",
+        "2017 — Founds Anduril Industries",
+        "2020s — Becomes a prominent Republican technology donor and defense-policy advocate"
+      ],
+      "metadata": {
+        "country": "United States",
+        "born": "1992-09-19",
+        "influenceAreas": [
+          "campaign finance",
+          "defense technology",
+          "military procurement"
+        ]
+      },
+      "sources": [
+        "https://www.anduril.com/leadership/palmer-luckey/",
+        "https://www.washingtonpost.com/technology/2024/07/28/jd-vance-peter-thiel-donors-big-tech-trump-vp/"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "source": "Richard Uihlein",
+      "target": "Elizabeth Uihlein",
+      "relType": "married-to"
+    },
+    {
+      "source": "George Soros",
+      "target": "Alex Soros",
+      "relType": "family-of",
+      "role": "father and son"
+    },
+    {
+      "source": "Robert Mercer",
+      "target": "Rebekah Mercer",
+      "relType": "family-of",
+      "role": "father and daughter"
+    },
+    {
+      "source": "John Arnold",
+      "target": "Laura Arnold",
+      "relType": "married-to"
+    }
+  ]
+}

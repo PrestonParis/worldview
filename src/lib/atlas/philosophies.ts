@@ -34,6 +34,7 @@ const MOVEMENTS = new Set([
   "bolivarianism", "peronism", "kemalism", "national-conservatism", "christian-nationalism", "hindutva", "religious-zionism",
   "buddhist-nationalism", "effective-accelerationism", "tech-right", "white-nationalism", "chicano-nationalism",
   "indigenous-sovereignty", "ados", "antiracism", "patriot-movement", "radical-feminism", "zionism", "sikh-nationalism",
+  "groyper",
 ]);
 
 function kindOf(id: string): PhilosophyKind {

@@ -6,6 +6,7 @@ import type { CampaignCandidate, Race } from "@/lib/db/moneyOverview";
 import { FUNDING_SOURCES, MONEY_COLORS, partyColor, partyLetter } from "@/lib/money/semantic";
 import { Term } from "./term";
 import { FeatureList } from "@/components/ui/feature-list";
+import { publicEntityPath } from "@/lib/people/public";
 
 // Shared building blocks for the /money views. Each has one job and one
 // visual form: headline numbers are unboxed, rankings are compact lists,
@@ -44,17 +45,17 @@ export function MoneyHeader({
   extra,
 }: {
   title: string;
-  features: ReactNode[];
+  features?: ReactNode[];
   cycle?: number | null;
   cycles?: number[];
   basePath?: string;
   extra?: ReactNode;
 }) {
   return (
-    <header className="flex flex-wrap items-end justify-between gap-4">
+    <header className={`flex flex-wrap justify-between gap-4 ${features?.length ? "items-end" : "items-center"}`}>
       <div className="max-w-3xl">
         <h1 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl dark:text-white">{title}</h1>
-        <FeatureList className="mt-3" items={features} />
+        {features?.length ? <FeatureList className="mt-3" items={features} /> : null}
       </div>
       <div className="flex flex-wrap items-center gap-2">
         {extra}
@@ -339,7 +340,7 @@ export function RaceCard({ race, cycle, latest }: { race: Race; cycle: number | 
         {leaders.map((c) => (
           <li key={c.entityId}>
             <div className="flex items-baseline justify-between gap-3 text-sm">
-              <Link href={`/data/entities/${c.entityId}`} className="min-w-0 truncate font-medium text-slate-800 hover:underline dark:text-slate-100">
+              <Link href={publicEntityPath({ id: c.entityId, name: c.name })} className="min-w-0 truncate font-medium text-slate-800 hover:underline dark:text-slate-100">
                 {c.name}
                 <span className="ml-1.5 text-xs font-normal text-slate-400">
                   {partyLetter(c.party)}

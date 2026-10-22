@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useCanEdit } from "@/components/auth/can-edit";
-import type { ActionResult } from "@/lib/actions/entities";
+import type { ActionResult } from "@/lib/actions/result";
 
 export function DeleteButton({
   id,

@@ -1,14 +1,14 @@
-import { h, type TraditionHistory } from "./types";
+import { h, type TraditionCore } from "./types";
 
 // Regime traditions and national-developmental movements outside the
 // Western left–right families.
 
-export const WORLD: Record<string, TraditionHistory> = {
+export const WORLD: Record<string, TraditionCore> = {
   "state-capitalism": h({
     when: "1978",
     where: "China",
     founders: ["Deng Xiaoping"],
-    figures: ["Deng Xiaoping", "Chen Yun", "Wang Huning", "Xi Jinping"],
+    figures: ["Deng Xiaoping", "Chen Yun", "Wang Huning"],
     texts: [
       ["\"Emancipate the Mind, Seek Truth from Facts\"", "Deng Xiaoping", "1978"],
       ["Southern Tour talks", "Deng Xiaoping", "1992"],
@@ -32,7 +32,7 @@ export const WORLD: Record<string, TraditionHistory> = {
     when: "1960s",
     where: "East Asia",
     founders: ["Park Chung-hee", "Lee Kuan Yew", "Chiang Ching-kuo"],
-    figures: ["Friedrich List", "Chalmers Johnson", "Alice Amsden", "Robert Wade", "Ha-Joon Chang"],
+    figures: ["Friedrich List", "Chalmers Johnson", "Alice Amsden"],
     texts: [
       ["MITI and the Japanese Miracle", "Chalmers Johnson", "1982"],
       ["From Third World to First", "Lee Kuan Yew", "2000"],
@@ -78,7 +78,7 @@ export const WORLD: Record<string, TraditionHistory> = {
     when: "Recurring; the modern \"bureaucratic-authoritarian\" model from the 1960s",
     where: "Latin America, the Middle East, Africa, and Southeast Asia",
     founders: ["Gamal Abdel Nasser (Free Officers)", "Humberto Castelo Branco (Brazil)"],
-    figures: ["Gamal Abdel Nasser", "Golbery do Couto e Silva", "Augusto Pinochet", "Suharto"],
+    figures: ["Gamal Abdel Nasser", "Golbery do Couto e Silva", "Augusto Pinochet"],
     texts: [
       ["The Philosophy of the Revolution", "Gamal Abdel Nasser", "1954"],
       ["Political Order in Changing Societies", "Samuel Huntington", "1968"],
@@ -103,7 +103,7 @@ export const WORLD: Record<string, TraditionHistory> = {
     when: "1982–1999",
     where: "Venezuela",
     founders: ["Hugo Chávez"],
-    figures: ["Simón Bolívar", "Hugo Chávez", "Heinz Dieterich", "Marta Harnecker"],
+    figures: ["Simón Bolívar", "Hugo Chávez", "Heinz Dieterich"],
     texts: [
       ["Jamaica Letter", "Simón Bolívar", "1815"],
       ["Angostura Address", "Simón Bolívar", "1819"],
@@ -128,7 +128,7 @@ export const WORLD: Record<string, TraditionHistory> = {
     when: "1943–1946",
     where: "Argentina",
     founders: ["Juan Perón", "Eva Perón"],
-    figures: ["Juan Perón", "Eva Perón", "Arturo Jauretche", "John William Cooke"],
+    figures: ["Juan Perón", "Eva Perón", "Arturo Jauretche"],
     texts: [
       ["The Twenty Truths of Justicialism", "Juan Perón", "1950"],
       ["La razón de mi vida", "Eva Perón", "1951"],
@@ -152,7 +152,7 @@ export const WORLD: Record<string, TraditionHistory> = {
     when: "1689",
     where: "England",
     founders: ["Framers of the Bill of Rights 1689", "Montesquieu (theory)", "Walter Bagehot"],
-    figures: ["Montesquieu", "Benjamin Constant", "Walter Bagehot", "Vernon Bogdanor"],
+    figures: ["Montesquieu", "Benjamin Constant", "Walter Bagehot"],
     texts: [
       ["Bill of Rights", "Parliament of England", "1689"],
       ["The Spirit of the Laws", "Montesquieu", "1748"],
@@ -177,7 +177,7 @@ export const WORLD: Record<string, TraditionHistory> = {
     when: "1940–1947",
     where: "Damascus",
     founders: ["Michel Aflaq", "Salah al-Din al-Bitar", "Zaki al-Arsuzi"],
-    figures: ["Michel Aflaq", "Salah al-Din al-Bitar", "Zaki al-Arsuzi", "Sati' al-Husri"],
+    figures: ["Michel Aflaq", "Salah al-Din al-Bitar", "Zaki al-Arsuzi"],
     texts: [
       ["Constitution of the Ba'ath Party", "Ba'ath Party", "1947"],
       ["On the Way of Resurrection", "Michel Aflaq", "1959"],

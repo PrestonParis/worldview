@@ -1,0 +1,567 @@
+{
+  "subject": "trump",
+  "reviewedAt": "2026-10-22",
+  "sourcesVerifiedAt": "2026-10-22",
+  "brief": {
+    "inclusion": "The 45th and 47th president of the United States, and the central figure in the appointments, campaigns, organizations and political relationships that make up the contemporary Trump network.",
+    "identifiers": {
+      "wikidata": "Q22686",
+      "fec_candidate": "P80001571"
+    },
+    "namesakes": "No plausible namesake in the presidential record; campaign-finance records should be matched by candidate identifier rather than name.",
+    "coverage": {
+      "from": "1946",
+      "through": "2025-01-20",
+      "lags": "This first writing pass ends at the second inauguration. The second administration's policy record, appointments, financial disclosures, business conflicts and legal outcomes after January 20, 2025 still require dedicated current-record passes."
+    },
+    "openQuestions": [
+      "Add a primary-record policy pass for both presidential terms, including legislation, executive actions, appointments and foreign policy.",
+      "Recheck the status of every criminal and civil case through 2026-10-22, including appeals and monetary judgments.",
+      "Build the campaign-finance and political-organization records without treating committee receipts as the candidate's personal money.",
+      "Document the second administration through the current review date before publication.",
+      "Run separate evidence, quantitative, editorial and product reviews after the remaining records are complete."
+    ],
+    "review": []
+  },
+  "summary": "The 45th and 47th president of the United States, Donald Trump converted a family real-estate business, a licensing brand and television celebrity into control of the Republican Party and two nonconsecutive presidential victories. His political record includes a first term ending in two impeachments and an effort to overturn his 2020 defeat, followed by a 2024 return that made him the second U.S. president elected to nonconsecutive terms.",
+  "roles": [
+    {
+      "label": "President of the United States",
+      "detail": "45th president, 2017–2021; 47th president since January 20, 2025",
+      "sources": ["white-house-biography", "miller-life-brief"]
+    },
+    {
+      "label": "Republican political leader",
+      "detail": "Republican presidential nominee in 2016, 2020 and 2024",
+      "sources": ["miller-campaigns", "fec-2016-results", "fec-2020-results", "fec-2024-results"]
+    },
+    {
+      "label": "Business executive",
+      "detail": "Led the family real-estate business that became the Trump Organization from 1971 until transferring day-to-day leadership to his sons in 2017",
+      "sources": ["miller-before-presidency"]
+    },
+    {
+      "label": "Television personality",
+      "detail": "Star of NBC's The Apprentice and Celebrity Apprentice, 2004–2015",
+      "sources": ["miller-before-presidency"]
+    },
+    {
+      "label": "Author and brand licensor",
+      "detail": "Credited author of Trump: The Art of the Deal (1987) and other business books; licensed the Trump name to properties and consumer products",
+      "sources": ["miller-before-presidency"]
+    }
+  ],
+  "finance": {
+    "coverage": "Campaign receipts and spending are not yet imported for this draft. Presidential campaign committees, leadership PACs, joint fundraising committees, super PACs and Trump-controlled businesses must be kept analytically separate."
+  },
+  "entities": {
+    "trump": {
+      "match": {
+        "name": "Donald Trump",
+        "type": "politician"
+      }
+    },
+    "trump-organization": {
+      "create": {
+        "name": "Trump Organization",
+        "type": "company",
+        "description": "Privately held collection of real-estate, hospitality, licensing and other businesses principally owned by Donald Trump.",
+        "websiteUrl": "https://www.trump.com/"
+      }
+    }
+  },
+  "sources": [
+    {
+      "key": "white-house-biography",
+      "title": "President Donald J. Trump",
+      "publisher": "The White House",
+      "type": "official_statement",
+      "url": "https://www.whitehouse.gov/administration/donald-j-trump/",
+      "accessedAt": "2026-10-22",
+      "notes": "Current official biography; useful for office and administration self-description, not independent evaluation."
+    },
+    {
+      "key": "miller-life-brief",
+      "title": "Donald Trump: Life in Brief",
+      "publisher": "Miller Center, University of Virginia",
+      "author": "Benjamin C. Waterhouse",
+      "type": "secondary",
+      "url": "https://millercenter.org/president/trump/life-in-brief",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "miller-before-presidency",
+      "title": "Donald Trump: Life Before the Presidency",
+      "publisher": "Miller Center, University of Virginia",
+      "author": "Benjamin C. Waterhouse",
+      "type": "secondary",
+      "url": "https://millercenter.org/president/trump/life-presidency",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "miller-campaigns",
+      "title": "Donald Trump: Campaigns and Elections",
+      "publisher": "Miller Center, University of Virginia",
+      "author": "Benjamin C. Waterhouse",
+      "type": "secondary",
+      "url": "https://millercenter.org/president/trump/campaigns-and-elections",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "fec-2016-results",
+      "title": "Federal Elections 2016: Election Results for the U.S. President, the U.S. Senate and the U.S. House of Representatives",
+      "publisher": "Federal Election Commission",
+      "publishedAt": "2017",
+      "type": "primary",
+      "url": "https://www.fec.gov/resources/cms-content/documents/federalelections2016.pdf",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "fec-2020-results",
+      "title": "Official 2020 Presidential General Election Results",
+      "publisher": "Federal Election Commission",
+      "publishedAt": "2021",
+      "type": "primary",
+      "url": "https://www.fec.gov/resources/cms-content/documents/2020presgeresults.pdf",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "fec-2024-results",
+      "title": "Official 2024 Presidential General Election Results",
+      "publisher": "Federal Election Commission",
+      "publishedAt": "2025",
+      "type": "primary",
+      "url": "https://www.fec.gov/resources/cms-content/documents/2024presgeresults.pdf",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "senate-impeachment-cases",
+      "title": "Impeachment Cases",
+      "publisher": "United States Senate",
+      "type": "primary",
+      "url": "https://www.senate.gov/about/powers-procedures/impeachment/impeachment-list.htm",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "january-6-report",
+      "title": "Final Report of the Select Committee to Investigate the January 6th Attack on the United States Capitol",
+      "publisher": "U.S. Government Publishing Office",
+      "publishedAt": "2022-12-22",
+      "type": "primary",
+      "url": "https://www.govinfo.gov/content/pkg/GPO-J6-REPORT/html-submitted/index.html",
+      "documentId": "House Report 117-663",
+      "accessedAt": "2026-10-22",
+      "notes": "Congressional committee findings; conclusions are attributed to the committee in prose."
+    },
+    {
+      "key": "manhattan-da-conviction",
+      "title": "D.A. Bragg Announces 34-Count Felony Trial Conviction of Donald J. Trump",
+      "publisher": "Manhattan District Attorney's Office",
+      "publishedAt": "2024-05-30",
+      "type": "official_statement",
+      "url": "https://manhattanda.org/d-a-bragg-announces-34-count-felony-trial-conviction-of-donald-j-trump/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "ny-courts-sentencing-order",
+      "title": "People v Trump",
+      "publisher": "New York State Unified Court System",
+      "publishedAt": "2025-01-03",
+      "type": "filing",
+      "url": "https://www.nycourts.gov/reporter/pdfs/2025/2025_30014.pdf",
+      "accessedAt": "2026-10-22",
+      "notes": "Order setting sentencing and explaining the court's stated inclination toward an unconditional discharge; later case history still needs a full appeal pass."
+    },
+    {
+      "key": "ny-ag-fraud-judgment",
+      "title": "Attorney General James Wins Landmark Victory in Case Against Donald Trump",
+      "publisher": "Office of the New York Attorney General",
+      "publishedAt": "2024-02-16",
+      "type": "official_statement",
+      "url": "https://ag.ny.gov/press-release/2024/attorney-general-james-wins-landmark-victory-case-against-donald-trump",
+      "accessedAt": "2026-10-22",
+      "notes": "Describes the trial-court judgment; appellate history must be checked before publication."
+    },
+    {
+      "key": "fbi-butler",
+      "title": "Butler Investigation Updates",
+      "publisher": "Federal Bureau of Investigation",
+      "publishedAt": "2024",
+      "type": "official_statement",
+      "url": "https://www.fbi.gov/news/press-releases/butler-investigation-updates",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "ap-2024-comeback",
+      "title": "The story of how Trump went from diminished ex-president to a victor once again",
+      "publisher": "Associated Press",
+      "author": "Jill Colvin",
+      "publishedAt": "2024-11-08",
+      "type": "article",
+      "url": "https://apnews.com/article/trump-victory-harris-dd64fe5fac158025058a45f21388a6b2",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "white-house-inaugural-2025",
+      "title": "The Inaugural Address",
+      "publisher": "The White House",
+      "author": "Donald J. Trump",
+      "publishedAt": "2025-01-20",
+      "type": "transcript",
+      "url": "https://www.whitehouse.gov/remarks/2025/01/the-inaugural-address/",
+      "accessedAt": "2026-10-22"
+    }
+  ],
+  "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "June 14, 1946",
+      "detail": "Queens, New York City",
+      "featured": true,
+      "sources": ["miller-life-brief"]
+    },
+    {
+      "key": "education",
+      "label": "Education",
+      "value": "B.S. in economics, University of Pennsylvania",
+      "detail": "Graduated from the Wharton School in 1968 after beginning college at Fordham University",
+      "sources": ["miller-before-presidency"]
+    },
+    {
+      "key": "presidential-terms",
+      "label": "Presidential terms",
+      "value": "2017–2021; 2025–",
+      "featured": true,
+      "sources": ["white-house-biography", "miller-life-brief"]
+    },
+    {
+      "key": "elections-won",
+      "label": "Presidential elections won",
+      "value": "2016 and 2024",
+      "detail": "Won 304 electoral votes in 2016 and 312 in 2024",
+      "featured": true,
+      "sources": ["fec-2016-results", "fec-2024-results"]
+    },
+    {
+      "key": "impeachments",
+      "label": "Impeachments",
+      "value": "Two",
+      "detail": "Acquitted by the Senate in 2020 and 2021",
+      "featured": true,
+      "sources": ["senate-impeachment-cases", "miller-life-brief"]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "led-trump-organization",
+      "source": "trump",
+      "target": "trump-organization",
+      "relType": "former-role",
+      "role": "Executive who took over the family business in 1971 and transferred day-to-day leadership to his sons in 2017",
+      "from": "1971",
+      "until": "2017",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["miller-before-presidency"]
+    }
+  ],
+  "events": [
+    {
+      "key": "born-1946",
+      "date": "1946-06-14",
+      "title": "Born in Queens, New York City",
+      "summary": "Donald John Trump was the fourth of five children of Mary Anne MacLeod Trump and real-estate developer Fred Trump.",
+      "category": "personal",
+      "significance": 1,
+      "status": "verified",
+      "participants": [["trump", "subject"]],
+      "sources": ["miller-life-brief"],
+      "chapter": "queens-to-manhattan"
+    },
+    {
+      "key": "joins-family-business-1968",
+      "date": "1968",
+      "title": "Joins the family real-estate business full time",
+      "summary": "After graduating from the University of Pennsylvania, Trump returned to New York and entered his father's business full time.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        ["trump", "subject"],
+        ["trump-organization", "later name of family business"]
+      ],
+      "sources": ["miller-before-presidency"],
+      "chapter": "queens-to-manhattan"
+    },
+    {
+      "key": "takes-control-1971",
+      "date": "1971",
+      "title": "Takes control of the family business",
+      "summary": "Trump assumed leadership of the company founded by his grandmother and father and renamed it the Trump Organization in 1973.",
+      "category": "career",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["trump", "executive"],
+        ["trump-organization", "company"]
+      ],
+      "sources": ["miller-before-presidency"],
+      "chapter": "queens-to-manhattan"
+    },
+    {
+      "key": "art-of-deal-1987",
+      "date": "1987",
+      "title": "Publishes Trump: The Art of the Deal",
+      "summary": "The book extended Trump's public identity from property developer to a national brand associated with dealmaking and business success.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "participants": [["trump", "credited author"]],
+      "sources": ["miller-before-presidency"],
+      "chapter": "the-brand"
+    },
+    {
+      "key": "apprentice-2004",
+      "date": "2004",
+      "date_end": "2015",
+      "title": "Stars in The Apprentice",
+      "summary": "The NBC reality show brought Trump's business persona to a national weekly audience and made the phrase “You're fired” part of his political-era brand.",
+      "category": "career",
+      "significance": 3,
+      "status": "verified",
+      "participants": [["trump", "host"]],
+      "sources": ["miller-before-presidency"],
+      "chapter": "the-brand"
+    },
+    {
+      "key": "campaign-launch-2015",
+      "date": "2015-06-16",
+      "title": "Launches first successful presidential campaign",
+      "summary": "Trump announced his Republican candidacy at Trump Tower, joining opposition to immigration and trade policy to the Make America Great Again slogan.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [["trump", "candidate"]],
+      "sources": ["miller-campaigns"],
+      "chapter": "candidate"
+    },
+    {
+      "key": "wins-2016",
+      "date": "2016-11-08",
+      "title": "Wins the presidency",
+      "summary": "Trump defeated Hillary Clinton in the Electoral College, 304 to 227, while receiving fewer popular votes nationally.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [["trump", "president-elect"]],
+      "sources": ["fec-2016-results", "miller-life-brief"],
+      "chapter": "candidate"
+    },
+    {
+      "key": "first-inauguration-2017",
+      "date": "2017-01-20",
+      "title": "Becomes the 45th president",
+      "summary": "Trump entered office without prior government service or military leadership, the first president to do so.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [["trump", "president"]],
+      "sources": ["miller-life-brief"],
+      "chapter": "first-presidency"
+    },
+    {
+      "key": "first-impeachment-2019",
+      "date": "2019-12",
+      "title": "Impeached for the first time",
+      "summary": "The House impeached Trump for abuse of power and obstruction of Congress arising from his effort to press Ukraine's president to announce investigations affecting the 2020 election; the Senate acquitted him in February 2020.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [["trump", "president"]],
+      "sources": ["miller-life-brief", "senate-impeachment-cases"],
+      "chapter": "first-presidency"
+    },
+    {
+      "key": "loses-2020",
+      "date": "2020-11-03",
+      "title": "Loses reelection to Joe Biden",
+      "summary": "Biden won 306 electoral votes to Trump's 232 and led the national popular vote by about seven million.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [["trump", "candidate"]],
+      "sources": ["fec-2020-results", "miller-life-brief"],
+      "chapter": "defeat-and-january-6"
+    },
+    {
+      "key": "january-6-2021",
+      "date": "2021-01-06",
+      "title": "Effort to overturn the election culminates at the Capitol",
+      "summary": "After weeks of pressure on state and federal officials, Trump addressed supporters who then marched to the Capitol, where the electoral count was violently disrupted. The House select committee later described a multi-part effort driven by Trump to overturn the result; Trump disputed the committee's work and conclusions.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [["trump", "president"]],
+      "sources": ["january-6-report", "miller-life-brief"],
+      "chapter": "defeat-and-january-6"
+    },
+    {
+      "key": "second-impeachment-2021",
+      "date": "2021-01",
+      "title": "Impeached for the second time",
+      "summary": "The House impeached Trump after the January 6 attack. The Senate acquitted him on February 13, 2021, after he had left office.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [["trump", "former president at trial"]],
+      "sources": ["senate-impeachment-cases", "miller-life-brief"],
+      "chapter": "defeat-and-january-6"
+    },
+    {
+      "key": "civil-fraud-judgment-2024",
+      "date": "2024-02-16",
+      "title": "Trial court enters New York civil-fraud judgment",
+      "summary": "A New York judge ordered Trump and other defendants to pay more than $450 million in disgorgement and pre-judgment interest and imposed business restrictions. The judgment's later appellate history remains part of this dossier's open legal pass.",
+      "category": "legal",
+      "significance": 2,
+      "status": "unresolved",
+      "statusNote": "The cited source establishes the trial-court result; update with the complete appellate disposition before publication.",
+      "participants": [
+        ["trump", "defendant"],
+        ["trump-organization", "defendant organization"]
+      ],
+      "sources": ["ny-ag-fraud-judgment"],
+      "chapter": "return"
+    },
+    {
+      "key": "criminal-conviction-2024",
+      "date": "2024-05-30",
+      "title": "Convicted on 34 felony counts in New York",
+      "summary": "A Manhattan jury found Trump guilty on 34 counts of falsifying business records. He said he would appeal; the complete appeal history remains an open research item.",
+      "category": "legal",
+      "significance": 3,
+      "status": "unresolved",
+      "statusNote": "The conviction and initial sentence are verified; appellate proceedings must be brought current before publication.",
+      "participants": [["trump", "defendant"]],
+      "sources": ["manhattan-da-conviction", "ny-courts-sentencing-order", "miller-life-brief"],
+      "chapter": "return"
+    },
+    {
+      "key": "butler-attempt-2024",
+      "date": "2024-07-13",
+      "title": "Survives assassination attempt in Butler, Pennsylvania",
+      "summary": "A gunman fired at Trump during a campaign rally, wounding him and killing an attendee. The raised-fist image and Trump's call to “Fight” became a defining image of the campaign.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [["trump", "target"]],
+      "sources": ["fbi-butler", "ap-2024-comeback"],
+      "chapter": "return"
+    },
+    {
+      "key": "wins-2024",
+      "date": "2024-11-05",
+      "title": "Wins a nonconsecutive second term",
+      "summary": "Trump defeated Vice President Kamala Harris, winning the national popular vote and 312 electoral votes to Harris's 226.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [["trump", "president-elect"]],
+      "sources": ["fec-2024-results", "miller-life-brief", "ap-2024-comeback"],
+      "chapter": "return"
+    },
+    {
+      "key": "second-inauguration-2025",
+      "date": "2025-01-20",
+      "title": "Becomes the 47th president",
+      "summary": "Trump began a second, nonconsecutive term and used his inaugural address to promise rapid executive action under an “America First” program.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [["trump", "president"]],
+      "sources": ["white-house-inaugural-2025", "white-house-biography", "miller-life-brief"],
+      "chapter": "second-inauguration"
+    }
+  ],
+  "statements": [
+    {
+      "key": "america-first-2025",
+      "date": "2025-01-20",
+      "venue": "Second inaugural address",
+      "issue": "Governing program",
+      "quote": "During every single day of the Trump administration, I will, very simply, put America first.",
+      "summary": "Trump presented “America First” as the organizing principle of his second administration.",
+      "stance": "explicit",
+      "source": "white-house-inaugural-2025"
+    },
+    {
+      "key": "liberation-day-2025",
+      "date": "2025-01-20",
+      "venue": "Second inaugural address",
+      "issue": "Political mandate",
+      "quote": "For American citizens, January 20th, 2025, is Liberation Day.",
+      "summary": "Trump described his return to office as a decisive break with the preceding administration.",
+      "stance": "explicit",
+      "source": "white-house-inaugural-2025"
+    }
+  ],
+  "ideas": {
+    "traditions": [],
+    "influences": [],
+    "works": [
+      {
+        "title": "Trump: The Art of the Deal",
+        "year": 1987,
+        "kind": "Book",
+        "detail": "Credited to Donald Trump with Tony Schwartz; central to the dealmaker persona that preceded Trump's television and political careers.",
+        "source": "miller-before-presidency"
+      }
+    ],
+    "featuredQuotes": ["america-first-2025", "liberation-day-2025"]
+  },
+  "chapters": [
+    {
+      "key": "queens-to-manhattan",
+      "title": "From Queens to Manhattan",
+      "dek": "A family real-estate business supplied the capital, relationships and operating structure for Trump's public career.",
+      "body": "Donald John Trump was born in Queens on June 14, 1946, the fourth of five children of Mary Anne MacLeod Trump and Fred Trump. Fred's company built and managed housing in Queens, Brooklyn and Staten Island. Donald attended New York Military Academy, began college at Fordham University, transferred to the University of Pennsylvania and graduated from its Wharton School in 1968. He then joined the family business full time. [[miller-life-brief, miller-before-presidency]]\n\nTrump took control of the company in 1971 and renamed it the Trump Organization two years later. His early strategic move was geographic and social: he sought projects in Manhattan rather than remaining concentrated in the outer boroughs. The redevelopment of the Commodore Hotel as the Grand Hyatt depended on a long city tax abatement and a partnership with Hyatt, showing that public concessions, inherited connections and private financing were intertwined in the business from the beginning. [[miller-before-presidency]]\n\nThe Manhattan projects made Trump a public figure as well as a developer. Trump Tower, casinos and hotels put his name on the buildings themselves. That visibility became an asset independent of any one property, and it helped him survive financial setbacks that would have ended a less recognizable developer's public career. [[miller-before-presidency]]"
+    },
+    {
+      "key": "the-brand",
+      "title": "The business became a brand",
+      "dek": "Debt restructurings and casino bankruptcies coexisted with a growing image of wealth and command.",
+      "body": "Trump expanded into Atlantic City casinos during the 1980s, financing projects with substantial borrowing. The Taj Mahal entered bankruptcy protection in 1991 and the Trump Plaza Hotel followed in 1992. He subsequently used bankruptcy law to restructure company debts and placed casino holdings into a publicly traded company, while the privately held Trump Organization remained a collection of businesses principally or solely owned by him. [[miller-before-presidency]]\n\nThe setbacks did not end the image Trump had cultivated. The 1987 book Trump: The Art of the Deal presented him as a master negotiator, and the company increasingly licensed his name to properties and products. The distinction between the underlying businesses and the value of the Trump name became central: the public persona could generate fees and opportunity even when particular ventures struggled. [[miller-before-presidency]]\n\nThe Apprentice brought that persona into American homes beginning in 2004. Trump played a decisive executive who judged competitors and dismissed one each week with “You're fired.” The show and Celebrity Apprentice ran through 2015, creating a national audience that knew Trump less through real-estate records than through a staged version of business authority. [[miller-before-presidency]]"
+    },
+    {
+      "key": "candidate",
+      "title": "Celebrity became a political constituency",
+      "dek": "Trump joined immigration, trade and national decline to a campaign built around his own capacity to act.",
+      "body": "Trump had floated presidential campaigns before 2015, including a Reform Party exploration in 1999. During Barack Obama's presidency he became a leading promoter of the false claim that Obama had not been born in the United States. That campaign placed Trump inside conservative media and activist politics before he held office and showed how he could keep an allegation in public circulation through repetition and celebrity. [[miller-campaigns]]\n\nOn June 16, 2015, Trump announced his Republican campaign at Trump Tower. He attacked existing immigration and trade policy, described the country as losing to foreign competitors and made “Make America Great Again” the campaign's organizing promise. The message fused a story of national decline with the dealmaker character developed through his books, licensing business and television work. [[miller-campaigns, miller-before-presidency]]\n\nTrump defeated Hillary Clinton on November 8, 2016. The official count gave him 304 electoral votes to Clinton's 227, although Clinton led the national popular vote by about 2.9 million. The result made Trump the first president to enter office without prior public office or military leadership and turned a personal political brand into control of the executive branch. [[fec-2016-results, miller-life-brief]]"
+    },
+    {
+      "key": "first-presidency",
+      "title": "The first presidency",
+      "dek": "Trump governed through the Republican Party while preserving the personal organization and communication style of his campaign.",
+      "body": "Trump took office as the 45th president on January 20, 2017. He transferred day-to-day management of the Trump Organization to his sons Donald Jr. and Eric but did not divest his ownership, leaving critics to argue that official decisions and private financial interests could overlap. The arrangement also kept family members at the center of both the business and the administration: Ivanka Trump and her husband, Jared Kushner, served as White House advisers. [[miller-before-presidency, miller-life-brief]]\n\nHis first term remade the Republican Party around his leadership and intensified arguments about the boundaries of presidential power and political norms. In December 2019 the House impeached him for abuse of power and obstruction of Congress after he pressed Ukraine's president to announce investigations that could affect the 2020 election. The Senate acquitted him on February 5, 2020. [[miller-life-brief, senate-impeachment-cases]]"
+    },
+    {
+      "key": "defeat-and-january-6",
+      "title": "Defeat, pressure and January 6",
+      "dek": "The 2020 loss did not end Trump's leadership of the party; it produced an effort to reverse the certified result.",
+      "body": "Joe Biden defeated Trump in the 2020 election, winning 306 electoral votes to Trump's 232 and leading the national popular vote by about seven million. Trump did not concede. He and his allies challenged results in court and pressed state and federal officials while publicly insisting that the election had been stolen. [[fec-2020-results, miller-life-brief]]\n\nThe House select committee that investigated January 6 later described a multi-part effort driven by Trump to overturn the result. Its report found that he spread false fraud claims after advisers told him they lacked evidence sufficient to change the outcome, pressed state officials, sought to use alternate electoral slates, urged the Justice Department to support his claims and pressured Vice President Mike Pence over the electoral count. These are the committee's findings; Trump rejected the investigation and its conclusions. [[january-6-report]]\n\nOn January 6, 2021, after Trump addressed supporters near the White House, members of the crowd marched to the Capitol and violently interrupted Congress's count of electoral votes. The House impeached him a second time. After Trump left office, the Senate tried and acquitted him on February 13, making him the first U.S. president impeached twice and the only former president returned to office after that history. [[january-6-report, senate-impeachment-cases, miller-life-brief]]"
+    },
+    {
+      "key": "return",
+      "title": "Legal jeopardy and political return",
+      "dek": "Criminal and civil cases became part of Trump's campaign narrative rather than removing him from Republican leadership.",
+      "body": "Out of office, Trump remained the dominant Republican political figure. By the 2024 campaign he faced multiple criminal prosecutions and major civil judgments. In February 2024 a New York trial court entered a civil-fraud judgment against Trump, other defendants and Trump Organization entities. On May 30 a Manhattan jury convicted him on 34 counts of falsifying business records. He denied wrongdoing and pursued appeals; this draft records the trial-level outcomes but leaves their later appellate disposition open for the legal review. [[ny-ag-fraud-judgment, manhattan-da-conviction, ny-courts-sentencing-order]]\n\nThe prosecutions did not prevent Trump from sweeping the Republican primaries. His campaign portrayed the cases as political persecution, an account that helped turn legal proceedings into campaign events. On July 13, 2024, a gunman shot at him during a rally in Butler, Pennsylvania, grazing his ear and killing an attendee. Images of Trump rising with his fist raised while calling “Fight” became a defining symbol of the campaign. [[ap-2024-comeback, fbi-butler]]\n\nOn November 5 Trump defeated Vice President Kamala Harris. The official results gave him 312 electoral votes to Harris's 226, and he also won the national popular vote. The victory made him the second president, after Grover Cleveland, elected to nonconsecutive terms. It also demonstrated that the movement built around Trump could outlast an election defeat, two impeachments, criminal indictments and a felony conviction. [[fec-2024-results, miller-life-brief, ap-2024-comeback]]"
+    },
+    {
+      "key": "second-inauguration",
+      "title": "A second inauguration",
+      "dek": "Trump returned with a stronger claim to party control and a promise to move quickly through executive power.",
+      "body": "Trump was sentenced to an unconditional discharge in the New York criminal case before taking office, leaving the conviction in place without jail, a fine, probation or community service while he pursued an appeal. On January 20, 2025, at age 78, he took the oath as the 47th president and became the oldest person inaugurated to the office. [[miller-life-brief, ny-courts-sentencing-order]]\n\nHis inaugural address described January 20 as “Liberation Day” and promised that every day of the administration would put “America first.” He announced immediate action on immigration, energy, the federal workforce, gender policy and other subjects, presenting his return not as a restoration of the first term but as authority to reverse the preceding administration quickly. [[white-house-inaugural-2025]]"
+    }
+  ]
+}

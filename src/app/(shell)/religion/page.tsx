@@ -2,15 +2,16 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense, type ReactNode } from "react";
 import { ChartCard } from "@/components/charts/chart-card";
+import { citeSources, type SourceSpec } from "@/components/charts/citation";
 import { RankedBars } from "@/components/charts/ranked-bars";
 import { StatTile } from "@/components/charts/stat-tile";
 import { StateExplorer } from "@/components/charts/state-explorer";
 import { rankedTable, seriesTable } from "@/components/charts/tables";
 import { TimeSeriesChart } from "@/components/charts/time-series-chart";
-import { DatasetList } from "@/components/data/dataset-list";
 import { SectionNav } from "@/components/data/section-nav";
 import { DemographicsForecast } from "@/components/demographics/demographics-forecast";
 import { loadReligion, type GroupProfile } from "@/lib/religion/data";
+import { IssueHeader } from "@/components/data/issue-layout";
 
 // Rebuilt at most daily; crawlers and visitors share the cached render.
 export const revalidate = 86400;
@@ -22,25 +23,18 @@ export const metadata: Metadata = {
 };
 
 const SECTIONS = [
-  ["overview", "Overview"],
   ["affiliation", "Affiliation"],
   ["attendance", "Attendance"],
   ["traditions", "Traditions"],
   ["belief", "Belief"],
   ["politics", "Politics"],
   ["states", "States"],
-  ["sources", "Sources"],
 ] as const;
 
-const SOURCES = {
+const SOURCE_SPECS = {
   pew: { label: "Pew Research Center, Religious Landscape Study", href: "/datasets/pew-rls" },
   gallup: { label: "Gallup religion trends", href: "/datasets/gallup-religion" },
-};
-
-const USES: Record<string, string> = {
-  "pew-rls": "affiliation, attendance, belief, and party by state and by religious group, 2007, 2014, and 2023–24",
-  "gallup-religion": "yearly national trends in membership, attendance, religious preference, and importance of religion",
-};
+} satisfies Record<string, SourceSpec>;
 
 const whole = (v: number | null | undefined) => (v === null || v === undefined ? "—" : `${Math.round(v)}%`);
 
@@ -73,26 +67,25 @@ export default async function ReligionPage() {
   const h = d.headline;
   const n = d.national;
 
+  const SOURCES = citeSources(SOURCE_SPECS, d.datasets);
+
   return (
     <div className="mx-auto max-w-7xl space-y-14">
-      <header className="max-w-3xl">
-        <p className="text-sm font-semibold tracking-[0.14em] text-blue-700 uppercase dark:text-blue-400">United States</p>
-        <h1 className="mt-2 text-4xl font-bold tracking-tight text-slate-950 sm:text-5xl dark:text-white">Religion</h1>
-        <p className="mt-4 text-lg leading-8 text-slate-600 dark:text-slate-300">
-          What Americans believe and how they practice it: religious identity by state with projections, who attends services and how
-          often, the size of each Christian tradition and denomination, and how each group leans politically.
-        </p>
-      </header>
+      <IssueHeader title="Religion" />
 
       <ChartCard title="Membership and attendance" subtitle="Share of U.S. adults, yearly" source={SOURCES.gallup} table={seriesTable(d.attendance, "percent")}>
-        <TimeSeriesChart series={d.attendance} unit="percent" height={340} />
+        <TimeSeriesChart
+          series={d.attendance}
+          unit="percent"
+          height={340}
+          markers={[{ x: 2020.2, label: "COVID-19 pandemic" }]}
+        />
       </ChartCard>
 
       <SectionNav sections={SECTIONS} />
 
-      {/* ------------------------------------------------------------ Overview */}
-      <section id="overview" className="scroll-mt-28 space-y-6">
-        <h2 className="text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">At a glance</h2>
+      {/* ---------------------------------------------------------- Affiliation */}
+      <Section id="affiliation" title="Religious affiliation" question="How Christian is each state, and how fast are the unaffiliated growing?">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <StatTile
             label="Christian"
@@ -108,37 +101,7 @@ export default async function ReligionPage() {
             period="2023–24"
             note={h.nones.then !== null ? `${whole(h.nones.then)} in 2007 · atheist, agnostic, or nothing in particular` : undefined}
           />
-          <StatTile
-            label="Attend services weekly"
-            unit="percent"
-            value={h.weekly.value}
-            period="2023–24"
-            note={n.seldom !== null ? `${whole(n.seldom)} seldom or never attend` : undefined}
-          />
-          <StatTile
-            label="Church, synagogue, or mosque members"
-            unit="percent"
-            value={h.member.point?.value ?? null}
-            period={h.member.point?.period}
-            note="Gallup · say they belong to a congregation"
-            spark={h.member.spark}
-          />
         </div>
-        <div className="rounded-2xl bg-slate-50 p-5 dark:bg-slate-900/60">
-          <h3 className="text-base font-semibold text-slate-950 dark:text-white">Key findings</h3>
-          <ul className="mt-3 space-y-2.5 text-sm leading-6 text-slate-700 dark:text-slate-300">
-            {d.findings.map((f) => (
-              <li key={f} className="flex gap-2.5">
-                <span className="mt-2.5 size-1.5 shrink-0 rounded-full bg-blue-600 dark:bg-blue-400" aria-hidden />
-                {f}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      {/* ---------------------------------------------------------- Affiliation */}
-      <Section id="affiliation" title="Religious affiliation" question="How Christian is each state, how fast are the unaffiliated growing, and where is that heading?">
         <Prose>
           <p>
             The same affiliation view as on{" "}
@@ -155,31 +118,31 @@ export default async function ReligionPage() {
 
       {/* ----------------------------------------------------------- Attendance */}
       <Section id="attendance" title="Attendance at services" question="How many Americans go to religious services, and how has that changed?">
-        <div className="grid gap-6 lg:grid-cols-2">
-          <ChartCard
-            title="Weekly attendance by tradition"
-            subtitle="2023–24 · attend at least once a week"
-            source={SOURCES.pew}
-            table={rankedTable(d.attendanceByGroup, "Tradition", "percent")}
-          >
-            <RankedBars items={d.attendanceByGroup} unit="percent" limit={d.attendanceByGroup.length} />
-          </ChartCard>
-          <ChartCard title="Highest weekly attendance" subtitle="2023–24 · states" source={SOURCES.pew} table={rankedTable(d.attendanceTop, "State", "percent")}>
-            <RankedBars items={d.attendanceTop} unit="percent" />
-          </ChartCard>
-          <ChartCard title="Lowest weekly attendance" subtitle="2023–24 · states" source={SOURCES.pew} table={rankedTable(d.attendanceBottom, "State", "percent")}>
-            <RankedBars items={d.attendanceBottom} unit="percent" slot={2} />
-          </ChartCard>
-          <ChartCard
-            title="Largest declines since 2007"
-            subtitle="Percentage points of adults attending weekly"
-            source={SOURCES.pew}
-            table={rankedTable(d.attendanceDrop, "State", "points")}
-            className="lg:col-span-2"
-          >
-            <RankedBars items={d.attendanceDrop} unit="points" slot={2} />
-          </ChartCard>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <StatTile
+            label="Attend services weekly"
+            unit="percent"
+            value={h.weekly.value}
+            period="2023–24"
+            note={n.seldom !== null ? `${whole(n.seldom)} seldom or never attend` : undefined}
+          />
+          <StatTile
+            label="Church, synagogue, or mosque members"
+            unit="percent"
+            value={h.member.point?.value ?? null}
+            period={h.member.point?.period}
+            note="Gallup · say they belong to a congregation"
+            spark={h.member.spark}
+          />
         </div>
+        <ChartCard
+          title="Weekly attendance by tradition"
+          subtitle="2023–24 · attend at least once a week"
+          source={SOURCES.pew}
+          table={rankedTable(d.attendanceByGroup, "Tradition", "percent")}
+        >
+          <RankedBars items={d.attendanceByGroup} unit="percent" limit={d.attendanceByGroup.length} />
+        </ChartCard>
         <p className="text-xs text-slate-500 dark:text-slate-400">
           Pew&apos;s 2023–24 survey was answered mostly online and on paper; earlier surveys were by phone, where people tend to report more
           attendance. Gallup&apos;s yearly figures are all by phone.
@@ -209,7 +172,7 @@ export default async function ReligionPage() {
       </Section>
 
       {/* --------------------------------------------------------------- Belief */}
-      <Section id="belief" title="Belief and practice" question="How important is religion to Americans, and how many pray or are certain God exists?">
+      <Section id="belief" title="Belief and practice" question="How important is religion to Americans?">
         <div className="grid gap-4 sm:grid-cols-3">
           <StatTile label="Religion very important" unit="percent" value={n.importance} period="2023–24" note="Pew · share of adults" />
           <StatTile label="Pray at least daily" unit="percent" value={n.prayDaily} period="2023–24" note="Pew · share of adults" />
@@ -246,19 +209,8 @@ export default async function ReligionPage() {
       </Section>
 
       {/* --------------------------------------------------------------- States */}
-      <Section id="states" title="Across the states" question="How do the states compare? Pick a measure to map it; sort the table by any column.">
+      <Section id="states" title="Across the states" question="How do the states compare?">
         <StateExplorer metrics={d.states.metrics} rows={d.states.rows} />
-      </Section>
-
-      {/* -------------------------------------------------------------- Sources */}
-      <Section id="sources" title="Sources and methods" question="Every figure on this page comes from the datasets below.">
-        <DatasetList datasets={d.datasets} uses={USES} />
-        <p className="text-sm text-slate-500 dark:text-slate-400">
-          Open a dataset for its full methodology, coverage, and API access.{" "}
-          <Link href="/datasets" className="font-medium text-slate-900 underline underline-offset-2 dark:text-white">
-            Browse all datasets
-          </Link>
-        </p>
       </Section>
     </div>
   );

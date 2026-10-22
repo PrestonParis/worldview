@@ -1,16 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { TimeSeriesChart, type Marker, type Series } from "@/components/charts/time-series-chart";
+import { TimeSeriesChart, type Marker, type Series, type SeriesSlot } from "@/components/charts/time-series-chart";
 import { formatSigned, formatValue } from "@/lib/format";
 import type { OffenseKey, OffenseTrend } from "@/lib/crime/offenses";
 import { Chip, Segmented } from "./segmented";
 
 type Mode = "rate" | "index";
-const MAX_PICKED = 3; // one per series color
 
-// National annual rates: small multiples on their own scales, or up to
-// three offenses indexed to the first year on one shared scale. A table
+// National annual rates: small multiples on their own scales, or any
+// set of offenses indexed to the first year on one shared scale. A table
 // view lists every value for either mode.
 export function CrimeTrends({
   offenses,
@@ -34,8 +33,13 @@ export function CrimeTrends({
   const points = (o: OffenseTrend) =>
     (mode === "index" ? indexed(o) : o.rates).map((p) => ({ x: Number(p.year), label: p.year, value: p.value }));
   const unit = mode === "index" ? "index" : "per_100k";
+  // Colors follow the offense, not the pick order, so a line keeps its color
+  // as others are toggled.
+  const order = offenses.map((o) => o.key);
+  const slotOf = (k: OffenseKey) => ((order.indexOf(k) % 9) + 1) as SeriesSlot;
+
   const toggle = (k: OffenseKey) =>
-    setPicked((cur) => (cur.includes(k) ? (cur.length > 1 ? cur.filter((x) => x !== k) : cur) : [...cur, k].slice(-MAX_PICKED)));
+    setPicked((cur) => (cur.includes(k) ? (cur.length > 1 ? cur.filter((x) => x !== k) : cur) : order.filter((x) => x === k || cur.includes(x))));
 
   const years = offenses[0]?.rates.map((p) => p.year) ?? [];
 
@@ -105,13 +109,13 @@ export function CrimeTrends({
             ))}
           </div>
           <p className="text-xs text-slate-500 dark:text-slate-400">
-            Each line is that offense&apos;s rate as a share of its {baseYear} rate. Pick up to {MAX_PICKED}.
+            Each line is that offense&apos;s rate as a share of its {baseYear} rate. Pick any.
           </p>
           <TimeSeriesChart
             series={picked.map(
               (k, i): Series => {
                 const o = offenses.find((x) => x.key === k)!;
-                return { id: k, label: o.label, slot: (i + 1) as 1 | 2 | 3, points: points(o) };
+                return { id: k, label: o.label, slot: slotOf(k), points: points(o) };
               },
             )}
             unit="index"

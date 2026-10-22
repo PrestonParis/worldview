@@ -30,8 +30,8 @@ export default async function OrgDirectoryPage() {
       <div className="flex items-baseline justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Organizations</h1>
-          <p className="mt-1 text-slate-500 dark:text-slate-400">
-            Parties, think tanks, outlets, PACs and companies, by how many people connect to them.
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+            Ranked by how many people connect to them.
           </p>
         </div>
         <Link href="/people" className="shrink-0 text-sm text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100">

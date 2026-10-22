@@ -1,13 +1,13 @@
-import { h, type TraditionHistory } from "./types";
+import { h, type TraditionCore } from "./types";
 
 // Libertarian, classical-liberal, and technology traditions.
 
-export const LIBERTARIAN: Record<string, TraditionHistory> = {
+export const LIBERTARIAN: Record<string, TraditionCore> = {
   libertarianism: h({
     when: "1946–1971",
     where: "The United States",
     founders: ["Leonard Read", "Murray Rothbard", "David Nolan"],
-    figures: ["Murray Rothbard", "Robert Nozick", "Milton Friedman", "Leonard Read", "Rose Wilder Lane", "Karl Hess"],
+    figures: ["Murray Rothbard", "Robert Nozick", "Leonard Read"],
     texts: [
       ["Capitalism and Freedom", "Milton Friedman", "1962"],
       ["For a New Liberty", "Murray Rothbard", "1973"],
@@ -33,7 +33,7 @@ export const LIBERTARIAN: Record<string, TraditionHistory> = {
     when: "Late 17th–18th century",
     where: "England, Scotland, and France",
     founders: ["John Locke", "Adam Smith", "Montesquieu"],
-    figures: ["John Locke", "Adam Smith", "Montesquieu", "James Madison", "Benjamin Constant", "John Stuart Mill"],
+    figures: ["John Locke", "Adam Smith", "John Stuart Mill"],
     texts: [
       ["Second Treatise of Government", "John Locke", "1689", "https://www.gutenberg.org/ebooks/7370"],
       ["The Spirit of the Laws", "Montesquieu", "1748"],
@@ -58,7 +58,7 @@ export const LIBERTARIAN: Record<string, TraditionHistory> = {
     when: "1850s; named in 1971",
     where: "France, Britain, and the United States",
     founders: ["Frédéric Bastiat", "Herbert Spencer", "Samuel Edward Konkin III (coined the term)"],
-    figures: ["Frédéric Bastiat", "Herbert Spencer", "Robert Nozick", "Tibor Machan"],
+    figures: ["Frédéric Bastiat", "Herbert Spencer", "Robert Nozick"],
     texts: [
       ["The Law", "Frédéric Bastiat", "1850"],
       ["Social Statics", "Herbert Spencer", "1851"],
@@ -81,7 +81,7 @@ export const LIBERTARIAN: Record<string, TraditionHistory> = {
     when: "1849; developed in the 1960s–1970s",
     where: "France, then the United States",
     founders: ["Gustave de Molinari", "Murray Rothbard", "David Friedman"],
-    figures: ["Murray Rothbard", "David Friedman", "Hans-Hermann Hoppe", "Walter Block", "Bruce Benson"],
+    figures: ["Murray Rothbard", "David Friedman", "Hans-Hermann Hoppe"],
     texts: [
       ["The Production of Security", "Gustave de Molinari", "1849"],
       ["Man, Economy, and State", "Murray Rothbard", "1962"],
@@ -106,7 +106,7 @@ export const LIBERTARIAN: Record<string, TraditionHistory> = {
     when: "1989–1990",
     where: "The United States",
     founders: ["Murray Rothbard", "Lew Rockwell"],
-    figures: ["Murray Rothbard", "Lew Rockwell", "Hans-Hermann Hoppe", "Tom Woods", "Thomas DiLorenzo"],
+    figures: ["Murray Rothbard", "Lew Rockwell", "Hans-Hermann Hoppe"],
     texts: [
       ["\"The Case for Paleo-Libertarianism\"", "Lew Rockwell", "1990"],
       ["\"Right-Wing Populism\"", "Murray Rothbard", "1992"],
@@ -130,7 +130,7 @@ export const LIBERTARIAN: Record<string, TraditionHistory> = {
     when: "1797; developed in the 1990s",
     where: "Britain and the United States",
     founders: ["Thomas Paine (precursor)", "Hillel Steiner", "Peter Vallentyne", "Philippe Van Parijs"],
-    figures: ["Hillel Steiner", "Peter Vallentyne", "Michael Otsuka", "Philippe Van Parijs", "Roderick Long"],
+    figures: ["Hillel Steiner", "Peter Vallentyne", "Michael Otsuka"],
     texts: [
       ["Agrarian Justice", "Thomas Paine", "1797"],
       ["An Essay on Rights", "Hillel Steiner", "1994"],
@@ -155,7 +155,7 @@ export const LIBERTARIAN: Record<string, TraditionHistory> = {
     when: "1943–1957",
     where: "New York",
     founders: ["Ayn Rand"],
-    figures: ["Ayn Rand", "Nathaniel Branden", "Leonard Peikoff", "Alan Greenspan", "David Kelley", "Yaron Brook"],
+    figures: ["Ayn Rand", "Nathaniel Branden", "Leonard Peikoff"],
     texts: [
       ["The Fountainhead", "Ayn Rand", "1943"],
       ["Atlas Shrugged", "Ayn Rand", "1957"],
@@ -179,7 +179,7 @@ export const LIBERTARIAN: Record<string, TraditionHistory> = {
     when: "2009–2024",
     where: "Silicon Valley",
     founders: ["Peter Thiel", "Marc Andreessen", "Elon Musk"],
-    figures: ["Peter Thiel", "Marc Andreessen", "Elon Musk", "David Sacks", "Balaji Srinivasan"],
+    figures: ["Peter Thiel", "Marc Andreessen", "Balaji Srinivasan"],
     texts: [
       ["\"The Education of a Libertarian\"", "Peter Thiel", "2009"],
       ["Zero to One", "Peter Thiel", "2014"],
@@ -203,7 +203,7 @@ export const LIBERTARIAN: Record<string, TraditionHistory> = {
     when: "1796",
     where: "The United States",
     founders: ["George Washington", "Thomas Jefferson"],
-    figures: ["John Quincy Adams", "Randolph Bourne", "Charles Beard", "Robert Taft", "Andrew Bacevich"],
+    figures: ["John Quincy Adams", "Randolph Bourne", "Andrew Bacevich"],
     texts: [
       ["Farewell Address", "George Washington", "1796"],
       ["Independence Day address (\"She goes not abroad in search of monsters to destroy\")", "John Quincy Adams", "1821"],
@@ -227,7 +227,7 @@ export const LIBERTARIAN: Record<string, TraditionHistory> = {
     when: "1957; organized in the 1980s–1990s",
     where: "Britain and California",
     founders: ["Julian Huxley", "FM-2030", "Max More", "Nick Bostrom", "David Pearce"],
-    figures: ["Max More", "Natasha Vita-More", "Nick Bostrom", "David Pearce", "Ray Kurzweil", "Zoltan Istvan"],
+    figures: ["Max More", "Nick Bostrom", "Ray Kurzweil"],
     texts: [
       ["\"Transhumanism\" (in New Bottles for New Wine)", "Julian Huxley", "1957"],
       ["\"Principles of Extropy\"", "Max More", "1990"],
@@ -252,7 +252,7 @@ export const LIBERTARIAN: Record<string, TraditionHistory> = {
     when: "1990s; e/acc named in 2022",
     where: "Britain, then San Francisco",
     founders: ["Nick Land", "Guillaume Verdon (\"Beff Jezos\")"],
-    figures: ["Nick Land", "Guillaume Verdon", "Marc Andreessen", "Garry Tan"],
+    figures: ["Nick Land", "Guillaume Verdon", "Marc Andreessen"],
     texts: [
       ["Fanged Noumena (collected essays, 1987–2007)", "Nick Land", "2011"],
       ["\"#Accelerate: Manifesto for an Accelerationist Politics\"", "Alex Williams and Nick Srnicek", "2013"],
@@ -273,7 +273,7 @@ export const LIBERTARIAN: Record<string, TraditionHistory> = {
     when: "1997–2003",
     where: "The United States",
     founders: ["Leon Kass", "Francis Fukuyama", "Bill McKibben", "Michael Sandel"],
-    figures: ["Leon Kass", "Francis Fukuyama", "Bill McKibben", "Michael Sandel", "Jürgen Habermas"],
+    figures: ["Leon Kass", "Francis Fukuyama", "Michael Sandel"],
     texts: [
       ["\"The Wisdom of Repugnance\"", "Leon Kass", "1997"],
       ["Our Posthuman Future", "Francis Fukuyama", "2002"],
@@ -297,7 +297,7 @@ export const LIBERTARIAN: Record<string, TraditionHistory> = {
     when: "1980s",
     where: "Detroit and Eugene, Oregon",
     founders: ["Fredy Perlman", "John Zerzan"],
-    figures: ["Fredy Perlman", "John Zerzan", "Ted Kaczynski (adjacent)", "Derrick Jensen"],
+    figures: ["Fredy Perlman", "John Zerzan", "Derrick Jensen"],
     texts: [
       ["\"The Original Affluent Society\"", "Marshall Sahlins", "1966"],
       ["Against His-Story, Against Leviathan!", "Fredy Perlman", "1983"],

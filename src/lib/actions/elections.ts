@@ -4,16 +4,14 @@ import { requireContributor } from "../auth/guard";
 import { revalidatePath } from "next/cache";
 import { electionSchema, type ElectionInput } from "../validation/election";
 import * as electionsDb from "../db/elections";
-import type { ActionResult } from "./entities";
+import { actionFailure, validationFailure, type ActionResult } from "./result";
 
-export async function createElectionAction(
-  input: ElectionInput,
-): Promise<ActionResult<{ id: string }>> {
+export async function createElectionAction(input: ElectionInput): Promise<ActionResult<{ id: string }>> {
   const denied = await requireContributor();
   if (denied) return denied;
   const parsed = electionSchema.safeParse(input);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+    return validationFailure(parsed.error);
   }
   try {
     const election = await electionsDb.createElection(parsed.data);
@@ -21,19 +19,16 @@ export async function createElectionAction(
     revalidatePath("/elections");
     return { ok: true, data: { id: election.id } };
   } catch (err) {
-    return { ok: false, error: (err as Error).message };
+    return actionFailure("elections.create", err);
   }
 }
 
-export async function updateElectionAction(
-  id: string,
-  input: ElectionInput,
-): Promise<ActionResult<{ id: string }>> {
+export async function updateElectionAction(id: string, input: ElectionInput): Promise<ActionResult<{ id: string }>> {
   const denied = await requireContributor();
   if (denied) return denied;
   const parsed = electionSchema.safeParse(input);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+    return validationFailure(parsed.error);
   }
   try {
     const election = await electionsDb.updateElection(id, parsed.data);
@@ -42,13 +37,11 @@ export async function updateElectionAction(
     revalidatePath("/elections");
     return { ok: true, data: { id: election.id } };
   } catch (err) {
-    return { ok: false, error: (err as Error).message };
+    return actionFailure("elections.update", err);
   }
 }
 
-export async function deleteElectionAction(
-  id: string,
-): Promise<ActionResult<null>> {
+export async function deleteElectionAction(id: string): Promise<ActionResult<null>> {
   const denied = await requireContributor();
   if (denied) return denied;
   try {
@@ -57,6 +50,6 @@ export async function deleteElectionAction(
     revalidatePath("/elections");
     return { ok: true, data: null };
   } catch (err) {
-    return { ok: false, error: (err as Error).message };
+    return actionFailure("elections.delete", err);
   }
 }

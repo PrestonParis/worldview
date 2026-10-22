@@ -3,7 +3,8 @@ import { redirect } from "next/navigation";
 import { Field, inputClass } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/auth/session";
-import { deleteAccountAction, setPasswordAction, updateDisplayNameAction } from "@/lib/actions/auth";
+import { deleteAccountAction, updateDisplayNameAction } from "@/lib/actions/auth";
+import { EmailSection, PasswordSection } from "@/components/auth/account-security";
 
 export const metadata: Metadata = { title: "Account · Worldview" };
 
@@ -12,11 +13,11 @@ const PROVIDER_LABELS: Record<string, string> = { email: "Email", google: "Googl
 export default async function AccountPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; saved?: string }>;
+  searchParams: Promise<{ error?: string }>;
 }) {
   const user = await getCurrentUser();
   if (!user) redirect("/login?next=/account");
-  const { error, saved } = await searchParams;
+  const { error } = await searchParams;
 
   return (
     <div className="mx-auto max-w-xl space-y-10">
@@ -46,31 +47,16 @@ export default async function AccountPage({
       </section>
 
       <section className="space-y-3">
+        <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Email</h2>
+        <EmailSection currentEmail={user.email} />
+      </section>
+
+      <section className="space-y-3">
         <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Password</h2>
-        <form action={setPasswordAction} className="flex items-end gap-3">
-          <div className="flex-1">
-            <Field
-              label="New password"
-              htmlFor="password"
-              error={error === "password" ? "Use 8–72 characters." : undefined}
-            >
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                minLength={8}
-                maxLength={72}
-                autoComplete="new-password"
-                className={inputClass}
-              />
-            </Field>
-          </div>
-          <Button type="submit">Set password</Button>
-        </form>
-        {saved === "password" ? (
-          <p className="text-sm text-emerald-700 dark:text-emerald-400">Password saved. Sign in with it from now on.</p>
-        ) : null}
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          Set one to sign in with your email and a password. Without one, sign in with Google or an emailed code.
+        </p>
+        <PasswordSection />
       </section>
 
       <section className="space-y-2">
@@ -86,12 +72,20 @@ export default async function AccountPage({
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Session</h2>
-        <form action="/auth/signout" method="post">
-          <Button type="submit" variant="ghost" className="border border-slate-300 dark:border-slate-700">
-            Sign out
-          </Button>
-        </form>
+        <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Sessions</h2>
+        <div className="flex flex-wrap gap-3">
+          <form action="/auth/signout" method="post">
+            <Button type="submit" variant="ghost" className="border border-slate-300 dark:border-slate-700">
+              Sign out
+            </Button>
+          </form>
+          <form action="/auth/signout?scope=global" method="post">
+            <Button type="submit" variant="ghost" className="border border-slate-300 dark:border-slate-700">
+              Sign out everywhere
+            </Button>
+          </form>
+        </div>
+        <p className="text-sm text-slate-500 dark:text-slate-400">“Sign out everywhere” also signs out your other browsers and devices.</p>
       </section>
 
       <section className="space-y-3 rounded-md border border-red-200 p-4 dark:border-red-900">

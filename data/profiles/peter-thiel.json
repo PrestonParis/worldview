@@ -1,0 +1,1649 @@
+{
+  "subject": "thiel",
+  "reviewedAt": "2026-10-20",
+  "sourcesVerifiedAt": "2026-10-20",
+  "summary": "Co-founder of PayPal and Palantir and Facebook's first outside investor. Since 2000 he has made more than $50 million in itemized federal political contributions, nearly all to Republican candidates and committees, including $35 million to two super PACs that backed the 2022 Senate campaigns of former employees JD Vance and Blake Masters.",
+  "roles": [
+    {
+      "label": "Entrepreneur",
+      "detail": "Co-founder of PayPal (1998) and Palantir (2003)",
+      "sources": [
+        "palantir-board"
+      ]
+    },
+    {
+      "label": "Investor",
+      "detail": "Partner, Founders Fund; president, Thiel Capital",
+      "sources": [
+        "palantir-board"
+      ]
+    },
+    {
+      "label": "Technology executive",
+      "detail": "Chairman of Palantir since 2003",
+      "sources": [
+        "palantir-board"
+      ]
+    },
+    {
+      "label": "Political donor",
+      "detail": "Federal contributions recorded by the FEC since 2001",
+      "sources": [
+        "fec-sa-thiel"
+      ]
+    },
+    {
+      "label": "Author",
+      "detail": "The Diversity Myth (1995), Zero to One (2014)",
+      "sources": [
+        "independent-diversity-myth",
+        "techcrunch-zero-to-one"
+      ]
+    }
+  ],
+  "finance": {
+    "fec": {
+      "contributorName": "THIEL, PETER",
+      "namePattern": "^THIEL, PETER( A\\.?)?( MR\\.?)?$",
+      "employerPattern": "THIEL CAPITAL|CLARIUM|CLARIOUM|CLARIAM|CARIUM|CALRIUM|CLARION|FOUNDERS FUND|FACEBOOK|PAY ?PAL",
+      "cities": [
+        "SAN FRANCISCO",
+        "WEST HOLLYWOOD",
+        "LOS ANGELES",
+        "MIAMI",
+        "MIAMI BEACH",
+        "NEW YORK",
+        "PALO ALTO"
+      ],
+      "source": "fec-sa-thiel"
+    },
+    "coverage": "Itemized federal contributions reported to the FEC on Schedule A (gifts over $200), 2000 to present. State and local giving and donations to nonprofits that do not disclose donors are outside this record."
+  },
+  "entities": {
+    "thiel": {
+      "match": {
+        "name": "Peter Thiel",
+        "type": "donor"
+      }
+    },
+    "vance": {
+      "match": {
+        "identifier": [
+          "fec_candidate",
+          "S2OH00436"
+        ]
+      }
+    },
+    "masters": {
+      "match": {
+        "identifier": [
+          "fec_candidate",
+          "S2AZ00372"
+        ]
+      }
+    },
+    "trump": {
+      "match": {
+        "name": "Donald Trump",
+        "type": "politician"
+      }
+    },
+    "musk": {
+      "match": {
+        "name": "Elon Musk",
+        "type": "donor"
+      }
+    },
+    "sacks": {
+      "match": {
+        "name": "David Sacks",
+        "type": "donor"
+      }
+    },
+    "lonsdale": {
+      "match": {
+        "name": "Joe Lonsdale",
+        "type": "donor"
+      }
+    },
+    "palantir": {
+      "create": {
+        "name": "Palantir Technologies",
+        "type": "company",
+        "description": "Data-integration and analytics software company co-founded in 2003; Peter Thiel is chairman.",
+        "websiteUrl": "https://www.palantir.com/"
+      }
+    },
+    "paypal": {
+      "create": {
+        "name": "PayPal",
+        "type": "company",
+        "description": "Online payments company formed from Confinity and X.com; acquired by eBay in 2002 and spun off in 2015.",
+        "websiteUrl": "https://www.paypal.com/"
+      }
+    },
+    "meta": {
+      "create": {
+        "name": "Meta Platforms",
+        "type": "company",
+        "description": "Parent company of Facebook, Instagram and WhatsApp; renamed from Facebook, Inc. in 2021.",
+        "websiteUrl": "https://about.meta.com/"
+      }
+    },
+    "founders-fund": {
+      "create": {
+        "name": "Founders Fund",
+        "type": "company",
+        "description": "San Francisco venture capital firm founded in 2005.",
+        "websiteUrl": "https://foundersfund.com/"
+      }
+    },
+    "thiel-capital": {
+      "create": {
+        "name": "Thiel Capital",
+        "type": "company",
+        "description": "Peter Thiel's investment firm, founded in 2011."
+      }
+    },
+    "clarium": {
+      "create": {
+        "name": "Clarium Capital",
+        "type": "company",
+        "description": "Global macro hedge fund founded by Peter Thiel after the sale of PayPal."
+      }
+    },
+    "valar": {
+      "create": {
+        "name": "Valar Ventures",
+        "type": "company",
+        "description": "Venture capital firm co-founded by Peter Thiel in 2010."
+      }
+    },
+    "mithril": {
+      "create": {
+        "name": "Mithril Capital",
+        "type": "company",
+        "description": "Growth-stage investment firm launched in 2012 by Peter Thiel and Ajay Royan."
+      }
+    },
+    "stanford-review": {
+      "create": {
+        "name": "The Stanford Review",
+        "type": "organization",
+        "description": "Student newspaper at Stanford University, founded in 1987 by Peter Thiel and Norman Book.",
+        "websiteUrl": "https://stanfordreview.org/"
+      }
+    },
+    "thiel-foundation": {
+      "create": {
+        "name": "Thiel Foundation",
+        "type": "organization",
+        "description": "Peter Thiel's foundation; runs the Thiel Fellowship, launched in 2010."
+      }
+    },
+    "gawker": {
+      "create": {
+        "name": "Gawker Media",
+        "type": "company",
+        "description": "Online publisher that filed for bankruptcy in 2016 after the Bollea v. Gawker verdict."
+      }
+    },
+    "trump-transition": {
+      "create": {
+        "name": "Trump presidential transition (2016)",
+        "type": "organization",
+        "description": "Transition team for President-elect Donald Trump, November 2016 to January 2017."
+      }
+    }
+  },
+  "sources": [
+    {
+      "key": "fec-sa-thiel",
+      "title": "Individual contributions: Thiel, Peter (Schedule A)",
+      "publisher": "Federal Election Commission",
+      "type": "filing",
+      "url": "https://www.fec.gov/data/receipts/individual-contributions/?contributor_name=THIEL%2C+PETER",
+      "documentId": "OpenFEC /schedules/schedule_a"
+    },
+    {
+      "key": "fec-ie-2022",
+      "title": "Independent expenditures, 2022: Protect Ohio Values PAC and Saving Arizona PAC (Schedule E)",
+      "publisher": "Federal Election Commission",
+      "type": "filing",
+      "url": "https://www.fec.gov/data/independent-expenditures/?data_type=processed&committee_id=C00770495&committee_id=C00777185&cycle=2022"
+    },
+    {
+      "key": "palantir-board",
+      "title": "Board of Directors: Peter Thiel",
+      "publisher": "Palantir Technologies",
+      "type": "primary",
+      "url": "https://investors.palantir.com/board.html"
+    },
+    {
+      "key": "founders-fund-team",
+      "title": "Team: Peter Thiel",
+      "publisher": "Founders Fund",
+      "type": "primary",
+      "url": "https://foundersfund.com/team/peter-thiel/"
+    },
+    {
+      "key": "wikidata",
+      "title": "Peter Thiel (Q705525)",
+      "publisher": "Wikidata",
+      "type": "secondary",
+      "url": "https://www.wikidata.org/wiki/Q705525",
+      "notes": "Structured reference record."
+    },
+    {
+      "key": "wikipedia",
+      "title": "Peter Thiel",
+      "publisher": "Wikipedia",
+      "type": "secondary",
+      "url": "https://en.wikipedia.org/wiki/Peter_Thiel",
+      "notes": "Reference work; cited only for undisputed dates and figures."
+    },
+    {
+      "key": "wikipedia-categories",
+      "title": "Peter Thiel: article categories",
+      "publisher": "Wikipedia",
+      "type": "secondary",
+      "url": "https://en.wikipedia.org/wiki/Peter_Thiel#catlinks",
+      "notes": "Emigrants from West Germany to the United States; New Zealand people of German descent; American gay men."
+    },
+    {
+      "key": "wikipedia-masters",
+      "title": "Blake Masters",
+      "publisher": "Wikipedia",
+      "type": "secondary",
+      "url": "https://en.wikipedia.org/wiki/Blake_Masters",
+      "notes": "Reference work."
+    },
+    {
+      "key": "wikipedia-narya",
+      "title": "Narya Capital",
+      "publisher": "Wikipedia",
+      "type": "secondary",
+      "url": "https://en.wikipedia.org/wiki/Narya_Capital",
+      "notes": "Reference work."
+    },
+    {
+      "key": "nz-dia",
+      "title": "Citizenship of Mr Peter Thiel",
+      "publisher": "New Zealand Department of Internal Affairs",
+      "type": "official_statement",
+      "url": "https://www.dia.govt.nz/Citizenship-of-Mr-Peter-Thiel",
+      "notes": "Released under the Official Information Act on February 1, 2017, with further releases in 2017 and 2018."
+    },
+    {
+      "key": "cato-2009",
+      "title": "The Education of a Libertarian",
+      "publisher": "Cato Unbound",
+      "author": "Peter Thiel",
+      "type": "primary",
+      "publishedAt": "2009-04-13",
+      "url": "https://www.cato-unbound.org/2009/04/13/peter-thiel/education-libertarian/"
+    },
+    {
+      "key": "independent-diversity-myth",
+      "title": "The Diversity Myth: Multiculturalism and Political Intolerance on Campus",
+      "publisher": "Independent Institute",
+      "author": "David O. Sacks and Peter A. Thiel",
+      "type": "primary",
+      "publishedAt": "1995-09-01",
+      "url": "https://independent.org/store/book.asp?f=hc&id=38"
+    },
+    {
+      "key": "wsj-2014",
+      "title": "Competition Is for Losers",
+      "publisher": "The Wall Street Journal",
+      "author": "Peter Thiel",
+      "type": "primary",
+      "publishedAt": "2014-09-12",
+      "url": "https://www.wsj.com/articles/peter-thiel-competition-is-for-losers-1410535536",
+      "notes": "Adapted from Zero to One."
+    },
+    {
+      "key": "zero-to-one-book",
+      "title": "Zero to One: Notes on Startups, or How to Build the Future",
+      "publisher": "Crown Business",
+      "author": "Peter Thiel with Blake Masters",
+      "type": "primary",
+      "publishedAt": "2014-09-16",
+      "url": "https://www.penguinrandomhouse.com/books/234730"
+    },
+    {
+      "key": "techcrunch-zero-to-one",
+      "title": "Zero to One: How Blake Masters went from being Peter Thiel's student to co-author",
+      "publisher": "TechCrunch",
+      "type": "article",
+      "publishedAt": "2014-09-16",
+      "url": "https://techcrunch.com/2014/09/16/zero-to-one-how-blake-masters-went-from-being-peter-thiels-student-to-co-author"
+    },
+    {
+      "key": "venturebeat-fellowship",
+      "title": "Peter Thiel pays kids $100K to drop out of college",
+      "publisher": "VentureBeat",
+      "type": "article",
+      "publishedAt": "2010-09-29",
+      "url": "https://venturebeat.com/business/peter-thiel-pays-kids-100k-to-drop-out-of-college"
+    },
+    {
+      "key": "america-2014",
+      "title": "Faith and technology: a Q&A with Peter Thiel",
+      "publisher": "America",
+      "type": "transcript",
+      "publishedAt": "2014-10-01",
+      "url": "https://www.americamagazine.org/all-things/2014/10/01/faith-technology-qa-peter-thiel/"
+    },
+    {
+      "key": "fortune-rnc-2016",
+      "title": "Read Peter Thiel's speech at the Republican National Convention",
+      "publisher": "Fortune",
+      "type": "transcript",
+      "publishedAt": "2016-07-21",
+      "url": "https://fortune.com/2016/07/21/read-peter-thiels-speech-at-the-republican-national-convention",
+      "notes": "Remarks as prepared for delivery."
+    },
+    {
+      "key": "abc-rnc-2016",
+      "title": "Peter Thiel at RNC: 'I'm proud to be gay, I'm proud to be a Republican'",
+      "publisher": "ABC7",
+      "type": "article",
+      "publishedAt": "2016-07-21",
+      "url": "https://abc7.com/peter-thiel-rnc-cleveland-gay/1437667/"
+    },
+    {
+      "key": "lgbtqnation-rnc-2016",
+      "title": "Peter Thiel RNC address: 'Who cares' where trans folk go the restroom",
+      "publisher": "LGBTQ Nation",
+      "type": "article",
+      "publishedAt": "2016-07-22",
+      "url": "https://www.lgbtqnation.com/2016/07/peter-thiel-rnc-address-cares-trans-folk-go-restroom/"
+    },
+    {
+      "key": "p2016-transition",
+      "title": "President-elect Donald J. Trump announces transition team executive committee",
+      "publisher": "Trump transition (archived by Democracy in Action)",
+      "type": "official_statement",
+      "publishedAt": "2016-11-11",
+      "url": "https://www.p2016.org/chrntran/transition111116pr.html"
+    },
+    {
+      "key": "fortune-transition-2016",
+      "title": "Peter Thiel joins Trump's transition team",
+      "publisher": "Fortune",
+      "type": "article",
+      "publishedAt": "2016-11-11",
+      "url": "https://fortune.com/2016/11/11/thiel-trump-transition-team/"
+    },
+    {
+      "key": "forbes-gawker-2016",
+      "title": "Forbes report identifying Peter Thiel as the funder of Bollea v. Gawker",
+      "publisher": "Forbes",
+      "type": "article",
+      "publishedAt": "2016-05-24",
+      "documentId": "Forbes, May 24, 2016",
+      "notes": "Original report; the copy cited here is CNBC's account of it."
+    },
+    {
+      "key": "cnbc-forbes-2016",
+      "title": "PayPal billionaire Peter Thiel financing Hulk Hogan's lawsuit against Gawker: Forbes reports",
+      "publisher": "CNBC",
+      "type": "article",
+      "publishedAt": "2016-05-24",
+      "url": "https://www.cnbc.com/2016/05/24/paypal-billionaire-peter-thiel-financing-hulk-hogans-lawsuit-against-gawker-forbes-reports.html",
+      "repeats": "forbes-gawker-2016"
+    },
+    {
+      "key": "nyt-sorkin-2016",
+      "title": "Peter Thiel, tech billionaire, reveals secret war with Gawker",
+      "publisher": "The New York Times",
+      "author": "Andrew Ross Sorkin",
+      "type": "transcript",
+      "publishedAt": "2016-05-25",
+      "documentId": "The New York Times, DealBook, May 25, 2016",
+      "notes": "Interview in which Thiel confirmed the funding."
+    },
+    {
+      "key": "techcrunch-gawker-2016",
+      "title": "Thiel says he decided several years ago to try to cripple Gawker",
+      "publisher": "TechCrunch",
+      "type": "article",
+      "publishedAt": "2016-05-25",
+      "url": "https://techcrunch.com/2016/05/25/thiel-says-he-decided-several-years-ago-to-try-to-cripple-gawker/",
+      "repeats": "nyt-sorkin-2016"
+    },
+    {
+      "key": "nyt-oped-2016",
+      "title": "The Online Privacy Debate Won't End With Gawker",
+      "publisher": "The New York Times",
+      "author": "Peter Thiel",
+      "type": "primary",
+      "publishedAt": "2016-08-15",
+      "documentId": "The New York Times, op-ed, August 15, 2016"
+    },
+    {
+      "key": "cnn-oped-2016",
+      "title": "Peter Thiel's New York Times op-ed on Gawker",
+      "publisher": "CNN Money",
+      "type": "article",
+      "publishedAt": "2016-08-15",
+      "url": "https://money.cnn.com/2016/08/15/technology/peter-thiel-nytimes-op-ed",
+      "repeats": "nyt-oped-2016"
+    },
+    {
+      "key": "cnn-settlement-2016",
+      "title": "Gawker and Hulk Hogan settle lawsuit: 'The saga is over'",
+      "publisher": "CNN Money",
+      "type": "article",
+      "publishedAt": "2016-11-02",
+      "url": "https://money.cnn.com/2016/11/02/media/gawker-hulk-hogan"
+    },
+    {
+      "key": "fortune-meta-2022",
+      "title": "Peter Thiel is leaving Meta's board to help advance Trump's agenda",
+      "publisher": "Fortune",
+      "type": "article",
+      "publishedAt": "2022-02-07",
+      "url": "https://fortune.com/2022/02/07/peter-thiel-leaving-meta-trump-agenda"
+    },
+    {
+      "key": "reuters-2023",
+      "title": "Peter Thiel, Republican megadonor, won't fund candidates in 2024 – sources",
+      "publisher": "Reuters",
+      "type": "article",
+      "publishedAt": "2023-04-27",
+      "url": "https://www.investing.com/news/world-news/exclusivepeter-thiel-republican-megadonor-wont-fund-candidates-in-2024--sources-3064715",
+      "notes": "Reuters exclusive, read in its Investing.com syndication."
+    },
+    {
+      "key": "wapo-2024",
+      "title": "Washington Post report on JD Vance, Peter Thiel and technology donors",
+      "publisher": "The Washington Post",
+      "type": "article",
+      "publishedAt": "2024-07-28",
+      "url": "https://www.washingtonpost.com/technology/2024/07/28/jd-vance-peter-thiel-donors-big-tech-trump-vp/"
+    },
+    {
+      "key": "whitehouse-vance",
+      "title": "JD Vance, Vice President of the United States",
+      "publisher": "The White House",
+      "type": "official_statement",
+      "url": "https://www.whitehouse.gov/administration/jd-vance/"
+    },
+    {
+      "key": "douthat-2025",
+      "title": "Peter Thiel and the Antichrist",
+      "publisher": "The New York Times (Interesting Times with Ross Douthat)",
+      "type": "transcript",
+      "publishedAt": "2025-06-26",
+      "documentId": "Interesting Times podcast, June 26, 2025"
+    },
+    {
+      "key": "sfstandard-2025",
+      "title": "Peter Thiel's Antichrist lecture series in San Francisco",
+      "publisher": "The San Francisco Standard",
+      "type": "article",
+      "publishedAt": "2025-09-16",
+      "url": "https://sfstandard.com/2025/09/16/peter-thiel-antichrist-san-francisco/"
+    },
+    {
+      "key": "forbes-profile",
+      "title": "Peter Thiel: real-time net worth",
+      "publisher": "Forbes",
+      "type": "secondary",
+      "url": "https://www.forbes.com/profile/peter-thiel/"
+    },
+    {
+      "key": "lonsdale-8vc",
+      "title": "Team: Joe Lonsdale",
+      "publisher": "8VC",
+      "type": "primary",
+      "url": "https://www.8vc.com/team/joe-lonsdale"
+    }
+  ],
+  "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "October 11, 1967",
+      "detail": "Frankfurt am Main, West Germany",
+      "sources": [
+        "wikidata"
+      ]
+    },
+    {
+      "key": "sex",
+      "label": "Sex",
+      "value": "Male",
+      "sources": [
+        "wikidata"
+      ]
+    },
+    {
+      "key": "ethnicity",
+      "label": "Ethnicity",
+      "value": "German",
+      "detail": "German-born; emigrated to the U.S. as an infant.",
+      "sources": [
+        "wikipedia-categories",
+        "wikidata"
+      ]
+    },
+    {
+      "key": "race",
+      "label": "Race",
+      "value": "White",
+      "detail": "From ethnic German descent.",
+      "sources": [
+        "wikipedia-categories"
+      ]
+    },
+    {
+      "key": "citizenship",
+      "label": "Citizenship",
+      "value": "United States; New Zealand",
+      "detail": "New Zealand since 2011, by ministerial decision. Wikidata also lists Germany.",
+      "sources": [
+        "nz-dia",
+        "wikidata"
+      ]
+    },
+    {
+      "key": "sexual-orientation",
+      "label": "Sexual orientation",
+      "value": "Gay",
+      "detail": "Self-identified, 2016.",
+      "sources": [
+        "fortune-rnc-2016"
+      ]
+    },
+    {
+      "key": "spouse",
+      "label": "Spouse",
+      "value": "Matt Danzeisen",
+      "detail": "Married 2017.",
+      "sources": [
+        "wikidata",
+        "wikipedia"
+      ]
+    },
+    {
+      "key": "religion",
+      "label": "Religion",
+      "value": "Christian (self-described)",
+      "sources": [
+        "america-2014"
+      ]
+    },
+    {
+      "key": "party",
+      "label": "Party",
+      "value": "Republican",
+      "detail": "Trump delegate, 2016.",
+      "sources": [
+        "wikidata",
+        "fortune-rnc-2016"
+      ]
+    },
+    {
+      "key": "education",
+      "label": "Education",
+      "value": "BA, philosophy, Stanford (1989); JD, Stanford Law School (1992)",
+      "sources": [
+        "palantir-board",
+        "wikipedia"
+      ]
+    },
+    {
+      "key": "current-roles",
+      "label": "Current roles",
+      "value": "Chairman, Palantir; partner, Founders Fund; president, Thiel Capital",
+      "featured": true,
+      "sources": [
+        "palantir-board"
+      ]
+    },
+    {
+      "key": "net-worth",
+      "label": "Net worth (estimate)",
+      "value": "$37.2 billion",
+      "detail": "Forbes real-time estimate",
+      "asOf": "2026-10-20",
+      "featured": true,
+      "sources": [
+        "forbes-profile"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "thiel-paypal",
+      "source": "thiel",
+      "target": "paypal",
+      "relType": "co-founded",
+      "role": "Co-founded Confinity (1998); CEO, president and chairman 2000–2002",
+      "from": "1998",
+      "until": "2002",
+      "prominence": 3,
+      "sources": [
+        "palantir-board",
+        "wikipedia"
+      ]
+    },
+    {
+      "key": "thiel-palantir",
+      "source": "thiel",
+      "target": "palantir",
+      "relType": "co-founded",
+      "role": "Co-founder; chairman of the board",
+      "from": "2003",
+      "prominence": 3,
+      "sources": [
+        "palantir-board"
+      ]
+    },
+    {
+      "key": "thiel-founders-fund",
+      "source": "thiel",
+      "target": "founders-fund",
+      "relType": "works-for",
+      "role": "Partner",
+      "from": "2005",
+      "prominence": 3,
+      "sources": [
+        "palantir-board",
+        "founders-fund-team"
+      ]
+    },
+    {
+      "key": "thiel-thiel-capital",
+      "source": "thiel",
+      "target": "thiel-capital",
+      "relType": "founded",
+      "role": "President",
+      "from": "2011",
+      "prominence": 2,
+      "sources": [
+        "palantir-board"
+      ]
+    },
+    {
+      "key": "thiel-meta-board",
+      "source": "thiel",
+      "target": "meta",
+      "relType": "board-member-of",
+      "role": "Director (Facebook, then Meta Platforms)",
+      "from": "2005",
+      "until": "2022",
+      "prominence": 3,
+      "notes": "Palantir's disclosure dates the board seat from 2005; some accounts place it in 2004, the year of his first investment.",
+      "sources": [
+        "palantir-board",
+        "fortune-meta-2022"
+      ]
+    },
+    {
+      "key": "thiel-meta-investment",
+      "source": "thiel",
+      "target": "meta",
+      "relType": "invested-in",
+      "role": "First outside investor: $500,000 for 10.2% (August 2004); sold nearly all shares in 2012",
+      "from": "2004",
+      "until": "2012",
+      "prominence": 2,
+      "sources": [
+        "wikipedia"
+      ]
+    },
+    {
+      "key": "thiel-clarium",
+      "source": "thiel",
+      "target": "clarium",
+      "relType": "founded",
+      "role": "Founder",
+      "from": "2002",
+      "prominence": 1,
+      "sources": [
+        "wikipedia"
+      ]
+    },
+    {
+      "key": "thiel-valar",
+      "source": "thiel",
+      "target": "valar",
+      "relType": "co-founded",
+      "role": "Co-founder",
+      "from": "2010",
+      "prominence": 1,
+      "sources": [
+        "wikipedia"
+      ]
+    },
+    {
+      "key": "thiel-mithril",
+      "source": "thiel",
+      "target": "mithril",
+      "relType": "co-founded",
+      "role": "Co-founder",
+      "from": "2012",
+      "prominence": 2,
+      "sources": [
+        "wikipedia"
+      ]
+    },
+    {
+      "key": "thiel-stanford-review",
+      "source": "thiel",
+      "target": "stanford-review",
+      "relType": "co-founded",
+      "role": "Co-founder; first editor-in-chief (1987–1989)",
+      "from": "1987",
+      "prominence": 1,
+      "sources": [
+        "wikipedia"
+      ]
+    },
+    {
+      "key": "thiel-foundation",
+      "source": "thiel",
+      "target": "thiel-foundation",
+      "relType": "founded",
+      "role": "Founder; Thiel Fellowship (2010)",
+      "from": "2010",
+      "prominence": 1,
+      "sources": [
+        "venturebeat-fellowship"
+      ]
+    },
+    {
+      "key": "thiel-endorsed-trump",
+      "source": "thiel",
+      "target": "trump",
+      "relType": "endorsed",
+      "role": "Convention speaker and delegate, 2016",
+      "from": "2016",
+      "until": "2016",
+      "prominence": 3,
+      "sources": [
+        "abc-rnc-2016",
+        "wikipedia"
+      ]
+    },
+    {
+      "key": "thiel-trump-transition",
+      "source": "thiel",
+      "target": "trump-transition",
+      "relType": "serves-in",
+      "role": "Executive committee member",
+      "from": "2016-11",
+      "until": "2017-01",
+      "prominence": 2,
+      "sources": [
+        "p2016-transition",
+        "fortune-transition-2016"
+      ]
+    },
+    {
+      "key": "thiel-gawker",
+      "source": "thiel",
+      "target": "gawker",
+      "relType": "opposed",
+      "role": "Secretly financed lawsuits including Bollea v. Gawker Media",
+      "until": "2016",
+      "prominence": 2,
+      "sources": [
+        "cnbc-forbes-2016",
+        "nyt-sorkin-2016"
+      ]
+    },
+    {
+      "key": "masters-zero-to-one",
+      "source": "masters",
+      "target": "thiel",
+      "relType": "collaborated-with",
+      "role": "Co-author, Zero to One (2014)",
+      "from": "2014",
+      "prominence": 2,
+      "sources": [
+        "techcrunch-zero-to-one"
+      ]
+    },
+    {
+      "key": "masters-thiel-capital",
+      "source": "masters",
+      "target": "thiel-capital",
+      "relType": "former-role",
+      "role": "Chief operating officer",
+      "until": "2022",
+      "prominence": 2,
+      "sources": [
+        "wikipedia-masters",
+        "reuters-2023"
+      ]
+    },
+    {
+      "key": "masters-thiel-foundation",
+      "source": "masters",
+      "target": "thiel-foundation",
+      "relType": "former-role",
+      "role": "President",
+      "prominence": 1,
+      "sources": [
+        "wikipedia-masters"
+      ]
+    },
+    {
+      "key": "vance-mithril",
+      "source": "vance",
+      "target": "mithril",
+      "relType": "former-role",
+      "role": "Worked at Mithril before founding Narya Capital (2019)",
+      "prominence": 2,
+      "sources": [
+        "wikipedia-narya",
+        "reuters-2023"
+      ]
+    },
+    {
+      "key": "sacks-diversity-myth",
+      "source": "sacks",
+      "target": "thiel",
+      "relType": "collaborated-with",
+      "role": "Co-author, The Diversity Myth (1995)",
+      "from": "1995",
+      "prominence": 1,
+      "sources": [
+        "independent-diversity-myth"
+      ]
+    },
+    {
+      "key": "musk-paypal",
+      "source": "musk",
+      "target": "paypal",
+      "relType": "co-founded",
+      "role": "Founded X.com, which merged with Confinity in 2000",
+      "from": "2000",
+      "prominence": 1,
+      "sources": [
+        "wikipedia"
+      ]
+    },
+    {
+      "key": "lonsdale-palantir",
+      "source": "lonsdale",
+      "target": "palantir",
+      "relType": "co-founded",
+      "role": "Co-founder",
+      "from": "2003",
+      "prominence": 1,
+      "sources": [
+        "lonsdale-8vc"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "key": "born",
+      "date": "1967-10-11",
+      "title": "Born in Frankfurt am Main, West Germany",
+      "category": "personal",
+      "significance": 2,
+      "chapter": "early",
+      "sources": [
+        "wikidata"
+      ]
+    },
+    {
+      "key": "foster-city",
+      "date": "1977",
+      "title": "Family settles in Foster City, California",
+      "summary": "After living in Cleveland and in South West Africa (now Namibia).",
+      "category": "personal",
+      "significance": 1,
+      "chapter": "early",
+      "sources": [
+        "wikipedia"
+      ]
+    },
+    {
+      "key": "stanford-review",
+      "date": "1987",
+      "title": "Co-founds The Stanford Review",
+      "summary": "Serves as its first editor-in-chief until 1989.",
+      "category": "ideas",
+      "significance": 2,
+      "chapter": "early",
+      "participants": [
+        [
+          "stanford-review",
+          "publication"
+        ]
+      ],
+      "sources": [
+        "wikipedia"
+      ]
+    },
+    {
+      "key": "jd",
+      "date": "1992",
+      "title": "Graduates from Stanford Law School",
+      "summary": "Clerks for Judge J. L. Edmondson of the Eleventh Circuit, then works at Sullivan & Cromwell and Credit Suisse.",
+      "category": "career",
+      "significance": 1,
+      "chapter": "early",
+      "sources": [
+        "wikipedia",
+        "palantir-board"
+      ]
+    },
+    {
+      "key": "diversity-myth",
+      "date": "1995-09",
+      "title": "Publishes The Diversity Myth with David Sacks",
+      "category": "ideas",
+      "significance": 2,
+      "chapter": "early",
+      "participants": [
+        [
+          "sacks",
+          "co-author"
+        ]
+      ],
+      "sources": [
+        "independent-diversity-myth"
+      ]
+    },
+    {
+      "key": "confinity",
+      "date": "1998",
+      "title": "Co-founds Confinity, the company that becomes PayPal",
+      "category": "career",
+      "significance": 3,
+      "chapter": "paypal",
+      "participants": [
+        [
+          "paypal",
+          "company"
+        ]
+      ],
+      "sources": [
+        "palantir-board",
+        "wikipedia"
+      ]
+    },
+    {
+      "key": "xcom-merger",
+      "date": "2000",
+      "title": "Confinity merges with Elon Musk's X.com",
+      "summary": "Thiel becomes PayPal's chief executive.",
+      "category": "career",
+      "significance": 2,
+      "chapter": "paypal",
+      "participants": [
+        [
+          "musk",
+          "X.com founder"
+        ],
+        [
+          "paypal",
+          "company"
+        ]
+      ],
+      "sources": [
+        "palantir-board",
+        "wikipedia"
+      ]
+    },
+    {
+      "key": "ebay-sale",
+      "date": "2002-10",
+      "title": "eBay acquires PayPal for $1.5 billion",
+      "summary": "Eight months after PayPal's February 15 IPO. Thiel's roughly 3.7% stake is worth about $55 million.",
+      "category": "finance",
+      "significance": 3,
+      "chapter": "paypal",
+      "participants": [
+        [
+          "paypal",
+          "company"
+        ]
+      ],
+      "sources": [
+        "wikipedia"
+      ]
+    },
+    {
+      "key": "palantir",
+      "date": "2003-05",
+      "title": "Incorporates Palantir and becomes its chairman",
+      "category": "career",
+      "significance": 3,
+      "chapter": "investing",
+      "participants": [
+        [
+          "palantir",
+          "company"
+        ],
+        [
+          "lonsdale",
+          "co-founder"
+        ]
+      ],
+      "sources": [
+        "palantir-board",
+        "wikipedia"
+      ]
+    },
+    {
+      "key": "facebook-investment",
+      "date": "2004-08",
+      "title": "Makes Facebook's first outside investment",
+      "summary": "$500,000 for a 10.2% stake.",
+      "category": "finance",
+      "significance": 3,
+      "chapter": "investing",
+      "participants": [
+        [
+          "meta",
+          "company"
+        ]
+      ],
+      "sources": [
+        "wikipedia"
+      ]
+    },
+    {
+      "key": "founders-fund",
+      "date": "2005",
+      "title": "Becomes a partner at Founders Fund",
+      "category": "career",
+      "significance": 2,
+      "chapter": "investing",
+      "participants": [
+        [
+          "founders-fund",
+          "firm"
+        ]
+      ],
+      "sources": [
+        "palantir-board"
+      ]
+    },
+    {
+      "key": "facebook-board",
+      "date": "2005",
+      "title": "Joins Facebook's board of directors",
+      "category": "career",
+      "significance": 2,
+      "chapter": "investing",
+      "participants": [
+        [
+          "meta",
+          "company"
+        ]
+      ],
+      "status": "unresolved",
+      "statusNote": "Palantir's disclosure dates the board seat from 2005; some accounts place it in 2004.",
+      "sources": [
+        "palantir-board"
+      ]
+    },
+    {
+      "key": "valleywag",
+      "date": "2007",
+      "title": "Gawker's Valleywag publishes \"Peter Thiel is totally gay, people\"",
+      "category": "personal",
+      "significance": 2,
+      "chapter": "gawker",
+      "participants": [
+        [
+          "gawker",
+          "publisher"
+        ]
+      ],
+      "sources": [
+        "wikipedia",
+        "cnbc-forbes-2016"
+      ]
+    },
+    {
+      "key": "cato-essay",
+      "date": "2009-04-13",
+      "title": "\"The Education of a Libertarian\" in Cato Unbound",
+      "summary": "Writes that he no longer believes freedom and democracy are compatible.",
+      "category": "ideas",
+      "significance": 3,
+      "chapter": "ideas",
+      "sources": [
+        "cato-2009"
+      ]
+    },
+    {
+      "key": "fellowship",
+      "date": "2010-09",
+      "title": "Launches the Thiel Fellowship",
+      "summary": "$100,000 over two years for people under 20 who leave or skip college to build something.",
+      "category": "ideas",
+      "significance": 2,
+      "chapter": "investing",
+      "participants": [
+        [
+          "thiel-foundation",
+          "sponsor"
+        ]
+      ],
+      "sources": [
+        "venturebeat-fellowship"
+      ]
+    },
+    {
+      "key": "nz-citizenship",
+      "date": "2011-06-30",
+      "title": "Granted New Zealand citizenship",
+      "summary": "Approved by ministerial decision; made public on February 1, 2017.",
+      "category": "personal",
+      "significance": 2,
+      "chapter": "",
+      "sources": [
+        "nz-dia"
+      ]
+    },
+    {
+      "key": "mithril",
+      "date": "2012",
+      "title": "Launches Mithril Capital",
+      "category": "career",
+      "significance": 1,
+      "chapter": "investing",
+      "participants": [
+        [
+          "mithril",
+          "firm"
+        ]
+      ],
+      "sources": [
+        "wikipedia"
+      ]
+    },
+    {
+      "key": "facebook-sale",
+      "date": "2012-08",
+      "title": "Sells nearly all remaining Facebook shares",
+      "summary": "After the May 2012 IPO; more than $1 billion in total.",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "investing",
+      "participants": [
+        [
+          "meta",
+          "company"
+        ]
+      ],
+      "sources": [
+        "wikipedia"
+      ]
+    },
+    {
+      "key": "zero-to-one",
+      "date": "2014-09-16",
+      "title": "Publishes Zero to One with Blake Masters",
+      "summary": "Built from Masters's notes on Thiel's 2012 Stanford course on startups.",
+      "category": "ideas",
+      "significance": 2,
+      "chapter": "ideas",
+      "participants": [
+        [
+          "masters",
+          "co-author"
+        ]
+      ],
+      "sources": [
+        "techcrunch-zero-to-one"
+      ]
+    },
+    {
+      "key": "bollea-verdict",
+      "date": "2016-03",
+      "title": "Florida jury awards Hulk Hogan $140 million against Gawker",
+      "category": "legal",
+      "significance": 2,
+      "chapter": "gawker",
+      "participants": [
+        [
+          "gawker",
+          "defendant"
+        ]
+      ],
+      "sources": [
+        "cnbc-forbes-2016"
+      ]
+    },
+    {
+      "key": "gawker-funding-revealed",
+      "date": "2016-05-24",
+      "title": "Forbes reveals Thiel financed the Gawker litigation",
+      "summary": "He confirms it to The New York Times the next day.",
+      "category": "legal",
+      "significance": 3,
+      "chapter": "gawker",
+      "participants": [
+        [
+          "gawker",
+          "defendant"
+        ]
+      ],
+      "sources": [
+        "cnbc-forbes-2016",
+        "nyt-sorkin-2016"
+      ]
+    },
+    {
+      "key": "rnc-speech",
+      "date": "2016-07-21",
+      "title": "Speaks at the Republican National Convention",
+      "summary": "The first convention speaker to say he was gay.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "politics",
+      "participants": [
+        [
+          "trump",
+          "nominee"
+        ]
+      ],
+      "sources": [
+        "abc-rnc-2016",
+        "lgbtqnation-rnc-2016"
+      ]
+    },
+    {
+      "key": "privacy-oped",
+      "date": "2016-08-15",
+      "title": "New York Times op-ed defends the Gawker litigation",
+      "category": "ideas",
+      "significance": 1,
+      "chapter": "gawker",
+      "sources": [
+        "nyt-oped-2016",
+        "cnn-oped-2016"
+      ]
+    },
+    {
+      "key": "gawker-settlement",
+      "date": "2016-11-02",
+      "title": "Gawker settles with Bollea for $31 million",
+      "summary": "Following its June 2016 bankruptcy filing.",
+      "category": "legal",
+      "significance": 2,
+      "chapter": "gawker",
+      "participants": [
+        [
+          "gawker",
+          "defendant"
+        ]
+      ],
+      "sources": [
+        "cnn-settlement-2016"
+      ]
+    },
+    {
+      "key": "transition",
+      "date": "2016-11-11",
+      "title": "Named to Trump's transition executive committee",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "politics",
+      "participants": [
+        [
+          "trump-transition",
+          "committee"
+        ],
+        [
+          "trump",
+          "president-elect"
+        ]
+      ],
+      "sources": [
+        "p2016-transition",
+        "fortune-transition-2016"
+      ]
+    },
+    {
+      "key": "meta-exit",
+      "date": "2022-02-07",
+      "title": "Announces he will leave Meta's board",
+      "summary": "To concentrate on the 2022 midterm campaigns.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "senate-2022",
+      "participants": [
+        [
+          "meta",
+          "company"
+        ]
+      ],
+      "sources": [
+        "fortune-meta-2022"
+      ]
+    },
+    {
+      "key": "midterms-2022",
+      "date": "2022-11-08",
+      "title": "Vance wins Ohio's Senate seat; Masters loses in Arizona",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "senate-2022",
+      "participants": [
+        [
+          "vance",
+          "candidate"
+        ],
+        [
+          "masters",
+          "candidate"
+        ]
+      ],
+      "sources": [
+        "reuters-2023"
+      ]
+    },
+    {
+      "key": "no-2024-giving",
+      "date": "2023-04-27",
+      "title": "Reuters: Thiel will not fund candidates in 2024",
+      "summary": "People close to him cite his view that the party is too focused on cultural issues.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "politics",
+      "sources": [
+        "reuters-2023"
+      ]
+    },
+    {
+      "key": "vance-ticket",
+      "date": "2024-07-15",
+      "title": "Trump picks JD Vance as his running mate",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "senate-2022",
+      "participants": [
+        [
+          "vance",
+          "nominee"
+        ],
+        [
+          "trump",
+          "nominee"
+        ]
+      ],
+      "sources": [
+        "wapo-2024"
+      ]
+    },
+    {
+      "key": "vance-vp",
+      "date": "2025-01-20",
+      "title": "Vance takes office as vice president",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "senate-2022",
+      "participants": [
+        [
+          "vance",
+          "vice president"
+        ]
+      ],
+      "sources": [
+        "whitehouse-vance"
+      ]
+    },
+    {
+      "key": "douthat",
+      "date": "2025-06-26",
+      "title": "Discusses the Antichrist with Ross Douthat",
+      "category": "ideas",
+      "significance": 2,
+      "chapter": "religion",
+      "sources": [
+        "douthat-2025"
+      ]
+    },
+    {
+      "key": "antichrist-lectures",
+      "date": "2025-09-15",
+      "date_end": "2025-10-06",
+      "title": "Gives four off-the-record lectures on the Antichrist in San Francisco",
+      "category": "ideas",
+      "significance": 2,
+      "chapter": "religion",
+      "sources": [
+        "sfstandard-2025"
+      ]
+    }
+  ],
+  "statements": [
+    {
+      "key": "freedom-2009",
+      "issue": "Democracy and freedom",
+      "date": "2009-04-13",
+      "venue": "\"The Education of a Libertarian,\" Cato Unbound",
+      "quote": "I remain committed to the faith of my teenage years: to authentic human freedom as a precondition for the highest good.",
+      "source": "cato-2009"
+    },
+    {
+      "key": "democracy-2009",
+      "issue": "Democracy and freedom",
+      "date": "2009-04-13",
+      "venue": "\"The Education of a Libertarian,\" Cato Unbound",
+      "quote": "I no longer believe that freedom and democracy are compatible.",
+      "source": "cato-2009"
+    },
+    {
+      "key": "franchise-2009",
+      "issue": "Democracy and freedom",
+      "date": "2009-04-13",
+      "venue": "\"The Education of a Libertarian,\" Cato Unbound",
+      "quote": "Since 1920, the vast increase in welfare beneficiaries and the extension of the franchise to women ... have rendered the notion of \"capitalist democracy\" into an oxymoron.",
+      "summary": "In a note added after publication: \"While I don't think any class of people should be disenfranchised, I have little hope that voting will make things better.\"",
+      "source": "cato-2009"
+    },
+    {
+      "key": "contrarian-2014",
+      "issue": "Business and technology",
+      "date": "2014-09-16",
+      "venue": "Zero to One",
+      "quote": "What important truth do very few people agree with you on?",
+      "summary": "The question he says he asks in every job interview.",
+      "source": "zero-to-one-book"
+    },
+    {
+      "key": "courage-2014",
+      "issue": "Business and technology",
+      "date": "2014-09-16",
+      "venue": "Zero to One",
+      "quote": "Brilliant thinking is rare, but courage is in even shorter supply than genius.",
+      "source": "zero-to-one-book"
+    },
+    {
+      "key": "monopoly-2014",
+      "issue": "Business and technology",
+      "date": "2014-09-16",
+      "venue": "Zero to One",
+      "quote": "Only one thing can allow a business to transcend the daily brute struggle for survival: monopoly profits.",
+      "source": "zero-to-one-book"
+    },
+    {
+      "key": "competition-2014",
+      "issue": "Business and technology",
+      "date": "2014-09-12",
+      "venue": "\"Competition Is for Losers,\" The Wall Street Journal",
+      "quote": "Capitalism and competition are opposites.",
+      "verbatim": false,
+      "summary": "The essay's central claim, as quoted in coverage of it; the exact sentence couldn't be checked against the original.",
+      "source": "wsj-2014"
+    },
+    {
+      "key": "deterrence-2016",
+      "issue": "The press",
+      "date": "2016-05-25",
+      "venue": "Interview with The New York Times, on funding the Gawker lawsuits",
+      "quote": "It's less about revenge and more about specific deterrence.",
+      "summary": "He also called the funding \"one of my greater philanthropic things that I've done.\"",
+      "source": "nyt-sorkin-2016"
+    },
+    {
+      "key": "proud-2016",
+      "issue": "Politics",
+      "date": "2016-07-21",
+      "venue": "Republican National Convention",
+      "quote": "I am proud to be gay. I am proud to be a Republican. But most of all I am proud to be an American.",
+      "source": "fortune-rnc-2016"
+    },
+    {
+      "key": "culture-wars-2016",
+      "issue": "Politics",
+      "date": "2016-07-21",
+      "venue": "Republican National Convention",
+      "quote": "I don't pretend to agree with every plank in our party's platform; but fake culture wars only distract us from our economic decline, and nobody in this race is being honest about it except Donald Trump.",
+      "source": "fortune-rnc-2016"
+    },
+    {
+      "key": "bathrooms-2016",
+      "issue": "Politics",
+      "date": "2016-07-21",
+      "venue": "Republican National Convention",
+      "quote": "When I was a kid, the great debate was about how to defeat the Soviet Union. And we won. Now we are told that the great debate is about who gets to use which bathroom.",
+      "source": "fortune-rnc-2016"
+    },
+    {
+      "key": "silicon-valley-2016",
+      "issue": "Politics",
+      "date": "2016-07-21",
+      "venue": "Republican National Convention",
+      "quote": "Where I work in Silicon Valley, it's hard to see where America has gone wrong. My industry has made a lot of progress in computers and in software, and, of course, it's made a lot of money. But Silicon Valley is a small place.",
+      "source": "fortune-rnc-2016"
+    }
+  ],
+  "ideas": {
+    "traditions": [
+      {
+        "label": "Libertarianism",
+        "atlasId": "libertarianism",
+        "basis": "Self-described",
+        "context": "He calls himself \"libertarian\" in his 2009 Cato Unbound essay, in the same essay that rejects democracy as a guarantor of freedom.",
+        "sources": [
+          "cato-2009"
+        ]
+      },
+      {
+        "label": "Tech right",
+        "atlasId": "tech-right",
+        "basis": "Worldview Atlas",
+        "context": "The Atlas lists him among the founders of this tradition, which pairs technology investment with conservative and nationalist politics, and cites his 2009 essay and Zero to One as founding texts.",
+        "sources": []
+      }
+    ],
+    "influences": [
+      {
+        "name": "René Girard",
+        "note": "French literary theorist he encountered at Stanford. Girard's account of imitation, rivalry and scapegoating runs through Thiel's writing on competition and on Christianity.",
+        "sources": [
+          "america-2014",
+          "wikipedia"
+        ]
+      }
+    ],
+    "works": [
+      {
+        "title": "The Diversity Myth",
+        "year": "1995",
+        "kind": "Book",
+        "detail": "With David O. Sacks",
+        "source": "independent-diversity-myth"
+      },
+      {
+        "title": "The Education of a Libertarian",
+        "year": "2009",
+        "kind": "Essay",
+        "detail": "Cato Unbound",
+        "source": "cato-2009"
+      },
+      {
+        "title": "Zero to One",
+        "year": "2014",
+        "kind": "Book",
+        "detail": "With Blake Masters",
+        "source": "zero-to-one-book"
+      },
+      {
+        "title": "Competition Is for Losers",
+        "year": "2014",
+        "kind": "Essay",
+        "detail": "The Wall Street Journal",
+        "source": "wsj-2014"
+      },
+      {
+        "title": "The Online Privacy Debate Won't End With Gawker",
+        "year": "2016",
+        "kind": "Op-ed",
+        "detail": "The New York Times",
+        "source": "nyt-oped-2016"
+      }
+    ],
+    "featuredQuotes": [
+      "democracy-2009",
+      "culture-wars-2016"
+    ]
+  },
+  "chapters": [
+    {
+      "key": "early",
+      "title": "Frankfurt, Foster City and Stanford",
+      "dek": "A philosophy student who built a conservative newspaper and a first book around campus politics.",
+      "body": "Thiel was born in Frankfurt am Main on October 11, 1967 [[wikidata]]. His family moved to the United States when he was an infant, lived in Cleveland, spent several years in South West Africa (now Namibia), and settled in Foster City, California, in 1977 [[wikipedia]].\n\nHe studied philosophy at Stanford, graduating in 1989. In 1987 he co-founded The Stanford Review, a student paper set up to challenge what its founders saw as political conformity on campus, and was its first editor-in-chief [[wikipedia, palantir-board]]. The argument became his first book, The Diversity Myth (1995), written with David Sacks, which criticised Stanford's multicultural curriculum [[independent-diversity-myth]].\n\nAfter Stanford Law School (JD, 1992) he clerked for Judge J. L. Edmondson of the Eleventh Circuit, practised securities law at Sullivan & Cromwell and traded derivatives at Credit Suisse, then returned to California in 1996 to start Thiel Capital Management [[wikipedia]]."
+    },
+    {
+      "key": "paypal",
+      "title": "PayPal and the first fortune",
+      "dek": "A payments start-up, a merger with Elon Musk's company, and a $1.5 billion sale.",
+      "body": "In 1998 Thiel co-founded Confinity, whose payments product, PayPal, launched the following year [[palantir-board, wikipedia]]. Confinity merged with Elon Musk's X.com in 2000, and Thiel served as PayPal's chief executive, president and chairman from 2000 until its sale [[palantir-board]].\n\nPayPal went public on February 15, 2002. That October eBay bought it for $1.5 billion, which left Thiel's stake of roughly 3.7 percent worth about $55 million [[wikipedia]].\n\nSeveral early PayPal staff, among them Musk and Sacks, went on to found or fund major technology companies, a group later nicknamed the \"PayPal Mafia\" [[wikipedia]]. Both later became political figures in their own right."
+    },
+    {
+      "key": "investing",
+      "title": "Palantir, Facebook and Founders Fund",
+      "dek": "The companies and funds that made him a billionaire, and employed two future Senate candidates.",
+      "body": "Thiel incorporated Palantir in May 2003 with a small group of co-founders including Joe Lonsdale, and has chaired its board since [[palantir-board, lonsdale-8vc, wikipedia]].\n\nIn August 2004 he paid $500,000 for 10.2 percent of Facebook, the company's first outside investment [[wikipedia]]. He sat on its board, which became Meta Platforms' board in 2021, until 2022 [[palantir-board, fortune-meta-2022]]. After Facebook's 2012 IPO he sold nearly all his remaining shares, for more than $1 billion in total [[wikipedia]].\n\nHe has been a partner at Founders Fund since 2005 [[palantir-board, founders-fund-team]]. He also started Clarium Capital, a macro hedge fund, after the PayPal sale, co-founded Valar Ventures in 2010 and Mithril Capital in 2012, and has been president of Thiel Capital since 2011 [[wikipedia, palantir-board]]. In 2010 his foundation launched the Thiel Fellowship, which pays people under 20 $100,000 to leave or skip college and build something [[venturebeat-fellowship]].\n\nTwo of these firms later supplied Republican Senate candidates. JD Vance worked at Mithril before starting his own fund, Narya Capital, in 2019. Blake Masters, Thiel's co-author on Zero to One, was chief operating officer of Thiel Capital and president of the Thiel Foundation [[wikipedia-narya, wikipedia-masters]]."
+    },
+    {
+      "key": "ideas",
+      "title": "A libertarian against democracy",
+      "dek": "The 2009 essay that defined his politics, and the case for monopoly.",
+      "body": "Thiel still used the libertarian label in 2009, but the essay that made his politics widely discussed qualified it sharply. In \"The Education of a Libertarian,\" published by Cato Unbound that April, he wrote:\n\n> I no longer believe that freedom and democracy are compatible. [[cato-2009]]\n\nHe argued that the growth of welfare spending and the extension of the vote to women since 1920 had made \"capitalist democracy\" an oxymoron. After the line drew wide criticism, he added a note saying he did not think \"any class of people should be disenfranchised,\" but had \"little hope that voting will make things better\" [[cato-2009]]. His alternative was technological: cyberspace, outer space and seasteading as frontiers beyond the reach of existing politics.\n\nA second argument runs through his business writing: that lasting companies escape competition rather than win it. It is the core of Zero to One (2014), which grew out of Blake Masters's notes on a course Thiel taught at Stanford in 2012 [[techcrunch-zero-to-one]], and of a Wall Street Journal essay adapted from the book, which argued that capitalism and competition are opposites [[wsj-2014]]."
+    },
+    {
+      "key": "politics",
+      "title": "From Ron Paul to Donald Trump",
+      "dek": "A selective donor who backed Trump early in 2016, then pulled back.",
+      "body": "FEC filings record Thiel's federal giving from 2000, mostly to Republican candidates and party committees, including Ron Paul's House campaigns [[fec-sa-thiel]]. In the 2012 cycle he gave $2.6 million to Endorse Liberty, a super PAC supporting Paul's presidential bid [[fec-sa-thiel, wikipedia]].\n\nIn 2016 he was one of very few prominent technology figures to back Donald Trump. He was a Trump delegate and, on July 21, spoke at the Republican National Convention in Cleveland, where he became the first convention speaker to say he was gay [[wikipedia, abc-rnc-2016]]:\n\n> I am proud to be gay. I am proud to be a Republican. But most of all I am proud to be an American. [[fortune-rnc-2016]]\n\nThe same speech said \"fake culture wars only distract us from our economic decline,\" and contrasted the Cold War with a debate over \"who gets to use which bathroom\" [[fortune-rnc-2016]]. In October he gave $1 million to Make America Number 1, a pro-Trump super PAC, and $250,000 to the Trump Victory joint fundraising committee [[fec-sa-thiel]]. After the election he was named to the executive committee of Trump's transition [[p2016-transition, fortune-transition-2016]].\n\nHe did not repeat the role. FEC records show no comparable gifts to Trump's 2020 campaign, and in April 2023 Reuters reported that he had told associates he would fund no candidates in 2024, because he thought the party was too focused on cultural issues [[fec-sa-thiel, reuters-2023]]. His filings since then show gifts to party committees and a $1.5 million contribution to Club for Growth Action in February 2026 [[fec-sa-thiel]]."
+    },
+    {
+      "key": "senate-2022",
+      "title": "Vance, Masters and the 2022 Senate races",
+      "dek": "$35 million to two super PACs, each built around a former employee.",
+      "body": "The 2022 Senate primaries were Thiel's largest political outlay. In March and April 2021 he gave $10 million each to two new super PACs, Protect Ohio Values PAC and Saving Arizona PAC. By October 2022 his contributions had reached $15 million to the Ohio committee and $20 million to the Arizona one [[fec-sa-thiel]].\n\nEach committee spent mainly on one candidate, both former Thiel employees. Protect Ohio Values reported $14.7 million in independent expenditures supporting JD Vance; Saving Arizona reported $13.0 million supporting Blake Masters, and more against his primary and general-election opponents [[fec-ie-2022]]. Federal law limited an individual's direct gifts to a candidate's campaign to $2,900 per election that cycle, so nearly all of this money moved through the super PACs rather than the campaigns.\n\nIn February 2022 Thiel announced he would leave Meta's board to concentrate on the midterms [[fortune-meta-2022]]. Vance won in Ohio; Masters won his primary and lost to Senator Mark Kelly in November [[reuters-2023]].\n\nIn July 2024 Trump chose Vance as his running mate. Reporting at the time traced the technology investors, Thiel among them, who had backed Vance's career [[wapo-2024]]. Vance took office as vice president in January 2025 [[whitehouse-vance]]."
+    },
+    {
+      "key": "gawker",
+      "title": "The Gawker case",
+      "dek": "Secret litigation funding that ended a publisher.",
+      "body": "In 2007 Gawker Media's Valleywag blog published a post headlined \"Peter Thiel is totally gay, people\" [[wikipedia]]. Thiel later secretly paid for lawsuits against the company, including former wrestler Terry Bollea's (Hulk Hogan's) suit over a sex tape Gawker had published in 2012 [[cnbc-forbes-2016, nyt-sorkin-2016]]. In March 2016 a Florida jury awarded Bollea $140 million [[cnbc-forbes-2016]].\n\nForbes revealed Thiel's role on May 24, 2016. The next day he confirmed it to The New York Times, which reported that he had spent about $10 million on the litigation [[nyt-sorkin-2016, wikipedia]]:\n\n> It's less about revenge and more about specific deterrence. [[nyt-sorkin-2016]]\n\nGawker Media filed for bankruptcy in June and in November settled with Bollea for $31 million [[cnn-settlement-2016]]. In an August op-ed Thiel presented the case as a defence of private individuals, arguing that journalism does not require indiscriminate access to people's sex lives [[nyt-oped-2016]]. Reporters and First Amendment specialists warned that it showed how a wealthy patron could use litigation to silence critics [[techcrunch-gawker-2016]]."
+    },
+    {
+      "key": "religion",
+      "title": "Girard, Christianity and the Antichrist",
+      "dek": "A theology of technology, and lately of catastrophe.",
+      "body": "Thiel describes himself as a Christian. His account of faith draws on René Girard, the French literary theorist he encountered at Stanford, whose theory of imitation, rivalry and scapegoating he cites as a lasting influence [[america-2014, wikipedia]]. In a 2014 interview he argued that Christianity is compatible with technological progress and can motivate it [[america-2014]].\n\nMore recently his religious arguments have turned to the end times. In a June 2025 interview with Ross Douthat he described an Antichrist who might come to power promising peace and safety, through global governance that halts science and technology [[douthat-2025]]. That September and October he gave four off-the-record lectures on the Antichrist at San Francisco's Commonwealth Club, organized by the ACTS 17 Collective. They were not recorded, so public accounts of them come from attendees [[sfstandard-2025]]."
+    }
+  ]
+}

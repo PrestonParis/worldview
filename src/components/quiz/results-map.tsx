@@ -35,6 +35,7 @@ export function ResultsMap({
   kicker,
   title,
   description,
+  matchBase,
 }: {
   ranked: { id: string; match: number }[]; // every tradition, best match first
   you: MapPoint;
@@ -43,6 +44,7 @@ export function ResultsMap({
   kicker: string;
   title: string;
   description: string;
+  matchBase: string; // a tradition's row in the ranking is `${matchBase}${id}`
 }) {
   const [hovered, setHovered] = useState<string | null>(null);
   const [selected, setSelected] = useState(ranked[0].id);
@@ -123,6 +125,8 @@ export function ResultsMap({
             key={i.id}
             type="button"
             tabIndex={isNumbered ? 0 : -1}
+            // The unnumbered dots are pointer-only; the closest list carries the ranking.
+            aria-hidden={isNumbered ? undefined : true}
             aria-label={`${rank}. ${i.name}, ${matchOf.get(i.id)}% match`}
             aria-pressed={selected === i.id}
             onClick={() => setSelected(i.id)}
@@ -235,7 +239,7 @@ export function ResultsMap({
         </div>
         <p className="mt-3 line-clamp-4 text-sm leading-6 text-slate-700 dark:text-slate-300">{inspected.description}</p>
         <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm">
-          <a href={`#match-${inspected.id}`} onClick={() => setFocused(false)} className="font-semibold text-slate-950 underline decoration-slate-300 underline-offset-4 dark:text-white dark:decoration-slate-600">
+          <a href={`${matchBase}${inspected.id}`} onClick={() => setFocused(false)} className="font-semibold text-slate-950 underline decoration-slate-300 underline-offset-4 dark:text-white dark:decoration-slate-600">
             Axis by axis
           </a>
           <Link href={`/atlas/philosophies/${inspected.id}`} className="font-semibold text-slate-950 underline decoration-slate-300 underline-offset-4 dark:text-white dark:decoration-slate-600">
@@ -244,7 +248,7 @@ export function ResultsMap({
         </div>
       </div>
       <div>
-        <p className={small}>Closest to {youLabel === "You" ? "you" : "them"}</p>
+        <p className={small}>Closest to {youLabel === "You" ? "you" : "this profile"}</p>
         <ol className="mt-1.5 space-y-px">
           {closest.map((m, i) => {
             const t = byId.get(m.id)!;

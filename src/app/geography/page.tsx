@@ -18,7 +18,7 @@ export default async function GeographyPage() {
 
   return (
     <div className="flex h-screen flex-col bg-neutral-900">
-      <Header accountLabel={user.displayName ?? user.email ?? "Account"} previews={previews} />
+      <Header accountLabel={user.displayName ?? user.email ?? "Account"} owner previews={previews} />
 
       <div className="shrink-0 border-b border-neutral-800 bg-neutral-950 px-4 py-2 text-sm">
         <span className="font-medium text-neutral-100">{content.title}</span>

@@ -138,7 +138,7 @@ await runImport("wikipedia-races", async (pg) => {
 
   const counts = {
     races: 0, missingRaces: 0, openSeats: 0, nominees: 0, entitiesCreated: 0,
-    entitiesRenamed: 0, retired: 0, redistricted: 0, ratings: 0,
+    entitiesRenamed: 0, retired: 0, staleIncumbents: 0, ratings: 0,
   };
   const { rows: politicians } = await pg.query("select id, name from entities where type = 'politician'");
   const nameById = new Map(politicians.map((p) => [p.id, p.name]));
@@ -266,13 +266,15 @@ await runImport("wikipedia-races", async (pg) => {
       }
 
       // Rows not on the general-election ballot: a retiring incumbent, an
-      // earlier nominee who dropped out, or — after mid-decade redistricting
-      // — a member the scaffold placed here who now sits in another seat.
+      // earlier nominee who dropped out, or someone flagged incumbent here
+      // who no longer holds the seat (moved by mid-decade redistricting, or
+      // replaced mid-term). That last kind is marked not running; the
+      // cleanup after the loop drops it when they are on another ballot.
       for (const row of existing) {
         if (used.has(row.candidate_entity_id)) continue;
         if (row.incumbent && incumbentEntityId && row.candidate_entity_id !== incumbentEntityId) {
-          counts.redistricted += 1;
-          if (!DRY_RUN) await pg.query("UPDATE candidacies SET incumbent = false, status = 'redistricted' WHERE id = $1", [row.id]);
+          counts.staleIncumbents += 1;
+          if (!DRY_RUN) await pg.query("UPDATE candidacies SET incumbent = false, status = 'not_running' WHERE id = $1", [row.id]);
           continue;
         }
         if (!["nominee", "primary_winner"].includes(row.status)) continue;
@@ -307,6 +309,20 @@ await runImport("wikipedia-races", async (pg) => {
         );
       }
     }
+  }
+  // A member running in a new district keeps no row in their old one, or
+  // the old race would list them once it is past.
+  if (!DRY_RUN) {
+    const { rowCount } = await pg.query(
+      `DELETE FROM candidacies c USING elections e
+        WHERE e.id = c.election_id AND e.cycle = $1 AND NOT c.incumbent AND c.status = 'not_running'
+          AND EXISTS (
+            SELECT 1 FROM candidacies o JOIN elections oe ON oe.id = o.election_id
+             WHERE o.candidate_entity_id = c.candidate_entity_id AND oe.cycle = $1
+               AND o.election_id <> c.election_id AND o.status = 'nominee')`,
+      [YEAR],
+    );
+    counts.movedRowsDropped = rowCount;
   }
   console.log("  ", counts);
   return { inserted: counts.nominees + counts.ratings, updated: counts.races };

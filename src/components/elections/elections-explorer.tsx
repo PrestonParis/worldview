@@ -5,6 +5,8 @@ import Link from "next/link";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { SortTh, useTableSort } from "@/components/data/sortable-table";
 import { SearchInput } from "@/components/search/search-input";
+import { MyRaceTag, useIsMyRace } from "@/components/my-government/highlights";
+import { useMyGovernment } from "@/components/my-government/use-my-government";
 import { US_STATE_GRID, US_STATE_GRID_COLS, US_STATE_GRID_ROWS, US_STATE_NAMES } from "@/lib/money/us-states";
 import {
   HANDICAPPERS,
@@ -186,13 +188,19 @@ function matchup(race: RaceSummary): string {
 function RaceCard({ race }: { race: RaceSummary }) {
   const major = race.nominees.filter((n) => n.party);
   const others = race.nominees.length - major.length;
+  const mine = useIsMyRace(race.code);
   return (
     <Link
       href={`/elections/${race.id}`}
-      className="block rounded-lg border border-slate-200 bg-white px-3 py-2.5 transition-colors hover:border-slate-400 dark:border-slate-800 dark:bg-slate-950 dark:hover:border-slate-600"
+      className={`block rounded-lg border bg-white px-3 py-2.5 transition-colors hover:border-slate-400 dark:bg-slate-950 dark:hover:border-slate-600 ${
+        mine ? "border-blue-500 ring-1 ring-blue-500 dark:border-blue-400 dark:ring-blue-400" : "border-slate-200 dark:border-slate-800"
+      }`}
     >
       <div className="flex items-baseline justify-between gap-2">
-        <span className="truncate text-sm font-semibold text-slate-950 dark:text-white">{raceTitle(race)}</span>
+        <span className="flex min-w-0 items-baseline gap-1.5">
+          <span className="truncate text-sm font-semibold text-slate-950 dark:text-white">{raceTitle(race)}</span>
+          <MyRaceTag code={race.code} />
+        </span>
         {race.openSeat ? (
           <span className="shrink-0 rounded bg-amber-100 px-1.5 text-[10px] font-semibold uppercase text-amber-800 dark:bg-amber-950 dark:text-amber-300">
             Open seat
@@ -242,11 +250,16 @@ function RaceCard({ race }: { race: RaceSummary }) {
 }
 
 function RaceChip({ race }: { race: RaceSummary }) {
+  const mine = useIsMyRace(race.code);
   return (
     <Link
       href={`/elections/${race.id}`}
-      title={[raceTitle(race), matchup(race), race.openSeat ? "open seat" : ""].filter(Boolean).join(" · ")}
-      className="rounded border border-slate-200 px-1.5 py-0.5 font-mono text-[11px] text-slate-700 hover:border-slate-400 hover:text-slate-950 dark:border-slate-800 dark:text-slate-300 dark:hover:border-slate-600 dark:hover:text-white"
+      title={[raceTitle(race), matchup(race), race.openSeat ? "open seat" : "", mine ? "on your ballot" : ""].filter(Boolean).join(" · ")}
+      className={`rounded border px-1.5 py-0.5 font-mono text-[11px] ${
+        mine
+          ? "border-blue-600 bg-blue-600 font-semibold text-white hover:bg-blue-700 dark:border-blue-400 dark:bg-blue-500"
+          : "border-slate-200 text-slate-700 hover:border-slate-400 hover:text-slate-950 dark:border-slate-800 dark:text-slate-300 dark:hover:border-slate-600 dark:hover:text-white"
+      }`}
     >
       {race.code}
       {race.special ? "*" : ""}
@@ -354,6 +367,7 @@ function StateTiles({
   styleFor: (race: RaceSummary) => { fill: string; text: string } | null;
   describe: (race: RaceSummary) => string;
 }) {
+  const myState = useMyGovernment()?.stateCode;
   const byState = new Map<string, RaceSummary[]>();
   for (const race of races) {
     if (race.stateAbbr) byState.set(race.stateAbbr, [...(byState.get(race.stateAbbr) ?? []), race]);
@@ -392,9 +406,11 @@ function StateTiles({
             key={cell.abbr}
             role="listitem"
             href={`/elections/${main.id}`}
-            title={list.map(describe).join("\n")}
+            title={[...list.map(describe), cell.abbr === myState ? "Your state" : ""].filter(Boolean).join("\n")}
             style={{ ...position, background: style.fill, color: style.text }}
-            className={`${common} relative transition-transform hover:z-10 hover:scale-110 hover:shadow-md`}
+            className={`${common} relative transition-transform hover:z-10 hover:scale-110 hover:shadow-md ${
+              cell.abbr === myState ? "z-10 ring-2 ring-slate-950 ring-offset-2 ring-offset-[var(--background)] dark:ring-white" : ""
+            }`}
           >
             {cell.abbr}
             {list.length > 1 ? (
@@ -464,6 +480,7 @@ function ResultsTable({ races }: { races: RaceSummary[] }) {
                 <span className="font-mono text-xs font-semibold">{race.code}</span>
                 {race.special ? <span className="ml-1.5 text-xs text-slate-500">special</span> : null}
               </Link>
+              <span className="ml-1.5"><MyRaceTag code={race.code} /></span>
             </td>
             <td className="py-2 pr-3">
               {race.result ? (
@@ -630,7 +647,7 @@ export function ElectionsExplorer({
               <ResultsSummary races={races} office={office} />
               <section className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
                 {mapped ? (
-                  <div className="space-y-3 lg:sticky lg:top-6">
+                  <div className="mx-auto w-full max-w-3xl space-y-3 lg:col-span-2">
                     <StateTiles
                       races={races}
                       styleFor={(race) => (race.result ? resultStyle(race.result.winnerParty, race.result.marginPct) : null)}
@@ -643,13 +660,15 @@ export function ElectionsExplorer({
                     <ResultsLegend />
                   </div>
                 ) : null}
-                <div className={mapped ? "" : "lg:col-span-2"}>
-                  <h2 className="mb-1 text-base font-semibold text-slate-950 dark:text-white">
-                    {cycle} {officeLabel} results
-                  </h2>
-                  <p className="mb-2 text-xs text-slate-500 dark:text-slate-400">Closest races first · margin in percentage points</p>
-                  <ResultsTable races={races.filter((race) => race.code !== "US")} />
-                </div>
+                {mapped ? null : (
+                  <div className="lg:col-span-2">
+                    <h2 className="mb-1 text-base font-semibold text-slate-950 dark:text-white">
+                      {cycle} {officeLabel} results
+                    </h2>
+                    <p className="mb-2 text-xs text-slate-500 dark:text-slate-400">Closest races first · margin in percentage points</p>
+                    <ResultsTable races={races.filter((race) => race.code !== "US")} />
+                  </div>
+                )}
               </section>
             </>
           )}

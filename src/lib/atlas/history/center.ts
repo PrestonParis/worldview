@@ -1,13 +1,13 @@
-import { h, type TraditionHistory } from "./types";
+import { h, type TraditionCore } from "./types";
 
 // Liberal, centrist, and technocratic traditions.
 
-export const CENTER: Record<string, TraditionHistory> = {
+export const CENTER: Record<string, TraditionCore> = {
   "modern-liberalism": h({
     when: "1930s",
     where: "The United States",
     founders: ["Franklin D. Roosevelt", "John Dewey", "John Maynard Keynes (influence)"],
-    figures: ["John Dewey", "John Maynard Keynes", "John Kenneth Galbraith", "Arthur Schlesinger Jr.", "John Rawls", "Eleanor Roosevelt"],
+    figures: ["John Dewey", "John Maynard Keynes", "John Rawls"],
     texts: [
       ["Liberalism and Social Action", "John Dewey", "1935"],
       ["The General Theory of Employment, Interest and Money", "John Maynard Keynes", "1936"],
@@ -34,7 +34,7 @@ export const CENTER: Record<string, TraditionHistory> = {
     when: "1985–1998",
     where: "The United States and Britain",
     founders: ["Democratic Leadership Council", "Bill Clinton", "Tony Blair", "Anthony Giddens"],
-    figures: ["Anthony Giddens", "Al From", "Will Marshall", "William Galston", "Elaine Kamarck"],
+    figures: ["Anthony Giddens", "Al From", "Will Marshall"],
     texts: [
       ["Putting People First", "Bill Clinton and Al Gore", "1992"],
       ["The Third Way: The Renewal of Social Democracy", "Anthony Giddens", "1998"],
@@ -59,7 +59,7 @@ export const CENTER: Record<string, TraditionHistory> = {
     when: "1938–1947",
     where: "Paris and Mont Pèlerin, Switzerland",
     founders: ["Walter Lippmann Colloquium", "Friedrich Hayek", "Mont Pèlerin Society"],
-    figures: ["Friedrich Hayek", "Milton Friedman", "Ludwig von Mises", "Wilhelm Röpke", "Alexander Rüstow", "George Stigler"],
+    figures: ["Friedrich Hayek", "Milton Friedman", "Alexander Rüstow"],
     texts: [
       ["The Road to Serfdom", "Friedrich Hayek", "1944"],
       ["The Constitution of Liberty", "Friedrich Hayek", "1960"],
@@ -85,7 +85,7 @@ export const CENTER: Record<string, TraditionHistory> = {
     when: "1910s",
     where: "The United States and Britain",
     founders: ["Woodrow Wilson", "Norman Angell", "Immanuel Kant (precursor)"],
-    figures: ["Woodrow Wilson", "Norman Angell", "Robert Keohane", "Joseph Nye", "G. John Ikenberry"],
+    figures: ["Woodrow Wilson", "Norman Angell", "Robert Keohane"],
     texts: [
       ["Perpetual Peace", "Immanuel Kant", "1795"],
       ["The Great Illusion", "Norman Angell", "1910"],
@@ -112,7 +112,7 @@ export const CENTER: Record<string, TraditionHistory> = {
     when: "1644–1920",
     where: "England and the United States",
     founders: ["John Milton", "John Stuart Mill", "Roger Baldwin", "Crystal Eastman"],
-    figures: ["Louis Brandeis", "Oliver Wendell Holmes Jr.", "William O. Douglas", "Ira Glasser", "Nadine Strossen"],
+    figures: ["Louis Brandeis", "Oliver Wendell Holmes Jr.", "William O. Douglas"],
     texts: [
       ["Areopagitica", "John Milton", "1644", "https://www.gutenberg.org/ebooks/608"],
       ["On Liberty", "John Stuart Mill", "1859", "https://www.gutenberg.org/ebooks/34901"],
@@ -137,7 +137,7 @@ export const CENTER: Record<string, TraditionHistory> = {
     when: "2010s–2025",
     where: "The United States",
     founders: ["YIMBY housing movement", "Ezra Klein", "Derek Thompson"],
-    figures: ["Ezra Klein", "Derek Thompson", "Matthew Yglesias", "Jerusalem Demsas", "Sonja Trauss"],
+    figures: ["Ezra Klein", "Derek Thompson", "Matthew Yglesias"],
     texts: [
       ["\"It's Time to Build\"", "Marc Andreessen", "2020"],
       ["Abundance", "Ezra Klein and Derek Thompson", "2025"],
@@ -160,7 +160,7 @@ export const CENTER: Record<string, TraditionHistory> = {
     when: "1950s–1960s",
     where: "The Northeastern United States",
     founders: ["Thomas Dewey", "Dwight Eisenhower", "Nelson Rockefeller"],
-    figures: ["Nelson Rockefeller", "Dwight Eisenhower", "Arthur Larson", "Bruce Chapman", "George Gilder"],
+    figures: ["Nelson Rockefeller", "Dwight Eisenhower", "Arthur Larson"],
     texts: [
       ["A Republican Looks at His Party", "Arthur Larson", "1956"],
       ["The Future of Federalism", "Nelson Rockefeller", "1962"],
@@ -182,7 +182,7 @@ export const CENTER: Record<string, TraditionHistory> = {
     when: "1949; revived in the 1990s",
     where: "The United States and Western Europe",
     founders: ["Arthur Schlesinger Jr.", "Ross Perot"],
-    figures: ["Arthur Schlesinger Jr.", "Michael Lind", "Ted Halstead", "Mark Satin", "John Avlon"],
+    figures: ["Arthur Schlesinger Jr.", "Michael Lind", "Mark Satin"],
     texts: [
       ["Nicomachean Ethics (on the mean)", "Aristotle", "c. 340 BC"],
       ["The Vital Center", "Arthur Schlesinger Jr.", "1949"],
@@ -228,7 +228,7 @@ export const CENTER: Record<string, TraditionHistory> = {
     when: "1980s",
     where: "The United States and Canada",
     founders: ["Alasdair MacIntyre", "Michael Sandel", "Charles Taylor", "Michael Walzer", "Amitai Etzioni"],
-    figures: ["Amitai Etzioni", "Michael Sandel", "Alasdair MacIntyre", "Robert Bellah", "Robert Putnam"],
+    figures: ["Amitai Etzioni", "Michael Sandel", "Alasdair MacIntyre"],
     texts: [
       ["After Virtue", "Alasdair MacIntyre", "1981"],
       ["Liberalism and the Limits of Justice", "Michael Sandel", "1982"],
@@ -253,7 +253,7 @@ export const CENTER: Record<string, TraditionHistory> = {
     when: "1819; organized in 1919–1933",
     where: "France, then the United States",
     founders: ["Henri de Saint-Simon", "Thorstein Veblen", "Howard Scott", "M. King Hubbert"],
-    figures: ["Henri de Saint-Simon", "Thorstein Veblen", "Howard Scott", "M. King Hubbert", "James Burnham"],
+    figures: ["Henri de Saint-Simon", "Thorstein Veblen", "Howard Scott"],
     texts: [
       ["L'Organisateur", "Henri de Saint-Simon", "1819"],
       ["The Engineers and the Price System", "Thorstein Veblen", "1921"],
@@ -277,7 +277,7 @@ export const CENTER: Record<string, TraditionHistory> = {
     when: "1879",
     where: "San Francisco",
     founders: ["Henry George"],
-    figures: ["Henry George", "Louis F. Post", "Joseph Fels", "Albert Jay Nock", "Leo Tolstoy (admirer)"],
+    figures: ["Henry George", "Louis F. Post", "Joseph Fels"],
     texts: [
       ["Progress and Poverty", "Henry George", "1879", "https://www.gutenberg.org/ebooks/55308"],
       ["Social Problems", "Henry George", "1883"],
@@ -301,7 +301,7 @@ export const CENTER: Record<string, TraditionHistory> = {
     when: "1940s",
     where: "The United States and Western Europe",
     founders: ["Altiero Spinelli", "Emery Reves", "Grenville Clark", "Robert Hutchins"],
-    figures: ["Albert Einstein", "Grenville Clark", "Louis Sohn", "Altiero Spinelli", "Garry Davis"],
+    figures: ["Grenville Clark", "Louis Sohn", "Altiero Spinelli"],
     texts: [
       ["Perpetual Peace", "Immanuel Kant", "1795"],
       ["Ventotene Manifesto", "Altiero Spinelli and Ernesto Rossi", "1941"],

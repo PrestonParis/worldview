@@ -17,7 +17,7 @@ const TOPICS: Record<string, string> = {
   crime: "Crime & justice",
   abortion: "Abortion",
   guns: "Guns",
-  health: "Health care",
+  health: "Healthcare",
   energy: "Energy & climate",
   demographics: "Demographics",
   education: "Education",

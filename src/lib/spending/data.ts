@@ -6,7 +6,7 @@
 
 import { datasetCoverage, getCrossSection, getSeriesMany, listDatasets, type Point } from "@/lib/db/stats";
 import { STATES_51 } from "@/lib/geo/states";
-import { formatPeriod, formatValue, pctChange } from "@/lib/format";
+import { formatPeriod, pctChange } from "@/lib/format";
 import type { RankedItem } from "@/components/charts/ranked-bars";
 import type { StateMetric, StateRow } from "@/components/charts/state-explorer";
 import type { Series, SeriesPoint } from "@/components/charts/time-series-chart";
@@ -25,10 +25,6 @@ const monthSeries = (points: Point[] | undefined): SeriesPoint[] =>
 const last = (points: Point[] | undefined) => points?.at(-1) ?? null;
 const at = (points: Point[] | undefined, period: string) => points?.find((p) => p.period === period)?.value ?? null;
 const billions = (v: number) => `$${Math.round(v / 1e9).toLocaleString("en-US")} billion`;
-// Trillions to two decimals, so close totals ($1.97T vs $2.03T) stay distinct.
-const usdT = (v: number | null | undefined) =>
-  v === null || v === undefined ? "—" : Math.abs(v) >= 1e12 ? `$${(v / 1e12).toFixed(2)}T` : `$${Math.round(v / 1e9).toLocaleString("en-US")}B`;
-const pct = (v: number | null | undefined) => formatValue(v, "percent");
 
 // A share of GDP for each fiscal year a dollar series has.
 function shareOfGdp(points: Point[] | undefined, gdp: Map<string, number>): SeriesPoint[] {
@@ -65,7 +61,7 @@ const PROGRAMS: [key: string, label: string][] = [
   ["medicaid", "Medicaid"],
   ["medicare_hospital", "Medicare Part A (hospital)"],
   ["veterans_compensation", "Veterans' disability compensation"],
-  ["veterans_health", "Veterans' health care"],
+  ["veterans_health", "Veterans' healthcare"],
   ["social_security_disability", "Social Security disability"],
   ["civil_service_retirement", "Federal civilian retirement"],
   ["aca_premium_credits", "ACA premium tax credits"],
@@ -227,20 +223,12 @@ export async function loadSpending() {
     });
     return { abbr: s.abbr, name: s.name, values };
   });
-  // Grants are ranked per resident: they go to state and local governments,
-  // so their place is meaningful. Direct payments are recorded where
-  // USAspending places the payment, which concentrates them in a few states.
-  const perCapita = stateRows
-    .filter((r) => r.values.federal_grants_per_capita !== null)
-    .sort((a, b) => b.values.federal_grants_per_capita! - a.values.federal_grants_per_capita!);
-  const perCapitaTop: RankedItem[] = perCapita.slice(0, 10).map((r) => ({ label: r.name, value: r.values.federal_grants_per_capita! }));
-  const perCapitaBottom: RankedItem[] = perCapita.slice(-10).reverse().map((r) => ({ label: r.name, value: r.values.federal_grants_per_capita! }));
   const topDistricts: RankedItem[] = districts.values
     .filter((v) => !/-(98|99)$/.test(v.geoName ?? "")) // non-voting / unassigned codes
     .slice(0, 15)
     .map((v) => ({ label: v.geoName ?? v.geoid, value: v.value }));
 
-  // ---- Headline + findings ----
+  // ---- Headline ----
   const debtNow = last(treasury.debt_total);
   const headline = {
     fy: fy.replace(/^FY/, "FY "),
@@ -250,34 +238,10 @@ export async function loadSpending() {
     interest: { value: at(omb.outlays_net_interest, fy), spark: omb.outlays_net_interest.slice(-20).map((p) => p.value) },
   };
 
-  const findings: string[] = [];
-  const o = headline.outlays;
-  const rcpt = at(omb.receipts, fy);
-  if (o.value !== null && rcpt !== null) findings.push(`The federal government spent ${usdT(o.value)} in ${headline.fy} (${pct(o.share)} of GDP) and collected ${usdT(rcpt)}, a deficit of ${usdT(headline.deficit.value)}.`);
-  const top3 = byFunction.slice(0, 3);
-  const top3Share = top3.reduce((t, f) => t + f.value, 0) / (o.value ?? 1) * 100;
-  if (top3.length === 3) findings.push(`${top3.map((f) => f.label.replace(/ \(.*\)$/, "")).join(", ")} together made up ${Math.round(top3Share)}% of spending.`);
-  const interest = headline.interest.value;
-  const defense = at(omb.outlays_national_defense, fy);
-  if (interest !== null && defense !== null) {
-    findings.push(`Net interest on the debt was ${usdT(interest)}, ${interest > defense ? "more than" : "less than"} the ${usdT(defense)} spent on national defense.`);
-  }
-  const debtPub = last(omb.debt_public_pct_gdp);
-  const debtPeak = omb.debt_public_pct_gdp.filter((p) => fyX(p.period) <= 1950).reduce<Point | null>((a, b) => (!a || b.value > a.value ? b : a), null);
-  if (debtPub && debtPeak) findings.push(`Debt held by the public reached ${pct(debtPub.value)} of GDP at the end of ${debtPub.period.replace(/^FY/, "FY ")}; the post-World War II peak was ${pct(debtPeak.value)} in ${debtPeak.period.replace(/^FY/, "FY ")}.`);
-  if (debtNow && headline.debt.asOf) findings.push(`Total public debt outstanding was ${usdT(debtNow.value)} on ${new Date(`${headline.debt.asOf}T12:00:00`).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}.`);
-  const surplusYears = omb.deficit.filter((p) => p.value < 0);
-  const lastSurplus = surplusYears.at(-1);
-  if (lastSurplus) findings.push(`The last budget surplus was in ${lastSurplus.period.replace(/^FY/, "FY ")}.`);
-  const ip = last(accuracy.improper_payment_rate);
-  if (ip) findings.push(`Agencies estimated ${pct(ip.value)} of payments in programs prone to errors were improper in ${ip.period.replace(/^FY/, "FY ")}.`);
-  if (ytd) findings.push(`In ${ytd.fy} through ${ytd.through}, the deficit was ${billions(ytd.deficit)}, against ${billions(ytd.priorDeficit)} over the same months of ${ytd.prior}.`);
-
   const order = [OMB, TREASURY, AWARDS, ACCURACY];
   const cov = await datasetCoverage(datasets.map((d) => d.slug));
   return {
     headline,
-    findings,
     fy: headline.fy,
     byFunction,
     byProgram,
@@ -295,8 +259,6 @@ export async function loadSpending() {
     improper,
     states: { metrics: stateMetrics, rows: stateRows },
     awardYear: awardLabel,
-    perCapitaTop,
-    perCapitaBottom,
     topDistricts,
     datasets: [...datasets]
       .sort((a, b) => order.indexOf(a.slug) - order.indexOf(b.slug))

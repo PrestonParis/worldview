@@ -135,25 +135,40 @@ export async function getOrgProfile(orgId: string): Promise<OrgProfile | null> {
   return { entity: org, connectionsByCategory, total: connections.length };
 }
 
+// Where a post sits on the executive map (data/administration.json).
+export type AdministrationGroup = "vp" | "eop" | "department" | "agency";
+
 export interface AdministrationRole {
   person: Entity;
   title: string;
   priorSector: string | null;
   department: Entity | null;
+  group: AdministrationGroup | null;
+  /** Position in the file: departments run in line-of-succession order. */
+  order: number;
+  since: string;
+  until: string;
 }
 
 export interface Administration {
   president: Entity;
   office: Entity | null;
+  /** Serving now, in file order. */
   roles: AdministrationRole[];
+  /** Left during this term, most recent departure first. */
+  former: AdministrationRole[];
 }
 
-function parsePriorSector(notes: string): string | null {
+function parseRoleNotes(notes: string): { priorSector: string | null; group: AdministrationGroup | null; order: number } {
   try {
     const v = JSON.parse(notes || "{}");
-    return typeof v?.priorSector === "string" ? v.priorSector : null;
+    return {
+      priorSector: typeof v?.priorSector === "string" ? v.priorSector : null,
+      group: ["vp", "eop", "department", "agency"].includes(v?.group) ? v.group : null,
+      order: typeof v?.order === "number" ? v.order : Number.MAX_SAFE_INTEGER,
+    };
   } catch {
-    return null;
+    return { priorSector: null, group: null, order: Number.MAX_SAFE_INTEGER };
   }
 }
 
@@ -182,34 +197,39 @@ export async function getAdministration(): Promise<Administration | null> {
   const personIds = appointed.map((e) => e.targetEntityId);
   const servesIn = personIds.length
     ? await db
-        .select({ personId: entityEdges.sourceEntityId, deptId: entityEdges.targetEntityId })
+        .select({ personId: entityEdges.sourceEntityId, deptId: entityEdges.targetEntityId, role: entityEdges.role })
         .from(entityEdges)
         .where(and(eq(entityEdges.relType, "serves-in"), inArray(entityEdges.sourceEntityId, personIds)))
     : [];
-  const deptByPerson = new Map(servesIn.map((r) => [r.personId, r.deptId]));
+  // Keyed by person and title: someone can hold two posts in a term.
+  const deptByPost = new Map(servesIn.map((r) => [`${r.personId}|${r.role}`, r.deptId]));
 
   const byId = new Map(
     (
-      await getEntitiesByIds([officeEdge.presidentId, officeEdge.officeId, ...personIds, ...deptByPerson.values()])
+      await getEntitiesByIds([officeEdge.presidentId, officeEdge.officeId, ...personIds, ...deptByPost.values()])
     ).map((e) => [e.id, e]),
   );
   const president = byId.get(officeEdge.presidentId);
   if (!president) return null;
 
-  const roles: AdministrationRole[] = appointed
+  const all: AdministrationRole[] = appointed
     .map((e) => {
       const person = byId.get(e.targetEntityId);
       if (!person) return null;
-      const deptId = deptByPerson.get(person.id);
+      const title = e.role || e.label;
+      const deptId = deptByPost.get(`${person.id}|${title}`);
       return {
         person,
-        title: e.role || e.label,
-        priorSector: parsePriorSector(e.notes ?? ""),
+        title,
+        ...parseRoleNotes(e.notes ?? ""),
         department: deptId ? byId.get(deptId) ?? null : null,
+        since: e.validFrom ?? "",
+        until: e.validTo ?? "",
       };
     })
-    .filter((r): r is AdministrationRole => r !== null)
-    .sort((a, b) => a.title.localeCompare(b.title));
+    .filter((r): r is AdministrationRole => r !== null);
 
-  return { president, office: byId.get(officeEdge.officeId) ?? null, roles };
+  const roles = all.filter((r) => !r.until).sort((a, b) => a.order - b.order || a.title.localeCompare(b.title));
+  const former = all.filter((r) => r.until).sort((a, b) => b.until.localeCompare(a.until));
+  return { president, office: byId.get(officeEdge.officeId) ?? null, roles, former };
 }

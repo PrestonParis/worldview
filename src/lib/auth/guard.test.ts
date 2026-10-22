@@ -1,5 +1,6 @@
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
+import ts from "typescript";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { CurrentUser } from "./session";
 
@@ -68,16 +69,23 @@ describe("shared-data server actions", () => {
   const dir = path.join(__dirname, "../actions");
   // These manage the caller's own account, quizzes, and map projects, and
   // check ownership themselves.
-  const ownerScoped = new Set(["auth.ts", "atlas.ts", "quiz.ts", "mapProjects.ts"]);
+  const ownerScoped = new Set(["auth.ts", "atlas.ts", "myGovernment.ts", "quiz.ts", "mapProjects.ts"]);
   const files = readdirSync(dir).filter((f) => f.endsWith(".ts") && !f.endsWith(".test.ts") && !ownerScoped.has(f));
 
   it.each(files)("%s guards every exported action", (file) => {
     const source = readFileSync(path.join(dir, file), "utf8");
-    const actions = [...source.matchAll(/^export async function (\w+)[\s\S]*?\n\): [^\n]*\{\n([^\n]*)\n/gm)];
-    const declared = source.match(/^export async function /gm)?.length ?? 0;
-    expect(actions.length, `${file}: could not parse every action`).toBe(declared);
-    for (const [, name, firstLine] of actions) {
-      expect(firstLine.trim(), `${file} → ${name}`).toBe("const denied = await requireContributor();");
+    const tree = ts.createSourceFile(file, source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
+    const actions = tree.statements.filter(
+      (statement): statement is ts.FunctionDeclaration =>
+        ts.isFunctionDeclaration(statement) &&
+        statement.modifiers?.some((modifier) => modifier.kind === ts.SyntaxKind.ExportKeyword) === true &&
+        statement.modifiers.some((modifier) => modifier.kind === ts.SyntaxKind.AsyncKeyword),
+    );
+
+    for (const action of actions) {
+      const name = action.name?.text ?? "<anonymous>";
+      const firstStatement = action.body?.statements[0]?.getText(tree);
+      expect(firstStatement, `${file} → ${name}`).toBe("const denied = await requireContributor();");
     }
   });
 });

@@ -23,7 +23,7 @@ export default function PrivacyPage() {
       <h2 className={heading}>Information we process</h2>
       <ul className={list}>
         <li><strong>Account information.</strong> If you register, Worldview processes your email address, authentication provider information, an optional display name, and account timestamps. Passwords and authentication sessions are managed by Supabase Auth.</li>
-        <li><strong>Content you create.</strong> Saved Geography Studio projects include the project name, map view, and layers. Political Quiz sessions include answers, refinements, status, visibility, and timestamps. The quiz landing page also records its opening answers, their timing, and whether a quiz was started, with no cookie, account, IP address, or browser details attached.</li>
+        <li><strong>Content you create.</strong> Saved Geography Studio projects include the project name, map view, and layers. Worldview Atlas sessions include answers, refinements, status, visibility, and timestamps. If signed in, Atlas also stores philosophies you deliberately save and compact specialist-assessment results. The quiz landing page records its opening answers, their timing, and whether a quiz was started, with no cookie, account, IP address, or browser details attached.</li>
         <li><strong>Address lookups.</strong> When you use My Government, the address you enter is sent through Worldview&apos;s server to geocoding and civic-data services so the site can determine relevant jurisdictions and offices.</li>
         <li><strong>Technical information.</strong> Hosting, authentication, security, and other service providers may process IP address, browser, device, request, cookie, and diagnostic information needed to deliver and protect the service.</li>
         <li><strong>Public records.</strong> Worldview republishes and organizes government and other public-interest data. Some source records, such as campaign finance filings, can include names, location, employer, occupation, and transaction details that are already public.</li>
@@ -64,12 +64,12 @@ export default function PrivacyPage() {
 
       <h2 className={heading}>Sharing and visibility</h2>
       <p className={paragraph}>
-        Unclaimed quiz results can be viewed by anyone who has their hard-to-guess link until they expire. When a quiz is claimed by an account, its owner can choose public or private visibility. Public quiz pages can be shared and indexed. Saved Geography Studio projects are associated with the account that created them and are not presented as public pages by the current service.
+        Unclaimed quiz results can be viewed by anyone who has their hard-to-guess link. These links remain available so people can revisit old results. When a quiz is claimed by an account, its owner can choose public or private visibility. Public quiz pages can be shared and indexed. Saved Geography Studio projects are associated with the account that created them and are not presented as public pages by the current service.
       </p>
 
       <h2 className={heading}>Retention and deletion</h2>
       <p className={paragraph}>
-        Account information and saved content are kept while the account is active or as needed to provide the service. Unclaimed quiz sessions expire and are later removed; their answers are kept without the quiz link, edit token, or any account to improve the quiz. Security and operational records may be retained for a reasonable period. The account page lets you permanently delete your account, saved map projects, and claimed quizzes. Backups and provider logs may take additional time to expire.
+        Account information and saved content are kept while the account is active or as needed to provide the service. Unclaimed quiz sessions and their hard-to-guess result links are retained so old results remain available. Security and operational records may be retained for a reasonable period. The account page lets you permanently delete your account, saved map projects, and claimed quizzes. Backups and provider logs may take additional time to expire.
       </p>
 
       <h2 className={heading}>Your choices</h2>

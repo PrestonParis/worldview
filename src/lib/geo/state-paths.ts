@@ -43,7 +43,23 @@ const LABEL_AT: Record<string, [number, number]> = {
   KY: [-85.3, 37.5],
 };
 
-let cached: Promise<{ width: number; height: number; states: StatePath[] }> | null = null;
+// The scale and offset that fit the projected states into the map, kept so
+// points (cities) can be placed on the same map with projectPoint.
+export interface MapFrame {
+  minX: number;
+  minY: number;
+  k: number;
+  pad: number;
+}
+
+// A longitude/latitude in the given state (FIPS, for the Alaska and Hawaii
+// insets) to map coordinates.
+export function projectPoint(frame: MapFrame, fips: string, lon: number, lat: number): [number, number] {
+  const [x, y] = albers(...insetPosition(fips, lon, lat));
+  return [Math.round(((x - frame.minX) * frame.k + frame.pad) * 10) / 10, Math.round(((y - frame.minY) * frame.k + frame.pad) * 10) / 10];
+}
+
+let cached: Promise<{ width: number; height: number; states: StatePath[]; frame: MapFrame }> | null = null;
 
 export function loadStatePaths() {
   cached ??= build();
@@ -95,7 +111,7 @@ async function build() {
       label: best.area < MIN_LABEL_AREA ? null : LABEL_AT[p.STUSPS] ? round(fit(albers(...LABEL_AT[p.STUSPS]))) : round(best.c),
     };
   });
-  return { width: STATE_MAP_WIDTH, height, states };
+  return { width: STATE_MAP_WIDTH, height, states, frame: { minX, minY, k, pad } };
 }
 
 const round = ([x, y]: [number, number]): [number, number] => [Math.round(x), Math.round(y)];

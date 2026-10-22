@@ -1,13 +1,13 @@
-import { h, type TraditionHistory } from "./types";
+import { h, type TraditionCore } from "./types";
 
 // Religious-political traditions.
 
-export const RELIGIOUS: Record<string, TraditionHistory> = {
+export const RELIGIOUS: Record<string, TraditionCore> = {
   "christian-democracy": h({
     when: "1891–1945",
     where: "Italy, Germany, and Belgium",
     founders: ["Pope Leo XIII", "Luigi Sturzo", "Konrad Adenauer", "Alcide De Gasperi"],
-    figures: ["Luigi Sturzo", "Jacques Maritain", "Emmanuel Mounier", "Konrad Adenauer", "Alcide De Gasperi", "Robert Schuman"],
+    figures: ["Luigi Sturzo", "Jacques Maritain", "Emmanuel Mounier"],
     texts: [
       ["Rerum Novarum", "Pope Leo XIII", "1891", "https://www.vatican.va/content/leo-xiii/en/encyclicals/documents/hf_l-xiii_enc_15051891_rerum-novarum.html"],
       ["Quadragesimo Anno", "Pope Pius XI", "1931"],
@@ -32,7 +32,7 @@ export const RELIGIOUS: Record<string, TraditionHistory> = {
     when: "1880s–1910s; liberation theology from 1968",
     where: "The United States, then Latin America",
     founders: ["Walter Rauschenbusch", "Washington Gladden", "Gustavo Gutiérrez"],
-    figures: ["Walter Rauschenbusch", "Dorothy Day", "Martin Luther King Jr.", "Gustavo Gutiérrez", "Óscar Romero", "William Barber II"],
+    figures: ["Walter Rauschenbusch", "Dorothy Day", "Gustavo Gutiérrez"],
     texts: [
       ["Christianity and the Social Crisis", "Walter Rauschenbusch", "1907"],
       ["A Theology for the Social Gospel", "Walter Rauschenbusch", "1917"],
@@ -58,7 +58,7 @@ export const RELIGIOUS: Record<string, TraditionHistory> = {
     when: "1440s; modern form in the 1880s–1890s",
     where: "Bohemia, then Russia",
     founders: ["Petr Chelčický", "Leo Tolstoy"],
-    figures: ["Leo Tolstoy", "Petr Chelčický", "Adin Ballou", "Dorothy Day", "Ammon Hennacy", "Jacques Ellul"],
+    figures: ["Leo Tolstoy", "Petr Chelčický", "Adin Ballou"],
     texts: [
       ["The Net of Faith", "Petr Chelčický", "c. 1440"],
       ["Christian Non-Resistance", "Adin Ballou", "1846"],
@@ -83,7 +83,7 @@ export const RELIGIOUS: Record<string, TraditionHistory> = {
     when: "1960s–1970s",
     where: "The United States",
     founders: ["R. J. Rushdoony", "Greg Bahnsen", "Gary North"],
-    figures: ["R. J. Rushdoony", "Greg Bahnsen", "Gary North", "Gary DeMar", "Joel McDurmon"],
+    figures: ["R. J. Rushdoony", "Greg Bahnsen", "Gary North"],
     texts: [
       ["The Institutes of Biblical Law", "R. J. Rushdoony", "1973"],
       ["Theonomy in Christian Ethics", "Greg Bahnsen", "1977"],
@@ -105,7 +105,7 @@ export const RELIGIOUS: Record<string, TraditionHistory> = {
     when: "1928–1941",
     where: "Egypt and British India",
     founders: ["Hassan al-Banna", "Abul A'la Maududi", "Sayyid Qutb"],
-    figures: ["Hassan al-Banna", "Abul A'la Maududi", "Sayyid Qutb", "Hassan al-Turabi", "Yusuf al-Qaradawi"],
+    figures: ["Hassan al-Banna", "Abul A'la Maududi", "Sayyid Qutb"],
     texts: [
       ["Letter of the Teachings", "Hassan al-Banna", "1930s"],
       ["The Islamic Law and Constitution", "Abul A'la Maududi", "1955"],
@@ -131,7 +131,7 @@ export const RELIGIOUS: Record<string, TraditionHistory> = {
     when: "1980s–2000s",
     where: "Tunisia, Turkey, and Indonesia",
     founders: ["Rached Ghannouchi", "Abdurrahman Wahid", "Nurcholish Madjid"],
-    figures: ["Rached Ghannouchi", "Abdurrahman Wahid", "Nurcholish Madjid", "Abdolkarim Soroush", "Khaled Abou El Fadl"],
+    figures: ["Rached Ghannouchi", "Abdurrahman Wahid", "Abdolkarim Soroush"],
     texts: [
       ["Constitution of Medina", "Muhammad", "c. 622"],
       ["Public Freedoms in the Islamic State", "Rached Ghannouchi", "1993"],
@@ -155,7 +155,7 @@ export const RELIGIOUS: Record<string, TraditionHistory> = {
     when: "1970",
     where: "Najaf, Iraq, then Iran",
     founders: ["Ruhollah Khomeini"],
-    figures: ["Ruhollah Khomeini", "Ali Khamenei", "Morteza Motahhari", "Mohammad Beheshti", "Mohammad-Taqi Mesbah-Yazdi"],
+    figures: ["Ruhollah Khomeini", "Morteza Motahhari", "Mohammad-Taqi Mesbah-Yazdi"],
     texts: [
       ["Islamic Government: Governance of the Jurist", "Ruhollah Khomeini", "1970"],
       ["Constitution of the Islamic Republic of Iran", "Assembly of Experts", "1979"],
@@ -178,7 +178,7 @@ export const RELIGIOUS: Record<string, TraditionHistory> = {
     when: "1923–1925",
     where: "Maharashtra, India",
     founders: ["Vinayak Damodar Savarkar", "K. B. Hedgewar"],
-    figures: ["V. D. Savarkar", "K. B. Hedgewar", "M. S. Golwalkar", "Deendayal Upadhyaya", "Sita Ram Goel"],
+    figures: ["V. D. Savarkar", "K. B. Hedgewar", "M. S. Golwalkar"],
     texts: [
       ["Essentials of Hindutva", "V. D. Savarkar", "1923"],
       ["We, or Our Nationhood Defined", "M. S. Golwalkar", "1939"],
@@ -203,7 +203,7 @@ export const RELIGIOUS: Record<string, TraditionHistory> = {
     when: "1902",
     where: "Vilnius and Ottoman Palestine",
     founders: ["Yitzchak Yaacov Reines", "Abraham Isaac Kook"],
-    figures: ["Yitzchak Yaacov Reines", "Abraham Isaac Kook", "Zvi Yehuda Kook", "Shlomo Aviner", "Yehuda Amital"],
+    figures: ["Yitzchak Yaacov Reines", "Abraham Isaac Kook", "Zvi Yehuda Kook"],
     texts: [
       ["Orot", "Abraham Isaac Kook", "1920"],
       ["Orot HaTeshuvah", "Abraham Isaac Kook", "1925"],
@@ -226,7 +226,7 @@ export const RELIGIOUS: Record<string, TraditionHistory> = {
     when: "1880s–1950s",
     where: "Sri Lanka and Burma",
     founders: ["Anagarika Dharmapala", "Walpola Rahula"],
-    figures: ["Anagarika Dharmapala", "Walpola Rahula", "Galagoda Aththe Gnanasara", "Ashin Wirathu"],
+    figures: ["Anagarika Dharmapala", "Walpola Rahula", "Ashin Wirathu"],
     texts: [
       ["Mahavamsa", "Mahanama (attributed)", "5th–6th century"],
       ["Return to Righteousness (collected writings)", "Anagarika Dharmapala", "1965"],
@@ -250,7 +250,7 @@ export const RELIGIOUS: Record<string, TraditionHistory> = {
     when: "1940s; Khalistan demand from the 1970s",
     where: "Punjab and the Sikh diaspora",
     founders: ["Master Tara Singh", "Jagjit Singh Chohan", "Jarnail Singh Bhindranwale"],
-    figures: ["Master Tara Singh", "Kapur Singh", "Jarnail Singh Bhindranwale", "Jagjit Singh Chohan", "Gurpatwant Singh Pannun"],
+    figures: ["Master Tara Singh", "Kapur Singh", "Jarnail Singh Bhindranwale"],
     texts: [
       ["Adi Granth (Sikh scripture)", "Guru Arjan, comp.", "1604"],
       ["Anandpur Sahib Resolution", "Shiromani Akali Dal", "1973"],
@@ -273,7 +273,7 @@ export const RELIGIOUS: Record<string, TraditionHistory> = {
     when: "1930",
     where: "Detroit",
     founders: ["Wallace Fard Muhammad", "Elijah Muhammad"],
-    figures: ["Wallace Fard Muhammad", "Elijah Muhammad", "Malcolm X", "Louis Farrakhan", "Warith Deen Mohammed"],
+    figures: ["Wallace Fard Muhammad", "Elijah Muhammad", "Malcolm X"],
     texts: [
       ["Message to the Blackman in America", "Elijah Muhammad", "1965"],
       ["The Autobiography of Malcolm X", "Malcolm X and Alex Haley", "1965"],
@@ -297,7 +297,7 @@ export const RELIGIOUS: Record<string, TraditionHistory> = {
     when: "1979–1990s",
     where: "Egypt, Afghanistan, and Saudi Arabia",
     founders: ["Abdullah Azzam", "Osama bin Laden", "Ayman al-Zawahiri"],
-    figures: ["Sayyid Qutb (influence)", "Muhammad Abd al-Salam Faraj", "Abdullah Azzam", "Abu Muhammad al-Maqdisi", "Abu Musab al-Suri", "Abu Bakr Naji"],
+    figures: ["Muhammad Abd al-Salam Faraj", "Abdullah Azzam", "Abu Muhammad al-Maqdisi"],
     texts: [
       ["The Neglected Duty", "Muhammad Abd al-Salam Faraj", "1981"],
       ["Defense of the Muslim Lands", "Abdullah Azzam", "1984"],

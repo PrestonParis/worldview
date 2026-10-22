@@ -24,7 +24,7 @@ export function PhilosophyExplorer({ profiles }: { profiles: PhilosophyProfile[]
       (p) =>
         (scope === "all" || p.scopes.includes(scope)) &&
         (!q ||
-          `${p.ideology.name} ${p.ideology.description} ${p.kind} ${p.history.origins.founders.join(" ")} ${p.history.figures.join(" ")}`
+          `${p.ideology.name} ${p.ideology.description} ${p.kind} ${p.history.origins.founders.join(" ")} ${p.history.figures.join(" ")} ${p.history.comparisons.map((c) => c.government).join(" ")}`
             .toLowerCase()
             .includes(q)),
     );

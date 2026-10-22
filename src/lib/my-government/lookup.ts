@@ -130,13 +130,40 @@ export function mergeOfficialCoverage(
   return { officials, gaps };
 }
 
+export function placeLabel(geography: Pick<CensusGeography, "placeName" | "countyName" | "stateCode">): string {
+  // Census place names carry their legal type: "Ann Arbor city".
+  const place = geography.placeName.replace(/\s+(city|town|village|borough|CDP|municipality)$/, "");
+  const local = place || geography.countyName;
+  return local ? `${local}, ${geography.stateCode}` : geography.stateCode;
+}
+
+// Census "06" / "0" (at large) -> the elections table's "MI-06" / "AK-AL".
+export function houseCode(geography: Pick<CensusGeography, "stateCode" | "congressionalDistrict">): string | null {
+  const district = Number.parseInt(geography.congressionalDistrict, 10);
+  if (!geography.congressionalDistrict || !Number.isFinite(district)) return null;
+  return `${geography.stateCode}-${district === 0 ? "AL" : String(district).padStart(2, "0")}`;
+}
+
 export async function lookupGovernment(address: string, magicKey?: string): Promise<GovernmentLookupResult> {
   let geography: CensusGeography;
   if (magicKey) {
     const point = await resolveSuggestion(address, magicKey);
     geography = await geocodeCoordinates(point.address, point.longitude, point.latitude);
   } else {
-    geography = await geocodeAddress(address);
+    try {
+      geography = await geocodeAddress(address);
+    } catch (censusError) {
+      // Census occasionally changes a directional suffix while matching an
+      // otherwise valid address (for example Piedmont Ave NE to SE). Resolve
+      // the exact address point with ArcGIS, then ask Census only for the
+      // districts at those coordinates.
+      try {
+        const point = await resolveSuggestion(address);
+        geography = await geocodeCoordinates(point.address, point.longitude, point.latitude);
+      } catch {
+        throw censusError;
+      }
+    }
   }
   const [federal, state, local, provider] = await Promise.all([
     getFederalOfficials(geography).catch(() => []),
@@ -152,7 +179,10 @@ export async function lookupGovernment(address: string, magicKey?: string): Prom
 
   return {
     matchedAddress: geography.matchedAddress,
+    place: placeLabel(geography),
     stateCode: geography.stateCode,
+    stateName: geography.stateName,
+    houseCode: houseCode(geography),
     districts: geography.districts,
     officials,
     sources: [

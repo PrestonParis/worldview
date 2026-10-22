@@ -25,7 +25,13 @@ export interface GovernmentOfficial {
 
 export interface GovernmentLookupResult {
   matchedAddress: string;
+  // "Ann Arbor, MI" — what a saved result shows in place of the address.
+  place: string;
   stateCode: string;
+  stateName: string;
+  // The U.S. House race code elections use ("MI-06", "AK-AL"); null when
+  // the Census returned no congressional district.
+  houseCode: string | null;
   districts: GovernmentDistrict[];
   officials: GovernmentOfficial[];
   sources: Array<{ label: string; url: string }>;
@@ -52,4 +58,19 @@ export interface CensusGeography {
   stateLowerDistrict: string;
   schoolDistricts: Array<{ kind: string; name: string; geoid: string }>;
   districts: GovernmentDistrict[];
+}
+
+// What Worldview holds on one official (records.ts), fetched alongside a
+// lookup or saved result so saved results never go stale.
+export interface OfficialRecord {
+  entityId: string;
+  bioguideId: string | null;
+  profilePath: string;
+  // The newest FEC cycle with receipts; federal candidates only.
+  finance: { cycle: number; receipts: number; cashOnHand: number | null } | null;
+  billsSponsored: number;
+  rollCallVotes: number;
+  // Voteview DW-NOMINATE first dimension, -1 (left) to +1 (right).
+  nominate: number | null;
+  nextRace: { id: string; name: string; date: string } | null;
 }

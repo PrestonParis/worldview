@@ -10,6 +10,9 @@ const slugPart = /^[a-z0-9][a-z0-9_]{0,63}$/;
 
 // YYYY | YYYY-MM | YYYY-MM-DD | YYYY-Qn | FYYYYY
 const periodPattern = /^(\d{4})(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[12]\d|3[01]))?|-Q([1-4]))?$|^FY(\d{4})$/;
+export const periodSchema = z
+  .string()
+  .regex(periodPattern, "period must be YYYY, YYYY-MM, YYYY-MM-DD, YYYY-Qn, or FYYYYY");
 
 // Geography codes the platform joins on; anything else must use a
 // partner-defined level (letters/underscores) with a free-form geoid.
@@ -36,7 +39,7 @@ export const observationSchema = z
     geoLevel: z.string().regex(/^[a-z][a-z_]{0,31}$/, "geoLevel must be lowercase letters and underscores"),
     geoid: z.string().min(1).max(64),
     geoName: z.string().max(200).optional(),
-    period: z.string().regex(periodPattern, "period must be YYYY, YYYY-MM, YYYY-MM-DD, YYYY-Qn, or FYYYYY"),
+    period: periodSchema,
     value: z.number().finite().nullable(),
     unit: z.string().max(32).optional(),
     metadata: z.record(z.string(), z.unknown()).optional(),
@@ -44,7 +47,11 @@ export const observationSchema = z
   .superRefine((o, ctx) => {
     const pattern = geoidPatterns[o.geoLevel];
     if (pattern && !pattern.test(o.geoid)) {
-      ctx.addIssue({ code: "custom", path: ["geoid"], message: `geoid "${o.geoid}" is not a valid ${o.geoLevel} code` });
+      ctx.addIssue({
+        code: "custom",
+        path: ["geoid"],
+        message: `geoid "${o.geoid}" is not a valid ${o.geoLevel} code`,
+      });
     }
   });
 

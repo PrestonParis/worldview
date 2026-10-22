@@ -1,0 +1,402 @@
+{
+ "jurisdiction": {
+  "shortName": "Georgia",
+  "name": [
+   {
+    "languageId": "en",
+    "text": "Georgia"
+   }
+  ],
+  "childLocalities": []
+ },
+ "election": {
+  "id": "01000000-b960-7e2f-bde4-08dead3401e5",
+  "jurisdictionId": "09378a07-e6cf-4f66-be7c-ca4aa534f99a",
+  "name": [
+   {
+    "languageId": "en",
+    "text": "May 19, 2026 - General Primary"
+   }
+  ],
+  "electionDate": "2026-05-19",
+  "isOfficialResults": true,
+  "isPrimary": true,
+  "asOf": "2026-06-05T12:37:48.4286599Z",
+  "lastUpdated": "2026-06-04T15:31:48.7238665Z"
+ },
+ "localityElections": [],
+ "ballotItems": [
+  {
+   "id": "01000000-f33c-bc21-a444-08dead340297",
+   "parentId": null,
+   "name": [
+    {
+     "languageId": "en",
+     "text": "US Senate - Rep"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 1"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": "REP",
+   "reportingStatus": {
+    "reportingUnits": 159,
+    "totalUnits": 159,
+    "asOf": "2026-06-05T12:37:48.4286599Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 912696,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-f33c-bc21-b67e-08dead340297",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Earl L. \"Buddy\" Carter"
+       }
+      ],
+      "voteCount": 229223,
+      "party": {
+       "abbreviation": "REP"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-f33c-bc21-b83c-08dead340297",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Mike Collins"
+       }
+      ],
+      "voteCount": 369642,
+      "party": {
+       "abbreviation": "REP"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-f33c-bc21-b848-08dead340297",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "John F. Coyne III"
+       }
+      ],
+      "voteCount": 9850,
+      "party": {
+       "abbreviation": "REP"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-f33c-bc21-b84f-08dead340297",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Derek Dooley"
+       }
+      ],
+      "voteCount": 275534,
+      "party": {
+       "abbreviation": "REP"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-f33c-bc21-b855-08dead340297",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Jonathan \"Jon\" McColumn"
+       }
+      ],
+      "voteCount": 28447,
+      "party": {
+       "abbreviation": "REP"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     }
+    ]
+   }
+  },
+  {
+   "id": "01000000-f33c-bc21-b379-08dead3402a6",
+   "parentId": null,
+   "name": [
+    {
+     "languageId": "en",
+     "text": "US Senate - Dem"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 1"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": "DEM",
+   "reportingStatus": {
+    "reportingUnits": 159,
+    "totalUnits": 159,
+    "asOf": "2026-06-05T12:37:48.4286599Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 1042331,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-f33c-bc21-b397-08dead3402a6",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Jon Ossoff (I)"
+       }
+      ],
+      "voteCount": 1042331,
+      "party": {
+       "abbreviation": "DEM"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     }
+    ]
+   }
+  },
+  {
+   "id": "01000000-f33c-bc21-75d0-08dead3402aa",
+   "parentId": null,
+   "name": [
+    {
+     "languageId": "en",
+     "text": "Governor - Dem"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 1"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": "DEM",
+   "reportingStatus": {
+    "reportingUnits": 159,
+    "totalUnits": 159,
+    "asOf": "2026-06-05T12:37:48.4286599Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 1081811,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-f33c-bc21-75e2-08dead3402aa",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Keisha Lance Bottoms"
+       }
+      ],
+      "voteCount": 608264,
+      "party": {
+       "abbreviation": "DEM"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-f33c-bc21-75f7-08dead3402aa",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Olu Brown"
+       }
+      ],
+      "voteCount": 12329,
+      "party": {
+       "abbreviation": "DEM"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-f33c-bc21-761c-08dead3402aa",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Amanda Duffy"
+       }
+      ],
+      "voteCount": 18808,
+      "party": {
+       "abbreviation": "DEM"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-f33c-bc21-762a-08dead3402aa",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Geoff Duncan"
+       }
+      ],
+      "voteCount": 75721,
+      "party": {
+       "abbreviation": "DEM"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-f33c-bc21-7630-08dead3402aa",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Jason Esteves"
+       }
+      ],
+      "voteCount": 201852,
+      "party": {
+       "abbreviation": "DEM"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-f33c-bc21-7636-08dead3402aa",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Derrick Jackson"
+       }
+      ],
+      "voteCount": 25050,
+      "party": {
+       "abbreviation": "DEM"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-f33c-bc21-763c-08dead3402aa",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Michael \"Mike\" Thurmond"
+       }
+      ],
+      "voteCount": 139787,
+      "party": {
+       "abbreviation": "DEM"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     }
+    ]
+   }
+  },
+  {
+   "id": "01000000-f33c-bc21-041f-08dead3402ae",
+   "parentId": null,
+   "name": [
+    {
+     "languageId": "en",
+     "text": "Lieutenant Governor - Dem"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 1"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": "DEM",
+   "reportingStatus": {
+    "reportingUnits": 159,
+    "totalUnits": 159,
+    "asOf": "2026-06-05T12:37:48.4286599Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 1030951,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-f33c-bc21-0431-08dead3402ae",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Josh McLaurin"
+       }
+      ],
+      "voteCount": 426854,
+      "party": {
+       "abbreviation": "DEM"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-f33c-bc21-0442-08dead3402ae",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Nabilah Parkes"
+       }
+      ],
+      "voteCount": 407380,
+      "party": {
+       "abbreviation": "DEM"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-f33c-bc21-0449-08dead3402ae",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Richard N. Wright"
+       }
+      ],
+      "voteCount": 196717,
+      "party": {
+       "abbreviation": "DEM"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     }
+    ]
+   }
+  }
+ ]
+}

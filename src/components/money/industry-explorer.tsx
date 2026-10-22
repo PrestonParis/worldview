@@ -11,6 +11,7 @@ import {
   type IndustrySlice,
 } from "@/lib/money";
 import type { Entity } from "@/lib/validation/entity";
+import { publicEntityPath } from "@/lib/people/public";
 
 const MAX_COMPARE = 3;
 const BAR = "bg-emerald-500 dark:bg-emerald-600";
@@ -85,7 +86,7 @@ function SectorRow({
             return (
               <li key={d.donorEntityId} className="flex items-center justify-between gap-3 text-xs">
                 <Link
-                  href={e ? `/data/entities/${e.id}` : "#"}
+                  href={e ? publicEntityPath(e) : "#"}
                   className="min-w-0 truncate text-slate-600 hover:underline dark:text-slate-400"
                 >
                   {e?.name ?? "Unknown"}

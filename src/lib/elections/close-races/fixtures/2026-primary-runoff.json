@@ -1,0 +1,152 @@
+{
+ "jurisdiction": {
+  "shortName": "Georgia",
+  "name": [
+   {
+    "languageId": "en",
+    "text": "Georgia"
+   }
+  ],
+  "childLocalities": []
+ },
+ "election": {
+  "id": "01000000-040f-d9d9-f733-08dec5806c31",
+  "jurisdictionId": "09378a07-e6cf-4f66-be7c-ca4aa534f99a",
+  "name": [
+   {
+    "languageId": "en",
+    "text": "June 16th, 2026 General Primary Runoff"
+   }
+  ],
+  "electionDate": "2026-06-16",
+  "isOfficialResults": true,
+  "isPrimary": true,
+  "asOf": "2026-08-20T14:15:31.593143Z",
+  "lastUpdated": "2026-07-02T15:08:30.0213858Z"
+ },
+ "localityElections": [],
+ "ballotItems": [
+  {
+   "id": "01000000-76e9-acd3-8dd2-08dec5806d97",
+   "parentId": null,
+   "name": [
+    {
+     "languageId": "en",
+     "text": "US Senate - Rep"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 1"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": "REP",
+   "reportingStatus": {
+    "reportingUnits": 159,
+    "totalUnits": 159,
+    "asOf": "2026-08-20T14:15:31.593143Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 702513,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-76e9-acd3-9655-08dec5806d97",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Mike Collins"
+       }
+      ],
+      "voteCount": 390174,
+      "party": {
+       "abbreviation": "REP"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-76e9-acd3-9686-08dec5806d97",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Derek Dooley"
+       }
+      ],
+      "voteCount": 312339,
+      "party": {
+       "abbreviation": "REP"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     }
+    ]
+   }
+  },
+  {
+   "id": "01000000-76e9-acd3-ddbb-08dec5806da2",
+   "parentId": null,
+   "name": [
+    {
+     "languageId": "en",
+     "text": "Lieutenant Governor - Dem"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 1"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": "DEM",
+   "reportingStatus": {
+    "reportingUnits": 159,
+    "totalUnits": 159,
+    "asOf": "2026-08-20T14:15:31.593143Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 384212,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-76e9-acd3-dddd-08dec5806da2",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Josh McLaurin"
+       }
+      ],
+      "voteCount": 210842,
+      "party": {
+       "abbreviation": "DEM"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-76e9-acd3-dde8-08dec5806da2",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Nabilah Parkes"
+       }
+      ],
+      "voteCount": 173370,
+      "party": {
+       "abbreviation": "DEM"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     }
+    ]
+   }
+  }
+ ]
+}

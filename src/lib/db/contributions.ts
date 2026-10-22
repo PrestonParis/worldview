@@ -1,4 +1,4 @@
-import { eq, or, count, gte, sum, min, max, sql } from "drizzle-orm";
+import { and, eq, or, count, gte, sum, min, max, sql } from "drizzle-orm";
 import { db } from "./client";
 import { contributions } from "./schema";
 import type { Contribution, ContributionInput } from "../validation/contribution";
@@ -10,6 +10,11 @@ import type {
   IndustryBreakdownRow,
   StateBreakdownRow,
 } from "../money";
+
+// FEC memo lines (memo_code 'X') itemize money already counted on another
+// line — a joint-fundraising committee's allocation, a conduit's earmark —
+// so every total leaves them out.
+export const countedContribution = sql`coalesce(${contributions.memoCode}, '') <> 'X'`;
 
 function toContribution(row: typeof contributions.$inferSelect): Contribution {
   return {
@@ -67,6 +72,7 @@ export async function listContributionTotalsByCurrency(): Promise<
   const rows = await db
     .select({ currency: contributions.currency, total: sum(contributions.amount) })
     .from(contributions)
+    .where(countedContribution)
     .groupBy(contributions.currency);
   return rows.map((r) => ({ currency: r.currency, total: Number(r.total ?? 0) }));
 }
@@ -86,6 +92,7 @@ export async function listContributionFlows(): Promise<ContributionFlow[]> {
       lastDate: max(contributions.date),
     })
     .from(contributions)
+    .where(countedContribution)
     .groupBy(
       contributions.donorEntityId,
       contributions.recipientEntityId,
@@ -123,6 +130,7 @@ export async function listIndustryBreakdown(): Promise<IndustryBreakdownRow[]> {
       count: count(),
     })
     .from(contributions)
+    .where(countedContribution)
     .groupBy(
       contributions.recipientEntityId,
       contributions.donorIndustry,
@@ -154,6 +162,7 @@ export async function listStateBreakdown(): Promise<StateBreakdownRow[]> {
       count: count(),
     })
     .from(contributions)
+    .where(countedContribution)
     .groupBy(
       contributions.recipientEntityId,
       contributions.donorState,
@@ -191,12 +200,12 @@ export async function getEntityContributionSummary(
     db
       .select({ currency: contributions.currency, total: sum(contributions.amount), count: count() })
       .from(contributions)
-      .where(eq(contributions.recipientEntityId, entityId))
+      .where(and(eq(contributions.recipientEntityId, entityId), countedContribution))
       .groupBy(contributions.currency),
     db
       .select({ currency: contributions.currency, total: sum(contributions.amount), count: count() })
       .from(contributions)
-      .where(eq(contributions.donorEntityId, entityId))
+      .where(and(eq(contributions.donorEntityId, entityId), countedContribution))
       .groupBy(contributions.currency),
     db
       .select({
@@ -206,7 +215,7 @@ export async function getEntityContributionSummary(
         count: count(),
       })
       .from(contributions)
-      .where(eq(contributions.recipientEntityId, entityId))
+      .where(and(eq(contributions.recipientEntityId, entityId), countedContribution))
       .groupBy(contributions.donorEntityId, contributions.currency)
       .orderBy(amountDesc)
       .limit(8),
@@ -218,7 +227,7 @@ export async function getEntityContributionSummary(
         count: count(),
       })
       .from(contributions)
-      .where(eq(contributions.donorEntityId, entityId))
+      .where(and(eq(contributions.donorEntityId, entityId), countedContribution))
       .groupBy(contributions.recipientEntityId, contributions.currency)
       .orderBy(amountDesc)
       .limit(8),

@@ -1,14 +1,14 @@
-import { h, type TraditionHistory } from "./types";
+import { h, type TraditionCore } from "./types";
 
 // Racial and ethnic nationalist traditions, and the movements on race that
 // answer them.
 
-export const RACE: Record<string, TraditionHistory> = {
+export const RACE: Record<string, TraditionCore> = {
   "white-nationalism": h({
     when: "1910s–1920s; modern movement from the 1970s",
     where: "The United States",
     founders: ["Madison Grant", "Lothrop Stoddard", "William Pierce", "Jared Taylor"],
-    figures: ["Madison Grant", "Lothrop Stoddard", "William Pierce", "Jared Taylor", "Kevin MacDonald", "Richard Spencer"],
+    figures: ["Madison Grant", "Lothrop Stoddard", "William Pierce"],
     texts: [
       ["The Passing of the Great Race", "Madison Grant", "1916"],
       ["The Rising Tide of Color Against White World-Supremacy", "Lothrop Stoddard", "1920"],
@@ -35,7 +35,7 @@ export const RACE: Record<string, TraditionHistory> = {
     when: "1919–1920",
     where: "Munich, Germany",
     founders: ["Anton Drexler", "Adolf Hitler"],
-    figures: ["Adolf Hitler", "Alfred Rosenberg", "Gottfried Feder", "Hans F. K. Günther", "Dietrich Eckart", "George Lincoln Rockwell"],
+    figures: ["Adolf Hitler", "Alfred Rosenberg", "Gottfried Feder"],
     texts: [
       ["25-Point Program", "NSDAP", "1920"],
       ["Mein Kampf", "Adolf Hitler", "1925–1926"],
@@ -61,7 +61,7 @@ export const RACE: Record<string, TraditionHistory> = {
     when: "1877–1900",
     where: "The American South",
     founders: ["Southern \"Redeemer\" Democrats", "Benjamin Tillman", "James K. Vardaman"],
-    figures: ["Thomas Dixon Jr.", "Theodore Bilbo", "Tom P. Brady", "James J. Kilpatrick", "Carleton Putnam"],
+    figures: ["Thomas Dixon Jr.", "Tom P. Brady", "James J. Kilpatrick"],
     texts: [
       ["Mississippi Constitution", "Mississippi Constitutional Convention", "1890"],
       ["Plessy v. Ferguson (majority opinion)", "Henry Billings Brown", "1896"],
@@ -88,7 +88,7 @@ export const RACE: Record<string, TraditionHistory> = {
     when: "1969–1994",
     where: "The United States, Britain, and Canada",
     founders: ["Arthur Jensen", "J. Philippe Rushton", "Richard Lynn", "Charles Murray"],
-    figures: ["Arthur Jensen", "J. Philippe Rushton", "Richard Lynn", "Charles Murray", "Steve Sailer", "Nicholas Wade"],
+    figures: ["Arthur Jensen", "J. Philippe Rushton", "Richard Lynn"],
     texts: [
       ["\"How Much Can We Boost IQ and Scholastic Achievement?\"", "Arthur Jensen", "1969"],
       ["The Bell Curve", "Richard Herrnstein and Charles Murray", "1994"],
@@ -133,7 +133,7 @@ export const RACE: Record<string, TraditionHistory> = {
     when: "1850s",
     where: "The United States",
     founders: ["Martin Delany", "Edward Wilmot Blyden", "Marcus Garvey"],
-    figures: ["Martin Delany", "Marcus Garvey", "Malcolm X", "Kwame Ture (Stokely Carmichael)", "Huey Newton", "Imari Obadele"],
+    figures: ["Martin Delany", "Marcus Garvey", "Malcolm X"],
     texts: [
       ["The Condition, Elevation, Emigration, and Destiny of the Colored People of the United States", "Martin Delany", "1852"],
       ["Philosophy and Opinions of Marcus Garvey", "Marcus Garvey", "1923"],
@@ -159,7 +159,7 @@ export const RACE: Record<string, TraditionHistory> = {
     when: "1900",
     where: "London",
     founders: ["Henry Sylvester Williams", "W. E. B. Du Bois", "Marcus Garvey"],
-    figures: ["W. E. B. Du Bois", "Marcus Garvey", "Kwame Nkrumah", "Frantz Fanon", "Julius Nyerere", "Walter Rodney"],
+    figures: ["W. E. B. Du Bois", "Marcus Garvey", "Kwame Nkrumah"],
     texts: [
       ["\"To the Nations of the World\"", "W. E. B. Du Bois", "1900"],
       ["The Wretched of the Earth", "Frantz Fanon", "1961"],
@@ -184,7 +184,7 @@ export const RACE: Record<string, TraditionHistory> = {
     when: "2016",
     where: "The United States, online",
     founders: ["Yvette Carnell", "Antonio Moore"],
-    figures: ["Yvette Carnell", "Antonio Moore", "William Darity Jr.", "A. Kirsten Mullen"],
+    figures: ["Yvette Carnell", "Antonio Moore", "William Darity Jr."],
     texts: [
       ["H.R. 40 (Commission to Study Reparation Proposals)", "John Conyers", "1989"],
       ["\"The Case for Reparations\"", "Ta-Nehisi Coates", "2014"],
@@ -207,7 +207,7 @@ export const RACE: Record<string, TraditionHistory> = {
     when: "1895",
     where: "The American South",
     founders: ["Booker T. Washington"],
-    figures: ["Booker T. Washington", "George Schuyler", "Thomas Sowell", "Walter E. Williams", "Shelby Steele", "Glenn Loury"],
+    figures: ["Booker T. Washington", "George Schuyler", "Thomas Sowell"],
     texts: [
       ["Atlanta Exposition Address", "Booker T. Washington", "1895"],
       ["Up from Slavery", "Booker T. Washington", "1901", "https://www.gutenberg.org/ebooks/2376"],
@@ -231,7 +231,7 @@ export const RACE: Record<string, TraditionHistory> = {
     when: "1980s (critical race theory); 2010s movement",
     where: "The United States",
     founders: ["Derrick Bell", "Kimberlé Crenshaw", "Ibram X. Kendi"],
-    figures: ["Derrick Bell", "Kimberlé Crenshaw", "Ibram X. Kendi", "Robin DiAngelo", "Nikole Hannah-Jones"],
+    figures: ["Derrick Bell", "Kimberlé Crenshaw", "Ibram X. Kendi"],
     texts: [
       ["\"Demarginalizing the Intersection of Race and Sex\"", "Kimberlé Crenshaw", "1989"],
       ["Faces at the Bottom of the Well", "Derrick Bell", "1992"],
@@ -256,7 +256,7 @@ export const RACE: Record<string, TraditionHistory> = {
     when: "1960s",
     where: "The American Southwest",
     founders: ["Rodolfo \"Corky\" Gonzales", "Reies López Tijerina", "José Ángel Gutiérrez"],
-    figures: ["Rodolfo \"Corky\" Gonzales", "Reies López Tijerina", "José Ángel Gutiérrez", "Rodolfo Acuña", "David Sánchez"],
+    figures: ["Rodolfo \"Corky\" Gonzales", "Reies López Tijerina", "José Ángel Gutiérrez"],
     texts: [
       ["\"I Am Joaquín\"", "Rodolfo \"Corky\" Gonzales", "1967"],
       ["El Plan Espiritual de Aztlán", "Chicano Youth Liberation Conference", "1969"],
@@ -281,7 +281,7 @@ export const RACE: Record<string, TraditionHistory> = {
     when: "1960s–1970s (Red Power)",
     where: "The United States",
     founders: ["American Indian Movement", "Vine Deloria Jr.", "Dennis Banks", "Russell Means"],
-    figures: ["Vine Deloria Jr.", "Dennis Banks", "Russell Means", "Winona LaDuke", "Glen Coulthard", "Nick Estes"],
+    figures: ["Vine Deloria Jr.", "Dennis Banks", "Russell Means"],
     texts: [
       ["Custer Died for Your Sins", "Vine Deloria Jr.", "1969"],
       ["Trail of Broken Treaties 20-Point Position Paper", "Trail of Broken Treaties caravan", "1972"],
@@ -306,7 +306,7 @@ export const RACE: Record<string, TraditionHistory> = {
     when: "1896–1897",
     where: "Vienna and Basel",
     founders: ["Theodor Herzl", "Leon Pinsker (precursor)"],
-    figures: ["Theodor Herzl", "Leon Pinsker", "Ahad Ha'am", "Ze'ev Jabotinsky", "A. D. Gordon", "David Ben-Gurion"],
+    figures: ["Theodor Herzl", "Ahad Ha'am", "Ze'ev Jabotinsky"],
     texts: [
       ["Auto-Emancipation", "Leon Pinsker", "1882"],
       ["The Jewish State", "Theodor Herzl", "1896"],

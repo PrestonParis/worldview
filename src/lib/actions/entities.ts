@@ -4,19 +4,14 @@ import { requireContributor } from "../auth/guard";
 import { revalidatePath } from "next/cache";
 import { entitySchema, type EntityInput } from "../validation/entity";
 import * as entitiesDb from "../db/entities";
+import { actionFailure, validationFailure, type ActionResult } from "./result";
 
-export type ActionResult<T> =
-  | { ok: true; data: T }
-  | { ok: false; error: string };
-
-export async function createEntityAction(
-  input: EntityInput,
-): Promise<ActionResult<{ id: string }>> {
+export async function createEntityAction(input: EntityInput): Promise<ActionResult<{ id: string }>> {
   const denied = await requireContributor();
   if (denied) return denied;
   const parsed = entitySchema.safeParse(input);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+    return validationFailure(parsed.error);
   }
   try {
     const entity = await entitiesDb.createEntity(parsed.data);
@@ -24,19 +19,16 @@ export async function createEntityAction(
     revalidatePath("/people", "layout");
     return { ok: true, data: { id: entity.id } };
   } catch (err) {
-    return { ok: false, error: (err as Error).message };
+    return actionFailure("entities.create", err);
   }
 }
 
-export async function updateEntityAction(
-  id: string,
-  input: EntityInput,
-): Promise<ActionResult<{ id: string }>> {
+export async function updateEntityAction(id: string, input: EntityInput): Promise<ActionResult<{ id: string }>> {
   const denied = await requireContributor();
   if (denied) return denied;
   const parsed = entitySchema.safeParse(input);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+    return validationFailure(parsed.error);
   }
   try {
     const entity = await entitiesDb.updateEntity(id, parsed.data);
@@ -45,13 +37,11 @@ export async function updateEntityAction(
     revalidatePath("/people", "layout");
     return { ok: true, data: { id: entity.id } };
   } catch (err) {
-    return { ok: false, error: (err as Error).message };
+    return actionFailure("entities.update", err);
   }
 }
 
-export async function deleteEntityAction(
-  id: string,
-): Promise<ActionResult<null>> {
+export async function deleteEntityAction(id: string): Promise<ActionResult<null>> {
   const denied = await requireContributor();
   if (denied) return denied;
   try {
@@ -60,6 +50,6 @@ export async function deleteEntityAction(
     revalidatePath("/people", "layout");
     return { ok: true, data: null };
   } catch (err) {
-    return { ok: false, error: (err as Error).message };
+    return actionFailure("entities.delete", err);
   }
 }

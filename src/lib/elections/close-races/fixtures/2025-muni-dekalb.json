@@ -1,0 +1,293 @@
+{
+ "jurisdiction": {
+  "shortName": "dekalb-county-ga",
+  "name": [
+   {
+    "languageId": "en",
+    "text": "DeKalb County"
+   }
+  ],
+  "childLocalities": []
+ },
+ "election": {
+  "id": "01000000-b5ce-a69b-548e-08de06bd6817",
+  "jurisdictionId": "6911dea4-3a52-4ad8-b4de-b4ebf56c8d85",
+  "name": [
+   {
+    "languageId": "en",
+    "text": "November 4, 2025 - Municipal General / Special Election (PSC)"
+   }
+  ],
+  "electionDate": "2025-11-04",
+  "isOfficialResults": true,
+  "isPrimary": false,
+  "asOf": "2025-11-21T18:33:51.8284127Z",
+  "lastUpdated": "2025-11-18T16:02:30.9110242Z"
+ },
+ "localityElections": [],
+ "ballotItems": [
+  {
+   "id": "01000000-b5ce-a69b-d1e2-08de06bd6b52",
+   "parentId": null,
+   "name": [
+    {
+     "languageId": "en",
+     "text": "Atlanta Mayor"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 1"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": null,
+   "reportingStatus": {
+    "reportingUnits": 16,
+    "totalUnits": 16,
+    "asOf": "2025-11-21T18:33:51.8284127Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 11905,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-b5ce-a69b-d1f0-08de06bd6b52",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Andre Dickens (I)"
+       }
+      ],
+      "voteCount": 9432,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-b5ce-a69b-d1ff-08de06bd6b52",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Helmut \"Love\" Domagalski"
+       }
+      ],
+      "voteCount": 569,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-b5ce-a69b-d207-08de06bd6b52",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Kalema Jackson"
+       }
+      ],
+      "voteCount": 771,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-b5ce-a69b-d20d-08de06bd6b52",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Eddie Meredith"
+       }
+      ],
+      "voteCount": 1133,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     }
+    ]
+   }
+  },
+  {
+   "id": "01000000-b5ce-a69b-d42b-08de06bd6b52",
+   "parentId": null,
+   "name": [
+    {
+     "languageId": "en",
+     "text": "Atlanta City Council Member Post 1 At Large"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 1"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": null,
+   "reportingStatus": {
+    "reportingUnits": 16,
+    "totalUnits": 16,
+    "asOf": "2025-11-21T18:33:51.8284127Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 11833,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-b5ce-a69b-d43f-08de06bd6b52",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Michael Julian Bond (I)"
+       }
+      ],
+      "voteCount": 5401,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-b5ce-a69b-d44c-08de06bd6b52",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Juan Mendoza"
+       }
+      ],
+      "voteCount": 2997,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-b5ce-a69b-d454-08de06bd6b52",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Matt Rinker"
+       }
+      ],
+      "voteCount": 3435,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     }
+    ]
+   }
+  },
+  {
+   "id": "01000000-b5ce-a69b-f976-08de06bd6b52",
+   "parentId": null,
+   "name": [
+    {
+     "languageId": "en",
+     "text": "Clarkston City Council"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 3"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": null,
+   "reportingStatus": {
+    "reportingUnits": 2,
+    "totalUnits": 2,
+    "asOf": "2025-11-21T18:33:51.8284127Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 2553,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-b5ce-a69b-f98a-08de06bd6b52",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Lynn Bayonne"
+       }
+      ],
+      "voteCount": 741,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-b5ce-a69b-f994-08de06bd6b52",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Yterenickia \"YT\" Bell (I)"
+       }
+      ],
+      "voteCount": 659,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-b5ce-a69b-f9d5-08de06bd6b52",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Nick Crawford"
+       }
+      ],
+      "voteCount": 558,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-b5ce-a69b-f9dc-08de06bd6b52",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Dean Sumner Moore"
+       }
+      ],
+      "voteCount": 595,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     }
+    ]
+   }
+  }
+ ]
+}

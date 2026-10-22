@@ -5,13 +5,14 @@ import { latestByGeo } from "@/lib/db/stats";
 import { formatValue } from "@/lib/format";
 import { STATES_51 } from "@/lib/geo/states";
 import { stateSlug } from "@/lib/states/slug";
+import { IssueHeader } from "@/components/data/issue-layout";
 
 // Rebuilt at most daily; crawlers and visitors share the cached render.
 export const revalidate = 86400;
 
 export const metadata: Metadata = {
   title: "States | Worldview",
-  description: "A profile of every state and the District of Columbia: the economy, housing, health care, crime, immigration, schools, family, religion, and elections, each compared with the U.S.",
+  description: "A profile of every state and the District of Columbia: the economy, housing, healthcare, crime, immigration, schools, family, religion, and elections, each compared with the U.S.",
 };
 
 export default async function StatesPage() {
@@ -21,14 +22,7 @@ export default async function StatesPage() {
 
   return (
     <div className="mx-auto max-w-7xl space-y-12">
-      <header className="max-w-3xl">
-        <p className="text-sm font-semibold tracking-[0.14em] text-blue-700 uppercase dark:text-blue-400">United States</p>
-        <h1 className="mt-2 text-4xl font-bold tracking-tight text-slate-950 sm:text-5xl dark:text-white">States</h1>
-        <p className="mt-4 text-lg leading-8 text-slate-600 dark:text-slate-300">
-          Pick a state to see every topic on Worldview in one place — jobs, homes, health, crime, immigration, schools, family, faith, and elections —
-          each beside the U.S. figure and the state&apos;s rank.
-        </p>
-      </header>
+      <IssueHeader title="States" />
 
       <div className="max-w-2xl">
         <StateTileNav />

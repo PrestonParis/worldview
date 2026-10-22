@@ -13,7 +13,7 @@ import type { Ideology } from "./types";
 // engagement -Internationalist/+America First · force -Interventionist/+Restraint ·
 // social -Progressive/+Traditional · religion -Secular/+Religious ·
 // immigration -Open/+Restrictive · justice -Reform/+Law & order ·
-// identity -Group-conscious/+Colorblind · environment -Environmental/+Growth-first ·
+// identity -Group-conscious/+Race-neutral law · environment -Environmental/+Growth-first ·
 // technology -Precautionary/+Accelerationist
 //
 // Lenses (tradition, authority, nation) list the categorical answers an

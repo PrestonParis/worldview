@@ -6,6 +6,7 @@ import { SearchInput } from "@/components/search/search-input";
 import { entityColorFor } from "@/lib/entity-colors";
 import type { Entity } from "@/lib/validation/entity";
 import type { Edge } from "@/lib/validation/edge";
+import { publicEntityPath } from "@/lib/people/public";
 
 function parseMetadata(raw: string): [string, string][] {
   if (!raw.trim()) return [];
@@ -70,7 +71,7 @@ export function EntityTypeSection({
                   >
                     <div className="flex items-start justify-between gap-2">
                       <Link
-                        href={`/data/entities/${e.id}`}
+                        href={publicEntityPath(e)}
                         className="font-medium text-slate-900 hover:underline dark:text-slate-100"
                       >
                         {e.name}

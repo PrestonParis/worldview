@@ -1,4 +1,5 @@
 import { partyLetter } from "./overview";
+import type { Candidacy } from "../validation/candidacy";
 
 const SUFFIXES = new Set(["Jr", "Sr", "II", "III", "IV", "V"]);
 const SMALL = new Set(["de", "del", "la", "van", "von"]);
@@ -52,4 +53,25 @@ export function normalizePartyName(raw: string): string {
   if (letter === "I") return "Independent";
   if (!raw.trim()) return "Unaffiliated";
   return raw.replace(/\s+party$/i, "").split(/\s+/).map(titleWord).join(" ");
+}
+
+function candidateStage(candidacy: Candidacy): number {
+  if (candidacy.withdrew || candidacy.status === "withdrew") return 0;
+  if (candidacy.status === "nominee") return 5;
+  if (candidacy.status === "primary_winner") return 4;
+  if (candidacy.status === "filed") return 3;
+  if (candidacy.status === "lost_primary") return 1;
+  return 2;
+}
+
+// One row per person: a race can carry a scaffold row and an FEC filing for
+// the same candidate. Keeps the furthest-along candidacy, preferring incumbents.
+export function dedupeCandidacies(candidacies: Candidacy[], nameFor: (entityId: string) => string): Candidacy[] {
+  const unique = new Map<string, Candidacy>();
+  for (const candidacy of candidacies) {
+    const key = candidateIdentityKey(nameFor(candidacy.candidateEntityId));
+    const existing = unique.get(key);
+    if (!existing || candidateStage(candidacy) > candidateStage(existing) || (candidacy.incumbent && !existing.incumbent)) unique.set(key, candidacy);
+  }
+  return [...unique.values()];
 }

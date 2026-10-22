@@ -4,70 +4,43 @@
 // through here.
 
 import { and, asc, desc, eq, gte, inArray, isNotNull, lte, sql } from "drizzle-orm";
-import { unstable_cache } from "next/cache";
 import { db, type Db } from "./client";
-import { recordCoverage, type RecordTableCoverage } from "./records";
+import { recordCoverage } from "./records";
 import { bySource, dbFor } from "./stores";
 import { areaStats, dataPartners, datasets, geographies, geoLevels, syncRuns } from "./schema";
 import { periodEnd, periodStart, type ObservationInput } from "@/lib/validation/observation";
+import { PublicDataInputError } from "@/lib/data/public-error";
+import type {
+  AreaValue,
+  CompareResult,
+  CompareSeries,
+  Dataset,
+  DatasetCoverage,
+  GeographicMetricCoverage,
+  LatestValue,
+  MetricDefinition,
+  ObservationQuery,
+  Point,
+  SeriesKey,
+  YearlyValue,
+} from "./stats/types";
+import { cacheStatsQuery } from "./stats/cache";
 
-export interface MetricDefinition {
-  label: string;
-  unit: string;
-  description?: string;
-}
-
-export interface Dataset {
-  slug: string;
-  title: string;
-  topic: string;
-  publisher: string;
-  partner: { slug: string; name: string } | null;
-  description: string | null;
-  methodology: string | null;
-  sourceUrl: string | null;
-  license: string | null;
-  cadence: string | null;
-  metrics: Record<string, MetricDefinition>;
-  status: string;
-  updatedAt: string;
-}
-
-export interface DatasetCoverage {
-  // "values" for area_stats series; "records" for record datasets
-  // (src/lib/db/records.ts), which also break their rows down by table.
-  kind: "values" | "records";
-  rows: number;
-  metrics: number;
-  geoLevels: string[];
-  firstPeriod: string | null;
-  lastPeriod: string | null;
-  lastUpdated: string | null;
-  tables?: RecordTableCoverage[];
-}
-
-export interface GeographicMetricCoverage {
-  dataset: string;
-  metric: string;
-  geoLevel: string;
-  firstPeriod: string;
-  lastPeriod: string;
-  rows: number;
-}
-
-export interface Point {
-  period: string;
-  periodStart: string | null;
-  value: number;
-  metadata?: Record<string, unknown> | null;
-}
-
-export interface AreaValue {
-  geoid: string;
-  geoName: string | null;
-  value: number;
-  metadata?: Record<string, unknown> | null;
-}
+export type {
+  AreaValue,
+  CompareResult,
+  CompareSeries,
+  Dataset,
+  DatasetCoverage,
+  GeographicMetricCoverage,
+  LatestValue,
+  MetricDefinition,
+  ObservationQuery,
+  Point,
+  SeriesKey,
+  YearlyValue,
+} from "./stats/types";
+export { AREA_STATS_TAG } from "./stats/cache";
 
 const datasetColumns = {
   slug: datasets.slug,
@@ -107,7 +80,10 @@ function toDataset(row: Awaited<ReturnType<typeof selectDatasets>>[number]): Dat
   };
 }
 
-export async function listDatasets({ topic, includeUnpublished = false }: { topic?: string; includeUnpublished?: boolean } = {}) {
+export async function listDatasets({
+  topic,
+  includeUnpublished = false,
+}: { topic?: string; includeUnpublished?: boolean } = {}) {
   const rows = await selectDatasets()
     .where(
       and(
@@ -132,19 +108,25 @@ export async function datasetCoverage(slugs: string[]): Promise<Record<string, D
   if (!slugs.length) return {};
   const records = await recordCoverage(slugs);
   const groups = await bySource(slugs, (s) => s);
-  const rows = (await Promise.all(groups.map(([store, group]) => store
-    .select({
-      source: areaStats.source,
-      rows: sql<number>`count(*)::int`,
-      metrics: sql<number>`count(distinct ${areaStats.metric})::int`,
-      geoLevels: sql<string[]>`array_agg(distinct ${areaStats.geoLevel})`,
-      firstPeriod: sql<string | null>`min(${areaStats.period})`,
-      lastPeriod: sql<string | null>`max(${areaStats.period})`,
-      lastUpdated: sql<string | null>`max(${areaStats.updatedAt})::text`,
-    })
-    .from(areaStats)
-    .where(and(inArray(areaStats.source, group), isNotNull(areaStats.value)))
-    .groupBy(areaStats.source)))).flat();
+  const rows = (
+    await Promise.all(
+      groups.map(([store, group]) =>
+        store
+          .select({
+            source: areaStats.source,
+            rows: sql<number>`count(*)::int`,
+            metrics: sql<number>`count(distinct ${areaStats.metric})::int`,
+            geoLevels: sql<string[]>`array_agg(distinct ${areaStats.geoLevel})`,
+            firstPeriod: sql<string | null>`min(${areaStats.period})`,
+            lastPeriod: sql<string | null>`max(${areaStats.period})`,
+            lastUpdated: sql<string | null>`max(${areaStats.updatedAt})::text`,
+          })
+          .from(areaStats)
+          .where(and(inArray(areaStats.source, group), isNotNull(areaStats.value)))
+          .groupBy(areaStats.source),
+      ),
+    )
+  ).flat();
   return {
     ...Object.fromEntries(
       Object.entries(records).map(([slug, r]) => [
@@ -162,18 +144,18 @@ export async function datasetCoverage(slugs: string[]): Promise<Record<string, D
       ]),
     ),
     ...Object.fromEntries(
-    rows.map((r) => [
-      r.source,
-      {
-        kind: "values" as const,
-        rows: r.rows,
-        metrics: r.metrics,
-        geoLevels: r.geoLevels,
-        firstPeriod: r.firstPeriod,
-        lastPeriod: r.lastPeriod,
-        lastUpdated: r.lastUpdated ? new Date(r.lastUpdated).toISOString() : null,
-      },
-    ]),
+      rows.map((r) => [
+        r.source,
+        {
+          kind: "values" as const,
+          rows: r.rows,
+          metrics: r.metrics,
+          geoLevels: r.geoLevels,
+          firstPeriod: r.firstPeriod,
+          lastPeriod: r.lastPeriod,
+          lastUpdated: r.lastUpdated ? new Date(r.lastUpdated).toISOString() : null,
+        },
+      ]),
     ),
   };
 }
@@ -181,30 +163,41 @@ export async function datasetCoverage(slugs: string[]): Promise<Record<string, D
 export async function geographicMetricCoverage(slugs: string[]): Promise<GeographicMetricCoverage[]> {
   if (!slugs.length) return [];
   const groups = await bySource(slugs, (s) => s);
-  const rows = await Promise.all(groups.map(([store, group]) => store
-    .select({
-      dataset: areaStats.source,
-      metric: areaStats.metric,
-      geoLevel: areaStats.geoLevel,
-      firstPeriod: sql<string>`min(${areaStats.period})`,
-      lastPeriod: sql<string>`max(${areaStats.period})`,
-      rows: sql<number>`count(*)::int`,
-    })
-    .from(areaStats)
-    .where(and(
-      inArray(areaStats.source, group),
-      inArray(areaStats.geoLevel, ["state", "county", "country"]),
-      isNotNull(areaStats.value),
-    ))
-    .groupBy(areaStats.source, areaStats.metric, areaStats.geoLevel)));
+  const rows = await Promise.all(
+    groups.map(([store, group]) =>
+      store
+        .select({
+          dataset: areaStats.source,
+          metric: areaStats.metric,
+          geoLevel: areaStats.geoLevel,
+          firstPeriod: sql<string>`min(${areaStats.period})`,
+          lastPeriod: sql<string>`max(${areaStats.period})`,
+          rows: sql<number>`count(*)::int`,
+        })
+        .from(areaStats)
+        .where(
+          and(
+            inArray(areaStats.source, group),
+            inArray(areaStats.geoLevel, ["state", "county", "country"]),
+            isNotNull(areaStats.value),
+          ),
+        )
+        .groupBy(areaStats.source, areaStats.metric, areaStats.geoLevel),
+    ),
+  );
   return rows
     .flat()
-    .sort((a, b) => a.dataset.localeCompare(b.dataset) || a.metric.localeCompare(b.metric) || a.geoLevel.localeCompare(b.geoLevel));
+    .sort(
+      (a, b) =>
+        a.dataset.localeCompare(b.dataset) || a.metric.localeCompare(b.metric) || a.geoLevel.localeCompare(b.geoLevel),
+    );
 }
 
 // One metric for one place over time, oldest first.
 async function getSeriesQuery(source: string, metric: string, geoLevel = "nation", geoid = "US"): Promise<Point[]> {
-  const rows = await (await dbFor(source))
+  const rows = await (
+    await dbFor(source)
+  )
     .select({
       period: areaStats.period,
       periodStart: areaStats.periodStart,
@@ -232,7 +225,9 @@ async function getSeriesQuery(source: string, metric: string, geoLevel = "nation
 
 // Several metrics for one place, keyed by metric.
 async function getSeriesManyQuery(source: string, metrics: string[], geoLevel = "nation", geoid = "US") {
-  const rows = await (await dbFor(source))
+  const rows = await (
+    await dbFor(source)
+  )
     .select({
       metric: areaStats.metric,
       period: areaStats.period,
@@ -252,16 +247,36 @@ async function getSeriesManyQuery(source: string, metrics: string[], geoLevel = 
     )
     .orderBy(asc(areaStats.periodStart), asc(areaStats.period));
   const out: Record<string, Point[]> = Object.fromEntries(metrics.map((m) => [m, []]));
-  for (const r of rows) out[r.metric].push({ period: r.period, periodStart: r.periodStart, value: r.value!, metadata: r.metadata as Record<string, unknown> | null });
+  for (const r of rows)
+    out[r.metric].push({
+      period: r.period,
+      periodStart: r.periodStart,
+      value: r.value!,
+      metadata: r.metadata as Record<string, unknown> | null,
+    });
   return out;
 }
 
 // One metric's series for every area at a level, keyed by geoid.
 async function getSeriesByGeoQuery(source: string, metric: string, geoLevel: string) {
-  const rows = await (await dbFor(source))
-    .select({ geoid: areaStats.geoid, period: areaStats.period, periodStart: areaStats.periodStart, value: areaStats.value })
+  const rows = await (
+    await dbFor(source)
+  )
+    .select({
+      geoid: areaStats.geoid,
+      period: areaStats.period,
+      periodStart: areaStats.periodStart,
+      value: areaStats.value,
+    })
     .from(areaStats)
-    .where(and(eq(areaStats.source, source), eq(areaStats.metric, metric), eq(areaStats.geoLevel, geoLevel), isNotNull(areaStats.value)))
+    .where(
+      and(
+        eq(areaStats.source, source),
+        eq(areaStats.metric, metric),
+        eq(areaStats.geoLevel, geoLevel),
+        isNotNull(areaStats.value),
+      ),
+    )
     .orderBy(asc(areaStats.periodStart), asc(areaStats.period));
   const out: Record<string, Point[]> = {};
   for (const r of rows) (out[r.geoid] ??= []).push({ period: r.period, periodStart: r.periodStart, value: r.value! });
@@ -269,7 +284,9 @@ async function getSeriesByGeoQuery(source: string, metric: string, geoLevel: str
 }
 
 async function latestPeriodQuery(source: string, metric: string, geoLevel: string): Promise<string | null> {
-  const [row] = await (await dbFor(source))
+  const [row] = await (
+    await dbFor(source)
+  )
     .select({ period: areaStats.period })
     .from(areaStats)
     .where(
@@ -296,8 +313,15 @@ async function getCrossSectionQuery(
 ): Promise<{ period: string | null; values: AreaValue[] }> {
   const at = period ?? (await latestPeriod(source, metric, geoLevel));
   if (!at) return { period: null, values: [] };
-  const rows = await (await dbFor(source))
-    .select({ geoid: areaStats.geoid, geoName: areaStats.geoName, value: areaStats.value, metadata: areaStats.metadata })
+  const rows = await (
+    await dbFor(source)
+  )
+    .select({
+      geoid: areaStats.geoid,
+      geoName: areaStats.geoName,
+      value: areaStats.value,
+      metadata: areaStats.metadata,
+    })
     .from(areaStats)
     .where(
       and(
@@ -330,7 +354,9 @@ async function sumByGeoQuery(
   fromStart: string,
   toStart: string,
 ): Promise<AreaValue[]> {
-  const rows = await (await dbFor(source))
+  const rows = await (
+    await dbFor(source)
+  )
     .select({
       geoid: areaStats.geoid,
       geoName: sql<string | null>`max(${areaStats.geoName})`,
@@ -357,17 +383,6 @@ async function sumByGeoQuery(
 // false) and the mean / lowest metadata.coverage across them (for sources
 // that report those, like fbi-cde). `geoidPrefix` narrows to, e.g., the
 // counties of one state.
-export interface YearlyValue {
-  metric: string;
-  geoid: string;
-  year: string;
-  value: number;
-  months: number;
-  reportedMonths: number;
-  coverage: number | null;
-  minCoverage: number | null;
-}
-
 async function yearlySumsByGeoQuery(
   source: string,
   metrics: string[],
@@ -402,27 +417,28 @@ async function yearlySumsByGeoQuery(
 
 // Each area's name and metadata from its newest row of one metric.
 export async function latestMetadataByGeo(source: string, metric: string, geoLevel: string) {
-  const rows = await (await dbFor(source))
-    .selectDistinctOn([areaStats.geoid], { geoid: areaStats.geoid, geoName: areaStats.geoName, metadata: areaStats.metadata })
+  const rows = await (
+    await dbFor(source)
+  )
+    .selectDistinctOn([areaStats.geoid], {
+      geoid: areaStats.geoid,
+      geoName: areaStats.geoName,
+      metadata: areaStats.metadata,
+    })
     .from(areaStats)
     .where(and(eq(areaStats.source, source), eq(areaStats.metric, metric), eq(areaStats.geoLevel, geoLevel)))
     .orderBy(areaStats.geoid, desc(areaStats.period));
-  return rows.map((r) => ({ geoid: r.geoid, geoName: r.geoName, metadata: (r.metadata ?? {}) as Record<string, unknown> }));
-}
-
-export interface ObservationQuery {
-  dataset: string;
-  metric?: string;
-  geoLevel?: string;
-  geoid?: string;
-  from?: string;
-  to?: string;
-  limit: number;
-  offset: number;
+  return rows.map((r) => ({
+    geoid: r.geoid,
+    geoName: r.geoName,
+    metadata: (r.metadata ?? {}) as Record<string, unknown>,
+  }));
 }
 
 export async function queryObservations(q: ObservationQuery) {
-  const rows = await (await dbFor(q.dataset))
+  const rows = await (
+    await dbFor(q.dataset)
+  )
     .select({
       metric: areaStats.metric,
       geoLevel: areaStats.geoLevel,
@@ -518,7 +534,10 @@ export async function upsertObservations(
     if (metricDefinitions && Object.keys(metricDefinitions).length) {
       await tx
         .update(datasets)
-        .set({ metrics: sql`${datasets.metrics} || ${JSON.stringify(metricDefinitions)}::jsonb`, updatedAt: new Date() })
+        .set({
+          metrics: sql`${datasets.metrics} || ${JSON.stringify(metricDefinitions)}::jsonb`,
+          updatedAt: new Date(),
+        })
         .where(eq(datasets.id, dataset.id));
     } else {
       await tx.update(datasets).set({ updatedAt: new Date() }).where(eq(datasets.id, dataset.id));
@@ -536,23 +555,18 @@ export async function upsertObservations(
 
 // ---- Batched reads for profile pages (one place, many metrics) ----
 
-export interface SeriesKey {
-  source: string;
-  metric: string;
-}
-
-export interface LatestValue extends SeriesKey {
-  geoid: string;
-  geoName: string | null;
-  period: string;
-  value: number;
-}
-
-const keyTuples = (keys: SeriesKey[]) => sql.join(keys.map((k) => sql`(${k.source}, ${k.metric})`), sql`, `);
+const keyTuples = (keys: SeriesKey[]) =>
+  sql.join(
+    keys.map((k) => sql`(${k.source}, ${k.metric})`),
+    sql`, `,
+  );
 
 // Runs a query over series keys once per database holding them and
 // concatenates the rows.
-async function perStore<K extends SeriesKey>(keys: K[], run: (store: Db, group: K[]) => Promise<{ rows: Record<string, unknown>[] }>) {
+async function perStore<K extends SeriesKey>(
+  keys: K[],
+  run: (store: Db, group: K[]) => Promise<{ rows: Record<string, unknown>[] }>,
+) {
   const groups = await bySource(keys, (k) => k.source);
   return (await Promise.all(groups.map(([store, group]) => run(store, group)))).flatMap((r) => r.rows);
 }
@@ -560,37 +574,73 @@ async function perStore<K extends SeriesKey>(keys: K[], run: (store: Db, group: 
 // Each area's latest value of each series at one geography level.
 export async function latestByGeo(keys: SeriesKey[], geoLevel: string): Promise<LatestValue[]> {
   if (!keys.length) return [];
-  const rows = await perStore(keys, (store, group) => store.execute(sql`
+  const rows = await perStore(keys, (store, group) =>
+    store.execute(sql`
     select distinct on (source, metric, geoid) source, metric, geoid, geo_name, period, value
     from area_stats
     where geo_level = ${geoLevel} and value is not null and (source, metric) in (${keyTuples(group)})
-    order by source, metric, geoid, period_start desc nulls last, period desc`));
-  return (rows as { source: string; metric: string; geoid: string; geo_name: string | null; period: string; value: number }[]).map((r) => ({
-    source: r.source, metric: r.metric, geoid: r.geoid, geoName: r.geo_name, period: r.period, value: Number(r.value),
+    order by source, metric, geoid, period_start desc nulls last, period desc`),
+  );
+  return (
+    rows as { source: string; metric: string; geoid: string; geo_name: string | null; period: string; value: number }[]
+  ).map((r) => ({
+    source: r.source,
+    metric: r.metric,
+    geoid: r.geoid,
+    geoName: r.geo_name,
+    period: r.period,
+    value: Number(r.value),
   }));
 }
 
 // Values for one place at given periods, keyed "source|metric|period".
-export async function valuesAt(keys: (SeriesKey & { period: string })[], geoLevel: string, geoid: string): Promise<Map<string, number>> {
+export async function valuesAt(
+  keys: (SeriesKey & { period: string })[],
+  geoLevel: string,
+  geoid: string,
+): Promise<Map<string, number>> {
   if (!keys.length) return new Map();
-  const tuples = (group: typeof keys) => sql.join(group.map((k) => sql`(${k.source}, ${k.metric}, ${k.period})`), sql`, `);
-  const rows = await perStore(keys, (store, group) => store.execute(sql`
+  const tuples = (group: typeof keys) =>
+    sql.join(
+      group.map((k) => sql`(${k.source}, ${k.metric}, ${k.period})`),
+      sql`, `,
+    );
+  const rows = await perStore(keys, (store, group) =>
+    store.execute(sql`
     select source, metric, period, value from area_stats
-    where geo_level = ${geoLevel} and geoid = ${geoid} and value is not null and (source, metric, period) in (${tuples(group)})`));
-  return new Map((rows as { source: string; metric: string; period: string; value: number }[]).map((r) => [`${r.source}|${r.metric}|${r.period}`, Number(r.value)]));
+    where geo_level = ${geoLevel} and geoid = ${geoid} and value is not null and (source, metric, period) in (${tuples(group)})`),
+  );
+  return new Map(
+    (rows as { source: string; metric: string; period: string; value: number }[]).map((r) => [
+      `${r.source}|${r.metric}|${r.period}`,
+      Number(r.value),
+    ]),
+  );
 }
 
 // Every series for one place, oldest first, keyed "source|metric".
 export async function seriesForGeo(keys: SeriesKey[], geoLevel: string, geoid: string): Promise<Map<string, Point[]>> {
   if (!keys.length) return new Map();
-  const rows = await perStore(keys, (store, group) => store.execute(sql`
+  const rows = await perStore(keys, (store, group) =>
+    store.execute(sql`
     select source, metric, period, period_start, value from area_stats
     where geo_level = ${geoLevel} and geoid = ${geoid} and value is not null and (source, metric) in (${keyTuples(group)})
-    order by period_start nulls first, period`));
+    order by period_start nulls first, period`),
+  );
   // Each database's rows come back in order; restore it across both.
-  rows.sort((a, b) => String(a.period_start ?? "").localeCompare(String(b.period_start ?? "")) || String(a.period).localeCompare(String(b.period)));
+  rows.sort(
+    (a, b) =>
+      String(a.period_start ?? "").localeCompare(String(b.period_start ?? "")) ||
+      String(a.period).localeCompare(String(b.period)),
+  );
   const out = new Map<string, Point[]>();
-  for (const r of rows as { source: string; metric: string; period: string; period_start: string | null; value: number }[]) {
+  for (const r of rows as {
+    source: string;
+    metric: string;
+    period: string;
+    period_start: string | null;
+    value: number;
+  }[]) {
     const k = `${r.source}|${r.metric}`;
     if (!out.has(k)) out.set(k, []);
     out.get(k)!.push({ period: r.period, periodStart: r.period_start, value: Number(r.value) });
@@ -598,36 +648,29 @@ export async function seriesForGeo(keys: SeriesKey[], geoLevel: string, geoid: s
   return out;
 }
 
-export interface CompareSeries {
-  source: string;
-  metric: string;
-  /** A specific period; the latest one at this level when omitted. */
-  period?: string;
-}
-
-export interface CompareResult {
-  level: string;
-  series: { source: string; metric: string; period: string | null; label: string; unit: string | null }[];
-  /** One row per place, values in `series` order; null where a dataset has no value. */
-  rows: { geoid: string; name: string; state: string | null; values: (number | null)[] }[];
-}
-
 // Several datasets' metrics side by side for every place at one geography
 // level, labeled with the canonical names in `geographies`. `within` limits
 // the places to those inside one parent (a state FIPS for counties or
 // districts). Throws on a level that isn't a geography or an unpublished
 // dataset.
-async function compareByGeoQuery(level: string, series: CompareSeries[], { within }: { within?: string } = {}): Promise<CompareResult> {
+async function compareByGeoQuery(
+  level: string,
+  series: CompareSeries[],
+  { within }: { within?: string } = {},
+): Promise<CompareResult> {
   const [kind] = await db.select({ kind: geoLevels.kind }).from(geoLevels).where(eq(geoLevels.level, level));
-  if (kind?.kind !== "geography") throw new Error(`"${level}" is not a geography level.`);
+  if (kind?.kind !== "geography") throw new PublicDataInputError(`"${level}" is not a geography level.`);
   const sources = [...new Set(series.map((s) => s.source))];
   const meta = new Map(
-    (await db.select({ slug: datasets.slug, metrics: datasets.metrics }).from(datasets)
-      .where(and(inArray(datasets.slug, sources), eq(datasets.status, "published"))))
-      .map((d) => [d.slug, d.metrics as Record<string, MetricDefinition>]),
+    (
+      await db
+        .select({ slug: datasets.slug, metrics: datasets.metrics })
+        .from(datasets)
+        .where(and(inArray(datasets.slug, sources), eq(datasets.status, "published")))
+    ).map((d) => [d.slug, d.metrics as Record<string, MetricDefinition>]),
   );
   const missing = sources.find((source) => !meta.has(source));
-  if (missing) throw new Error(`No published dataset "${missing}".`);
+  if (missing) throw new PublicDataInputError(`No published dataset "${missing}".`);
 
   const sections = await Promise.all(
     series.map((s) => getCrossSection(s.source, s.metric, level, { period: s.period, geoidPrefix: within })),
@@ -635,9 +678,12 @@ async function compareByGeoQuery(level: string, series: CompareSeries[], { withi
   const geoids = [...new Set(sections.flatMap((section) => section.values.map((v) => v.geoid)))];
   const places = new Map(
     geoids.length
-      ? (await db.select({ geoid: geographies.geoid, name: geographies.name, state: geographies.state }).from(geographies)
-          .where(and(eq(geographies.level, level), inArray(geographies.geoid, geoids))))
-          .map((g) => [g.geoid, g])
+      ? (
+          await db
+            .select({ geoid: geographies.geoid, name: geographies.name, state: geographies.state })
+            .from(geographies)
+            .where(and(eq(geographies.level, level), inArray(geographies.geoid, geoids)))
+        ).map((g) => [g.geoid, g])
       : [],
   );
   const valueMaps = sections.map((section) => new Map(section.values.map((v) => [v.geoid, v])));
@@ -658,7 +704,13 @@ async function compareByGeoQuery(level: string, series: CompareSeries[], { withi
     level,
     series: series.map((s, i) => {
       const def = meta.get(s.source)?.[s.metric];
-      return { source: s.source, metric: s.metric, period: sections[i].period, label: def?.label ?? s.metric, unit: def?.unit ?? null };
+      return {
+        source: s.source,
+        metric: s.metric,
+        period: sections[i].period,
+        label: def?.label ?? s.metric,
+        unit: def?.unit ?? null,
+      };
     }),
     rows,
   };
@@ -668,28 +720,41 @@ async function compareByGeoQuery(level: string, series: CompareSeries[], { withi
 // partner upload (src/app/api/data/v1/datasets/[slug]/observations) can mark
 // them stale. Importers write straight to the database; their data appears
 // within the day.
-export const AREA_STATS_TAG = "area-stats";
-
-function cached<A extends unknown[], R>(name: string, fn: (...args: A) => Promise<R>) {
-  return unstable_cache(fn, ["area-stats", name], { tags: [AREA_STATS_TAG], revalidate: 86400 });
-}
-
-export const getSeries = cached("getSeries", getSeriesQuery);
-export const getSeriesMany = cached("getSeriesMany", getSeriesManyQuery);
-export const getSeriesByGeo = cached("getSeriesByGeo", getSeriesByGeoQuery);
-export const latestPeriod = cached("latestPeriod", latestPeriodQuery);
-export const getCrossSection = cached("getCrossSection", getCrossSectionQuery);
-export const sumByGeo = cached("sumByGeo", sumByGeoQuery);
+export const getSeries = cacheStatsQuery("getSeries", getSeriesQuery);
+export const getSeriesMany = cacheStatsQuery("getSeriesMany", getSeriesManyQuery);
+export const getSeriesByGeo = cacheStatsQuery("getSeriesByGeo", getSeriesByGeoQuery);
+export const latestPeriod = cacheStatsQuery("latestPeriod", latestPeriodQuery);
+export const getCrossSection = cacheStatsQuery("getCrossSection", getCrossSectionQuery);
+export const sumByGeo = cacheStatsQuery("sumByGeo", sumByGeoQuery);
 // Next refuses cache entries over 2MB, and the state- and agency-level crime
 // calls run past that as row objects. Each metric is cached on its own, as
 // bare tuples, and expanded on the way out.
-type YearlyTuple = [geoid: string, year: string, value: number, months: number, reportedMonths: number, coverage: number | null, minCoverage: number | null];
+type YearlyTuple = [
+  geoid: string,
+  year: string,
+  value: number,
+  months: number,
+  reportedMonths: number,
+  coverage: number | null,
+  minCoverage: number | null,
+];
 
-const yearlySumsForMetric = cached(
+const yearlySumsForMetric = cacheStatsQuery(
   "yearlySumsForMetric",
-  async (source: string, metric: string, geoLevel: string, opts: { geoidPrefix?: string } = {}): Promise<YearlyTuple[]> =>
+  async (
+    source: string,
+    metric: string,
+    geoLevel: string,
+    opts: { geoidPrefix?: string } = {},
+  ): Promise<YearlyTuple[]> =>
     (await yearlySumsByGeoQuery(source, [metric], geoLevel, opts)).map((r) => [
-      r.geoid, r.year, r.value, r.months, r.reportedMonths, r.coverage, r.minCoverage,
+      r.geoid,
+      r.year,
+      r.value,
+      r.months,
+      r.reportedMonths,
+      r.coverage,
+      r.minCoverage,
     ]),
 );
 
@@ -702,8 +767,15 @@ export async function yearlySumsByGeo(
   const parts = await Promise.all(metrics.map((m) => yearlySumsForMetric(source, m, geoLevel, opts)));
   return parts.flatMap((rows, i) =>
     rows.map(([geoid, year, value, months, reportedMonths, coverage, minCoverage]) => ({
-      metric: metrics[i], geoid, year, value, months, reportedMonths, coverage, minCoverage,
+      metric: metrics[i],
+      geoid,
+      year,
+      value,
+      months,
+      reportedMonths,
+      coverage,
+      minCoverage,
     })),
   );
 }
-export const compareByGeo = cached("compareByGeo", compareByGeoQuery);
+export const compareByGeo = cacheStatsQuery("compareByGeo", compareByGeoQuery);

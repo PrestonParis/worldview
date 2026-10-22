@@ -1,18 +1,18 @@
 import type { Metadata } from "next";
+import { citeSources, type SourceSpec } from "@/components/charts/citation";
 import Link from "next/link";
 import { ChartCard, type TableView } from "@/components/charts/chart-card";
 import { RankedBars, type RankedItem } from "@/components/charts/ranked-bars";
 import { StatTile } from "@/components/charts/stat-tile";
 import { TimeSeriesChart, type Series } from "@/components/charts/time-series-chart";
 import { SortableTable } from "@/components/data/sortable-table";
-import { DatasetList } from "@/components/data/dataset-list";
 import { StatusPill } from "@/components/legislation/bill-status";
 import { DataFreshness } from "@/components/legislation/data-freshness";
 import { IdeologyHistogram, RollCallList } from "@/components/legislation/overview-charts";
 import { datasetCoverage, listDatasets } from "@/lib/db/stats";
 import { formatValue } from "@/lib/format";
 import { loadLegislation } from "@/lib/legislation/overview";
-import { FeatureList } from "@/components/ui/feature-list";
+import { IssueHeader } from "@/components/data/issue-layout";
 
 // Rebuilt at most daily; crawlers and visitors share the cached render.
 export const revalidate = 86400;
@@ -28,16 +28,15 @@ const SECTIONS = [
   ["polarization", "Polarization"],
   ["court", "Supreme Court"],
   ["executive", "Executive orders"],
-  ["sources", "Sources"],
 ] as const;
 
-const SOURCES = {
+const SOURCE_SPECS = {
   bills: { label: "Congress.gov", href: "/datasets/congress-bills" },
   votes: { label: "Congress.gov roll-call votes", href: "/datasets/congress-votes" },
   voteview: { label: "Voteview DW-NOMINATE", href: "/datasets/voteview" },
   scdb: { label: "The Supreme Court Database", href: "/datasets/scdb" },
   fr: { label: "Federal Register", href: "/datasets/federal-register" },
-};
+} satisfies Record<string, SourceSpec>
 
 const DATASET_SLUGS = ["congress-bills", "congress-votes", "voteview", "scdb", "federal-register"];
 
@@ -75,25 +74,15 @@ export default async function LegislationPage() {
     listDatasets().then((all) => all.filter((d) => DATASET_SLUGS.includes(d.slug))),
   ]);
   const coverage = await datasetCoverage(datasets.map((d) => d.slug));
+  const SOURCES = citeSources(SOURCE_SPECS, datasets.map((d) => ({ ...d, coverage: coverage[d.slug] ?? null })));
   const gapNow = polarization.houseGapNow;
   const gapFirst = polarization.houseGapFirst;
 
   return (
     <div className="mx-auto max-w-7xl space-y-14">
-      <header className="max-w-3xl">
-        <p className="text-sm font-semibold tracking-[0.14em] text-blue-700 uppercase dark:text-blue-400">United States</p>
-        <h1 className="mt-2 text-4xl font-bold tracking-tight sm:text-5xl text-slate-950 dark:text-white">Legislation &amp; Courts</h1>
-        <FeatureList
-          className="mt-4"
-          items={[
-            "Bills and roll-call votes in Congress",
-            "How far apart the parties vote",
-            "Every Supreme Court decision since 1946",
-            "Presidential executive orders",
-          ]}
-        />
-        <DataFreshness sources={["congress-bills", "congress-votes"]} className="mt-3" />
-      </header>
+      <IssueHeader title="Legislation &amp; Courts">
+        <DataFreshness sources={["congress-bills", "congress-votes"]} className="mt-4" />
+      </IssueHeader>
 
       <ChartCard
         title="How far apart the parties vote"
@@ -332,10 +321,6 @@ export default async function LegislationPage() {
             </ul>
           </ChartCard>
         </div>
-      </Section>
-
-      <Section id="sources" title="Sources" intro="Every figure on this page comes from the datasets below.">
-        <DatasetList datasets={datasets.map((d) => ({ ...d, coverage: coverage[d.slug] ?? null }))} />
       </Section>
     </div>
   );

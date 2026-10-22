@@ -1,7 +1,9 @@
 // Which side of the People graph an entity belongs on. Politicians are
 // sorted by the party recorded in their metadata; commentators, outlets
 // and movement groups carry no party, so they're placed by the curated
-// name lists below. Anyone not on a list stays unclassified and shows only
+// name lists below. FEC committees and companies carry a `lean` that
+// scripts/classify-entity-lean.mjs computes from their party affiliation,
+// sponsor or giving, with a `leanBasis` sentence saying why. Anyone not on a list stays unclassified and shows only
 // in the combined view — straight-news anchors, data analysts, libertarians,
 // heterodox podcasters, and the anti-Trump Republicans now working with
 // Democrats are left there on purpose rather than forced onto a side.
@@ -39,6 +41,30 @@ export const sideColors: Record<GraphSide, string> = {
 export function parseSide(value: string | undefined): GraphSide {
   return graphSides.includes(value as GraphSide) ? (value as GraphSide) : graphSides[0];
 }
+
+// Trump administration officials (data/administration.json) whose records
+// carry no party field.
+export const ADMINISTRATION = [
+  "Brooke Rollins",
+  "Chris Wright",
+  "Doug Burgum",
+  "Howard Lutnick",
+  "Jamieson Greer",
+  "Jay Clayton",
+  "John Ratcliffe",
+  "Keith Sonderling",
+  "Lee Zeldin",
+  "Linda McMahon",
+  "Pam Bondi",
+  "Pete Hegseth",
+  "Robert F. Kennedy Jr.",
+  "Russell Vought",
+  "Scott Bessent",
+  "Scott Turner",
+  "Sean Duffy",
+  "Susie Wiles",
+  "Todd Blanche",
+];
 
 const CONSERVATIVE = [
   // Parties and politicians without a usable party field
@@ -211,6 +237,130 @@ const CONSERVATIVE = [
   "VDARE",
   "Vanguard America",
   "Youth for Western Civilization",
+  // Outlets, shows and groups placed Oct 2026: right-of-center media,
+  // think tanks and party organizations
+  "American Enterprise Institute",
+  "Breitbart News",
+  "Claremont Institute",
+  "Clay Travis and Buck Sexton",
+  "Commentary",
+  "Competitive Enterprise Institute",
+  "Compound Media",
+  "Discovery Institute",
+  "Dispatch",
+  "Federalist",
+  "Fox Business",
+  "Fox Corporation",
+  "Fox Entertainment",
+  "Fox Entertainment Group",
+  "Fox Nation",
+  "GOPAC",
+  "Hoover Institution",
+  "Human Events",
+  "Infowars",
+  "Institute for Humane Studies",
+  "Intercollegiate Studies Institute",
+  "Log Cabin Republicans",
+  "Louder with Crowder",
+  "Manhattan Institute for Policy Research",
+  "National Review",
+  "National Rifle Association of America",
+  "Nelk Boys",
+  "New York Post",
+  "Newsmax TV",
+  "Officer Tatum",
+  "One America News Network",
+  "OutKick",
+  "PragerU",
+  "Project Veritas",
+  "Radio America",
+  "Reason",
+  "Rebel News",
+  "Republican National Committee",
+  "Rubin Report",
+  "Salem Media Group",
+  "Salem Radio Network",
+  "Shawn Ryan",
+  "Sinclair Broadcast Group",
+  "Taki's Magazine",
+  "The Daily Caller",
+  "The Epoch Times",
+  "The Free Press",
+  "The Heritage Foundation",
+  "The Joe Rogan Experience",
+  "The Washington Times",
+  "TheBlaze",
+  "Timcast",
+  "Townhall",
+  "Triggernometry",
+  "War Room",
+  // Megadonors whose giving goes overwhelmingly to Republicans
+  "Barre Seid",
+  "Charles Koch",
+  "David Sacks",
+  "Elizabeth Uihlein",
+  "Elon Musk",
+  "Harlan Crow",
+  "Jeff Yass",
+  "Joe Lonsdale",
+  "Ken Griffin",
+  "Larry Ellison",
+  "Marc Andreessen",
+  "Miriam Adelson",
+  "Palmer Luckey",
+  "Paul Singer",
+  "Peter Thiel",
+  "Rebekah Mercer",
+  "Richard Uihlein",
+  "Robert Mercer",
+  "Stephen Schwarzman",
+  "Timothy Mellon",
+  ...ADMINISTRATION,
+  // Commentators and journalists placed Oct 2026 by the side their
+  // current work and audience sit on; libertarians count as right of
+  // center, as in the party mapping below
+  "Adin Ross",
+  "Alan Dershowitz",
+  "Andrew Napolitano",
+  "Andrew Schulz",
+  "Andrew Sullivan",
+  "Arielle Scarcella",
+  "Bari Weiss",
+  "Bret Weinstein",
+  "Coleman Hughes",
+  "Dave Smith",
+  "David Brooks",
+  "Francis Foster",
+  "Frank Luntz",
+  "Glenn Greenwald",
+  "Heather Heying",
+  "Jackson Hinkle",
+  "Joe Rogan",
+  "Katherine Mangu-Ward",
+  "Kim Iversen",
+  "Konstantin Kisin",
+  "Kyle Forgeard",
+  "Mark Halperin",
+  "Matt Taibbi",
+  "Matt Welch",
+  "Michael Malice",
+  "Naomi Wolf",
+  "Nick Gillespie",
+  "Peter Boghossian",
+  "Peter Schiff",
+  "Piers Morgan",
+  "Richard Hanania",
+  "Robby Soave",
+  "S. E. Cupp",
+  "Scott Horton",
+  "Shawn Ryan",
+  "Theo Von",
+  "Tom Woods",
+  "Walter Weekes", // Fresh and Fit co-host, beside Myron Gaines
+  // Straight-news journalists placed by their outlet (OUTLET_PLACED)
+  "Bret Baier",
+  "Howard Kurtz",
+  "Shannon Bream",
 ];
 
 const LIBERAL = [
@@ -389,30 +539,289 @@ const LIBERAL = [
   "The David Pakman Show",
   "The Majority Report",
   "Zeteo",
+  // Outlets, shows and groups placed Oct 2026: left-of-center media
+  // (outlets by the lean of their audience, Pew Research Center) and groups
+  "AlterNet",
+  "Bernie Sanders 2020 presidential campaign",
+  "CNN",
+  "Chapo Trap House",
+  "Current Affairs",
+  "Defending Democracy Together",
+  "Democracy Now!",
+  "HuffPost",
+  "Humanist Report",
+  "Jacobin",
+  "Jimmy Dore",
+  "Know Your Enemy",
+  "Last Week Tonight",
+  "Los Angeles Times",
+  "MS NOW",
+  "MeidasTouch",
+  "NPR",
+  "New York",
+  "Occupy Democrats",
+  "Rational National",
+  "Ring of Fire",
+  "Rolling Stone",
+  "Roland Martin Unfiltered",
+  "Salon.com",
+  "Secular Talk",
+  "Slate",
+  "Slate Political Gabfest",
+  "Some More News",
+  "Talking Points Memo",
+  "The Atlantic",
+  "The Bulwark",
+  "The Grayzone",
+  "The Guardian",
+  "The Intercept",
+  "The Nation",
+  "The New Republic",
+  "The New York Times",
+  "The New York Times Company",
+  "The New Yorker",
+  "The Washington Post",
+  "The Young Turks",
+  "TrueAnon",
+  "Very Serious",
+  // Megadonors whose giving goes overwhelmingly to Democrats
+  "Alex Soros",
+  "Donald Sussman",
+  "Dustin Moskovitz",
+  "Eric Schmidt",
+  "George Soros",
+  "Laurene Powell Jobs",
+  "Pierre Omidyar",
+  "Reid Hoffman",
+  "Vinod Khosla",
+  // Self-described Democrats (Chronicle of Philanthropy) who give to
+  // Democratic campaigns and House Majority PAC
+  "John Arnold",
+  "Laura Arnold",
+  // Commentators and journalists placed Oct 2026. Anti-Trump
+  // Republicans who now back Democratic candidates sit here, by the side
+  // their current work supports.
+  "Alyssa Farah Griffin",
+  "Amanda Carpenter",
+  "Ana Navarro",
+  "Andrew Yang",
+  "Bill Kristol",
+  "Charlamagne tha God",
+  "Charlie Sykes",
+  "David Frum",
+  "David Plotz",
+  "Devin Stone",
+  "Fareed Zakaria",
+  "G. Elliott Morris",
+  "George Conway",
+  "Jennifer Rubin",
+  "Jimmy Dore",
+  "Joe Scarborough",
+  "John Heilemann",
+  "Josh Barro",
+  "June Lapine",
+  "Matthew Dowd",
+  "Michael Smerconish",
+  "Michael Steele",
+  "Nate Silver",
+  "Nicolle Wallace",
+  "Pamela Paul",
+  "Philip Bump",
+  "Rick Wilson",
+  "Sarah Longwell",
+  "Scott Galloway",
+  "Stuart Stevens",
+  "Tara Setmayer",
+  "Thomas Chatterton Williams",
+  "Tim Miller",
+  "Tommy Vietor",
+  "Touré Reed",
+  "Zeynep Tufekci",
+  // Straight-news journalists placed by their outlet (OUTLET_PLACED)
+  "Abby Phillip",
+  "Anderson Cooper",
+  "Chris Cillizza",
+  "Chuck Todd",
+  "Dana Bash",
+  "Erin Burnett",
+  "Harry Enten",
+  "Jake Tapper",
+  "John Dickerson",
+  "Kaitlan Collins",
+  "Michael Beschloss",
+  "Nate Cohn",
+  "Sara Haines",
+  "Steve Kornacki",
+  "Wolf Blitzer",
 ];
+
+// Straight-news journalists with no stated side of their own, placed by
+// the lean of their outlet's audience (Pew Research Center's media
+// polarization studies: Fox News right; CNN, NBC/MSNBC, CBS, ABC's The
+// View, The New York Times left).
+const OUTLET_PLACED = new Set([
+  "Abby Phillip", "Anderson Cooper", "Bret Baier", "Chris Cillizza", "Chuck Todd", "Dana Bash", "Erin Burnett",
+  "Harry Enten", "Howard Kurtz", "Jake Tapper", "John Dickerson", "Kaitlan Collins", "Michael Beschloss",
+  "Nate Cohn", "Sara Haines", "Shannon Bream", "Steve Kornacki", "Wolf Blitzer",
+]);
 
 const LEAN_BY_NAME = new Map<string, Lean>([
   ...CONSERVATIVE.map((n) => [n, "conservative"] as const),
   ...LIBERAL.map((n) => [n, "liberal"] as const),
 ]);
 
+// State officeholders whose recorded party doesn't place them: Nebraska's
+// officially nonpartisan legislators, by the party they're registered
+// with (Wikipedia's Nebraska Legislature roster), and independents, by
+// the caucus they sit with or the party they were elected in and left.
+// Politicians only, since several names are common.
+const L: Lean = "liberal";
+const C: Lean = "conservative";
+const NE_D = "Registered Democrat in Nebraska's officially nonpartisan Legislature.";
+const NE_R = "Registered Republican in Nebraska's officially nonpartisan Legislature.";
+const AK_COALITION = "Independent in the Alaska House's Democratic-led bipartisan majority coalition.";
+const LEFT_D = "Elected as a Democrat; now an independent.";
+const LEFT_R = "Elected as a Republican; now an independent.";
+const place = (names: string[], lean: Lean, basis: string) =>
+  names.map((n): [string, [Lean, string]] => [n, [lean, basis]]);
+const OFFICIAL_PLACED = new Map<string, [Lean, string]>([
+  ...place(
+    [
+      "Victor Rountree",
+      "Margo Juarez",
+      "Machaela Cavanaugh",
+      "Dunixi Guereca",
+      "John Cavanaugh",
+      "Wendy DeBoer",
+      "Terrell McKinney",
+      "Ashlei Spivey",
+      "John Fredrickson",
+      "George Dungan",
+      "Jason Prokop",
+      "Jane Raybould",
+      "Eliot Bostar",
+      "Dan Quick",
+      "Danielle Conrad",
+    ],
+    L,
+    NE_D,
+  ),
+  ...place(
+    [
+      "Bob Hallstrom",
+      "Rob Clements",
+      "Brad von Gillern",
+      "Merv Riepe",
+      "John Arch",
+      "Woody Wordekemper",
+      "Ben Hansen",
+      "Glen Meyer",
+      "Christy Armendariz",
+      "Robert Dover",
+      "Beau Ballard",
+      "Mike Moser",
+      "Jared Storm",
+      "Jana Hughes",
+      "Carolyn Bosn",
+      "Myron Dorn",
+      "Kathleen Kauth",
+      "Tom Brandt",
+      "Dan Lonowski",
+      "Loren Lippincott",
+      "Rick Holdcroft",
+      "Stan Clouse",
+      "Dave Murman",
+      "Tony Sorrentino",
+      "Barry DeKay",
+      "Fred Meyer",
+      "Mike Jacobson",
+      "Tanya Storer",
+      "Teresa Ibach",
+      "Rita Sanders",
+      "Paul Strommen",
+      "Brian Hardin",
+      "Bob Andersen",
+    ],
+    C,
+    NE_R,
+  ),
+  ...place(["Megan Hunt"], L, "Elected as a Democrat; registered nonpartisan since 2023."),
+  ...place(["Alyse Galvin", "Bryce Edgmon", "Calvin Schrage", "Ky Holland", "Rebecca Himschoot"], L, AK_COALITION),
+  ...place(
+    ["Jason Pizzo", "Angela Cockerham", "Shanda Yates", "Carla Cunningham", "Nasif Majeed", "Jon Brien", "Ed Crockett"],
+    L,
+    LEFT_D,
+  ),
+  ...place(["Ed Clere", "Rick Bennett", "Susannah Whipps", "Aidan Ankarberg", "Tom Ploszaj"], C, LEFT_R),
+  ...place(["Troy Headrick"], L, "Elected as a Vermont Progressive; now an independent."),
+  ...place(["Jed Lipsky"], C, "Independent listed as a Republican in Wikidata."),
+  ...place(["Emily Buss"], C, "Forward Party senator and lifelong Republican until joining Forward in 2025."),
+  ...place(
+    ["Christina Henderson"],
+    L,
+    "Holds a D.C. Council at-large seat closed to the majority party; former Democratic Senate staffer.",
+  ),
+  ...place(
+    ["Elissa Silverman"],
+    L,
+    "Holds a D.C. Council at-large seat closed to the majority party; left the Democratic Party to run for it.",
+  ),
+  ...place(
+    ["Joanne Rodríguez Veve"],
+    C,
+    "Elected for Proyecto Dignidad, a Christian-democratic party; now an independent.",
+  ),
+  ...place(["Anne Lopez"], L, "Appointed by Democratic Governor Josh Green."),
+  ...place(["Mike Hilgers"], C, "Former Republican speaker of the Nebraska Legislature."),
+]);
+
+// Puerto Rico's parties divide over the island's status rather than
+// left and right, and members of each sit in both national parties; they're
+// placed by the position each party holds on Puerto Rico's own spectrum.
+const PR_PARTIES: [RegExp, Lean, string][] = [
+  [/^(partido nuevo progresista|new progressive)/, C, "Partido Nuevo Progresista, the center-right statehood party."],
+  [
+    /^(partido popular democr|popular democratic)/,
+    L,
+    "Partido Popular Democrático, the center-left commonwealth party.",
+  ],
+  [
+    /^(partido independentista|puerto rican independence)/,
+    L,
+    "Partido Independentista Puertorriqueño, the social-democratic independence party.",
+  ],
+  [/^(movimiento victoria ciudadana|citizens' victory)/, L, "Movimiento Victoria Ciudadana, a left-wing party."],
+  [/^proyecto dignidad/, C, "Proyecto Dignidad, a Christian-democratic, socially conservative party."],
+];
+
+const prParty = (party: string) => PR_PARTIES.find(([re]) => re.test(party.trim().toLowerCase()));
+
 // Party strings as they arrive from Congress, OpenStates and the
 // governors' import: "Republican", "R", "Republican/Conservative",
 // "Democratic", "Democrat", "D", "Democratic-Farmer-Labor",
-// "Democratic/Working Families", FEC's "DEM"/"REP", … Puerto Rico's parties, independents,
-// nonpartisan seats and minor parties don't map onto either side.
+// "Democratic/Working Families", FEC's "DEM"/"REP", … Independents and
+// nonpartisan seats don't map onto either side.
 function leanFromParty(party: string): Lean | null {
   const p = party.trim().toLowerCase();
   if (p === "r" || p === "rep" || p.startsWith("republican")) return "conservative";
-  if (p === "d" || p === "dem" || p.startsWith("democrat")) return "liberal";
-  return null;
+  if (p === "d" || p === "dem" || p === "dfl" || p.startsWith("democrat")) return "liberal";
+  // Minor parties by the side of the spectrum they run on.
+  if (
+    /^(green|gre|socialist|working families|wf|progressive|peace and freedom|vermont progressive|dsa|legal marijuana now)/.test(
+      p,
+    )
+  )
+    return "liberal";
+  if (/^(libertarian|lib|constitution|conservative|american independent|america first)( party)?$/.test(p))
+    return "conservative";
+  return prParty(p)?.[1] ?? null;
 }
 
-function partyOf(metadata: string | undefined): string | null {
-  if (!metadata || !metadata.includes('"party"')) return null;
+function metadataField(metadata: string | undefined, key: "party" | "lean" | "leanBasis"): string | null {
+  if (!metadata || !metadata.includes(`"${key}"`)) return null;
   try {
-    const party = (JSON.parse(metadata) as { party?: unknown }).party;
-    return typeof party === "string" ? party : null;
+    const value = (JSON.parse(metadata) as Record<string, unknown>)[key];
+    return typeof value === "string" ? value : null;
   } catch {
     return null;
   }
@@ -421,9 +830,34 @@ function partyOf(metadata: string | undefined): string | null {
 export function leanOf(entity: Pick<Entity, "name" | "type" | "metadata">): Lean | null {
   const named = LEAN_BY_NAME.get(entity.name);
   if (named) return named;
-  if (entity.type !== "politician") return null;
-  const party = partyOf(entity.metadata);
-  return party ? leanFromParty(party) : null;
+  if (entity.type === "politician") {
+    const party = metadataField(entity.metadata, "party");
+    const fromParty = party ? leanFromParty(party) : null;
+    return fromParty ?? OFFICIAL_PLACED.get(entity.name)?.[0] ?? null;
+  }
+  const computed = metadataField(entity.metadata, "lean");
+  return leans.includes(computed as Lean) ? (computed as Lean) : null;
+}
+
+// Placed by hand on the curated lists above, as opposed to by party or
+// FEC money — the movement landscape shows only these organizations.
+export function isCurated(entity: Pick<Entity, "name">): boolean {
+  return LEAN_BY_NAME.has(entity.name);
+}
+
+// Why an entity sits where it does, in one sentence, when that isn't
+// self-evident from a party label.
+export function leanBasisOf(entity: Pick<Entity, "name" | "type" | "metadata">): string | null {
+  if (OUTLET_PLACED.has(entity.name))
+    return "Straight-news journalist, placed by the lean of their outlet's audience (Pew Research Center).";
+  if (LEAN_BY_NAME.has(entity.name)) return null;
+  if (entity.type === "politician") {
+    const party = metadataField(entity.metadata, "party");
+    if (party && prParty(party)) return prParty(party)![2];
+    if (party && leanFromParty(party)) return null;
+    return OFFICIAL_PLACED.get(entity.name)?.[1] ?? null;
+  }
+  return metadataField(entity.metadata, "leanBasis");
 }
 
 // People are the thing being split: a politician, pundit or journalist
@@ -431,7 +865,7 @@ export function leanOf(entity: Pick<Entity, "name" | "type" | "metadata">): Lean
 // none. Institutions without a side (chambers, committees, state offices,
 // donors, neutral outlets) appear on every tab, since they're what
 // connects each side's people to each other.
-const PERSON_TYPES = new Set<string>(["politician", "pundit", "journalist"]);
+const PERSON_TYPES = new Set<string>(["politician", "judge", "pundit", "journalist"]);
 
 // What a node's colour means in the network: people by political family,
 // everything else as an institution. Party colours mean only this.
@@ -443,10 +877,7 @@ export function familyOf(entity: Pick<Entity, "name" | "type" | "metadata">): No
   return PERSON_TYPES.has(entity.type) ? "unplaced" : "institution";
 }
 
-export function belongsOnSide(
-  entity: Pick<Entity, "name" | "type" | "metadata">,
-  side: GraphSide,
-): boolean {
+export function belongsOnSide(entity: Pick<Entity, "name" | "type" | "metadata">, side: GraphSide): boolean {
   const lean = leanOf(entity);
   if (lean) return lean === side;
   return side === "uncharacterized" || !PERSON_TYPES.has(entity.type);

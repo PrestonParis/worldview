@@ -1,13 +1,13 @@
-import { h, type TraditionHistory } from "./types";
+import { h, type TraditionCore } from "./types";
 
 // Socialist, communist, anarchist, and green traditions.
 
-export const LEFT: Record<string, TraditionHistory> = {
+export const LEFT: Record<string, TraditionCore> = {
   "anarcho-communism": h({
     when: "1876–1880",
     where: "Italy and the Swiss Jura",
     founders: ["Carlo Cafiero", "Errico Malatesta", "Peter Kropotkin", "Élisée Reclus"],
-    figures: ["Peter Kropotkin", "Errico Malatesta", "Emma Goldman", "Alexander Berkman", "Nestor Makhno"],
+    figures: ["Peter Kropotkin", "Errico Malatesta", "Emma Goldman"],
     texts: [
       ["The Conquest of Bread", "Peter Kropotkin", "1892", "https://www.gutenberg.org/ebooks/23428"],
       ["Mutual Aid: A Factor of Evolution", "Peter Kropotkin", "1902", "https://www.gutenberg.org/ebooks/4341"],
@@ -32,7 +32,7 @@ export const LEFT: Record<string, TraditionHistory> = {
     when: "1902–1938",
     where: "Russia and the Soviet Union",
     founders: ["Vladimir Lenin", "Joseph Stalin"],
-    figures: ["Vladimir Lenin", "Joseph Stalin", "Nikolai Bukharin", "Georg Lukács", "Mikhail Suslov"],
+    figures: ["Vladimir Lenin", "Joseph Stalin", "Nikolai Bukharin"],
     texts: [
       ["What Is to Be Done?", "Vladimir Lenin", "1902"],
       ["Imperialism, the Highest Stage of Capitalism", "Vladimir Lenin", "1917"],
@@ -60,7 +60,7 @@ export const LEFT: Record<string, TraditionHistory> = {
     when: "1840s–1870s",
     where: "France, Switzerland, and the First International",
     founders: ["Pierre-Joseph Proudhon", "Mikhail Bakunin", "Joseph Déjacque"],
-    figures: ["Mikhail Bakunin", "William Morris", "Rudolf Rocker", "Cornelius Castoriadis", "Noam Chomsky"],
+    figures: ["Mikhail Bakunin", "William Morris", "Noam Chomsky"],
     texts: [
       ["Statism and Anarchy", "Mikhail Bakunin", "1873"],
       ["News from Nowhere", "William Morris", "1890", "https://www.gutenberg.org/ebooks/3261"],
@@ -86,7 +86,7 @@ export const LEFT: Record<string, TraditionHistory> = {
     when: "1880s–1900s",
     where: "Britain and the United States",
     founders: ["Sidney Webb", "Beatrice Webb", "Keir Hardie", "Eugene V. Debs"],
-    figures: ["Eugene V. Debs", "Norman Thomas", "R. H. Tawney", "G. D. H. Cole", "Irving Howe", "Michael Harrington"],
+    figures: ["Eugene V. Debs", "R. H. Tawney", "Michael Harrington"],
     texts: [
       ["Fabian Essays in Socialism", "George Bernard Shaw, ed.", "1889"],
       ["Equality", "R. H. Tawney", "1931"],
@@ -111,7 +111,7 @@ export const LEFT: Record<string, TraditionHistory> = {
     when: "1920s–1930s",
     where: "Europe and the United States, in the socialist calculation debate",
     founders: ["Oskar Lange", "Abba Lerner", "Fred M. Taylor"],
-    figures: ["Oskar Lange", "Abba Lerner", "Ota Šik", "Alec Nove", "John Roemer", "David Schweickart"],
+    figures: ["Oskar Lange", "Abba Lerner", "Alec Nove"],
     texts: [
       ["On the Economic Theory of Socialism", "Oskar Lange", "1936"],
       ["The Economics of Control", "Abba Lerner", "1944"],
@@ -136,7 +136,7 @@ export const LEFT: Record<string, TraditionHistory> = {
     when: "1970s–2001",
     where: "Europe and the United States",
     founders: ["André Gorz", "James O'Connor", "Joel Kovel", "Michael Löwy"],
-    figures: ["Joel Kovel", "Michael Löwy", "John Bellamy Foster", "Andreas Malm", "Kohei Saito"],
+    figures: ["Joel Kovel", "Michael Löwy", "John Bellamy Foster"],
     texts: [
       ["Ecology as Politics", "André Gorz", "1975"],
       ["Marx's Ecology", "John Bellamy Foster", "2000"],
@@ -187,7 +187,7 @@ export const LEFT: Record<string, TraditionHistory> = {
     when: "1890s–1910s",
     where: "The United States",
     founders: ["Theodore Roosevelt", "Robert La Follette", "Jane Addams", "Herbert Croly"],
-    figures: ["Jane Addams", "Herbert Croly", "Louis Brandeis", "Walter Lippmann", "John Dewey"],
+    figures: ["Herbert Croly", "Jane Addams", "John Dewey"],
     texts: [
       ["The Jungle", "Upton Sinclair", "1906", "https://www.gutenberg.org/ebooks/140"],
       ["The Promise of American Life", "Herbert Croly", "1909"],
@@ -213,7 +213,7 @@ export const LEFT: Record<string, TraditionHistory> = {
     when: "1972–1980",
     where: "New Zealand, Tasmania, and West Germany",
     founders: ["Values Party", "United Tasmania Group", "Petra Kelly", "Herbert Gruhl"],
-    figures: ["Petra Kelly", "Rudolf Bahro", "Arne Næss", "E. F. Schumacher", "Ralph Nader"],
+    figures: ["Petra Kelly", "Arne Næss", "E. F. Schumacher"],
     texts: [
       ["Silent Spring", "Rachel Carson", "1962"],
       ["The Limits to Growth", "Donella Meadows et al.", "1972"],
@@ -237,7 +237,7 @@ export const LEFT: Record<string, TraditionHistory> = {
     when: "1863–1899",
     where: "Germany",
     founders: ["Ferdinand Lassalle", "August Bebel", "Wilhelm Liebknecht", "Eduard Bernstein"],
-    figures: ["Eduard Bernstein", "Rudolf Hilferding", "Ernst Wigforss", "Gunnar Myrdal", "Alva Myrdal", "Anthony Crosland"],
+    figures: ["Eduard Bernstein", "Ernst Wigforss", "Anthony Crosland"],
     texts: [
       ["Erfurt Program", "SPD", "1891"],
       ["Evolutionary Socialism", "Eduard Bernstein", "1899"],
@@ -261,7 +261,7 @@ export const LEFT: Record<string, TraditionHistory> = {
     when: "1890s–1910",
     where: "France and Spain",
     founders: ["Fernand Pelloutier", "Émile Pouget", "Rudolf Rocker"],
-    figures: ["Fernand Pelloutier", "Émile Pouget", "Rudolf Rocker", "Buenaventura Durruti", "Federica Montseny"],
+    figures: ["Fernand Pelloutier", "Émile Pouget", "Rudolf Rocker"],
     texts: [
       ["Charter of Amiens", "CGT", "1906"],
       ["Reflections on Violence", "Georges Sorel", "1908"],
@@ -285,7 +285,7 @@ export const LEFT: Record<string, TraditionHistory> = {
     when: "2005",
     where: "Turkey and northern Syria",
     founders: ["Abdullah Öcalan", "Murray Bookchin (influence)"],
-    figures: ["Abdullah Öcalan", "Murray Bookchin", "Janet Biehl", "David Graeber"],
+    figures: ["Abdullah Öcalan", "Murray Bookchin", "Janet Biehl"],
     texts: [
       ["The Ecology of Freedom", "Murray Bookchin", "1982"],
       ["Declaration of Democratic Confederalism", "Abdullah Öcalan", "2005"],
@@ -308,7 +308,7 @@ export const LEFT: Record<string, TraditionHistory> = {
     when: "1840s",
     where: "France and the United States",
     founders: ["Pierre-Joseph Proudhon", "Josiah Warren"],
-    figures: ["Pierre-Joseph Proudhon", "Josiah Warren", "William B. Greene", "Benjamin Tucker", "Kevin Carson"],
+    figures: ["Pierre-Joseph Proudhon", "Josiah Warren", "Benjamin Tucker"],
     texts: [
       ["What Is Property?", "Pierre-Joseph Proudhon", "1840", "https://www.gutenberg.org/ebooks/360"],
       ["System of Economic Contradictions", "Pierre-Joseph Proudhon", "1846"],
@@ -333,7 +333,7 @@ export const LEFT: Record<string, TraditionHistory> = {
     when: "1927–1949",
     where: "China",
     founders: ["Mao Zedong"],
-    figures: ["Mao Zedong", "Chen Boda", "Lin Biao", "Charu Majumdar", "Abimael Guzmán", "Pushpa Kamal Dahal (Prachanda)"],
+    figures: ["Mao Zedong", "Chen Boda", "Lin Biao"],
     texts: [
       ["Report on an Investigation of the Peasant Movement in Hunan", "Mao Zedong", "1927"],
       ["On Contradiction", "Mao Zedong", "1937"],
@@ -360,7 +360,7 @@ export const LEFT: Record<string, TraditionHistory> = {
     when: "1923–1938",
     where: "The Soviet Union and exile",
     founders: ["Leon Trotsky"],
-    figures: ["Leon Trotsky", "James P. Cannon", "Ernest Mandel", "Tony Cliff", "Ted Grant"],
+    figures: ["Leon Trotsky", "James P. Cannon", "Ernest Mandel"],
     texts: [
       ["Results and Prospects", "Leon Trotsky", "1906"],
       ["The Permanent Revolution", "Leon Trotsky", "1930"],
@@ -385,7 +385,7 @@ export const LEFT: Record<string, TraditionHistory> = {
     when: "1918–1921",
     where: "Germany, the Netherlands, and Italy",
     founders: ["Anton Pannekoek", "Herman Gorter", "Amadeo Bordiga"],
-    figures: ["Anton Pannekoek", "Herman Gorter", "Otto Rühle", "Amadeo Bordiga", "Paul Mattick"],
+    figures: ["Anton Pannekoek", "Herman Gorter", "Amadeo Bordiga"],
     texts: [
       ["Open Letter to Comrade Lenin", "Herman Gorter", "1920"],
       ["The Revolution Is Not a Party Affair", "Otto Rühle", "1920"],
@@ -431,7 +431,7 @@ export const LEFT: Record<string, TraditionHistory> = {
     when: "1967–1970",
     where: "New York and Chicago",
     founders: ["Shulamith Firestone", "Kate Millett", "Robin Morgan", "New York Radical Women"],
-    figures: ["Shulamith Firestone", "Kate Millett", "Andrea Dworkin", "Catharine MacKinnon", "Sheila Jeffreys"],
+    figures: ["Shulamith Firestone", "Andrea Dworkin", "Catharine MacKinnon"],
     texts: [
       ["The Second Sex", "Simone de Beauvoir", "1949"],
       ["Sexual Politics", "Kate Millett", "1970"],
@@ -456,7 +456,7 @@ export const LEFT: Record<string, TraditionHistory> = {
     when: "1870s; modern form in the 1970s",
     where: "Italy",
     founders: ["Paul Brousse", "Luigi Galleani", "Alfredo Bonanno"],
-    figures: ["Johann Most", "Luigi Galleani", "Alfredo Bonanno", "Wolfi Landstreicher", "The Invisible Committee"],
+    figures: ["Johann Most", "Luigi Galleani", "Alfredo Bonanno"],
     texts: [
       ["The Science of Revolutionary Warfare", "Johann Most", "1885"],
       ["The End of Anarchism?", "Luigi Galleani", "1925"],

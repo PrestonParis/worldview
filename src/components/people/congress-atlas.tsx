@@ -34,10 +34,10 @@ interface Placed extends AtlasMember {
   r: number;
 }
 
-function layoutLanes(members: AtlasMember[]) {
+function layoutLanes(members: AtlasMember[], chambers: readonly (typeof CHAMBERS)[number][]) {
   let top = 0;
   const lanes = [];
-  for (const chamber of CHAMBERS) {
+  for (const chamber of chambers) {
     const inLane = members.filter((m) => m.chamber === chamber);
     const r = RADIUS[chamber];
     const xs = inLane.map((m) => xOf(m.score));
@@ -55,15 +55,24 @@ function layoutLanes(members: AtlasMember[]) {
   return { lanes, height: top - LANE_GAP + AXIS_H };
 }
 
-export function CongressAtlas({ congress, members }: { congress: number; members: AtlasMember[] }) {
+// `chamber` draws one lane instead of both.
+export function CongressAtlas({
+  congress,
+  members,
+  chamber,
+}: {
+  congress: number;
+  members: AtlasMember[];
+  chamber?: (typeof CHAMBERS)[number];
+}) {
   const [hovered, setHovered] = useState<Placed | null>(null);
   const [query, setQuery] = useState("");
 
-  const layout = useMemo(() => layoutLanes(members), [members]);
+  const layout = useMemo(() => layoutLanes(members, chamber ? [chamber] : CHAMBERS), [members, chamber]);
 
   const q = query.trim().toLowerCase();
   const matches = (m: AtlasMember) => !q || m.name.toLowerCase().includes(q) || m.seat.toLowerCase().startsWith(q);
-  const matchCount = q ? members.filter(matches).length : 0;
+  const matchCount = q ? members.filter((m) => (!chamber || m.chamber === chamber) && matches(m)).length : 0;
 
   return (
     <div>

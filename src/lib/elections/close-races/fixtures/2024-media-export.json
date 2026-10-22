@@ -1,0 +1,656 @@
+{
+ "electionDate": "2024-11-05",
+ "electionName": "November General Election",
+ "createdAt": "2025-01-30T13:59:59.5881725Z",
+ "results": {
+  "id": "09378a07-e6cf-4f66-be7c-ca4aa534f99a",
+  "name": "Georgia",
+  "ballotItems": [
+   {
+    "type": "State",
+    "id": "5100",
+    "name": "President of the US",
+    "voteFor": 1,
+    "ballotOrder": 5100,
+    "precinctsParticipating": null,
+    "precinctsReporting": null,
+    "contestType": "Candidate",
+    "ballotOptions": [
+     {
+      "id": "1",
+      "name": "Donald J. Trump (Rep)",
+      "ballotOrder": 1,
+      "voteCount": 2663117,
+      "politicalParty": "Rep",
+      "groupResults": [
+       {
+        "groupName": "Election Day",
+        "voteCount": 647080,
+        "isFromVirtualPrecinct": false
+       },
+       {
+        "groupName": "Absentee by Mail",
+        "voteCount": 98151,
+        "isFromVirtualPrecinct": false
+       },
+       {
+        "groupName": "Provisional",
+        "voteCount": 1444,
+        "isFromVirtualPrecinct": false
+       },
+       {
+        "groupName": "Advanced Voting",
+        "voteCount": 1916442,
+        "isFromVirtualPrecinct": false
+       }
+      ],
+      "precinctResults": null
+     },
+     {
+      "id": "2",
+      "name": "Kamala D. Harris (Dem)",
+      "ballotOrder": 2,
+      "voteCount": 2548017,
+      "politicalParty": "Dem",
+      "groupResults": [
+       {
+        "groupName": "Election Day",
+        "voteCount": 558607,
+        "isFromVirtualPrecinct": false
+       },
+       {
+        "groupName": "Absentee by Mail",
+        "voteCount": 183133,
+        "isFromVirtualPrecinct": false
+       },
+       {
+        "groupName": "Provisional",
+        "voteCount": 2164,
+        "isFromVirtualPrecinct": false
+       },
+       {
+        "groupName": "Advanced Voting",
+        "voteCount": 1804113,
+        "isFromVirtualPrecinct": false
+       }
+      ],
+      "precinctResults": null
+     },
+     {
+      "id": "3",
+      "name": "Chase Oliver (Lib)",
+      "ballotOrder": 3,
+      "voteCount": 20684,
+      "politicalParty": "Lib",
+      "groupResults": [
+       {
+        "groupName": "Election Day",
+        "voteCount": 8290,
+        "isFromVirtualPrecinct": false
+       },
+       {
+        "groupName": "Absentee by Mail",
+        "voteCount": 1027,
+        "isFromVirtualPrecinct": false
+       },
+       {
+        "groupName": "Provisional",
+        "voteCount": 13,
+        "isFromVirtualPrecinct": false
+       },
+       {
+        "groupName": "Advanced Voting",
+        "voteCount": 11354,
+        "isFromVirtualPrecinct": false
+       }
+      ],
+      "precinctResults": null
+     },
+     {
+      "id": "4",
+      "name": "Jill Stein (Grn)",
+      "ballotOrder": 4,
+      "voteCount": 18229,
+      "politicalParty": "Grn",
+      "groupResults": [
+       {
+        "groupName": "Election Day",
+        "voteCount": 7280,
+        "isFromVirtualPrecinct": false
+       },
+       {
+        "groupName": "Absentee by Mail",
+        "voteCount": 1047,
+        "isFromVirtualPrecinct": false
+       },
+       {
+        "groupName": "Provisional",
+        "voteCount": 24,
+        "isFromVirtualPrecinct": false
+       },
+       {
+        "groupName": "Advanced Voting",
+        "voteCount": 9878,
+        "isFromVirtualPrecinct": false
+       }
+      ],
+      "precinctResults": null
+     }
+    ],
+    "rankedChoiceResults": null
+   },
+   {
+    "type": "State",
+    "id": "60500",
+    "name": "State House of Representatives - District 105",
+    "voteFor": 1,
+    "ballotOrder": 60500,
+    "precinctsParticipating": null,
+    "precinctsReporting": null,
+    "contestType": "Candidate",
+    "ballotOptions": [
+     {
+      "id": "53",
+      "name": "Sandy Donatucci (Rep)",
+      "ballotOrder": 81,
+      "voteCount": 15142,
+      "politicalParty": "Rep",
+      "groupResults": [
+       {
+        "groupName": "Election Day",
+        "voteCount": 3418,
+        "isFromVirtualPrecinct": false
+       },
+       {
+        "groupName": "Absentee by Mail",
+        "voteCount": 607,
+        "isFromVirtualPrecinct": false
+       },
+       {
+        "groupName": "Provisional",
+        "voteCount": 3,
+        "isFromVirtualPrecinct": false
+       },
+       {
+        "groupName": "Advanced Voting",
+        "voteCount": 11114,
+        "isFromVirtualPrecinct": false
+       }
+      ],
+      "precinctResults": null
+     },
+     {
+      "id": "54",
+      "name": "Farooq Mughal (I) (Dem)",
+      "ballotOrder": 82,
+      "voteCount": 15062,
+      "politicalParty": "Dem",
+      "groupResults": [
+       {
+        "groupName": "Election Day",
+        "voteCount": 3185,
+        "isFromVirtualPrecinct": false
+       },
+       {
+        "groupName": "Absentee by Mail",
+        "voteCount": 973,
+        "isFromVirtualPrecinct": false
+       },
+       {
+        "groupName": "Provisional",
+        "voteCount": 2,
+        "isFromVirtualPrecinct": false
+       },
+       {
+        "groupName": "Advanced Voting",
+        "voteCount": 10902,
+        "isFromVirtualPrecinct": false
+       }
+      ],
+      "precinctResults": null
+     }
+    ],
+    "rankedChoiceResults": null
+   },
+   {
+    "type": "State",
+    "id": "62800",
+    "name": "State House of Representatives - District 128",
+    "voteFor": 1,
+    "ballotOrder": 62800,
+    "precinctsParticipating": null,
+    "precinctsReporting": null,
+    "contestType": "Candidate",
+    "ballotOptions": [
+     {
+      "id": "280",
+      "name": "Tracy Wheeler (Rep)",
+      "ballotOrder": 13,
+      "voteCount": 13878,
+      "politicalParty": "Rep",
+      "groupResults": [
+       {
+        "groupName": "Election Day",
+        "voteCount": 3434,
+        "isFromVirtualPrecinct": false
+       },
+       {
+        "groupName": "Absentee by Mail",
+        "voteCount": 490,
+        "isFromVirtualPrecinct": false
+       },
+       {
+        "groupName": "Provisional",
+        "voteCount": 2,
+        "isFromVirtualPrecinct": false
+       },
+       {
+        "groupName": "Advanced Voting",
+        "voteCount": 9952,
+        "isFromVirtualPrecinct": false
+       }
+      ],
+      "precinctResults": null
+     },
+     {
+      "id": "311",
+      "name": "Mack Jackson (I) (Dem)",
+      "ballotOrder": 14,
+      "voteCount": 13926,
+      "politicalParty": "Dem",
+      "groupResults": [
+       {
+        "groupName": "Election Day",
+        "voteCount": 3929,
+        "isFromVirtualPrecinct": false
+       },
+       {
+        "groupName": "Absentee by Mail",
+        "voteCount": 1545,
+        "isFromVirtualPrecinct": false
+       },
+       {
+        "groupName": "Provisional",
+        "voteCount": 5,
+        "isFromVirtualPrecinct": false
+       },
+       {
+        "groupName": "Advanced Voting",
+        "voteCount": 8447,
+        "isFromVirtualPrecinct": false
+       }
+      ],
+      "precinctResults": null
+     }
+    ],
+    "rankedChoiceResults": null
+   }
+  ]
+ },
+ "localResults": [
+  {
+   "id": "d58e790a-a271-4225-8cd6-a1ed0aa829b1",
+   "name": "Appling County",
+   "ballotItems": [
+    {
+     "type": "Local",
+     "id": "5100",
+     "name": "President of the US",
+     "voteFor": 1,
+     "ballotOrder": 1,
+     "precinctsParticipating": 9,
+     "precinctsReporting": 9,
+     "contestType": "Candidate",
+     "ballotOptions": [
+      {
+       "id": "1",
+       "name": "Donald J. Trump (Rep)",
+       "ballotOrder": 1,
+       "voteCount": 6761,
+       "politicalParty": "Rep",
+       "groupResults": [
+        {
+         "groupName": "Election Day",
+         "voteCount": 1928,
+         "isFromVirtualPrecinct": false
+        },
+        {
+         "groupName": "Absentee by Mail",
+         "voteCount": 269,
+         "isFromVirtualPrecinct": false
+        },
+        {
+         "groupName": "Provisional",
+         "voteCount": 0,
+         "isFromVirtualPrecinct": false
+        },
+        {
+         "groupName": "Advanced Voting",
+         "voteCount": 4564,
+         "isFromVirtualPrecinct": false
+        }
+       ],
+       "precinctResults": null
+      },
+      {
+       "id": "2",
+       "name": "Kamala D. Harris (Dem)",
+       "ballotOrder": 2,
+       "voteCount": 1560,
+       "politicalParty": "Dem",
+       "groupResults": [
+        {
+         "groupName": "Election Day",
+         "voteCount": 381,
+         "isFromVirtualPrecinct": false
+        },
+        {
+         "groupName": "Absentee by Mail",
+         "voteCount": 155,
+         "isFromVirtualPrecinct": false
+        },
+        {
+         "groupName": "Provisional",
+         "voteCount": 0,
+         "isFromVirtualPrecinct": false
+        },
+        {
+         "groupName": "Advanced Voting",
+         "voteCount": 1024,
+         "isFromVirtualPrecinct": false
+        }
+       ],
+       "precinctResults": null
+      },
+      {
+       "id": "3",
+       "name": "Chase Oliver (Lib)",
+       "ballotOrder": 3,
+       "voteCount": 8,
+       "politicalParty": "Lib",
+       "groupResults": [
+        {
+         "groupName": "Election Day",
+         "voteCount": 3,
+         "isFromVirtualPrecinct": false
+        },
+        {
+         "groupName": "Absentee by Mail",
+         "voteCount": 1,
+         "isFromVirtualPrecinct": false
+        },
+        {
+         "groupName": "Provisional",
+         "voteCount": 0,
+         "isFromVirtualPrecinct": false
+        },
+        {
+         "groupName": "Advanced Voting",
+         "voteCount": 4,
+         "isFromVirtualPrecinct": false
+        }
+       ],
+       "precinctResults": null
+      },
+      {
+       "id": "4",
+       "name": "Jill Stein (Grn)",
+       "ballotOrder": 4,
+       "voteCount": 5,
+       "politicalParty": "Grn",
+       "groupResults": [
+        {
+         "groupName": "Election Day",
+         "voteCount": 0,
+         "isFromVirtualPrecinct": false
+        },
+        {
+         "groupName": "Absentee by Mail",
+         "voteCount": 1,
+         "isFromVirtualPrecinct": false
+        },
+        {
+         "groupName": "Provisional",
+         "voteCount": 0,
+         "isFromVirtualPrecinct": false
+        },
+        {
+         "groupName": "Advanced Voting",
+         "voteCount": 4,
+         "isFromVirtualPrecinct": false
+        }
+       ],
+       "precinctResults": null
+      }
+     ],
+     "rankedChoiceResults": null
+    },
+    {
+     "type": "Local",
+     "id": "8",
+     "name": "Sheriff",
+     "voteFor": 1,
+     "ballotOrder": 8,
+     "precinctsParticipating": 9,
+     "precinctsReporting": 9,
+     "contestType": "Candidate",
+     "ballotOptions": [
+      {
+       "id": "14",
+       "name": "Mark Melton (I) (Rep)",
+       "ballotOrder": 21,
+       "voteCount": 6806,
+       "politicalParty": "Rep",
+       "groupResults": [
+        {
+         "groupName": "Election Day",
+         "voteCount": 1929,
+         "isFromVirtualPrecinct": false
+        },
+        {
+         "groupName": "Absentee by Mail",
+         "voteCount": 298,
+         "isFromVirtualPrecinct": false
+        },
+        {
+         "groupName": "Provisional",
+         "voteCount": 0,
+         "isFromVirtualPrecinct": false
+        },
+        {
+         "groupName": "Advanced Voting",
+         "voteCount": 4579,
+         "isFromVirtualPrecinct": false
+        }
+       ],
+       "precinctResults": null
+      }
+     ],
+     "rankedChoiceResults": null
+    }
+   ]
+  },
+  {
+   "id": "ea1814cb-4423-439e-b273-131e9a8356a6",
+   "name": "Fulton County",
+   "ballotItems": [
+    {
+     "type": "Local",
+     "id": "5100",
+     "name": "President of the US",
+     "voteFor": 1,
+     "ballotOrder": 1,
+     "precinctsParticipating": 466,
+     "precinctsReporting": 466,
+     "contestType": "Candidate",
+     "ballotOptions": [
+      {
+       "id": "1",
+       "name": "Donald J. Trump (Rep)",
+       "ballotOrder": 1,
+       "voteCount": 144655,
+       "politicalParty": "Rep",
+       "groupResults": [
+        {
+         "groupName": "Election Day",
+         "voteCount": 25789,
+         "isFromVirtualPrecinct": false
+        },
+        {
+         "groupName": "Absentee by Mail",
+         "voteCount": 6280,
+         "isFromVirtualPrecinct": false
+        },
+        {
+         "groupName": "Provisional",
+         "voteCount": 132,
+         "isFromVirtualPrecinct": false
+        },
+        {
+         "groupName": "Advanced Voting",
+         "voteCount": 112454,
+         "isFromVirtualPrecinct": false
+        }
+       ],
+       "precinctResults": null
+      },
+      {
+       "id": "2",
+       "name": "Kamala D. Harris (Dem)",
+       "ballotOrder": 2,
+       "voteCount": 384752,
+       "politicalParty": "Dem",
+       "groupResults": [
+        {
+         "groupName": "Election Day",
+         "voteCount": 64475,
+         "isFromVirtualPrecinct": false
+        },
+        {
+         "groupName": "Absentee by Mail",
+         "voteCount": 22497,
+         "isFromVirtualPrecinct": false
+        },
+        {
+         "groupName": "Provisional",
+         "voteCount": 487,
+         "isFromVirtualPrecinct": false
+        },
+        {
+         "groupName": "Advanced Voting",
+         "voteCount": 297293,
+         "isFromVirtualPrecinct": false
+        }
+       ],
+       "precinctResults": null
+      },
+      {
+       "id": "3",
+       "name": "Chase Oliver (Lib)",
+       "ballotOrder": 3,
+       "voteCount": 2507,
+       "politicalParty": "Lib",
+       "groupResults": [
+        {
+         "groupName": "Election Day",
+         "voteCount": 870,
+         "isFromVirtualPrecinct": false
+        },
+        {
+         "groupName": "Absentee by Mail",
+         "voteCount": 123,
+         "isFromVirtualPrecinct": false
+        },
+        {
+         "groupName": "Provisional",
+         "voteCount": 2,
+         "isFromVirtualPrecinct": false
+        },
+        {
+         "groupName": "Advanced Voting",
+         "voteCount": 1512,
+         "isFromVirtualPrecinct": false
+        }
+       ],
+       "precinctResults": null
+      },
+      {
+       "id": "4",
+       "name": "Jill Stein (Grn)",
+       "ballotOrder": 4,
+       "voteCount": 3324,
+       "politicalParty": "Grn",
+       "groupResults": [
+        {
+         "groupName": "Election Day",
+         "voteCount": 1073,
+         "isFromVirtualPrecinct": false
+        },
+        {
+         "groupName": "Absentee by Mail",
+         "voteCount": 171,
+         "isFromVirtualPrecinct": false
+        },
+        {
+         "groupName": "Provisional",
+         "voteCount": 7,
+         "isFromVirtualPrecinct": false
+        },
+        {
+         "groupName": "Advanced Voting",
+         "voteCount": 2073,
+         "isFromVirtualPrecinct": false
+        }
+       ],
+       "precinctResults": null
+      }
+     ],
+     "rankedChoiceResults": null
+    },
+    {
+     "type": "Local",
+     "id": "38",
+     "name": "Sheriff",
+     "voteFor": 1,
+     "ballotOrder": 38,
+     "precinctsParticipating": 466,
+     "precinctsReporting": 466,
+     "contestType": "Candidate",
+     "ballotOptions": [
+      {
+       "id": "66",
+       "name": "Patrick \"Pat\" Labat (I) (Dem)",
+       "ballotOrder": 102,
+       "voteCount": 435304,
+       "politicalParty": "Dem",
+       "groupResults": [
+        {
+         "groupName": "Election Day",
+         "voteCount": 77274,
+         "isFromVirtualPrecinct": false
+        },
+        {
+         "groupName": "Absentee by Mail",
+         "voteCount": 22363,
+         "isFromVirtualPrecinct": false
+        },
+        {
+         "groupName": "Provisional",
+         "voteCount": 497,
+         "isFromVirtualPrecinct": false
+        },
+        {
+         "groupName": "Advanced Voting",
+         "voteCount": 335170,
+         "isFromVirtualPrecinct": false
+        }
+       ],
+       "precinctResults": null
+      }
+     ],
+     "rankedChoiceResults": null
+    }
+   ]
+  }
+ ]
+}

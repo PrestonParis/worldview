@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import Link from "next/link";
 import { X } from "lucide-react";
 import { ideologies } from "@/lib/quiz/ideologies";
+import { BOOKS } from "@/lib/atlas/history/books";
 import { axisById } from "@/lib/quiz/axes";
 import { FAMILIES, familyColor } from "@/lib/quiz/families";
 import { AXIS_HUBS, type Hub } from "@/lib/quiz/hubs";
@@ -178,6 +179,25 @@ export function TraditionPanel({
               </button>
             ))}
           </div>
+
+          {!!BOOKS[ideology.id]?.length && (
+            <>
+              <p className="mt-5 text-xs font-medium text-slate-500 dark:text-slate-400">Start reading</p>
+              <ul className="mt-2 space-y-1.5 text-sm">
+                {BOOKS[ideology.id].slice(0, 2).map((b) => (
+                  <li key={b.title}>
+                    <span className="font-medium text-slate-950 dark:text-white">{b.title}</span>
+                    <span className="text-slate-500 dark:text-slate-400"> · {b.author}</span>
+                  </li>
+                ))}
+              </ul>
+              {BOOKS[ideology.id].length > 2 && (
+                <Link href={`/atlas/philosophies/${ideology.id}`} className="mt-1.5 inline-flex text-xs font-medium text-slate-500 underline decoration-slate-300 underline-offset-4 hover:text-slate-950 dark:text-slate-400 dark:decoration-slate-600 dark:hover:text-white">
+                  {BOOKS[ideology.id].length - 2} more on the philosophy page
+                </Link>
+              )}
+            </>
+          )}
 
           {hubs.length > 0 && (
             <>

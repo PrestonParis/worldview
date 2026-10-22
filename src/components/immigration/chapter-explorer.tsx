@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { ChartCard } from "@/components/charts/chart-card";
+import { ChartCard, type ChartSource } from "@/components/charts/chart-card";
 import { RankedBars, type RankedItem } from "@/components/charts/ranked-bars";
 import { StatTile } from "@/components/charts/stat-tile";
 import { rankedTable, seriesTable } from "@/components/charts/tables";
 import { TimeSeriesChart, type Marker, type Series } from "@/components/charts/time-series-chart";
 
-type Source = { label: string; href?: string };
+type Source = ChartSource;
 
 export type ExplorerMetric = {
   label: string;

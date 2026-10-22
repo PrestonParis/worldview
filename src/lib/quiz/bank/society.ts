@@ -99,7 +99,7 @@ export const societyStatements: Statement[] = [
   st("justice.19", -0.75, "People serving long sentences should have their cases reviewed for release after 10 years."),
   st("justice.20", 0.75, "Juveniles who commit violent crimes should be tried as adults."),
 
-  // ── Identity: Group-conscious (-1) ↔ Colorblind (+1) ──
+  // ── Identity: Group-conscious (-1) ↔ Race-neutral law (+1) ──
   st("identity.01", -1, "The federal government should pay reparations to the descendants of enslaved people."),
   st("identity.02", -1, "American institutions are fundamentally built on racism and must be remade."),
   st("identity.03", -0.75, "College admissions should actively favor applicants from underrepresented groups."),

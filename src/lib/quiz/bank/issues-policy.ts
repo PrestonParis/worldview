@@ -89,7 +89,7 @@ export const policyIssues: IssueModule[] = [
   },
   {
     id: "healthcare",
-    name: "Health care",
+    name: "Healthcare",
     unless: communist,
     screener: {
       id: "healthcare.system",
@@ -100,7 +100,7 @@ export const policyIssues: IssueModule[] = [
         o("public-option", "Private insurance plus a government plan anyone can buy into", "Public option", L(["ownership", -0.3, 0.5], ["redistribution", -0.4, 0.4])),
         o("regulated", "Private insurers operating under strong federal rules", "Regulated private insurance", L(["regulation", -0.4, 0.4])),
         o("market", "Private insurers operating under limited federal rules", "Market-based private insurance", L(["regulation", 0.5, 0.4])),
-        o("private", "Fully private; the government should not be involved in health care", "Fully private health care", L(["ownership", 1, 0.5], ["redistribution", 0.9, 0.4])),
+        o("private", "Fully private; the government should not be involved in healthcare", "Fully private healthcare", L(["ownership", 1, 0.5], ["redistribution", 0.9, 0.4])),
       ],
     },
     followUps: [

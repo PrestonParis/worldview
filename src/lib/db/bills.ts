@@ -38,6 +38,7 @@ export interface BillSearch {
   chamber?: string;
   policyArea?: string;
   sponsorIds?: string[]; // entities whose names matched `q`
+  sponsorEntityId?: string; // only bills this member sponsored
   page?: number;
   pageSize?: number;
 }
@@ -50,6 +51,7 @@ export async function searchBills({
   chamber,
   policyArea,
   sponsorIds = [],
+  sponsorEntityId,
   page = 1,
   pageSize = 50,
 }: BillSearch): Promise<{ bills: Bill[]; total: number }> {
@@ -70,6 +72,7 @@ export async function searchBills({
   if (status) conditions.push(eq(bills.status, status as Bill["status"]));
   if (chamber) conditions.push(eq(bills.chamber, chamber));
   if (policyArea) conditions.push(eq(bills.policyArea, policyArea));
+  if (sponsorEntityId) conditions.push(eq(bills.sponsorEntityId, sponsorEntityId));
   const where = and(...conditions);
 
   const [rows, [{ value: total }]] = await Promise.all([

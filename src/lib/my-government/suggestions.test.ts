@@ -51,6 +51,22 @@ describe("parseResolvedSuggestion", () => {
     const candidate = { address: "141 Piedmont Ave NE, Atlanta, Georgia, 30303", location: { x: 0, y: 0 }, score: 100 };
     expect(parseResolvedSuggestion({ candidates: [{ ...candidate, attributes: { Addr_type: "StreetName" } }] }, selected)).toBeNull();
     expect(parseResolvedSuggestion({ candidates: [{ ...candidate, address: "143 Piedmont Ave NE", attributes: { Addr_type: "PointAddress" } }] }, selected)).toBeNull();
+    expect(parseResolvedSuggestion({ candidates: [{ ...candidate, address: "141 Piedmont Ave SE, Atlanta, Georgia, 30303", attributes: { Addr_type: "PointAddress" } }] }, selected)).toBeNull();
     expect(parseResolvedSuggestion({ candidates: [] }, selected)).toBeNull();
+  });
+
+  it("keeps a precise NE address point available when Census suggests SE", () => {
+    expect(parseResolvedSuggestion({
+      candidates: [{
+        address: "141 Piedmont Ave NE, Atlanta, Georgia, 30303",
+        location: { x: -84.3804, y: 33.7577 },
+        score: 100,
+        attributes: { Addr_type: "PointAddress" },
+      }],
+    }, selected)).toEqual({
+      address: "141 Piedmont Ave NE, Atlanta, GA, 30303",
+      longitude: -84.3804,
+      latitude: 33.7577,
+    });
   });
 });

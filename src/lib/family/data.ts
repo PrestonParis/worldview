@@ -4,7 +4,6 @@
 
 import { datasetCoverage, getCrossSection, getSeriesMany, listDatasets, type Point } from "@/lib/db/stats";
 import { STATES_51 } from "@/lib/geo/states";
-import { formatValue } from "@/lib/format";
 import type { RankedItem } from "@/components/charts/ranked-bars";
 import type { StateMetric, StateRow } from "@/components/charts/state-explorer";
 import type { Series, SeriesPoint } from "@/components/charts/time-series-chart";
@@ -16,8 +15,6 @@ const PEP = "census-pep";
 
 const annual = (points: Point[] | undefined): SeriesPoint[] => (points ?? []).map((p) => ({ x: Number(p.period), label: p.period, value: p.value }));
 const last = (points: Point[] | undefined) => points?.at(-1) ?? null;
-const first = (points: Point[] | undefined) => points?.[0] ?? null;
-const whole = (v: number | null | undefined) => (v === null || v === undefined ? "—" : `${Math.round(v)}%`);
 
 const ACS_METRICS = [
   "marriage_rate", "divorce_rate", "first_marriage_age_men", "first_marriage_age_women",
@@ -122,21 +119,8 @@ export async function loadFamily() {
     name: s.name,
     values: Object.fromEntries(STATE_METRICS.map(([key], i) => [key, maps[i].get(s.fips) ?? null])),
   }));
-  const stateRanking = (key: string, n = 10): RankedItem[] =>
-    rows
-      .filter((r) => r.values[key] !== null)
-      .sort((a, b) => b.values[key]! - a.values[key]!)
-      .slice(0, n)
-      .map((r) => ({ label: r.name, value: r.values[key]! }));
-  const birthRateTop = stateRanking("birth_rate");
-  const marriedKidsLow = rows
-    .filter((r) => r.values.children_married_couple_share !== null)
-    .sort((a, b) => a.values.children_married_couple_share! - b.values.children_married_couple_share!)
-    .slice(0, 10)
-    .map((r) => ({ label: r.name, value: r.values.children_married_couple_share! }));
-  const marriedKidsHigh = stateRanking("children_married_couple_share");
 
-  // ---- Headline + findings ----
+  // ---- Headline ----
   const tfrNow = last(usTfr);
   const headline = {
     tfr: { point: tfrNow, spark: usTfr.slice(-30).map((p) => p.value) },
@@ -146,46 +130,11 @@ export async function loadFamily() {
     unmarried: { point: last(acs.births_unmarried_share) },
   };
 
-  const findings: string[] = [];
-  const peak = usTfr.length ? usTfr.reduce((a, b) => (b.value > a.value ? b : a)) : null;
-  const below = usTfr.find((p, i) => i > 0 && p.value < 2.1 && usTfr.slice(i).every((q) => q.value < 2.1));
-  if (tfrNow) {
-    findings.push(
-      `The U.S. total fertility rate was ${formatValue(tfrNow.value, "per_woman")} births per woman in ${tfrNow.period}${below ? `, below the replacement level of about 2.1 every year since ${below.period}` : ""}${peak ? `; it peaked at ${formatValue(peak.value, "per_woman")} in ${peak.period}` : ""}.`,
-    );
-  }
-  const gfrNow = last(nchs.general_fertility_rate);
-  const gfrPeak = nchs.general_fertility_rate.length ? nchs.general_fertility_rate.reduce((a, b) => (b.value > a.value ? b : a)) : null;
-  const gfrLowest = gfrNow !== null && nchs.general_fertility_rate.every((p) => p.value >= gfrNow.value);
-  if (gfrNow && gfrPeak) {
-    findings.push(
-      `There were ${formatValue(gfrNow.value, "per_1000")} births per 1,000 women aged 15–44 in ${gfrNow.period}${gfrLowest ? `, the lowest since the series began in ${first(nchs.general_fertility_rate)!.period}` : ""}, against ${formatValue(gfrPeak.value, "per_1000")} in ${gfrPeak.period}.`,
-    );
-  }
-  const mr = last(acs.marriage_rate);
-  const mr0 = first(acs.marriage_rate);
-  const dr = last(acs.divorce_rate);
-  const dr0 = first(acs.divorce_rate);
-  if (mr && mr0 && dr && dr0) findings.push(`${formatValue(mr.value, "per_1000")} of every 1,000 women married in ${mr.period} (${formatValue(mr0.value, "per_1000")} in ${mr0.period}); the divorce rate fell from ${formatValue(dr0.value, "per_1000")} to ${formatValue(dr.value, "per_1000")}.`);
-  const fw = last(acs.first_marriage_age_women);
-  const fw0 = first(acs.first_marriage_age_women);
-  const fm = last(acs.first_marriage_age_men);
-  if (fw && fw0 && fm) findings.push(`The median age at first marriage reached ${formatValue(fw.value, "years")} for women and ${formatValue(fm.value, "years")} for men in ${fw.period}, up from ${formatValue(fw0.value, "years")} for women in ${fw0.period}.`);
-  const nm = last(acs.never_married_share);
-  const nm0 = first(acs.never_married_share);
-  if (nm && nm0) findings.push(`${whole(nm.value)} of people 15 and over had never married in ${nm.period}, up from ${whole(nm0.value)} in ${nm0.period}.`);
-  const kids = headline.kids.point;
-  const mom = last(acs.children_single_mother_share);
-  if (kids && mom) findings.push(`${whole(kids.value)} of children lived with married parents in ${kids.period}; ${whole(mom.value)} lived with a single mother.`);
-  const um = headline.unmarried.point;
-  if (um) findings.push(`${whole(um.value)} of women who gave birth in the year before the ${um.period} survey were unmarried.`);
-
   const order = [NCHS, WB, ACS];
   const cov = await datasetCoverage([...datasets.map((d) => d.slug), PEP]);
   const pepDataset = (await listDatasets({ topic: "demographics" })).find((d) => d.slug === PEP);
   return {
     headline,
-    findings,
     tfrCompare,
     tfrRanking,
     tfrYear: peerLatest.period,
@@ -197,9 +146,6 @@ export async function loadFamily() {
     children,
     households,
     unmarried,
-    birthRateTop,
-    marriedKidsLow,
-    marriedKidsHigh,
     states: { metrics, rows },
     datasets: [...datasets.sort((a, b) => order.indexOf(a.slug) - order.indexOf(b.slug)), ...(pepDataset ? [pepDataset] : [])].map((d) => ({
       ...d,

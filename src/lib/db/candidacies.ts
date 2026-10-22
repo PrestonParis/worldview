@@ -1,6 +1,6 @@
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { db } from "./client";
-import { candidacies } from "./schema";
+import { candidacies, elections } from "./schema";
 import {
   summarizeCandidacies,
   type Candidacy,
@@ -45,6 +45,42 @@ export async function listCandidaciesForElection(
     orderBy: (c, { asc }) => asc(c.createdAt),
   });
   return rows.map(toCandidacy);
+}
+
+export interface EntityCandidacy extends Candidacy {
+  election: {
+    id: string;
+    name: string;
+    office: string;
+    jurisdiction: string;
+    electionType: string;
+    status: string;
+    electionDate: string;
+    cycle: number | null;
+  };
+}
+
+// Every race one person has run in, newest first, with the election attached.
+export async function listCandidaciesForEntity(entityId: string): Promise<EntityCandidacy[]> {
+  const rows = await db
+    .select({ candidacy: candidacies, election: elections })
+    .from(candidacies)
+    .innerJoin(elections, eq(elections.id, candidacies.electionId))
+    .where(eq(candidacies.candidateEntityId, entityId))
+    .orderBy(desc(elections.electionDate));
+  return rows.map(({ candidacy, election }) => ({
+    ...toCandidacy(candidacy),
+    election: {
+      id: election.id,
+      name: election.name,
+      office: election.office,
+      jurisdiction: election.jurisdiction,
+      electionType: election.electionType,
+      status: election.status,
+      electionDate: election.electionDate.toISOString(),
+      cycle: election.cycle,
+    },
+  }));
 }
 
 // One query for every election's roll-up, rather than one per election —

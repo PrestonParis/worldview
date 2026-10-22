@@ -10,10 +10,11 @@ import { getEntitiesByIds } from "@/lib/db/entities";
 import { summarizeCandidacies, type Candidacy } from "@/lib/validation/candidacy";
 import { partyColorFor } from "@/lib/party-colors";
 import { formatAmount } from "@/lib/money";
-import { candidateIdentityKey, normalizeCandidateName, normalizePartyName } from "@/lib/elections/display";
+import { dedupeCandidacies, normalizeCandidateName, normalizePartyName } from "@/lib/elections/display";
 import { consensusRating, HANDICAPPERS, partyLetter } from "@/lib/elections/overview";
 import { ratingLabel } from "@/lib/validation/raceRating";
 import { ElectionStatusPill } from "@/components/elections/election-status";
+import { OnYourBallot } from "@/components/my-government/highlights";
 import { DataSourceNote } from "@/components/elections/data-source-note";
 import { FollowMoneyMenu } from "@/components/money/follow-money-menu";
 import { partyColor as fecPartyColor, partyLetter as fecPartyLetter } from "@/lib/money/semantic";
@@ -37,26 +38,6 @@ function shortDate(iso: string): string {
   return new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" });
 }
 
-function candidateStage(candidacy: Candidacy): number {
-  if (candidacy.withdrew || candidacy.status === "withdrew") return 0;
-  if (candidacy.status === "nominee") return 5;
-  if (candidacy.status === "primary_winner") return 4;
-  if (candidacy.status === "filed") return 3;
-  if (candidacy.status === "lost_primary") return 1;
-  return 2;
-}
-
-function dedupeCandidacies(candidacies: Candidacy[], entityById: Map<string, Entity>): Candidacy[] {
-  const unique = new Map<string, Candidacy>();
-  for (const candidacy of candidacies) {
-    const name = entityById.get(candidacy.candidateEntityId)?.name ?? "Unknown";
-    const key = candidateIdentityKey(name);
-    const existing = unique.get(key);
-    if (!existing || candidateStage(candidacy) > candidateStage(existing) || (candidacy.incumbent && !existing.incumbent)) unique.set(key, candidacy);
-  }
-  return [...unique.values()];
-}
-
 export default async function ElectionDetailPage({ params }: PageProps<"/elections/[id]">) {
   const { id } = await params;
   const [election, candidacyRows, resultRows, ratings] = await Promise.all([
@@ -69,7 +50,7 @@ export default async function ElectionDetailPage({ params }: PageProps<"/electio
 
   const entities = await getEntitiesByIds(candidacyRows.map((candidacy) => candidacy.candidateEntityId));
   const entityById = new Map(entities.map((entity) => [entity.id, entity]));
-  const candidacies = dedupeCandidacies(candidacyRows, entityById);
+  const candidacies = dedupeCandidacies(candidacyRows, (entityId) => entityById.get(entityId)?.name ?? "Unknown");
   const upcomingGeneral = election.status === "scheduled" && election.electionType === "general";
   const nominees = candidacies.filter((candidate) => !candidate.withdrew && (candidate.status === "nominee" || candidate.status === "primary_winner"));
   const active = upcomingGeneral ? nominees : candidacies.filter((candidate) => !candidate.withdrew && candidate.status !== "lost_primary");
@@ -94,11 +75,14 @@ export default async function ElectionDetailPage({ params }: PageProps<"/electio
 
   return (
     <div className="mx-auto max-w-6xl pb-16">
-      <Link href={`/elections?cycle=${cycle}`} className="text-sm font-medium text-blue-700 hover:underline dark:text-blue-300">← Election center</Link>
+      <div className="flex items-center justify-between gap-2">
+        <Link href={`/elections?cycle=${cycle}`} className="text-sm font-medium text-blue-700 hover:underline dark:text-blue-300">← Election center</Link>
+        <Link href={`/writ/race/${election.id}`} className="text-xs font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">Open in Writ →</Link>
+      </div>
 
       <header className="mt-5 border-y border-slate-300 py-7 dark:border-slate-700">
         <div className="flex flex-wrap items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-          <span>{election.office}</span><span aria-hidden>·</span><span>{election.jurisdiction}</span><ElectionStatusPill status={election.status} />
+          <span>{election.office}</span><span aria-hidden>·</span><span>{election.jurisdiction}</span><ElectionStatusPill status={election.status} /><OnYourBallot jurisdiction={election.jurisdiction} />
         </div>
         <h1 className="mt-2 text-4xl font-semibold tracking-[-0.03em] text-slate-950 dark:text-white">{election.jurisdiction} {election.office}</h1>
         <p className="mt-3 text-lg text-slate-700 dark:text-slate-300">{election.electionType.replace(/^./, (character) => character.toUpperCase())} election · {formatDate(election.electionDate)}</p>

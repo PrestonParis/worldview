@@ -1,4 +1,4 @@
-// Loads data/political-figures.json into the graph: curated profiles
+// Loads the curated political-figure collections into the graph: profiles
 // (description, biography, dated highlights, aliases, sources) for people and
 // organizations, plus the typed connections between them.
 //
@@ -11,7 +11,7 @@
 //
 // Idempotent: entities MERGE on a name key, edges MERGE on a sourceKey.
 //
-// Usage: node scripts/import-political-figures.mjs [--dry-run] [--force]
+// Usage: node scripts/import-political-figures.mjs [--dry-run] [--force] [--collection=name] [--profile=name]
 //        node scripts/import-political-figures.mjs --docs   (regenerate docs/political-figures.md, no DB)
 
 import fs from "node:fs";
@@ -20,17 +20,42 @@ import { randomUUID } from "node:crypto";
 const DRY_RUN = process.argv.includes("--dry-run");
 const FORCE = process.argv.includes("--force");
 const DOCS = process.argv.includes("--docs");
-const DATA = JSON.parse(fs.readFileSync("data/political-figures.json", "utf8"));
+const PROFILE_ARG = process.argv
+  .find((arg) => arg.startsWith("--profile="))
+  ?.split("=")[1]
+  ?.trim()
+  .toLowerCase();
+const DATA_PATHS = ["data/political-figures.json", "data/political-influence-wealth.json"];
+const COLLECTIONS = DATA_PATHS.map((path) => ({ path, data: JSON.parse(fs.readFileSync(path, "utf8")) }));
+const COLLECTION_ARG = process.argv.find((arg) => arg.startsWith("--collection="))?.split("=")[1];
+const ACTIVE_COLLECTIONS = COLLECTION_ARG
+  ? COLLECTIONS.filter(({ data }) => data.collection === COLLECTION_ARG)
+  : COLLECTIONS;
+if (COLLECTION_ARG && ACTIVE_COLLECTIONS.length === 0) {
+  throw new Error(`Unknown collection: ${COLLECTION_ARG}`);
+}
 const DOCS_PATH = "docs/political-figures.md";
 
 // Mirrors the limits in src/lib/validation/entity.ts.
-const LIMITS = { description: 2000, biography: 12000, highlights: 2000, metadata: 4000 };
+const LIMITS = { description: 2000, biography: 12000, highlights: 2000, metadata: 24000 };
 
-function profileFields(profile) {
-  const metadata = { ...profile.metadata, sources: profile.sources ?? [], collection: DATA.collection };
+function biographyText(profile) {
+  if (profile.biography) return profile.biography;
+  return (profile.profile?.sections ?? []).map((section) => `${section.heading}\n${section.body}`).join("\n\n");
+}
+
+function profileFields(profile, collection) {
+  const metadata = {
+    ...profile.metadata,
+    ...(profile.profile ? { profile: profile.profile } : {}),
+    sources: profile.sources ?? [],
+    collection,
+  };
   const fields = {
     description: profile.description ?? "",
-    biography: profile.biography ?? "",
+    biography: biographyText(profile),
+    image_url: profile.imageUrl ?? "",
+    website_url: profile.websiteUrl ?? "",
     highlights: (profile.highlights ?? []).join("\n"),
     metadata,
   };
@@ -42,7 +67,14 @@ function profileFields(profile) {
 }
 
 function writeDocs() {
-  const anchor = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  const people = COLLECTIONS.flatMap(({ data }) => data.people);
+  const organizations = COLLECTIONS.flatMap(({ data }) => data.organizations);
+  const connections = COLLECTIONS.flatMap(({ data }) => data.connections);
+  const anchor = (name) =>
+    name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "");
   const section = (profile) => {
     const meta = profile.metadata ?? {};
     const facts = [
@@ -51,7 +83,7 @@ function writeDocs() {
       meta.died ? `**Died:** ${meta.died}` : "",
       meta.founded ? `**Founded:** ${meta.founded}` : "",
     ].filter(Boolean);
-    const links = DATA.connections
+    const links = connections
       .filter((c) => c.source === profile.name || c.target === profile.name)
       .map((c) => `- ${c.source} → *${c.relType}* → ${c.target}${c.role ? ` — ${c.role}` : ""}`);
     return [
@@ -60,7 +92,7 @@ function writeDocs() {
       `*${profile.description}*`,
       facts.length ? `\n${facts.join(" · ")}` : "",
       "",
-      profile.biography,
+      biographyText(profile),
       "",
       "**Notable events**",
       "",
@@ -75,14 +107,14 @@ function writeDocs() {
   const md = [
     "# Political figures — curated profiles",
     "",
-    "Generated from `data/political-figures.json` by `node scripts/import-political-figures.mjs --docs`.",
-    "Edit the JSON, not this file. Profiles appear on `/data/entities/[id]` (biography, highlights,",
+    "Generated from the `data/political-*.json` collections by `node scripts/import-political-figures.mjs --docs`.",
+    "Edit those JSON files, not this document. Profiles appear on `/data/entities/[id]` (biography, highlights,",
     "aliases, born/died, sources) and in the `/people` graph via their connections.",
     "",
     "## Adding a figure",
     "",
     "1. Add an entry to `people` (or `organizations`) with `description`, `biography`, dated",
-    "   `highlights` (`\"YYYY — event\"`), `metadata`, and at least one `sources` URL.",
+    '   `highlights` (`"YYYY — event"`), `metadata`, and at least one `sources` URL.',
     "2. Add `connections` using slugs from `src/lib/relationships.ts`.",
     "3. `node scripts/import-political-figures.mjs --dry-run`, then without `--dry-run`",
     "   (`ENV_FILE=.env.cloud` for production), then `--docs`.",
@@ -94,35 +126,57 @@ function writeDocs() {
     "",
     "| Name | Kind | Summary |",
     "|---|---|---|",
-    ...DATA.people.map((p) => `| [${p.name}](#${anchor(p.name)}) | ${p.type} | ${p.description.replaceAll("|", "\\|")} |`),
-    ...DATA.organizations.map((o) => `| [${o.name}](#${anchor(o.name)}) | organization | ${o.description.replaceAll("|", "\\|")} |`),
+    ...people.map((p) => `| [${p.name}](#${anchor(p.name)}) | ${p.type} | ${p.description.replaceAll("|", "\\|")} |`),
+    ...organizations.map(
+      (o) => `| [${o.name}](#${anchor(o.name)}) | organization | ${o.description.replaceAll("|", "\\|")} |`,
+    ),
     "",
     "## People",
     "",
-    ...DATA.people.map(section),
+    ...people.map(section),
     "## Organizations",
     "",
-    ...DATA.organizations.map(section),
+    ...organizations.map(section),
   ].join("\n");
   fs.writeFileSync(DOCS_PATH, md);
-  console.log(`Wrote ${DOCS_PATH} (${DATA.people.length} people, ${DATA.organizations.length} organizations).`);
+  console.log(`Wrote ${DOCS_PATH} (${people.length} people, ${organizations.length} organizations).`);
 }
 
 async function main() {
   // Validate everything before touching the DB.
-  const profiles = [
-    ...DATA.organizations.map((o) => ({ ...o, type: "organization" })),
-    ...DATA.people,
-  ].map((p) => ({ ...p, fields: profileFields(p) }));
+  const profiles = ACTIVE_COLLECTIONS.flatMap(({ data }) => [
+    ...data.organizations.map((profile) => ({
+      ...profile,
+      type: "organization",
+      collection: data.collection,
+      fields: profileFields(profile, data.collection),
+    })),
+    ...data.people.map((profile) => ({
+      ...profile,
+      collection: data.collection,
+      fields: profileFields(profile, data.collection),
+    })),
+  ]).filter((profile) => !PROFILE_ARG || profile.name.toLowerCase() === PROFILE_ARG);
+  if (PROFILE_ARG && profiles.length === 0) throw new Error(`Unknown profile: ${PROFILE_ARG}`);
+  const connections = ACTIVE_COLLECTIONS.flatMap(({ data }) =>
+    data.connections.map((connection) => ({ ...connection, collection: data.collection })),
+  ).filter(
+    (connection) =>
+      !PROFILE_ARG ||
+      connection.source.toLowerCase() === PROFILE_ARG ||
+      connection.target.toLowerCase() === PROFILE_ARG,
+  );
 
   if (DOCS) return writeDocs();
 
   process.loadEnvFile(process.env.ENV_FILE || ".env.local");
   const { connectPg } = await import("./lib/bulk.mjs");
-  const { upsertEdges, upsertEntities } = await import("./lib/entities.mjs");
+  const { addIdentifiers, describeConflict, upsertEdges, upsertEntities } = await import("./lib/entities.mjs");
   const pg = await connectPg();
   try {
-    const { rows: existing } = await pg.query("select id, name, description, biography, highlights, metadata from entities");
+    const { rows: existing } = await pg.query(
+      "select id, name, description, biography, image_url, website_url, highlights, metadata from entities",
+    );
     const byLowerName = new Map(existing.map((e) => [e.name.toLowerCase(), e]));
     const idByLowerName = new Map(existing.map((e) => [e.name.toLowerCase(), e.id]));
     const stats = { created: 0, updated: 0, edges: 0, skipped: [] };
@@ -134,7 +188,17 @@ async function main() {
         const id = randomUUID();
         if (!DRY_RUN) {
           await upsertEntities(pg, [
-            { id, type: profile.type, name: profile.name, description, biography, highlights, metadata: JSON.stringify(metadata) },
+            {
+              id,
+              type: profile.type,
+              name: profile.name,
+              description,
+              biography,
+              image_url: profile.fields.image_url,
+              website_url: profile.fields.website_url,
+              highlights,
+              metadata: JSON.stringify(metadata),
+            },
           ]);
         }
         idByLowerName.set(profile.name.toLowerCase(), id);
@@ -145,15 +209,21 @@ async function main() {
       let mergedMeta = {};
       try {
         mergedMeta = JSON.parse(current.metadata || "{}");
-      } catch {}
+      } catch (error) {
+        console.warn(
+          `Ignoring malformed metadata for ${current.name}: ${error instanceof Error ? error.message : String(error)}`,
+        );
+      }
       const pick = (field, value) => (FORCE || !current[field] ? value : current[field]);
       if (!DRY_RUN) {
         await pg.query(
-          "update entities set description = $2, biography = $3, highlights = $4, metadata = $5, updated_at = now() where id = $1",
+          "update entities set description = $2, biography = $3, image_url = $4, website_url = $5, highlights = $6, metadata = $7, updated_at = now() where id = $1",
           [
             current.id,
             pick("description", description),
             pick("biography", biography),
+            pick("image_url", profile.fields.image_url),
+            pick("website_url", profile.fields.website_url),
             pick("highlights", highlights),
             JSON.stringify({ ...mergedMeta, ...metadata }),
           ],
@@ -162,7 +232,19 @@ async function main() {
       stats.updated++;
     }
 
-    for (const c of DATA.connections) {
+    const identifierRows = profiles.flatMap((profile) => {
+      const entityId = idByLowerName.get(profile.name.toLowerCase());
+      if (!entityId || !profile.identifiers) return [];
+      return Object.entries(profile.identifiers).flatMap(([scheme, value]) =>
+        (Array.isArray(value) ? value : [value]).map((item) => ({ entityId, scheme, value: item })),
+      );
+    });
+    if (!DRY_RUN && identifierRows.length) {
+      const conflicts = await addIdentifiers(pg, identifierRows);
+      for (const conflict of conflicts) console.warn(`Identifier conflict: ${describeConflict(conflict)}`);
+    }
+
+    for (const c of connections) {
       const sourceId = idByLowerName.get(c.source.toLowerCase());
       const targetId = idByLowerName.get(c.target.toLowerCase());
       if (!sourceId || !targetId) {
@@ -175,7 +257,7 @@ async function main() {
         pg,
         [
           {
-            source_key: `${DATA.collection}:${sourceId}:${c.relType}:${targetId}`,
+            source_key: `${c.collection}:${sourceId}:${c.relType}:${targetId}`,
             source_entity_id: sourceId,
             target_entity_id: targetId,
             label: c.relType === "former-role" ? "formerly worked for" : c.relType.replaceAll("-", " "),

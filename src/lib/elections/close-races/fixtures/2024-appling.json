@@ -1,0 +1,290 @@
+{
+ "jurisdiction": {
+  "shortName": "appling-county-ga",
+  "name": [
+   {
+    "languageId": "en",
+    "text": "Appling County"
+   }
+  ],
+  "childLocalities": []
+ },
+ "election": {
+  "id": "01000000-d884-2e72-cd46-08dcda4b865f",
+  "jurisdictionId": "d58e790a-a271-4225-8cd6-a1ed0aa829b1",
+  "name": [
+   {
+    "languageId": "en",
+    "text": "November General Election"
+   }
+  ],
+  "electionDate": "2024-11-05",
+  "isOfficialResults": true,
+  "isPrimary": false,
+  "asOf": "2025-01-02T19:02:40.8660003Z",
+  "lastUpdated": "2024-11-12T20:35:36.6851691Z"
+ },
+ "localityElections": [],
+ "ballotItems": [
+  {
+   "id": "01000000-d884-2e72-ab5a-08dcda4b86b0",
+   "parentId": "01000000-d884-2e72-6367-08dcda4b86b5",
+   "name": [
+    {
+     "languageId": "en",
+     "text": "President of the US"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 1"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": null,
+   "reportingStatus": {
+    "reportingUnits": 9,
+    "totalUnits": 9,
+    "asOf": "2025-01-02T19:02:40.8660003Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 8334,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-d884-2e72-c03a-08dcda4b86b0",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Donald J. Trump (Rep)"
+       }
+      ],
+      "voteCount": 6761,
+      "party": {
+       "abbreviation": "Rep"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-d884-2e72-295b-08dcda4b86b1",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Kamala D. Harris (Dem)"
+       }
+      ],
+      "voteCount": 1560,
+      "party": {
+       "abbreviation": "Dem"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-d884-2e72-2a2f-08dcda4b86b1",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Chase Oliver (Lib)"
+       }
+      ],
+      "voteCount": 8,
+      "party": {
+       "abbreviation": "Lib"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-d884-2e72-2a5d-08dcda4b86b1",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Jill Stein (Grn)"
+       }
+      ],
+      "voteCount": 5,
+      "party": {
+       "abbreviation": "Grn"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     }
+    ]
+   }
+  },
+  {
+   "id": "01000000-d884-2e72-3521-08dcda4b86e0",
+   "parentId": null,
+   "name": [
+    {
+     "languageId": "en",
+     "text": "County Commissioner - District 2"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 1"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": null,
+   "reportingStatus": {
+    "reportingUnits": 1,
+    "totalUnits": 1,
+    "asOf": "2025-01-02T19:02:40.8660003Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 1069,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-d884-2e72-3542-08dcda4b86e0",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Jakharis Jones (Dem)"
+       }
+      ],
+      "voteCount": 1069,
+      "party": {
+       "abbreviation": "Dem"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     }
+    ]
+   }
+  },
+  {
+   "id": "01000000-d884-2e72-340d-08dcda4b86e0",
+   "parentId": null,
+   "name": [
+    {
+     "languageId": "en",
+     "text": "Councilmember - Graham"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 1"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": null,
+   "reportingStatus": {
+    "reportingUnits": 1,
+    "totalUnits": 1,
+    "asOf": "2025-01-02T19:02:40.8660003Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 97,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-d884-2e72-346a-08dcda4b86e0",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Ralph Crosby"
+       }
+      ],
+      "voteCount": 62,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-d884-2e72-34d1-08dcda4b86e0",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "James Hill"
+       }
+      ],
+      "voteCount": 35,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     }
+    ]
+   }
+  },
+  {
+   "id": "01000000-d884-2e72-ea1c-08dcda4b86de",
+   "parentId": null,
+   "name": [
+    {
+     "languageId": "en",
+     "text": "Appling Ad Valorem Tax"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 1"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": null,
+   "reportingStatus": {
+    "reportingUnits": 9,
+    "totalUnits": 9,
+    "asOf": "2025-01-02T19:02:40.8660003Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 7631,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-d884-2e72-ea7f-08dcda4b86de",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Yes"
+       }
+      ],
+      "voteCount": 4828,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-d884-2e72-eb17-08dcda4b86de",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "No"
+       }
+      ],
+      "voteCount": 2803,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     }
+    ]
+   }
+  }
+ ]
+}

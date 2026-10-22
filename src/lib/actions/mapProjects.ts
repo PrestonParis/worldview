@@ -1,11 +1,16 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { mapProjectPatchSchema, mapProjectSchema, type MapProjectInput, type MapProject } from "../validation/mapProject";
+import {
+  mapProjectPatchSchema,
+  mapProjectSchema,
+  type MapProjectInput,
+  type MapProject,
+} from "../validation/mapProject";
 import * as mapProjectsDb from "../db/mapProjects";
 import { getCurrentUser } from "../auth/session";
 import { isOwner } from "../auth/guard";
-import type { ActionResult } from "./entities";
+import { actionFailure, validationFailure, type ActionResult } from "./result";
 
 // Every action re-derives the owner from the authenticated session server
 // side rather than trusting a client-supplied id — the client can't spoof
@@ -23,25 +28,23 @@ export async function listMapProjectsAction(): Promise<ActionResult<MapProject[]
     const projects = await mapProjectsDb.listMapProjects(userId);
     return { ok: true, data: projects };
   } catch (err) {
-    return { ok: false, error: (err as Error).message };
+    return actionFailure("map-projects.list", err, "Graphics could not be loaded. Please try again.");
   }
 }
 
-export async function createMapProjectAction(
-  input: MapProjectInput,
-): Promise<ActionResult<MapProject>> {
+export async function createMapProjectAction(input: MapProjectInput): Promise<ActionResult<MapProject>> {
   const userId = await requireUserId();
   if (!userId) return { ok: false, error: "Not signed in." };
   const parsed = mapProjectSchema.safeParse(input);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+    return validationFailure(parsed.error);
   }
   try {
     const project = await mapProjectsDb.createMapProject(userId, parsed.data);
     revalidatePath("/geography");
     return { ok: true, data: project };
   } catch (err) {
-    return { ok: false, error: (err as Error).message };
+    return actionFailure("map-projects.create", err);
   }
 }
 
@@ -53,7 +56,7 @@ export async function updateMapProjectAction(
   if (!userId) return { ok: false, error: "Not signed in." };
   const parsed = mapProjectPatchSchema.safeParse(patch);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+    return validationFailure(parsed.error);
   }
   try {
     // No revalidatePath: the studio is client state, and this runs on every autosave.
@@ -61,7 +64,7 @@ export async function updateMapProjectAction(
     if (!project) return { ok: false, error: "Graphic not found." };
     return { ok: true, data: project };
   } catch (err) {
-    return { ok: false, error: (err as Error).message };
+    return actionFailure("map-projects.update", err);
   }
 }
 
@@ -73,7 +76,7 @@ export async function deleteMapProjectAction(id: string): Promise<ActionResult<n
     revalidatePath("/geography");
     return { ok: true, data: null };
   } catch (err) {
-    return { ok: false, error: (err as Error).message };
+    return actionFailure("map-projects.delete", err);
   }
 }
 
@@ -88,6 +91,6 @@ export async function setMapProjectPublishedAction(
     if (!project) return { ok: false, error: "Graphic not found." };
     return { ok: true, data: project };
   } catch (err) {
-    return { ok: false, error: (err as Error).message };
+    return actionFailure("map-projects.publish", err);
   }
 }

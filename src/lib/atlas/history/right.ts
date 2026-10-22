@@ -1,13 +1,13 @@
-import { h, type TraditionHistory } from "./types";
+import { h, type TraditionCore } from "./types";
 
 // Conservative, nationalist, reactionary, and far-right traditions.
 
-export const RIGHT: Record<string, TraditionHistory> = {
+export const RIGHT: Record<string, TraditionCore> = {
   "mainstream-conservatism": h({
     when: "1955–1964",
     where: "The United States",
     founders: ["William F. Buckley Jr.", "Frank Meyer", "Russell Kirk", "Barry Goldwater"],
-    figures: ["William F. Buckley Jr.", "Frank Meyer", "James Burnham", "Whittaker Chambers", "M. Stanton Evans"],
+    figures: ["William F. Buckley Jr.", "Frank Meyer", "James Burnham"],
     texts: [
       ["God and Man at Yale", "William F. Buckley Jr.", "1951"],
       ["The Sharon Statement", "Young Americans for Freedom", "1960"],
@@ -32,7 +32,7 @@ export const RIGHT: Record<string, TraditionHistory> = {
     when: "19th century",
     where: "Britain and the United States",
     founders: ["William Gladstone", "Grover Cleveland"],
-    figures: ["James Buchanan (economist)", "Gordon Tullock", "Richard Wagner", "Grover Norquist", "Pete Peterson"],
+    figures: ["James Buchanan (economist)", "Gordon Tullock", "Grover Norquist"],
     texts: [
       ["The Calculus of Consent", "James Buchanan and Gordon Tullock", "1962"],
       ["Democracy in Deficit", "James Buchanan and Richard Wagner", "1977"],
@@ -56,7 +56,7 @@ export const RIGHT: Record<string, TraditionHistory> = {
     when: "1970s",
     where: "The United States",
     founders: ["Phyllis Schlafly", "Paul Weyrich", "James Dobson"],
-    figures: ["Phyllis Schlafly", "Paul Weyrich", "James Dobson", "Robert P. George", "Ryan T. Anderson"],
+    figures: ["Phyllis Schlafly", "Paul Weyrich", "Robert P. George"],
     texts: [
       ["A Choice Not an Echo", "Phyllis Schlafly", "1964"],
       ["The Power of the Positive Woman", "Phyllis Schlafly", "1977"],
@@ -81,7 +81,7 @@ export const RIGHT: Record<string, TraditionHistory> = {
     when: "1976–1980",
     where: "The United States",
     founders: ["Jerry Falwell", "Paul Weyrich", "Pat Robertson", "Francis Schaeffer"],
-    figures: ["Francis Schaeffer", "Jerry Falwell", "Pat Robertson", "Tim LaHaye", "Ralph Reed", "James Dobson"],
+    figures: ["Francis Schaeffer", "Jerry Falwell", "Pat Robertson"],
     texts: [
       ["How Should We Then Live?", "Francis Schaeffer", "1976"],
       ["Listen, America!", "Jerry Falwell", "1980"],
@@ -105,7 +105,7 @@ export const RIGHT: Record<string, TraditionHistory> = {
     when: "1990s",
     where: "The United States",
     founders: ["Marvin Olasky", "Myron Magnet", "George W. Bush"],
-    figures: ["Marvin Olasky", "Myron Magnet", "John DiIulio", "Michael Gerson"],
+    figures: ["Marvin Olasky", "Myron Magnet", "John DiIulio"],
     texts: [
       ["The Tragedy of American Compassion", "Marvin Olasky", "1992"],
       ["The Dream and the Nightmare", "Myron Magnet", "1993"],
@@ -127,7 +127,7 @@ export const RIGHT: Record<string, TraditionHistory> = {
     when: "Late 1960s–1970s",
     where: "New York",
     founders: ["Irving Kristol", "Norman Podhoretz", "Nathan Glazer"],
-    figures: ["Irving Kristol", "Norman Podhoretz", "Jeane Kirkpatrick", "Paul Wolfowitz", "William Kristol", "Robert Kagan"],
+    figures: ["Irving Kristol", "Norman Podhoretz", "Jeane Kirkpatrick"],
     texts: [
       ["\"Dictatorships and Double Standards\"", "Jeane Kirkpatrick", "1979"],
       ["Reflections of a Neoconservative", "Irving Kristol", "1983"],
@@ -151,7 +151,7 @@ export const RIGHT: Record<string, TraditionHistory> = {
     when: "1980s",
     where: "The United States",
     founders: ["Edwin Meese", "Robert Bork", "Antonin Scalia", "Federalist Society"],
-    figures: ["Antonin Scalia", "Clarence Thomas", "Robert Bork", "Edwin Meese", "Randy Barnett", "Steven Calabresi"],
+    figures: ["Antonin Scalia", "Robert Bork", "Edwin Meese"],
     texts: [
       ["The Federalist", "Alexander Hamilton, James Madison, and John Jay", "1788", "https://www.gutenberg.org/ebooks/1404"],
       ["The Tempting of America", "Robert Bork", "1990"],
@@ -175,7 +175,7 @@ export const RIGHT: Record<string, TraditionHistory> = {
     when: "1790; American revival in the 1950s",
     where: "Britain, then the United States",
     founders: ["Edmund Burke", "Russell Kirk"],
-    figures: ["Edmund Burke", "Russell Kirk", "Richard Weaver", "Robert Nisbet", "T. S. Eliot", "Roger Scruton"],
+    figures: ["Edmund Burke", "Russell Kirk", "Richard Weaver"],
     texts: [
       ["Reflections on the Revolution in France", "Edmund Burke", "1790", "https://www.gutenberg.org/ebooks/15679"],
       ["I'll Take My Stand", "Twelve Southerners", "1930"],
@@ -200,7 +200,7 @@ export const RIGHT: Record<string, TraditionHistory> = {
     when: "1980s",
     where: "The United States",
     founders: ["Paul Gottfried", "Thomas Fleming", "Samuel Francis", "M. E. Bradford"],
-    figures: ["Pat Buchanan", "Samuel Francis", "Paul Gottfried", "Thomas Fleming", "Joseph Sobran"],
+    figures: ["Pat Buchanan", "Samuel Francis", "Paul Gottfried"],
     texts: [
       ["Beautiful Losers", "Samuel Francis", "1993"],
       ["The Death of the West", "Pat Buchanan", "2002"],
@@ -224,7 +224,7 @@ export const RIGHT: Record<string, TraditionHistory> = {
     when: "2010s; named in 2019",
     where: "Hungary, the United States, and Britain",
     founders: ["Yoram Hazony", "Christopher DeMuth", "Edmund Burke Foundation"],
-    figures: ["Yoram Hazony", "Christopher DeMuth", "R. R. Reno", "Michael Anton", "Rich Lowry"],
+    figures: ["Yoram Hazony", "Christopher DeMuth", "R. R. Reno"],
     texts: [
       ["The Virtue of Nationalism", "Yoram Hazony", "2018"],
       ["Conservatism: A Rediscovery", "Yoram Hazony", "2022"],
@@ -247,7 +247,7 @@ export const RIGHT: Record<string, TraditionHistory> = {
     when: "2010s",
     where: "The United States and Britain",
     founders: ["Patrick Deneen", "Adrian Vermeule", "John Milbank", "Adrian Pabst"],
-    figures: ["Patrick Deneen", "Adrian Vermeule", "Sohrab Ahmari", "Gladden Pappin", "John Milbank"],
+    figures: ["Patrick Deneen", "Adrian Vermeule", "John Milbank"],
     texts: [
       ["The Politics of Virtue", "John Milbank and Adrian Pabst", "2016"],
       ["Why Liberalism Failed", "Patrick Deneen", "2018"],
@@ -271,7 +271,7 @@ export const RIGHT: Record<string, TraditionHistory> = {
     when: "1891–1926",
     where: "England",
     founders: ["Pope Leo XIII", "G. K. Chesterton", "Hilaire Belloc", "Vincent McNabb"],
-    figures: ["G. K. Chesterton", "Hilaire Belloc", "Vincent McNabb", "Arthur Penty", "E. F. Schumacher"],
+    figures: ["G. K. Chesterton", "Hilaire Belloc", "Arthur Penty"],
     texts: [
       ["Rerum Novarum", "Pope Leo XIII", "1891", "https://www.vatican.va/content/leo-xiii/en/encyclicals/documents/hf_l-xiii_enc_15051891_rerum-novarum.html"],
       ["What's Wrong with the World", "G. K. Chesterton", "1910", "https://www.gutenberg.org/ebooks/1717"],
@@ -296,7 +296,7 @@ export const RIGHT: Record<string, TraditionHistory> = {
     when: "1968; revived in the 1990s and 2010s",
     where: "The United States and Europe",
     founders: ["George Wallace", "Pat Buchanan", "Jean-Marie Le Pen", "Donald Trump"],
-    figures: ["Samuel Francis", "Pat Buchanan", "Steve Bannon", "Michael Anton"],
+    figures: ["Samuel Francis", "Pat Buchanan", "Steve Bannon"],
     texts: [
       ["The Death of the West", "Pat Buchanan", "2002"],
       ["Inaugural address (\"American carnage\")", "Donald Trump", "2017"],
@@ -321,7 +321,7 @@ export const RIGHT: Record<string, TraditionHistory> = {
     when: "Colonial roots; modern movement from the 1980s",
     where: "The United States",
     founders: ["David Barton", "R. J. Rushdoony (influence)", "Stephen Wolfe"],
-    figures: ["David Barton", "Stephen Wolfe", "Doug Wilson", "Lance Wallnau", "Andrew Isker"],
+    figures: ["Stephen Wolfe", "Doug Wilson", "David Barton"],
     texts: [
       ["\"A Model of Christian Charity\"", "John Winthrop", "1630"],
       ["The Myth of Separation", "David Barton", "1989"],
@@ -344,7 +344,7 @@ export const RIGHT: Record<string, TraditionHistory> = {
     when: "19th century; revived in the 2010s",
     where: "Catholic Europe, then the United States",
     founders: ["Pope Pius IX", "Pope Leo XIII", "Thomas Pink", "Edmund Waldstein"],
-    figures: ["Edmund Waldstein", "Thomas Pink", "Adrian Vermeule", "Thomas Crean", "Alan Fimister", "Gladden Pappin"],
+    figures: ["Edmund Waldstein", "Thomas Pink", "Adrian Vermeule"],
     texts: [
       ["Syllabus of Errors", "Pope Pius IX", "1864"],
       ["Immortale Dei", "Pope Leo XIII", "1885"],
@@ -368,7 +368,7 @@ export const RIGHT: Record<string, TraditionHistory> = {
     when: "2007–2013",
     where: "The United States, online",
     founders: ["Curtis Yarvin (Mencius Moldbug)", "Nick Land"],
-    figures: ["Curtis Yarvin", "Nick Land", "Michael Anissimov", "Peter Thiel (adjacent)"],
+    figures: ["Curtis Yarvin", "Nick Land", "Michael Anissimov"],
     texts: [
       ["\"A Formalist Manifesto\"", "Curtis Yarvin", "2007"],
       ["\"An Open Letter to Open-Minded Progressives\"", "Curtis Yarvin", "2008"],
@@ -389,7 +389,7 @@ export const RIGHT: Record<string, TraditionHistory> = {
     when: "16th–17th centuries (early modern absolutism)",
     where: "France and England",
     founders: ["Jean Bodin", "James VI and I", "Robert Filmer", "Jacques-Bénigne Bossuet"],
-    figures: ["Jean Bodin", "Thomas Hobbes", "Robert Filmer", "Jacques-Bénigne Bossuet"],
+    figures: ["Jean Bodin", "Robert Filmer", "Jacques-Bénigne Bossuet"],
     texts: [
       ["Six Books of the Commonwealth", "Jean Bodin", "1576"],
       ["The True Law of Free Monarchies", "James VI and I", "1598"],
@@ -414,7 +414,7 @@ export const RIGHT: Record<string, TraditionHistory> = {
     when: "1790s–1820s",
     where: "France and Savoy",
     founders: ["Joseph de Maistre", "Louis de Bonald"],
-    figures: ["Joseph de Maistre", "Louis de Bonald", "Juan Donoso Cortés", "Charles Maurras", "Nicolás Gómez Dávila"],
+    figures: ["Joseph de Maistre", "Louis de Bonald", "Juan Donoso Cortés"],
     texts: [
       ["Considerations on France", "Joseph de Maistre", "1797"],
       ["St Petersburg Dialogues", "Joseph de Maistre", "1821"],
@@ -439,7 +439,7 @@ export const RIGHT: Record<string, TraditionHistory> = {
     when: "Late 18th–early 19th century",
     where: "The German lands",
     founders: ["Johann Gottfried Herder", "Johann Gottlieb Fichte", "Ernst Moritz Arndt"],
-    figures: ["Johann Gottfried Herder", "Johann Gottlieb Fichte", "Ernst Moritz Arndt", "Maurice Barrès", "Alain de Benoist"],
+    figures: ["Johann Gottfried Herder", "Johann Gottlieb Fichte", "Ernst Moritz Arndt"],
     texts: [
       ["Ideas on the Philosophy of the History of Mankind", "Johann Gottfried Herder", "1784–1791"],
       ["Addresses to the German Nation", "Johann Gottlieb Fichte", "1808"],
@@ -462,7 +462,7 @@ export const RIGHT: Record<string, TraditionHistory> = {
     when: "1919",
     where: "Milan, Italy",
     founders: ["Benito Mussolini", "Giovanni Gentile"],
-    figures: ["Benito Mussolini", "Giovanni Gentile", "Gabriele D'Annunzio", "José Antonio Primo de Rivera", "Oswald Mosley"],
+    figures: ["Benito Mussolini", "Giovanni Gentile", "Gabriele D'Annunzio"],
     texts: [
       ["Manifesto of the Fasci of Combat", "Alceste De Ambris and Filippo Marinetti", "1919"],
       ["Charter of Carnaro", "Alceste De Ambris and Gabriele D'Annunzio", "1920"],
@@ -488,7 +488,7 @@ export const RIGHT: Record<string, TraditionHistory> = {
     when: "1927–1941",
     where: "Romania, Austria, Slovakia, and Croatia",
     founders: ["Corneliu Codreanu", "Engelbert Dollfuss", "Jozef Tiso", "Ante Pavelić"],
-    figures: ["Corneliu Codreanu", "Nae Ionescu", "Othmar Spann", "Jozef Tiso", "Ante Pavelić"],
+    figures: ["Corneliu Codreanu", "Nae Ionescu", "Othmar Spann"],
     texts: [
       ["For My Legionaries", "Corneliu Codreanu", "1936"],
       ["May Constitution of the Federal State of Austria", "Dollfuss government", "1934"],
@@ -511,7 +511,7 @@ export const RIGHT: Record<string, TraditionHistory> = {
     when: "1919–1920s; revived in 1993",
     where: "Germany, then Russia",
     founders: ["Ernst Niekisch", "Nikolay Ustryalov", "Eduard Limonov", "Aleksandr Dugin"],
-    figures: ["Ernst Niekisch", "Nikolay Ustryalov", "Eduard Limonov", "Aleksandr Dugin"],
+    figures: ["Ernst Niekisch", "Nikolay Ustryalov", "Eduard Limonov"],
     texts: [
       ["In the Struggle for Russia", "Nikolay Ustryalov", "1920"],
       ["Widerstand (journal)", "Ernst Niekisch", "1926–1934"],
@@ -532,7 +532,7 @@ export const RIGHT: Record<string, TraditionHistory> = {
     when: "1921; revived in the 1990s",
     where: "Russian émigré circles in Sofia and Prague, then Russia",
     founders: ["Nikolai Trubetzkoy", "Pyotr Savitsky", "Aleksandr Dugin"],
-    figures: ["Nikolai Trubetzkoy", "Pyotr Savitsky", "Lev Gumilev", "Aleksandr Dugin"],
+    figures: ["Nikolai Trubetzkoy", "Lev Gumilev", "Aleksandr Dugin"],
     texts: [
       ["Europe and Mankind", "Nikolai Trubetzkoy", "1920"],
       ["Exodus to the East", "Trubetzkoy, Savitsky, et al.", "1921"],
@@ -577,7 +577,7 @@ export const RIGHT: Record<string, TraditionHistory> = {
     when: "1925–1930",
     where: "Germany",
     founders: ["Gregor Strasser", "Otto Strasser"],
-    figures: ["Gregor Strasser", "Otto Strasser", "Arthur Moeller van den Bruck", "Troy Southgate"],
+    figures: ["Gregor Strasser", "Otto Strasser", "Arthur Moeller van den Bruck"],
     texts: [
       ["\"The Socialists Leave the NSDAP\"", "Otto Strasser", "1930"],
       ["Germany Tomorrow", "Otto Strasser", "1940"],
@@ -598,7 +598,7 @@ export const RIGHT: Record<string, TraditionHistory> = {
     when: "1969; mass movement in 1994",
     where: "The rural American West and Midwest",
     founders: ["William Potter Gale", "John Trochmann", "Norman Olson"],
-    figures: ["William Potter Gale", "John Trochmann", "Richard Mack", "Stewart Rhodes", "Cliven Bundy", "Ammon Bundy"],
+    figures: ["William Potter Gale", "Richard Mack", "Stewart Rhodes"],
     texts: [
       ["The Federalist No. 46", "James Madison", "1788"],
       ["The County Sheriff: America's Last Hope", "Richard Mack", "2009"],
@@ -645,7 +645,7 @@ export const RIGHT: Record<string, TraditionHistory> = {
     when: "2019–2020",
     where: "The United States, online",
     founders: ["Nick Fuentes"],
-    figures: ["Nick Fuentes", "E. Michael Jones", "Patrick Casey"],
+    figures: ["Nick Fuentes", "E. Michael Jones", "Joel Webbon"],
     texts: [
       ["Libido Dominandi", "E. Michael Jones", "2000"],
       ["The Jewish Revolutionary Spirit and Its Impact on World History", "E. Michael Jones", "2008"],

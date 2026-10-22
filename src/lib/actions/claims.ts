@@ -4,35 +4,30 @@ import { requireContributor } from "../auth/guard";
 import { revalidatePath } from "next/cache";
 import { claimSchema, type ClaimInput } from "../validation/claim";
 import * as claimsDb from "../db/claims";
-import type { ActionResult } from "./entities";
+import { actionFailure, validationFailure, type ActionResult } from "./result";
 
-export async function createClaimAction(
-  input: ClaimInput,
-): Promise<ActionResult<{ id: string }>> {
+export async function createClaimAction(input: ClaimInput): Promise<ActionResult<{ id: string }>> {
   const denied = await requireContributor();
   if (denied) return denied;
   const parsed = claimSchema.safeParse(input);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+    return validationFailure(parsed.error);
   }
   try {
     const claim = await claimsDb.createClaim(parsed.data);
     revalidatePath("/data");
     return { ok: true, data: { id: claim.id } };
   } catch (err) {
-    return { ok: false, error: (err as Error).message };
+    return actionFailure("claims.create", err);
   }
 }
 
-export async function updateClaimAction(
-  id: string,
-  input: ClaimInput,
-): Promise<ActionResult<{ id: string }>> {
+export async function updateClaimAction(id: string, input: ClaimInput): Promise<ActionResult<{ id: string }>> {
   const denied = await requireContributor();
   if (denied) return denied;
   const parsed = claimSchema.safeParse(input);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+    return validationFailure(parsed.error);
   }
   try {
     const claim = await claimsDb.updateClaim(id, parsed.data);
@@ -40,13 +35,11 @@ export async function updateClaimAction(
     revalidatePath("/data");
     return { ok: true, data: { id: claim.id } };
   } catch (err) {
-    return { ok: false, error: (err as Error).message };
+    return actionFailure("claims.update", err);
   }
 }
 
-export async function deleteClaimAction(
-  id: string,
-): Promise<ActionResult<null>> {
+export async function deleteClaimAction(id: string): Promise<ActionResult<null>> {
   const denied = await requireContributor();
   if (denied) return denied;
   try {
@@ -54,6 +47,6 @@ export async function deleteClaimAction(
     revalidatePath("/data");
     return { ok: true, data: null };
   } catch (err) {
-    return { ok: false, error: (err as Error).message };
+    return actionFailure("claims.delete", err);
   }
 }

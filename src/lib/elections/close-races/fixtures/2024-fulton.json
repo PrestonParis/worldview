@@ -1,0 +1,322 @@
+{
+ "jurisdiction": {
+  "shortName": "fulton-county-ga",
+  "name": [
+   {
+    "languageId": "en",
+    "text": "Fulton County"
+   }
+  ],
+  "childLocalities": []
+ },
+ "election": {
+  "id": "01000000-d884-2e72-1c03-08dcda4ba6ad",
+  "jurisdictionId": "ea1814cb-4423-439e-b273-131e9a8356a6",
+  "name": [
+   {
+    "languageId": "en",
+    "text": "November General Election"
+   }
+  ],
+  "electionDate": "2024-11-05",
+  "isOfficialResults": true,
+  "isPrimary": false,
+  "asOf": "2025-01-02T19:04:20.416202Z",
+  "lastUpdated": "2024-11-13T14:01:20.0063939Z"
+ },
+ "localityElections": [],
+ "ballotItems": [
+  {
+   "id": "01000000-d884-2e72-49e4-08dcda4bb6af",
+   "parentId": "01000000-d884-2e72-6367-08dcda4b86b5",
+   "name": [
+    {
+     "languageId": "en",
+     "text": "President of the US"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 1"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": null,
+   "reportingStatus": {
+    "reportingUnits": 466,
+    "totalUnits": 466,
+    "asOf": "2025-01-02T19:04:20.416202Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 535238,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-d884-2e72-4a9f-08dcda4bb6af",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Donald J. Trump (Rep)"
+       }
+      ],
+      "voteCount": 144655,
+      "party": {
+       "abbreviation": "Rep"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-d884-2e72-4b3c-08dcda4bb6af",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Kamala D. Harris (Dem)"
+       }
+      ],
+      "voteCount": 384752,
+      "party": {
+       "abbreviation": "Dem"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-d884-2e72-4b5c-08dcda4bb6af",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Chase Oliver (Lib)"
+       }
+      ],
+      "voteCount": 2507,
+      "party": {
+       "abbreviation": "Lib"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-d884-2e72-4b76-08dcda4bb6af",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Jill Stein (Grn)"
+       }
+      ],
+      "voteCount": 3324,
+      "party": {
+       "abbreviation": "Grn"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     }
+    ]
+   }
+  },
+  {
+   "id": "01000000-d884-2e72-7148-08dcda4bb6ca",
+   "parentId": null,
+   "name": [
+    {
+     "languageId": "en",
+     "text": "Sheriff"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 1"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": null,
+   "reportingStatus": {
+    "reportingUnits": 466,
+    "totalUnits": 466,
+    "asOf": "2025-01-02T19:04:20.416202Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 435304,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-d884-2e72-7162-08dcda4bb6ca",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Patrick \"Pat\" Labat (I) (Dem)"
+       }
+      ],
+      "voteCount": 435304,
+      "party": {
+       "abbreviation": "Dem"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     }
+    ]
+   }
+  },
+  {
+   "id": "01000000-d884-2e72-d543-08dcda4bb741",
+   "parentId": null,
+   "name": [
+    {
+     "languageId": "en",
+     "text": "County Commission - District 2"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 1"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": null,
+   "reportingStatus": {
+    "reportingUnits": 73,
+    "totalUnits": 73,
+    "asOf": "2025-01-02T19:04:20.416202Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 94032,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-d884-2e72-d58d-08dcda4bb741",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Bob Ellis (I) (Rep)"
+       }
+      ],
+      "voteCount": 51289,
+      "party": {
+       "abbreviation": "Rep"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-d884-2e72-d5cb-08dcda4bb741",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Megan Harris (Dem)"
+       }
+      ],
+      "voteCount": 42743,
+      "party": {
+       "abbreviation": "Dem"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     }
+    ]
+   }
+  },
+  {
+   "id": "01000000-d884-2e72-f880-08dcda4bb74a",
+   "parentId": null,
+   "name": [
+    {
+     "languageId": "en",
+     "text": "East Point City Council - Ward B At Large (SE)"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 1"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": null,
+   "reportingStatus": {
+    "reportingUnits": 17,
+    "totalUnits": 17,
+    "asOf": "2025-01-02T19:04:20.416202Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 14175,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-d884-2e72-f898-08dcda4bb74a",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Shean Atkins"
+       }
+      ],
+      "voteCount": 4362,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-d884-2e72-f8a9-08dcda4bb74a",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Stanley Elder"
+       }
+      ],
+      "voteCount": 1049,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-d884-2e72-f8b2-08dcda4bb74a",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Marie Terry"
+       }
+      ],
+      "voteCount": 4247,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-d884-2e72-f8ba-08dcda4bb74a",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Jermaine Wright"
+       }
+      ],
+      "voteCount": 4517,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     }
+    ]
+   }
+  }
+ ]
+}

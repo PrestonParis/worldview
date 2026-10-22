@@ -107,10 +107,10 @@ const TOPICS: Record<Topic, { label: string; href: string; blurb: string; terms:
     terms: ["abortion", "abortions", "dobbs", "roe", "roe v wade", "pro-life", "pro-choice", "mifepristone", "abortion pill", "medication abortion", "heartbeat bill", "shield law", "reproductive", "planned parenthood", "guttmacher"],
   },
   health: {
-    label: "Health Care",
-    href: "/health-care",
+    label: "Healthcare",
+    href: "/healthcare",
     blurb: "Insurance, overdoses, and how U.S. health compares",
-    terms: ["health", "health care", "healthcare", "health insurance", "insurance", "uninsured", "obamacare", "aca", "affordable care act", "overdose", "overdoses", "opioid", "opioids", "fentanyl", "drug deaths", "life expectancy", "infant mortality"],
+    terms: ["health", "healthcare", "healthcare", "health insurance", "insurance", "uninsured", "obamacare", "aca", "affordable care act", "overdose", "overdoses", "opioid", "opioids", "fentanyl", "drug deaths", "life expectancy", "infant mortality"],
   },
   energy: {
     label: "Energy & Climate",
@@ -191,10 +191,20 @@ const TOPICS: Record<Topic, { label: string; href: string; blurb: string; terms:
     terms: ["my government", "representative", "representatives", "my rep", "district", "who represents"],
   },
   quiz: {
-    label: "Political Quiz",
-    href: "/quiz",
-    blurb: "Map your views on 18 axes and 28 issues",
-    terms: ["quiz", "political quiz"],
+    label: "Worldview Atlas",
+    href: "/atlas",
+    blurb: "Map your views and explore political, economic, governing, and foreign-policy philosophies",
+    terms: [
+      "quiz",
+      "political quiz",
+      "atlas",
+      "worldview",
+      "ideology",
+      "philosophy",
+      "economic philosophy",
+      "government authority",
+      "foreign policy quiz",
+    ],
   },
   datasets: {
     label: "Datasets",

@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { searchEntities } from "@/lib/db/entities";
-import { listClaims } from "@/lib/db/claims";
-import { listSources } from "@/lib/db/sources";
 import { listDatasets } from "@/lib/db/stats";
+import { publicEntityPath } from "@/lib/people/public";
 import { findTopics, normalizeQuery, searchSite, significantWords } from "@/lib/search/site";
 
 const MAX_PER_GROUP = 6;
@@ -19,35 +18,6 @@ export interface SearchResponse {
   pages: SearchResult[];
   datasets: SearchResult[];
   entities: SearchResult[];
-  claims: SearchResult[];
-  sources: SearchResult[];
-}
-
-/**
- * Lower is better. Ranks a match on where it occurs relative to word
- * boundaries, so "don" surfaces "Donald Trump" (first word starts with
- * the query) ahead of "Brandon Gill" (query only appears mid-word).
- */
-function matchRank(text: string, q: string): number {
-  const lower = text.toLowerCase();
-  const index = lower.indexOf(q);
-  if (index === -1) return Infinity;
-  if (index === 0) return 0;
-  if (lower[index - 1] === " ") return 1;
-  return 2;
-}
-
-function bestRank(q: string, ...fields: (string | undefined)[]): number {
-  return Math.min(...fields.map((f) => matchRank(f ?? "", q)));
-}
-
-function byRank<T>(q: string, items: T[], ...fieldsOf: ((item: T) => string | undefined)[]) {
-  return items
-    .map((item) => ({ item, rank: bestRank(q, ...fieldsOf.map((f) => f(item))) }))
-    .filter(({ rank }) => rank !== Infinity)
-    .sort((a, b) => a.rank - b.rank)
-    .slice(0, MAX_PER_GROUP)
-    .map(({ item }) => item);
 }
 
 export async function GET(request: Request) {
@@ -55,13 +25,11 @@ export async function GET(request: Request) {
   const q = (searchParams.get("q") ?? "").trim().toLowerCase();
 
   if (!q) {
-    return NextResponse.json<SearchResponse>({ pages: [], datasets: [], entities: [], claims: [], sources: [] });
+    return NextResponse.json<SearchResponse>({ pages: [], datasets: [], entities: [] });
   }
 
-  const [entities, claims, sources, datasets] = await Promise.all([
+  const [entities, datasets] = await Promise.all([
     searchEntities(q, MAX_PER_GROUP),
-    listClaims(),
-    listSources(),
     listDatasets().catch(() => []),
   ]);
 
@@ -90,39 +58,13 @@ export async function GET(request: Request) {
     id: e.id,
     label: e.name,
     meta: e.type,
-    href: `/data/entities/${e.id}`,
+    href: publicEntityPath(e),
     type: e.type,
-  }));
-
-  const claimResults: SearchResult[] = byRank(
-    q,
-    claims,
-    (c) => c.quote,
-    (c) => c.topic,
-  ).map((c) => ({
-    id: c.id,
-    label: c.quote,
-    meta: c.topic || new Date(c.date).toLocaleDateString(),
-    href: `/data/claims/${c.id}/edit`,
-  }));
-
-  const sourceResults: SearchResult[] = byRank(
-    q,
-    sources,
-    (s) => s.title,
-    (s) => s.publisher,
-  ).map((s) => ({
-    id: s.id,
-    label: s.title,
-    meta: s.publisher || s.sourceType,
-    href: `/data/sources/${s.id}/edit`,
   }));
 
   return NextResponse.json<SearchResponse>({
     pages: pageResults,
     datasets: datasetResults,
     entities: entityResults,
-    claims: claimResults,
-    sources: sourceResults,
   });
 }

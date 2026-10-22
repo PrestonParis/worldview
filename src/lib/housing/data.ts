@@ -4,8 +4,7 @@
 // from area_stats.
 
 import { getSeriesMany, type Point } from "@/lib/db/stats";
-import { formatPeriod, formatValue } from "@/lib/format";
-import { datasetsFor, extremes, last, rankStates, stateTable, toPoints, yearAgo } from "@/lib/issues/series";
+import { datasetsFor, last, stateTable, toPoints, yearAgo } from "@/lib/issues/series";
 import type { Series } from "@/components/charts/time-series-chart";
 
 const FRED = "fred-housing";
@@ -92,7 +91,7 @@ export async function loadHousing() {
     r.values.value_to_income = v !== null && inc ? v / inc : null;
   }
 
-  // ---- Headline + findings ----
+  // ---- Headline ----
   const price = last(f.median_home_sale_price);
   const rate = last(f.mortgage_rate_30y);
   const burden = last(acs.rent_burdened_share);
@@ -104,29 +103,8 @@ export async function loadHousing() {
     own: { point: own, spark: f.homeownership_rate.slice(-40).map((p) => p.value) },
   };
 
-  const findings: string[] = [];
-  if (price) findings.push(`The median house sold for ${formatValue(price.value, "usd")} in ${formatPeriod(price.period)}.`);
-  const ptiNow = priceToIncome.at(-1);
-  if (ptiNow) {
-    const avg = priceToIncome.reduce((t, p) => t + p.value, 0) / priceToIncome.length;
-    findings.push(`That was ${formatValue(ptiNow.value, "times")} the median household's income in ${ptiNow.period}, against an average of ${formatValue(avg, "times")} since ${priceToIncome[0].period}.`);
-  }
-  const payNow = payments.at(-1);
-  const pay5 = payments.find((p) => p.period === payNow?.period.replace(/^\d{4}/, (y) => String(Number(y) - 5)));
-  if (payNow && rate) {
-    findings.push(
-      `At a ${formatValue(rate.value, "percent")} mortgage rate, monthly principal and interest on that house with 20% down came to ${formatValue(payNow.value, "usd")} in ${formatPeriod(payNow.period)}${pay5 ? `, against ${formatValue(pay5.value, "usd")} five years earlier` : ""}.`,
-    );
-  }
-  if (burden) findings.push(`${formatValue(burden.value, "percent")} of renter households spent 30% or more of their income on rent and utilities in ${burden.period}.`);
-  const { max: ownPeak } = extremes(f.homeownership_rate);
-  if (own && ownPeak) findings.push(`The homeownership rate was ${formatValue(own.value, "percent")} in ${formatPeriod(own.period)}; it peaked at ${formatValue(ownPeak.value, "percent")} in ${formatPeriod(ownPeak.period)}.`);
-  const st = last(f.housing_starts);
-  if (st) findings.push(`Builders started homes at an annual rate of ${formatValue(st.value, "units", { compact: true })} in ${formatPeriod(st.period)}.`);
-
   return {
     headline,
-    findings,
     prices,
     priceGrowth,
     ratio,
@@ -138,8 +116,6 @@ export async function loadHousing() {
     rent,
     ownership,
     states,
-    valueHigh: rankStates(states.rows, "value_to_income"),
-    burdenHigh: rankStates(states.rows, "rent_burdened_share"),
     datasets: await datasetsFor([FRED, ACS, ECON, SOCIAL]),
   };
 }

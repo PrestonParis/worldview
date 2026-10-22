@@ -1,0 +1,91 @@
+{
+ "jurisdiction": {
+  "shortName": "Georgia",
+  "name": [
+   {
+    "languageId": "en",
+    "text": "Georgia"
+   }
+  ],
+  "childLocalities": []
+ },
+ "election": {
+  "id": "01000000-bc80-1501-925b-08dec6632242",
+  "jurisdictionId": "09378a07-e6cf-4f66-be7c-ca4aa534f99a",
+  "name": [
+   {
+    "languageId": "en",
+    "text": "RECOUNT - May 19th, 2026 PSC District 3-REP"
+   }
+  ],
+  "electionDate": "2026-05-19",
+  "isOfficialResults": false,
+  "isPrimary": true,
+  "asOf": "2026-07-01T16:47:20.1410688Z",
+  "lastUpdated": "2026-07-01T15:47:38.1889139Z"
+ },
+ "localityElections": [],
+ "ballotItems": [
+  {
+   "id": "01000000-c857-3a10-d2bf-08dec66323f1",
+   "parentId": null,
+   "name": [
+    {
+     "languageId": "en",
+     "text": "PSC - District 3 - Rep"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 1"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": "REP",
+   "reportingStatus": {
+    "reportingUnits": 159,
+    "totalUnits": 159,
+    "asOf": "2026-07-01T16:47:20.1410688Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 776322,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-c857-3a10-d2e0-08dec66323f1",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Fitz Johnson"
+       }
+      ],
+      "voteCount": 389682,
+      "party": {
+       "abbreviation": "REP"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-c857-3a10-d2f2-08dec66323f1",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Brandon Martin"
+       }
+      ],
+      "voteCount": 386640,
+      "party": {
+       "abbreviation": "REP"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     }
+    ]
+   }
+  }
+ ]
+}

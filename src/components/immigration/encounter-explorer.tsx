@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChartCard } from "@/components/charts/chart-card";
+import { ChartCard, type ChartSource } from "@/components/charts/chart-card";
 import { seriesTable } from "@/components/charts/tables";
 import { TimeSeriesChart, type Marker, type Series } from "@/components/charts/time-series-chart";
 
@@ -32,7 +32,7 @@ export function EncounterExplorer({
   breakdowns: EncounterBreakdown[];
   series: Record<string, Record<string, Series[]>>; // region -> breakdown -> series
   markers: Marker[];
-  source: { label: string; href?: string };
+  source: ChartSource;
 }) {
   const [region, setRegion] = useState(regions[0].key);
   const [split, setSplit] = useState(breakdowns[0].key);

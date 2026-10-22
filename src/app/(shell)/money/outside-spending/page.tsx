@@ -7,6 +7,7 @@ import { Term } from "@/components/money/term";
 import { formatValue } from "@/lib/format";
 import { listMoneyCycles, loadCampaignMoney, resolveCycle } from "@/lib/db/moneyOverview";
 import { MONEY_COLORS } from "@/lib/money/semantic";
+import { publicEntityPath } from "@/lib/people/public";
 
 export const dynamic = "force-dynamic";
 
@@ -96,7 +97,7 @@ export default async function OutsideSpendingPage({ searchParams }: PageProps<"/
                   sub: candidateTag(t),
                   support: t.support,
                   oppose: t.oppose,
-                  href: t.entityId ? `/data/entities/${t.entityId}` : undefined,
+                  href: t.entityId ? publicEntityPath({ id: t.entityId, name: t.name }) : undefined,
                 }))}
               />
             </MoneySection>

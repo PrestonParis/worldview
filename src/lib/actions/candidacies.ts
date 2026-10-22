@@ -4,16 +4,14 @@ import { requireContributor } from "../auth/guard";
 import { revalidatePath } from "next/cache";
 import { candidacySchema, type CandidacyInput } from "../validation/candidacy";
 import * as candidaciesDb from "../db/candidacies";
-import type { ActionResult } from "./entities";
+import { actionFailure, validationFailure, type ActionResult } from "./result";
 
-export async function createCandidacyAction(
-  input: CandidacyInput,
-): Promise<ActionResult<{ id: string }>> {
+export async function createCandidacyAction(input: CandidacyInput): Promise<ActionResult<{ id: string }>> {
   const denied = await requireContributor();
   if (denied) return denied;
   const parsed = candidacySchema.safeParse(input);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+    return validationFailure(parsed.error);
   }
   try {
     const candidacy = await candidaciesDb.createCandidacy(parsed.data);
@@ -21,19 +19,16 @@ export async function createCandidacyAction(
     revalidatePath("/elections");
     return { ok: true, data: { id: candidacy.id } };
   } catch (err) {
-    return { ok: false, error: (err as Error).message };
+    return actionFailure("candidacies.create", err);
   }
 }
 
-export async function updateCandidacyAction(
-  id: string,
-  input: CandidacyInput,
-): Promise<ActionResult<{ id: string }>> {
+export async function updateCandidacyAction(id: string, input: CandidacyInput): Promise<ActionResult<{ id: string }>> {
   const denied = await requireContributor();
   if (denied) return denied;
   const parsed = candidacySchema.safeParse(input);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+    return validationFailure(parsed.error);
   }
   try {
     const candidacy = await candidaciesDb.updateCandidacy(id, parsed.data);
@@ -42,13 +37,11 @@ export async function updateCandidacyAction(
     revalidatePath("/elections");
     return { ok: true, data: { id: candidacy.id } };
   } catch (err) {
-    return { ok: false, error: (err as Error).message };
+    return actionFailure("candidacies.update", err);
   }
 }
 
-export async function deleteCandidacyAction(
-  id: string,
-): Promise<ActionResult<null>> {
+export async function deleteCandidacyAction(id: string): Promise<ActionResult<null>> {
   const denied = await requireContributor();
   if (denied) return denied;
   try {
@@ -57,6 +50,6 @@ export async function deleteCandidacyAction(
     revalidatePath("/elections");
     return { ok: true, data: null };
   } catch (err) {
-    return { ok: false, error: (err as Error).message };
+    return actionFailure("candidacies.delete", err);
   }
 }
