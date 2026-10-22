@@ -1,4 +1,4 @@
--- Structured records behind people profiles (docs/people-profile-architecture.md).
+-- Structured records behind people profiles (docs/people/profile-model.md).
 -- A profile's prose lives in entity_profiles; everything a paragraph asserts
 -- that can be reused — facts, dated events, relationships, statements,
 -- contributions — is its own row, and every row points at the sources that

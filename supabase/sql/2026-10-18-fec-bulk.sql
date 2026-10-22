@@ -1,4 +1,4 @@
--- FEC bulk data for Subpoena (docs/subpoena-plan.md), filled by
+-- FEC bulk data for Subpoena (docs/data-sources.md), filled by
 -- scripts/import-fec-bulk.mjs from https://www.fec.gov/data/browse-data/?tab=bulk-data.
 --
 -- Everything here is keyed by FEC's own ids, not entity ids. Entities attach

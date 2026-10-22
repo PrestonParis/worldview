@@ -1,4 +1,4 @@
--- Registered accounts (src/lib/auth, docs/auth-plan.md).
+-- Registered accounts (src/lib/auth, docs/auth.md).
 -- Idempotent and additive: apply with `node scripts/apply-sql.mjs supabase/sql/2026-10-02-profiles.sql`.
 -- Mirrors profiles in src/lib/db/schema.ts.
 

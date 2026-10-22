@@ -1,7 +1,7 @@
 // Which tabs a profile shows, decided by the records it has rather than by a
 // single entity type: a donor gets Money, anyone with sourced quotations gets
 // Quotes. Tabs without data never render as empty shells. See
-// docs/people-profile-architecture.md, "Profile modules".
+// docs/people/profile-model.md, "Tabs and availability".
 
 import { highlightEvents, summarizeGiving, type EventRecord } from "./profile-model";
 import { parseHighlights } from "../validation/entity";

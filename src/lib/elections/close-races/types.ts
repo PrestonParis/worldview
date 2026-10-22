@@ -1,4 +1,4 @@
-// Shared vocabulary for the close-races tracker (docs/writ-close-races.md).
+// Shared vocabulary for the close-races tracker (docs/elections/ga-close-races.md).
 // Everything in this folder is plain TypeScript with no path aliases and
 // explicit `.ts` imports, so both the app and the Node ingester
 // (scripts/sync-ga-results.mjs) import it directly.

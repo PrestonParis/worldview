@@ -1,4 +1,4 @@
--- Account roles (src/lib/auth/guard.ts, docs/auth-plan.md).
+-- Account roles (src/lib/auth/guard.ts, docs/auth.md).
 -- Registration is open, so a profile no longer implies write access to shared
 -- data: 'editor' can change shared records, 'member' only owns its own map
 -- projects and quizzes. Mirrors profiles.role in src/lib/db/schema.ts.

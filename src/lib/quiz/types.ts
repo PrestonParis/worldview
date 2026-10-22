@@ -1,5 +1,5 @@
 // Political quiz — question bank and ideology catalog types. Pure data; the
-// engine (later phase) consumes these. See docs/quiz-plan.md.
+// engine (later phase) consumes these. See docs/quiz.md.
 
 export const axisIds = ["federalism", "executive", "liberty", "voting", "democracy", "violence", "ownership", "regulation", "redistribution", "trade", "engagement", "force", "social", "religion", "immigration", "justice", "identity", "race", "environment", "technology"] as const;
 
@@ -7,7 +7,7 @@ export type AxisId = (typeof axisIds)[number];
 
 export type AxisGroup = "governance" | "economy" | "foreign" | "society" | "tech";
 
-// How agreement relates to position (see docs/quiz-plan.md, Engine):
+// How agreement relates to position (see docs/quiz.md, Engine):
 // - directional: agreement rises steadily toward the pole on the side of
 //   `location`; `location` is the threshold where agreement turns positive,
 //   so a ±1 item is agreed with only at the extreme. Most policy statements.
@@ -58,7 +58,7 @@ export interface Statement {
 
 // Categorical preferences that can't sit on a line. Recorded from choice
 // options and used only to tell ideologies apart when matching; they never
-// move an axis (docs/quiz-plan.md, principle 3).
+// move an axis (docs/quiz.md, principle 3).
 export const traditions = ["none", "pluralist", "catholic", "protestant", "orthodox", "christian", "sunni", "shia", "jewish", "hindu", "buddhist", "sikh", "other"] as const;
 export type Tradition = (typeof traditions)[number];
 

@@ -1,6 +1,6 @@
 name: GA results watch
 
-# Election-night ingest for Writ's close-races report (docs/writ-close-races-runbook.md).
+# Election-night ingest for Writ's close-races report (docs/elections/ga-close-races-runbook.md).
 # Started by hand before polls close. Each run polls the Georgia SOS results
 # feed for up to 5h45m, then starts the next run while results are still
 # unofficial. A laptop can take over at any time with the same command; the

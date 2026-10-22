@@ -12,7 +12,7 @@
 // Idempotent: entities MERGE on a name key, edges MERGE on a sourceKey.
 //
 // Usage: node scripts/import-political-figures.mjs [--dry-run] [--force] [--collection=name] [--profile=name]
-//        node scripts/import-political-figures.mjs --docs   (regenerate docs/political-figures.md, no DB)
+//        node scripts/import-political-figures.mjs --docs   (regenerate docs/people/political-figures.md, no DB)
 
 import fs from "node:fs";
 import { randomUUID } from "node:crypto";
@@ -34,7 +34,7 @@ const ACTIVE_COLLECTIONS = COLLECTION_ARG
 if (COLLECTION_ARG && ACTIVE_COLLECTIONS.length === 0) {
   throw new Error(`Unknown collection: ${COLLECTION_ARG}`);
 }
-const DOCS_PATH = "docs/political-figures.md";
+const DOCS_PATH = "docs/people/political-figures.md";
 
 // Mirrors the limits in src/lib/validation/entity.ts.
 const LIMITS = { description: 2000, biography: 12000, highlights: 2000, metadata: 24000 };
@@ -108,8 +108,8 @@ function writeDocs() {
     "# Political figures — curated profiles",
     "",
     "Generated from the `data/political-*.json` collections by `node scripts/import-political-figures.mjs --docs`.",
-    "Edit those JSON files, not this document. Profiles appear on `/data/entities/[id]` (biography, highlights,",
-    "aliases, born/died, sources) and in the `/people` graph via their connections.",
+    "Edit those JSON files, not this document. Profiles appear on `/subpoena/[slug]` (biography, highlights,",
+    "aliases, born/died, sources) and in the `/people` page via their connections.",
     "",
     "## Adding a figure",
     "",

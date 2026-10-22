@@ -16,7 +16,7 @@ Both land in the same place and render with the same charts, maps, and API.
 | `data_partners` | Partner institutions. `status`: `pending` \| `approved` \| `suspended`. Only approved partners can write. |
 | `partner_keys` | API keys for partners. Only the SHA-256 is stored, plus a 12-character display prefix. |
 
-Migration: `supabase/sql/2026-10-05-data-hosting.sql` (additive; `npm run db:apply-sql -- <file>`, and also run by `import:all`).
+Migration: `supabase/sql/2026-10-05-data-hosting.sql`, applied by `npm run db:migrate`.
 
 Built-in datasets are defined in `scripts/lib/catalog.mjs`. Every importer calls `registerDataset()`, and `npm run data:catalog` registers them all at once. Edit the catalog, not the table.
 

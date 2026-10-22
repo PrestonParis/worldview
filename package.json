@@ -33,6 +33,7 @@
     "import:congress-votes": "node scripts/import-congress-votes.mjs",
     "import:elections": "node scripts/import-elections.mjs",
     "import:county-results": "node scripts/import-county-results.mjs",
+    "import:race-ratings": "node scripts/import-race-ratings.mjs",
     "backfill:members": "node scripts/backfill-members.mjs",
     "import:fec-bulk": "node scripts/import-fec-bulk.mjs",
     "import:fec-cycle": "node scripts/import-fec-cycle.mjs",

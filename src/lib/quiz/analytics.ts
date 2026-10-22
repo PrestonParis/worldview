@@ -1,4 +1,4 @@
-// Quiz analytics over stored answer logs (docs/quiz-plan.md, Analytics): the
+// Quiz analytics over stored answer logs (docs/quiz.md, Analytics): the
 // owner's /quiz/stats page and `npm run quiz:stats`. Pure: the callers load
 // live sessions, archived responses (quiz_responses) and landing-page opener
 // events, and this replays them against the current bank and engine.

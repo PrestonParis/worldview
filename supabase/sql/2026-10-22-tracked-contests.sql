@@ -1,4 +1,4 @@
--- Writ close-races tracker (docs/writ-close-races.md §3). Every Georgia
+-- Writ close-races tracker (docs/elections/ga-close-races.md, "Data model"). Every Georgia
 -- contest from the SOS results feed — federal down to school board — with
 -- its options, county splits, margin history, coverage and the ingest
 -- worker's heartbeat. Independent of entities: local candidates aren't

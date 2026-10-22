@@ -1,4 +1,4 @@
-// Grants or removes shared-data editing for an account (docs/auth-plan.md).
+// Grants or removes shared-data editing for an account (docs/auth.md).
 // New accounts are members; editors can change shared records.
 //
 // Usage: npm run auth:role -- <email> editor|member

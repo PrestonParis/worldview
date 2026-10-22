@@ -6,15 +6,16 @@ Full load in dependency order: `ENV_FILE=.env.cloud npm run import:all`
 (`-- quick` skips the multi-hour sweeps). Weekly refresh:
 `.github/workflows/sync-public-data.yml`.
 
-New Postgres tables are in `supabase/sql/2026-10-01-data-imports.sql`
-(additive, `npm run db:apply-sql -- <file>`), mirrored in `src/lib/db/schema.ts`.
+Tables come from the dated migrations in `supabase/sql/`, applied by
+`npm run db:migrate` (and automatically before `npm run dev` and on every
+production build), mirrored in `src/lib/db/schema.ts`.
 
 ## Two databases: Supabase + Neon
 
 `area_stats` is split across two Postgres databases. Supabase (`DATABASE_URL`)
 is kept just under its 500 MB plan cap, since past the cap it goes
-read-only. The datasets that don't fit go to Neon (`NEON_DATABASE_URL`, project
-`lucky-dew-67554375`, 1 GB per branch). Each dataset's rows are all in
+read-only. The datasets that don't fit go to Neon (`NEON_DATABASE_URL`, 1 GB
+per branch). Each dataset's rows are all in
 one of the two; `datasets.storage` (`supabase` | `neon`, kept in Supabase)
 records which. Everything else, including the catalog, accounts and other
 tables, stays in Supabase.
@@ -138,11 +139,14 @@ and `lda_registrant` ids as they match or create entities.
 |---|---|---|---|
 | `import:voteview` | Voteview DW-NOMINATE members | `member_ideology` | — |
 | `import:congress-bills` / `-votes` | Congress.gov API | `bills`, `roll_calls`, `votes`, … | api.data.gov (`CONGRESS_GOV_API_KEY` or `FEC_API_KEY`) |
+| `import:fec-bulk -- --cycles=2022,2024,2026` | FEC bulk files (cn, cm, weball, pas2), cached in `.cache/fec/` | `fec_candidates`, `fec_committees`, `money_flows` (committee → candidate totals per cycle and kind), `candidate_finance`; entities for candidates with money and every giving committee, matched by FEC id only; `--lake` writes itemized pas2 to `fec/pas2/<cycle>.parquet` | none |
 | `import:fec-cycle` | OpenFEC | `candidate_finance`, `contributions` | `FEC_API_KEY` |
 | `import:fec-ie` | OpenFEC Schedule E (periodic reports only) | `independent_expenditures` | `FEC_API_KEY` |
 | `import:lda-lobbying -- --all` | Senate LDA | `lobbying_registrations`, `lobbying_issues` | `LDA_API_KEY` recommended |
 | `import:federal-register` | FederalRegister.gov | `executive_documents` (presidential docs since 1994 + significant rules) | — |
 | `import:scdb` | Supreme Court Database | `court_cases`, `case_votes` | — (pass `--url=` for a new release) |
+| `import:supreme-court` | `data/supreme-court.json` (hand-curated: seats, appointing president, nomination/confirmation/seating dates, Senate vote, Wikidata id, Commons portrait) | `judge` entities matched by SCDB code (`scdb` crosswalk scheme, never by name), `nominated` + `serves-in` edges, fills `case_votes.justice_entity_id`; run after `import:scdb` | — |
+| `import:administration` | `data/administration.json` (hand-curated cabinet and cabinet-level roster, map group, start dates, departures under `former`) | `appointed` + `serves-in` edges from the President, `metadata.branch`/`office` on current appointees; prunes this term's edges the file no longer produces | — |
 | `import:acs` | Census ACS 5-year | `area_stats` (`census-acs5`; us/state/county/cd/sldu/sldl) | `CENSUS_API_KEY` |
 | `import:usaspending` | USAspending.gov | `area_stats` (`usaspending`; state/county/cd by award type, agencies) | — |
 | `import:fbi-crime` | FBI Crime Data Explorer | `area_stats` (`fbi-cde`; nation/state monthly) | api.data.gov (`FBI_API_KEY`, `FEC_API_KEY`, or `CONGRESS_GOV_API_KEY`) |
@@ -172,6 +176,32 @@ and `lda_registrant` ids as they match or create entities.
 | `import:climate` | Our World in Data `co2-data` and `energy-data` CSVs (GitHub) + NOAA Climate at a Glance JSON | `area_stats` (`owid-energy`: CO₂ totals, per person, global share 1950–, electricity mix by source 1985–, for the U.S., 9 other emitters and the world; `noaa-climate`: annual average temperature, contiguous U.S. and 49 states, 1895–). `--only=owid,noaa` | — |
 | `import:eavs` | EAC EAVS 2024 | `area_stats` (`eavs`; jurisdiction/county/state) | — |
 | `import:cps-voting` | Census CPS November Voting and Registration Supplement, 2020–2024 (public-use microdata) | `area_stats` (`cps-voting`; nation/state; citizens, registered, voted by age, race, sex, education, income, voting method) | — |
+
+## Elections and pilot imports
+
+| Script | Source | Table | Key needed |
+|---|---|---|---|
+| `import:elections` | MIT Election Lab President and Senate returns committed in `data/elections/` (2000– by default; `-- --cycles=1976-2024`, `-- --offices=president`, `-- --all-candidates`) | `elections`, `candidacies`; politician entities for candidates it can't match. Ambiguous name matches go to `backups/<ts>/election-import-report.json` and are skipped, never guessed. House needs its source file placed by hand (`data/elections/SOURCES.md`) | — |
+| `import:county-results` | Two-party county presidential returns (2020, 2024) committed as `data/elections/tonmcg-*` | `election_results`, keyed by county FIPS so the `/elections/<id>` choropleth joins directly; run after `import:elections` | — |
+| `import:race-ratings -- --year=2026` | `data/elections/<year>-ratings.csv`, transcribed from Sabato's Crystal Ball; seats missing from the file get an inferred safe rating for the holding party | `race_ratings` (history: a newer snapshot appends) | — |
+| `sync:ga-results` | Georgia Secretary of State results feed | the `tracked_*` close-races tables (see docs/elections/ga-close-races.md) | — |
+| `import:fec-donors` | OpenFEC, for a pilot set of politicians | `contributions` (PAC/committee money with donor geography, employer and a heuristic industry from `src/lib/money/industries.ts`); `-- --refresh` re-stamps those columns on existing rows | `FEC_API_KEY` recommended (`DEMO_KEY` allows 40 requests/hour) |
+
+## Hand entry and the ingest API
+
+Both go through the same Zod schemas (`src/lib/validation/`) as the importers.
+
+- **By hand:** `/data` in the app has forms for entities, relationships, claims,
+  sources, bills, contributions and elections (editor role required).
+- **Programmatically:** `POST /api/ingest/batch` with
+  `Authorization: Bearer <INGEST_API_KEY>` takes any mix of `entities`,
+  `sources`, `edges`, `claims`, `elections` and `candidacies` arrays in one
+  request. Give an item a `clientId` and reference it from a later item as
+  `"$ref:<clientId>"` to link records created in the same call. `elections`
+  and `candidacies` items with an `externalId` are idempotent upserts on it.
+  See `src/lib/ingest/batch.ts`.
+
+## Catalog
 
 Every importer registers its dataset in the `datasets` catalog (`scripts/lib/catalog.mjs`); see docs/data-hosting.md for the catalog, partner publishing, and the public data API. `scripts/lib/xlsx.mjs` reads Excel workbooks (DHS, ICE) without a dependency.
 

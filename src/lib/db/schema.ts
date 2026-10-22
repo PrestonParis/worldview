@@ -217,7 +217,7 @@ export const entityTraits = pgTable(
 );
 
 // Profile records (supabase/sql/2026-10-20-profile-records.sql,
-// docs/people-profile-architecture.md). Filled by scripts/import-profile.mjs.
+// docs/people/profile-model.md). Filled by scripts/import-profile.mjs.
 export const entityProfiles = pgTable("entity_profiles", {
   entityId: uuid("entity_id")
     .primaryKey()
@@ -1503,7 +1503,7 @@ export const caseVotes = pgTable(
   ],
 );
 
-// Political quiz sessions (src/lib/quiz, docs/quiz-plan.md). The answer log
+// Political quiz sessions (src/lib/quiz, docs/quiz.md). The answer log
 // is the source of truth; results are recomputed from it on every view.
 export const quizSessions = pgTable(
   "quiz_sessions",
@@ -1585,7 +1585,7 @@ export const quizOpenerEvents = pgTable(
   (table) => [index("quiz_opener_events_created_idx").on(table.createdAt)],
 );
 
-// Worldview accounts (docs/auth-plan.md). finalizeSignIn creates the row the
+// Worldview accounts (docs/auth.md). finalizeSignIn creates the row the
 // first time a verified Supabase auth user signs in. Only editors may change
 // shared data (src/lib/auth/guard.ts); members own their own maps and quizzes.
 export const profiles = pgTable(

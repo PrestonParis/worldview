@@ -1,4 +1,4 @@
--- Political quiz sessions (src/lib/quiz, docs/quiz-plan.md).
+-- Political quiz sessions (src/lib/quiz, docs/quiz.md).
 -- Idempotent and additive: apply with `node scripts/apply-sql.mjs supabase/sql/2026-10-01-quiz.sql`.
 -- Mirrors quizSessions in src/lib/db/schema.ts.
 

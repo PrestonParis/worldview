@@ -1,4 +1,4 @@
-// Georgia close-races ingest for Writ (docs/writ-close-races.md §5): every
+// Georgia close-races ingest for Writ (docs/elections/ga-close-races.md, "Ingest"): every
 // contest in the Secretary of State's results system — state feed plus the
 // 159 county feeds — into the tracked_* tables, ranked by margin.
 //

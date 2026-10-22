@@ -11,7 +11,7 @@ import { finalizeSignIn, getCurrentUser, safeNext } from "../auth/session";
 import { claimAfterSignIn } from "../quiz/access";
 import type { ActionResult } from "./result";
 
-// Sign-in and registration (docs/auth-plan.md): Google, email + password, or
+// Sign-in and registration (docs/auth.md): Google, email + password, or
 // a code emailed to the address (which also creates new accounts). New
 // password accounts confirm their email with a code when Supabase's "Confirm
 // email" is on; a forgotten password is reset with an emailed code.

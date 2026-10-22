@@ -1,4 +1,4 @@
-// Who may view, answer, and claim a quiz (docs/quiz-plan.md, Persistence &
+// Who may view, answer, and claim a quiz (docs/quiz.md, Persistence &
 // sharing). Server-only: reads the edit cookie and the Supabase session.
 
 import { createHash, randomBytes, timingSafeEqual } from "node:crypto";

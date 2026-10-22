@@ -1,6 +1,6 @@
 // Adaptive quiz engine — pure functions over the answer log. No I/O; the
 // stored answers are the source of truth and everything here is a replay.
-// See docs/quiz-plan.md (Engine).
+// See docs/quiz.md (Engine).
 
 import { axisIds, type AxisId, type ChoiceOption, type ChoiceQuestion, type Condition, type FollowUp, type IssueModule, type Lens, type Loadings, type Statement } from "./types";
 import { statements, issues } from "./bank";

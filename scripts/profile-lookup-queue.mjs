@@ -2,7 +2,7 @@
 // an entry in the political-*.json collections) missing a core attribute in
 // both their dossier facts and their Wikidata/Wikipedia traits. Each entry is
 // a lookup to do while writing that person's dossier
-// (docs/people-profile-architecture.md, "Attribute lookups").
+// (docs/people/profile-guide.md, "Attribute lookups").
 //
 // Usage: node scripts/profile-lookup-queue.mjs [--write]   (--write saves data/profiles/lookup-queue.json)
 

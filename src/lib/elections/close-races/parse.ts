@@ -1,6 +1,6 @@
 // Georgia SOS results payloads (results.sos.ga.gov, Enhanced Voting) →
 // normalized contests. The payload shape is documented in
-// docs/writ-close-races.md §2; fixtures live in ./fixtures.
+// docs/elections/ga-close-races.md, "Source"; fixtures live in ./fixtures.
 
 import type { ElectionKind, ParsedContest, ParsedElectionHeader, ParsedFeed, ParsedLocality, ParsedOption } from "./types.ts";
 

@@ -1,6 +1,6 @@
 import type { Ideology } from "./types";
 
-// Reference positions are hand-placed for v1 (see docs/quiz-plan.md, Phase 6
+// Reference positions are hand-placed for v1 (see docs/quiz.md, Phase 7
 // for fitting them from data). Every ideology is placed on every axis; `core`
 // lists the axes that define it, which count fully when measuring distance.
 // The rest are a typical adherent's position and count at half weight.

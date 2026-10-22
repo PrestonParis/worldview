@@ -1,4 +1,4 @@
-// Write access to shared data (docs/auth-plan.md). Server-only.
+// Write access to shared data (docs/auth.md). Server-only.
 //
 // Browsing is open and anyone can create an account, but every
 // create/update/delete of shared records requires an editor (profiles.role).

@@ -29,7 +29,7 @@ try {
         key: `heartbeat:${bucket(30)}`,
         kind: "heartbeat",
         severity: "critical",
-        message: `Ingest heartbeat is ${Number.isFinite(minutes) ? `${Math.round(minutes)} min` : "missing"} old (${r.mode}); start the backup (see docs/writ-close-races-runbook.md)`,
+        message: `Ingest heartbeat is ${Number.isFinite(minutes) ? `${Math.round(minutes)} min` : "missing"} old (${r.mode}); start the backup (see docs/elections/ga-close-races-runbook.md)`,
       });
     }
   }

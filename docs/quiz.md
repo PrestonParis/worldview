@@ -1,9 +1,10 @@
 # Political Quiz — an adaptive, US-specific ideology quiz
 
-**Status (2026-10-14):** the shared engine now supports **Snapshot**, **Profile**, and **Deep Map**
-checkpoints plus topic/campaign entry links. Routes are `/quiz` and `/quiz/[slug]`. Engine and bank:
-`src/lib/quiz/`. Table: `quiz_sessions` (`supabase/sql/2026-10-01-quiz.sql` plus
-`2026-10-14-quiz-modes.sql`). Result URLs are retained unless explicitly deleted by an owner.
+The quiz has three checkpoints on one shared engine, **Snapshot**, **Profile** and
+**Deep Map**, plus topic and campaign entry links. Routes are `/quiz` and `/quiz/[slug]`;
+the engine and question bank are in `src/lib/quiz/`, sessions in `quiz_sessions`
+(`supabase/sql/2026-10-01-quiz.sql`, `2026-10-14-quiz-modes.sql`). Result URLs are kept
+until an owner deletes the quiz.
 
 ## Context
 
@@ -24,25 +25,6 @@ plus its uncertainty, asks whatever narrows that uncertainty most, and stops an
 axis once it's settled. It uses two response models. Most policy statements are
 **directional**: the further toward a pole you are, the more you agree. Compromise
 statements are **ideal-point** (GGUM-style): people at both extremes reject them.
-
-## Scope & definition of done
-
-- [ ] `/quiz` landing → start → `/quiz/[hash]`, the same URL while in progress and after finishing.
-- [ ] US-adapted axes (below), each reported as a position with a precision.
-- [ ] Issue modules (abortion, guns, …), each reported as a structured **policy profile**:
-      one stance per attribute (legality, gestational limit, exceptions, who decides, …).
-- [x] Adaptive engine with three honest stopping points: Snapshot (~24 screens), Profile
-      (~54), and the fully adaptive Deep Map (~115 typical). Every tier shares one answer log.
-- [ ] Every quiz is saved after each answer. Anyone can resume from the browser that
-      started it.
-- [ ] Signed-in users can **claim** a quiz, then set it **public** (anyone with the
-      link) or **private** (owner only).
-- [x] Results: axis chart with confidence, policy profiles, distance-ranked ideology
-      similarities, and "why you landed here" for each axis. Snapshot reports a political
-      neighborhood rather than overclaiming a single settled ideology.
-- [ ] Finishing isn't final: after completion, any low-confidence axis offers "answer N more
-      questions to refine this", appended to the same quiz.
-- [ ] **Not in scope yet:** matching users to politicians or other real people.
 
 ## Design decisions taken up front
 
@@ -96,7 +78,7 @@ Poles are named so that both sides would accept the description. 20 axes in 5 gr
 | 12  | Society       | Secular ↔ Religious                          | Religion and the state, from a state that discourages religion to one governed by religious law; statements are tradition-neutral                                                  | Irreligious–Religious                                                                                                                                                                      |
 | 13  | Society       | Open/pluralist ↔ Restrictive/assimilationist | Immigration levels, language, national identity                                                                                                                                    | Assimilationist–Multiculturalist                                                                                                                                                           |
 | 14  | Society       | Reform ↔ Law & order                         | Sentencing, policing, drugs, death penalty                                                                                                                                         | new                                                                                                                                                                                        |
-| 15  | Society       | Group-conscious ↔ Colorblind                 | Affirmative action, disparate impact, DEI                                                                                                                                          | new                                                                                                                                                                                        |
+| 15  | Society       | Group-conscious ↔ Race-neutral law           | Affirmative action, disparate impact, DEI                                                                                                                                          | new                                                                                                                                                                                        |
 | 15b | Society       | Integrationist ↔ Racial nationalist          | Whether races are one people or separate nations: separatism, race in immigration and association law, hereditarian claims, racial supremacy                                       | new (bank 5.0.0). Remedy policy and racial nationhood are separate questions: on one line, Black nationalism sat with DEI progressives and white nationalism near colorblind conservatives |
 | 16  | Tech & nature | Environmental ↔ Growth-first                 | Climate, fossil fuels, conservation, energy                                                                                                                                        | new                                                                                                                                                                                        |
 | 17  | Tech & nature | Precautionary ↔ Accelerationist              | AI, biotech, nuclear, automation                                                                                                                                                   | Acceleration–Bioconservative                                                                                                                                                               |
@@ -366,6 +348,13 @@ quizSessions = pgTable("quiz_sessions", {
   answer and the pole it pushed toward, e.g. "Strongly agreed: '…' → toward States". Each
   links to editing that answer, and results recompute on change.
 - Owner controls: claim / visibility / retake. Open Graph image for shared links.
+
+## Analytics
+
+The owner's `/quiz/stats` page and `npm run quiz:stats` replay stored answer logs
+(live sessions, archived `quiz_responses`, landing-page opener events) against the current
+bank and engine (`src/lib/quiz/analytics.ts`). `quiz:audit`, `quiz:trace`, `quiz:funnel` and
+`quiz:answers` inspect the bank, single sessions, drop-off and raw answers.
 
 ## Phases
 

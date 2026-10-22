@@ -1,4 +1,4 @@
-// The people-profile model (docs/people-profile-architecture.md). One bundle
+// The people-profile model (docs/people/profile-model.md). One bundle
 // of structured records per profile; every module on the page reads from it
 // rather than from its own copy of the facts. Pure: the queries that fill a
 // bundle live in src/lib/db/profile-records.ts.

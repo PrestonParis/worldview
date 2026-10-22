@@ -1,6 +1,6 @@
 // Imports FEC bulk files (https://www.fec.gov/data/browse-data/?tab=bulk-data)
 // for whole cycles: every candidate, every committee, and every committee ->
-// candidate dollar. The data layer under Subpoena (docs/subpoena-plan.md).
+// candidate dollar. The data layer under Subpoena (docs/data-sources.md).
 //
 // Per cycle it reads, from .cache/fec/<cycle>/ (downloaded on first use):
 //   cn      candidate master       -> fec_candidates

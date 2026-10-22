@@ -1,5 +1,5 @@
 {
-  "note": "Curated profiles of American political figures that mainstream coverage tends to skip — write-ups plus the dated events you'd otherwise have to be in the know to find. Edited by hand; every entry carries sources. Names are matched case-insensitively against existing entities (missing ones are created, empty fields filled). Re-run `node scripts/import-political-figures.mjs` after editing, and `--docs` to regenerate docs/political-figures.md.",
+  "note": "Curated profiles of American political figures that mainstream coverage tends to skip — write-ups plus the dated events you'd otherwise have to be in the know to find. Edited by hand; every entry carries sources. Names are matched case-insensitively against existing entities (missing ones are created, empty fields filled). Re-run `node scripts/import-political-figures.mjs` after editing, and `--docs` to regenerate docs/people/political-figures.md.",
   "collection": "political-figures",
   "organizations": [
     {

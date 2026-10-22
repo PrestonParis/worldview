@@ -1,4 +1,4 @@
-// Operator alerts for the close-races ingest (docs/writ-close-races.md §5).
+// Operator alerts for the close-races ingest (docs/elections/ga-close-races.md, "Ingest").
 // Each alert is stored once in tracked_alerts (deduped by key) and, when
 // ALERT_WEBHOOK_URL is set, posted to it. The body adapts to the target:
 // Discord wants `content`, ntfy.sh a plain-text body, Slack (and anything

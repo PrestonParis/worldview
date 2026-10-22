@@ -1,4 +1,4 @@
-// Margin, flags and result status for one contest (docs/writ-close-races.md
+// Margin, flags and result status for one contest (docs/elections/ga-close-races.md
 // §4). The canonical ranking is the raw vote margin; percentage-point margin
 // is the alternate sort.
 

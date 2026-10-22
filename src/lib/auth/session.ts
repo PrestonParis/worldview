@@ -1,4 +1,4 @@
-// Who is signed in (docs/auth-plan.md). Server-only.
+// Who is signed in (docs/auth.md). Server-only.
 //
 // A session counts once its Supabase user has a profiles row, which
 // finalizeSignIn creates after the email is verified. What the account may

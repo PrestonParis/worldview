@@ -1,5 +1,5 @@
-// Loaders for Writ's close-races report (docs/writ-close-races.md §6). The
-// ranked rows come from the one shared query in
+// Loaders for Writ's close-races report (docs/elections/ga-close-races.md,
+// "Report"). The ranked rows come from the one shared query in
 // src/lib/elections/close-races/rows.ts; results are cached for 60 s under
 // CLOSE_RACES_TAG, which the ingester expires after every write
 // (/api/writ/revalidate).

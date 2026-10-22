@@ -1,6 +1,28 @@
-# Geography data-layer system
+# Geography studio
 
-The Geography studio treats external and Worldview data as saved, editable
+`/geography` is the owner-only map and annotation studio for broadcast
+graphics: a MapLibre map with a Konva annotation layer, saved projects,
+data layers and a live presentation output. It sits outside the site shell
+(`src/app/geography/`), with its components in `src/components/{map,annotate,layout}/`.
+
+## Editor: export, saving and undo
+
+- **Export:** the map is created with `preserveDrawingBuffer: true`
+  (`src/components/map/MapCanvas.tsx`) so its WebGL canvas stays readable,
+  and the Konva stage's own `toCanvas()` supplies the annotation half of the
+  PNG.
+- **Saving:** projects are rows in `map_projects` (`src/lib/db/mapProjects.ts`),
+  written through owner-scoped server actions (`src/lib/actions/mapProjects.ts`)
+  that take the owner from the session, never the client. `GraphicsBar.tsx`
+  autosaves about 1.5s after the last edit and opens, renames and deletes
+  saved graphics.
+- **Undo:** `zundo` wraps the store and tracks only the `layers` slice, so
+  pan/zoom, the active tool and project bookkeeping stay out of history.
+  Continuous slider edits are grouped into one step.
+
+## Data layers
+
+The studio treats external and Worldview data as saved, editable
 layers. Every data layer uses the same project-document shape, MapLibre
 renderer, visibility control, style controls, legend, source attribution,
 refresh policy, and frozen-snapshot workflow.

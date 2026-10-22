@@ -2,7 +2,7 @@
 // profile records: sources, facts, relationships, events, statements and the
 // editorial layer (summary, roles, chapters, ideas). With --fec, also pulls
 // the subject's itemized FEC Schedule A contributions into `contributions`.
-// docs/people-profile-architecture.md describes the model.
+// docs/people/profile-model.md describes the model.
 //
 // Every record a dossier owns is keyed by the dossier ("profile:<slug>:...")
 // so a re-run updates in place and removes what the file no longer lists.
