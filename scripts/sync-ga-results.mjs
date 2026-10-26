@@ -43,7 +43,7 @@ import { sosClient, SOS_BASE } from "./lib/ga-sos.mjs";
 import { bucket, raiseAlert, sendWebhook } from "./lib/alerts.mjs";
 import { bumpError, coverageRows, electionLinks, updateStatus, writeContests, writeCoverage } from "./lib/close-races-store.mjs";
 import { electionKind, parseElectionList, parseFeed } from "../src/lib/elections/close-races/parse.ts";
-import { assembleContests, stableHash } from "../src/lib/elections/close-races/merge.ts";
+import { assembleContests, normalizeName, stableHash } from "../src/lib/elections/close-races/merge.ts";
 import { evaluateContest } from "../src/lib/elections/close-races/evaluate.ts";
 import { compareByPercent, compareByVotes } from "../src/lib/elections/close-races/margin.ts";
 import { parseMediaExport } from "../src/lib/elections/close-races/media-export.ts";
@@ -170,7 +170,10 @@ async function fetchState(ctx) {
   }
   try {
     const res = await client.mediaExport(id);
-    const { state, counties } = parseMediaExport(res.json, { isOfficial: Boolean(ctx.state?.feed.election.isOfficialResults) });
+    const { state, counties } = parseMediaExport(res.json, {
+      isOfficial: Boolean(ctx.state?.feed.election.isOfficialResults),
+      isPrimary: ctx.state?.feed.election.isPrimary ?? ctx.election.kind === "primary",
+    });
     ctx.lastStateOk = new Date();
     ctx.fetchSource = "media-export";
     if (ctx.state?.source === "media-export" && ctx.state.hash === res.hash) return false;
@@ -314,6 +317,9 @@ async function persist(ctx, mode) {
   for (const w of warnings.filter((w) => w.startsWith("merged") || w.startsWith("ballot question"))) {
     await raiseAlert(pg, { election: id, key: `merge:${stableHash(w)}`, kind: "merge", severity: "info", message: `Check merge — ${w}` });
   }
+  for (const w of warnings.filter((w) => w.startsWith("unlinked"))) {
+    await raiseAlert(pg, { election: id, key: `unlinked:${stableHash(w)}`, kind: "unlinked", severity: "warning", message: `Statewide total may be incomplete — ${w.replace(/^unlinked: /, "")}` });
+  }
 
   // Coverage: observed contests per county feed and per named municipality.
   const { manifest } = inputs(id);
@@ -388,9 +394,23 @@ async function watch(ctx) {
   let stopping = false;
   for (const sig of ["SIGINT", "SIGTERM"]) process.on(sig, () => ((stopping = true), console.log(`\n${sig}: finishing this round`)));
 
-  await loadOnce(ctx, "watch");
-  let staleWebhookAt = 0;
+  // SOS can take an election's feed down before results start (Nov 3 2026's
+  // went 404/empty after Oct 24), so a run started early waits for it
+  // instead of failing. Only a missing feed is retried.
   while (!stopping && Date.now() < deadline) {
+    try {
+      await loadOnce(ctx, "watch");
+      break;
+    } catch (err) {
+      if (ctx.state) throw err;
+      console.warn(`  ${new Date().toISOString()} no feed for ${ctx.election.id} yet (${err.message}); retrying in ${every / 1000}s`);
+      if (!DRY_RUN) await updateStatus(ctx.pg, ctx.election.id, { heartbeat_at: new Date(), worker_id: WORKER, mode: "waiting" }).catch(() => {});
+      await sleep(every);
+    }
+  }
+  if (!ctx.state) console.warn("  run ended before the feed appeared; the next run keeps waiting");
+  let staleWebhookAt = 0;
+  while (ctx.state && !stopping && Date.now() < deadline) {
     await sleep(every);
     if (stopping) break;
     const round = new Date();
@@ -490,7 +510,8 @@ async function snapshot(pg, id) {
 
 async function reconcile(pg, id) {
   const res = await client.mediaExport(id);
-  const { state, counties } = parseMediaExport(res.json);
+  const header = parseFeed((await client.state(id)).json).election;
+  const { state, counties } = parseMediaExport(res.json, { isPrimary: header.isPrimary });
   const { overrides } = inputs(id);
   const { contests } = assembleContests(state, counties, { split: overrides.split ?? [], merge: overrides.merge ?? [] });
   const { rows } = await pg.query(
@@ -508,8 +529,21 @@ async function reconcile(pg, id) {
       continue;
     }
     db.delete(`ga-sos:${id}:${c.key}`);
+    const label = `${c.name}${c.county ? ` (${c.county})` : ""}`;
     const total = c.options.reduce((s, o) => s + o.votes, 0);
-    if (total !== row.total_votes) problems.push(`${c.name}${c.county ? ` (${c.county})` : ""}: export ${total} vs DB ${row.total_votes}`);
+    if (total !== row.total_votes) problems.push(`${label}: export ${total} vs DB ${row.total_votes}`);
+    // Per candidate too: equal totals can hide two candidates' votes swapped.
+    // Same-named lines ("Write-in", "Write-in#") are compared as one sum.
+    const sums = (pairs) => {
+      const m = new Map();
+      for (const [k, v] of pairs) m.set(k.replace(/#+$/, ""), (m.get(k.replace(/#+$/, "")) ?? 0) + Number(v));
+      return m;
+    };
+    const exported = sums(c.options.map((o) => [normalizeName(o.name), o.votes]));
+    const stored = sums(Object.entries(row.votes));
+    for (const name of new Set([...exported.keys(), ...stored.keys()])) {
+      if (exported.get(name) !== stored.get(name)) problems.push(`${label} — ${name}: export ${exported.get(name) ?? "absent"} vs DB ${stored.get(name) ?? "absent"}`);
+    }
   }
   for (const r of db.values()) problems.push(`in DB but not in export: ${r.external_id}`);
   console.log(`  reconcile ${id} against media export (${res.json.createdAt}): ${contests.length} contests, ${problems.length} mismatches`);

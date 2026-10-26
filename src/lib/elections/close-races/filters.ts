@@ -4,7 +4,7 @@
 import type { CloseRaceFilters } from "./rows.ts";
 import { CONTEST_LEVELS, RESULT_STATUSES, type ContestFlag, type ContestLevel, type ResultStatus } from "./types.ts";
 
-const FLAGS: ContestFlag[] = ["tie", "recount_request_range", "runoff_required", "near_runoff", "runoff_rule_unverified", "merged"];
+const FLAGS: ContestFlag[] = ["tie", "recount_request_range", "runoff_required", "near_runoff", "runoff_rule_unverified", "merged", "unlinked_counties"];
 
 type Params = Record<string, string | string[] | undefined> | URLSearchParams;
 
@@ -60,6 +60,7 @@ export const FLAG_LABELS: Record<ContestFlag, string> = {
   near_runoff: "Near runoff line",
   runoff_rule_unverified: "Runoff rule unverified",
   merged: "Merged across counties",
+  unlinked_counties: "County results not linked by SOS",
 };
 
 export const STATUS_LABELS: Record<ResultStatus, string> = {

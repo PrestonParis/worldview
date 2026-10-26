@@ -40,7 +40,7 @@ export function contestHash(ev) {
     s: ev.status,
     r: [ev.rule, ev.threshold],
     f: ev.flags,
-    a: ev.areas.map((a) => [a.countySlug, a.reportingUnits, a.totalUnits, a.options.map((o) => [o.name, o.votes])]),
+    a: ev.areas.map((a) => [a.countySlug, a.reportingUnits, a.totalUnits, a.linked !== false, a.options.map((o) => [o.name, o.votes])]),
   };
   return createHash("sha1").update(JSON.stringify(shape)).digest("hex");
 }
@@ -197,7 +197,7 @@ export async function writeContests(pg, { electionId, header, kind, evaluated, c
         for (const o of area.options) {
           const id = optionId.get(`${contestId}\u0000${normalizeName(o.name)}`);
           if (!id) continue;
-          areaRows.push({ contest_id: contestId, option_id: id, county_slug: area.countySlug, county: area.county, votes: o.votes, reporting_units: area.reportingUnits, total_units: area.totalUnits });
+          areaRows.push({ contest_id: contestId, option_id: id, county_slug: area.countySlug, county: area.county, votes: o.votes, reporting_units: area.reportingUnits, total_units: area.totalUnits, linked: area.linked !== false });
         }
       }
     }

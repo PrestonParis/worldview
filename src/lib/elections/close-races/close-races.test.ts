@@ -57,6 +57,8 @@ describe("parse", () => {
     const feed = parseFeed(decRunoff2025);
     expect(feed.contests[0].name).toBe("State House of Representatives - District 106");
     expect(englishName("Sales and Use Tax")).toBe("Sales and Use Tax");
+    expect(englishName("Judge, State Court / Para Juez, Tribunal Estatal del Condado de Gwinnett (Colvin)")).toBe("Judge, State Court (Colvin)");
+    expect(englishName("Judge - Superior Court - Gwinnett Judicial Circuit (Cason)/ Para Juez (Cason)")).toBe("Judge - Superior Court - Gwinnett Judicial Circuit (Cason)");
   });
 
   it("reads election kinds from SOS names", () => {
@@ -114,6 +116,13 @@ describe("level", () => {
     expect(municipalityOf("Atlanta Mayor")).toBe("Atlanta");
     expect(municipalityOf("City of College Park Homestead Exemption")).toBe("College Park");
     expect(municipalityOf("City Council (Jonesboro)")).toBe("Jonesboro");
+    // Nov 3 2026 special-election names
+    expect(municipalityOf("Spec Alapaha City Council - Post 4")).toBe("Alapaha");
+    expect(municipalityOf("Special Molena City Council - Post 2")).toBe("Molena");
+    expect(municipalityOf("SPECIAL City of LaGrange Council Member - District 2C")).toBe("LaGrange");
+    expect(municipalityOf("Councilmember - At Large (Gordon Special)")).toBe("Gordon");
+    expect(municipalityOf("Mayor (Special)")).toBeNull();
+    expect(municipalityOf("Special City Council - District 2")).toBeNull();
     expect(municipalityOf("Mayor - Bloomingdale")).toBe("Bloomingdale");
     expect(municipalityOf("Fairburn City Council At Large")).toBe("Fairburn");
     expect(municipalityOf("Councilmember - Graham")).toBe("Graham");
@@ -256,6 +265,43 @@ describe("result status", () => {
     expect(resultStatus({ ...base, totalVotes: 10, reportingUnits: 159, totalUnits: 159, isOfficial: true })).toBe("state_certified");
     expect(resultStatus({ ...base, scope: "county", totalVotes: 10, reportingUnits: 9, totalUnits: 9, isOfficial: true })).toBe("county_certified");
     expect(resultStatus({ ...base, totalVotes: 10, reportingUnits: 9, totalUnits: 9, override: "recount_pending" })).toBe("recount_pending");
+  });
+});
+
+describe("contest keys", () => {
+  const item = (id: string, name: string, candidates: [string, string | null][]) => ({
+    id,
+    parentId: null,
+    name: [{ text: name }],
+    voteFor: [{ text: "Vote for 1" }],
+    reportingStatus: { reportingUnits: 0, totalUnits: 10 },
+    summaryResults: {
+      ballotOptions: candidates.map(([n, party], i) => ({ id: `${id}-${i}`, name: [{ text: n }], voteCount: 0, party: party ? { abbreviation: party } : null })),
+    },
+  });
+  const keys = (isPrimary: boolean, items: unknown[]) =>
+    assembleContests(parseFeed({ election: { isPrimary }, ballotItems: items }), []).contests.map((c) => `${c.name}|${c.options[0].name}|${c.key}`).sort();
+
+  it("keys a party's primary by party, whatever the feed order or contest ids", () => {
+    const rep = (id: string) => item(id, "State Senate - District 7", [["Aizaz Shahbaz Shaikh", "Rep"]]);
+    const dem = (id: string) => item(id, "State Senate - District 7", [["Ruwa Romman", "Dem"], ["Astrid S. Ross", "Dem"]]);
+    const api = keys(true, [rep("a1"), dem("a2")]);
+    expect(api).toEqual(keys(true, [dem("x9"), rep("x8")]));
+    expect(api.map((k) => k.split("|")[2])).toEqual(["state-senate-district-7-r", "state-senate-district-7-d"]);
+  });
+
+  it("infers the primary party from the candidates when the name has none", () => {
+    const feed = parseFeed({ election: { isPrimary: true }, ballotItems: [item("a", "State House - District 97", [["Jacques Laurent", "Dem"], ["Jyot Singh", "Dem"]])] });
+    expect(feed.contests[0].primaryParty).toBe("D");
+  });
+
+  it("keys a same-named general contest by its candidates", () => {
+    const regular = (id: string) => item(id, "Board of Education District 3", [["Ann Lee", null], ["Bo Diaz", null]]);
+    const special = (id: string) => item(id, "Board of Education District 3", [["Cy Moss", null], ["Di Park", null]]);
+    const a = keys(false, [regular("1"), special("2")]);
+    expect(a).toEqual(keys(false, [special("9"), regular("8")]));
+    expect(new Set(a.map((k) => k.split("|")[2])).size).toBe(2);
+    expect(a.every((k) => k.includes("~c"))).toBe(true);
   });
 });
 

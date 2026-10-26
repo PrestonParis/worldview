@@ -281,6 +281,7 @@ const FLAG_STYLE: Record<ContestFlag, string> = {
   near_runoff: "bg-amber-50 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300",
   runoff_rule_unverified: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300",
   merged: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300",
+  unlinked_counties: "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-200",
 };
 
 function flagLabel(flag: ContestFlag, row: ReportRow) {

@@ -53,7 +53,8 @@ export type ContestFlag =
   | "runoff_required"
   | "near_runoff"
   | "runoff_rule_unverified"
-  | "merged";
+  | "merged"
+  | "unlinked_counties";
 
 export type CloseRaceSort = "votes" | "percent";
 

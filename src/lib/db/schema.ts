@@ -1803,6 +1803,7 @@ export const trackedContestAreas = pgTable(
     votes: integer("votes").notNull().default(0),
     reportingUnits: integer("reporting_units").notNull().default(0),
     totalUnits: integer("total_units").notNull().default(0),
+    linked: boolean("linked").notNull().default(true),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [
@@ -1895,5 +1896,64 @@ export const trackedAlerts = pgTable(
   (table) => [
     uniqueIndex("tracked_alerts_dedupe_idx").on(table.dedupeKey),
     index("tracked_alerts_election_idx").on(table.sourceElectionId, table.createdAt.desc()),
+  ],
+);
+
+// Candidate registrations from campaign-finance registries (GA PeachFile,
+// FEC) and their matches to contest options: Writ's campaign contacts.
+// supabase/sql/2026-10-24-writ-candidates.sql.
+export const trackedCandidates = pgTable(
+  "tracked_candidates",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    source: text("source").notNull(),
+    externalId: text("external_id").notNull(),
+    state: text("state").notNull(),
+    cycleYear: integer("cycle_year").notNull(),
+    electionCycle: text("election_cycle"),
+    name: text("name").notNull(),
+    ballotName: text("ballot_name"),
+    firstName: text("first_name"),
+    middleName: text("middle_name"),
+    lastName: text("last_name").notNull(),
+    party: text("party"),
+    office: text("office").notNull(),
+    officeFamily: text("office_family"),
+    district: text("district"),
+    jurisdiction: text("jurisdiction"),
+    registrationStatus: text("registration_status"),
+    committeeName: text("committee_name"),
+    website: text("website"),
+    campaignEmail: text("campaign_email"),
+    campaignPhone: text("campaign_phone"),
+    filerEmail: text("filer_email"),
+    filerPhone: text("filer_phone"),
+    sourceUrl: text("source_url").notNull(),
+    fetchedAt: timestamp("fetched_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("tracked_candidates_external_id_idx").on(table.externalId),
+    index("tracked_candidates_lookup_idx").on(table.state, table.cycleYear, table.officeFamily, table.district),
+  ],
+);
+
+export const trackedCandidateMatches = pgTable(
+  "tracked_candidate_matches",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    optionId: uuid("option_id")
+      .notNull()
+      .references(() => trackedContestOptions.id, { onDelete: "cascade" }),
+    candidateId: uuid("candidate_id")
+      .notNull()
+      .references(() => trackedCandidates.id, { onDelete: "cascade" }),
+    confidence: text("confidence").notNull(),
+    evidence: text("evidence").notNull(),
+    matchedAt: timestamp("matched_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("tracked_candidate_matches_pair_idx").on(table.optionId, table.candidateId),
+    index("tracked_candidate_matches_candidate_idx").on(table.candidateId),
   ],
 );

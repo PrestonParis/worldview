@@ -102,6 +102,7 @@
     "build:demographics": "node scripts/build-demographics.mjs",
     "sync:wiki-races": "node scripts/sync-wiki-races.mjs",
     "sync:ga-results": "node scripts/sync-ga-results.mjs",
+    "sync:ga-candidates": "node scripts/sync-ga-candidates.mjs",
     "quiz:answers": "tsx scripts/quiz-answers.ts",
     "quiz:audit": "tsx scripts/quiz-audit.ts",
     "quiz:claim": "node scripts/claim-quiz.mjs",

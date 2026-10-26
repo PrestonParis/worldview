@@ -9,8 +9,9 @@ on:
   workflow_dispatch:
     inputs:
       election:
+        # The Nov 3 id isn't in SOS's election list, so auto can't find it.
         description: "SOS election id, or auto (uses date)"
-        default: auto
+        default: 11032026GeneralAndSpecialElection
       date:
         description: "Election date for auto (YYYY-MM-DD)"
         default: "2026-11-03"

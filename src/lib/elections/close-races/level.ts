@@ -33,7 +33,13 @@ export function placeSuffix(name: string): string | null {
 }
 
 /** "Atlanta Mayor", "Mayor - Bloomingdale", "City Council (Jonesboro)", "City of College Park …" → the city. */
-export function municipalityOf(name: string): string | null {
+export function municipalityOf(fullName: string): string | null {
+  // Special-election markers aren't place names: "Spec Alapaha City Council",
+  // "SPECIAL City of LaGrange …", "Mayor (Special)", "(Gordon Special)".
+  const name = fullName
+    .replace(/^(?:spec(?:ial)?|for)\.?\s+/i, "")
+    .replace(/\s*\(special\)/i, "")
+    .replace(/\s+special\)/i, ")");
   const cityOf = name.match(/\b(?:City|Town) of ([A-Z][A-Za-z.' -]+?)(?=\s+(?:Homestead|Sales|Ad Valorem|Question|Referendum|Bond|Tax|Charter|Exemption|Sunday|Mayor|City|Council|-)|$)/);
   if (cityOf) return cityOf[1].trim();
   const paren = name.match(/\(([A-Z][A-Za-z.' -]+)\)\s*$/);

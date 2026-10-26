@@ -21,7 +21,7 @@ try {
     const minutes = r.minutes == null ? Infinity : Number(r.minutes);
     // A live watch run that went quiet, or a run that ended and never
     // handed off. Daily loads ("load") and deliberate stops are left alone.
-    const dead = (r.mode === "watch" && minutes > STALE_MIN) || (r.mode === "watch-ended" && minutes > 2 * STALE_MIN);
+    const dead = ((r.mode === "watch" || r.mode === "waiting") && minutes > STALE_MIN) || (r.mode === "watch-ended" && minutes > 2 * STALE_MIN);
     console.log(`${r.source_election_id}: heartbeat ${Number.isFinite(minutes) ? `${minutes.toFixed(1)} min ago` : "never"} (${r.mode})`);
     if (dead) {
       await raiseAlert(pg, {

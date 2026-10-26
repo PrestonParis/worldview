@@ -28,6 +28,12 @@ export interface AreaRow {
   reportingUnits: number;
   totalUnits: number;
   options: { name: string; votes: number }[];
+  /**
+   * False for a county's copy of a state contest that the county feed
+   * doesn't link to it (parentId null). SOS may leave it out of the state
+   * total, so its votes are shown but never added to the contest.
+   */
+  linked?: boolean;
 }
 
 export interface AssembledContest {
@@ -54,6 +60,8 @@ export interface AssembledContest {
   options: ParsedOption[];
   areas: AreaRow[];
   merged: boolean;
+  /** Counties whose copy of this state contest isn't linked to it. */
+  unlinkedCounties: string[];
 }
 
 export function normalizeName(name: string): string {
@@ -114,6 +122,13 @@ function sumOptions(groups: ParsedOption[][]): ParsedOption[] {
   return [...byName.values()];
 }
 
+const candidateSet = (contest: ParsedContest) =>
+  contest.options
+    .filter((o) => !o.isWriteIn)
+    .map((o) => normalizeName(o.name))
+    .sort()
+    .join("|");
+
 const total = (options: ParsedOption[]) => options.reduce((s, o) => s + o.votes, 0);
 
 function areaRow(county: CountyFeed, contest: ParsedContest): AreaRow {
@@ -139,34 +154,40 @@ export function assembleContests(
   const stateIds = new Set(state.contests.map((c) => c.sourceId));
   const areasByState = new Map<string, AreaRow[]>();
   const locals: { county: CountyFeed; contest: ParsedContest }[] = [];
+  const addArea = (parentId: string, row: AreaRow) => areasByState.set(parentId, [...(areasByState.get(parentId) ?? []), row]);
+
+  // A county contest with no parentId that has a state contest's exact name
+  // and exactly its candidates is that state contest, unlinked by the county
+  // feed (Carroll, Madison and Stewart's US Senate and Governor on the
+  // Nov 3 2026 ballot definition). Name alone isn't enough.
+  const stateByName = new Map<string, ParsedContest[]>();
+  for (const c of state.contests) stateByName.set(normalizeName(c.name), [...(stateByName.get(normalizeName(c.name)) ?? []), c]);
+  const unlinkedParent = (contest: ParsedContest): ParsedContest | null => {
+    const matches = (stateByName.get(normalizeName(contest.name)) ?? []).filter((s) => candidateSet(s) === candidateSet(contest));
+    return matches.length === 1 && !contest.isReferendum ? matches[0] : null;
+  };
 
   for (const county of counties) {
     for (const contest of county.feed.contests) {
       if (contest.parentId && stateIds.has(contest.parentId)) {
-        const rows = areasByState.get(contest.parentId) ?? [];
-        rows.push(areaRow(county, contest));
-        areasByState.set(contest.parentId, rows);
-      } else {
-        if (contest.parentId) warnings.push(`${county.slug}: "${contest.name}" points at a state contest not in the state feed; kept as local`);
-        locals.push({ county, contest });
+        addArea(contest.parentId, areaRow(county, contest));
+        continue;
       }
+      const parent = contest.parentId ? null : unlinkedParent(contest);
+      if (parent) {
+        addArea(parent.sourceId, { ...areaRow(county, contest), linked: false });
+        warnings.push(`unlinked: "${parent.name}" in ${county.slug} isn't linked to the state contest; the SOS statewide total may leave it out`);
+        continue;
+      }
+      if (contest.parentId) warnings.push(`${county.slug}: "${contest.name}" points at a state contest not in the state feed; kept as local`);
+      locals.push({ county, contest });
     }
   }
-
-  // Names are unique within a feed in every election checked; a repeat gets
-  // its source id appended rather than overwriting the first.
-  const used = new Set<string>();
-  const uniqueKey = (key: string, sourceId: string) => {
-    const final = used.has(key) ? `${key}~${sourceId}` : key;
-    if (final !== key) warnings.push(`duplicate contest key ${key}; using ${final}`);
-    used.add(final);
-    return final;
-  };
 
   const contests: AssembledContest[] = state.contests.map((contest) => {
     const areas = (areasByState.get(contest.sourceId) ?? []).sort((a, b) => a.county.localeCompare(b.county));
     return {
-      key: uniqueKey(slugify(contest.name), contest.sourceId),
+      key: slugify(contest.name),
       scope: "state",
       sourceContestIds: [contest.sourceId],
       name: contest.name,
@@ -184,6 +205,7 @@ export function assembleContests(
       options: contest.options,
       areas,
       merged: false,
+      unlinkedCounties: areas.filter((a) => a.linked === false).map((a) => a.countySlug),
     };
   });
 
@@ -234,6 +256,7 @@ export function assembleContests(
       options: sumOptions(ordered.map((m) => m.contest.options)),
       areas: ordered.map((m) => areaRow(m.county, m.contest)),
       merged: true,
+      unlinkedCounties: [],
     });
   }
 
@@ -251,7 +274,7 @@ export function assembleContests(
 
   for (const { county, contest } of singles) {
     contests.push({
-      key: uniqueKey(`${county.slug}:${slugify(contest.name)}`, contest.sourceId),
+      key: `${county.slug}:${slugify(contest.name)}`,
       scope: "county",
       sourceContestIds: [contest.sourceId],
       name: contest.name,
@@ -269,8 +292,45 @@ export function assembleContests(
       options: contest.options,
       areas: [],
       merged: false,
+      unlinkedCounties: [],
     });
   }
 
+  resolveKeyCollisions(contests, warnings);
   return { contests, warnings };
+}
+
+/**
+ * Contests that share a name share a base key: a party's primary for the same
+ * seat ("State Senate - District 7" once per party), or a regular and a
+ * special election for one office. Every member of a colliding group gets a
+ * suffix taken from its content, so the key never depends on feed order and
+ * the JSON API and media export (different contest ids) agree: the primary
+ * party when each member has a different one, else the candidate set. Only
+ * when both tie does the source id decide, which the media export can't
+ * reproduce, so that case is reported.
+ */
+export function resolveKeyCollisions(contests: AssembledContest[], warnings: string[]): void {
+  const byKey = new Map<string, AssembledContest[]>();
+  for (const c of contests) byKey.set(c.key, [...(byKey.get(c.key) ?? []), c]);
+  for (const [key, group] of byKey) {
+    if (group.length < 2) continue;
+    const parties = group.map((c) => (c.primaryParty ? slugify(c.primaryParty) : ""));
+    const candidates = group.map((c) =>
+      stableHash(
+        c.options
+          .filter((o) => !o.isWriteIn)
+          .map((o) => normalizeName(o.name))
+          .sort()
+          .join("|"),
+      ).slice(0, 8),
+    );
+    const distinct = (tags: string[]) => tags.every(Boolean) && new Set(tags).size === tags.length;
+    if (distinct(parties)) group.forEach((c, i) => (c.key = `${key}-${parties[i]}`));
+    else if (distinct(candidates)) group.forEach((c, i) => (c.key = `${key}~c${candidates[i]}`));
+    else {
+      group.forEach((c) => (c.key = `${key}~${c.sourceContestIds[0]}`));
+      warnings.push(`contests named alike with the same candidates: ${key}; keyed by source id, so the media-export fallback can't match them`);
+    }
+  }
 }

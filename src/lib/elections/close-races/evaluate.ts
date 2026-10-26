@@ -56,6 +56,7 @@ export function evaluateContest(
   });
   const flags: ContestFlag[] = [...margin.flags];
   if (contest.merged) flags.push("merged");
+  if (contest.unlinkedCounties.length) flags.push("unlinked_counties");
   return {
     ...contest,
     ...cls,

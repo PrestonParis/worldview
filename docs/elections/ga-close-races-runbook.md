@@ -18,11 +18,11 @@ Both of you subscribe to `ALERT_WEBHOOK_URL`. An ntfy.sh topic gives phone push.
 
 ```sh
 # Primary: GitHub → Actions → "GA results watch" → Run workflow
-#   election=auto, date=2026-11-03, every=180, until=5h45m, chain=true
+#   election=11032026GeneralAndSpecialElection, date=2026-11-03, every=180, until=5h45m, chain=true
 # It hands off to a fresh run every ~6 h until results are official.
 
 # Backup, or takeover from a laptop (same writes; safe to run alongside):
-ENV_FILE=.env.cloud npm run sync:ga-results -- --election=auto --date=2026-11-03 --watch --every=180 --until=8h
+ENV_FILE=.env.cloud npm run sync:ga-results -- --election=11032026GeneralAndSpecialElection --date=2026-11-03 --watch --every=180 --until=8h
 
 # One-off full load / dry run that writes nothing:
 ENV_FILE=.env.cloud npm run sync:ga-results -- --election=<id>
@@ -37,7 +37,7 @@ SOS adds the election to its list close to the day. Check it:
 npm run sync:ga-results -- --list | head
 ```
 
-`--election=auto --date=2026-11-03` picks the general on that date, and fails loudly if there is none or more than one. Once the id is known (e.g. `2026NovGen`), pass it explicitly. The report is then at `/writ/close-races/<id>`.
+The Nov 3 general is `11032026GeneralAndSpecialElection`. It is not in the SOS list, so `--election=auto` can't find it: pass the id. Its feed was live on Oct 24 and returned 404/empty again on Oct 26; a watch started before the feed is back waits (mode `waiting`) and loads once it appears. Once the id is known (e.g. `2026NovGen`), pass it explicitly. The report is then at `/writ/close-races/<id>`.
 
 ## 4. Expected counts
 
@@ -108,7 +108,7 @@ Each command writes `exports/close-races/ga-close-races-<id>-by-<sort>-<timestam
 
 ## Preflight (Nov 2)
 
-1. Apply the migration on cloud (`ENV_FILE=.env.cloud node scripts/migrate.mjs`, or deploy). Check database size first (the Supabase free plan caps at 500 MB): a general adds about 5 MB plus snapshots.
+1. Apply the migration on cloud (`ENV_FILE=.env.cloud node scripts/migrate.mjs`, or deploy). Check database size first (the Supabase free plan caps at 500 MB): the Nov 3 general needs about 25–45 MB through certification (contests ~5 MB, county rows 5–18 MB, snapshot history 15–20 MB), the Dec 1 runoff 2–5 MB. Keep 100 MB free.
 2. Set secrets: repo secrets `ALERT_WEBHOOK_URL`, `SITE_URL`, `REVALIDATE_SECRET`, `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, plus `REVALIDATE_SECRET` in the site's env.
 3. Send a test alert: `node -e 'import("./scripts/lib/alerts.mjs").then(m => m.sendWebhook("test"))'`.
 4. Check the source without writing: `npm run sync:ga-results -- --election=<id> --dry-run`.

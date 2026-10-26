@@ -40,7 +40,12 @@ export function partyCode(value: string | null | undefined): string | null {
 /** "State House … - District 106/ Para Representante …" → the English half. */
 export function englishName(raw: string): string {
   const cut = raw.indexOf("/ ");
-  return (cut > 0 ? raw.slice(0, cut) : raw).replace(/\s+/g, " ").trim();
+  if (cut <= 0) return raw.replace(/\s+/g, " ").trim();
+  // A seat qualifier after the Spanish half belongs to both: Gwinnett's
+  // "Judge, State Court / Para Juez, … (Colvin)" and "… (Dove)" are two seats.
+  const qualifier = raw.slice(cut).match(/\s(\([^()]+\))\s*$/)?.[1];
+  const english = raw.slice(0, cut).replace(/\s+/g, " ").trim();
+  return qualifier && !english.endsWith(qualifier) ? `${english} ${qualifier}` : english;
 }
 
 /** `Mack Jackson (I) (Dem)` → name, incumbent, party. */
@@ -104,11 +109,24 @@ function parseOption(raw: Raw): ParsedOption {
   };
 }
 
+/**
+ * The one party every candidate carries, for primary contests whose name has
+ * no party suffix (the May 2026 feed lists "State Senate - District 7" twice,
+ * once per party). Null when candidates disagree or carry none.
+ */
+export function sharedParty(options: ParsedOption[]): string | null {
+  const parties = new Set(options.filter((o) => !o.isWriteIn).map((o) => o.party));
+  const [only] = parties;
+  return parties.size === 1 && only && only !== "NP" ? only : null;
+}
+
 export function parseContest(raw: Raw, isPrimary = false): ParsedContest {
   const rawName = text(raw.name);
   const name = englishName(rawName);
   const options = (raw.summaryResults?.ballotOptions ?? []).map(parseOption);
-  const primaryParty = isPrimary ? (partyCode(raw.partyName) ?? primaryPartyFromName(name)) : null;
+  const primaryParty = isPrimary
+    ? (partyCode(raw.partyName) ?? primaryPartyFromName(name) ?? sharedParty(options))
+    : null;
   if (primaryParty) for (const option of options) option.party ??= primaryParty;
   return {
     sourceId: String(raw.id),
