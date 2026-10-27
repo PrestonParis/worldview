@@ -4,18 +4,18 @@ import type { ReactNode } from "react";
 import { LimitsMap } from "@/components/abortion/limits-map";
 import { StateTravelPicker } from "@/components/abortion/state-travel";
 import { ChartCard } from "@/components/charts/chart-card";
+import { citeFrom } from "@/components/charts/citation";
 import { periodTags } from "@/components/charts/period-tag";
 import { RankedBars } from "@/components/charts/ranked-bars";
 import { StatTile } from "@/components/charts/stat-tile";
 import { StateExplorer } from "@/components/charts/state-explorer";
 import { rankedTable, seriesTable } from "@/components/charts/tables";
 import { TimeSeriesChart } from "@/components/charts/time-series-chart";
-import { DatasetList } from "@/components/data/dataset-list";
 import { SectionNav } from "@/components/data/section-nav";
 import { loadAbortion } from "@/lib/abortion/data";
 import { formatValue } from "@/lib/format";
 import { loadStatePaths } from "@/lib/geo/state-paths";
-import { FeatureList } from "@/components/ui/feature-list";
+import { IssueHeader } from "@/components/data/issue-layout";
 
 // Rebuilt at most daily; crawlers and visitors share the cached render.
 export const revalidate = 86400;
@@ -27,32 +27,36 @@ export const metadata: Metadata = {
 };
 
 const SECTIONS = [
-  ["overview", "Overview"],
-  ["trend", "Since 2023"],
-  ["long-run", "Since 1973"],
+  ["trend", "Since 1973"],
   ["laws", "State limits"],
   ["travel", "Travel"],
   ["telehealth", "Telehealth & method"],
   ["patients", "Patients"],
   ["states", "States"],
-  ["sources", "Sources"],
 ] as const;
 
 const SOURCES = {
-  monthly: { label: "Guttmacher Monthly Abortion Provision Study", href: "/datasets/guttmacher-monthly-abortions" },
-  history: { label: "Guttmacher, Pregnancies, Births and Abortions 1973–2020", href: "/datasets/guttmacher-pregnancy-history" },
-  cdc: { label: "CDC Abortion Surveillance", href: "/datasets/cdc-abortion-surveillance" },
-  limits: { label: "Guttmacher state policy summaries", href: "/datasets/abortion-gestational-limits" },
+  monthly: "guttmacher-monthly-abortions",
+  history: "guttmacher-pregnancy-history",
+  cdc: "cdc-abortion-surveillance",
+  limits: "abortion-gestational-limits",
 };
 
-const USES: Record<string, string> = {
-  "guttmacher-monthly-abortions": "monthly and annual abortions by state since 2023, travel between states, and telehealth",
-  "guttmacher-pregnancy-history": "abortions and abortion rates by state of residence, 1973–2020",
-  "cdc-abortion-surveillance": "abortions reported by state health agencies, medication share, and patients' age, race and ethnicity, and weeks of gestation",
-  "abortion-gestational-limits": "each state's gestational limit",
-};
-
-const DOBBS = { x: 2022 + 5 / 12, label: "Dobbs decision (June 2022)" };
+// Court rulings and federal rules that changed abortion access. Charts only
+// draw the ones inside their own date range.
+const HISTORY = [
+  { x: 1973 + 0 / 12, label: "Roe v. Wade (Jan 1973)" },
+  { x: 1976 + 8 / 12, label: "Hyde Amendment (Sep 1976)" },
+  { x: 1992 + 5 / 12, label: "Planned Parenthood v. Casey (Jun 1992)" },
+  { x: 2000 + 8 / 12, label: "FDA approves mifepristone (Sep 2000)" },
+  { x: 2021 + 11 / 12, label: "FDA allows pills by mail (Dec 2021)" },
+  { x: 2022 + 5 / 12, label: "Dobbs decision (Jun 2022)" },
+];
+const SINCE_2023 = [
+  { x: 2023 + 5 / 12, label: "New York telehealth shield law (Jun 2023)" },
+  { x: 2024 + 4 / 12, label: "Florida 6-week ban (May 2024)" },
+  { x: 2024 + 5 / 12, label: "Supreme Court mifepristone ruling (Jun 2024)" },
+];
 
 const pct = (v: number | null | undefined) => (v === null || v === undefined ? "—" : `${Math.round(v)}%`);
 
@@ -72,19 +76,6 @@ function Prose({ children }: { children: ReactNode }) {
   return <div className="max-w-3xl space-y-3 text-base leading-7 text-slate-600 dark:text-slate-300">{children}</div>;
 }
 
-function Explainers({ items }: { items: { title: ReactNode; body: ReactNode }[] }) {
-  return (
-    <div className="grid gap-3 md:grid-cols-3">
-      {items.map((it, i) => (
-        <div key={i} className="rounded-2xl border border-slate-200 p-4 dark:border-slate-800">
-          <h3 className="font-semibold text-slate-950 dark:text-white">{it.title}</h3>
-          <div className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300">{it.body}</div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
 export default async function AbortionPage() {
   const [d, map] = await Promise.all([loadAbortion(), loadStatePaths()]);
   if (!d) {
@@ -96,38 +87,26 @@ export default async function AbortionPage() {
     );
   }
   const h = d.headline;
+  const cite = (slug: string) => citeFrom(d.datasets, slug)[0];
   const year = h.year ?? "";
 
   return (
     <div className="mx-auto max-w-7xl space-y-14">
-      <header className="max-w-3xl">
-        <p className="text-sm font-semibold tracking-[0.14em] text-blue-700 uppercase dark:text-blue-400">United States</p>
-        <h1 className="mt-2 text-4xl font-bold tracking-tight text-slate-950 sm:text-5xl dark:text-white">Abortion</h1>
-        <FeatureList
-          className="mt-4"
-          items={[
-            "Monthly counts since 2023",
-            "Every state back to 1988",
-            "National totals back to 1973",
-            "Each state's current gestational limit",
-          ]}
-        />
-      </header>
+      <IssueHeader title="Abortion" />
 
       <ChartCard
         title="Abortions per year since 1973"
-        subtitle="Three sources · the line marks the Dobbs decision"
-        source={SOURCES.history}
+        subtitle="Three sources · lines mark major rulings and federal rules"
+        source={[cite(SOURCES.history), cite(SOURCES.monthly), cite(SOURCES.cdc)].filter(Boolean)}
         table={seriesTable(d.longRun, "abortions")}
       >
-        <TimeSeriesChart series={d.longRun} unit="abortions" height={340} markers={[DOBBS]} />
+        <TimeSeriesChart series={d.longRun} unit="abortions" height={340} markers={HISTORY} />
       </ChartCard>
 
       <SectionNav sections={SECTIONS} />
 
-      {/* ------------------------------------------------------------ Overview */}
-      <section id="overview" className="scroll-mt-28 space-y-6">
-        <h2 className="text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">At a glance</h2>
+      {/* ---------------------------------------------------------- Since 1973 */}
+      <Section id="trend" title="Since 1973" question="How does today compare with the decades since Roe v. Wade, and how has each month gone since 2023?">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <StatTile
             label="Abortions per year"
@@ -149,96 +128,30 @@ export default async function AbortionPage() {
             compareLabel={h.month.compare ? `vs ${h.month.compare}` : undefined}
             spark={h.month.spark}
           />
-          <StatTile
-            label="By telehealth (virtual-only)"
-            unit="abortions"
-            value={h.virtual.value}
-            period={year}
-            extra={h.virtual.share !== null ? ` · ${pct(h.virtual.share)}` : undefined}
-            note="Pills mailed after an online consultation"
-            spark={h.virtual.spark}
-          />
-          <StatTile
-            label="Traveled to another state"
-            unit="abortions"
-            value={h.fromOther.value}
-            period={year}
-            extra={h.fromOther.share !== null ? ` · ${pct(h.fromOther.share)}` : undefined}
-            note="Patients treated outside their home state"
-          />
         </div>
-        <div className="rounded-2xl bg-slate-50 p-5 dark:bg-slate-900/60">
-          <h3 className="text-base font-semibold text-slate-950 dark:text-white">Key findings</h3>
-          <ul className="mt-3 space-y-2.5 text-sm leading-6 text-slate-700 dark:text-slate-300">
-            {d.findings.map((f) => (
-              <li key={f} className="flex gap-2.5">
-                <span className="mt-2.5 size-1.5 shrink-0 rounded-full bg-blue-600 dark:bg-blue-400" aria-hidden />
-                {f}
-              </li>
-            ))}
-          </ul>
-        </div>
-        <Explainers
-          items={[
-            {
-              title: "Two ways to count",
-              body: (
-                <>
-                  Guttmacher surveys and models every provider, so its totals are complete. CDC compiles what state health agencies report;
-                  California, Maryland, and New Hampshire don&apos;t report, so CDC&apos;s totals are lower.
-                </>
-              ),
-            },
-            {
-              title: "Where an abortion is counted",
-              body: (
-                <>
-                  Since 2023 counts are by <em>state of occurrence</em>: where the procedure happened or where pills were received. The 1973–2020
-                  series counts by the patient&apos;s <em>state of residence</em>.
-                </>
-              ),
-            },
-            {
-              title: "What isn't counted",
-              body: (
-                <>
-                  Abortions under exceptions to total bans, and pills obtained outside the U.S. health system (for example from overseas
-                  pharmacies or community networks), are not in Guttmacher&apos;s estimates.
-                </>
-              ),
-            },
-          ]}
-        />
-      </section>
-
-      {/* ---------------------------------------------------------- Since 2023 */}
-      <Section id="trend" title="Month by month since 2023" question="How many abortions are provided each month, and how does that split between states with and without total bans?">
+        <Prose>
+          <p>
+            Guttmacher counts every provider; there is no Guttmacher estimate for 2021–2022. CDC&apos;s totals are lower because California,
+            Maryland, and New Hampshire don&apos;t report. Counts since 2023 are by the state where the abortion happened, earlier ones by the
+            patient&apos;s home state. Abortions under ban exceptions and pills from outside the U.S. health system aren&apos;t included.
+          </p>
+        </Prose>
+        <ChartCard title="Abortion rate" subtitle="Per 1,000 women aged 15–44" source={cite(SOURCES.history)} table={seriesTable(d.rates, "per_1000")}>
+          <TimeSeriesChart series={d.rates} unit="per_1000" height={280} markers={HISTORY} />
+        </ChartCard>
         <div className="grid gap-6 lg:grid-cols-2">
-          <ChartCard title="Abortions per month" subtitle="United States · estimate" source={SOURCES.monthly} table={seriesTable(d.trend, "abortions")}>
-            <TimeSeriesChart series={d.trend} unit="abortions" height={260} />
+          <ChartCard title="Abortions per month" subtitle="United States · estimate" source={cite(SOURCES.monthly)} table={seriesTable(d.trend, "abortions")}>
+            <TimeSeriesChart series={d.trend} unit="abortions" height={260} markers={SINCE_2023} />
           </ChartCard>
           <ChartCard
             title="By state law"
             subtitle="Per month · states with total bans receive abortions mainly by telehealth"
-            source={SOURCES.monthly}
+            source={cite(SOURCES.monthly)}
             table={seriesTable(d.groups, "abortions")}
           >
-            <TimeSeriesChart series={d.groups} unit="abortions" height={260} />
+            <TimeSeriesChart series={d.groups} unit="abortions" height={260} markers={SINCE_2023} />
           </ChartCard>
         </div>
-      </Section>
-
-      {/* ---------------------------------------------------------- Since 1973 */}
-      <Section id="long-run" title="Since 1973" question="How does today compare with the decades since Roe v. Wade?">
-        <Prose>
-          <p>
-            Guttmacher&apos;s 1973–2020 series and its monthly study since 2023 both cover every state; there is no Guttmacher estimate
-            for 2021–2022. CDC&apos;s count is lower because several states don&apos;t report to it.
-          </p>
-        </Prose>
-        <ChartCard title="Abortion rate" subtitle="Per 1,000 women aged 15–44" source={SOURCES.history} table={seriesTable(d.rates, "per_1000")}>
-          <TimeSeriesChart series={d.rates} unit="per_1000" height={280} />
-        </ChartCard>
       </Section>
 
       {/* --------------------------------------------------------- State limits */}
@@ -285,35 +198,51 @@ export default async function AbortionPage() {
           ))}
         </div>
         <p className="text-xs text-slate-400">
-          Hover a state for the law&apos;s wording. Source:{" "}
-          <Link href={SOURCES.limits.href} className="underline underline-offset-2">
-            {SOURCES.limits.label}
-          </Link>
+          Hover a state for the law&apos;s wording.
+          {cite(SOURCES.limits) && (
+            <>
+              {" "}Source:{" "}
+              <Link href={cite(SOURCES.limits).href!} className="underline underline-offset-2">
+                {cite(SOURCES.limits).label}
+              </Link>
+            </>
+          )}
         </p>
       </Section>
 
       {/* -------------------------------------------------------------- Travel */}
       {d.travel.year && (
         <Section id="travel" title="Travel between states" question="How many people cross state lines for an abortion, and where do they go?">
-          <div className="grid gap-6 lg:grid-cols-2">
-            <ChartCard
-              title="Residents who went to another state"
-              subtitle={`${d.travel.year} · top 10 states`}
-              source={SOURCES.monthly}
-              table={rankedTable(d.travel.leftRanking, "State", "abortions")}
-            >
-              <RankedBars items={d.travel.leftRanking} unit="abortions" slot={2} />
-            </ChartCard>
-            <ChartCard title="Largest flows" subtitle={`${d.travel.year} · home state → state where provided`} source={SOURCES.monthly} table={rankedTable(d.travel.corridors, "Flow", "abortions")}>
-              <RankedBars items={d.travel.corridors} unit="abortions" />
-            </ChartCard>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <StatTile
+              label="Traveled to another state"
+              unit="abortions"
+              value={h.fromOther.value}
+              period={year}
+              extra={h.fromOther.share !== null ? ` · ${pct(h.fromOther.share)}` : undefined}
+              note="Patients treated outside their home state"
+            />
           </div>
+          <ChartCard title="Largest flows" subtitle={`${d.travel.year} · home state → state where provided`} source={cite(SOURCES.monthly)} table={rankedTable(d.travel.corridors, "Flow", "abortions")}>
+            <RankedBars items={d.travel.corridors} unit="abortions" />
+          </ChartCard>
           <StateTravelPicker states={d.travel.states} year={d.travel.year} />
         </Section>
       )}
 
       {/* ---------------------------------------------------------- Telehealth */}
       <Section id="telehealth" title="Telehealth and method" question="How much abortion now happens by mail, and how common is medication abortion?">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <StatTile
+            label="By telehealth (virtual-only)"
+            unit="abortions"
+            value={h.virtual.value}
+            period={year}
+            extra={h.virtual.share !== null ? ` · ${pct(h.virtual.share)}` : undefined}
+            note="Pills mailed after an online consultation"
+            spark={h.virtual.spark}
+          />
+        </div>
         <Prose>
           <p>
             Medication abortion uses two drugs, mifepristone and misoprostol, which the FDA has approved through 10 weeks of pregnancy. Virtual-only providers
@@ -322,10 +251,10 @@ export default async function AbortionPage() {
           </p>
         </Prose>
         <div className="grid gap-6 lg:grid-cols-2">
-          <ChartCard title="Abortions by virtual-only providers" subtitle="Per year · by state law where the pills were received" source={SOURCES.monthly} table={seriesTable(d.virtualSeries, "abortions")}>
+          <ChartCard title="Abortions by virtual-only providers" subtitle="Per year · by state law where the pills were received" source={cite(SOURCES.monthly)} table={seriesTable(d.virtualSeries, "abortions")}>
             <TimeSeriesChart series={d.virtualSeries} type="column" unit="abortions" height={260} />
           </ChartCard>
-          <ChartCard title="Medication abortions" subtitle="Share of abortions reported to CDC with a known method" source={SOURCES.cdc} table={seriesTable(d.medication, "percent")}>
+          <ChartCard title="Medication abortions" subtitle="Share of abortions reported to CDC with a known method" source={cite(SOURCES.cdc)} table={seriesTable(d.medication, "percent")}>
             <TimeSeriesChart series={d.medication} type="column" unit="percent" height={260} />
           </ChartCard>
         </div>
@@ -334,40 +263,39 @@ export default async function AbortionPage() {
       {/* ------------------------------------------------------------ Patients */}
       {d.cdcYear && (
         <Section id="patients" title="Patients" question="Who obtains abortions, and how far along in pregnancy?">
-          <Prose>
-            <p>
-              From CDC&apos;s {d.cdcYear} report, the latest published, among the reporting areas that record each characteristic.
-              {d.later !== null && <> {formatValue(100 - d.later, "percent")} of abortions took place at 13 weeks of pregnancy or earlier; {formatValue(d.later, "percent")} after 13 weeks.</>}
-            </p>
-          </Prose>
-          <div className="grid gap-6 lg:grid-cols-2">
-            <ChartCard title="By age" subtitle={`${d.cdcYear} · share of abortions`} source={SOURCES.cdc} table={rankedTable(d.ages, "Age", "percent")}>
-              <RankedBars items={d.ages} unit="percent" />
-            </ChartCard>
-            <ChartCard title="Abortion rate by race and ethnicity" subtitle={`${d.cdcYear} · per 1,000 women aged 15–44`} source={SOURCES.cdc} table={rankedTable(d.raceRates, "Group", "per_1000")}>
-              <RankedBars items={d.raceRates} unit="per_1000" slot={2} />
-            </ChartCard>
-            <ChartCard title="Weeks of pregnancy" subtitle="Share of abortions, 13 weeks or earlier" source={SOURCES.cdc} table={seriesTable(d.weeks, "percent")} className="lg:col-span-2">
-              <TimeSeriesChart series={d.weeks} unit="percent" height={240} />
-            </ChartCard>
-          </div>
+          <ChartCard
+            title="Who obtains abortions"
+            subtitle={`${d.cdcYear} · CDC reporting areas that record each characteristic`}
+            source={cite(SOURCES.cdc)}
+            table={{
+              columns: ["Group", "Value"],
+              rows: [
+                ...d.ages.map((i) => [`Age ${i.label}`, formatValue(i.value, "percent")]),
+                ...d.weeks.map((i) => [i.label, formatValue(i.value, "percent")]),
+                ...d.raceRates.map((i) => [i.label, `${formatValue(i.value, "per_1000")} per 1,000`]),
+              ],
+            }}
+          >
+            <div className="grid gap-x-10 gap-y-8 lg:grid-cols-3">
+              {[
+                { title: "Age", note: "Share of abortions", items: d.ages, unit: "percent", slot: 1 as const },
+                { title: "Weeks of pregnancy", note: "Share of abortions", items: d.weeks, unit: "percent", slot: 3 as const },
+                { title: "Race and ethnicity", note: "Abortions per 1,000 women aged 15–44", items: d.raceRates, unit: "per_1000", slot: 2 as const },
+              ].map((g) => (
+                <div key={g.title}>
+                  <h4 className="text-sm font-semibold text-slate-950 dark:text-white">{g.title}</h4>
+                  <p className="mb-3 text-xs text-slate-500 dark:text-slate-400">{g.note}</p>
+                  <RankedBars items={g.items} unit={g.unit} slot={g.slot} />
+                </div>
+              ))}
+            </div>
+          </ChartCard>
         </Section>
       )}
 
       {/* -------------------------------------------------------------- States */}
-      <Section id="states" title="Across the states" question="How do the states compare? Pick a measure to map it; sort the table by any column.">
+      <Section id="states" title="Across the states" question="How do the states compare?">
         <StateExplorer metrics={d.states.metrics} rows={d.states.rows} />
-      </Section>
-
-      {/* ------------------------------------------------------------- Sources */}
-      <Section id="sources" title="Sources and methods" question="Every figure on this page comes from the datasets below.">
-        <DatasetList datasets={d.datasets} uses={USES} />
-        <p className="text-sm text-slate-500 dark:text-slate-400">
-          Open a dataset for its full methodology, coverage, and API access.{" "}
-          <Link href="/datasets" className="font-medium text-slate-900 underline underline-offset-2 dark:text-white">
-            Browse all datasets
-          </Link>
-        </p>
       </Section>
     </div>
   );

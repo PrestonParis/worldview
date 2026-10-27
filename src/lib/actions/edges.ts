@@ -4,16 +4,14 @@ import { requireContributor } from "../auth/guard";
 import { revalidatePath } from "next/cache";
 import { edgeSchema, type EdgeInput } from "../validation/edge";
 import * as edgesDb from "../db/edges";
-import type { ActionResult } from "./entities";
+import { actionFailure, validationFailure, type ActionResult } from "./result";
 
-export async function createEdgeAction(
-  input: EdgeInput,
-): Promise<ActionResult<{ id: string }>> {
+export async function createEdgeAction(input: EdgeInput): Promise<ActionResult<{ id: string }>> {
   const denied = await requireContributor();
   if (denied) return denied;
   const parsed = edgeSchema.safeParse(input);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+    return validationFailure(parsed.error);
   }
   try {
     const edge = await edgesDb.createEdge(parsed.data);
@@ -21,13 +19,11 @@ export async function createEdgeAction(
     revalidatePath("/people", "layout");
     return { ok: true, data: { id: edge.id } };
   } catch (err) {
-    return { ok: false, error: (err as Error).message };
+    return actionFailure("edges.create", err);
   }
 }
 
-export async function deleteEdgeAction(
-  id: string,
-): Promise<ActionResult<null>> {
+export async function deleteEdgeAction(id: string): Promise<ActionResult<null>> {
   const denied = await requireContributor();
   if (denied) return denied;
   try {
@@ -36,6 +32,6 @@ export async function deleteEdgeAction(
     revalidatePath("/people", "layout");
     return { ok: true, data: null };
   } catch (err) {
-    return { ok: false, error: (err as Error).message };
+    return actionFailure("edges.delete", err);
   }
 }

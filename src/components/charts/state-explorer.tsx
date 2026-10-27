@@ -2,11 +2,10 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { ArrowDown, ArrowUp } from "lucide-react";
-import { US_STATE_GRID, US_STATE_GRID_COLS, US_STATE_GRID_ROWS } from "@/lib/money/us-states";
+import { DemographicsMap, NEGATIVE_COLOR, divergingExtent, valueExtent } from "@/components/demographics/demographics-map";
+import { FIPS_TO_ABBR, STATE_FIPS } from "@/lib/geo/states";
 import { formatValue } from "@/lib/format";
 import { stateSlug } from "@/lib/states/slug";
-import { useWidth } from "./use-width";
 
 export interface StateMetric {
   key: string;
@@ -24,42 +23,48 @@ export interface StateRow {
   values: Record<string, number | null>;
 }
 
-const STEPS = 7;
+const DEFAULT_COLOR = "#2563eb";
 
-// Quantile breaks: immigration figures are heavily skewed (CA/TX/FL/NY), so
-// equal-interval bins would paint 45 states the same color.
-function quantileBreaks(values: number[]): number[] {
-  const sorted = [...values].sort((a, b) => a - b);
-  return Array.from({ length: STEPS - 1 }, (_, i) => sorted[Math.floor(((i + 1) / STEPS) * (sorted.length - 1))]);
-}
+const ordinal = (n: number) => {
+  const s = ["th", "st", "nd", "rd"];
+  const v = n % 100;
+  return `${n}${s[(v - 20) % 10] ?? s[v] ?? s[0]}`;
+};
 
-// Tile map of one metric (switchable) above a sortable table of all of them.
-export function StateExplorer({ metrics, rows }: { metrics: StateMetric[]; rows: StateRow[] }) {
-  const [active, setActive] = useState(metrics[0].key);
-  const [sort, setSort] = useState<{ key: string; dir: 1 | -1 }>({ key: metrics[0].key, dir: -1 });
-  const [hover, setHover] = useState<string | null>(null);
+// State map of one metric (switchable), shaded from light (low) to dark
+// (high) in `color`. Measures that cross zero, such as change since a base
+// year, shade both ways from zero. Clicking a state lists every measure for
+// it with its rank.
+export function StateExplorer({
+  metrics,
+  rows,
+  color = DEFAULT_COLOR,
+  initial,
+}: {
+  metrics: StateMetric[];
+  rows: StateRow[];
+  color?: string;
+  initial?: string; // metric key to open on
+}) {
+  const [active, setActive] = useState(metrics.some((m) => m.key === initial) ? initial! : metrics[0].key);
   const [selected, setSelected] = useState<string | null>(null);
-  const [ref, width] = useWidth<HTMLDivElement>();
   const metric = metrics.find((m) => m.key === active)!;
   const groups = [...new Set(metrics.map((m) => m.group).filter((g): g is string => !!g))];
 
   const byAbbr = useMemo(() => new Map(rows.map((r) => [r.abbr, r])), [rows]);
   const present = rows.map((r) => r.values[active]).filter((v): v is number => v !== null && v !== undefined);
-  const breaks = present.length ? quantileBreaks(present) : [];
-  const step = (v: number) => breaks.filter((b) => v > b).length + 1;
+  const diverging = present.some((v) => v < 0);
+  const [lo, hi] = valueExtent(present);
+  const reach = divergingExtent(present);
+  const focused = selected ? byAbbr.get(selected) : undefined;
 
-  const gap = 3;
-  const cell = Math.min(52, Math.floor((width - gap * (US_STATE_GRID_COLS - 1)) / US_STATE_GRID_COLS));
-  const mapW = cell * US_STATE_GRID_COLS + gap * (US_STATE_GRID_COLS - 1);
-  const mapH = cell * US_STATE_GRID_ROWS + gap * (US_STATE_GRID_ROWS - 1);
-  const focused = byAbbr.get(hover ?? selected ?? "");
-
-  const sorted = [...rows].sort((a, b) => {
-    if (sort.key === "name") return a.name.localeCompare(b.name) * sort.dir;
-    const av = a.values[sort.key] ?? -Infinity;
-    const bv = b.values[sort.key] ?? -Infinity;
-    return (av - bv) * sort.dir;
-  });
+  // Rank 1 = highest value.
+  const rankOf = (key: string, abbr: string) => {
+    const v = byAbbr.get(abbr)?.values[key];
+    if (v === null || v === undefined) return null;
+    const all = rows.map((r) => r.values[key]).filter((x): x is number => x !== null && x !== undefined);
+    return { rank: all.filter((x) => x > v).length + 1, of: all.length };
+  };
 
   return (
     <div className="space-y-6">
@@ -106,128 +111,105 @@ export function StateExplorer({ metrics, rows }: { metrics: StateMetric[]; rows:
       )}
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_16rem]">
-        <div ref={ref} className="relative min-w-0">
-          <svg width={mapW} height={mapH} role="img" aria-label={`${metric.label} by state`} className="block max-w-full">
-            {US_STATE_GRID.map((c) => {
-              const v = byAbbr.get(c.abbr)?.values[active];
-              const s = v === null || v === undefined ? 0 : step(v);
-              const x = c.col * (cell + gap);
-              const y = c.row * (cell + gap);
-              return (
-                <g
-                  key={c.abbr}
-                  tabIndex={0}
-                  onPointerEnter={() => setHover(c.abbr)}
-                  onPointerLeave={() => setHover(null)}
-                  onFocus={() => setHover(c.abbr)}
-                  onBlur={() => setHover(null)}
-                  onClick={() => setSelected((current) => current === c.abbr ? null : c.abbr)}
-                  className="cursor-pointer outline-none"
-                >
-                  <rect
-                    x={x}
-                    y={y}
-                    width={cell}
-                    height={cell}
-                    rx={4}
-                    fill={s ? `var(--viz-seq-${s})` : "var(--viz-empty)"}
-                    stroke={selected === c.abbr ? "var(--viz-series-2)" : hover === c.abbr ? "var(--viz-muted)" : "none"}
-                    strokeWidth={selected === c.abbr ? 3 : 2}
-                    className="transition-all duration-300"
-                  />
-                  <text
-                    x={x + cell / 2}
-                    y={y + cell / 2}
-                    dy="0.35em"
-                    textAnchor="middle"
-                    className="text-[11px] font-semibold"
-                    style={{ fill: s ? `var(--viz-seq-ink-${s})` : "var(--viz-muted)" }}
-                  >
-                    {c.abbr}
-                  </text>
-                </g>
-              );
-            })}
-          </svg>
-          {focused && (
-            <div className="pointer-events-none absolute top-0 right-0 rounded-lg border border-slate-200 bg-white/95 px-3 py-2 text-xs shadow-lg dark:border-slate-700 dark:bg-slate-900/95">
-              <p className="font-medium text-slate-500 dark:text-slate-400">{focused.name}</p>
-              <p className="mt-0.5 text-base font-semibold text-slate-900 tabular-nums dark:text-white">
-                {formatValue(focused.values[active], metric.unit)}
-              </p>
-              {selected && !hover && <p className="mt-1 text-[11px] text-slate-400">Selected · click again to clear</p>}
-            </div>
-          )}
+        <div className="min-w-0 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800">
+          <DemographicsMap
+            states={rows.map((r) => ({ id: STATE_FIPS[r.abbr], name: r.name, value: r.values[active] ?? null }))}
+            cities={[]}
+            selectedStateId={selected ? STATE_FIPS[selected] : null}
+            selectedCityId={null}
+            cityLevel={false}
+            color={color}
+            scale={diverging ? "diverging" : "sequential"}
+            formatValue={(v) => formatValue(v, metric.unit)}
+            onSelectState={(id) => setSelected((current) => (current === FIPS_TO_ABBR[id] ? null : FIPS_TO_ABBR[id]))}
+            onSelectCity={() => {}}
+            onBack={() => setSelected(null)}
+            onNational={() => setSelected(null)}
+          />
         </div>
-        <div className="space-y-3 text-sm">
-          <p className="font-semibold text-slate-900 dark:text-white">{metric.label}</p>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            {metric.period} · {metric.source}
-          </p>
-          {metric.description && <p className="text-xs leading-5 text-slate-600 dark:text-slate-300">{metric.description}</p>}
-          {breaks.length > 0 && (
-            <ul className="space-y-1 text-xs text-slate-600 dark:text-slate-300">
-              {Array.from({ length: STEPS }, (_, i) => {
-                const lo = i === 0 ? Math.min(...present) : breaks[i - 1];
-                const hi = i === STEPS - 1 ? Math.max(...present) : breaks[i];
-                return (
-                  <li key={i} className="flex items-center gap-2">
-                    <span className="size-3 rounded-sm" style={{ background: `var(--viz-seq-${i + 1})` }} />
-                    <span className="tabular-nums">
-                      {formatValue(lo, metric.unit, { compact: true })} – {formatValue(hi, metric.unit, { compact: true })}
-                    </span>
-                  </li>
-                );
-              })}
-            </ul>
+        <div className="space-y-4 text-sm">
+          <div className="space-y-2">
+            <p className="font-semibold text-slate-900 dark:text-white">{metric.label}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              {metric.period} · {metric.source}
+            </p>
+            {metric.description && (
+              <p className="text-xs leading-5 text-slate-600 dark:text-slate-300">{metric.description}</p>
+            )}
+            {present.length > 0 && (
+              <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                <span className="tabular-nums">
+                  {formatValue(diverging ? -reach : lo, metric.unit, { compact: true })}
+                </span>
+                <span
+                  className="h-2 flex-1 rounded-full"
+                  style={{
+                    background: diverging
+                      ? `linear-gradient(to right, ${NEGATIVE_COLOR}, color-mix(in srgb, ${NEGATIVE_COLOR} 12%, transparent) 50%, color-mix(in srgb, ${color} 12%, transparent) 50%, ${color})`
+                      : `linear-gradient(to right, color-mix(in srgb, ${color} 12%, transparent), ${color})`,
+                  }}
+                />
+                <span className="tabular-nums">
+                  {formatValue(diverging ? reach : hi, metric.unit, { compact: true })}
+                </span>
+              </div>
+            )}
+          </div>
+          {focused ? (
+            <div className="rounded-xl border border-slate-200 p-3 dark:border-slate-800">
+              <div className="flex items-baseline justify-between gap-2">
+                <Link
+                  href={`/states/${stateSlug(focused.name)}`}
+                  className="font-semibold text-slate-900 hover:underline dark:text-white"
+                >
+                  {focused.name}
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => setSelected(null)}
+                  className="text-xs text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+                >
+                  Clear
+                </button>
+              </div>
+              <dl className="mt-2 space-y-1.5 text-xs">
+                {metrics.map((m) => {
+                  const r = rankOf(m.key, focused.abbr);
+                  return (
+                    <div key={m.key} className="flex justify-between gap-3">
+                      <dt>
+                        <button
+                          type="button"
+                          onClick={() => setActive(m.key)}
+                          className={`text-left ${
+                            m.key === active
+                              ? "font-medium text-slate-900 dark:text-white"
+                              : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
+                          }`}
+                        >
+                          {m.label}
+                        </button>
+                      </dt>
+                      <dd className="shrink-0 text-right">
+                        <span className="font-medium text-slate-900 tabular-nums dark:text-white">
+                          {formatValue(focused.values[m.key], m.unit)}
+                        </span>
+                        {r && (
+                          <span className="block text-[11px] text-slate-400 tabular-nums">
+                            {ordinal(r.rank)} of {r.of}
+                          </span>
+                        )}
+                      </dd>
+                    </div>
+                  );
+                })}
+              </dl>
+            </div>
+          ) : (
+            <p className="text-xs text-slate-400">Hover a state for its value; click one to see every measure and its rank.</p>
           )}
-          <p className="text-xs text-slate-400">Shades split states into sevenths by rank.</p>
         </div>
       </div>
-
-      <details className="group rounded-xl border border-slate-200 dark:border-slate-800">
-        <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-sm font-semibold text-slate-900 dark:text-white">
-          View and sort the full state data table
-          <span aria-hidden className="text-slate-400 transition group-open:rotate-45">+</span>
-        </summary>
-        <div className="max-h-[32rem] overflow-auto border-t border-slate-200 dark:border-slate-800">
-        <table className="w-full min-w-[40rem] text-sm">
-          <thead className="sticky top-0 bg-slate-50 text-xs text-slate-500 dark:bg-slate-900 dark:text-slate-400">
-            <tr>
-              {[{ key: "name", label: "State" }, ...metrics].map((col) => (
-                <th key={col.key} className={`px-3 py-2 font-medium ${col.key === "name" ? "text-left" : "text-right"}`}>
-                  <button
-                    type="button"
-                    onClick={() => setSort((s) => ({ key: col.key, dir: s.key === col.key ? ((-s.dir) as 1 | -1) : col.key === "name" ? 1 : -1 }))}
-                    className="inline-flex items-center gap-1 hover:text-slate-900 dark:hover:text-white"
-                  >
-                    {col.label}
-                    {sort.key === col.key && (sort.dir === 1 ? <ArrowUp className="size-3" /> : <ArrowDown className="size-3" />)}
-                  </button>
-                  {"period" in col && <span className="block font-normal text-slate-400">{col.period}</span>}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-            {sorted.map((r) => (
-              <tr key={r.abbr} className="hover:bg-slate-50 dark:hover:bg-slate-900/60">
-                <td className="px-3 py-1.5 text-slate-700 dark:text-slate-200">
-                  <Link href={`/states/${stateSlug(r.name)}`} className="hover:underline">
-                    {r.name}
-                  </Link>
-                </td>
-                {metrics.map((m) => (
-                  <td key={m.key} className={`px-3 py-1.5 text-right tabular-nums ${m.key === active ? "font-medium text-slate-900 dark:text-white" : "text-slate-600 dark:text-slate-300"}`}>
-                    {formatValue(r.values[m.key], m.unit)}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        </div>
-      </details>
     </div>
   );
 }

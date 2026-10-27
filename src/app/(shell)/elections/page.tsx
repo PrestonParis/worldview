@@ -4,6 +4,7 @@ import { ElectorateSection } from "@/components/elections/electorate-section";
 import { DataSourceNote } from "@/components/elections/data-source-note";
 import { ElectionCalendar, ElectionCycleHero } from "@/components/elections/election-cycle-hero";
 import { EmptyState } from "@/components/empty-state";
+import { MyRaces } from "@/components/my-government/highlights";
 import { listCycles, listRaces, listSearchEntries } from "@/lib/db/election-overview";
 import { loadElectorate } from "@/lib/db/electorate";
 import { chamberProjections } from "@/lib/elections/cycle-control";
@@ -59,6 +60,7 @@ export default async function Page({ searchParams }: PageProps<"/elections">) {
           />
         ) : (
           <>
+            <MyRaces cycle={summary.cycle} showPrompt className="mb-6" />
             <ElectionsExplorer
               key={`${summary.cycle}-${office}`}
               cycles={cycles}

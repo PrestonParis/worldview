@@ -11,12 +11,14 @@ export interface SessionInfo {
   // Whether the visitor may change shared data. This only hides controls that
   // would fail anyway; the server actions enforce it (src/lib/auth/guard.ts).
   canEdit: boolean;
+  // The site owner, who also sees owner-only tools such as Geography.
+  isOwner: boolean;
 }
 
-const SIGNED_OUT: SessionInfo = { accountLabel: null, canEdit: false };
+const SIGNED_OUT: SessionInfo = { accountLabel: null, canEdit: false, isOwner: false };
 const SessionContext = createContext<SessionInfo>(SIGNED_OUT);
 
-const hasSessionCookie = () => document.cookie.split(";").some((c) => c.trim().startsWith("sb-"));
+export const hasSessionCookie = () => document.cookie.split(";").some((c) => c.trim().startsWith("sb-"));
 
 export function SessionProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();

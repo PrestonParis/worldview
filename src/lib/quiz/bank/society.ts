@@ -99,7 +99,7 @@ export const societyStatements: Statement[] = [
   st("justice.19", -0.75, "People serving long sentences should have their cases reviewed for release after 10 years."),
   st("justice.20", 0.75, "Juveniles who commit violent crimes should be tried as adults."),
 
-  // ── Identity: Group-conscious (-1) ↔ Colorblind (+1) ──
+  // ── Identity: Group-conscious (-1) ↔ Race-neutral law (+1) ──
   st("identity.01", -1, "The federal government should pay reparations to the descendants of enslaved people."),
   st("identity.02", -1, "American institutions are fundamentally built on racism and must be remade."),
   st("identity.03", -0.75, "College admissions should actively favor applicants from underrepresented groups."),
@@ -120,4 +120,26 @@ export const societyStatements: Statement[] = [
   st("identity.18", 1, "Private businesses should be free to choose their customers and employees for any reason.", on("regulation", 0.6, 0.4)),
   st("identity.19", -0.75, "Electoral districts should be drawn to ensure minority communities can elect representatives of their choice."),
   st("identity.20", 0.75, "Gaps between groups today mostly reflect differences in culture and choices, not discrimination."),
+
+  // ── Race: Integrationist (-1) ↔ Racial nationalist (+1) ──
+  st("race.01", -1, "Racial categories have no real biological meaning and should fade from public life over time."),
+  st("race.02", -1, "The best future for America is one where intermarriage blurs racial lines until they disappear."),
+  st("race.03", -0.75, "Any political movement organized around one race's interests is harmful, whichever race it is."),
+  st("race.04", -0.75, "Racially separate neighborhoods and schools are harmful even when people choose them freely."),
+  st("race.05", -0.5, "Being American is a matter of shared citizenship and ideals, not ancestry.", on("immigration", -0.3, 0.3)),
+  st("race.06", -0.5, "A person's race says nothing about their character or abilities."),
+  st("race.23", -0.25, "No racial or ethnic group should organize politically as a separate people."),
+  st("race.22", -0.25, "Race should play little part in how people decide whom to vote for."),
+  st("race.09", -0.75, "Interracial marriage is good for the country."),
+  st("race.10", 0, "People naturally prefer to live among others like themselves, and government should neither push nor fight that."),
+  st("race.11", 0, "Ethnic communities can keep their own neighborhoods and institutions while the country stays one nation."),
+  st("race.12", 0.25, "White Americans should be as free as any other group to organize around their racial identity."),
+  st("race.13", 0.25, "It would be a loss if America's historic ethnic majority became a minority.", on("immigration", 0.6, 0.3)),
+  st("race.14", 0.5, "Average differences in intelligence between racial groups are partly genetic."),
+  st("race.15", 0.5, "Each racial community should build and control its own businesses, schools, and institutions rather than pursue integration."),
+  st("race.24", 0.75, "Racial groups are distinct peoples whose political interests cannot be reduced to individual rights."),
+  st("race.17", 0.75, "Races would be better off living in separate nations or territories."),
+  st("race.18", 0.75, "Immigration is being deliberately used to replace America's white population.", on("immigration", 1, 0.4)),
+  st("race.19", 1, "Some races are superior to others."),
+  st("race.20", 1, "Citizenship should be limited to people of one race."),
 ];

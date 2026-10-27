@@ -384,23 +384,23 @@ export async function loadContributionSummary(cycle: number | null): Promise<Con
     rows(sql`select coalesce(sum(amount),0) amount, count(*) n,
                     count(distinct donor_entity_id) donors, count(distinct recipient_entity_id) recipients,
                     min(date) first, max(date) last
-             from contributions where currency = 'USD' ${inWindow}`),
+             from contributions where currency = 'USD' and coalesce(memo_code, '') <> 'X' ${inWindow}`),
     rows(sql`select to_char(date_trunc('month', date), 'YYYY-MM') m, sum(amount) total, count(*) n
-             from contributions where currency = 'USD' ${inWindow}
+             from contributions where currency = 'USD' and coalesce(memo_code, '') <> 'X' ${inWindow}
              group by 1 order by 1`),
     rows(sql`select recipient_entity_id id, sum(amount) total, count(*) n from contributions
-             where currency = 'USD' ${inWindow} group by 1 order by 2 desc limit 25`),
+             where currency = 'USD' and coalesce(memo_code, '') <> 'X' ${inWindow} group by 1 order by 2 desc limit 25`),
     rows(sql`select donor_entity_id id, sum(amount) total, count(*) n from contributions
-             where currency = 'USD' ${inWindow} group by 1 order by 2 desc limit 25`),
+             where currency = 'USD' and coalesce(memo_code, '') <> 'X' ${inWindow} group by 1 order by 2 desc limit 25`),
     rows(sql`select donor_industry k, sum(amount) total, count(*) n from contributions
-             where currency = 'USD' ${inWindow} group by 1 order by 2 desc`),
+             where currency = 'USD' and coalesce(memo_code, '') <> 'X' ${inWindow} group by 1 order by 2 desc`),
     rows(sql`select contribution_type k, sum(amount) total, count(*) n from contributions
-             where currency = 'USD' ${inWindow} group by 1 order by 2 desc`),
+             where currency = 'USD' and coalesce(memo_code, '') <> 'X' ${inWindow} group by 1 order by 2 desc`),
     rows(sql`select rid, did, ind, total, n from (
                select recipient_entity_id rid, donor_entity_id did, max(donor_industry) ind,
                       sum(amount) total, count(*) n,
                       row_number() over (partition by recipient_entity_id order by sum(amount) desc) rk
-               from contributions where currency = 'USD' ${inWindow} group by 1, 2
+               from contributions where currency = 'USD' and coalesce(memo_code, '') <> 'X' ${inWindow} group by 1, 2
              ) t where rk <= 8`),
     rows(sql`select distinct on (entity_id) entity_id id, party from candidate_finance order by entity_id, cycle desc`),
   ]);

@@ -1,7 +1,7 @@
 import { revalidateTag } from "next/cache";
 import { authenticatePartner } from "@/lib/data/partner-keys";
 import { AREA_STATS_TAG, getDataset, getPartnerDataset, queryObservations, upsertObservations } from "@/lib/db/stats";
-import { observationBatchSchema } from "@/lib/validation/observation";
+import { observationBatchSchema, periodSchema } from "@/lib/validation/observation";
 
 type Context = { params: Promise<{ slug: string }> };
 
@@ -14,6 +14,15 @@ export async function GET(request: Request, { params }: Context) {
     return Response.json({ error: `No published dataset "${slug}".` }, { status: 404 });
   }
   const q = new URL(request.url).searchParams;
+  for (const field of ["from", "to"] as const) {
+    const value = q.get(field);
+    if (value && !periodSchema.safeParse(value).success) {
+      return Response.json(
+        { error: `${field} must be YYYY, YYYY-MM, YYYY-MM-DD, YYYY-Qn, or FYYYYY.` },
+        { status: 400 },
+      );
+    }
+  }
   const limit = Math.min(MAX_LIMIT, Math.max(1, Number(q.get("limit")) || 1000));
   const offset = Math.max(0, Number(q.get("offset")) || 0);
   try {
@@ -32,9 +41,9 @@ export async function GET(request: Request, { params }: Context) {
       observations,
       next: observations.length === limit ? offset + limit : null,
     });
-  } catch (err) {
-    // periodStart() rejects a malformed from/to.
-    return Response.json({ error: (err as Error).message }, { status: 400 });
+  } catch (error) {
+    console.error(`[api:data:observations:${slug}]`, error);
+    return Response.json({ error: "Observations are temporarily unavailable." }, { status: 500 });
   }
 }
 

@@ -6,6 +6,7 @@ import { AddPanel } from "@/components/forms/add-panel";
 import { DeleteButton } from "@/components/forms/delete-button";
 import { deleteEntityAction } from "@/lib/actions/entities";
 import { entityTypes, type EntityType } from "@/lib/validation/entity";
+import { publicEntityPath } from "@/lib/people/public";
 
 export default async function EntitiesPage({
   searchParams,
@@ -27,7 +28,7 @@ export default async function EntitiesPage({
           <li key={e.id} className="flex items-center justify-between gap-4 py-3">
             <div className="min-w-0">
               <Link
-                href={`/data/entities/${e.id}`}
+                href={publicEntityPath(e)}
                 className="block truncate font-medium text-slate-900 hover:underline dark:text-slate-100"
               >
                 {e.name}

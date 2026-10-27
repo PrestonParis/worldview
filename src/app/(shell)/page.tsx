@@ -10,11 +10,13 @@ import { countContributions, listContributionTotalsByCurrency } from "@/lib/db/c
 import { countBills } from "@/lib/db/bills";
 import { countRollCalls } from "@/lib/db/rollCalls";
 import { listCycles } from "@/lib/db/election-overview";
+import { loadContributionSummary } from "@/lib/db/moneyOverview";
+import { getNavPreviews } from "@/lib/nav-previews";
 import { formatPeriod } from "@/lib/format";
 import { loadStatePaths } from "@/lib/geo/state-paths";
 import { Hero, type SnapshotMetric } from "@/components/home/hero";
 import type { StateMeasure } from "@/components/home/state-map";
-import { ToolModules, type PlatformFacts } from "@/components/home/tool-modules";
+import { ToolModules, type PlatformFacts, type TrendEvent } from "@/components/home/tool-modules";
 
 // Rebuilt at most daily; crawlers and visitors share the cached render.
 export const revalidate = 86400;
@@ -28,6 +30,24 @@ async function loadStatePopulations() {
 }
 
 const numbers = (values: (number | null)[]) => values.filter((value): value is number => value !== null && Number.isFinite(value));
+
+function shiftMonth(period: string, delta: number) {
+  const match = /^(\d{4})-(\d{2})$/.exec(period);
+  if (!match) return period;
+  const date = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1 + delta, 1));
+  return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}`;
+}
+
+function timelineEvent(start: string | undefined, end: string | undefined, at: string, label: string): TrendEvent[] {
+  const value = (period: string) => {
+    const match = /^(\d{4})(?:-(\d{2}))?/.exec(period);
+    return match ? Number(match[1]) * 12 + Number(match[2] ?? 1) - 1 : NaN;
+  };
+  if (!start || !end) return [];
+  const [a, b, x] = [value(start), value(end), value(at)];
+  if (![a, b, x].every(Number.isFinite) || x < a || x > b || a === b) return [];
+  return [{ position: (x - a) / (b - a), label }];
+}
 
 export default async function Home() {
   const [
@@ -44,6 +64,8 @@ export default async function Home() {
     billCount,
     rollCallCount,
     cycles,
+    moneySummary,
+    previews,
   ] = await Promise.all([
     settle(loadImmigration()),
     settle(loadCrime()),
@@ -58,6 +80,8 @@ export default async function Home() {
     settle(countBills()),
     settle(countRollCalls()),
     settle(listCycles()),
+    settle(loadContributionSummary(null)),
+    getNavPreviews(),
   ]);
 
   const race = getDemographicSeries("race");
@@ -65,6 +89,9 @@ export default async function Home() {
   const encounter = immigration?.stats.encounters;
   const violentCrime = crime?.headline.violent;
   const population = statePopulations?.reduce((sum, region) => sum + region.population, 0);
+  const encounterStart = encounter?.period && encounter.spark?.length
+    ? shiftMonth(encounter.period, -(encounter.spark.length - 1))
+    : undefined;
 
   const snapshot: SnapshotMetric[] = [
     ...(encounter ? [{
@@ -135,7 +162,12 @@ export default async function Home() {
       people: { entities: entityCount, relationships: edgeCount, recent: recentEntities?.map((entity) => entity.name) ?? [] },
     } : {}),
     ...(contributionCount != null ? {
-      money: { contributions: contributionCount, usdTotal: contributionTotals?.find((total) => total.currency === "USD")?.total ?? 0 },
+      money: {
+        contributions: contributionCount,
+        usdTotal: contributionTotals?.find((total) => total.currency === "USD")?.total ?? 0,
+        topRecipients: moneySummary?.topRecipients.slice(0, 3).map((recipient) => ({ name: recipient.name, total: recipient.total })) ?? [],
+        coverage: moneySummary?.totals.lastDate,
+      },
     } : {}),
     ...(billCount != null && rollCallCount != null ? { legislation: { bills: billCount, rollCalls: rollCallCount } } : {}),
     ...(latestCycle ? {
@@ -156,7 +188,8 @@ export default async function Home() {
           period: encounter.period ? formatPeriod(encounter.period) : "Latest month",
           source: "CBP",
           values: encounter.spark ?? [],
-          firstPeriod: "Prior 24 months",
+          firstPeriod: encounterStart ? formatPeriod(encounterStart) : undefined,
+          events: timelineEvent(encounterStart, encounter.period, "2025-01", "Administration change"),
         } : null}
         crime={crime?.year && violentCrime ? {
           label: "Violent crime rate",
@@ -166,6 +199,8 @@ export default async function Home() {
           source: "FBI",
           values: violentCrime.spark ?? [],
           firstPeriod: crime.baseYear ?? undefined,
+          lastPeriod: crime.year,
+          events: timelineEvent(crime.baseYear ?? undefined, crime.year, "2020", "COVID-19 pandemic"),
         } : null}
         demographics={observed ? {
           period: `${race.observedThrough} estimate`,
@@ -173,6 +208,7 @@ export default async function Home() {
           categories: race.categories.map((category) => ({ label: category.label, value: observed.values[category.id] ?? 0, color: category.color })),
         } : null}
         facts={facts}
+        previews={previews}
         datasetCount={datasets?.length ?? 0}
         publisherCount={publishers}
       />

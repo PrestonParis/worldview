@@ -85,7 +85,7 @@ const SECTIONS: { id: string; title: string; href: (s: StateInfo) => string; lin
     ],
   },
   {
-    id: "health", title: "Health care", href: () => "/health-care#states", linkLabel: "Health Care",
+    id: "health", title: "Healthcare", href: () => "/healthcare#states", linkLabel: "Healthcare",
     facts: [
       raw("census-acs1-health", "uninsured_rate", "Uninsured", "percent"),
       raw("census-acs1-health", "medicaid_share", "Covered by Medicaid", "percent"),

@@ -1,127 +1,70 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState, type FormEvent } from "react";
-import {
-  BadgeDollarSign,
-  Building2,
-  CheckCircle2,
-  ChevronDown,
-  ExternalLink,
-  Landmark,
-  LoaderCircle,
-  MapPin,
-  Search,
-  ShieldCheck,
-  Scale,
-  Users,
-  Vote,
-} from "lucide-react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { Bookmark, ChevronDown, LoaderCircle, MapPin, Search } from "lucide-react";
 import type {
   GovernmentLevel,
   GovernmentLookupResult,
   GovernmentOfficial,
+  OfficialRecord,
 } from "@/lib/my-government/types";
 import type { AddressSuggestion } from "@/lib/my-government/suggestions";
 import { FeatureList } from "@/components/ui/feature-list";
+import { MyRaces } from "@/components/my-government/highlights";
+import { OfficialAvatar, OfficialCard } from "@/components/my-government/official-card";
+import { clearMyGovernment, saveMyGovernment, useMyGovernment } from "@/components/my-government/use-my-government";
+import { savedAsLookup } from "@/lib/my-government/saved";
 
 const GROUPS: Array<{ level: GovernmentLevel; label: string; description: string }> = [
-  { level: "local", label: "Local", description: "Schools and city government" },
+  { level: "federal", label: "In Washington", description: "Your members of Congress" },
+  { level: "state", label: "At the statehouse", description: "Your legislators and statewide officers" },
   { level: "county", label: "County", description: "Public safety and county services" },
-  { level: "state", label: "State", description: "Legislature and executive" },
-  { level: "federal", label: "Federal", description: "Congress" },
+  { level: "local", label: "Local", description: "Schools and city government" },
   { level: "courts", label: "Courts", description: "Trial and appellate judges" },
 ];
 
-const LEVEL_ICONS: Record<GovernmentLevel, typeof Building2> = {
-  local: Users,
-  county: Building2,
-  state: Landmark,
-  federal: Landmark,
-  courts: Scale,
-};
+// Profile links and headline numbers for the officials shown, keyed by
+// entity id and Bioguide id (federal officials arrive with only the latter).
+function useOfficialRecords(officials: GovernmentOfficial[] | undefined) {
+  const query = useMemo(() => {
+    const e = [...new Set((officials ?? []).flatMap((o) => (o.entityId ? [o.entityId] : [])))].sort();
+    const b = [...new Set((officials ?? []).flatMap((o) => (o.bioguideId && !o.entityId ? [o.bioguideId] : [])))].sort();
+    return e.length || b.length ? new URLSearchParams({ e: e.join(","), b: b.join(",") }).toString() : "";
+  }, [officials]);
+  const [data, setData] = useState<{ query: string; records: OfficialRecord[] } | null>(null);
 
-function connectionHref(base: string, official: GovernmentOfficial): string {
-  const params = new URLSearchParams({ official: official.name ?? official.office });
-  if (official.bioguideId) params.set("bioguide", official.bioguideId);
-  return `${base}?${params.toString()}`;
+  useEffect(() => {
+    if (!query) return;
+    let live = true;
+    fetch(`/api/my-government/records?${query}`)
+      .then((res) => (res.ok ? res.json() : { records: [] }))
+      .then((body: { records: OfficialRecord[] }) => {
+        if (live) setData({ query, records: body.records });
+      })
+      .catch(() => {});
+    return () => {
+      live = false;
+    };
+  }, [query]);
+
+  return useMemo(() => {
+    const byKey = new Map<string, OfficialRecord>();
+    for (const r of data?.query === query ? data.records : []) {
+      byKey.set(r.entityId, r);
+      if (r.bioguideId) byKey.set(r.bioguideId, r);
+    }
+    return (o: GovernmentOfficial) => (o.entityId && byKey.get(o.entityId)) || (o.bioguideId && byKey.get(o.bioguideId)) || undefined;
+  }, [data, query]);
 }
 
-function OfficeCard({ official }: { official: GovernmentOfficial }) {
-  const verified = official.status === "verified";
-  const Icon = LEVEL_ICONS[official.level];
-  const links = [
-    { label: "Votes", icon: Vote, href: "/legislation" },
-    { label: "Money", icon: BadgeDollarSign, href: "/money" },
-    { label: "Promises", icon: CheckCircle2, href: "/legislation" },
-    { label: "Scorecards", icon: ShieldCheck, href: "/people" },
-  ];
-
-  return (
-    <article className="group flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-950/[0.02] transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md dark:border-slate-800 dark:bg-slate-950 dark:shadow-black/20 dark:hover:border-slate-700">
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex min-w-0 items-start gap-3">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-900 dark:text-slate-300">
-            <Icon size={19} />
-          </span>
-          <div className="min-w-0">
-            <p className="text-xs font-semibold tracking-wide text-slate-400 uppercase">{official.office}</p>
-            <h3 className={`mt-1 text-base font-semibold ${verified ? "text-slate-950 dark:text-white" : "text-slate-500 dark:text-slate-400"}`}>
-              {official.name ?? "Official not yet resolved"}
-            </h3>
-          </div>
-        </div>
-        <span className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold ${verified ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300" : "bg-amber-50 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300"}`}>
-          {verified ? "Verified" : "District only"}
-        </span>
-      </div>
-
-      <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-50 px-2.5 py-1 dark:bg-slate-900">
-          <MapPin size={12} /> {official.jurisdiction}
-        </span>
-        {official.party ? <span>{official.party}</span> : null}
-      </div>
-
-      {verified ? (
-        <div className="mt-5 grid grid-cols-4 gap-1.5 border-t border-slate-100 pt-4 dark:border-slate-800">
-          {links.map((item) => {
-            const ItemIcon = item.icon;
-            return (
-              <Link
-                key={item.label}
-                href={connectionHref(item.href, official)}
-                className="flex flex-col items-center gap-1 rounded-lg px-1 py-2 text-[11px] font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-950 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-white"
-              >
-                <ItemIcon size={15} />
-                {item.label}
-              </Link>
-            );
-          })}
-        </div>
-      ) : (
-        <p className="mt-5 border-t border-slate-100 pt-4 text-xs leading-5 text-slate-400 dark:border-slate-800">
-          The district is confirmed. A verified officeholder roster is not connected for this office yet.
-        </p>
-      )}
-
-      <div className="mt-auto flex items-center justify-between gap-3 pt-4 text-xs">
-        <a
-          href={official.sourceUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex items-center gap-1 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
-        >
-          {official.sourceLabel} <ExternalLink size={11} />
-        </a>
-        {official.website ? (
-          <a href={official.website} target="_blank" rel="noreferrer" className="font-medium text-slate-700 hover:underline dark:text-slate-200">
-            Official site
-          </a>
-        ) : null}
-      </div>
-    </article>
-  );
+function partySummary(officials: GovernmentOfficial[]): string {
+  const counts = new Map<string, number>();
+  for (const o of officials) {
+    const p = o.party?.toUpperCase().startsWith("DEM") ? "D" : o.party?.toUpperCase().startsWith("REP") ? "R" : o.party ? "Other" : "";
+    if (p) counts.set(p, (counts.get(p) ?? 0) + 1);
+  }
+  return ["D", "R", "Other"].flatMap((p) => (counts.get(p) ? [`${counts.get(p)} ${p}`] : [])).join(" · ");
 }
 
 export function MyGovernmentLookup({ initialAddress = "" }: { initialAddress?: string }) {
@@ -132,20 +75,46 @@ export function MyGovernmentLookup({ initialAddress = "" }: { initialAddress?: s
   const [suggesting, setSuggesting] = useState(false);
   const [suggestions, setSuggestions] = useState<AddressSuggestion[]>([]);
   const [districtsOpen, setDistrictsOpen] = useState(false);
+  // "saved" once this lookup is kept; "device" when only this browser has it.
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "device">("idle");
+  const saved = useMyGovernment();
+
+  // With no fresh lookup (and no ?address=), show the saved result.
+  const showingSaved = !result && !initialAddress && Boolean(saved);
+  const shown = useMemo(
+    () => result ?? (showingSaved && saved ? savedAsLookup(saved) : null),
+    [result, saved, showingSaved],
+  );
+  const isSaved = showingSaved || saveState === "saved" || saveState === "device";
 
   const grouped = useMemo(() => {
     const map = new Map<GovernmentLevel, GovernmentOfficial[]>();
     for (const group of GROUPS) map.set(group.level, []);
-    for (const official of result?.officials ?? []) {
+    for (const official of shown?.officials ?? []) {
       map.get(official.level)?.push(official);
     }
     return map;
-  }, [result]);
+  }, [shown]);
+  const recordFor = useOfficialRecords(shown?.officials);
+  const people = (shown?.officials ?? []).filter((o) => o.status === "verified" && o.name);
+
+  async function save() {
+    if (!result) return;
+    setSaveState("saving");
+    setSaveState((await saveMyGovernment(result)) ? "saved" : "device");
+  }
+
+  async function forget() {
+    setSaveState("idle");
+    if (showingSaved) setAddress("");
+    await clearMyGovernment();
+  }
 
   async function lookupAddress(selectedAddress: string, magicKey?: string) {
     setLoading(true);
     setError("");
     setSuggestions([]);
+    setSaveState("idle");
     try {
       const response = await fetch("/api/my-government", {
         method: "POST",
@@ -202,20 +171,25 @@ export function MyGovernmentLookup({ initialAddress = "" }: { initialAddress?: s
 
   return (
     <div className="mx-auto max-w-7xl">
-      <section className="relative overflow-hidden rounded-[28px] bg-slate-950 px-6 py-10 text-white sm:px-10 sm:py-14">
+      <section
+        className={`relative overflow-hidden rounded-[28px] bg-slate-950 text-white ${shown ? "px-6 py-6 sm:px-8" : "px-6 py-10 sm:px-10 sm:py-14"}`}
+      >
         <div className="absolute inset-0 opacity-40 [background-image:radial-gradient(circle_at_75%_20%,#334155_0,transparent_34%),radial-gradient(circle_at_10%_100%,#1e3a5f_0,transparent_32%)]" />
-        <div className="relative max-w-3xl">
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-300">
-            <MapPin size={13} /> Address-based representation
-          </div>
-          <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">Who represents you?</h1>
-          <FeatureList
-            tone="inverse"
-            className="mt-4"
-            items={["Every district for one address", "From school board to Congress", "Who holds each office"]}
-          />
+        <div className={`relative ${shown ? "flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between" : "max-w-3xl"}`}>
+          {shown ? (
+            <h1 className="text-2xl font-semibold tracking-tight">Who represents you?</h1>
+          ) : (
+            <>
+              <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">Who represents you?</h1>
+              <FeatureList
+                tone="inverse"
+                className="mt-4"
+                items={["Every district for one address", "From school board to Congress", "Who holds each office"]}
+              />
+            </>
+          )}
 
-          <div className="mt-8 max-w-3xl">
+          <div className={shown ? "w-full max-w-2xl" : "mt-8 max-w-3xl"}>
             <form onSubmit={submit} className="flex flex-col gap-2 rounded-2xl bg-white p-2 shadow-2xl shadow-black/25 sm:flex-row">
               <label className="flex min-w-0 flex-1 items-center gap-3 px-3">
                 <MapPin size={18} className="shrink-0 text-slate-400" />
@@ -266,12 +240,14 @@ export function MyGovernmentLookup({ initialAddress = "" }: { initialAddress?: s
               </div>
             ) : null}
           </div>
-          <p className="mt-3 text-xs text-slate-400">Used only for this lookup. Worldview does not save your address.</p>
+          {shown ? null : (
+            <p className="mt-3 text-xs text-slate-400">Worldview does not save your address. Saving a result keeps only your districts and officials.</p>
+          )}
           {error ? <p role="alert" className="mt-4 rounded-xl border border-red-400/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">{error}</p> : null}
         </div>
       </section>
 
-      {!result ? (
+      {!shown ? (
         <section className="grid gap-4 py-10 sm:grid-cols-3">
           {[
             ["1", "Match your address", "The Census geocoder identifies the exact government and school districts for your location."],
@@ -289,26 +265,67 @@ export function MyGovernmentLookup({ initialAddress = "" }: { initialAddress?: s
         <div className="py-10">
           <section className="flex flex-col gap-4 border-b border-slate-200 pb-7 sm:flex-row sm:items-end sm:justify-between dark:border-slate-800">
             <div>
-              <p className="text-xs font-semibold tracking-wider text-slate-400 uppercase">Matched address</p>
-              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">{result.matchedAddress}</h2>
-              <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                {result.coverage.resolved} verified {result.coverage.resolved === 1 ? "official" : "officials"} found
-                {result.coverage.gaps?.length ? ` · ${result.coverage.gaps.length} coverage ${result.coverage.gaps.length === 1 ? "gap" : "gaps"}` : ""}
-              </p>
+              <p className="text-xs font-semibold tracking-wider text-slate-400 uppercase">{showingSaved ? "Your saved government" : "Matched address"}</p>
+              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">{shown.matchedAddress}</h2>
+              {people.length ? (
+                <div className="mt-3 flex flex-wrap items-center gap-3">
+                  <div className="flex -space-x-1">
+                    {people.map((o) => (
+                      <OfficialAvatar key={o.id} name={o.name!} party={o.party} size="sm" />
+                    ))}
+                  </div>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                    <span className="font-semibold text-slate-900 dark:text-white">{people.length} officials</span> represent this address
+                    {partySummary(people) ? ` · ${partySummary(people)}` : ""}
+                  </p>
+                </div>
+              ) : null}
             </div>
-            <button
-              type="button"
-              onClick={() => setDistrictsOpen((open) => !open)}
-              className="inline-flex items-center gap-2 self-start rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-800 dark:text-slate-200 dark:hover:bg-slate-900 sm:self-auto"
-            >
-              <MapPin size={15} /> {result.districts.length} matched districts
-              <ChevronDown size={15} className={`transition-transform ${districtsOpen ? "rotate-180" : ""}`} />
-            </button>
+            <div className="flex flex-wrap gap-2 self-start sm:self-auto">
+              {isSaved ? (
+                <button
+                  type="button"
+                  onClick={forget}
+                  className="inline-flex items-center gap-2 rounded-xl border border-slate-900 bg-slate-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-slate-700 dark:border-white dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200"
+                  title="Stop highlighting these races and officials"
+                >
+                  <Bookmark size={15} fill="currentColor" /> Saved · Remove
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={save}
+                  disabled={saveState === "saving"}
+                  className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-500 disabled:opacity-50"
+                >
+                  <Bookmark size={15} /> {saved ? "Replace my saved government" : "Save as my government"}
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => setDistrictsOpen((open) => !open)}
+                className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-800 dark:text-slate-200 dark:hover:bg-slate-900"
+              >
+                <MapPin size={15} /> {shown.districts.length} matched districts
+                <ChevronDown size={15} className={`transition-transform ${districtsOpen ? "rotate-180" : ""}`} />
+              </button>
+            </div>
           </section>
+
+          {saveState === "saved" || saveState === "device" ? (
+            <p role="status" className="mt-4 text-sm text-slate-600 dark:text-slate-300">
+              Saved. Elections and profiles across Worldview now point out your races and officials.
+              {saveState === "device" ? (
+                <> Kept on this device only — <Link href="/login?next=/my-government" className="font-medium text-blue-700 hover:underline dark:text-blue-300">sign in</Link> to keep it everywhere.</>
+              ) : null}
+            </p>
+          ) : null}
+
+          {isSaved ? <MyRaces className="mt-8" /> : null}
 
           {districtsOpen ? (
             <div className="mt-5 flex flex-wrap gap-2 rounded-2xl bg-slate-50 p-4 dark:bg-slate-900/60">
-              {result.districts.map((district) => (
+              {shown.districts.map((district) => (
                 <span key={`${district.kind}-${district.geoid}`} className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-600 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-300">
                   <strong className="font-semibold text-slate-900 dark:text-white">{district.kind}:</strong> {district.name}
                 </span>
@@ -316,19 +333,7 @@ export function MyGovernmentLookup({ initialAddress = "" }: { initialAddress?: s
             </div>
           ) : null}
 
-          {result.coverage.gaps?.length ? (
-            <div className="mt-6 flex gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-amber-950 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-100">
-              <ShieldCheck size={20} className="mt-0.5 shrink-0 text-amber-600 dark:text-amber-400" />
-              <div>
-                <p className="text-sm font-semibold">Some offices still need a verified roster</p>
-                <p className="mt-1 text-sm leading-6 text-amber-800 dark:text-amber-200/80">
-                  Worldview found the jurisdictions but will not guess an officeholder: {result.coverage.gaps.map((gap) => `${gap.office} (${gap.jurisdiction})`).join(" · ")}
-                </p>
-              </div>
-            </div>
-          ) : null}
-
-          <div className="mt-10 space-y-12">
+          <div className="mt-8 space-y-10">
             {GROUPS.map((group) => {
               const officials = grouped.get(group.level) ?? [];
               if (!officials.length) return null;
@@ -339,15 +344,33 @@ export function MyGovernmentLookup({ initialAddress = "" }: { initialAddress?: s
                     <p className="text-sm text-slate-400">{group.description}</p>
                   </div>
                   <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                    {officials.map((official) => <OfficeCard key={official.id} official={official} />)}
+                    {officials.map((official) => (
+                      <OfficialCard key={official.id} official={official} record={recordFor(official)} />
+                    ))}
                   </div>
                 </section>
               );
             })}
           </div>
 
+          {shown.coverage.gaps?.length ? (
+            <section className="mt-12">
+              <h2 className="text-sm font-semibold text-slate-950 dark:text-white">Also on this address, no officeholder roster yet</h2>
+              <ul className="mt-3 flex flex-wrap gap-2">
+                {shown.coverage.gaps.map((gap) => (
+                  <li
+                    key={`${gap.office}-${gap.jurisdiction}`}
+                    className="rounded-full border border-dashed border-slate-300 px-3 py-1 text-xs text-slate-600 dark:border-slate-700 dark:text-slate-300"
+                  >
+                    {gap.office} <span className="text-slate-400">· {gap.jurisdiction}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+
           <footer className="mt-12 border-t border-slate-200 pt-6 text-xs text-slate-400 dark:border-slate-800">
-            Sources: {result.sources.map((source, index) => (
+            Sources: {shown.sources.map((source, index) => (
               <span key={source.url}>{index ? " · " : ""}<a href={source.url} target="_blank" rel="noreferrer" className="hover:text-slate-700 hover:underline dark:hover:text-slate-200">{source.label}</a></span>
             ))}
           </footer>

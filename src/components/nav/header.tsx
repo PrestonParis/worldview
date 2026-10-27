@@ -9,6 +9,7 @@ import {
   ArrowRight,
   Baby,
   Banknote,
+  Briefcase,
   ChevronDown,
   Church,
   Compass,
@@ -24,8 +25,10 @@ import {
   Network,
   PersonStanding,
   Receipt,
+  Scroll,
   Search,
   ShieldAlert,
+  SlidersHorizontal,
   Stethoscope,
   TrendingUp,
   Users,
@@ -34,7 +37,7 @@ import {
   Zap,
   type LucideIcon,
 } from "lucide-react";
-import { navGroups, navLinks } from "@/lib/nav";
+import { navGroups as baseNavGroups, ownerNavItems } from "@/lib/nav";
 import { GlobalSearch } from "@/components/search/global-search";
 import { NewMenu } from "@/components/nav/new-menu";
 import { SettingsMenu } from "@/components/nav/settings-menu";
@@ -46,7 +49,7 @@ const ICONS: Record<string, LucideIcon> = {
   "/crime": ShieldAlert,
   "/abortion": Stethoscope,
   "/guns": Crosshair,
-  "/health-care": HeartPulse,
+  "/healthcare": HeartPulse,
   "/energy": Zap,
   "/economy": TrendingUp,
   "/housing": House,
@@ -61,8 +64,11 @@ const ICONS: Record<string, LucideIcon> = {
   "/legislation": Gavel,
   "/elections": Vote,
   "/my-government": Landmark,
-  "/quiz": Compass,
+  "/atlas": Compass,
   "/geography": Globe2,
+  "/subpoena": Briefcase,
+  "/writ": Scroll,
+  "/issueview": SlidersHorizontal,
 };
 
 interface PillRect {
@@ -78,14 +84,17 @@ const GROUP_FEATURES: Record<string, { eyebrow: string; title: string; body: str
   society: { eyebrow: "Explore the evidence", title: "Who we are, and where we're headed", body: "Population, schooling, belief, and family life — measured over decades and projected forward.", href: "/demographics" },
   power: { eyebrow: "Explore the network", title: "See how influence moves", body: "Connect people, institutions, money, legislation, and the relationships between them.", href: "/people" },
   democracy: { eyebrow: "Start with your address", title: "Government, made personal", body: "Find the offices that represent you, then explore the elections and districts beneath them.", href: "/my-government" },
-  tools: { eyebrow: "Work with Worldview", title: "Explore it your way", body: "Map your politics or build a geographic view from the platform's underlying tools.", href: "/quiz" },
+  tools: { eyebrow: "Analytical Workspaces", title: "Unconstrained tools over public data", body: "Investigate money in Subpoena, track legislation in Writ, correlate metrics in IssueView, and map ideology in Atlas.", href: "/tools" },
 };
 
 // accountLabel overrides the client session for pages outside the shell that
 // already know who is signed in.
-export function Header({ accountLabel: knownLabel, previews }: { accountLabel?: string | null; previews?: NavPreviews }) {
+export function Header({ accountLabel: knownLabel, owner, previews }: { accountLabel?: string | null; owner?: boolean; previews?: NavPreviews }) {
   const session = useSession();
   const accountLabel = knownLabel ?? session.accountLabel;
+  const navGroups = (owner ?? session.isOwner)
+    ? baseNavGroups.map((g) => (ownerNavItems[g.id] ? { ...g, items: [...g.items, ...ownerNavItems[g.id]] } : g))
+    : baseNavGroups;
   const pathname = usePathname();
   const navRef = useRef<HTMLDivElement>(null);
   const triggerRefs = useRef<Map<string, HTMLElement>>(new Map());
@@ -109,9 +118,7 @@ export function Header({ accountLabel: knownLabel, previews }: { accountLabel?: 
     return () => observer.disconnect();
   }, [pathname]);
 
-  const activeKey =
-    navGroups.find((g) => g.items.some((i) => isOn(pathname, i.page.href)))?.id ??
-    navLinks.find((p) => isOn(pathname, p.href))?.href;
+  const activeKey = navGroups.find((g) => g.items.some((i) => isOn(pathname, i.page.href)))?.id;
 
   useLayoutEffect(() => {
     const measure = () => {
@@ -245,13 +252,6 @@ export function Header({ accountLabel: knownLabel, previews }: { accountLabel?: 
             );
           })}
 
-          <span aria-hidden className="mx-1 h-4 w-px bg-slate-200 dark:bg-slate-800" />
-
-          {navLinks.map((page) => (
-            <Link key={page.href} href={page.href} ref={setTrigger(page.href)} onClick={closeMenus} className={triggerClass(activeKey === page.href)}>
-              {page.navLabel}
-            </Link>
-          ))}
         </nav>
 
         <div className="flex items-center gap-1 justify-self-end">
@@ -349,18 +349,6 @@ export function Header({ accountLabel: knownLabel, previews }: { accountLabel?: 
                   })}
                 </ul>
               </section>
-            ))}
-          </div>
-          <div className="mt-6 flex flex-wrap gap-2 border-t border-slate-200 pt-4 dark:border-slate-800">
-            {navLinks.map((page) => (
-              <Link
-                key={page.href}
-                href={page.href}
-                onClick={closeMenus}
-                className="rounded-full border border-slate-200 px-3.5 py-1.5 text-sm text-slate-700 hover:border-slate-400 dark:border-slate-700 dark:text-slate-200"
-              >
-                {page.label}
-              </Link>
             ))}
           </div>
         </nav>

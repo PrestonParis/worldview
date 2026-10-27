@@ -1,32 +1,13 @@
 // Political quiz — question bank and ideology catalog types. Pure data; the
-// engine (later phase) consumes these. See docs/quiz-plan.md.
+// engine (later phase) consumes these. See docs/quiz.md.
 
-export const axisIds = [
-  "federalism",
-  "executive",
-  "liberty",
-  "voting",
-  "democracy",
-  "ownership",
-  "regulation",
-  "redistribution",
-  "trade",
-  "engagement",
-  "force",
-  "social",
-  "religion",
-  "immigration",
-  "justice",
-  "identity",
-  "environment",
-  "technology",
-] as const;
+export const axisIds = ["federalism", "executive", "liberty", "voting", "democracy", "violence", "ownership", "regulation", "redistribution", "trade", "engagement", "force", "social", "religion", "immigration", "justice", "identity", "race", "environment", "technology"] as const;
 
 export type AxisId = (typeof axisIds)[number];
 
 export type AxisGroup = "governance" | "economy" | "foreign" | "society" | "tech";
 
-// How agreement relates to position (see docs/quiz-plan.md, Engine):
+// How agreement relates to position (see docs/quiz.md, Engine):
 // - directional: agreement rises steadily toward the pole on the side of
 //   `location`; `location` is the threshold where agreement turns positive,
 //   so a ±1 item is agreed with only at the extreme. Most policy statements.
@@ -60,6 +41,13 @@ export interface AxisLoading {
 
 export type Loadings = Partial<Record<AxisId, AxisLoading>>;
 
+// Match-only signals distinguish traditions where the distinction should not
+// be presented as a public political axis. They are deliberately absent from
+// `axisIds`, result charts, comparisons, and coverage requirements.
+export const internalSignalIds = ["antisemitism"] as const;
+export type InternalSignalId = (typeof internalSignalIds)[number];
+export type InternalSignals = Partial<Record<InternalSignalId, number>>;
+
 // An agree/disagree statement, answered on a 7-point scale plus Skip.
 export interface Statement {
   id: string; // stable forever; stored answers reference it
@@ -70,78 +58,46 @@ export interface Statement {
 
 // Categorical preferences that can't sit on a line. Recorded from choice
 // options and used only to tell ideologies apart when matching; they never
-// move an axis (docs/quiz-plan.md, principle 3).
-export const traditions = [
-  "none",
-  "pluralist",
-  "catholic",
-  "protestant",
-  "orthodox",
-  "christian",
-  "sunni",
-  "shia",
-  "jewish",
-  "hindu",
-  "buddhist",
-  "sikh",
-  "other",
-] as const;
+// move an axis (docs/quiz.md, principle 3).
+export const traditions = ["none", "pluralist", "catholic", "protestant", "orthodox", "christian", "sunni", "shia", "jewish", "hindu", "buddhist", "sikh", "other"] as const;
 export type Tradition = (typeof traditions)[number];
 
-export const authorities = [
-  "elected",
-  "assemblies",
-  "party",
-  "leader",
-  "monarch",
-  "clergy",
-  "experts",
-  "military",
-  "owners",
-  "no-state",
-] as const;
+export const authorities = ["elected", "assemblies", "party", "leader", "monarch", "clergy", "experts", "military", "owners", "no-state"] as const;
 export type Authority = (typeof authorities)[number];
 
 export const nationBases = ["civic", "ethnic", "religious", "civilizational", "class"] as const;
 export type NationBasis = (typeof nationBases)[number];
 
+// Whose interests, if any racial or ethnic people's, come first. "every" is
+// the ethnopluralist answer: each people should put its own first.
+export const peoples = ["none", "white", "black", "indigenous", "hispanic", "jewish", "every", "other"] as const;
+export type People = (typeof peoples)[number];
+
+// What politics should do with the existing order: go back to an earlier
+// one, keep what exists, improve it, or replace it with something new. This
+// is what separates reactionaries from conservatives, and both from
+// revolutionaries of the left and right.
+export const changes = ["restore", "conserve", "reform", "transform"] as const;
+export type Change = (typeof changes)[number];
+
+// How a communist or socialist judges the 20th-century communist states:
+// the line that divides Marxist-Leninists, Trotskyists, left communists and
+// anarchists, and democratic socialists. Asked only of communists and socialists.
+export const legacies = ["achievement", "degenerated", "state-capitalist", "dictatorship"] as const;
+export type Legacy = (typeof legacies)[number];
+
 export interface Lens {
   tradition?: Tradition; // the religious tradition that should shape the law
   authority?: Authority; // who should hold final political authority
   nation?: NationBasis; // what defines membership in the nation
+  people?: People; // which racial or ethnic people's interests come first
+  change?: Change; // restore, conserve, reform, or transform the existing order
+  legacy?: Legacy; // a socialist's verdict on the 20th-century communist states
 }
 export type LensId = keyof Lens;
-export const lensIds: LensId[] = ["tradition", "authority", "nation"];
+export const lensIds: LensId[] = ["tradition", "authority", "nation", "people", "change", "legacy"];
 
-export type IssueId =
-  | "abortion"
-  | "guns"
-  | "immigration"
-  | "healthcare"
-  | "taxes"
-  | "labor"
-  | "entitlements"
-  | "climate"
-  | "policing"
-  | "death-penalty"
-  | "drugs"
-  | "lgbtq"
-  | "affirmative-action"
-  | "education"
-  | "speech"
-  | "voting-rules"
-  | "judiciary"
-  | "israel"
-  | "ukraine"
-  | "china"
-  | "tariffs"
-  | "ai"
-  | "religious-liberty"
-  | "housing"
-  | "debt"
-  | "religion-law"
-  | "regime"
-  | "economic-system";
+export type IssueId = "abortion" | "guns" | "immigration" | "healthcare" | "taxes" | "labor" | "entitlements" | "climate" | "policing" | "death-penalty" | "drugs" | "lgbtq" | "affirmative-action" | "race" | "violence" | "family" | "education" | "speech" | "voting-rules" | "judiciary" | "israel" | "ukraine" | "china" | "tariffs" | "ai" | "religious-liberty" | "housing" | "debt" | "religion-law" | "regime" | "economic-system";
 
 export interface ChoiceOption {
   id: string; // unique within its question
@@ -156,6 +112,9 @@ export interface ChoiceOption {
   exclusive?: boolean;
   // Categorical preference this option records (see Lens).
   lens?: Lens;
+  // Internal-only match evidence. Values run from 0 to 1 and never move a
+  // displayed axis or appear in the result payload.
+  internal?: InternalSignals;
   // Checklist options only: what leaving the box unchecked means. Each
   // checklist option is its own yes/no item, scored as a choice between
   // `axes` (checked) and these loadings (unchecked).
@@ -186,6 +145,10 @@ export type Condition =
 export interface FollowUp extends ChoiceQuestion {
   // Omitted: asked whenever the screener was answered (not skipped).
   when?: Condition;
+  // Narrows within a group rather than placing someone in one: held back
+  // until the broad pass has placed the respondent, then asked before any
+  // new issue. Used for a foundation's specialist follow-ups.
+  later?: boolean;
 }
 
 export interface IssueModule {
@@ -198,20 +161,13 @@ export interface IssueModule {
   // minimum-wage levels for someone who wants private enterprise abolished.
   // Leaving the foundation unanswered never skips a module.
   unless?: Condition;
+  // Asked only from this checkpoint on; Snapshot leaves it out.
+  minMode?: "standard" | "deep";
   screener: ChoiceQuestion;
   followUps: FollowUp[];
 }
 
-export type IdeologyFamily =
-  | "left"
-  | "liberal"
-  | "center"
-  | "conservative"
-  | "right"
-  | "libertarian"
-  | "populist"
-  | "religious"
-  | "other";
+export type IdeologyFamily = "left" | "liberal" | "center" | "conservative" | "right" | "libertarian" | "populist" | "religious" | "other";
 
 export interface Ideology {
   id: string;
@@ -227,4 +183,9 @@ export interface Ideology {
   tradition?: Tradition[];
   authority?: Authority[];
   nation?: NationBasis[];
+  people?: People[];
+  change?: Change[];
+  legacy?: Legacy[];
+  // Umbrella labels only: the specific traditions the label spans.
+  covers?: string[];
 }

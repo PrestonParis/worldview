@@ -3,9 +3,9 @@
 // and U.S. and state temperatures (NOAA) — all from area_stats.
 
 import { getCrossSection, getSeriesByGeo, getSeriesMany, type Point } from "@/lib/db/stats";
-import { formatPeriod, formatSigned, formatValue } from "@/lib/format";
+import { formatPeriod } from "@/lib/format";
 import { STATES_51 } from "@/lib/geo/states";
-import { datasetsFor, extremes, last, rankStates, stateTable, toPoints, yearAgo } from "@/lib/issues/series";
+import { datasetsFor, last, stateTable, toPoints, yearAgo } from "@/lib/issues/series";
 import type { RankedItem } from "@/components/charts/ranked-bars";
 import type { Series } from "@/components/charts/time-series-chart";
 
@@ -111,7 +111,7 @@ export async function loadEnergy() {
     r.values.warming = b !== null && n !== null ? Math.round((n - b) * 10) / 10 : null;
   }
 
-  // ---- Headline + findings ----
+  // ---- Headline ----
   const gasNow = last(prices.gas_price);
   const lowCarbon = last(usa.elec_share_low_carbon);
   const co2 = last(usa.co2_emissions);
@@ -123,31 +123,8 @@ export async function loadEnergy() {
     temp: { point: tNow, anomaly: tNow && base !== null ? tNow.value - base : null, spark: t.slice(-40).map((p) => p.value) },
   };
 
-  const findings: string[] = [];
-  const realGas = real(prices.gas_price);
-  const gasPeak = extremes(realGas).max;
-  if (gasNow && gasPeak) findings.push(`A gallon of regular gasoline averaged ${formatValue(gasNow.value, "usd_cents")} in ${formatPeriod(gasNow.period)}. Adjusted for inflation, the high was ${formatValue(gasPeak.value, "usd_cents")} in ${formatPeriod(gasPeak.period)}.`);
-  const coalNow = last(usa.elec_share_coal);
-  const gasShare = last(usa.elec_share_gas);
-  const coalPeak = extremes(usa.elec_share_coal).max;
-  if (coalNow && gasShare && coalPeak) findings.push(`Natural gas generated ${formatValue(gasShare.value, "percent")} of U.S. electricity in ${gasShare.period} and coal ${formatValue(coalNow.value, "percent")}, down from ${formatValue(coalPeak.value, "percent")} in ${coalPeak.period}.`);
-  const ws = usa.elec_share_wind.at(-1);
-  const sol = usa.elec_share_solar.at(-1);
-  if (ws && sol) findings.push(`Wind and solar together supplied ${formatValue(ws.value + sol.value, "percent")} of electricity in ${ws.period}.`);
-  const co2Peak = extremes(usa.co2_emissions).max;
-  if (co2 && co2Peak) {
-    findings.push(`U.S. CO₂ emissions were ${(co2.value / 1e9).toFixed(1)} billion tonnes in ${co2.period}, ${Math.round((1 - co2.value / co2Peak.value) * 100)}% below their ${co2Peak.period} peak.`);
-  }
-  const chnNow = last(chn.co2_emissions);
-  if (co2 && chnNow) findings.push(`China emitted ${formatValue(chnNow.value / co2.value, "times")} as much CO₂ as the U.S. in ${chnNow.period}; per person, the U.S. emitted ${formatValue(last(usa.co2_per_capita)?.value, "tonnes_per_person")} tonnes and China ${formatValue(last(chn.co2_per_capita)?.value, "tonnes_per_person")}.`);
-  const tRecent = recent(t);
-  if (tNow && base !== null && tRecent !== null) {
-    findings.push(`The contiguous U.S. averaged ${formatValue(tRecent, "deg_f")} over the 10 years to ${tNow.period}, ${formatSigned(tRecent - base, "deg_f")} against the 20th-century average of ${formatValue(base, "deg_f")}.`);
-  }
-
   return {
     headline,
-    findings,
     gas,
     electricity,
     oil,
@@ -161,7 +138,6 @@ export async function loadEnergy() {
     temperature,
     baseline: base,
     states,
-    warmingHigh: rankStates(states.rows, "warming"),
     datasets: await datasetsFor([PRICES, OWID, NOAA]),
   };
 }

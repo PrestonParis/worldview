@@ -4,7 +4,7 @@
 
 import { datasetCoverage, getCrossSection, getSeriesMany, listDatasets, type Point } from "@/lib/db/stats";
 import { STATES_51, stateName } from "@/lib/geo/states";
-import { formatPeriod, formatValue, pctChange } from "@/lib/format";
+import { formatPeriod, pctChange } from "@/lib/format";
 import type { RankedItem } from "@/components/charts/ranked-bars";
 import type { Series, SeriesPoint } from "@/components/charts/time-series-chart";
 
@@ -18,9 +18,6 @@ const annual = (points: Point[] | undefined): SeriesPoint[] =>
 const monthly = (points: Point[] | undefined): SeriesPoint[] =>
   (points ?? []).map((p) => ({ x: Number(p.period.slice(0, 4)) + (Number(p.period.slice(5, 7)) - 1) / 12, label: formatPeriod(p.period), value: p.value }));
 const at = (s: SeriesPoint[], year: string | null) => (year ? s.find((p) => p.label === year)?.value ?? null : null);
-const fmt = (v: number | null | undefined, unit = "abortions") => formatValue(v, unit, { compact: true });
-const pct = (v: number | null | undefined) => (v === null || v === undefined ? "—" : `${Math.round(v)}%`);
-const theName = (name: string) => (name.startsWith("District") ? `the ${name}` : name);
 
 export const LIMIT_CATEGORIES = [
   { value: 1, label: "Total ban" },
@@ -106,8 +103,6 @@ export async function loadAbortion() {
     { id: "history", label: "Guttmacher (all states)", slot: 1, points: annual(hist.abortion_rate) },
     { id: "cdc", label: "CDC (continuously reporting areas)", slot: 2, points: annual(cdc.abortion_rate) },
   ].filter((s) => s.points.length) as Series[];
-  const histRate = annual(hist.abortion_rate);
-  const peakRate = histRate.length ? histRate.reduce((a, b) => (b.value > a.value ? b : a)) : null;
 
   // ---- Who, how, when (CDC) ----
   const cdcYear = cdc.medication_share?.at(-1)?.period ?? null;
@@ -116,12 +111,10 @@ export async function loadAbortion() {
     ["share_age_under15", "Under 15"], ["share_age_15_19", "15–19"], ["share_age_20_24", "20–24"], ["share_age_25_29", "25–29"],
     ["share_age_30_34", "30–34"], ["share_age_35_39", "35–39"], ["share_age_40plus", "40 and over"],
   ].flatMap(([m, label]) => (cdcAt(m) === null ? [] : [{ label, value: cdcAt(m)! }]));
-  const weeks: Series[] = [
-    { id: "le6", label: "6 weeks or earlier", slot: 1, points: annual(cdc.share_weeks_le6) },
-    { id: "7_9", label: "7–9 weeks", slot: 2, points: annual(cdc.share_weeks_7_9) },
-    { id: "10_13", label: "10–13 weeks", slot: 3, points: annual(cdc.share_weeks_10_13) },
-  ];
-  const later = cdcAt("share_weeks_gt13");
+  const weeks: RankedItem[] = [
+    ["share_weeks_le6", "6 weeks or earlier"], ["share_weeks_7_9", "7–9 weeks"],
+    ["share_weeks_10_13", "10–13 weeks"], ["share_weeks_gt13", "After 13 weeks"],
+  ].flatMap(([m, label]) => (cdcAt(m) === null ? [] : [{ label, value: cdcAt(m)! }]));
   const raceRates: RankedItem[] = [
     ["abortion_rate_black", "Black (non-Hispanic)"], ["abortion_rate_hispanic", "Hispanic"],
     ["abortion_rate_other", "Other races (non-Hispanic)"], ["abortion_rate_white", "White (non-Hispanic)"],
@@ -213,40 +206,9 @@ export async function loadAbortion() {
       .slice(0, 8)
       .map((f) => ({ label: stateName(f.dest), value: f.value })),
   }));
-  const leftRanking: RankedItem[] = STATES_51.flatMap((s) => {
-    const v = m.left.get(s.fips);
-    const r = m.residents.get(s.fips);
-    return v ? [{ label: s.name, value: v, note: r ? `${pct((v / r) * 100)} of residents' abortions` : undefined }] : [];
-  })
-    .sort((a, b) => b.value - a.value)
-    .slice(0, 10);
-
-  // ---- Findings: plain statements computed from the numbers above ----
-  const findings: string[] = [];
-  if (year && total !== null) {
-    const ch = headline.total.change;
-    findings.push(
-      `Clinicians provided an estimated ${fmt(total)} abortions in ${year}${ch !== null ? `, ${Math.abs(ch) < 0.5 ? "about the same as" : `${pct(Math.abs(ch))} ${ch < 0 ? "fewer than" : "more than"}`} ${priorYear}` : ""}.`,
-    );
-  }
-  const hist2020 = at(annual(hist.abortions), "2020");
-  if (hist2020 !== null && total !== null && year) {
-    findings.push(`That is ${fmt(Math.abs(total - hist2020))} ${total > hist2020 ? "more" : "fewer"} than in 2020 (${fmt(hist2020)}), before the Supreme Court's June 2022 Dobbs decision returned abortion law to the states.`);
-  }
-  if (peakRate) findings.push(`The abortion rate peaked in ${peakRate.label} at ${formatValue(peakRate.value, "per_1000")} per 1,000 women aged 15–44; in 2020 it was ${formatValue(at(histRate, "2020"), "per_1000")}.`);
-  if (headline.virtual.share !== null && year) findings.push(`${pct(headline.virtual.share)} of abortions in ${year} were provided by virtual-only telehealth providers, which mail pills after an online consultation.`);
-  const banVirtual = at(annual(banGroup.abortions_virtual_only), year);
-  if (banVirtual !== null && year) findings.push(`${fmt(banVirtual)} abortions in ${year} were medication abortions mailed by telehealth providers into the ${limits[0].states.length} states with total bans.`);
-  if (headline.fromOther.value !== null && year) findings.push(`${fmt(headline.fromOther.value)} patients (${pct(headline.fromOther.share)}) traveled to another state for an abortion in ${year}.`);
-  const topLeft = leftRanking[0];
-  if (topLeft && travelYear) findings.push(`${theName(topLeft.label).replace(/^the/, "The")} had the most residents leave the state for an abortion in ${travelYear}: at least ${fmt(topLeft.value)}.`);
-  const med = cdc.medication_share?.at(-1);
-  const medFirst = cdc.medication_share?.[0];
-  if (med && medFirst) findings.push(`Medication abortion rose from ${pct(medFirst.value)} of abortions reported to CDC in ${medFirst.period} to ${pct(med.value)} in ${med.period}.`);
 
   return {
     headline,
-    findings,
     trend,
     groups,
     virtualSeries,
@@ -256,12 +218,11 @@ export async function loadAbortion() {
     cdcYear,
     ages,
     weeks,
-    later,
     raceRates,
     states: { metrics: stateMetrics, rows: stateRows },
     limits,
     limitsPeriod: limitCat.period,
-    travel: { year: travelYear, corridors, states: travel, leftRanking },
+    travel: { year: travelYear, corridors, states: travel },
     datasets: ds.map((d) => ({ ...d, coverage: cov[d.slug] ?? null })),
   };
 }

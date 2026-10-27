@@ -21,6 +21,7 @@ import { Term } from "@/components/money/term";
 import { formatValue } from "@/lib/format";
 import { listMoneyCycles, loadCampaignMoney, resolveCycle, type CampaignCandidate } from "@/lib/db/moneyOverview";
 import { partyColor, partyLetter } from "@/lib/money/semantic";
+import { publicEntityPath } from "@/lib/people/public";
 
 export const dynamic = "force-dynamic";
 
@@ -206,7 +207,7 @@ function CandidateTable({
               {
                 content: (
                   <>
-                    <Link href={`/data/entities/${r.entityId}`} className="font-medium text-slate-800 hover:underline dark:text-slate-200">
+                    <Link href={publicEntityPath({ id: r.entityId, name: r.name })} className="font-medium text-slate-800 hover:underline dark:text-slate-200">
                       {r.name}
                     </Link>
                     <span className="ml-1.5 inline-flex items-center gap-1 text-xs text-slate-400">

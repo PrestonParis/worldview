@@ -1,6 +1,7 @@
-import type { Entity, EntityType } from "@/lib/validation/entity";
+import type { Entity } from "@/lib/validation/entity";
 import type { Edge } from "@/lib/validation/edge";
 import type { LobbyingRegistration } from "@/lib/validation/lobbying";
+import { formatValue } from "@/lib/format";
 import { industryLabel } from "./industries";
 
 export * from "./industries";
@@ -22,12 +23,6 @@ export function isDonorEdge(edge: { label: string; relType?: string }): boolean 
   return donorLabelPattern.test(edge.label);
 }
 
-export const individualEntityTypes = new Set<EntityType>([
-  "politician",
-  "pundit",
-  "journalist",
-]);
-
 // ── Money formatting ──────────────────────────────────────────────────────
 export function formatAmount(amount: number, currency: string | undefined): string {
   const code = currency || "USD";
@@ -42,6 +37,15 @@ export function formatAmount(amount: number, currency: string | undefined): stri
     // validated against ISO 4217) — fall back to a plain labeled number.
     return `${amount.toLocaleString()} ${code}`;
   }
+}
+
+// Compact dollars ("$1.2M") and a share of a whole, for the money views.
+export const usd = (value: number) => formatValue(value, "usd", { compact: true });
+
+export function pct(part: number, whole: number): string {
+  if (!(whole > 0)) return "—";
+  const percentage = (part / whole) * 100;
+  return percentage > 0 && percentage < 0.5 ? "<1%" : `${Math.round(percentage)}%`;
 }
 
 export function moneyEdgeLabel(total: number, count: number, currency: string): string {

@@ -1,4 +1,4 @@
-import { and, asc, count, desc, eq, gte, ilike, inArray, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, ilike, inArray, sql } from "drizzle-orm";
 import { db } from "./client";
 import { entities, entityIdentifiers, entityMerges } from "./schema";
 import type { Entity, EntityInput, EntityType } from "../validation/entity";
@@ -21,7 +21,8 @@ export type IdentifierScheme =
   | "fec_committee"
   | "congress_committee"
   | "lda_client"
-  | "lda_registrant";
+  | "lda_registrant"
+  | "scdb";
 
 const bioguide = sql<string | null>`(
   select ${entityIdentifiers.value} from ${entityIdentifiers}
@@ -64,10 +65,27 @@ function selectEntities() {
   return db.select(entityColumns).from(entities);
 }
 
-export async function listEntities(filter?: { type?: EntityType }): Promise<Entity[]> {
-  const rows = await selectEntities()
+export async function listEntities(filter?: { type?: EntityType; limit?: number }): Promise<Entity[]> {
+  const query = selectEntities()
     .where(filter?.type ? eq(entities.type, filter.type) : undefined)
     .orderBy(asc(entities.name));
+  const rows = filter?.limit ? await query.limit(filter.limit) : await query;
+  return rows.map(toEntity);
+}
+
+// Profiles with the richest editorial material first. Used by biography-led
+// discovery surfaces where alphabetical FEC imports make poor recommendations.
+export async function listProfiledEntities(type: EntityType, limit: number): Promise<Entity[]> {
+  const profileScore = sql<number>`
+    (case when coalesce(${entities.imageUrl}, '') <> '' then 400 else 0 end) +
+    length(coalesce(${entities.biography}, '')) +
+    length(coalesce(${entities.highlights}, '')) +
+    length(coalesce(${entities.description}, ''))
+  `;
+  const rows = await selectEntities()
+    .where(eq(entities.type, type))
+    .orderBy(desc(profileScore), asc(entities.name))
+    .limit(limit);
   return rows.map(toEntity);
 }
 
@@ -99,12 +117,6 @@ export async function getIdentifierMap(scheme: IdentifierScheme): Promise<Map<st
     .from(entityIdentifiers)
     .where(eq(entityIdentifiers.scheme, scheme));
   return new Map(rows.map((r) => [r.value, r.entityId]));
-}
-
-// bioguideId -> entity id, for the legislation importers to resolve
-// sponsors and voters in one round trip.
-export function listPoliticianBioguideMap(): Promise<Map<string, string>> {
-  return getIdentifierMap("bioguide");
 }
 
 // Entities whose name contains `query`, case-insensitive, best matches
@@ -141,17 +153,12 @@ export async function findMemberIdsByName(query: string, limit = 50): Promise<st
   return rows.map((r) => r.id);
 }
 
-function escapeLike(s: string): string {
+export function escapeLike(s: string): string {
   return s.replace(/[\\%_]/g, (c) => `\\${c}`);
 }
 
 export async function countEntities(): Promise<number> {
   const [row] = await db.select({ value: count() }).from(entities);
-  return row.value;
-}
-
-export async function countEntitiesCreatedSince(since: Date): Promise<number> {
-  const [row] = await db.select({ value: count() }).from(entities).where(gte(entities.createdAt, since));
   return row.value;
 }
 
@@ -172,7 +179,10 @@ export async function getEntityByPublicSlug(slug: string): Promise<Entity | null
   const rows = await selectEntities()
     .where(sql`${entities.id}::text like ${`${shortId}%`}`)
     .limit(10);
-  return rows.map(toEntity).find((entity) => publicEntitySlug(entity) === slug) ?? null;
+  const matches = rows.map(toEntity);
+  // A link built from a variant spelling (FEC names, say) still resolves when
+  // the id prefix is unambiguous; the profile route redirects to the canonical slug.
+  return matches.find((entity) => publicEntitySlug(entity) === slug) ?? (matches.length === 1 ? matches[0] : null);
 }
 
 // The entity a merged duplicate was folded into (scripts/merge-entities.mjs),

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { AuthForm } from "@/components/auth/auth-form";
 import { getCurrentUser, safeNext } from "@/lib/auth/session";
+import { googleSignInEnabled } from "@/lib/auth/providers";
 
 export const metadata: Metadata = { title: "Create account · Worldview" };
 
@@ -19,7 +20,7 @@ export default async function RegisterPage({
       mode="register"
       next={next}
       initialError={error ?? null}
-      googleEnabled={process.env.NEXT_PUBLIC_AUTH_GOOGLE_ENABLED === "true"}
+      googleEnabled={await googleSignInEnabled()}
       turnstileSiteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || null}
     />
   );

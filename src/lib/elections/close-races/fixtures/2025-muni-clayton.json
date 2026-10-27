@@ -1,0 +1,152 @@
+{
+ "jurisdiction": {
+  "shortName": "clayton-county-ga",
+  "name": [
+   {
+    "languageId": "en",
+    "text": "Clayton County"
+   }
+  ],
+  "childLocalities": []
+ },
+ "election": {
+  "id": "01000000-b5ce-a69b-4436-08de06bd62b7",
+  "jurisdictionId": "7daf14bf-669e-4a33-bb04-262c69c0cb1d",
+  "name": [
+   {
+    "languageId": "en",
+    "text": "November 4, 2025 - Municipal General / Special Election (PSC)"
+   }
+  ],
+  "electionDate": "2025-11-04",
+  "isOfficialResults": true,
+  "isPrimary": false,
+  "asOf": "2025-11-21T18:32:51.2139059Z",
+  "lastUpdated": "2025-11-07T23:16:24.9709797Z"
+ },
+ "localityElections": [],
+ "ballotItems": [
+  {
+   "id": "01000000-b5ce-a69b-ef5b-08de06bd637d",
+   "parentId": null,
+   "name": [
+    {
+     "languageId": "en",
+     "text": "City of College Park Homestead Exemption"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 1"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": null,
+   "reportingStatus": {
+    "reportingUnits": 1,
+    "totalUnits": 1,
+    "asOf": "2025-11-21T18:32:51.2139059Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 53,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-b5ce-a69b-ef6b-08de06bd637d",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Yes"
+       }
+      ],
+      "voteCount": 45,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-b5ce-a69b-ef76-08de06bd637d",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "No"
+       }
+      ],
+      "voteCount": 8,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     }
+    ]
+   }
+  },
+  {
+   "id": "01000000-b5ce-a69b-e0b2-08de06bd637d",
+   "parentId": null,
+   "name": [
+    {
+     "languageId": "en",
+     "text": "Sales and Use Tax"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 1"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": null,
+   "reportingStatus": {
+    "reportingUnits": 70,
+    "totalUnits": 70,
+    "asOf": "2025-11-21T18:32:51.2139059Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 35938,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-b5ce-a69b-e0da-08de06bd637d",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Yes"
+       }
+      ],
+      "voteCount": 20536,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-b5ce-a69b-e101-08de06bd637d",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "No"
+       }
+      ],
+      "voteCount": 15402,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     }
+    ]
+   }
+  }
+ ]
+}

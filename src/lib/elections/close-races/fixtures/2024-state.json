@@ -1,0 +1,1405 @@
+{
+ "jurisdiction": {
+  "shortName": "Georgia",
+  "name": [
+   {
+    "languageId": "en",
+    "text": "Georgia"
+   }
+  ],
+  "childLocalities": [
+   {
+    "id": "D58E790A-A271-4225-8CD6-A1ED0AA829B1",
+    "name": [
+     {
+      "languageId": "en",
+      "text": "Appling County"
+     }
+    ],
+    "shortName": "appling-county-ga",
+    "percentReporting": 1
+   },
+   {
+    "id": "EA1814CB-4423-439E-B273-131E9A8356A6",
+    "name": [
+     {
+      "languageId": "en",
+      "text": "Fulton County"
+     }
+    ],
+    "shortName": "fulton-county-ga",
+    "percentReporting": 1
+   }
+  ]
+ },
+ "election": {
+  "id": "01000000-7316-ae4b-8b87-08dcda4b828a",
+  "jurisdictionId": "09378a07-e6cf-4f66-be7c-ca4aa534f99a",
+  "name": [
+   {
+    "languageId": "en",
+    "text": "November General Election"
+   }
+  ],
+  "electionDate": "2024-11-05",
+  "isOfficialResults": true,
+  "isPrimary": false,
+  "asOf": "2025-01-30T13:59:22.4956582Z",
+  "lastUpdated": "2025-01-07T16:55:00.6358836Z"
+ },
+ "localityElections": [
+  {
+   "id": "01000000-d884-2e72-cd46-08dcda4b865f",
+   "jurisdictionId": "d58e790a-a271-4225-8cd6-a1ed0aa829b1",
+   "name": [
+    {
+     "languageId": "en",
+     "text": "November General Election"
+    }
+   ],
+   "electionDate": "2024-11-05",
+   "isOfficialResults": true,
+   "isPrimary": false,
+   "asOf": "2025-01-30T13:59:12.8505546Z",
+   "lastUpdated": "2024-11-12T20:35:36.6851691Z"
+  },
+  {
+   "id": "01000000-d884-2e72-1c03-08dcda4ba6ad",
+   "jurisdictionId": "ea1814cb-4423-439e-b273-131e9a8356a6",
+   "name": [
+    {
+     "languageId": "en",
+     "text": "November General Election"
+    }
+   ],
+   "electionDate": "2024-11-05",
+   "isOfficialResults": true,
+   "isPrimary": false,
+   "asOf": "2025-01-30T13:59:16.539332Z",
+   "lastUpdated": "2024-11-13T14:01:20.0063939Z"
+  }
+ ],
+ "ballotItems": [
+  {
+   "id": "01000000-d884-2e72-6367-08dcda4b86b5",
+   "parentId": null,
+   "name": [
+    {
+     "languageId": "en",
+     "text": "President of the US"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 1"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": null,
+   "reportingStatus": {
+    "reportingUnits": 159,
+    "totalUnits": 159,
+    "asOf": "2025-01-30T13:59:22.4956582Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 5250047,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-d884-2e72-71ff-08dcda4b86b5",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Donald J. Trump (Rep)"
+       }
+      ],
+      "voteCount": 2663117,
+      "party": {
+       "abbreviation": "Rep"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": [
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Election Day"
+         }
+        ],
+        "voteCount": 647080
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Absentee by Mail"
+         }
+        ],
+        "voteCount": 98151
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Provisional"
+         }
+        ],
+        "voteCount": 1444
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Advanced Voting"
+         }
+        ],
+        "voteCount": 1916442
+       }
+      ]
+     },
+     {
+      "id": "01000000-d884-2e72-7a48-08dcda4b86b5",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Kamala D. Harris (Dem)"
+       }
+      ],
+      "voteCount": 2548017,
+      "party": {
+       "abbreviation": "Dem"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": [
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Election Day"
+         }
+        ],
+        "voteCount": 558607
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Absentee by Mail"
+         }
+        ],
+        "voteCount": 183133
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Provisional"
+         }
+        ],
+        "voteCount": 2164
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Advanced Voting"
+         }
+        ],
+        "voteCount": 1804113
+       }
+      ]
+     },
+     {
+      "id": "01000000-d884-2e72-7cf3-08dcda4b86b5",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Chase Oliver (Lib)"
+       }
+      ],
+      "voteCount": 20684,
+      "party": {
+       "abbreviation": "Lib"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": [
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Election Day"
+         }
+        ],
+        "voteCount": 8290
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Absentee by Mail"
+         }
+        ],
+        "voteCount": 1027
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Provisional"
+         }
+        ],
+        "voteCount": 13
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Advanced Voting"
+         }
+        ],
+        "voteCount": 11354
+       }
+      ]
+     },
+     {
+      "id": "01000000-d884-2e72-7f58-08dcda4b86b5",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Jill Stein (Grn)"
+       }
+      ],
+      "voteCount": 18229,
+      "party": {
+       "abbreviation": "Grn"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": [
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Election Day"
+         }
+        ],
+        "voteCount": 7280
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Absentee by Mail"
+         }
+        ],
+        "voteCount": 1047
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Provisional"
+         }
+        ],
+        "voteCount": 24
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Advanced Voting"
+         }
+        ],
+        "voteCount": 9878
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "01000000-d884-2e72-d102-08dcda4b86d5",
+   "parentId": null,
+   "name": [
+    {
+     "languageId": "en",
+     "text": "US House of Representatives - District 1"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 1"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": null,
+   "reportingStatus": {
+    "reportingUnits": 15,
+    "totalUnits": 15,
+    "asOf": "2025-01-30T13:59:22.4956582Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 355857,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-d884-2e72-d19c-08dcda4b86d5",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Earl L. \"Buddy\" Carter (I) (Rep)"
+       }
+      ],
+      "voteCount": 220576,
+      "party": {
+       "abbreviation": "Rep"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": [
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Election Day"
+         }
+        ],
+        "voteCount": 56186
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Absentee by Mail"
+         }
+        ],
+        "voteCount": 8262
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Provisional"
+         }
+        ],
+        "voteCount": 83
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Advanced Voting"
+         }
+        ],
+        "voteCount": 156045
+       }
+      ]
+     },
+     {
+      "id": "01000000-d884-2e72-d1b8-08dcda4b86d5",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Patti Hewitt (Dem)"
+       }
+      ],
+      "voteCount": 135281,
+      "party": {
+       "abbreviation": "Dem"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": [
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Election Day"
+         }
+        ],
+        "voteCount": 35127
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Absentee by Mail"
+         }
+        ],
+        "voteCount": 12282
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Provisional"
+         }
+        ],
+        "voteCount": 87
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Advanced Voting"
+         }
+        ],
+        "voteCount": 87785
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "01000000-d884-2e72-9118-08dcda4bc286",
+   "parentId": null,
+   "name": [
+    {
+     "languageId": "en",
+     "text": "State House of Representatives - District 99"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 1"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": null,
+   "reportingStatus": {
+    "reportingUnits": 1,
+    "totalUnits": 1,
+    "asOf": "2025-01-30T13:59:22.4956582Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 29003,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-d884-2e72-913b-08dcda4bc286",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Matt Reeves (I) (Rep)"
+       }
+      ],
+      "voteCount": 14812,
+      "party": {
+       "abbreviation": "Rep"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": [
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Election Day"
+         }
+        ],
+        "voteCount": 3103
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Absentee by Mail"
+         }
+        ],
+        "voteCount": 703
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Provisional"
+         }
+        ],
+        "voteCount": 6
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Advanced Voting"
+         }
+        ],
+        "voteCount": 11000
+       }
+      ]
+     },
+     {
+      "id": "01000000-d884-2e72-9154-08dcda4bc286",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Michelle Kang (Dem)"
+       }
+      ],
+      "voteCount": 14191,
+      "party": {
+       "abbreviation": "Dem"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": [
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Election Day"
+         }
+        ],
+        "voteCount": 2635
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Absentee by Mail"
+         }
+        ],
+        "voteCount": 1212
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Provisional"
+         }
+        ],
+        "voteCount": 8
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Advanced Voting"
+         }
+        ],
+        "voteCount": 10336
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "01000000-d884-2e72-e8bc-08dcda4bc27b",
+   "parentId": null,
+   "name": [
+    {
+     "languageId": "en",
+     "text": "State House of Representatives - District 105"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 1"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": null,
+   "reportingStatus": {
+    "reportingUnits": 1,
+    "totalUnits": 1,
+    "asOf": "2025-01-30T13:59:22.4956582Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 30204,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-d884-2e72-e8d8-08dcda4bc27b",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Sandy Donatucci (Rep)"
+       }
+      ],
+      "voteCount": 15142,
+      "party": {
+       "abbreviation": "Rep"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": [
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Election Day"
+         }
+        ],
+        "voteCount": 3418
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Absentee by Mail"
+         }
+        ],
+        "voteCount": 607
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Provisional"
+         }
+        ],
+        "voteCount": 3
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Advanced Voting"
+         }
+        ],
+        "voteCount": 11114
+       }
+      ]
+     },
+     {
+      "id": "01000000-d884-2e72-e8e2-08dcda4bc27b",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Farooq Mughal (I) (Dem)"
+       }
+      ],
+      "voteCount": 15062,
+      "party": {
+       "abbreviation": "Dem"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": [
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Election Day"
+         }
+        ],
+        "voteCount": 3185
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Absentee by Mail"
+         }
+        ],
+        "voteCount": 973
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Provisional"
+         }
+        ],
+        "voteCount": 2
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Advanced Voting"
+         }
+        ],
+        "voteCount": 10902
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "01000000-d884-2e72-6cff-08dcda4b8783",
+   "parentId": null,
+   "name": [
+    {
+     "languageId": "en",
+     "text": "State House of Representatives - District 128"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 1"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": null,
+   "reportingStatus": {
+    "reportingUnits": 6,
+    "totalUnits": 6,
+    "asOf": "2025-01-30T13:59:22.4956582Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 27804,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-d884-2e72-6d31-08dcda4b8783",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Tracy Wheeler (Rep)"
+       }
+      ],
+      "voteCount": 13878,
+      "party": {
+       "abbreviation": "Rep"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": [
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Election Day"
+         }
+        ],
+        "voteCount": 3434
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Absentee by Mail"
+         }
+        ],
+        "voteCount": 490
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Provisional"
+         }
+        ],
+        "voteCount": 2
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Advanced Voting"
+         }
+        ],
+        "voteCount": 9952
+       }
+      ]
+     },
+     {
+      "id": "01000000-d884-2e72-6d46-08dcda4b8783",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Mack Jackson (I) (Dem)"
+       }
+      ],
+      "voteCount": 13926,
+      "party": {
+       "abbreviation": "Dem"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": [
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Election Day"
+         }
+        ],
+        "voteCount": 3929
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Absentee by Mail"
+         }
+        ],
+        "voteCount": 1545
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Provisional"
+         }
+        ],
+        "voteCount": 5
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Advanced Voting"
+         }
+        ],
+        "voteCount": 8447
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "01000000-d884-2e72-44ac-08dcda4b8935",
+   "parentId": null,
+   "name": [
+    {
+     "languageId": "en",
+     "text": "State House of Representatives - District 145"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 1"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": null,
+   "reportingStatus": {
+    "reportingUnits": 2,
+    "totalUnits": 2,
+    "asOf": "2025-01-30T13:59:22.4956582Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 27031,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-d884-2e72-44dd-08dcda4b8935",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Noah Redding Harbuck (Rep)"
+       }
+      ],
+      "voteCount": 13379,
+      "party": {
+       "abbreviation": "Rep"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": [
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Election Day"
+         }
+        ],
+        "voteCount": 3770
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Absentee by Mail"
+         }
+        ],
+        "voteCount": 376
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Provisional"
+         }
+        ],
+        "voteCount": 6
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Advanced Voting"
+         }
+        ],
+        "voteCount": 9227
+       }
+      ]
+     },
+     {
+      "id": "01000000-d884-2e72-44ed-08dcda4b8935",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Tangie Herring (Dem)"
+       }
+      ],
+      "voteCount": 13652,
+      "party": {
+       "abbreviation": "Dem"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": [
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Election Day"
+         }
+        ],
+        "voteCount": 3749
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Absentee by Mail"
+         }
+        ],
+        "voteCount": 1027
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Provisional"
+         }
+        ],
+        "voteCount": 15
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Advanced Voting"
+         }
+        ],
+        "voteCount": 8861
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "01000000-d884-2e72-2f0a-08dcda4b8cf2",
+   "parentId": null,
+   "name": [
+    {
+     "languageId": "en",
+     "text": "District Attorney - Chattahoochee Judicial Circuit"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 1"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": null,
+   "reportingStatus": {
+    "reportingUnits": 6,
+    "totalUnits": 6,
+    "asOf": "2025-01-30T13:59:22.4956582Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 112237,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-d884-2e72-2f28-08dcda4b8cf2",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Don Kelly (I) (Rep)"
+       }
+      ],
+      "voteCount": 58100,
+      "party": {
+       "abbreviation": "Rep"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": [
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Election Day"
+         }
+        ],
+        "voteCount": 15836
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Absentee by Mail"
+         }
+        ],
+        "voteCount": 2735
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Provisional"
+         }
+        ],
+        "voteCount": 17
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Advanced Voting"
+         }
+        ],
+        "voteCount": 39512
+       }
+      ]
+     },
+     {
+      "id": "01000000-d884-2e72-2f35-08dcda4b8cf2",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Anthony Johnson (Dem)"
+       }
+      ],
+      "voteCount": 54137,
+      "party": {
+       "abbreviation": "Dem"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": [
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Election Day"
+         }
+        ],
+        "voteCount": 12971
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Absentee by Mail"
+         }
+        ],
+        "voteCount": 4863
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Provisional"
+         }
+        ],
+        "voteCount": 9
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Advanced Voting"
+         }
+        ],
+        "voteCount": 36294
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "01000000-d884-2e72-31d9-08dcda4b86dc",
+   "parentId": null,
+   "name": [
+    {
+     "languageId": "en",
+     "text": "Proposed Constitutional Amendment 2"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 1"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": null,
+   "reportingStatus": {
+    "reportingUnits": 159,
+    "totalUnits": 159,
+    "asOf": "2025-01-30T13:59:22.4956582Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 4867018,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-d884-2e72-3219-08dcda4b86dc",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Yes"
+       }
+      ],
+      "voteCount": 2525406,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": [
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Election Day"
+         }
+        ],
+        "voteCount": 628701
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Absentee by Mail"
+         }
+        ],
+        "voteCount": 125335
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Provisional"
+         }
+        ],
+        "voteCount": 1634
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Advanced Voting"
+         }
+        ],
+        "voteCount": 1769736
+       }
+      ]
+     },
+     {
+      "id": "01000000-d884-2e72-3230-08dcda4b86dc",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "No"
+       }
+      ],
+      "voteCount": 2341612,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": [
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Election Day"
+         }
+        ],
+        "voteCount": 507270
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Absentee by Mail"
+         }
+        ],
+        "voteCount": 121386
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Provisional"
+         }
+        ],
+        "voteCount": 1326
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Advanced Voting"
+         }
+        ],
+        "voteCount": 1711630
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "01000000-d884-2e72-931e-08dcda4b86dd",
+   "parentId": null,
+   "name": [
+    {
+     "languageId": "en",
+     "text": "Statewide Referendum Question A"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 1"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": null,
+   "reportingStatus": {
+    "reportingUnits": 159,
+    "totalUnits": 159,
+    "asOf": "2025-01-30T13:59:22.4956582Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 4999656,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-d884-2e72-9357-08dcda4b86dd",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Yes"
+       }
+      ],
+      "voteCount": 3223888,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": [
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Election Day"
+         }
+        ],
+        "voteCount": 737726
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Absentee by Mail"
+         }
+        ],
+        "voteCount": 178114
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Provisional"
+         }
+        ],
+        "voteCount": 1741
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Advanced Voting"
+         }
+        ],
+        "voteCount": 2306307
+       }
+      ]
+     },
+     {
+      "id": "01000000-d884-2e72-937f-08dcda4b86dd",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "No"
+       }
+      ],
+      "voteCount": 1775768,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": [
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Election Day"
+         }
+        ],
+        "voteCount": 425081
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Absentee by Mail"
+         }
+        ],
+        "voteCount": 80210
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Provisional"
+         }
+        ],
+        "voteCount": 1328
+       },
+       {
+        "groupName": [
+         {
+          "languageId": "en",
+          "text": "Advanced Voting"
+         }
+        ],
+        "voteCount": 1269149
+       }
+      ]
+     }
+    ]
+   }
+  }
+ ]
+}

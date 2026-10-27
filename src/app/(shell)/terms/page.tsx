@@ -57,7 +57,7 @@ export default function TermsPage() {
 
       <h2 className={heading}>Public links and visibility</h2>
       <p className={paragraph}>
-        An unclaimed quiz may be accessible to anyone with its link until it expires. A claimed quiz can be public or private. Do not include sensitive personal information in content intended to be public. Changing or deleting content does not remove copies that other people saved or shared while it was public.
+        An unclaimed quiz remains accessible to anyone with its hard-to-guess link. A claimed quiz can be public or private, and its owner can delete it. Do not include sensitive personal information in content intended to be public. Changing or deleting content does not remove copies that other people saved or shared while it was public.
       </p>
 
       <h2 className={heading}>Dataset publishing</h2>

@@ -1,4 +1,4 @@
-import { eq, or, count, gte, desc } from "drizzle-orm";
+import { eq, or, desc } from "drizzle-orm";
 import { db } from "./client";
 import { lobbyingRegistrations, lobbyingIssues } from "./schema";
 import type {
@@ -68,19 +68,6 @@ export async function listLobbyingForEntity(
     orderBy: (r, { desc: d }) => [d(r.year)],
   });
   return rows.map(toRegistration);
-}
-
-export async function countLobbyingRegistrations(): Promise<number> {
-  const [row] = await db.select({ value: count() }).from(lobbyingRegistrations);
-  return row.value;
-}
-
-export async function countLobbyingRegistrationsCreatedSince(since: Date): Promise<number> {
-  const [row] = await db
-    .select({ value: count() })
-    .from(lobbyingRegistrations)
-    .where(gte(lobbyingRegistrations.createdAt, since));
-  return row.value;
 }
 
 async function replaceIssues(registrationId: string, input: LobbyingRegistrationInput) {

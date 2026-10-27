@@ -3,7 +3,7 @@ import { db } from "@/lib/db/client";
 import { quizOpenerEvents } from "@/lib/db/schema";
 import { parseOpenerEvent } from "@/lib/quiz/openers";
 
-// Anonymous landing-page visit log for the quiz stats (docs/quiz-plan.md).
+// Anonymous landing-page visit log for the quiz stats (docs/quiz.md).
 // Sent once per visit by the hero via sendBeacon. Nothing identifying is
 // stored: no cookies, IP, or user agent.
 

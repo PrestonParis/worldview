@@ -24,6 +24,7 @@ export const IDENTIFIER_PROPS = {
   committeeId: "congress_committee",
   ldaClientId: "lda_client",
   ldaRegistrantId: "lda_registrant",
+  scdbJustice: "scdb",
 };
 export const PROP_FOR_SCHEME = Object.fromEntries(Object.entries(IDENTIFIER_PROPS).map(([p, s]) => [s, p]));
 

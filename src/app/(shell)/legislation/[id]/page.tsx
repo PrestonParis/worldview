@@ -3,17 +3,12 @@ import { notFound } from "next/navigation";
 import { getBill } from "@/lib/db/bills";
 import { listVotesForBill, listVotesForRollCall } from "@/lib/db/votes";
 import { listRollCallsForBill } from "@/lib/db/rollCalls";
-import {
-  listCosponsors,
-  listActions,
-  listCommittees,
-  listRelations,
-  listTextVersions,
-} from "@/lib/db/billDetails";
+import { listCosponsors, listActions, listCommittees, listRelations, listTextVersions } from "@/lib/db/billDetails";
 import { getEntitiesByIds } from "@/lib/db/entities";
 import { StatusPill } from "@/components/legislation/bill-status";
 import { votePositions, type Vote } from "@/lib/validation/vote";
 import type { Entity } from "@/lib/validation/entity";
+import { publicEntityPath } from "@/lib/people/public";
 
 // Rebuilt at most daily; crawlers and visitors share the cached render.
 export const revalidate = 86400;
@@ -38,13 +33,7 @@ const POSITION_LABEL: Record<string, string> = {
   absent: "Absent",
 };
 
-function RollCallBreakdown({
-  votes,
-  entityById,
-}: {
-  votes: Vote[];
-  entityById: Map<string, Entity>;
-}) {
+function RollCallBreakdown({ votes, entityById }: { votes: Vote[]; entityById: Map<string, Entity> }) {
   const byPosition = votePositions.map((position) => ({
     position,
     votes: votes.filter((v) => v.position === position),
@@ -52,9 +41,7 @@ function RollCallBreakdown({
   return (
     <>
       <p className="mt-1 text-sm tabular-nums text-slate-600 dark:text-slate-400">
-        {byPosition
-          .map(({ position, votes: v }) => `${v.length} ${POSITION_LABEL[position]}`)
-          .join(" · ")}
+        {byPosition.map(({ position, votes: v }) => `${v.length} ${POSITION_LABEL[position]}`).join(" · ")}
       </p>
       <div className="mt-3 flex flex-col gap-4">
         {byPosition
@@ -70,18 +57,13 @@ function RollCallBreakdown({
                   return (
                     <li key={vote.id} className="text-sm text-slate-700 dark:text-slate-300">
                       {voter ? (
-                        <Link
-                          href={`/legislation/members/${voter.id}`}
-                          className="underline underline-offset-2"
-                        >
+                        <Link href={`/legislation/members/${voter.id}`} className="underline underline-offset-2">
                           {voter.name}
                         </Link>
                       ) : (
                         "Unknown"
                       )}
-                      {vote.party ? (
-                        <span className="text-slate-400"> ({vote.party})</span>
-                      ) : null}
+                      {vote.party ? <span className="text-slate-400"> ({vote.party})</span> : null}
                     </li>
                   );
                 })}
@@ -93,26 +75,21 @@ function RollCallBreakdown({
   );
 }
 
-export default async function BillDetailPage({
-  params,
-}: PageProps<"/legislation/[id]">) {
+export default async function BillDetailPage({ params }: PageProps<"/legislation/[id]">) {
   const { id } = await params;
-  const [bill, billVotes, rollCalls, cosponsors, actions, committees, relations, textVersions] =
-    await Promise.all([
-      getBill(id),
-      listVotesForBill(id),
-      listRollCallsForBill(id),
-      listCosponsors(id),
-      listActions(id),
-      listCommittees(id),
-      listRelations(id),
-      listTextVersions(id),
-    ]);
+  const [bill, billVotes, rollCalls, cosponsors, actions, committees, relations, textVersions] = await Promise.all([
+    getBill(id),
+    listVotesForBill(id),
+    listRollCallsForBill(id),
+    listCosponsors(id),
+    listActions(id),
+    listCommittees(id),
+    listRelations(id),
+    listTextVersions(id),
+  ]);
   if (!bill) notFound();
 
-  const rollCallVotes = await Promise.all(
-    rollCalls.map((rc) => listVotesForRollCall(rc.id)),
-  );
+  const rollCallVotes = await Promise.all(rollCalls.map((rc) => listVotesForRollCall(rc.id)));
 
   const entities = await getEntitiesByIds([
     bill.sponsorEntityId ?? "",
@@ -121,9 +98,7 @@ export default async function BillDetailPage({
     ...rollCallVotes.flat().map((v) => v.voterEntityId),
   ]);
   const entityById = new Map(entities.map((e) => [e.id, e]));
-  const sponsor = bill.sponsorEntityId
-    ? entityById.get(bill.sponsorEntityId)
-    : undefined;
+  const sponsor = bill.sponsorEntityId ? entityById.get(bill.sponsorEntityId) : undefined;
   const subjects = bill.subjects
     .split("\n")
     .map((s) => s.trim())
@@ -138,17 +113,23 @@ export default async function BillDetailPage({
         ← Bills
       </Link>
 
-      <div className="mt-3 flex items-center gap-2">
-        <span className="text-sm tabular-nums text-slate-500 dark:text-slate-400">
-          {bill.billNumber}
-        </span>
-        <StatusPill status={bill.status} />
+      <div className="mt-3 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <span className="text-sm tabular-nums text-slate-500 dark:text-slate-400">{bill.billNumber}</span>
+          <StatusPill status={bill.status} />
+        </div>
+        <Link
+          href={`/writ/bill/${bill.id}`}
+          className="text-xs font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400"
+        >
+          Open in Writ →
+        </Link>
       </div>
       <h1 className="mt-1 text-2xl font-semibold tracking-tight">{bill.title}</h1>
       <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
         Sponsored by{" "}
         {sponsor ? (
-          <Link href={`/data/entities/${sponsor.id}`} className="underline underline-offset-2">
+          <Link href={publicEntityPath(sponsor)} className="underline underline-offset-2">
             {sponsor.name}
           </Link>
         ) : (
@@ -157,9 +138,7 @@ export default async function BillDetailPage({
         {bill.chamber ? ` · ${bill.chamber}` : ""} · Introduced {formatDate(bill.introducedDate)}
       </p>
 
-      {bill.summary ? (
-        <p className="mt-4 text-slate-700 dark:text-slate-300">{bill.summary}</p>
-      ) : null}
+      {bill.summary ? <p className="mt-4 text-slate-700 dark:text-slate-300">{bill.summary}</p> : null}
 
       {bill.policyArea || subjects.length > 0 ? (
         <div className="mt-4 flex flex-wrap gap-1.5">
@@ -181,8 +160,7 @@ export default async function BillDetailPage({
 
       {bill.latestActionText ? (
         <p className="mt-4 text-xs text-slate-500 dark:text-slate-400">
-          Latest action{bill.latestActionDate ? ` (${formatDate(bill.latestActionDate)})` : ""}:{" "}
-          {bill.latestActionText}
+          Latest action{bill.latestActionDate ? ` (${formatDate(bill.latestActionDate)})` : ""}: {bill.latestActionText}
         </p>
       ) : null}
 
@@ -190,9 +168,7 @@ export default async function BillDetailPage({
         <details className="group mt-6">
           <summary className="cursor-pointer list-none text-lg font-medium">
             Cosponsors ({cosponsors.length})
-            <span className="ml-2 text-xs font-normal text-slate-400 group-open:hidden">
-              show
-            </span>
+            <span className="ml-2 text-xs font-normal text-slate-400 group-open:hidden">show</span>
           </summary>
           <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
             {cosponsors.map((c) => {
@@ -200,7 +176,7 @@ export default async function BillDetailPage({
               return (
                 <li key={c.id} className="text-sm text-slate-700 dark:text-slate-300">
                   {e ? (
-                    <Link href={`/data/entities/${e.id}`} className="underline underline-offset-2">
+                    <Link href={publicEntityPath(e)} className="underline underline-offset-2">
                       {e.name}
                     </Link>
                   ) : (
@@ -250,9 +226,7 @@ export default async function BillDetailPage({
 
       {rollCalls.length > 0 ? (
         <>
-          <h2 className="mt-8 text-lg font-medium">
-            Roll calls ({rollCalls.length})
-          </h2>
+          <h2 className="mt-8 text-lg font-medium">Roll calls ({rollCalls.length})</h2>
           <div className="mt-3 flex flex-col gap-6">
             {rollCalls.map((rc, i) => (
               <div key={rc.id}>
@@ -281,9 +255,7 @@ export default async function BillDetailPage({
       {rollCalls.length === 0 && billVotes.length === 0 ? (
         <>
           <h2 className="mt-8 text-lg font-medium">Roll calls</h2>
-          <p className="mt-2 text-sm text-slate-400">
-            No votes recorded for this bill yet.
-          </p>
+          <p className="mt-2 text-sm text-slate-400">No votes recorded for this bill yet.</p>
         </>
       ) : null}
 
@@ -294,19 +266,14 @@ export default async function BillDetailPage({
             {relations.map((r) => (
               <li key={r.id} className="text-sm text-slate-700 dark:text-slate-300">
                 {r.relatedBillId ? (
-                  <Link
-                    href={`/legislation/${r.relatedBillId}`}
-                    className="underline underline-offset-2"
-                  >
+                  <Link href={`/legislation/${r.relatedBillId}`} className="underline underline-offset-2">
                     {r.relatedBillNumber || r.relatedExternalId}
                   </Link>
                 ) : (
                   <span>{r.relatedBillNumber || r.relatedExternalId}</span>
                 )}
                 {r.relatedTitle ? <span className="text-slate-500">: {r.relatedTitle}</span> : null}
-                {r.relationshipType ? (
-                  <span className="text-slate-400"> ({r.relationshipType})</span>
-                ) : null}
+                {r.relationshipType ? <span className="text-slate-400"> ({r.relationshipType})</span> : null}
               </li>
             ))}
           </ul>

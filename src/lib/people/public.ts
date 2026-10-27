@@ -3,9 +3,9 @@ import type { Entity } from "@/lib/validation/entity";
 export const roleGroups = [
   {
     key: "politicians",
-    label: "Politicians and candidates",
-    description: "Officeholders, candidates and former officials",
-    types: ["politician"],
+    label: "Officials and candidates",
+    description: "Officeholders, judges, candidates and former officials",
+    types: ["politician", "judge"],
   },
   {
     key: "media",
@@ -29,6 +29,7 @@ export const roleGroups = [
 
 export const typeLabels: Record<string, string> = {
   politician: "Politician",
+  judge: "Judge",
   pundit: "Commentator",
   journalist: "Journalist",
   organization: "Organization",
@@ -57,12 +58,15 @@ export function slugifyEntityName(name: string): string {
     .replace(/^-|-$/g, "") || "profile";
 }
 
+// Profiles (case files) live in Subpoena; /people/[slug] redirects here.
+export const PROFILE_BASE = "/subpoena";
+
 export function publicEntitySlug(entity: Pick<Entity, "id" | "name">): string {
   return `${slugifyEntityName(entity.name)}-${entity.id.slice(0, 8)}`;
 }
 
 export function publicEntityPath(entity: Pick<Entity, "id" | "name">): string {
-  return `/people/${publicEntitySlug(entity)}`;
+  return `${PROFILE_BASE}/${publicEntitySlug(entity)}`;
 }
 
 export function entityRole(entity: Pick<Entity, "type" | "metadata">): string {

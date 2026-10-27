@@ -1,4 +1,4 @@
--- Quiz analytics (docs/quiz-plan.md, Analytics). Additive and idempotent.
+-- Quiz analytics (docs/quiz.md, Analytics). Additive and idempotent.
 -- Mirrors quizResponses / quizOpenerEvents in src/lib/db/schema.ts.
 
 -- Sessions started by the site owner (testing), or marked as such on /quiz/stats.

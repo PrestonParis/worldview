@@ -13,7 +13,7 @@ const HUB = {
   abortion: { href: "/abortion", label: "Abortion" },
   guns: { href: "/guns", label: "Guns" },
   immigration: { href: "/immigration", label: "Immigration" },
-  health: { href: "/health-care", label: "Health care" },
+  health: { href: "/healthcare", label: "Healthcare" },
   education: { href: "/education", label: "Education" },
   housing: { href: "/housing", label: "Housing" },
   energy: { href: "/energy", label: "Energy & climate" },

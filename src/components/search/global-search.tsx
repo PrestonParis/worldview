@@ -10,11 +10,9 @@ const GROUPS: { key: keyof SearchResponse; label: string }[] = [
   { key: "pages", label: "Pages & data" },
   { key: "datasets", label: "Datasets" },
   { key: "entities", label: "People & organizations" },
-  { key: "claims", label: "Claims" },
-  { key: "sources", label: "Sources" },
 ];
 
-const EMPTY: SearchResponse = { pages: [], datasets: [], entities: [], claims: [], sources: [] };
+const EMPTY: SearchResponse = { pages: [], datasets: [], entities: [] };
 
 export function GlobalSearch({
   placeholder = "Search…",
@@ -158,7 +156,7 @@ export function GlobalSearch({
                     {items.map((item) => {
                       const flatIndex = flat.findIndex((f) => f.group === key && f.id === item.id);
                       const color = typeColorFor(
-                        ["politician", "pundit", "journalist"].includes(item.type ?? "")
+                        ["politician", "judge", "pundit", "journalist"].includes(item.type ?? "")
                           ? "people"
                           : key,
                       );

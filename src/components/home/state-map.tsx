@@ -77,7 +77,9 @@ export function StateMap({ width, height, states, measures }: {
         ))}
       </div>
 
-      <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={`Map of ${measure.label.toLowerCase()} by state`} className="mt-5 block h-auto w-full">
+      <div className="mt-5 sm:grid sm:grid-cols-[minmax(0,1fr)_9.5rem] sm:items-start sm:gap-4 lg:grid-cols-[minmax(0,1fr)_11rem] lg:gap-5">
+      <div className="min-w-0">
+      <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={`Map of ${measure.label.toLowerCase()} by state`} className="block h-auto w-full">
         {states.map((s) => (
           <path
             key={s.abbr}
@@ -116,9 +118,8 @@ export function StateMap({ width, height, states, measures }: {
         )}
       </svg>
 
-      <div className="mt-4 grid gap-5 sm:grid-cols-[1fr_12rem] sm:items-start">
-        <div>
-          <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400" aria-hidden>
+        <div className="mt-3 min-w-0">
+          <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400" aria-hidden>
             <span>{formatValue(Math.min(...Object.values(measure.values).filter((v): v is number => v !== null)), measure.unit, { compact: true })}</span>
             <span className="flex h-2.5 w-36 overflow-hidden rounded-sm">
               {STEPS.map((_, i) => <span key={i} className="flex-1" style={{ background: fill(i) }} />)}
@@ -133,7 +134,8 @@ export function StateMap({ width, height, states, measures }: {
             )}
           </p>
         </div>
-        <div className="min-w-0">
+      </div>
+        <div className="mt-4 hidden min-w-0 border-slate-200 sm:mt-0 sm:block sm:border-l sm:pl-4 lg:pl-5 dark:border-slate-800">
           <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">Highest</p>
           <ol className="mt-1.5 space-y-1 text-sm">
             {top.map(([abbr, value], i) => (

@@ -1,16 +1,16 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowDown, ArrowUp, Download, Search, X } from "lucide-react";
+import { Download, X } from "lucide-react";
 import { TimeSeriesChart, type Series } from "@/components/charts/time-series-chart";
-import { useWidth } from "@/components/charts/use-width";
-import { US_STATE_GRID, US_STATE_GRID_COLS, US_STATE_GRID_ROWS } from "@/lib/money/us-states";
+import type { StatePath } from "@/lib/geo/state-paths";
 import { formatSigned, formatValue, pctChange } from "@/lib/format";
 import {
   CLEARED,
   FULL_COVERAGE,
   OFFENSES,
   offenseLabel,
+  type CityRow,
   type ClearedKey,
   type OffenseKey,
   type StateCrimeData,
@@ -21,7 +21,6 @@ import { Chip } from "./segmented";
 
 const STEPS = 7;
 const TOTALS = new Set<string>(["violent_crime", "property_crime"]);
-type SortKey = "rank" | "name" | "value" | "change" | "since" | "vsUs" | "cleared";
 
 function quantileBreaks(values: number[]): number[] {
   const sorted = [...values].sort((a, b) => a - b);
@@ -30,28 +29,39 @@ function quantileBreaks(values: number[]): number[] {
 
 const signed = (v: number | null) => (v === null ? "—" : formatSigned(v, "percent"));
 
-// Tile map, detail panel, state profile, and table for one offense at a
-// time. Hovering previews a state; clicking a tile or a table row selects
-// it and opens its profile, where a second state can be compared.
+// Marker radius in map units: area grows with population.
+const cityRadius = (pop: number | null) => 2.2 + Math.sqrt((pop ?? 100_000) / 1_000_000) * 5;
+
+// U.S. map, detail panel, and state profile for one offense at a time.
+// States are shaded by rate; each large city's police department is a
+// marker where the city is. Hovering previews a state or a city; clicking a
+// state opens its profile, clicking a city shows its numbers in the panel.
 export function CrimeStateExplorer({
   data,
   year,
   priorYear,
   baseYear,
+  map,
+  cities,
+  cityPoints,
 }: {
   data: StateCrimeData;
   year: string;
   priorYear: string;
   baseYear: string;
+  map: { width: number; height: number; states: StatePath[] };
+  cities: CityRow[];
+  cityPoints: Record<string, [number, number]>;
 }) {
   const [metric, setMetric] = useState<OffenseKey>("violent_crime");
   const [hover, setHover] = useState<string | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
   const [compare, setCompare] = useState<string>("");
-  const [query, setQuery] = useState("");
-  const [sort, setSort] = useState<{ key: SortKey; dir: 1 | -1 }>({ key: "rank", dir: 1 });
+  const [hoverCity, setHoverCity] = useState<string | null>(null);
+  const [city, setCity] = useState<string | null>(null);
+  const [showCities, setShowCities] = useState(cities.length > 0);
   const profileRef = useRef<HTMLDivElement>(null);
-  const [mapRef, width] = useWidth<HTMLDivElement>();
+  const mapRef = useRef<HTMLDivElement>(null);
 
   const i = data.years.indexOf(year);
   const j = data.years.indexOf(priorYear);
@@ -86,27 +96,25 @@ export function CrimeStateExplorer({
   const breaks = present.length ? quantileBreaks(present) : [];
   const step = (v: number) => breaks.filter((x) => v > x).length + 1;
 
-  const gap = 3;
-  const cell = Math.min(52, Math.floor((width - gap * (US_STATE_GRID_COLS - 1)) / US_STATE_GRID_COLS));
-  const mapW = cell * US_STATE_GRID_COLS + gap * (US_STATE_GRID_COLS - 1);
-  const mapH = cell * US_STATE_GRID_ROWS + gap * (US_STATE_GRID_ROWS - 1);
+  const cityByOri = useMemo(() => new Map(cities.map((c) => [c.ori, c])), [cities]);
+  // Largest first, so small cities draw on top and stay clickable.
+  const markers = useMemo(
+    () => cities.filter((c) => cityPoints[c.ori]).sort((a, b) => (b.population ?? 0) - (a.population ?? 0)),
+    [cities, cityPoints],
+  );
 
   const select = (abbr: string | null, scroll = false) => {
     setSelected(abbr);
+    setCity(null);
     if (abbr === compare) setCompare("");
     if (abbr && scroll) requestAnimationFrame(() => profileRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
   };
 
-  const q = query.trim().toLowerCase();
-  const tableRows = rows
-    .filter((r) => !q || r.name.toLowerCase().includes(q) || r.abbr.toLowerCase() === q)
-    .sort((x, y) => {
-      if (sort.key === "name") return x.name.localeCompare(y.name) * sort.dir;
-      const av = sort.key === "rank" ? x.rank || Infinity : (x[sort.key] ?? -Infinity);
-      const bv = sort.key === "rank" ? y.rank || Infinity : (y[sort.key] ?? -Infinity);
-      return (av - bv) * sort.dir;
-    });
-
+  const pickCity = (ori: string | null, scroll = false) => {
+    setCity(ori);
+    if (ori && scroll) requestAnimationFrame(() => mapRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  };
+  const focusCity = (hoverCity && cityByOri.get(hoverCity)) || (!hover && city && cityByOri.get(city)) || null;
   const focus = (hover && byAbbr.get(hover)) || (selected && byAbbr.get(selected)) || null;
   const label = offenseLabel(metric);
 
@@ -129,16 +137,6 @@ export function CrimeStateExplorer({
     URL.revokeObjectURL(a.href);
   };
 
-  const headers: { key: SortKey; label: string; hint?: string }[] = [
-    { key: "rank", label: "Rank" },
-    { key: "name", label: "State" },
-    { key: "value", label: "Rate", hint: `${year}, per 100,000` },
-    { key: "change", label: "1-year change", hint: `vs ${priorYear}` },
-    { key: "since", label: `Since ${baseYear}` },
-    { key: "vsUs", label: "vs U.S.", hint: `U.S. ${formatValue(usNow, "per_100k")}` },
-    ...(clearedKey ? [{ key: "cleared" as const, label: "Cleared", hint: "share of offenses" }] : []),
-  ];
-
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap gap-2" role="group" aria-label="Offense">
@@ -149,76 +147,152 @@ export function CrimeStateExplorer({
         ))}
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,41rem)_minmax(16rem,22rem)]">
-        <div ref={mapRef} className="min-w-0 space-y-3">
-          <svg width={mapW} height={mapH} role="img" aria-label={`${label} rate by state`} className="block max-w-full">
-            {US_STATE_GRID.map((c) => {
-              const r = byAbbr.get(c.abbr);
-              const v = r?.value;
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(16rem,20rem)]">
+        <div ref={mapRef} className="min-w-0 scroll-mt-24 space-y-3">
+          <svg viewBox={`0 0 ${map.width} ${map.height}`} role="img" aria-label={`${label} rate by state`} className="block h-auto w-full">
+            {map.states.map((st) => {
+              const v = byAbbr.get(st.abbr)?.value;
               const s = v === null || v === undefined ? 0 : step(v);
-              const x = c.col * (cell + gap);
-              const y = c.row * (cell + gap);
-              const isSel = selected === c.abbr || compare === c.abbr;
+              const isSel = selected === st.abbr || compare === st.abbr;
               return (
-                <g
-                  key={c.abbr}
+                <path
+                  key={st.abbr}
+                  d={st.d}
                   tabIndex={0}
                   role="button"
-                  aria-label={`${c.name}: ${formatValue(v, "per_100k")}`}
-                  aria-pressed={selected === c.abbr}
-                  onPointerEnter={() => setHover(c.abbr)}
+                  aria-label={`${st.name}: ${formatValue(v, "per_100k")}`}
+                  aria-pressed={selected === st.abbr}
+                  onPointerEnter={() => setHover(st.abbr)}
                   onPointerLeave={() => setHover(null)}
-                  onFocus={() => setHover(c.abbr)}
+                  onFocus={() => setHover(st.abbr)}
                   onBlur={() => setHover(null)}
-                  onClick={() => select(selected === c.abbr ? null : c.abbr)}
+                  onClick={() => select(selected === st.abbr ? null : st.abbr)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
                       e.preventDefault();
-                      select(selected === c.abbr ? null : c.abbr);
+                      select(selected === st.abbr ? null : st.abbr);
                     }
                   }}
-                  className="cursor-pointer outline-none"
-                >
-                  <rect
-                    x={x + (isSel ? 1.5 : 0)}
-                    y={y + (isSel ? 1.5 : 0)}
-                    width={cell - (isSel ? 3 : 0)}
-                    height={cell - (isSel ? 3 : 0)}
-                    rx={4}
-                    fill={s ? `var(--viz-seq-${s})` : "var(--viz-empty)"}
-                    stroke={isSel ? "var(--viz-series-2)" : hover === c.abbr ? "var(--viz-muted)" : "none"}
-                    strokeWidth={isSel ? 3 : 2}
-                  />
-                  <text
-                    x={x + cell / 2}
-                    y={y + cell / 2}
-                    dy="0.35em"
-                    textAnchor="middle"
-                    className="pointer-events-none text-[11px] font-semibold"
-                    style={{ fill: s ? `var(--viz-seq-ink-${s})` : "var(--viz-muted)" }}
-                  >
-                    {c.abbr}
-                  </text>
-                </g>
+                  className="cursor-pointer"
+                  style={{
+                    fill: s ? `var(--viz-seq-${s})` : "var(--viz-empty)",
+                    stroke: isSel ? "var(--viz-series-2)" : hover === st.abbr ? "var(--viz-muted)" : "var(--viz-surface)",
+                    strokeWidth: isSel ? 2.5 : hover === st.abbr ? 2 : 1,
+                    strokeLinejoin: "round",
+                    outline: "none",
+                  }}
+                />
               );
             })}
+            {/* Selected and hovered outlines on top of their neighbors */}
+            {map.states
+              .filter((st) => st.abbr === selected || st.abbr === compare || st.abbr === hover)
+              .map((st) => (
+                <path
+                  key={`edge-${st.abbr}`}
+                  d={st.d}
+                  pointerEvents="none"
+                  style={{
+                    fill: "none",
+                    stroke: st.abbr === hover && st.abbr !== selected && st.abbr !== compare ? "var(--viz-muted)" : "var(--viz-series-2)",
+                    strokeWidth: st.abbr === hover && st.abbr !== selected && st.abbr !== compare ? 2 : 2.5,
+                    strokeLinejoin: "round",
+                  }}
+                />
+              ))}
+            {!showCities &&
+              map.states.map((st) => {
+                if (!st.label) return null;
+                const v = byAbbr.get(st.abbr)?.value;
+                const s = v === null || v === undefined ? 0 : step(v);
+                return (
+                  <text
+                    key={`label-${st.abbr}`}
+                    x={st.label[0]}
+                    y={st.label[1]}
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                    pointerEvents="none"
+                    className="text-[13px] font-semibold"
+                    style={{ fill: s ? `var(--viz-seq-ink-${s})` : "var(--viz-muted)" }}
+                  >
+                    {st.abbr}
+                  </text>
+                );
+              })}
+            {showCities &&
+              markers.map((c) => {
+                const [x, y] = cityPoints[c.ori];
+                const on = city === c.ori || hoverCity === c.ori;
+                return (
+                  <circle
+                    key={c.ori}
+                    cx={x}
+                    cy={y}
+                    r={cityRadius(c.population) + (on ? 1.5 : 0)}
+                    onPointerEnter={() => setHoverCity(c.ori)}
+                    onPointerLeave={() => setHoverCity(null)}
+                    onClick={() => pickCity(city === c.ori ? null : c.ori)}
+                    className="cursor-pointer"
+                    style={{
+                      fill: "var(--viz-series-2)",
+                      fillOpacity: on ? 1 : 0.75,
+                      stroke: on ? "var(--foreground)" : "var(--viz-surface)",
+                      strokeWidth: on ? 2 : 0.8,
+                    }}
+                  >
+                    <title>{`${c.name}, ${c.state}`}</title>
+                  </circle>
+                );
+              })}
+            {/* The chosen city again, above every other marker */}
+            {showCities && city && cityPoints[city] && (
+              <circle
+                cx={cityPoints[city][0]}
+                cy={cityPoints[city][1]}
+                r={cityRadius(cityByOri.get(city)?.population ?? null) + 1.5}
+                pointerEvents="none"
+                style={{ fill: "var(--viz-series-2)", stroke: "var(--foreground)", strokeWidth: 2 }}
+              />
+            )}
           </svg>
-          {breaks.length > 0 && (
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500 dark:text-slate-400">
-              <span>{formatValue(Math.min(...present), "per_100k")}</span>
-              <span className="flex">
-                {Array.from({ length: STEPS }, (_, k) => (
-                  <span key={k} className="h-2.5 w-6 first:rounded-l last:rounded-r" style={{ background: `var(--viz-seq-${k + 1})` }} />
-                ))}
-              </span>
-              <span>{formatValue(Math.max(...present), "per_100k")}</span>
-              <span className="text-slate-400">· shades split states into sevenths by rank · click a state for its profile</span>
-            </div>
-          )}
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-slate-500 dark:text-slate-400">
+            {breaks.length > 0 && (
+              <>
+                <span>{formatValue(Math.min(...present), "per_100k")}</span>
+                <span className="flex">
+                  {Array.from({ length: STEPS }, (_, k) => (
+                    <span key={k} className="h-2.5 w-6 first:rounded-l last:rounded-r" style={{ background: `var(--viz-seq-${k + 1})` }} />
+                  ))}
+                </span>
+                <span>{formatValue(Math.max(...present), "per_100k")}</span>
+                <span className="text-slate-400">· state shades split states into sevenths by rank</span>
+              </>
+            )}
+            {cities.length > 0 && (
+              <label className="ml-auto inline-flex cursor-pointer items-center gap-1.5">
+                <input type="checkbox" checked={showCities} onChange={(e) => setShowCities(e.target.checked)} className="accent-orange-600" />
+                <span className="inline-block size-2.5 rounded-full" style={{ background: "var(--viz-series-2)" }} aria-hidden />
+                Cities over 100,000, sized by population
+              </label>
+            )}
+          </div>
         </div>
 
         <aside className="rounded-2xl border border-slate-200 p-4 text-sm dark:border-slate-800" aria-live="polite">
-          {focus ? (
+          {focusCity ? (
+            <CityCard
+              c={focusCity}
+              cities={cities}
+              year={year}
+              usViolent={data.us.violent_crime[i]}
+              stateViolent={data.rows.find((r) => r.abbr === focusCity.state)?.rates.violent_crime[i] ?? null}
+              stateName={byAbbr.get(focusCity.state)?.name ?? focusCity.state}
+              pinned={city === focusCity.ori}
+              onClose={() => pickCity(null)}
+              onState={() => select(focusCity.state, true)}
+            />
+          ) : focus ? (
             <>
               <p className="text-xs font-medium tracking-wide text-slate-400 uppercase">{label} rate</p>
               <p className="mt-1 text-lg font-semibold text-slate-950 dark:text-white">{focus.name}</p>
@@ -258,7 +332,8 @@ export function CrimeStateExplorer({
               <p className="mt-2 text-3xl font-semibold tracking-tight text-slate-950 tabular-nums dark:text-white">{formatValue(usNow, "per_100k")}</p>
               <p className="text-xs text-slate-500 dark:text-slate-400">per 100,000 in {year}</p>
               <p className="mt-4 text-xs text-slate-500 dark:text-slate-400">
-                Hover a state to compare it with the nation; click one to open its profile.
+                Hover a state to compare it with the nation; click one to open its profile. Click a city marker for its police department&apos;s
+                numbers.
               </p>
             </>
           )}
@@ -280,91 +355,110 @@ export function CrimeStateExplorer({
         </div>
       )}
 
-      <div className="space-y-3">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <label className="relative block w-full max-w-xs">
-            <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate-400" />
-            <input
-              type="search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Find a state"
-              aria-label="Find a state"
-              className="w-full rounded-full border border-slate-200 bg-transparent py-1.5 pr-3 pl-9 text-sm outline-none focus:border-slate-400 dark:border-slate-700"
-            />
-          </label>
+      <button
+        type="button"
+        onClick={downloadCsv}
+        className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 hover:border-slate-400 dark:border-slate-700 dark:text-slate-300"
+      >
+        <Download className="size-3.5" /> Download CSV (all states and offenses, {data.years[0]}–{year})
+      </button>
+    </div>
+  );
+}
+
+function CityCard({
+  c,
+  cities,
+  year,
+  usViolent,
+  stateViolent,
+  stateName,
+  pinned,
+  onClose,
+  onState,
+}: {
+  c: CityRow;
+  cities: CityRow[];
+  year: string;
+  usViolent: number | null;
+  stateViolent: number | null;
+  stateName: string;
+  pinned: boolean;
+  onClose: () => void;
+  onState: () => void;
+}) {
+  const rank = (key: "violent" | "murder" | "property") => {
+    const v = c[key];
+    if (v === null) return null;
+    const ranked = cities.filter((x) => x[key] !== null);
+    return { n: ranked.filter((x) => x[key]! > v).length + 1, of: ranked.length };
+  };
+  const rows: { label: string; key: "violent" | "murder" | "property" }[] = [
+    { label: "Violent crime", key: "violent" },
+    { label: "Murder", key: "murder" },
+    { label: "Property crime", key: "property" },
+  ];
+  return (
+    <>
+      <div className="flex items-start justify-between gap-2">
+        <div>
+          <p className="text-xs font-medium tracking-wide text-slate-400 uppercase">City police department</p>
+          <p className="mt-1 text-lg font-semibold text-slate-950 dark:text-white">
+            {c.name}, {c.state}
+            {c.partial && (
+              <span className="ml-1 text-slate-400" title={`Incomplete data for ${year}`}>
+                †
+              </span>
+            )}
+          </p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{formatValue(c.population, "people")} residents served</p>
+        </div>
+        {pinned && (
           <button
             type="button"
-            onClick={downloadCsv}
-            className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 hover:border-slate-400 dark:border-slate-700 dark:text-slate-300"
+            onClick={onClose}
+            aria-label="Close city"
+            className="rounded-full p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-white"
           >
-            <Download className="size-3.5" /> Download CSV (all offenses, {data.years[0]}–{year})
+            <X className="size-4" />
           </button>
-        </div>
-        <div className="max-h-[32rem] overflow-auto rounded-xl border border-slate-200 dark:border-slate-800">
-          <table className="w-full min-w-[44rem] text-sm">
-            <thead className="sticky top-0 z-10 bg-slate-50 text-xs text-slate-500 dark:bg-slate-900 dark:text-slate-400">
-              <tr>
-                {headers.map((h) => (
-                  <th key={h.key} className={`px-3 py-2 align-bottom font-medium ${h.key === "name" ? "text-left" : "text-right"}`}>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setSort((s) => ({
-                          key: h.key,
-                          dir: s.key === h.key ? ((-s.dir) as 1 | -1) : h.key === "name" || h.key === "rank" ? 1 : -1,
-                        }))
-                      }
-                      className="inline-flex items-center gap-1 hover:text-slate-900 dark:hover:text-white"
-                    >
-                      {h.label}
-                      {sort.key === h.key && (sort.dir === 1 ? <ArrowUp className="size-3" /> : <ArrowDown className="size-3" />)}
-                    </button>
-                    {h.hint && <span className="block font-normal text-slate-400">{h.hint}</span>}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-              {tableRows.map((r) => (
-                <tr
-                  key={r.abbr}
-                  onClick={() => select(r.abbr, true)}
-                  onPointerEnter={() => setHover(r.abbr)}
-                  onPointerLeave={() => setHover(null)}
-                  className={`cursor-pointer ${selected === r.abbr ? "bg-blue-50 dark:bg-blue-950/40" : "hover:bg-slate-50 dark:hover:bg-slate-900/60"}`}
-                >
-                  <td className="px-3 py-1.5 text-right text-slate-400 tabular-nums">{r.rank || "—"}</td>
-                  <td className="px-3 py-1.5 text-slate-700 dark:text-slate-200">
-                    <button type="button" className="text-left hover:underline" onClick={(e) => (e.stopPropagation(), select(r.abbr, true))}>
-                      {r.name}
-                    </button>
-                    {r.coverage !== null && r.coverage < FULL_COVERAGE && (
-                      <span className="ml-1 text-slate-400" title={`Partial reporting: ${formatValue(r.coverage, "percent")} of residents covered`}>
-                        †
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-3 py-1.5 text-right font-medium text-slate-900 tabular-nums dark:text-white">{formatValue(r.value, "per_100k")}</td>
-                  <td className="px-3 py-1.5 text-right text-slate-600 tabular-nums dark:text-slate-300">{signed(r.change)}</td>
-                  <td className="px-3 py-1.5 text-right text-slate-600 tabular-nums dark:text-slate-300">{signed(r.since)}</td>
-                  <td className="px-3 py-1.5 text-right text-slate-600 tabular-nums dark:text-slate-300">{signed(r.vsUs)}</td>
-                  {clearedKey && <td className="px-3 py-1.5 text-right text-slate-600 tabular-nums dark:text-slate-300">{formatValue(r.cleared, "percent")}</td>}
-                </tr>
-              ))}
-              {!tableRows.length && (
-                <tr>
-                  <td colSpan={headers.length} className="px-3 py-6 text-center text-slate-400">
-                    No state matches “{query}”.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-        <p className="text-xs text-slate-400">† Agencies covering under {FULL_COVERAGE}% of the state&apos;s residents reported in {year}; the rate counts only their offenses.</p>
+        )}
       </div>
-    </div>
+      <p className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 tabular-nums dark:text-white">{formatValue(c.violent, "per_100k")}</p>
+      <p className="text-xs text-slate-500 dark:text-slate-400">violent crimes per 100,000 in {year}</p>
+      <dl className="mt-4 grid grid-cols-[1fr_auto_auto] gap-x-3 gap-y-2 text-xs">
+        {rows.map((r) => {
+          const k = rank(r.key);
+          return (
+            <div key={r.key} className="contents">
+              <dt className="text-slate-500 dark:text-slate-400">{r.label}</dt>
+              <dd className="text-right font-medium text-slate-900 tabular-nums dark:text-white">{formatValue(c[r.key], "per_100k")}</dd>
+              <dd className="text-right text-slate-400 tabular-nums">{k ? `#${k.n} of ${k.of}` : ""}</dd>
+            </div>
+          );
+        })}
+        <dt className="text-slate-500 dark:text-slate-400">Violent, 1-year</dt>
+        <dd className="col-span-2 text-right font-medium text-slate-900 tabular-nums dark:text-white">{signed(c.violentChange)}</dd>
+        <dt className="text-slate-500 dark:text-slate-400">Violent vs {stateName}</dt>
+        <dd className="col-span-2 text-right font-medium text-slate-900 tabular-nums dark:text-white">{signed(pctChange(c.violent, stateViolent))}</dd>
+        <dt className="text-slate-500 dark:text-slate-400">Violent vs U.S.</dt>
+        <dd className="col-span-2 text-right font-medium text-slate-900 tabular-nums dark:text-white">{signed(pctChange(c.violent, usViolent))}</dd>
+        <dt className="text-slate-500 dark:text-slate-400">Police staff per 1,000</dt>
+        <dd className="col-span-2 text-right font-medium text-slate-900 tabular-nums dark:text-white">{formatValue(c.staffing, "per_1000")}</dd>
+      </dl>
+      {c.partial && (
+        <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
+          † The department reported incomplete data for {year} — missing months, or far fewer offenses than its usual year.
+        </p>
+      )}
+      {pinned ? (
+        <button type="button" onClick={onState} className="mt-4 text-xs font-medium text-slate-600 underline underline-offset-2 dark:text-slate-300">
+          Open the {stateName} profile
+        </button>
+      ) : (
+        <p className="mt-3 text-xs text-slate-400">Click the marker to keep this open.</p>
+      )}
+    </>
   );
 }
 

@@ -1,172 +1,83 @@
 "use client";
 
-import {
-  useMemo,
-  useState,
-  useSyncExternalStore,
-  type CSSProperties,
-  type KeyboardEvent,
-  type PointerEvent,
-} from "react";
+import { useMemo, useState, useSyncExternalStore, type CSSProperties, type PointerEvent } from "react";
 import Link from "next/link";
-import { X } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { ChartCard } from "@/components/charts/chart-card";
 import { useWidth } from "@/components/charts/use-width";
 import { formatValue } from "@/lib/format";
 import { MONEY_COLORS, partyColor as partyColorOf } from "@/lib/money/semantic";
 import { useIsDark } from "@/lib/theme";
+import {
+  logDomain,
+  otherOf,
+  PARTIES,
+  placeLabels,
+  race,
+  SOURCES,
+  valueOf,
+  type FlowCandidate,
+  type FlowDonor,
+  type LabelSeed,
+  type PartyCode,
+  type SourceKey,
+} from "./money-flow-model";
+import { pct, usd } from "@/lib/money";
+import { publicEntityPath } from "@/lib/people/public";
 
-export interface FlowCandidate {
-  id: string;
-  name: string;
-  party: string; // FEC code: DEM, REP, …
-  state: string;
-  office: string;
-  district: string;
-  receipts: number;
-  disbursements: number;
-  cashOnHand: number;
-  individual: number;
-  pac: number;
-  party_: number;
-}
+export type { FlowCandidate, FlowDonor } from "./money-flow-model";
 
-export interface FlowDonor {
-  name: string;
-  industry: string;
-  total: number;
-  count: number;
-}
-
-type SourceKey = "individual" | "pac" | "party_" | "other";
-
-// Party colours stay on the candidate side; money sources take the shared
-// Money & Influence hues (lib/money/semantic.ts), so blue and red only ever
-// mean a party. Ink and band opacity are set inline on the chart's wrapper
-// from the live colour scheme.
+// Ink, gridlines, and the dot ring (the chart surface) per colour scheme,
+// set inline on the chart's wrapper.
 const THEME_VARS: Record<"light" | "dark", Record<string, string>> = {
   light: {
-    "--flow-band": "0.42",
     "--flow-ink": "#1e293b",
     "--flow-ink-muted": "#64748b",
-    "--flow-leader": "#cbd5e1",
+    "--flow-grid": "#e2e8f0",
+    "--flow-surface": "#ffffff",
   },
   dark: {
-    "--flow-band": "0.7",
     "--flow-ink": "#f1f5f9",
     "--flow-ink-muted": "#94a3b8",
-    "--flow-leader": "#475569",
+    "--flow-grid": "#1e293b",
+    "--flow-surface": "#020617",
   },
 };
 
 // null during server render: the scheme is only known in the browser.
 function useScheme(): "light" | "dark" | null {
-  const mounted = useSyncExternalStore(() => () => {}, () => true, () => false);
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
   const dark = useIsDark();
   return mounted ? (dark ? "dark" : "light") : null;
 }
 
-const SOURCES: {
-  key: SourceKey;
-  label: string;
-  short: string;
-  color: string;
-}[] = [
-  {
-    key: "individual",
-    label: "Individual donors",
-    short: "Individuals",
-    color: MONEY_COLORS.individual,
-  },
-  {
-    key: "pac",
-    label: "PACs & other committees",
-    short: "PACs",
-    color: MONEY_COLORS.pac,
-  },
-  {
-    key: "party_",
-    label: "Party committees",
-    short: "Party",
-    color: MONEY_COLORS.party,
-  },
-  {
-    key: "other",
-    label: "Transfers, loans & other",
-    short: "Other",
-    color: MONEY_COLORS.other,
-  },
-];
+type PartyFilter = "all" | PartyCode;
+type Office = "all" | "S" | "H";
 
-const PARTIES = [
-  { code: "DEM", label: "Democratic", color: partyColorOf("DEM") },
-  { code: "REP", label: "Republican", color: partyColorOf("REP") },
-] as const;
-type PartyCode = (typeof PARTIES)[number]["code"];
+const Y_OPTION: Record<SourceKey, string> = {
+  individual: "Share from individuals",
+  pac: "Share from PACs",
+  party_: "Share from party",
+  other: "Share from transfers & loans",
+};
 
-const usd = (v: number) => formatValue(v, "usd", { compact: true });
-function pct(part: number, whole: number): string {
-  if (!(whole > 0)) return "—";
-  const p = (part / whole) * 100;
-  return p > 0 && p < 0.5 ? "<1%" : `${Math.round(p)}%`;
-}
+const Y_LABEL: Record<SourceKey, string> = {
+  individual: "Share from individual donors",
+  pac: "Share from PACs & other committees",
+  party_: "Share from party committees",
+  other: "Share from transfers, loans & other",
+};
 
-interface Node {
-  id: string;
-  label: string;
-  sub: string;
-  value: number;
-  y0: number;
-  y1: number;
-  labelY: number;
-}
+const M = { top: 24, right: 12, bottom: 34, left: 40 };
 
-interface Ribbon {
-  id: string;
-  source: SourceKey;
-  target: string;
-  value: number;
-  path: string;
-}
-
-// Push labels apart to `gap` px, keeping them inside [top, bottom].
-function relax(
-  centres: number[],
-  gap: number,
-  top: number,
-  bottom: number,
-): number[] {
-  const out = [...centres];
-  for (let i = 0; i < out.length; i++)
-    out[i] = Math.max(out[i], i ? out[i - 1] + gap : top);
-  const overflow = out.at(-1)! - bottom;
-  if (overflow > 0) {
-    out[out.length - 1] = bottom;
-    for (let i = out.length - 2; i >= 0; i--)
-      out[i] = Math.min(out[i], out[i + 1] - gap);
-  }
-  return out;
-}
-
-const otherOf = (c: FlowCandidate) =>
-  Math.max(0, c.receipts - c.individual - c.pac - c.party_);
-const valueOf = (c: FlowCandidate, k: SourceKey) =>
-  k === "other" ? otherOf(c) : c[k];
-
-function race(c: FlowCandidate) {
-  const seat =
-    c.office === "S"
-      ? "Senate"
-      : c.office === "H"
-        ? `House${c.district && c.district !== "00" ? ` ${c.district}` : ""}`
-        : c.office;
-  return [c.state, seat].filter(Boolean).join(" ");
-}
-
-// Where one party's campaign money comes from: money sources on the left,
-// that party's top candidates on the right, band width = dollars, from
-// each campaign's FEC totals. Picking a candidate (in the chart, the
-// picker, or via ?candidate=) turns it into that campaign's drill-down.
+// Every campaign this cycle as one dot: across = dollars raised (log
+// scale), up = the share from one money source, colour = party. Filters
+// highlight rather than remove, so the axes never move. Picking a dot (or
+// ?candidate=) opens that campaign's donors and opponent.
 export function MoneyFlow({
   cycle,
   candidates,
@@ -183,288 +94,201 @@ export function MoneyFlow({
   initialCandidateId?: string | null;
   source: { label: string; href?: string };
 }) {
-  const initial = candidates.find((c) => c.id === initialCandidateId);
-  // Open on the linked candidate's party; otherwise on whichever party has
-  // raised more, so there's no fixed default side.
-  const [party, setParty] = useState<PartyCode>(() => {
-    const linked = PARTIES.find((p) => p.code === initial?.party)?.code;
-    if (linked) return linked;
-    const raised = (code: PartyCode) =>
-      candidates.reduce((s, c) => s + (c.party === code ? c.receipts : 0), 0);
-    return raised("REP") > raised("DEM") ? "REP" : "DEM";
-  });
-  const [hover, setHover] = useState<{
-    kind: "source" | "candidate" | "ribbon";
-    id: string;
-  } | null>(null);
+  const [party, setParty] = useState<PartyFilter>("all");
+  const [office, setOffice] = useState<Office>("all");
+  const [query, setQuery] = useState("");
+  const [metric, setMetric] = useState<SourceKey>("individual");
   const [selectedId, setSelectedId] = useState<string | null>(
-    initial && PARTIES.some((p) => p.code === initial.party) ? initial.id : null,
+    candidates.some((c) => c.id === initialCandidateId) ? initialCandidateId : null,
   );
-  const [tip, setTip] = useState<{
-    x: number;
-    y: number;
-    ribbon: Ribbon;
-  } | null>(null);
+  const [hoverId, setHoverId] = useState<string | null>(null);
   const [ref, width] = useWidth<HTMLDivElement>();
   const scheme = useScheme();
 
-  const partyMeta = PARTIES.find((p) => p.code === party)!;
-  const allTotal = candidates.reduce((s, c) => s + c.receipts, 0);
-  const pool = useMemo(
-    () =>
-      candidates
-        .filter((c) => c.party === party && c.receipts > 0)
-        .sort((a, b) => b.receipts - a.receipts),
-    [candidates, party],
+  const all = useMemo(
+    () => candidates.filter((c) => c.receipts > 0).sort((a, b) => b.receipts - a.receipts),
+    [candidates],
   );
-  const partyTotal = pool.reduce((s, c) => s + c.receipts, 0);
-  const senateOnly = pool.every((c) => c.office === "S");
+  const allTotal = all.reduce((s, c) => s + c.receipts, 0);
+  const q = query.trim().toLowerCase();
+  const filtered = party !== "all" || office !== "all" || q !== "";
+  const isOn = (c: FlowCandidate) =>
+    (party === "all" || c.party === party) &&
+    (office === "all" || c.office === office) &&
+    (!q || `${c.name} ${race(c)}`.toLowerCase().includes(q));
+  const on = all.filter(isOn);
+  const onTotal = on.reduce((s, c) => s + c.receipts, 0);
 
-  const chart = useMemo(() => {
-    const narrow = width < 640;
-    const leftLabelW = narrow ? 96 : 200;
-    const rightLabelW = narrow ? 128 : 230;
-    const nodeW = 10;
-    // Every candidate gets its own band; the chart grows to fit the labels.
-    const right = pool;
-    const flowTotal = (c: FlowCandidate) =>
-      SOURCES.reduce((s, src) => s + valueOf(c, src.key), 0);
+  const narrow = width < 640;
+  const height = narrow ? 340 : 460;
+  const plotR = width - M.right;
+  const plotB = height - M.bottom;
+  const { lo, hi, ticks } = useMemo(
+    () => logDomain(Math.max(1000, all.at(-1)?.receipts ?? 1000), all[0]?.receipts ?? 1e6),
+    [all],
+  );
+  const share = (c: FlowCandidate) => Math.min(1, Math.max(0, valueOf(c, metric) / c.receipts));
+  const sx = (v: number) =>
+    M.left + ((Math.log10(Math.max(lo, v)) - Math.log10(lo)) / (Math.log10(hi) - Math.log10(lo))) * (plotR - M.left);
+  const sy = (s: number) => plotB - s * (plotB - M.top);
 
-    const labelGap = narrow ? 30 : 34;
-    const height = Math.max(380, right.length * labelGap + 24);
-    const total = right.reduce((s, c) => s + flowTotal(c), 0) || 1;
-    const sources = SOURCES.map((s) => ({
-      ...s,
-      value: right.reduce((sum, c) => sum + valueOf(c, s.key), 0),
-    })).filter((s) => s.value > 0);
-    const gapL = 16;
-    const gapR = 5;
-    const pad = 12;
-    const k = Math.min(
-      (height - 2 * pad - gapL * (sources.length - 1)) / total,
-      (height - 2 * pad - gapR * (right.length - 1)) / total,
-    );
+  const points = all.map((c) => ({ c, x: sx(c.receipts), y: sy(share(c)), on: isOn(c) }));
+  const byId = new Map(points.map((p) => [p.c.id, p]));
+  const selected = selectedId ? (byId.get(selectedId)?.c ?? null) : null;
+  const hovered = hoverId ? (byId.get(hoverId) ?? null) : null;
+  const opponent = selected ? (candidates.find((c) => c.id === opponents[selected.id]) ?? null) : null;
 
-    const stack = <T,>(items: T[], value: (t: T) => number, gap: number) => {
-      const used =
-        items.reduce((s, t) => s + value(t) * k, 0) + gap * (items.length - 1);
-      let y = (height - used) / 2;
-      return items.map((t) => {
-        const y0 = y;
-        y += value(t) * k;
-        const out = { y0, y1: y };
-        y += gap;
-        return out;
-      });
-    };
+  // Name the biggest fundraisers and the outliers on the current measure
+  // among campaigns with real money, so the chart explains itself.
+  const big = on.filter((c) => c.receipts >= 1_000_000);
+  // Ties (many campaigns sit at exactly 0% or 100%) go to the bigger one.
+  const lowest = [...big].sort((a, b) => share(a) - share(b) || b.receipts - a.receipts);
+  const highest = [...big].sort((a, b) => share(b) - share(a) || b.receipts - a.receipts);
+  const seedOf = (c: FlowCandidate): LabelSeed => {
+    const p = byId.get(c.id)!;
+    const name = c.name.length > 22 ? `${c.name.slice(0, 21)}…` : c.name;
+    return { id: c.id, x: p.x, y: p.y, text: name };
+  };
+  const labels = placeLabels(
+    [
+      ...(selected ? [selected] : []),
+      ...on.slice(0, narrow ? 3 : 5),
+      ...(narrow ? [] : [...lowest.slice(0, 3), ...highest.slice(0, 3)]),
+    ].map(seedOf),
+    { left: M.left, right: plotR },
+    narrow ? 4 : 11,
+  );
 
-    const leftPos = stack(sources, (s) => s.value, gapL);
-    const rightPos = stack(right, flowTotal, gapR);
-    const leftLabels = relax(
-      leftPos.map((p) => (p.y0 + p.y1) / 2),
-      40,
-      20,
-      height - 20,
-    );
-    const rightLabels = relax(
-      rightPos.map((p) => (p.y0 + p.y1) / 2),
-      labelGap,
-      16,
-      height - 16,
-    );
-
-    const leftNodes: (Node & { key: SourceKey; color: string })[] = sources.map(
-      (s, i) => ({
-        id: s.key,
-        key: s.key,
-        color: s.color,
-        label: narrow ? s.short : s.label,
-        sub: `${usd(s.value)} · ${pct(s.value, total)}`,
-        value: s.value,
-        ...leftPos[i],
-        labelY: leftLabels[i],
-      }),
-    );
-    const maxChars = Math.floor((rightLabelW - 20) / (narrow ? 6.2 : 7));
-    const rightNodes: (Node & { candidate: FlowCandidate })[] = right.map(
-      (c, i) => {
-        const name = c.state ? `${c.name} (${c.state})` : c.name;
-        return {
-          id: c.id,
-          candidate: c,
-          label:
-            name.length > maxChars ? `${name.slice(0, maxChars - 1)}…` : name,
-          sub: usd(c.receipts),
-          value: c.receipts,
-          ...rightPos[i],
-          labelY: rightLabels[i],
-        };
-      },
-    );
-
-    const xL = leftLabelW;
-    const xR = width - rightLabelW - nodeW;
-    const xm = (xL + nodeW + xR) / 2;
-    const leftOffset = new Map(leftNodes.map((n) => [n.key, n.y0]));
-    const ribbons: Ribbon[] = [];
-    rightNodes.forEach((rn) => {
-      let ry = rn.y0;
-      for (const ln of leftNodes) {
-        const v = valueOf(rn.candidate, ln.key);
-        if (v <= 0) continue;
-        const h = v * k;
-        const ly = leftOffset.get(ln.key)!;
-        leftOffset.set(ln.key, ly + h);
-        const a = xL + nodeW;
-        ribbons.push({
-          id: `${ln.key}>${rn.id}`,
-          source: ln.key,
-          target: rn.id,
-          value: v,
-          path: `M${a},${ly}C${xm},${ly} ${xm},${ry} ${xR},${ry}L${xR},${ry + h}C${xm},${ry + h} ${xm},${ly + h} ${a},${ly + h}Z`,
-        });
-        ry += h;
+  const pick = (e: PointerEvent<SVGSVGElement>) => {
+    const box = e.currentTarget.getBoundingClientRect();
+    const mx = e.clientX - box.left;
+    const my = e.clientY - box.top;
+    let best: string | null = null;
+    let bestD = 18 * 18;
+    for (const p of points) {
+      if (!p.on) continue;
+      const d = (p.x - mx) ** 2 + (p.y - my) ** 2;
+      if (d < bestD) {
+        bestD = d;
+        best = p.c.id;
       }
-    });
-
-    return {
-      narrow,
-      height,
-      nodeW,
-      xL,
-      xR,
-      leftNodes,
-      rightNodes,
-      ribbons,
-      labelGap,
-    };
-  }, [pool, width]);
-
-  const active =
-    hover ??
-    (selectedId ? { kind: "candidate" as const, id: selectedId } : null);
-  const ribbonOn = (r: Ribbon) =>
-    !active ||
-    (active.kind === "ribbon" && active.id === r.id) ||
-    (active.kind === "source" && active.id === r.source) ||
-    (active.kind === "candidate" && active.id === r.target);
-
-  const selected = selectedId
-    ? (pool.find((c) => c.id === selectedId) ?? null)
-    : null;
-  const opponent = selected
-    ? (candidates.find((c) => c.id === opponents[selected.id]) ?? null)
-    : null;
-  const jumpTo = (c: FlowCandidate) => {
-    const p = PARTIES.find((x) => x.code === c.party);
-    if (!p) return;
-    setParty(p.code);
-    setSelectedId(c.id);
-    setHover(null);
-  };
-  const selectCandidate = (id: string) =>
-    setSelectedId((cur) => (cur === id ? null : id));
-  const onKey = (id: string) => (e: KeyboardEvent) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      selectCandidate(id);
     }
+    setHoverId(best);
   };
-  const moveTip = (r: Ribbon) => (e: PointerEvent<SVGPathElement>) => {
-    const box = (
-      e.currentTarget.ownerSVGElement as SVGSVGElement
-    ).getBoundingClientRect();
-    setTip({ x: e.clientX - box.left, y: e.clientY - box.top, ribbon: r });
+
+  const field =
+    "rounded-md border border-slate-300 bg-white px-2 py-1 text-sm text-slate-800 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100";
+  const ring = (p: (typeof points)[number]) => {
+    const sel = p.c.id === selectedId;
+    const hov = p.c.id === hoverId;
+    return (
+      <circle
+        key={p.c.id}
+        cx={p.x}
+        cy={p.y}
+        r={sel ? 6 : hov ? 5 : narrow ? 2.5 : 3.25}
+        style={{
+          fill: partyColorOf(p.c.party),
+          fillOpacity: sel || hov ? 1 : p.on ? (narrow ? 0.4 : 0.5) : 0.07,
+          stroke: sel ? "var(--flow-ink)" : p.on && !narrow ? "var(--flow-surface)" : "none",
+          strokeWidth: sel ? 2 : 1,
+        }}
+      />
+    );
   };
-  const nameOf = (id: string) =>
-    chart.rightNodes.find((n) => n.id === id)?.candidate.name ?? "";
 
   return (
-    <div
-      style={(scheme ? THEME_VARS[scheme] : THEME_VARS.light) as CSSProperties}
-    >
+    <div style={(scheme ? THEME_VARS[scheme] : THEME_VARS.light) as CSSProperties}>
       <div className="flex flex-wrap items-center gap-3">
         <div
           className="inline-flex rounded-lg border border-slate-200 p-0.5 text-sm dark:border-slate-800"
           role="group"
           aria-label="Party"
         >
-          {PARTIES.map((p) => {
-            const on = p.code === party;
+          {[{ code: "all" as const, label: "Both parties", color: "" }, ...PARTIES].map((p) => {
+            const active = p.code === party;
             return (
               <button
                 key={p.code}
                 type="button"
-                aria-pressed={on}
-                onClick={() => {
-                  setParty(p.code);
-                  setSelectedId(null);
-                  setHover(null);
-                }}
+                aria-pressed={active}
+                onClick={() => setParty(p.code)}
                 className={`flex items-center gap-1.5 rounded-md px-3 py-1 font-medium transition-colors ${
-                  on
+                  active
                     ? "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900"
                     : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
                 }`}
               >
-                <span
-                  className="h-2 w-2 rounded-full"
-                  style={{ background: p.color }}
-                />
+                {p.color ? <span className="h-2 w-2 rounded-full" style={{ background: p.color }} /> : null}
                 {p.label}
               </button>
             );
           })}
         </div>
-        <label className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-          Candidate
-          <select
-            value={selectedId ?? ""}
-            onChange={(e) => {
-              setSelectedId(e.target.value || null);
-              setHover(null);
-            }}
-            className="max-w-56 rounded-md border border-slate-300 bg-white px-2 py-1 text-sm text-slate-800 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
-          >
-            <option value="">All {partyMeta.label} candidates</option>
-            {pool.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-                {c.state ? ` (${c.state})` : ""}
-              </option>
-            ))}
-          </select>
+        <select
+          aria-label="Office"
+          value={office}
+          onChange={(e) => setOffice(e.target.value as Office)}
+          className={field}
+        >
+          <option value="all">Senate &amp; House</option>
+          <option value="S">Senate</option>
+          <option value="H">House</option>
+        </select>
+        <select
+          aria-label="Measure"
+          value={metric}
+          onChange={(e) => setMetric(e.target.value as SourceKey)}
+          className={field}
+        >
+          {SOURCES.map((s) => (
+            <option key={s.key} value={s.key}>
+              {Y_OPTION[s.key]}
+            </option>
+          ))}
+        </select>
+        <label className="relative">
+          <Search className="pointer-events-none absolute top-1/2 left-2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Name or state"
+            aria-label="Search candidates"
+            className={`${field} w-44 pl-7`}
+          />
         </label>
-        <p className="text-sm text-slate-500 dark:text-slate-400">
-          <span className="font-semibold text-slate-900 tabular-nums dark:text-white">
-            {usd(partyTotal)}
-          </span>{" "}
-          raised by {pool.length} {partyMeta.label}{" "}
-          {senateOnly ? "Senate " : ""}candidates,{" "}
-          <span className="tabular-nums">{pct(partyTotal, allTotal)}</span> of
-          the {usd(allTotal)} raised by all {candidates.length} tracked
-          candidates
-        </p>
+        <select
+          aria-label="Candidate"
+          value={selectedId ?? ""}
+          onChange={(e) => setSelectedId(e.target.value || null)}
+          className={`${field} max-w-52`}
+        >
+          <option value="">Pick a campaign…</option>
+          {on.slice(0, 500).map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.name}
+              {c.state ? ` (${c.state})` : ""}
+            </option>
+          ))}
+        </select>
       </div>
 
-      {/* A CSS breakpoint, not a measured width, so the chart's first
-          measurement already sees its final column. */}
-      <div className="mt-4 grid grid-cols-[minmax(0,1fr)] gap-4 xl:grid-cols-[minmax(0,1fr)_20rem]">
+      <div className="mt-4 grid grid-cols-[minmax(0,1fr)] items-start gap-4 xl:grid-cols-[minmax(0,1fr)_20rem]">
         <ChartCard
-          title={`Where ${partyMeta.label} campaign money comes from, ${cycle} cycle`}
-          subtitle={`Each band is dollars from one source to one campaign. All ${pool.length} candidates, ranked by money raised.`}
+          title={`What every campaign raised, ${cycle}`}
+          subtitle={
+            filtered
+              ? `${usd(onTotal)} raised by ${on.length.toLocaleString()} campaigns, ${pct(onTotal, allTotal)} of the ${usd(allTotal)} raised by all ${all.length.toLocaleString()}. Pick a dot for its donors and opponent.`
+              : `${usd(allTotal)} raised by ${all.length.toLocaleString()} campaigns. One dot each; pick one for its donors and opponent.`
+          }
           source={source}
           table={{
-            columns: [
-              "Candidate",
-              "Raised",
-              "Individuals",
-              "PACs",
-              "Party",
-              "Other",
-            ],
-            rows: pool.map((c) => [
-              `${c.name}${c.state ? ` (${c.state})` : ""}`,
+            columns: ["Candidate", "Party", "Race", "Raised", "Individuals", "PACs", "Party cmte", "Other"],
+            rows: on.map((c) => [
+              c.name,
+              c.party,
+              race(c),
               formatValue(c.receipts, "usd"),
               formatValue(c.individual, "usd"),
               formatValue(c.pac, "usd"),
@@ -473,223 +297,165 @@ export function MoneyFlow({
             ]),
           }}
         >
-          <div
-            ref={ref}
-            className="relative"
-            style={{ minHeight: chart.height }}
-          >
+          <div ref={ref} className="relative" style={{ minHeight: height }}>
             {scheme ? (
               <svg
                 width={width}
-                height={chart.height}
+                height={height}
                 role="img"
-                aria-label={`Sankey diagram: sources of money for ${partyMeta.label} candidates`}
-                onPointerLeave={() => {
-                  setHover(null);
-                  setTip(null);
-                }}
+                aria-label={`Scatter plot of ${all.length} campaigns: total raised against ${Y_LABEL[metric].toLowerCase()}`}
+                className={hovered ? "cursor-pointer" : undefined}
+                onPointerMove={pick}
+                onPointerLeave={() => setHoverId(null)}
+                onClick={() => hoverId && setSelectedId((cur) => (cur === hoverId ? null : hoverId))}
               >
-                <g>
-                  {chart.ribbons.map((r) => (
-                    <path
-                      key={r.id}
-                      d={r.path}
-                      style={{
-                        fill: SOURCES.find((s) => s.key === r.source)!.color,
-                        fillOpacity: ribbonOn(r)
-                          ? active
-                            ? 0.85
-                            : "var(--flow-band)"
-                          : 0.08,
-                      }}
-                      className="cursor-pointer transition-[fill-opacity] duration-150"
-                      onPointerEnter={() =>
-                        setHover({ kind: "ribbon", id: r.id })
-                      }
-                      onPointerMove={moveTip(r)}
-                      onPointerLeave={() => {
-                        setHover(null);
-                        setTip(null);
-                      }}
-                      onClick={() => selectCandidate(r.target)}
-                    />
-                  ))}
-                </g>
-
-                {chart.leftNodes.map((n) => (
-                  <g
-                    key={n.id}
-                    onPointerEnter={() =>
-                      setHover({ kind: "source", id: n.key })
-                    }
-                    onPointerLeave={() => setHover(null)}
-                  >
-                    <rect
-                      x={chart.xL}
-                      y={n.y0}
-                      width={chart.nodeW}
-                      height={Math.max(1, n.y1 - n.y0)}
-                      rx={2}
-                      style={{ fill: n.color }}
-                    />
-                    {Math.abs(n.labelY - (n.y0 + n.y1) / 2) > 3 ? (
-                      <path
-                        d={`M${chart.xL - 4},${(n.y0 + n.y1) / 2}L${chart.xL - 10},${n.labelY}`}
-                        fill="none"
-                        style={{ stroke: "var(--flow-leader)" }}
-                      />
-                    ) : null}
+                {[0, 0.25, 0.5, 0.75, 1].map((t) => (
+                  <g key={t}>
+                    <line x1={M.left} x2={plotR} y1={sy(t)} y2={sy(t)} style={{ stroke: "var(--flow-grid)" }} />
                     <text
-                      x={chart.xL - 12}
-                      y={n.labelY - 3}
-                      textAnchor="end"
-                      fontSize={12}
-                      fontWeight={500}
-                      style={{ fill: "var(--flow-ink)" }}
-                    >
-                      {n.label}
-                    </text>
-                    <text
-                      x={chart.xL - 12}
-                      y={n.labelY + 11}
+                      x={M.left - 6}
+                      y={sy(t) + 4}
                       textAnchor="end"
                       fontSize={11}
                       className="tabular-nums"
                       style={{ fill: "var(--flow-ink-muted)" }}
                     >
-                      {n.sub}
+                      {t * 100}%
                     </text>
                   </g>
                 ))}
-
-                {chart.rightNodes.map((n) => {
-                  const isSel = n.id === selectedId;
-                  const lx = chart.xR + chart.nodeW + 12;
-                  return (
-                    <g
-                      key={n.id}
-                      role="button"
-                      tabIndex={0}
-                      aria-pressed={isSel}
-                      aria-label={`${n.candidate.name}, ${usd(n.value)} raised`}
-                      className="cursor-pointer outline-none"
-                      onPointerEnter={() =>
-                        setHover({ kind: "candidate", id: n.id })
-                      }
-                      onPointerLeave={() => setHover(null)}
-                      onClick={() => selectCandidate(n.id)}
-                      onKeyDown={onKey(n.id)}
-                    >
-                      <rect
-                        x={chart.xR}
-                        y={n.y0}
-                        width={chart.nodeW}
-                        height={Math.max(1.5, n.y1 - n.y0)}
-                        rx={2}
-                        style={{ fill: partyMeta.color }}
-                      />
-                      {Math.abs(n.labelY - (n.y0 + n.y1) / 2) > 3 ? (
-                        <path
-                          d={`M${chart.xR + chart.nodeW + 2},${(n.y0 + n.y1) / 2}L${lx - 3},${n.labelY}`}
-                          fill="none"
-                          style={{ stroke: "var(--flow-leader)" }}
-                        />
-                      ) : null}
-                      {/* Hit area wider than the text, per the interaction spec. */}
-                      <rect
-                        x={lx - 4}
-                        y={n.labelY - (chart.labelGap - 2) / 2 - 2}
-                        width={width - lx + 4}
-                        height={chart.labelGap - 2}
-                        style={{ fill: "transparent" }}
-                      />
+                {ticks.map((t, i) => (
+                  <g key={t}>
+                    <line x1={sx(t)} x2={sx(t)} y1={M.top} y2={plotB} style={{ stroke: "var(--flow-grid)" }} />
+                    {!narrow || i % 2 === 0 ? (
                       <text
-                        x={lx}
-                        y={n.labelY - 3}
-                        fontSize={12}
-                        fontWeight={isSel ? 600 : 500}
-                        textDecoration={isSel ? "underline" : undefined}
-                        style={{ fill: "var(--flow-ink)" }}
-                      >
-                        {n.label}
-                      </text>
-                      <text
-                        x={lx}
-                        y={n.labelY + 11}
+                        x={sx(t)}
+                        y={plotB + 16}
+                        textAnchor={i === 0 ? "start" : i === ticks.length - 1 ? "end" : "middle"}
                         fontSize={11}
                         className="tabular-nums"
                         style={{ fill: "var(--flow-ink-muted)" }}
                       >
-                        {n.sub}
+                        {usd(t)}
                       </text>
-                    </g>
-                  );
-                })}
+                    ) : null}
+                  </g>
+                ))}
+                <text x={M.left} y={12} fontSize={11} fontWeight={500} style={{ fill: "var(--flow-ink-muted)" }}>
+                  ↑ {Y_LABEL[metric]}
+                </text>
+                <text
+                  x={plotR}
+                  y={height - 2}
+                  textAnchor="end"
+                  fontSize={11}
+                  fontWeight={500}
+                  style={{ fill: "var(--flow-ink-muted)" }}
+                >
+                  Total raised (log scale) →
+                </text>
+
+                <g>
+                  {points.filter((p) => !p.on).map(ring)}
+                  {points.filter((p) => p.on && p.c.id !== selectedId && p.c.id !== hoverId).map(ring)}
+                  {[...new Set([selectedId, hoverId])].map((id) => (id && byId.has(id) ? ring(byId.get(id)!) : null))}
+                </g>
+
+                {labels.map((l) => (
+                  <text
+                    key={l.id}
+                    x={l.lx}
+                    y={l.y + 4}
+                    textAnchor={l.anchor}
+                    fontSize={11}
+                    fontWeight={l.id === selectedId ? 600 : 500}
+                    paintOrder="stroke"
+                    style={{ fill: "var(--flow-ink)", stroke: "var(--flow-surface)", strokeWidth: 3 }}
+                    className="pointer-events-none"
+                  >
+                    {l.text}
+                  </text>
+                ))}
               </svg>
             ) : null}
 
-            {tip ? (
+            {hovered ? (
               <div
-                className="pointer-events-none absolute z-10 w-max max-w-64 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs shadow-lg dark:border-slate-700 dark:bg-slate-900"
+                className="pointer-events-none absolute z-10 w-60 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs shadow-lg dark:border-slate-700 dark:bg-slate-900"
                 style={{
-                  left: Math.min(tip.x + 12, width - 200),
-                  top: Math.max(0, tip.y - 56),
+                  left: Math.min(Math.max(0, hovered.x + 12), width - 240),
+                  top: hovered.y > height / 2 ? hovered.y - 110 : hovered.y + 12,
                 }}
               >
-                <p className="font-medium text-slate-900 dark:text-white">
-                  {SOURCES.find((s) => s.key === tip.ribbon.source)!.label} →{" "}
-                  {nameOf(tip.ribbon.target)}
+                <p className="flex items-center gap-1.5 font-medium text-slate-900 dark:text-white">
+                  <span
+                    className="h-2 w-2 shrink-0 rounded-full"
+                    style={{ background: partyColorOf(hovered.c.party) }}
+                  />
+                  <span className="truncate">{hovered.c.name}</span>
                 </p>
-                <p className="mt-0.5 text-slate-500 tabular-nums dark:text-slate-400">
-                  {formatValue(tip.ribbon.value, "usd")} ·{" "}
-                  {pct(
-                    tip.ribbon.value,
-                    chart.rightNodes.find((n) => n.id === tip.ribbon.target)
-                      ?.value ?? 0,
-                  )}{" "}
-                  of receipts
+                <p className="mt-0.5 text-slate-500 dark:text-slate-400">
+                  {race(hovered.c)} · <span className="tabular-nums">{usd(hovered.c.receipts)}</span> raised
                 </p>
+                <span className="mt-2 flex h-1.5 gap-0.5 overflow-hidden rounded">
+                  {SOURCES.map((s) => {
+                    const v = valueOf(hovered.c, s.key);
+                    return v > 0 ? (
+                      <span key={s.key} style={{ width: `${(v / hovered.c.receipts) * 100}%`, background: s.color }} />
+                    ) : null;
+                  })}
+                </span>
+                <ul className="mt-1.5 grid grid-cols-2 gap-x-3 text-slate-600 dark:text-slate-300">
+                  {SOURCES.map((s) => (
+                    <li key={s.key} className="flex items-center justify-between gap-2">
+                      <span className="flex items-center gap-1">
+                        <span className="h-1.5 w-1.5 rounded-sm" style={{ background: s.color }} />
+                        {s.short}
+                      </span>
+                      <span className="tabular-nums">{pct(valueOf(hovered.c, s.key), hovered.c.receipts)}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             ) : null}
           </div>
 
           <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500 dark:text-slate-400">
-            {SOURCES.map((s) => (
-              <li key={s.key} className="flex items-center gap-1.5">
-                <span
-                  className="h-2.5 w-2.5 rounded-sm"
-                  style={{ background: s.color }}
-                />
-                {s.label}
+            {PARTIES.map((p) => (
+              <li key={p.code} className="flex items-center gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-full" style={{ background: p.color }} />
+                {p.label}
               </li>
             ))}
             <li className="flex items-center gap-1.5">
-              <span
-                className="h-2.5 w-1 rounded-sm"
-                style={{ background: partyMeta.color }}
-              />
-              {partyMeta.label} candidate
+              <span className="h-2.5 w-2.5 rounded-full" style={{ background: MONEY_COLORS.other }} />
+              Other parties
             </li>
           </ul>
         </ChartCard>
 
-        {selected ? (
-          <CandidatePanel
-            candidate={selected}
-            donors={donorsByCandidate[selected.id] ?? []}
-            partyColor={partyMeta.color}
-            opponent={opponent}
-            onCompare={opponent ? () => jumpTo(opponent) : undefined}
-            onClose={() => setSelectedId(null)}
-          />
-        ) : (
-          <PartySummary
-            label={partyMeta.label}
-            color={partyMeta.color}
-            pool={pool}
-            onPick={(id) => setSelectedId(id)}
-          />
-        )}
+        <div className="space-y-4 xl:sticky xl:top-20">
+          {selected ? (
+            <CandidatePanel
+              candidate={selected}
+              donors={donorsByCandidate[selected.id] ?? []}
+              partyColor={partyColorOf(selected.party)}
+              opponent={opponent}
+              onCompare={opponent ? () => setSelectedId(opponent.id) : undefined}
+              onClose={() => setSelectedId(null)}
+            />
+          ) : (
+            PARTIES.filter((p) => party === "all" || p.code === party).map((p) => (
+              <PartySummary
+                key={p.code}
+                label={p.label}
+                color={p.color}
+                pool={all.filter((c) => c.party === p.code && (office === "all" || c.office === office))}
+                onPick={(id) => setSelectedId(id)}
+              />
+            ))
+          )}
+        </div>
       </div>
     </div>
   );
@@ -707,16 +473,11 @@ function PartySummary({
   pool: FlowCandidate[];
   onPick: (id: string) => void;
 }) {
-  const sum = (f: (c: FlowCandidate) => number) =>
-    pool.reduce((s, c) => s + f(c), 0);
+  const sum = (f: (c: FlowCandidate) => number) => pool.reduce((s, c) => s + f(c), 0);
   const raised = sum((c) => c.receipts);
   const sorted = pool.map((c) => c.receipts).sort((a, b) => a - b);
   const mid = Math.floor(sorted.length / 2);
-  const median = sorted.length
-    ? sorted.length % 2
-      ? sorted[mid]
-      : (sorted[mid - 1] + sorted[mid]) / 2
-    : 0;
+  const median = sorted.length ? (sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2) : 0;
   const parts: [string, number, string][] = [
     [SOURCES[0].short, sum((c) => c.individual), SOURCES[0].color],
     [SOURCES[1].short, sum((c) => c.pac), SOURCES[1].color],
@@ -734,8 +495,7 @@ function PartySummary({
         {usd(raised)}
       </p>
       <p className="text-xs text-slate-500 tabular-nums dark:text-slate-400">
-        raised by {pool.length} candidate{pool.length === 1 ? "" : "s"} ·
-        median {usd(median)}
+        raised by {pool.length} candidate{pool.length === 1 ? "" : "s"} · median {usd(median)}
       </p>
       <div className="mt-4 flex h-2.5 gap-0.5 overflow-hidden rounded">
         {parts
@@ -775,8 +535,7 @@ function PartySummary({
         </p>
       ) : null}
       <p className="mt-4 text-xs text-slate-400">
-        Pick a candidate in the chart or the menu to see where their money
-        came from.
+        Pick a dot to see a campaign&rsquo;s largest donor committees and its opponent.
       </p>
     </aside>
   );
@@ -810,15 +569,10 @@ function CandidatePanel({
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <p className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
-            <span
-              className="h-2 w-2 rounded-full"
-              style={{ background: partyColor }}
-            />
+            <span className="h-2 w-2 rounded-full" style={{ background: partyColor }} />
             {race(c)}
           </p>
-          <h3 className="mt-1 text-base font-semibold text-slate-950 dark:text-white">
-            {c.name}
-          </h3>
+          <h3 className="mt-1 text-base font-semibold text-slate-950 dark:text-white">{c.name}</h3>
         </div>
         <button
           type="button"
@@ -838,16 +592,9 @@ function CandidatePanel({
             ["Cash on hand", c.cashOnHand],
           ] as const
         ).map(([label, v]) => (
-          <div
-            key={label}
-            className="rounded-lg bg-slate-50 px-2 py-2 dark:bg-slate-900"
-          >
-            <dt className="text-[11px] text-slate-500 dark:text-slate-400">
-              {label}
-            </dt>
-            <dd className="text-sm font-semibold text-slate-900 tabular-nums dark:text-white">
-              {usd(v)}
-            </dd>
+          <div key={label} className="rounded-lg bg-slate-50 px-2 py-2 dark:bg-slate-900">
+            <dt className="text-[11px] text-slate-500 dark:text-slate-400">{label}</dt>
+            <dd className="text-sm font-semibold text-slate-900 tabular-nums dark:text-white">{usd(v)}</dd>
           </div>
         ))}
       </dl>
@@ -871,36 +618,24 @@ function CandidatePanel({
         {parts.map(([label, v, color]) => (
           <li key={label} className="flex items-center justify-between gap-2">
             <span className="flex items-center gap-1.5">
-              <span
-                className="h-2 w-2 rounded-sm"
-                style={{ background: color }}
-              />
+              <span className="h-2 w-2 rounded-sm" style={{ background: color }} />
               {label}
             </span>
-            <span className="tabular-nums text-slate-500 dark:text-slate-400">
-              {pct(v, c.receipts)}
-            </span>
+            <span className="tabular-nums text-slate-500 dark:text-slate-400">{pct(v, c.receipts)}</span>
           </li>
         ))}
       </ul>
 
-      <h4 className="mt-5 text-xs font-medium tracking-wide text-slate-400 uppercase">
-        Largest donor committees
-      </h4>
+      <h4 className="mt-5 text-xs font-medium tracking-wide text-slate-400 uppercase">Largest donor committees</h4>
       {donors.length ? (
         <ol className="mt-2 space-y-2">
           {donors.map((d) => (
             <li key={d.name} className="text-sm">
               <div className="flex items-baseline justify-between gap-3">
-                <span
-                  className="min-w-0 truncate text-slate-800 dark:text-slate-100"
-                  title={d.name}
-                >
+                <span className="min-w-0 truncate text-slate-800 dark:text-slate-100" title={d.name}>
                   {d.name}
                 </span>
-                <span className="shrink-0 text-xs text-slate-500 tabular-nums dark:text-slate-400">
-                  {usd(d.total)}
-                </span>
+                <span className="shrink-0 text-xs text-slate-500 tabular-nums dark:text-slate-400">{usd(d.total)}</span>
               </div>
               <div className="mt-1 h-1 rounded-full bg-slate-100 dark:bg-slate-800">
                 <div
@@ -911,11 +646,7 @@ function CandidatePanel({
                   }}
                 />
               </div>
-              {d.industry ? (
-                <p className="mt-0.5 text-[11px] text-slate-400">
-                  {d.industry}
-                </p>
-              ) : null}
+              {d.industry ? <p className="mt-0.5 text-[11px] text-slate-400">{d.industry}</p> : null}
             </li>
           ))}
         </ol>
@@ -932,25 +663,18 @@ function CandidatePanel({
           className="mt-5 flex w-full items-center justify-between gap-2 rounded-lg border border-slate-200 px-3 py-2 text-left text-xs hover:border-slate-400 dark:border-slate-700 dark:hover:border-slate-500"
         >
           <span className="min-w-0">
-            <span className="block text-slate-500 dark:text-slate-400">
-              Compare with opponent
-            </span>
+            <span className="block text-slate-500 dark:text-slate-400">Compare with opponent</span>
             <span className="flex items-center gap-1.5 truncate font-medium text-slate-900 dark:text-white">
-              <span
-                className="h-2 w-2 shrink-0 rounded-full"
-                style={{ background: partyColorOf(opponent.party) }}
-              />
+              <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: partyColorOf(opponent.party) }} />
               {opponent.name}
             </span>
           </span>
-          <span className="shrink-0 text-slate-600 tabular-nums dark:text-slate-300">
-            {usd(opponent.receipts)} →
-          </span>
+          <span className="shrink-0 text-slate-600 tabular-nums dark:text-slate-300">{usd(opponent.receipts)} →</span>
         </button>
       ) : null}
 
       <Link
-        href={`/data/entities/${c.id}`}
+        href={publicEntityPath(c)}
         className="mt-4 inline-block text-xs text-slate-500 underline underline-offset-2 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
       >
         Full profile

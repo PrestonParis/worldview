@@ -2,7 +2,7 @@
 
 import { useMemo, useState, type KeyboardEvent, type PointerEvent } from "react";
 import { formatValue } from "@/lib/format";
-import { axisFormat, niceTicks, useWidth } from "./use-width";
+import { niceTicks, useWidth } from "./use-width";
 
 export interface SeriesPoint {
   x: number; // year, or year + month/12
@@ -10,10 +10,13 @@ export interface SeriesPoint {
   value: number;
 }
 
+// Categorical color slots, --viz-series-1 … --viz-series-9 in globals.css.
+export type SeriesSlot = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+
 export interface Series {
   id: string;
   label: string;
-  slot: 1 | 2 | 3;
+  slot: SeriesSlot;
   color?: string; // overrides the slot, e.g. var(--viz-dem) for a party
   points: SeriesPoint[];
 }
@@ -29,7 +32,28 @@ export interface Reference {
   label: string;
 }
 
-const M = { top: 16, right: 16, bottom: 28, left: 48 };
+const M = { top: 28, right: 16, bottom: 28, left: 56 };
+
+function axisLabel(unit?: string) {
+  switch (unit) {
+    case "percent": return "Percent";
+    case "usd":
+    case "usd_cents": return "U.S. dollars";
+    case "cents": return "Cents";
+    case "per_100k": return "Per 100,000";
+    case "per_1000": return "Per 1,000";
+    case "per_woman": return "Per woman";
+    case "per_household": return "Per household";
+    case "deg_f": return "Degrees Fahrenheit";
+    case "tonnes_per_person": return "Tonnes per person";
+    case "times": return "Ratio";
+    case "index": return "Index";
+    case "points": return "Points";
+    case "years": return "Years";
+    case "days": return "Days";
+    default: return unit ? unit.replaceAll("_", " ") : "Value";
+  }
+}
 
 // Line or column chart over time, one shared y-axis, with a crosshair
 // tooltip that lists every series at the hovered x. Columns stack when
@@ -99,12 +123,20 @@ export function TimeSeriesChart({
   // ~6 x-axis labels on whole years.
   const years = [...new Set(xs.map((p) => Math.floor(p.x)))];
   const step = Math.max(1, Math.ceil(years.length / Math.max(2, Math.floor(plotW / 90))));
-  const xTicks =
-    xTickValues && type === "line"
-      ? xTickValues.filter((y) => y >= x0 && y <= x1).map((y) => ({ x: M.left + ((y - x0) / (x1 - x0 || 1)) * plotW, label: String(y) }))
-      : years
-          .filter((_, i) => i % step === 0)
-          .map((y) => ({ x: xPos(xs.findIndex((p) => Math.floor(p.x) === y)), label: String(y) }));
+  const shownYears = years.filter((_, i) => i % step === 0);
+  if (years.length && shownYears.at(-1) !== years.at(-1)) {
+    const lastYear = years.at(-1)!;
+    if (shownYears.length && lastYear - shownYears.at(-1)! < step * 0.6) shownYears[shownYears.length - 1] = lastYear;
+    else shownYears.push(lastYear);
+  }
+  const xTicks = xTickValues && type === "line"
+    ? xTickValues
+        .filter((year) => year >= x0 && year <= x1)
+        .map((year) => ({ x: M.left + ((year - x0) / (x1 - x0 || 1)) * plotW, label: String(year) }))
+    : shownYears.map((year) => ({
+        x: xPos(xs.findIndex((point) => Math.floor(point.x) === year)),
+        label: String(year),
+      }));
 
   const nearest = (clientX: number, rect: DOMRect) => {
     const px = clientX - rect.left;
@@ -126,18 +158,24 @@ export function TimeSeriesChart({
   return (
     <div ref={ref} className="relative">
       {series.length > 1 && (
-        <ul className="mb-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-600 dark:text-slate-300">
-          {series.map((s) => (
-            <li key={s.id} className="flex items-center gap-1.5">
-              {type === "line" ? (
-                <span className="h-0.5 w-3 rounded" style={{ background: color(s) }} />
-              ) : (
-                <span className="size-2.5 rounded-sm" style={{ background: color(s) }} />
-              )}
-              {s.label}
-            </li>
-          ))}
-        </ul>
+        <div className="mb-3 flex flex-wrap items-start justify-between gap-x-4 gap-y-1">
+          <ul className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-600 dark:text-slate-300">
+            {series.map((s) => (
+              <li key={s.id} className="flex items-center gap-1.5">
+                {type === "line" ? (
+                  <span className="h-0.5 w-3 rounded" style={{ background: color(s) }} />
+                ) : (
+                  <span className="size-2.5 rounded-sm" style={{ background: color(s) }} />
+                )}
+                <span>{s.label}</span>
+                <span className="font-semibold tabular-nums text-slate-900 dark:text-white">
+                  {format(s.points.at(-1)?.value ?? 0)}
+                </span>
+              </li>
+            ))}
+          </ul>
+          <span className="text-[10px] text-slate-400">Latest · {xs.at(-1)!.label}</span>
+        </div>
       )}
       <svg
         width={width}
@@ -152,11 +190,14 @@ export function TimeSeriesChart({
         onBlur={() => setHover(null)}
         onKeyDown={onKey}
       >
+        <text x={M.left} y={12} className="fill-[var(--viz-muted)] text-[10px] font-medium">
+          {axisLabel(unit)}
+        </text>
         {yTicks.map((t) => (
           <g key={t}>
             <line x1={M.left} x2={width - M.right} y1={yPos(t)} y2={yPos(t)} stroke={t === 0 ? "var(--viz-axis)" : "var(--viz-grid)"} />
             <text x={M.left - 8} y={yPos(t)} dy="0.32em" textAnchor="end" className="fill-[var(--viz-muted)] text-[11px] tabular-nums">
-              {axisFormat(t)}
+              {formatValue(t, unit, { compact: true })}
             </text>
           </g>
         ))}
@@ -181,28 +222,30 @@ export function TimeSeriesChart({
           </g>
         )}
         {markers.map((mk, k) => {
-          const i = xs.findIndex((p) => p.x >= mk.x);
-          if (i < 0) return null;
-          const j = mk.to === undefined ? i : xs.findLastIndex((p) => p.x < mk.to!);
+          if (mk.x < x0 || mk.x > x1) return null;
+          const markerX = M.left + ((mk.x - x0) / (x1 - x0 || 1)) * plotW;
+          const markerEndX = mk.to === undefined
+            ? markerX
+            : M.left + ((Math.min(x1, mk.to) - x0) / (x1 - x0 || 1)) * plotW;
           // Labels step down in up to three rows (one per marker on narrow
           // charts) so neighbors don't collide, and flip to the left of the
           // line near the right edge.
-          const flip = xPos(i) > width - M.right - 110;
+          const flip = markerX > width - M.right - 110;
           return (
             <g key={`${mk.x}-${mk.label}`}>
-              {j > i && (
+              {markerEndX > markerX && (
                 <rect
-                  x={xPos(i) - (type === "column" ? band / 2 : 0)}
+                  x={markerX}
                   y={M.top}
-                  width={xPos(j) - xPos(i) + (type === "column" ? band : 0)}
+                  width={markerEndX - markerX}
                   height={plotH}
                   fill="var(--viz-muted)"
                   opacity={0.08}
                 />
               )}
-              <line x1={xPos(i)} x2={xPos(i)} y1={M.top} y2={M.top + plotH} stroke="var(--viz-axis)" />
+              <line x1={markerX} x2={markerX} y1={M.top} y2={M.top + plotH} stroke="var(--viz-axis)" />
               <text
-                x={xPos(i) + (flip ? -4 : 4)}
+                x={markerX + (flip ? -4 : 4)}
                 y={M.top + 10 + (markers.length > 2 ? (k % (width < 640 ? markers.length : 3)) * 13 : 0)}
                 textAnchor={flip ? "end" : "start"}
                 className="fill-[var(--viz-muted)] text-[11px]"

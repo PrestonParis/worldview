@@ -1,14 +1,8 @@
-import type { AxisId, ChoiceOption, Condition, ItemModel, Lens, Loadings, Statement } from "../types";
+import type { AxisId, ChoiceOption, Condition, InternalSignals, ItemModel, Lens, Loadings, Statement } from "../types";
 
 // Choice option shorthand.
-export function o(
-  id: string,
-  text: string,
-  stance: string,
-  axes: Loadings = {},
-  lens?: Lens,
-): ChoiceOption {
-  return lens ? { id, text, stance, axes, lens } : { id, text, stance, axes };
+export function o(id: string, text: string, stance: string, axes: Loadings = {}, lens?: Lens, internal?: InternalSignals): ChoiceOption {
+  return { id, text, stance, axes, ...(lens ? { lens } : {}), ...(internal ? { internal } : {}) };
 }
 
 // Checklist item: checked scores as `yes`, unchecked as `no`. Both sides
@@ -30,13 +24,7 @@ export function when(q: string, ...ids: string[]): Condition {
 // side loadings on others. Centre statements (location 0) are compromise
 // claims and default to the ideal-point model; everything else is
 // directional unless overridden.
-export function st(
-  id: string,
-  location: number,
-  text: string,
-  side?: Loadings,
-  model: ItemModel = location === 0 ? "ideal" : "directional",
-): Statement {
+export function st(id: string, location: number, text: string, side?: Loadings, model: ItemModel = location === 0 ? "ideal" : "directional"): Statement {
   const axis = id.split(".")[0] as AxisId;
   return { id, text, model, axes: { [axis]: { location, weight: 1 }, ...side } };
 }

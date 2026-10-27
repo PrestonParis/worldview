@@ -4,6 +4,7 @@ import { getEntity, getMergedInto } from "@/lib/db/entities";
 import { listVoterRollCallVotes, votesByRollCall } from "@/lib/db/votingRecord";
 import { brokeWithParty, normalizeParty } from "@/lib/legislation/votingRecord";
 import { MemberVotingRecord } from "@/components/legislation/member-voting-record";
+import { publicEntityPath } from "@/lib/people/public";
 
 // Rebuilt at most daily; crawlers and visitors share the cached render.
 export const revalidate = 86400;
@@ -52,17 +53,25 @@ export default async function MemberVotingRecordPage({
 
   return (
     <div className="max-w-3xl">
-      <Link
-        href="/legislation"
-        className="text-sm text-slate-500 underline underline-offset-2 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
-      >
-        ← Legislation
-      </Link>
+      <div className="flex items-center justify-between gap-2">
+        <Link
+          href="/legislation"
+          className="text-sm text-slate-500 underline underline-offset-2 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
+        >
+          ← Legislation
+        </Link>
+        <Link
+          href={`/writ/member/${entity.id}`}
+          className="text-xs font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400"
+        >
+          Open in Writ →
+        </Link>
+      </div>
 
       <h1 className="mt-3 text-2xl font-semibold tracking-tight">{entity.name}</h1>
       <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
         Voting record{party ? ` · ${party}` : ""} ·{" "}
-        <Link href={`/data/entities/${entity.id}`} className="underline underline-offset-2">
+        <Link href={publicEntityPath(entity)} className="underline underline-offset-2">
           profile
         </Link>
       </p>

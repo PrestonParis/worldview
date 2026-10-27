@@ -9,14 +9,17 @@ export const generalPages: NavPage[] = [
   { label: "Legislation & Courts", navLabel: "Legislation", href: "/legislation" },
   { label: "Money & Influence", navLabel: "Money", href: "/money" },
   { label: "Elections & Maps", navLabel: "Elections", href: "/elections" },
-  { label: "Political Quiz", navLabel: "Quiz", href: "/quiz" },
+  { label: "Worldview Atlas", navLabel: "Atlas", href: "/atlas" },
+  { label: "Subpoena", navLabel: "Subpoena", href: "/subpoena" },
+  { label: "Writ", navLabel: "Writ", href: "/writ" },
+  { label: "IssueView", navLabel: "IssueView", href: "/issueview" },
 ];
 
 export const primaryPages: NavPage[] = [
   { label: "Immigration", navLabel: "Immigration", href: "/immigration" },
   { label: "Crime", navLabel: "Crime", href: "/crime" },
   { label: "Guns", navLabel: "Guns", href: "/guns" },
-  { label: "Health Care", navLabel: "Health Care", href: "/health-care" },
+  { label: "Healthcare", navLabel: "Healthcare", href: "/healthcare" },
   { label: "Energy & Climate", navLabel: "Energy", href: "/energy" },
   { label: "Economy", navLabel: "Economy", href: "/economy" },
   { label: "Housing", navLabel: "Housing", href: "/housing" },
@@ -55,8 +58,6 @@ export const navGroups: NavGroup[] = [
       { page: page("/crime"), blurb: "Violent and property crime, nationally and by state" },
       { page: page("/guns"), blurb: "Firearm deaths, ownership, and opinion on gun laws" },
       { page: page("/abortion"), blurb: "Abortions by state, travel, telehealth, and state limits" },
-      { page: page("/health-care"), blurb: "Insurance, overdoses, and how U.S. health compares" },
-      { page: page("/energy"), blurb: "Energy prices, electricity, emissions, and temperature" },
     ],
   },
   {
@@ -65,7 +66,8 @@ export const navGroups: NavGroup[] = [
     items: [
       { page: page("/economy"), blurb: "Jobs, inflation, wages, incomes, and growth" },
       { page: page("/housing"), blurb: "Home prices, mortgages, rents, and homeownership" },
-      { page: page("/spending"), blurb: "The budget, deficits, debt, and where federal money goes" },
+      { page: page("/healthcare"), blurb: "Insurance, overdoses, and how U.S. health compares" },
+      { page: page("/energy"), blurb: "Energy prices, electricity, emissions, and temperature" },
     ],
   },
   {
@@ -84,31 +86,33 @@ export const navGroups: NavGroup[] = [
     items: [
       { page: page("/people"), blurb: "Who's connected to whom, and how" },
       { page: page("/money"), blurb: "Donors, PACs, lobbying, and money flow" },
-      { page: page("/legislation"), blurb: "Bills, votes, and Supreme Court cases" },
+      { page: page("/my-government"), blurb: "Your officials, districts, and votes" },
     ],
   },
   {
-    id: "democracy",
-    label: "Democracy",
+    id: "government",
+    label: "Government",
     items: [
+      { page: page("/legislation"), blurb: "Bills, votes, and Supreme Court cases" },
       { page: page("/elections"), blurb: "Results, ratings, and county maps" },
-      { page: page("/my-government"), blurb: "Your officials, districts, and votes" },
+      { page: page("/spending"), blurb: "The budget, deficits, debt, and where federal money goes" },
+      { page: page("/states"), blurb: "Every topic for one state, ranked against the U.S." },
     ],
   },
   {
     id: "tools",
     label: "Tools",
     items: [
-      { page: page("/quiz"), blurb: "Map your views on 18 axes and 28 issues" },
+      { page: page("/subpoena"), blurb: "People, PACs, and campaign money dossiers" },
+      { page: page("/writ"), blurb: "Bills, roll-call voting alignments, and election shifts" },
+      { page: page("/issueview"), blurb: "Cross-topic state & county multi-metric comparator" },
+      { page: page("/atlas"), blurb: "Map your worldview and explore political philosophies" },
     ],
   },
 ];
 
-// Top-level links shown beside the menus.
-export const navLinks: NavPage[] = [page("/states"), page("/datasets")];
 
-export const dataAdminPage: NavPage = {
-  label: "Manage Data",
-  navLabel: "Manage Data",
-  href: "/data",
+// Owner-only pages, added to their group's menu for the site owner.
+export const ownerNavItems: Record<string, NavGroup["items"]> = {
+  tools: [{ page: { label: "Geography", navLabel: "Geography", href: "/geography" }, blurb: "Annotated map graphics for broadcast and social" }],
 };

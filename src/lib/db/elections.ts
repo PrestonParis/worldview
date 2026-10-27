@@ -1,4 +1,4 @@
-import { eq, count, gte, max } from "drizzle-orm";
+import { eq, max } from "drizzle-orm";
 import { db } from "./client";
 import { elections } from "./schema";
 import type { Election, ElectionInput } from "../validation/election";
@@ -52,14 +52,6 @@ export async function listElections(): Promise<Election[]> {
   return rows.map(toElection);
 }
 
-export async function listElectionsByCycle(cycle: number): Promise<Election[]> {
-  const rows = await db.query.elections.findMany({
-    where: eq(elections.cycle, cycle),
-    orderBy: (e, { asc }) => [asc(e.office), asc(e.jurisdiction)],
-  });
-  return rows.map(toElection);
-}
-
 // The most recent cycle any election is tagged with — the dashboard's
 // default view.
 export async function latestCycle(): Promise<number | null> {
@@ -70,19 +62,6 @@ export async function latestCycle(): Promise<number | null> {
 export async function getElection(id: string): Promise<Election | null> {
   const row = await db.query.elections.findFirst({ where: eq(elections.id, id) });
   return row ? toElection(row) : null;
-}
-
-export async function countElections(): Promise<number> {
-  const [row] = await db.select({ value: count() }).from(elections);
-  return row.value;
-}
-
-export async function countElectionsCreatedSince(since: Date): Promise<number> {
-  const [row] = await db
-    .select({ value: count() })
-    .from(elections)
-    .where(gte(elections.createdAt, since));
-  return row.value;
 }
 
 export async function createElection(input: ElectionInput): Promise<Election> {

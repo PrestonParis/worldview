@@ -1,0 +1,431 @@
+{
+ "jurisdiction": {
+  "shortName": "fulton-county-ga",
+  "name": [
+   {
+    "languageId": "en",
+    "text": "Fulton County"
+   }
+  ],
+  "childLocalities": []
+ },
+ "election": {
+  "id": "01000000-b5ce-a69b-88a3-08de06bd70ee",
+  "jurisdictionId": "ea1814cb-4423-439e-b273-131e9a8356a6",
+  "name": [
+   {
+    "languageId": "en",
+    "text": "November 4, 2025 - Municipal General / Special Election (PSC)"
+   }
+  ],
+  "electionDate": "2025-11-04",
+  "isOfficialResults": true,
+  "isPrimary": false,
+  "asOf": "2025-11-21T18:33:59.854839Z",
+  "lastUpdated": "2025-11-11T13:55:15.908682Z"
+ },
+ "localityElections": [],
+ "ballotItems": [
+  {
+   "id": "01000000-b5ce-a69b-5d03-08de06bd7a32",
+   "parentId": null,
+   "name": [
+    {
+     "languageId": "en",
+     "text": "Alpharetta City Council Post 1"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 1"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": null,
+   "reportingStatus": {
+    "reportingUnits": 23,
+    "totalUnits": 23,
+    "asOf": "2025-11-21T18:33:59.854839Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 8520,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-b5ce-a69b-5d14-08de06bd7a32",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Kirk Driskell"
+       }
+      ],
+      "voteCount": 8520,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     }
+    ]
+   }
+  },
+  {
+   "id": "01000000-b5ce-a69b-73dd-08de06bd7a31",
+   "parentId": null,
+   "name": [
+    {
+     "languageId": "en",
+     "text": "Atlanta Mayor"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 1"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": null,
+   "reportingStatus": {
+    "reportingUnits": 180,
+    "totalUnits": 180,
+    "asOf": "2025-11-21T18:33:59.854839Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 92219,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-b5ce-a69b-744e-08de06bd7a31",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Andre Dickens (I)"
+       }
+      ],
+      "voteCount": 79107,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-b5ce-a69b-74a9-08de06bd7a31",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Helmut \"Love\" Domagalski"
+       }
+      ],
+      "voteCount": 3395,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-b5ce-a69b-74b2-08de06bd7a31",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Kalema Jackson"
+       }
+      ],
+      "voteCount": 4519,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-b5ce-a69b-74ba-08de06bd7a31",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Eddie Meredith"
+       }
+      ],
+      "voteCount": 5198,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     }
+    ]
+   }
+  },
+  {
+   "id": "01000000-b5ce-a69b-8688-08de06bd7a31",
+   "parentId": null,
+   "name": [
+    {
+     "languageId": "en",
+     "text": "Atlanta City Council P1 At Large"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 1"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": null,
+   "reportingStatus": {
+    "reportingUnits": 180,
+    "totalUnits": 180,
+    "asOf": "2025-11-21T18:33:59.854839Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 88503,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-b5ce-a69b-86c8-08de06bd7a31",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Michael Julian Bond (I)"
+       }
+      ],
+      "voteCount": 53412,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-b5ce-a69b-86ec-08de06bd7a31",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Juan Mendoza"
+       }
+      ],
+      "voteCount": 18034,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-b5ce-a69b-86f5-08de06bd7a31",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Matt Rinker"
+       }
+      ],
+      "voteCount": 17057,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     }
+    ]
+   }
+  },
+  {
+   "id": "01000000-b5ce-a69b-81f4-08de06bd7a32",
+   "parentId": null,
+   "name": [
+    {
+     "languageId": "en",
+     "text": "City of College Park Homestead Exemption"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 1"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": null,
+   "reportingStatus": {
+    "reportingUnits": 17,
+    "totalUnits": 17,
+    "asOf": "2025-11-21T18:33:59.854839Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 2122,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-b5ce-a69b-8209-08de06bd7a32",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Yes"
+       }
+      ],
+      "voteCount": 1731,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-b5ce-a69b-8210-08de06bd7a32",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "No"
+       }
+      ],
+      "voteCount": 391,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     }
+    ]
+   }
+  },
+  {
+   "id": "01000000-b5ce-a69b-9396-08de06bd7a32",
+   "parentId": null,
+   "name": [
+    {
+     "languageId": "en",
+     "text": "Fairburn City Council At Large"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 3"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": null,
+   "reportingStatus": {
+    "reportingUnits": 4,
+    "totalUnits": 4,
+    "asOf": "2025-11-21T18:33:59.854839Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 7193,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-b5ce-a69b-93ad-08de06bd7a32",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Anatavia M. Benson"
+       }
+      ],
+      "voteCount": 1335,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-b5ce-a69b-93b6-08de06bd7a32",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Audrey Horn"
+       }
+      ],
+      "voteCount": 996,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-b5ce-a69b-93bc-08de06bd7a32",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Shanita Nichols"
+       }
+      ],
+      "voteCount": 1780,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-b5ce-a69b-93c2-08de06bd7a32",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Nancy Juarez Sanchez"
+       }
+      ],
+      "voteCount": 1097,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-b5ce-a69b-93cf-08de06bd7a32",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Ulysses Smallwood (I)"
+       }
+      ],
+      "voteCount": 1180,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-b5ce-a69b-93df-08de06bd7a32",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Rian Trotter"
+       }
+      ],
+      "voteCount": 805,
+      "party": {
+       "abbreviation": ""
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     }
+    ]
+   }
+  }
+ ]
+}

@@ -5,6 +5,7 @@ import {
   text,
   timestamp,
   integer,
+  smallint,
   bigint,
   boolean,
   doublePrecision,
@@ -36,6 +37,14 @@ export const sources = pgTable("sources", {
   sourceType: sourceTypeEnum("source_type").notNull().default("secondary"),
   publishedAt: timestamp("published_at", { withTimezone: true }),
   notes: text("notes"),
+  // Stable key dossiers cite (data/profiles/*.json); null for hand-made rows.
+  sourceKey: text("source_key"),
+  author: text("author"),
+  documentId: text("document_id"),
+  accessedAt: date("accessed_at"),
+  // A syndicated or derivative copy names the source it repeats, so the two
+  // never count as independent confirmation.
+  repeatsSourceKey: text("repeats_source_key"),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
@@ -77,7 +86,7 @@ export const entities = pgTable(
     index("entities_name_lower_idx").on(sql`lower(${table.name})`),
     check(
       "entities_type_check",
-      sql`${table.type} in ('politician', 'pundit', 'journalist', 'organization', 'company', 'lobbyist', 'donor')`,
+      sql`${table.type} in ('politician', 'judge', 'pundit', 'journalist', 'organization', 'company', 'lobbyist', 'donor')`,
     ),
   ],
 );
@@ -149,6 +158,10 @@ export const entityEdges = pgTable(
     // Importer idempotency key ("committee-seat:HSAG:P000197"); null for
     // hand-made edges.
     sourceKey: text("source_key"),
+    // 'verified' | 'disputed' | 'unresolved'
+    status: text("status").notNull().default("verified"),
+    // How central the tie is to the subject; the network starts from the top.
+    prominence: smallint("prominence").notNull().default(0),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },
@@ -181,6 +194,123 @@ export const entityMerges = pgTable(
   (table) => [index("entity_merges_into_idx").on(table.intoId)],
 );
 
+// Sourced personal traits, rebuilt by scripts/import-entity-traits.mjs
+// (supabase/sql/2026-10-18-entity-traits.sql). Traits live in
+// src/lib/people/traits.ts.
+export const entityTraits = pgTable(
+  "entity_traits",
+  {
+    entityId: uuid("entity_id")
+      .notNull()
+      .references(() => entities.id, { onDelete: "cascade" }),
+    trait: text("trait").notNull(),
+    value: text("value").notNull(),
+    detail: text("detail").notNull().default(""),
+    source: text("source").notNull(),
+    sourceUrl: text("source_url").notNull().default(""),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    primaryKey({ name: "entity_traits_pkey", columns: [table.entityId, table.trait, table.value] }),
+    index("entity_traits_trait_value_idx").on(table.trait, table.value),
+  ],
+);
+
+// Profile records (supabase/sql/2026-10-20-profile-records.sql,
+// docs/people/profile-model.md). Filled by scripts/import-profile.mjs.
+export const entityProfiles = pgTable("entity_profiles", {
+  entityId: uuid("entity_id")
+    .primaryKey()
+    .references(() => entities.id, { onDelete: "cascade" }),
+  summary: text("summary").notNull().default(""),
+  roles: jsonb("roles").notNull().default([]),
+  chapters: jsonb("chapters").notNull().default([]),
+  ideas: jsonb("ideas").notNull().default({}),
+  coverage: jsonb("coverage").notNull().default({}),
+  editorialReviewedAt: date("editorial_reviewed_at"),
+  sourcesVerifiedAt: date("sources_verified_at"),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const entityFacts = pgTable(
+  "entity_facts",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    entityId: uuid("entity_id")
+      .notNull()
+      .references(() => entities.id, { onDelete: "cascade" }),
+    factKey: text("fact_key").notNull(),
+    label: text("label").notNull(),
+    value: text("value").notNull(),
+    detail: text("detail").notNull().default(""),
+    asOf: date("as_of"),
+    sort: smallint("sort").notNull().default(0),
+    featured: boolean("featured").notNull().default(false),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [uniqueIndex("entity_facts_key").on(table.entityId, table.factKey)],
+);
+
+export const entityEvents = pgTable(
+  "entity_events",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    eventKey: text("event_key").notNull().unique(),
+    subjectEntityId: uuid("subject_entity_id")
+      .notNull()
+      .references(() => entities.id, { onDelete: "cascade" }),
+    // 'YYYY' | 'YYYY-MM' | 'YYYY-MM-DD'
+    dateStart: text("date_start").notNull(),
+    dateEnd: text("date_end").notNull().default(""),
+    title: text("title").notNull(),
+    summary: text("summary").notNull().default(""),
+    category: text("category").notNull(),
+    significance: smallint("significance").notNull().default(2),
+    chapterKey: text("chapter_key").notNull().default(""),
+    status: text("status").notNull().default("verified"),
+    statusNote: text("status_note").notNull().default(""),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [index("entity_events_subject_idx").on(table.subjectEntityId)],
+);
+
+export const entityEventParticipants = pgTable(
+  "entity_event_participants",
+  {
+    eventId: uuid("event_id")
+      .notNull()
+      .references(() => entityEvents.id, { onDelete: "cascade" }),
+    entityId: uuid("entity_id")
+      .notNull()
+      .references(() => entities.id, { onDelete: "cascade" }),
+    role: text("role").notNull().default(""),
+  },
+  (table) => [
+    primaryKey({ name: "entity_event_participants_pkey", columns: [table.eventId, table.entityId] }),
+    index("entity_event_participants_entity_idx").on(table.entityId),
+  ],
+);
+
+export const recordEvidence = pgTable(
+  "record_evidence",
+  {
+    // 'fact' | 'event' | 'edge' | 'claim'
+    recordType: text("record_type").notNull(),
+    recordId: uuid("record_id").notNull(),
+    sourceId: uuid("source_id")
+      .notNull()
+      .references(() => sources.id, { onDelete: "cascade" }),
+    // 'supports' | 'disputes' | 'context'
+    relation: text("relation").notNull().default("supports"),
+    locator: text("locator").notNull().default(""),
+    note: text("note").notNull().default(""),
+  },
+  (table) => [
+    primaryKey({ name: "record_evidence_pkey", columns: [table.recordType, table.recordId, table.sourceId] }),
+    index("record_evidence_source_idx").on(table.sourceId),
+  ],
+);
+
 export const claims = pgTable("claims", {
   id: uuid("id").primaryKey().defaultRandom(),
   speakerEntityId: uuid("speaker_entity_id")
@@ -198,6 +328,16 @@ export const claims = pgTable("claims", {
   sourceId: uuid("source_id").references(() => sources.id, {
     onDelete: "set null",
   }),
+  // Profile statements (supabase/sql/2026-10-20-profile-records.sql).
+  claimKey: text("claim_key"),
+  issue: text("issue"),
+  // 'explicit' (the speaker's own words) | 'interpretation' (an editorial reading)
+  stanceKind: text("stance_kind").notNull().default("explicit"),
+  summary: text("summary"),
+  // 'day' | 'month' | 'year' — how much of `date` is meaningful.
+  datePrecision: text("date_precision").notNull().default("day"),
+  // false: the wording couldn't be checked against the original; shown as "Not verbatim".
+  verbatim: boolean("verbatim").notNull().default(true),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
@@ -259,6 +399,15 @@ export const contributions = pgTable(
     // null for anything entered by hand through /data/contributions, which
     // never sets it. Lets an import script re-run safely via ON CONFLICT.
     externalId: text("external_id"),
+    // FEC Schedule A detail. memo_code 'X' lines itemize money counted on
+    // another line and never enter a total.
+    receiptType: text("receipt_type"),
+    memoCode: text("memo_code"),
+    cycle: smallint("cycle"),
+    committeeId: text("committee_id"),
+    // src/lib/money/recipient-kinds.ts
+    recipientKind: text("recipient_kind"),
+    recipientParty: text("recipient_party"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
@@ -314,6 +463,63 @@ export const candidateFinance = pgTable(
     index("candidate_finance_entity_idx").on(table.entityId),
     index("candidate_finance_cycle_idx").on(table.cycle),
     uniqueIndex("candidate_finance_external_id_idx").on(table.externalId),
+  ],
+);
+
+// FEC bulk data (supabase/sql/2026-10-18-fec-bulk.sql, scripts/import-fec-bulk.mjs).
+// Keyed by FEC ids; entities attach through entity_identifiers
+// (fec_candidate / fec_committee).
+export const fecCandidates = pgTable("fec_candidates", {
+  candidateId: text("candidate_id").primaryKey(),
+  name: text("name").notNull(),
+  party: text("party"),
+  office: text("office"),
+  state: text("state"),
+  district: text("district"),
+  incumbentChallenge: text("incumbent_challenge"),
+  principalCommitteeId: text("principal_committee_id"),
+  firstCycle: smallint("first_cycle").notNull(),
+  lastCycle: smallint("last_cycle").notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const fecCommittees = pgTable(
+  "fec_committees",
+  {
+    committeeId: text("committee_id").primaryKey(),
+    name: text("name").notNull(),
+    designation: text("designation"),
+    committeeType: text("committee_type"),
+    party: text("party"),
+    city: text("city"),
+    state: text("state"),
+    orgType: text("org_type"),
+    connectedOrg: text("connected_org"),
+    candidateId: text("candidate_id"),
+    firstCycle: smallint("first_cycle").notNull(),
+    lastCycle: smallint("last_cycle").notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [index("fec_committees_candidate_idx").on(table.candidateId)],
+);
+
+export const moneyFlowKinds = ["contribution", "coordinated", "ie_support", "ie_oppose"] as const;
+export type MoneyFlowKind = (typeof moneyFlowKinds)[number];
+
+// Committee -> candidate dollars per cycle and kind (FEC pas2, summed).
+export const moneyFlows = pgTable(
+  "money_flows",
+  {
+    candidateId: text("candidate_id").notNull(),
+    cycle: smallint("cycle").notNull(),
+    kind: text("kind").$type<MoneyFlowKind>().notNull(),
+    committeeId: text("committee_id").notNull(),
+    total: bigint("total", { mode: "number" }).notNull(),
+    n: integer("n").notNull(),
+  },
+  (table) => [
+    primaryKey({ name: "money_flows_pkey", columns: [table.candidateId, table.cycle, table.kind, table.committeeId] }),
+    index("money_flows_committee_idx").on(table.committeeId, table.cycle),
   ],
 );
 
@@ -1297,7 +1503,7 @@ export const caseVotes = pgTable(
   ],
 );
 
-// Political quiz sessions (src/lib/quiz, docs/quiz-plan.md). The answer log
+// Political quiz sessions (src/lib/quiz, docs/quiz.md). The answer log
 // is the source of truth; results are recomputed from it on every view.
 export const quizSessions = pgTable(
   "quiz_sessions",
@@ -1339,9 +1545,8 @@ export const quizSessions = pgTable(
   ],
 );
 
-// Anonymized answer logs of unclaimed quizzes, copied by the purge job
-// (scripts/purge-quizzes.mjs) before the session is deleted. Nothing links a
-// row back to its quiz link or a person.
+// Anonymized historical answer logs. Nothing links a row back to its quiz
+// result URL or a person. Live URL-addressable sessions remain in quizSessions.
 export const quizResponses = pgTable(
   "quiz_responses",
   {
@@ -1380,7 +1585,7 @@ export const quizOpenerEvents = pgTable(
   (table) => [index("quiz_opener_events_created_idx").on(table.createdAt)],
 );
 
-// Worldview accounts (docs/auth-plan.md). finalizeSignIn creates the row the
+// Worldview accounts (docs/auth.md). finalizeSignIn creates the row the
 // first time a verified Supabase auth user signs in. Only editors may change
 // shared data (src/lib/auth/guard.ts); members own their own maps and quizzes.
 export const profiles = pgTable(
@@ -1394,6 +1599,30 @@ export const profiles = pgTable(
   },
   (table) => [check("profiles_role_check", sql`${table.role} in ('member', 'editor')`)],
 );
+
+// The durable, user-owned layer above individual quiz sessions. Political
+// answers remain in quiz_sessions; this only stores explicit saves and the
+// results of smaller Atlas assessments.
+export const atlasProfiles = pgTable("atlas_profiles", {
+  ownerId: uuid("owner_id")
+    .primaryKey()
+    .references(() => profiles.id, { onDelete: "cascade" }),
+  savedPhilosophies: jsonb("saved_philosophies").notNull().default(sql`'[]'::jsonb`),
+  economicResult: jsonb("economic_result"),
+  authorityResult: jsonb("authority_result"),
+  foreignPolicyResult: jsonb("foreign_policy_result"),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+// A member's saved My Government result (src/lib/my-government/saved.ts):
+// districts and officials, never the street address.
+export const savedGovernments = pgTable("saved_governments", {
+  ownerId: uuid("owner_id")
+    .primaryKey()
+    .references(() => profiles.id, { onDelete: "cascade" }),
+  data: jsonb("data").notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
 
 // ── Data lake catalog and polls (supabase/sql/2026-10-16-data-lake.sql) ──
 // Source files and Parquet extracts live in Supabase Storage (`raw` and
@@ -1475,5 +1704,256 @@ export const pollResults = pgTable(
   (table) => [
     primaryKey({ name: "poll_results_pkey", columns: [table.pollId, table.choice] }),
     index("poll_results_entity_idx").on(table.entityId),
+  ],
+);
+
+// ── Writ close-races tracker (supabase/sql/2026-10-22-tracked-contests.sql) ──
+// Every contest from a state's official results feed (Georgia SOS first),
+// independent of entities. Vocabularies (level, decision rule, result
+// status, flags) are text, defined in src/lib/elections/close-races/types.ts.
+
+export const trackedContests = pgTable(
+  "tracked_contests",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    source: text("source").notNull(),
+    externalId: text("external_id").notNull(),
+    sourceElectionId: text("source_election_id").notNull(),
+    sourceContestIds: text("source_contest_ids").array().notNull().default(sql`'{}'`),
+    electionDate: date("election_date").notNull(),
+    electionKind: text("election_kind").notNull(),
+    state: text("state").notNull(),
+    name: text("name").notNull(),
+    rawName: text("raw_name").notNull(),
+    office: text("office").notNull(),
+    district: text("district"),
+    level: text("level").notNull(),
+    scope: text("scope").notNull(),
+    countySlug: text("county_slug"),
+    county: text("county"),
+    counties: text("counties").array().notNull().default(sql`'{}'`),
+    municipality: text("municipality"),
+    voteFor: integer("vote_for").notNull().default(1),
+    isReferendum: boolean("is_referendum").notNull().default(false),
+    primaryParty: text("primary_party"),
+    totalVotes: integer("total_votes").notNull().default(0),
+    reportingUnits: integer("reporting_units").notNull().default(0),
+    totalUnits: integer("total_units").notNull().default(0),
+    decisionRule: text("decision_rule").notNull(),
+    ruleSource: text("rule_source"),
+    threshold: doublePrecision("threshold"),
+    resultStatus: text("result_status").notNull(),
+    ranked: boolean("ranked").notNull().default(false),
+    uncontested: boolean("uncontested").notNull().default(false),
+    marginVotes: integer("margin_votes"),
+    marginPct: doublePrecision("margin_pct"),
+    leaderShare: doublePrecision("leader_share"),
+    flags: text("flags").array().notNull().default(sql`'{}'`),
+    sourceUpdatedAt: timestamp("source_updated_at", { withTimezone: true }),
+    asOf: timestamp("as_of", { withTimezone: true }),
+    ingestedAt: timestamp("ingested_at", { withTimezone: true }).notNull().defaultNow(),
+    sourceHash: text("source_hash"),
+    removedAt: timestamp("removed_at", { withTimezone: true }),
+    electionId: uuid("election_id").references(() => elections.id, { onDelete: "set null" }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("tracked_contests_external_id_idx").on(table.externalId),
+    index("tracked_contests_election_rank_idx").on(table.sourceElectionId, table.ranked, table.marginVotes),
+    index("tracked_contests_election_id_idx").on(table.electionId),
+  ],
+);
+
+export const trackedContestOptions = pgTable(
+  "tracked_contest_options",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    contestId: uuid("contest_id")
+      .notNull()
+      .references(() => trackedContests.id, { onDelete: "cascade" }),
+    nameKey: text("name_key").notNull(),
+    sourceOptionIds: text("source_option_ids").array().notNull().default(sql`'{}'`),
+    name: text("name").notNull(),
+    party: text("party"),
+    incumbent: boolean("incumbent").notNull().default(false),
+    isWriteIn: boolean("is_write_in").notNull().default(false),
+    votes: integer("votes").notNull().default(0),
+    votesByMethod: jsonb("votes_by_method").$type<Record<string, number>>().notNull().default({}),
+    rank: integer("rank").notNull(),
+    isCurrentLeader: boolean("is_current_leader").notNull().default(false),
+    isApparentWinner: boolean("is_apparent_winner").notNull().default(false),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [uniqueIndex("tracked_contest_options_contest_name_idx").on(table.contestId, table.nameKey)],
+);
+
+export const trackedContestAreas = pgTable(
+  "tracked_contest_areas",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    contestId: uuid("contest_id")
+      .notNull()
+      .references(() => trackedContests.id, { onDelete: "cascade" }),
+    optionId: uuid("option_id")
+      .notNull()
+      .references(() => trackedContestOptions.id, { onDelete: "cascade" }),
+    countySlug: text("county_slug").notNull(),
+    county: text("county").notNull(),
+    votes: integer("votes").notNull().default(0),
+    reportingUnits: integer("reporting_units").notNull().default(0),
+    totalUnits: integer("total_units").notNull().default(0),
+    linked: boolean("linked").notNull().default(true),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("tracked_contest_areas_option_county_idx").on(table.optionId, table.countySlug),
+    index("tracked_contest_areas_contest_idx").on(table.contestId),
+  ],
+);
+
+export const trackedSnapshots = pgTable(
+  "tracked_snapshots",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    contestId: uuid("contest_id")
+      .notNull()
+      .references(() => trackedContests.id, { onDelete: "cascade" }),
+    asOf: timestamp("as_of", { withTimezone: true }),
+    ingestedAt: timestamp("ingested_at", { withTimezone: true }).notNull().defaultNow(),
+    leaderOptionId: uuid("leader_option_id"),
+    runnerUpOptionId: uuid("runner_up_option_id"),
+    leaderVotes: integer("leader_votes"),
+    runnerUpVotes: integer("runner_up_votes"),
+    totalVotes: integer("total_votes").notNull(),
+    marginVotes: integer("margin_votes"),
+    marginPct: doublePrecision("margin_pct"),
+    reportingUnits: integer("reporting_units").notNull(),
+    totalUnits: integer("total_units").notNull(),
+    resultStatus: text("result_status").notNull(),
+    sourceHash: text("source_hash").notNull(),
+  },
+  (table) => [index("tracked_snapshots_contest_idx").on(table.contestId, table.ingestedAt.desc())],
+);
+
+export const trackedContestCoverage = pgTable(
+  "tracked_contest_coverage",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    sourceElectionId: text("source_election_id").notNull(),
+    jurisdictionId: text("jurisdiction_id").notNull(),
+    jurisdictionName: text("jurisdiction_name").notNull(),
+    jurisdictionType: text("jurisdiction_type").notNull(),
+    expectedCount: integer("expected_count"),
+    observedCount: integer("observed_count").notNull().default(0),
+    status: text("status").notNull(),
+    sourceUrl: text("source_url"),
+    localResultsUrl: text("local_results_url"),
+    verifiedAt: timestamp("verified_at", { withTimezone: true }),
+    notes: text("notes"),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [uniqueIndex("tracked_contest_coverage_jurisdiction_idx").on(table.sourceElectionId, table.jurisdictionId)],
+);
+
+export const trackedIngestStatus = pgTable("tracked_ingest_status", {
+  sourceElectionId: text("source_election_id").primaryKey(),
+  source: text("source").notNull(),
+  electionName: text("election_name").notNull(),
+  electionDate: date("election_date").notNull(),
+  electionKind: text("election_kind").notNull(),
+  mode: text("mode").notNull(),
+  workerId: text("worker_id"),
+  heartbeatAt: timestamp("heartbeat_at", { withTimezone: true }),
+  lastStateFetchAt: timestamp("last_state_fetch_at", { withTimezone: true }),
+  lastCountySweepAt: timestamp("last_county_sweep_at", { withTimezone: true }),
+  lastWriteAt: timestamp("last_write_at", { withTimezone: true }),
+  sourceUpdatedAt: timestamp("source_updated_at", { withTimezone: true }),
+  isOfficial: boolean("is_official").notNull().default(false),
+  fetchSource: text("fetch_source"),
+  errorCount: integer("error_count").notNull().default(0),
+  lastError: text("last_error"),
+  contests: integer("contests").notNull().default(0),
+  countiesFetched: integer("counties_fetched").notNull().default(0),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const trackedAlerts = pgTable(
+  "tracked_alerts",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    sourceElectionId: text("source_election_id").notNull(),
+    dedupeKey: text("dedupe_key").notNull(),
+    kind: text("kind").notNull(),
+    severity: text("severity").notNull(),
+    contestId: uuid("contest_id").references(() => trackedContests.id, { onDelete: "cascade" }),
+    message: text("message").notNull(),
+    payload: jsonb("payload").notNull().default({}),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    sentAt: timestamp("sent_at", { withTimezone: true }),
+    resolvedAt: timestamp("resolved_at", { withTimezone: true }),
+  },
+  (table) => [
+    uniqueIndex("tracked_alerts_dedupe_idx").on(table.dedupeKey),
+    index("tracked_alerts_election_idx").on(table.sourceElectionId, table.createdAt.desc()),
+  ],
+);
+
+// Candidate registrations from campaign-finance registries (GA PeachFile,
+// FEC) and their matches to contest options: Writ's campaign contacts.
+// supabase/sql/2026-10-24-writ-candidates.sql.
+export const trackedCandidates = pgTable(
+  "tracked_candidates",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    source: text("source").notNull(),
+    externalId: text("external_id").notNull(),
+    state: text("state").notNull(),
+    cycleYear: integer("cycle_year").notNull(),
+    electionCycle: text("election_cycle"),
+    name: text("name").notNull(),
+    ballotName: text("ballot_name"),
+    firstName: text("first_name"),
+    middleName: text("middle_name"),
+    lastName: text("last_name").notNull(),
+    party: text("party"),
+    office: text("office").notNull(),
+    officeFamily: text("office_family"),
+    district: text("district"),
+    jurisdiction: text("jurisdiction"),
+    registrationStatus: text("registration_status"),
+    committeeName: text("committee_name"),
+    website: text("website"),
+    campaignEmail: text("campaign_email"),
+    campaignPhone: text("campaign_phone"),
+    filerEmail: text("filer_email"),
+    filerPhone: text("filer_phone"),
+    sourceUrl: text("source_url").notNull(),
+    fetchedAt: timestamp("fetched_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("tracked_candidates_external_id_idx").on(table.externalId),
+    index("tracked_candidates_lookup_idx").on(table.state, table.cycleYear, table.officeFamily, table.district),
+  ],
+);
+
+export const trackedCandidateMatches = pgTable(
+  "tracked_candidate_matches",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    optionId: uuid("option_id")
+      .notNull()
+      .references(() => trackedContestOptions.id, { onDelete: "cascade" }),
+    candidateId: uuid("candidate_id")
+      .notNull()
+      .references(() => trackedCandidates.id, { onDelete: "cascade" }),
+    confidence: text("confidence").notNull(),
+    evidence: text("evidence").notNull(),
+    matchedAt: timestamp("matched_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("tracked_candidate_matches_pair_idx").on(table.optionId, table.candidateId),
+    index("tracked_candidate_matches_candidate_idx").on(table.candidateId),
   ],
 );

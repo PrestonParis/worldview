@@ -4,6 +4,8 @@
 //     no lens separates;
 //   - self-rank: a simulated respondent placed on each ideology (answering
 //     lens questions as it would) should rank it first;
+//   - centroids: an ideology that comes a close second for many others'
+//     adherents is a catch-all that wins on vagueness, not fit;
 //   - match calibration and simulated accuracy, the baseline for tuning.
 //
 //   npm run quiz:audit
@@ -19,7 +21,11 @@ import { quizModeIds } from "../src/lib/quiz/modes";
 
 const CLOSE = 0.15;
 const RANDOM_RESPONDENTS = 30;
-const MODE_RESPONDENTS = 10;
+const MODE_RESPONDENTS = 100;
+// A runner-up this close (match points) to an adherent's own tradition, for
+// this many traditions, flags a centroid.
+const CENTROID_GAP = 10;
+const CENTROID_COUNT = 3;
 
 const rms = (a: Ideology, b: Ideology) =>
   Math.sqrt(axisIds.reduce((s, x) => s + (a.position[x] - b.position[x]) ** 2, 0) / axisIds.length);
@@ -49,6 +55,8 @@ console.log("\nSelf-rank misses");
 let top1 = 0;
 let top3 = 0;
 const dist = { self: 0, top: 0, tenth: 0, median: 0 };
+let margin = 0;
+const closeSeconds = new Map<string, string[]>();
 for (const [k, ideology] of ideologies.entries()) {
   const lens = Object.fromEntries(lensIds.flatMap((l) => {
     const v = acceptedLens(ideology, l);
@@ -61,6 +69,10 @@ for (const [k, ideology] of ideologies.entries()) {
   if (rank === 1) top1++;
   if (rank <= 3) top3++;
   if (rank > 1) console.log(`  #${rank} ${ideology.name} (beaten by ${res.ideologies.slice(0, rank - 1).map((m) => m.ideology.name).join(", ")})`);
+  const own = res.ideologies[rank - 1];
+  const second = res.ideologies.find((m) => m.ideology.id !== ideology.id)!;
+  margin += own.match - second.match;
+  if (own.match - second.match < CENTROID_GAP) closeSeconds.set(second.ideology.name, [...(closeSeconds.get(second.ideology.name) ?? []), ideology.name]);
   const d = res.ideologies.map((m) => m.distance);
   dist.self += res.ideologies[rank - 1].distance;
   dist.top += d[0];
@@ -81,6 +93,10 @@ for (let i = 0; i < RANDOM_RESPONDENTS; i++) {
 const n = ideologies.length;
 console.log(`\nSelf-rank: top-1 ${top1}/${n} (${Math.round((100 * top1) / n)}%), top-3 ${top3}/${n}`);
 console.log(`Close pairs no lens separates: ${unseparated}`);
+console.log(`Self-rank margin over the runner-up: ${(margin / n).toFixed(1)} points on average`);
+const centroids = [...closeSeconds].filter(([, of]) => of.length >= CENTROID_COUNT).sort((a, b) => b[1].length - a[1].length);
+console.log(`Centroids (within ${CENTROID_GAP} points of ${CENTROID_COUNT}+ traditions' adherents): ${centroids.length}`);
+for (const [name, of] of centroids) console.log(`  ${name}: ${of.join(", ")}`);
 console.log(
   `Distances (calibrate MATCH_FLOOR/CEILING): on self ${(dist.self / n).toFixed(3)}, top ${(dist.top / n).toFixed(3)}, 10th ${(dist.tenth / n).toFixed(3)}, median ${(dist.median / n).toFixed(3)}`,
 );

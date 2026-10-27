@@ -30,6 +30,7 @@ import {
 import { GLOSSARY } from "@/lib/money/glossary";
 import { MONEY_COLORS, partyColor } from "@/lib/money/semantic";
 import { pagesContent } from "@/lib/pages-content";
+import { publicEntityPath } from "@/lib/people/public";
 
 export const dynamic = "force-dynamic";
 
@@ -67,10 +68,9 @@ export default async function MoneyPage({ searchParams }: PageProps<"/money">) {
   const giftRange = gifts.byMonth.length ? `${formatPeriod(gifts.byMonth[0].month)} – ${formatPeriod(gifts.byMonth.at(-1)!.month)}` : "";
 
   return (
-    <div className="mx-auto max-w-7xl space-y-14 pb-16">
+    <div className="mx-auto max-w-7xl space-y-10 pb-16">
       <MoneyHeader
         title={content.title}
-        features={["What campaigns raise", "Outside spending to win or defeat candidates", "Lobbying in Washington"]}
         cycle={cycle}
         cycles={cycles}
         basePath="/money"
@@ -84,11 +84,7 @@ export default async function MoneyPage({ searchParams }: PageProps<"/money">) {
       ) : (
         <>
           {cand.length > 0 && cycle != null ? (
-            <MoneySection
-              id="follow"
-              title="Follow the money"
-              intro="Where each party's campaign money comes from. Pick a candidate to see their funding mix, largest donor committees, and their opponent."
-            >
+            <section id="follow" className="scroll-mt-24">
               <MoneyFlow
                 key={requested ?? "all"}
                 cycle={cycle}
@@ -98,7 +94,7 @@ export default async function MoneyPage({ searchParams }: PageProps<"/money">) {
                 initialCandidateId={requested}
                 source={MONEY_SOURCES.fec}
               />
-            </MoneySection>
+            </section>
           ) : null}
 
           <MoneySection
@@ -225,7 +221,7 @@ export default async function MoneyPage({ searchParams }: PageProps<"/money">) {
                       sub: `${c.count} filing${c.count === 1 ? "" : "s"}`,
                       value: c.total,
                       color: MONEY_COLORS.lobbying,
-                      href: `/data/entities/${c.id}`,
+                      href: publicEntityPath(c),
                     }))}
                   />
                 </div>

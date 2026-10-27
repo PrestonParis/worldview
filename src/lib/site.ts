@@ -4,4 +4,4 @@ export const SITE_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
   ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
   : "https://www.worldviewpolitics.com";
 
-export const SLOGAN = "It's all real.";
+export const SLOGAN = "The Replacement is Real";

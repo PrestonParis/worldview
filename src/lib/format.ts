@@ -98,3 +98,13 @@ export function tidyLabel(s: string): string {
     })
     .join("");
 }
+
+/** A person's first and last initials for avatar placeholders: "Robert F. Kennedy Jr." → "RK". */
+export function initials(name: string): string {
+  const words = name
+    .replace(/,?\s+(Jr|Sr|II|III|IV)\.?$/i, "")
+    .replace(/[^\p{L}\s]/gu, " ")
+    .split(/\s+/)
+    .filter(Boolean);
+  return ((words[0]?.[0] ?? "") + (words.length > 1 ? words.at(-1)![0] : "")).toUpperCase() || "?";
+}

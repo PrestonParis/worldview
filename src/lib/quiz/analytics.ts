@@ -1,4 +1,4 @@
-// Quiz analytics over stored answer logs (docs/quiz-plan.md, Analytics): the
+// Quiz analytics over stored answer logs (docs/quiz.md, Analytics): the
 // owner's /quiz/stats page and `npm run quiz:stats`. Pure: the callers load
 // live sessions, archived responses (quiz_responses) and landing-page opener
 // events, and this replays them against the current bank and engine.
@@ -35,9 +35,11 @@ import {
   type RefineTargets,
 } from "./engine";
 import { ideologyMatches, verdict, type AxisResult, type Verdict } from "./results";
-import { ideologies } from "./ideologies";
+import { allTraditions, ideologies } from "./ideologies";
 import { modeRank, quizModeIds, type DeferredQuestion, type QuizCheckpointRecord, type QuizModeId } from "./modes";
 import { OPENERS, type OpenerAnswer } from "./openers";
+import { csvCell } from "../csv";
+import { pearson, spearman } from "../stats/correlation";
 
 // ── Inputs ──
 
@@ -96,7 +98,7 @@ export const OUTFIT_HIGH = 1.5;
 export const OUTFIT_LOW = 0.5;
 const CHI2_95 = 3.84; // profile-likelihood 95% interval: ΔLL ≤ 1.92
 const MAX_GAP_SECONDS = 600; // longer pauses are breaks, not answer time
-const SURVIVAL_POINTS = [1, 3, 5, 10, 15, 20, 24, 30, 40, 54, 64, 80, 110, 140, 170];
+const SURVIVAL_POINTS = [1, 3, 5, 10, 15, 20, 24, 30, 40, 54, 64, 80, 110, 140, 170, 200];
 const DAILY_MAX = 90;
 
 // ── Outputs ──
@@ -325,35 +327,6 @@ function variance(xs: number[]): number | null {
   const s = stdev(xs);
   return s === null ? null : s * s;
 }
-
-export function pearson(xs: number[], ys: number[]): number | null {
-  if (xs.length < 3) return null;
-  const mx = mean(xs)!;
-  const my = mean(ys)!;
-  let sxy = 0;
-  let sxx = 0;
-  let syy = 0;
-  for (let i = 0; i < xs.length; i++) {
-    sxy += (xs[i] - mx) * (ys[i] - my);
-    sxx += (xs[i] - mx) ** 2;
-    syy += (ys[i] - my) ** 2;
-  }
-  return sxx > 0 && syy > 0 ? sxy / Math.sqrt(sxx * syy) : null;
-}
-
-function ranks(xs: number[]): number[] {
-  const order = xs.map((x, i) => [x, i] as const).sort((a, b) => a[0] - b[0]);
-  const r = new Array<number>(xs.length);
-  for (let i = 0; i < order.length; ) {
-    let j = i;
-    while (j + 1 < order.length && order[j + 1][0] === order[i][0]) j++;
-    for (let k = i; k <= j; k++) r[order[k][1]] = (i + j) / 2;
-    i = j + 1;
-  }
-  return r;
-}
-
-const spearman = (xs: number[], ys: number[]) => pearson(ranks(xs), ranks(ys));
 
 function histogram(xs: number[], bins: number, lo: number, hi: number): number[] {
   const out = new Array<number>(bins).fill(0);
@@ -984,7 +957,7 @@ export function analyzeQuiz(allSessions: AnalyticsSession[], allOpeners: OpenerE
       lensCounts.set(key, (lensCounts.get(key) ?? 0) + 1);
     }
   }
-  const named = (id: string) => ideologies.find((i) => i.id === id)!;
+  const named = (id: string) => allTraditions.find((i) => i.id === id)!;
   const centroid: Partial<Record<AxisId, number>> = {};
   if (far.length) {
     for (const axis of axisIds) {
@@ -1072,11 +1045,6 @@ export function analyzeQuiz(allSessions: AnalyticsSession[], allOpeners: OpenerE
 }
 
 // ── Exports ──
-
-function csvCell(v: unknown): string {
-  const s = v === null || v === undefined ? "" : String(v);
-  return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
-}
 
 export function toCsv<T extends object>(rows: T[], columns: (keyof T)[]): string {
   return [columns.join(","), ...rows.map((r) => columns.map((c) => csvCell(r[c])).join(","))].join("\n") + "\n";

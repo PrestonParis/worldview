@@ -8,7 +8,7 @@
 
 import { datasetCoverage, getSeriesMany, listDatasets, yearlySumsByGeo, type Point, type YearlyValue } from "@/lib/db/stats";
 import { STATES_51 } from "@/lib/geo/states";
-import { formatPeriod, formatValue, pctChange } from "@/lib/format";
+import { formatPeriod, pctChange } from "@/lib/format";
 import {
   CLEARED,
   FULL_COVERAGE,
@@ -31,8 +31,6 @@ const PRE_PANDEMIC = "2019";
 
 const round1 = (v: number | null) => (v === null ? null : Math.round(v * 10) / 10);
 const coverageOf = (p: Point) => (typeof p.metadata?.coverage === "number" ? (p.metadata.coverage as number) : null);
-const theName = (name: string) => (name.startsWith("District") ? `the ${name}` : name);
-const pctFmt = (v: number) => formatValue(Math.abs(v), "percent");
 
 export async function loadCrime() {
   const keys = OFFENSES.map((o) => o.key);
@@ -132,9 +130,6 @@ export async function loadCrime() {
     hate,
     arrests,
     cities,
-    findings: year
-      ? buildFindings({ year, priorYear: priorYear!, baseYear: baseYear!, offenses, states, prelim, victimization, deaths })
-      : [],
     datasets: datasets.map((d) => ({ ...d, coverage: datasetCov[d.slug] ?? null })),
   };
 }
@@ -223,98 +218,3 @@ function buildPrelim(monthly: Record<string, Point[]>, year: string | null) {
   };
 }
 
-// Plain factual statements computed from the numbers on the page.
-function buildFindings({
-  year,
-  priorYear,
-  baseYear,
-  offenses,
-  states,
-  prelim,
-  victimization,
-  deaths,
-}: {
-  victimization: Awaited<ReturnType<typeof loadVictimization>>;
-  deaths: Awaited<ReturnType<typeof loadViolentDeaths>>;
-  year: string;
-  priorYear: string;
-  baseYear: string;
-  offenses: OffenseTrend[];
-  states: StateCrimeData;
-  prelim: ReturnType<typeof buildPrelim>;
-}): string[] {
-  const out: string[] = [];
-  const o = (k: OffenseKey) => offenses.find((x) => x.key === k)!;
-  const dir = (v: number) => (v < 0 ? "fell" : "rose");
-  const violent = o("violent_crime");
-  const murder = o("homicide");
-  const property = o("property_crime");
-
-  if (violent.change1y !== null && violent.latest !== null) {
-    out.push(
-      `The U.S. violent crime rate ${dir(violent.change1y)} ${pctFmt(violent.change1y)} in ${year}, to ${formatValue(violent.latest, "per_100k")} per 100,000 residents.`,
-    );
-  }
-  if (murder.change1y !== null && violent.change1y !== null) {
-    const faster = Math.abs(murder.change1y) > Math.abs(violent.change1y);
-    const same = Math.sign(murder.change1y) === Math.sign(violent.change1y);
-    out.push(
-      same
-        ? `The murder rate ${dir(murder.change1y)} ${pctFmt(murder.change1y)} — ${faster ? "faster" : "slower"} than violent crime overall.`
-        : `The murder rate ${dir(murder.change1y)} ${pctFmt(murder.change1y)} while violent crime overall ${dir(violent.change1y)}.`,
-    );
-  }
-  for (const x of [violent, property]) {
-    if (x.low?.year === year) out.push(`${x.label} is at its lowest rate in data back to ${baseYear}.`);
-    else if (x.peak?.year === year) out.push(`${x.label} is at its highest rate in data back to ${baseYear}.`);
-    else if (x.peak && x.latest !== null) {
-      out.push(`${x.label} is ${pctFmt(pctChange(x.latest, x.peak.value)!)} below its ${x.peak.year} peak.`);
-    }
-  }
-  const sinceBase = offenses.filter((x) => x.vsBase !== null).sort((a, b) => a.vsBase! - b.vsBase!);
-  if (sinceBase.length > 1) {
-    const [lo, hi] = [sinceBase[0], sinceBase.at(-1)!];
-    out.push(
-      lo.vsBase! < 0
-        ? `Since ${baseYear}, the ${lo.label.toLowerCase()} rate has fallen most (−${pctFmt(lo.vsBase!)}); ${hi.label.toLowerCase()} has ${hi.vsBase! < 0 ? `fallen least (−${pctFmt(hi.vsBase!)})` : `risen ${pctFmt(hi.vsBase!)}`}.`
-        : `Since ${baseYear}, every offense rate has risen; ${hi.label.toLowerCase()} most (+${pctFmt(hi.vsBase!)}).`,
-    );
-  }
-
-  const i = states.years.indexOf(year);
-  const j = states.years.indexOf(priorYear);
-  const vals = states.rows
-    .map((r) => ({ name: r.name, v: r.rates.violent_crime[i], p: j >= 0 ? r.rates.violent_crime[j] : null }))
-    .filter((r): r is { name: string; v: number; p: number | null } => r.v !== null);
-  if (vals.length) {
-    const sorted = [...vals].sort((a, b) => b.v - a.v);
-    out.push(
-      `${theName(sorted[0].name).replace(/^the/, "The")} had the highest violent crime rate among the ${vals.length} jurisdictions shown (${formatValue(sorted[0].v, "per_100k")}); ${theName(sorted.at(-1)!.name)} had the lowest (${formatValue(sorted.at(-1)!.v, "per_100k")}).`,
-    );
-    const compared = vals.filter((r) => r.p !== null);
-    const fell = compared.filter((r) => r.v < r.p!).length;
-    if (compared.length) out.push(`Violent crime rates fell in ${fell} of ${compared.length} jurisdictions from ${priorYear} to ${year}.`);
-  }
-
-  const clr = (x: OffenseTrend) => x.cleared.find((p) => p.year === year)?.value;
-  if (clr(murder) !== undefined && clr(violent) !== undefined) {
-    out.push(
-      `Police cleared ${formatValue(clr(murder), "percent")} of murders and ${formatValue(clr(violent), "percent")} of violent crimes reported in ${year}.`,
-    );
-  }
-  if (victimization?.latest.violentReported != null) {
-    out.push(
-      `In the ${victimization.year} victimization survey, victims said ${formatValue(victimization.latest.violentReported, "percent")} of violent crimes were reported to police.`,
-    );
-  }
-  if (deaths?.firearmShare != null) {
-    out.push(`Death records show ${formatValue(deaths.firearmShare, "percent")} of homicides in ${deaths.year} were committed with a firearm.`);
-  }
-  const pv = prelim?.rows.find((r) => r.key === "violent_crime");
-  if (prelim?.span && pv?.change !== null && pv?.change !== undefined) {
-    out.push(
-      `Preliminary ${prelim.year} reports (${prelim.span}) put violent crime ${pctFmt(pv.change)} ${pv.change < 0 ? "below" : "above"} the same months of ${year}.`,
-    );
-  }
-  return out;
-}

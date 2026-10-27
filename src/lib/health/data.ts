@@ -1,10 +1,9 @@
-// Everything /health-care shows: insurance coverage (ACS), drug overdose
+// Everything /healthcare shows: insurance coverage (ACS), drug overdose
 // deaths (CDC), and how U.S. health outcomes and spending compare with other
 // countries (World Bank) — all from area_stats.
 
 import { getCrossSection, getSeriesByGeo, getSeriesMany } from "@/lib/db/stats";
-import { formatPeriod, formatValue } from "@/lib/format";
-import { datasetsFor, extremes, last, rankStates, stateTable, toPoints, yearAgo } from "@/lib/issues/series";
+import { datasetsFor, last, stateTable, toPoints, yearAgo } from "@/lib/issues/series";
 import type { RankedItem } from "@/components/charts/ranked-bars";
 import type { Series } from "@/components/charts/time-series-chart";
 
@@ -105,12 +104,10 @@ export async function loadHealth() {
     r.values.overdose_rate = r.values.overdose_deaths !== null && p ? Math.round((r.values.overdose_deaths / p) * 1e6) / 10 : null;
   }
 
-  // ---- Headline + findings ----
+  // ---- Headline ----
   const un = last(acs.uninsured_rate);
-  const un0 = acs.uninsured_rate[0] ?? null;
   const odNow = last(od.overdose_deaths);
   const odYearAgo = yearAgo(od.overdose_deaths);
-  const odPeak = extremes(od.overdose_deaths).max;
   const life = last(us.life_expectancy);
   const spend = last(us.health_spending_share_gdp);
   const headline = {
@@ -120,29 +117,8 @@ export async function loadHealth() {
     spend: { point: spend, spark: us.health_spending_share_gdp.map((p) => p.value) },
   };
 
-  const findings: string[] = [];
-  if (un && un0) findings.push(`${formatValue(un.value, "percent")} of Americans had no health insurance in ${un.period}, down from ${formatValue(un0.value, "percent")} in ${un0.period}.`);
-  const mc = last(acs.medicaid_share);
-  if (mc) findings.push(`${formatValue(mc.value, "percent")} were covered by Medicaid or another means-tested public program in ${mc.period}.`);
-  if (odNow && odPeak) {
-    findings.push(
-      `${formatValue(odNow.value, "deaths")} people died of drug overdoses in the 12 months to ${formatPeriod(odNow.period)}${odYearAgo ? `, against ${formatValue(odYearAgo.value, "deaths")} a year earlier` : ""}; the peak was ${formatValue(odPeak.value, "deaths")} in the 12 months to ${formatPeriod(odPeak.period)}.`,
-    );
-  }
-  const syn = last(od.overdose_deaths_synthetic_opioids);
-  if (syn && odNow && syn.period === odNow.period) findings.push(`Synthetic opioids, mostly fentanyl, were involved in ${Math.round((syn.value / odNow.value) * 100)}% of those deaths.`);
-  const lifeOecd = last(oecd.life_expectancy);
-  if (life && lifeOecd) {
-    const pos = lifeRank.items.filter((i) => i.label !== "OECD members").findIndex((i) => i.label === "United States") + 1;
-    const n = lifeRank.items.filter((i) => i.label !== "OECD members").length;
-    findings.push(`Life expectancy at birth was ${formatValue(life.value, "years")} years in the U.S. in ${life.period} and ${formatValue(lifeOecd.value, "years")} across OECD members; the U.S. ranked ${pos} of the ${n} countries shown.`);
-  }
-  const spendPc = perPersonRank.items.find((i) => i.label === "United States");
-  if (spend && spendPc) findings.push(`The U.S. spent ${formatValue(spend.value, "percent")} of GDP on health care in ${spend.period}, ${formatValue(spendPc.value, "usd")} per person.`);
-
   return {
     headline,
-    findings,
     coverage,
     publicCoverage,
     overdoses,
@@ -154,8 +130,6 @@ export async function loadHealth() {
     perPersonRank,
     infantRank,
     states,
-    uninsuredHigh: rankStates(states.rows, "uninsured_rate"),
-    overdoseHigh: rankStates(states.rows, "overdose_rate"),
     datasets: await datasetsFor([ACS, OD, WB, PEP]),
   };
 }

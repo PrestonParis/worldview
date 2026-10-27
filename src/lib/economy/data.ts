@@ -3,8 +3,8 @@
 // Fed) plus ACS income and poverty, all from area_stats.
 
 import { getSeriesMany } from "@/lib/db/stats";
-import { formatPeriod, formatSigned, formatValue } from "@/lib/format";
-import { annualAverage, datasetsFor, extremes, last, rankStates, recessionMarkers, stateTable, toPoints, yearAgo } from "@/lib/issues/series";
+import { formatValue } from "@/lib/format";
+import { annualAverage, datasetsFor, last, recessionMarkers, stateTable, toPoints, yearAgo } from "@/lib/issues/series";
 import type { StateMetric } from "@/components/charts/state-explorer";
 import type { Series } from "@/components/charts/time-series-chart";
 
@@ -90,7 +90,7 @@ export async function loadEconomy() {
     for (const r of states.rows) r.values.effective_minimum_wage = Math.max(r.values.state_minimum_wage ?? 0, fedNow.value);
   }
 
-  // ---- Headline + findings ----
+  // ---- Headline ----
   const u = last(s.unemployment_rate);
   const infl = last(s.inflation_rate);
   const jobs = last(s.payroll_jobs);
@@ -104,48 +104,8 @@ export async function loadEconomy() {
     income: { point: income, prior: incomePrior, spark: s.real_median_household_income.map((p) => p.value) },
   };
 
-  const findings: string[] = [];
-  if (u) {
-    const { max } = extremes(s.unemployment_rate);
-    const avg = s.unemployment_rate.reduce((t, p) => t + p.value, 0) / s.unemployment_rate.length;
-    findings.push(
-      `Unemployment was ${formatValue(u.value, "percent")} in ${formatPeriod(u.period)}, against an average of ${formatValue(avg, "percent")} since ${s.unemployment_rate[0].period.slice(0, 4)} and a peak of ${formatValue(max!.value, "percent")} in ${formatPeriod(max!.period)}.`,
-    );
-  }
-  if (jobs && jobsYearAgo) {
-    const added = jobs.value - jobsYearAgo.value;
-    findings.push(`Payroll employment ${added >= 0 ? "grew" : "fell"} by ${formatValue(Math.abs(added), "jobs", { compact: true })} in the 12 months to ${formatPeriod(jobs.period)}, to ${formatValue(jobs.value, "jobs", { compact: true })} jobs.`);
-  }
-  if (infl) {
-    const recent = s.inflation_rate.filter((p) => p.period >= "2015");
-    const { max } = extremes(recent);
-    findings.push(`Consumer prices rose ${formatValue(infl.value, "percent")} in the 12 months to ${formatPeriod(infl.period)}${max ? `; the highest rate in the past decade was ${formatValue(max.value, "percent")} in ${formatPeriod(max.period)}` : ""}.`);
-  }
-  const wNow = aheYoy.at(-1);
-  const pNow = s.inflation_rate.find((p) => p.period === wNow?.period);
-  if (wNow && pNow) {
-    findings.push(`Average hourly pay rose ${formatValue(wNow.value, "percent")} in the year to ${formatPeriod(wNow.period)}, ${wNow.value >= pNow.value ? "ahead of" : "behind"} prices at ${formatValue(pNow.value, "percent")}.`);
-  }
-  if (income && incomePrior) {
-    const tenYears = s.real_median_household_income.find((p) => Number(p.period) === Number(income.period) - 10);
-    findings.push(
-      `Real median household income was ${formatValue(income.value, "usd")} in ${income.period} (${formatSigned(((income.value - incomePrior.value) / incomePrior.value) * 100, "percent")} on the year${tenYears ? `, ${formatSigned(((income.value - tenYears.value) / tenYears.value) * 100, "percent")} on ${tenYears.period}` : ""}).`,
-    );
-  }
-  const g = last(s.gdp_growth);
-  if (g) findings.push(`Real GDP grew at an annual rate of ${formatValue(g.value, "percent")} in ${formatPeriod(g.period)}.`);
-  if (fedNow && realMin.length) {
-    const peak = extremes(realMin).max!;
-    const changed = fedMin.findLast((p) => p.value !== fedNow.value);
-    const since = fedMin.find((p) => p.value === fedNow.value && (!changed || p.period > changed.period));
-    findings.push(
-      `The federal minimum wage has been ${formatValue(fedNow.value, "usd_cents")} an hour since ${since?.period}. Adjusted for inflation, it was highest in ${peak.period}, at ${formatValue(peak.value, "usd_cents")} in ${cpiLatestYear} dollars.`,
-    );
-  }
-
   return {
     headline,
-    findings,
     unemployment,
     payrolls,
     participation,
@@ -160,9 +120,6 @@ export async function loadEconomy() {
     minimumWage,
     recessions,
     states,
-    unemploymentHigh: rankStates(states.rows, "unemployment_rate"),
-    incomeHigh: rankStates(states.rows, "median_household_income"),
-    minWageHigh: rankStates(states.rows, "effective_minimum_wage", { n: 12 }),
     datasets: await datasetsFor([FRED, ACS]),
   };
 }

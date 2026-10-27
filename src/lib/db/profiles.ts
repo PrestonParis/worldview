@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { db } from "./client";
-import { mapProjects, profiles, quizSessions } from "./schema";
+import { atlasProfiles, mapProjects, profiles, quizSessions, savedGovernments } from "./schema";
 
 export type Role = "member" | "editor";
 
@@ -37,8 +37,10 @@ export async function updateDisplayName(id: string, displayName: string | null):
 // removed separately through the Supabase admin API.
 export async function deleteUserData(id: string): Promise<void> {
   await db.transaction(async (tx) => {
+    await tx.delete(atlasProfiles).where(eq(atlasProfiles.ownerId, id));
     await tx.delete(mapProjects).where(eq(mapProjects.ownerId, id));
     await tx.delete(quizSessions).where(eq(quizSessions.ownerId, id));
+    await tx.delete(savedGovernments).where(eq(savedGovernments.ownerId, id));
     await tx.delete(profiles).where(eq(profiles.id, id));
   });
 }

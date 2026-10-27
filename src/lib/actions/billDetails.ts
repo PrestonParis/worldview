@@ -15,7 +15,7 @@ import {
   type BillTextVersionInput,
 } from "../validation/billDetail";
 import * as bd from "../db/billDetails";
-import type { ActionResult } from "./entities";
+import { actionFailure, validationFailure, type ActionResult } from "./result";
 
 function revalidate(billId: string) {
   revalidatePath("/data/bills");
@@ -24,83 +24,70 @@ function revalidate(billId: string) {
   revalidatePath(`/legislation/${billId}`);
 }
 
-async function run<T>(
-  billId: string,
-  fn: () => Promise<T>,
-): Promise<ActionResult<T>> {
+async function run<T>(billId: string, fn: () => Promise<T>): Promise<ActionResult<T>> {
   try {
     const data = await fn();
     revalidate(billId);
     return { ok: true, data };
   } catch (err) {
-    return { ok: false, error: (err as Error).message };
+    return actionFailure("bill-details.write", err);
   }
 }
 
-export async function createCosponsorAction(
-  input: BillCosponsorInput,
-): Promise<ActionResult<{ id: string }>> {
+export async function createCosponsorAction(input: BillCosponsorInput): Promise<ActionResult<{ id: string }>> {
   const denied = await requireContributor();
   if (denied) return denied;
   const parsed = billCosponsorSchema.safeParse(input);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+    return validationFailure(parsed.error);
   }
   return run(parsed.data.billId, async () => ({
     id: (await bd.createCosponsor(parsed.data)).id,
   }));
 }
 
-export async function createActionAction(
-  input: BillActionInput,
-): Promise<ActionResult<{ id: string }>> {
+export async function createActionAction(input: BillActionInput): Promise<ActionResult<{ id: string }>> {
   const denied = await requireContributor();
   if (denied) return denied;
   const parsed = billActionSchema.safeParse(input);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+    return validationFailure(parsed.error);
   }
   return run(parsed.data.billId, async () => ({
     id: (await bd.createAction(parsed.data)).id,
   }));
 }
 
-export async function createCommitteeAction(
-  input: BillCommitteeInput,
-): Promise<ActionResult<{ id: string }>> {
+export async function createCommitteeAction(input: BillCommitteeInput): Promise<ActionResult<{ id: string }>> {
   const denied = await requireContributor();
   if (denied) return denied;
   const parsed = billCommitteeSchema.safeParse(input);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+    return validationFailure(parsed.error);
   }
   return run(parsed.data.billId, async () => ({
     id: (await bd.createCommittee(parsed.data)).id,
   }));
 }
 
-export async function createRelationAction(
-  input: BillRelationInput,
-): Promise<ActionResult<{ id: string }>> {
+export async function createRelationAction(input: BillRelationInput): Promise<ActionResult<{ id: string }>> {
   const denied = await requireContributor();
   if (denied) return denied;
   const parsed = billRelationSchema.safeParse(input);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+    return validationFailure(parsed.error);
   }
   return run(parsed.data.billId, async () => ({
     id: (await bd.createRelation(parsed.data)).id,
   }));
 }
 
-export async function createTextVersionAction(
-  input: BillTextVersionInput,
-): Promise<ActionResult<{ id: string }>> {
+export async function createTextVersionAction(input: BillTextVersionInput): Promise<ActionResult<{ id: string }>> {
   const denied = await requireContributor();
   if (denied) return denied;
   const parsed = billTextVersionSchema.safeParse(input);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+    return validationFailure(parsed.error);
   }
   return run(parsed.data.billId, async () => ({
     id: (await bd.createTextVersion(parsed.data)).id,

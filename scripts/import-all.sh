@@ -26,6 +26,8 @@ step node scripts/import-voteview.mjs
 
 # Reference datasets (fast).
 step node scripts/import-scdb.mjs
+step node scripts/import-supreme-court.mjs
+step node scripts/import-administration.mjs
 step node scripts/import-federal-register.mjs
 step node scripts/import-cbp-encounters.mjs
 step node scripts/import-ice-detention.mjs

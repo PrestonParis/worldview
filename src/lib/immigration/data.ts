@@ -413,7 +413,6 @@ export async function loadImmigration() {
     const [dest, origin] = f.geoid.split(":");
     return { dest, origin, value: f.value };
   });
-  const domRanked = domByState.values.filter((v) => in51.has(v.geoid));
   const stateRows = STATES_51.map((s) => ({
     abbr: s.abbr,
     name: s.name,
@@ -536,11 +535,6 @@ export async function loadImmigration() {
     states: { metrics: stateMetrics, rows: stateRows },
     domestic: {
       period: domByState.period ?? "",
-      gains: domRanked.filter((v) => v.value > 0).map((v) => ({ label: stateName(v.geoid), value: v.value })),
-      losses: domRanked
-        .filter((v) => v.value < 0)
-        .reverse()
-        .map((v) => ({ label: stateName(v.geoid), value: -v.value })),
       interstate: single("inter", "Moved between states", toChartPoints(interstate)),
       flows: {
         period: flows.period ?? "",

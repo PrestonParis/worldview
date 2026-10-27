@@ -4,16 +4,14 @@ import { requireContributor } from "../auth/guard";
 import { revalidatePath } from "next/cache";
 import { voteSchema, type VoteInput } from "../validation/vote";
 import * as votesDb from "../db/votes";
-import type { ActionResult } from "./entities";
+import { actionFailure, validationFailure, type ActionResult } from "./result";
 
-export async function createVoteAction(
-  input: VoteInput,
-): Promise<ActionResult<{ id: string }>> {
+export async function createVoteAction(input: VoteInput): Promise<ActionResult<{ id: string }>> {
   const denied = await requireContributor();
   if (denied) return denied;
   const parsed = voteSchema.safeParse(input);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+    return validationFailure(parsed.error);
   }
   try {
     const vote = await votesDb.createVote(parsed.data);
@@ -21,13 +19,11 @@ export async function createVoteAction(
     revalidatePath("/legislation");
     return { ok: true, data: { id: vote.id } };
   } catch (err) {
-    return { ok: false, error: (err as Error).message };
+    return actionFailure("votes.create", err);
   }
 }
 
-export async function deleteVoteAction(
-  id: string,
-): Promise<ActionResult<null>> {
+export async function deleteVoteAction(id: string): Promise<ActionResult<null>> {
   const denied = await requireContributor();
   if (denied) return denied;
   try {
@@ -36,6 +32,6 @@ export async function deleteVoteAction(
     revalidatePath("/legislation");
     return { ok: true, data: null };
   } catch (err) {
-    return { ok: false, error: (err as Error).message };
+    return actionFailure("votes.delete", err);
   }
 }

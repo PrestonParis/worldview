@@ -1,15 +1,13 @@
-import { eq, or, count, gte, sum, min, max, sql } from "drizzle-orm";
+import { and, eq, count, sum, sql } from "drizzle-orm";
 import { db } from "./client";
 import { contributions } from "./schema";
 import type { Contribution, ContributionInput } from "../validation/contribution";
-import type {
-  ContributionFlow,
-  CounterpartyTotal,
-  CurrencyTotal,
-  EntityContributionSummary,
-  IndustryBreakdownRow,
-  StateBreakdownRow,
-} from "../money";
+import type { CounterpartyTotal, CurrencyTotal, EntityContributionSummary, IndustryBreakdownRow, StateBreakdownRow } from "../money";
+
+// FEC memo lines (memo_code 'X') itemize money already counted on another
+// line — a joint-fundraising committee's allocation, a conduit's earmark —
+// so every total leaves them out.
+export const countedContribution = sql`coalesce(${contributions.memoCode}, '') <> 'X'`;
 
 function toContribution(row: typeof contributions.$inferSelect): Contribution {
   return {
@@ -51,14 +49,6 @@ export async function countContributions(): Promise<number> {
   return row.value;
 }
 
-export async function countContributionsCreatedSince(since: Date): Promise<number> {
-  const [row] = await db
-    .select({ value: count() })
-    .from(contributions)
-    .where(gte(contributions.createdAt, since));
-  return row.value;
-}
-
 // Grouped by currency, not summed blind across them — a $5,000 total and a
 // €5,000 total are not the same $10,000.
 export async function listContributionTotalsByCurrency(): Promise<
@@ -67,43 +57,9 @@ export async function listContributionTotalsByCurrency(): Promise<
   const rows = await db
     .select({ currency: contributions.currency, total: sum(contributions.amount) })
     .from(contributions)
+    .where(countedContribution)
     .groupBy(contributions.currency);
   return rows.map((r) => ({ currency: r.currency, total: Number(r.total ?? 0) }));
-}
-
-// Every donor→recipient pair, aggregated per currency — the edge list the
-// /money graph draws from (replacing the hand-entered donor edges it used
-// to filter out of the shared entity graph).
-export async function listContributionFlows(): Promise<ContributionFlow[]> {
-  const rows = await db
-    .select({
-      donorEntityId: contributions.donorEntityId,
-      recipientEntityId: contributions.recipientEntityId,
-      currency: contributions.currency,
-      total: sum(contributions.amount),
-      count: count(),
-      firstDate: min(contributions.date),
-      lastDate: max(contributions.date),
-    })
-    .from(contributions)
-    .groupBy(
-      contributions.donorEntityId,
-      contributions.recipientEntityId,
-      contributions.currency,
-    );
-
-  const toIso = (v: string | Date | null): string =>
-    v == null ? "" : (v instanceof Date ? v : new Date(v)).toISOString();
-
-  return rows.map((r) => ({
-    donorEntityId: r.donorEntityId,
-    recipientEntityId: r.recipientEntityId,
-    currency: r.currency,
-    total: Number(r.total ?? 0),
-    count: Number(r.count ?? 0),
-    firstDate: toIso(r.firstDate),
-    lastDate: toIso(r.lastDate),
-  }));
 }
 
 // One row per (recipient, donor industry, donor, currency) — the single
@@ -123,6 +79,7 @@ export async function listIndustryBreakdown(): Promise<IndustryBreakdownRow[]> {
       count: count(),
     })
     .from(contributions)
+    .where(countedContribution)
     .groupBy(
       contributions.recipientEntityId,
       contributions.donorIndustry,
@@ -154,6 +111,7 @@ export async function listStateBreakdown(): Promise<StateBreakdownRow[]> {
       count: count(),
     })
     .from(contributions)
+    .where(countedContribution)
     .groupBy(
       contributions.recipientEntityId,
       contributions.donorState,
@@ -170,19 +128,6 @@ export async function listStateBreakdown(): Promise<StateBreakdownRow[]> {
   }));
 }
 
-// Every contribution touching an entity, either direction — for the entity
-// profile page.
-export async function listContributionsForEntity(entityId: string): Promise<Contribution[]> {
-  const rows = await db.query.contributions.findMany({
-    where: or(
-      eq(contributions.donorEntityId, entityId),
-      eq(contributions.recipientEntityId, entityId),
-    ),
-    orderBy: (c, { desc }) => desc(c.date),
-  });
-  return rows.map(toContribution);
-}
-
 export async function getEntityContributionSummary(
   entityId: string,
 ): Promise<EntityContributionSummary> {
@@ -191,12 +136,12 @@ export async function getEntityContributionSummary(
     db
       .select({ currency: contributions.currency, total: sum(contributions.amount), count: count() })
       .from(contributions)
-      .where(eq(contributions.recipientEntityId, entityId))
+      .where(and(eq(contributions.recipientEntityId, entityId), countedContribution))
       .groupBy(contributions.currency),
     db
       .select({ currency: contributions.currency, total: sum(contributions.amount), count: count() })
       .from(contributions)
-      .where(eq(contributions.donorEntityId, entityId))
+      .where(and(eq(contributions.donorEntityId, entityId), countedContribution))
       .groupBy(contributions.currency),
     db
       .select({
@@ -206,7 +151,7 @@ export async function getEntityContributionSummary(
         count: count(),
       })
       .from(contributions)
-      .where(eq(contributions.recipientEntityId, entityId))
+      .where(and(eq(contributions.recipientEntityId, entityId), countedContribution))
       .groupBy(contributions.donorEntityId, contributions.currency)
       .orderBy(amountDesc)
       .limit(8),
@@ -218,7 +163,7 @@ export async function getEntityContributionSummary(
         count: count(),
       })
       .from(contributions)
-      .where(eq(contributions.donorEntityId, entityId))
+      .where(and(eq(contributions.donorEntityId, entityId), countedContribution))
       .groupBy(contributions.recipientEntityId, contributions.currency)
       .orderBy(amountDesc)
       .limit(8),

@@ -12,11 +12,15 @@ const nextConfig: NextConfig = {
     // session pooler caps clients (shared with live traffic) at 15.
     cpus: 2,
   },
-  // /people is one cached page; its old ?view= variants now live on their
-  // own routes (the query string carries over).
+  // /health-care was renamed /healthcare. /people is one cached page; the
+  // old administration and directory pages and ?view= variants now live on
+  // it or on their own routes.
   async redirects() {
     return [
-      { source: "/people", has: [{ type: "query", key: "view", value: "directory" }], destination: "/people/directory", permanent: true },
+      { source: "/health-care", destination: "/healthcare", permanent: true },
+      { source: "/issueview/health-care", destination: "/issueview/healthcare", permanent: true },
+      { source: "/people/administration", destination: "/people#executive", permanent: true },
+      { source: "/people/directory", destination: "/people", permanent: true },
       { source: "/people", has: [{ type: "query", key: "view", value: "network" }], destination: "/people/network", permanent: true },
       { source: "/people", has: [{ type: "query", key: "root" }], destination: "/people/network", permanent: true },
     ];

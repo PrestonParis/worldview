@@ -210,22 +210,8 @@ export async function loadReligion() {
       unaffiliated_change: change("share_unaffiliated", s.fips),
     },
   }));
-  // Highest first, or lowest first with `lowest`.
-  const ranked = (k: string, n = 10, lowest = false): RankedItem[] =>
-    stateRows
-      .filter((r) => r.values[k] !== null)
-      .sort((a, b) => (b.values[k]! - a.values[k]!) * (lowest ? -1 : 1))
-      .slice(0, n)
-      .map((r) => ({ label: r.name, value: r.values[k]!, note: k === "attendance_weekly" && r.values.attendance_change !== null ? `${r.values.attendance_change! > 0 ? "+" : ""}${Math.round(r.values.attendance_change!)} pts since 2007` : undefined }));
-  const attendanceTop = ranked("attendance_weekly");
-  const attendanceBottom = ranked("attendance_weekly", 10, true);
-  const attendanceDrop = stateRows
-    .filter((r) => r.values.attendance_change !== null)
-    .sort((a, b) => a.values.attendance_change! - b.values.attendance_change!)
-    .slice(0, 10)
-    .map((r) => ({ label: r.name, value: Math.abs(r.values.attendance_change!), note: `${whole(valueAt("attendance_weekly", STATES_51.find((s) => s.abbr === r.abbr)!.fips, "2007"))} → ${whole(r.values.attendance_weekly)}` }));
 
-  // ---- Headline + findings ----
+  // ---- Headline ----
   const nWeekly = last(nation.attendance_weekly);
   const headline = {
     christian: { value: at(nation.share_christian, "2024"), then: christian.first.share_of_adults },
@@ -235,27 +221,9 @@ export async function loadReligion() {
     pastWeek: { point: last(gallup.attended_past_week), spark: gallup.attended_past_week.map((p) => p.value) },
   };
 
-  const findings: string[] = [];
-  if (headline.christian.value !== null && headline.christian.then !== null) {
-    findings.push(`${whole(headline.christian.value)} of U.S. adults identified as Christian in 2023–24, down from ${whole(headline.christian.then)} in 2007; ${whole(headline.nones.value)} were religiously unaffiliated, up from ${whole(headline.nones.then)}.`);
-  }
-  const member = headline.member.point;
-  const memberFirst = gallup.church_member[0];
-  if (member && memberFirst) findings.push(`${whole(member.value)} of Americans said they belonged to a church, synagogue, or mosque in ${member.period}, against ${whole(memberFirst.value)} in ${memberFirst.period} (Gallup).`);
-  const pw = headline.pastWeek.point;
-  const pwFirst = gallup.attended_past_week[0];
-  if (pw && pwFirst) findings.push(`${whole(pw.value)} said they had attended services in the past week in ${pw.period}, compared with ${whole(pwFirst.value)} in ${pwFirst.period}.`);
-  if (attendanceTop[0] && attendanceBottom[0]) findings.push(`Weekly attendance ranges from ${whole(attendanceTop[0].value)} in ${attendanceTop[0].label} to ${whole(attendanceBottom[0].value)} in ${attendanceBottom[0].label} (2023–24).`);
-  const ev = groups.find((g) => g.slug === "evangelical-protestant");
-  if (ev?.latest.party_rep != null && ev.first.party_rep != null) findings.push(`${whole(ev.latest.party_rep)} of evangelical Protestants identify with or lean to the Republican Party, up from ${whole(ev.first.party_rep)} in 2007.`);
-  const prefNone = last(gallup.preference_none);
-  const prefNoneFirst = gallup.preference_none[0];
-  if (prefNone && prefNoneFirst) findings.push(`In Gallup's polling, the share naming no religion rose from ${whole(prefNoneFirst.value)} in ${prefNoneFirst.period} to ${whole(prefNone.value)} in ${prefNone.period}.`);
-
   const order = [PEW, GALLUP];
   return {
     headline,
-    findings,
     composition,
     denominations,
     groups,
@@ -268,9 +236,6 @@ export async function loadReligion() {
     importance,
     confidence,
     states: { metrics: stateMetrics, rows: stateRows },
-    attendanceTop,
-    attendanceBottom,
-    attendanceDrop,
     national: {
       weekly: at(nation.attendance_weekly, "2024"),
       seldom: at(nation.attendance_seldom, "2024"),

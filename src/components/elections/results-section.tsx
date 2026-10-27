@@ -1,9 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { partyColorFor } from "@/lib/party-colors";
 import { ResultsMap, type AreaDatum } from "./results-map";
-import { AreaResultsTable } from "./area-results-table";
 import type { AreaBreakdown } from "@/lib/validation/electionResult";
 
 // Margin (points) at which a county reaches full colour saturation.
@@ -14,8 +13,6 @@ function opacityForMargin(marginPct: number): number {
 }
 
 export function ResultsSection({ breakdowns }: { breakdowns: AreaBreakdown[] }) {
-  const [selected, setSelected] = useState<string | null>(null);
-
   const areas = useMemo(() => {
     const out: Record<string, AreaDatum> = {};
     for (const b of breakdowns) {
@@ -38,7 +35,7 @@ export function ResultsSection({ breakdowns }: { breakdowns: AreaBreakdown[] }) 
 
   return (
     <div className="mt-3 flex flex-col gap-4">
-      <ResultsMap areas={areas} onSelectArea={setSelected} />
+      <ResultsMap areas={areas} />
 
       <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500 dark:text-slate-400">
         {parties.map((p) => (
@@ -53,12 +50,6 @@ export function ResultsSection({ breakdowns }: { breakdowns: AreaBreakdown[] }) 
         ))}
         <span>· deeper colour = wider margin</span>
       </div>
-
-      <AreaResultsTable
-        areas={breakdowns}
-        onSelectArea={setSelected}
-        selectedAreaId={selected}
-      />
     </div>
   );
 }

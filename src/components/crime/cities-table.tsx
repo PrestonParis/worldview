@@ -19,8 +19,21 @@ const COLUMNS: { key: Key; label: string; hint?: string; unit?: string }[] = [
 ];
 
 // Every large-city police department, sortable and searchable. Used on its
-// own and, filtered to one state, inside the state profile.
-export function CitiesTable({ rows, year, compact = false }: { rows: CityRow[]; year: string; compact?: boolean }) {
+// own and, filtered to one state, inside the state profile. With onSelect,
+// clicking a row picks that city (on the crime map).
+export function CitiesTable({
+  rows,
+  year,
+  compact = false,
+  selected = null,
+  onSelect,
+}: {
+  rows: CityRow[];
+  year: string;
+  compact?: boolean;
+  selected?: string | null;
+  onSelect?: (ori: string) => void;
+}) {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<{ key: Key; dir: 1 | -1 }>({ key: compact ? "violent" : "population", dir: -1 });
   const q = query.trim().toLowerCase();
@@ -70,7 +83,11 @@ export function CitiesTable({ rows, year, compact = false }: { rows: CityRow[]; 
           </thead>
           <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {shown.map((r) => (
-              <tr key={r.ori} className="hover:bg-slate-50 dark:hover:bg-slate-900/60">
+              <tr
+                key={r.ori}
+                onClick={onSelect ? () => onSelect(r.ori) : undefined}
+                className={`${onSelect ? "cursor-pointer " : ""}${selected === r.ori ? "bg-blue-50 dark:bg-blue-950/40" : "hover:bg-slate-50 dark:hover:bg-slate-900/60"}`}
+              >
                 {cols.map((c) => {
                   if (c.key === "name")
                     return (

@@ -211,7 +211,7 @@ token_verifications = 30
 web3 = 30
 
 # Configure one of the supported captcha providers: `hcaptcha`, `turnstile`.
-# Worldview uses Turnstile; set NEXT_PUBLIC_TURNSTILE_SITE_KEY to match (docs/auth-plan.md).
+# Worldview uses Turnstile; set NEXT_PUBLIC_TURNSTILE_SITE_KEY to match (docs/auth.md).
 # [auth.captcha]
 # enabled = true
 # provider = "turnstile"
@@ -246,15 +246,26 @@ otp_expiry = 3600
 # admin_email = "no-reply@your-domain"
 # sender_name = "Worldview"
 
-# Sign-in is a typed 6-digit code, not a link — both templates must show
-# {{ .Token }}. Copy the same HTML into the cloud project's email templates.
+# Every emailed step is a typed code, not a link, so each template must show
+# {{ .Token }}: Magic Link = email sign-in, Confirmation = new account,
+# Recovery = forgot password, Email Change = new sign-in address. Copy the
+# subjects + HTML into the cloud project's email templates, and keep its
+# Email OTP Length at 6 to match otp_length above.
 [auth.email.template.magic_link]
 subject = "Your Worldview sign-in code"
 content_path = "./supabase/templates/sign-in-code.html"
 
 [auth.email.template.confirmation]
-subject = "Your Worldview sign-in code"
-content_path = "./supabase/templates/sign-in-code.html"
+subject = "Confirm your Worldview email"
+content_path = "./supabase/templates/confirm-code.html"
+
+[auth.email.template.recovery]
+subject = "Your Worldview password reset code"
+content_path = "./supabase/templates/reset-code.html"
+
+[auth.email.template.email_change]
+subject = "Confirm your new Worldview email"
+content_path = "./supabase/templates/email-change-code.html"
 
 # Uncomment to customize notification email template
 # [auth.email.notification.password_changed]
@@ -327,7 +338,8 @@ max_frequency = "5s"
 # Use an external OAuth provider. The full list of providers are: `apple`, `azure`, `bitbucket`,
 # `discord`, `facebook`, `github`, `gitlab`, `google`, `keycloak`, `linkedin_oidc`, `notion`, `twitch`,
 # `twitter`, `x`, `slack`, `spotify`, `workos`, `zoom`.
-# Google: set enabled = true with the env vars filled, plus NEXT_PUBLIC_AUTH_GOOGLE_ENABLED=true.
+# Google: set enabled = true with the env vars filled; the sign-in pages show
+# the button whenever the provider is on (src/lib/auth/providers.ts).
 [auth.external.google]
 enabled = false
 client_id = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID)"

@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const entityTypes = [
   "politician",
+  "judge",
   "pundit",
   "journalist",
   "organization",
@@ -28,7 +29,10 @@ export const entitySchema = z.object({
   // One highlight per line — kept as raw text like `metadata`, split with
   // `parseHighlights` wherever it's displayed as a list.
   highlights: z.string().max(2000).optional().or(z.literal("")),
-  metadata: z.string().max(4000).optional().or(z.literal("")),
+  // Curated profiles may carry structured, claim-level facts and biography
+  // sections with citations. Keep this as JSON text for backwards
+  // compatibility, but allow enough room for a genuinely useful dossier.
+  metadata: z.string().max(24000).optional().or(z.literal("")),
   // Stable external crosswalk key for a legislator — the Congress
   // "Bioguide" id (e.g. "P000197"), stored in entity_identifiers, where it
   // is unique, so importers can resolve a member by id instead of fuzzy

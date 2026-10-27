@@ -23,10 +23,8 @@ export default async function DataLayout({ children }: LayoutProps<"/data">) {
   return (
     <div className="max-w-3xl">
       <h1 className="text-2xl font-semibold tracking-tight">Manage Data</h1>
-      <p className="mt-1 text-slate-500 dark:text-slate-400">
-        The primitives every page draws from: entities and their relationships,
-        claims, sources, bills (with their votes), contributions, lobbying filings,
-        and elections (with their candidacies).
+      <p className="mt-1 hidden text-sm text-slate-500 sm:block dark:text-slate-400">
+        The records every page draws from.
       </p>
       <DataFreshness sources={["congress-bills", "congress-votes"]} className="mt-3" />
       {!user ? (

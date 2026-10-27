@@ -1,0 +1,91 @@
+{
+ "jurisdiction": {
+  "shortName": "Georgia",
+  "name": [
+   {
+    "languageId": "en",
+    "text": "Georgia"
+   }
+  ],
+  "childLocalities": []
+ },
+ "election": {
+  "id": "01000000-22a0-fcd5-b571-08de2c47a7a6",
+  "jurisdictionId": "09378a07-e6cf-4f66-be7c-ca4aa534f99a",
+  "name": [
+   {
+    "languageId": "en",
+    "text": "December 2nd, 2025 - Runoffs"
+   }
+  ],
+  "electionDate": "2025-12-02",
+  "isOfficialResults": true,
+  "isPrimary": false,
+  "asOf": "2025-12-15T17:22:29.2793273Z",
+  "lastUpdated": "2025-12-05T21:30:48.0835982Z"
+ },
+ "localityElections": [],
+ "ballotItems": [
+  {
+   "id": "01000000-e148-f7b5-a710-08de3101f593",
+   "parentId": null,
+   "name": [
+    {
+     "languageId": "en",
+     "text": "State House of Representatives - District 106/ Para Representante Estatal ante la Asamblea General, Distrito 106"
+    }
+   ],
+   "voteFor": [
+    {
+     "languageId": "en",
+     "text": "Vote for 1"
+    }
+   ],
+   "contestType": "Candidate",
+   "partyName": null,
+   "reportingStatus": {
+    "reportingUnits": 1,
+    "totalUnits": 1,
+    "asOf": "2025-12-15T17:22:29.2793273Z",
+    "reportingStatusDetails": null
+   },
+   "voteTotal": 1743,
+   "summaryResults": {
+    "ballotOptions": [
+     {
+      "id": "01000000-e148-f7b5-829a-08de3101f596",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Muhammad Akbar Ali (Dem)"
+       }
+      ],
+      "voteCount": 949,
+      "party": {
+       "abbreviation": "Dem"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     },
+     {
+      "id": "01000000-e148-f7b5-85f7-08de3101f596",
+      "name": [
+       {
+        "languageId": "en",
+        "text": "Marqus A. Cole (Dem)"
+       }
+      ],
+      "voteCount": 794,
+      "party": {
+       "abbreviation": "Dem"
+      },
+      "isWriteIn": false,
+      "isQualifiedWriteIn": false,
+      "groupResults": []
+     }
+    ]
+   }
+  }
+ ]
+}

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth/session";
-import { isEditor } from "@/lib/auth/guard";
+import { isEditor, isOwner } from "@/lib/auth/guard";
 
 // The signed-in state for the client header (src/components/auth/can-edit.tsx).
 export async function GET() {
@@ -10,6 +10,7 @@ export async function GET() {
     {
       accountLabel: user ? (user.displayName ?? user.email ?? "Account") : null,
       canEdit: isEditor(user),
+      isOwner: isOwner(user),
     },
     { headers: { "Cache-Control": "private, no-store" } },
   );

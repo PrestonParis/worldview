@@ -1,4 +1,4 @@
-import { eq, count, gte } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { db } from "./client";
 import { claims } from "./schema";
 import type { Claim, ClaimInput } from "../validation/claim";
@@ -22,37 +22,6 @@ function toClaim(row: typeof claims.$inferSelect): Claim {
 
 export async function listClaims(): Promise<Claim[]> {
   const rows = await db.query.claims.findMany({
-    orderBy: (c, { desc }) => desc(c.date),
-  });
-  return rows.map(toClaim);
-}
-
-export async function countClaims(): Promise<number> {
-  const [row] = await db.select({ value: count() }).from(claims);
-  return row.value;
-}
-
-export async function countClaimsCreatedSince(since: Date): Promise<number> {
-  const [row] = await db
-    .select({ value: count() })
-    .from(claims)
-    .where(gte(claims.createdAt, since));
-  return row.value;
-}
-
-export async function listRecentClaims(limit: number): Promise<Claim[]> {
-  const rows = await db.query.claims.findMany({
-    orderBy: (c, { desc }) => desc(c.createdAt),
-    limit,
-  });
-  return rows.map(toClaim);
-}
-
-export async function listClaimsForEntity(
-  speakerEntityId: string,
-): Promise<Claim[]> {
-  const rows = await db.query.claims.findMany({
-    where: eq(claims.speakerEntityId, speakerEntityId),
     orderBy: (c, { desc }) => desc(c.date),
   });
   return rows.map(toClaim);

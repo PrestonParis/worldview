@@ -42,6 +42,7 @@ export const relationshipTypes: RelationshipType[] = [
   { slug: "fellow-at", label: "Fellow at", category: "affiliation", verb: "fellow at", inverse: "has fellow", directed: true },
   { slug: "founded", label: "Founded", category: "affiliation", verb: "founded", inverse: "founded by", directed: true },
   { slug: "co-founded", label: "Co-founded", category: "affiliation", verb: "co-founded", inverse: "co-founded by", directed: true },
+  { slug: "collaborated-with", label: "Collaborated with", category: "affiliation", verb: "collaborated with", inverse: "collaborated with", directed: false },
   { slug: "affiliated-with", label: "Affiliated with", category: "affiliation", verb: "affiliated with", inverse: "affiliated with", directed: false },
 
   // employment
@@ -77,6 +78,7 @@ export const relationshipTypes: RelationshipType[] = [
   { slug: "donated-to", label: "Donated to", category: "corporate", verb: "donated to", inverse: "received from", directed: true },
   { slug: "lobbied-for", label: "Lobbied for", category: "corporate", verb: "lobbied for", inverse: "lobbied by", directed: true },
   { slug: "board-member-of", label: "Board member of", category: "corporate", verb: "board member of", inverse: "has board member", directed: true },
+  { slug: "invested-in", label: "Invested in", category: "corporate", verb: "invested in", inverse: "backed by", directed: true },
   { slug: "client-of", label: "Client of", category: "corporate", verb: "client of", inverse: "represents", directed: true },
 ];
 

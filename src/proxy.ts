@@ -1,4 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { STATES_51 } from "@/lib/geo/states";
+import { stateSlug } from "@/lib/states/slug";
 import { updateSession } from "@/lib/supabase/middleware";
 
 // Crawler user agents: "Name/1.0", "Name;", or a contact URL like
@@ -14,6 +16,20 @@ export async function proxy(request: NextRequest) {
     const plain = request.nextUrl.clone();
     plain.search = "";
     return NextResponse.redirect(plain, 301);
+  }
+
+  // /states opens on the visitor's own state, from Vercel's IP geolocation.
+  // Crawlers and "/states?all" (the state pages' breadcrumb) get the index.
+  if (request.nextUrl.pathname === "/states" && !request.nextUrl.search && !CRAWLER.test(request.headers.get("user-agent") ?? "")) {
+    const region = request.headers.get("x-vercel-ip-country") === "US" ? request.headers.get("x-vercel-ip-country-region") : null;
+    const state = region ? STATES_51.find((s) => s.abbr === region) : undefined;
+    if (state) {
+      const home = request.nextUrl.clone();
+      home.pathname = `/states/${stateSlug(state.name)}`;
+      const res = NextResponse.redirect(home, 307);
+      res.headers.set("Vary", "x-vercel-ip-country-region");
+      return res;
+    }
   }
 
   // Anonymous visitors (and crawlers) have no session to refresh, so skip

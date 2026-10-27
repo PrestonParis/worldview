@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { PeopleExplore } from "@/components/graph/people-explore";
-import { PeopleViewNav } from "@/components/graph/people-view-nav";
-import { listEdges } from "@/lib/db/edges";
+import { queryAttributes } from "@/lib/db/attributes";
 import { listEntities } from "@/lib/db/entities";
+import { getAdministration } from "@/lib/db/graph";
 import { loadCongressAtlas } from "@/lib/people/atlas";
+import { loadCourtComposition } from "@/lib/people/court";
+import { toExecutiveMap } from "@/lib/people/executive";
 
 export const metadata: Metadata = {
   title: "People & Power | Worldview",
@@ -11,21 +13,22 @@ export const metadata: Metadata = {
 };
 
 // One cached render for every visitor and crawler; the page reads no query
-// string. The directory (/people/directory) and old ?view= links are routed
-// in next.config.ts.
+// string. The attribute explorer applies its filters client-side, and old
+// administration and ?view= links are routed in next.config.ts.
 export const revalidate = 86400;
 
 export default async function Page() {
-  const [entities, edges, atlas] = await Promise.all([
+  const [entities, atlas, admin, court, attributes] = await Promise.all([
     listEntities(),
-    listEdges(),
     loadCongressAtlas().catch(() => null),
+    getAdministration().catch(() => null),
+    loadCourtComposition().catch(() => null),
+    queryAttributes({}),
   ]);
 
   return (
     <div className="mx-auto w-full max-w-7xl">
-      <div className="mb-8 flex justify-center"><PeopleViewNav active="explore" /></div>
-      <PeopleExplore entities={entities} edges={edges} atlas={atlas} />
+      <PeopleExplore entities={entities} atlas={atlas} executive={admin ? toExecutiveMap(admin) : null} court={court} attributes={attributes} />
     </div>
   );
 }

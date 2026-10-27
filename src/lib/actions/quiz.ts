@@ -5,8 +5,25 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import * as quizDb from "../db/quizSessions";
 import { BANK_VERSION } from "../quiz/bank";
-import { computeState, ENGINE_VERSION, highestCompletedMode, isValidAnswer, modeComplete, REFINE_STEP, roundLeft, type QuizAnswer, type QuizState } from "../quiz/engine";
-import { answerSnapshot, applyAnswer, runnerState, type RunnerState } from "../quiz/runner";
+import {
+  computeState,
+  ENGINE_VERSION,
+  highestCompletedMode,
+  isValidAnswer,
+  modeComplete,
+  REFINE_STEP,
+  roundLeft,
+  type QuizAnswer,
+  type QuizState,
+} from "../quiz/engine";
+import {
+  answerSnapshot,
+  applyAnswer,
+  IMPORTANCE_LABELS,
+  priorityItems,
+  runnerState,
+  type RunnerState,
+} from "../quiz/runner";
 import { computeResult } from "../quiz/results";
 import { planRound, ROUND_SIZES, withRound } from "../quiz/refine";
 import {
@@ -24,7 +41,7 @@ import { axisIds, type AxisId } from "../quiz/types";
 import { issues } from "../quiz/bank";
 import { modeRank, nextQuizMode, validQuizMode, type QuizModeId } from "../quiz/modes";
 import type { IssueId } from "../quiz/types";
-import type { ActionResult } from "./entities";
+import type { ActionResult } from "./result";
 import { currentUserIsOwner } from "../auth/guard";
 
 // Every action re-checks access server side — these are reachable by direct
@@ -38,7 +55,10 @@ async function loadEditable(slug: string) {
   return access.canEdit ? session : null;
 }
 
-export async function startQuizAction(modeOrForm?: QuizModeId | FormData, entryTopic: IssueId | null = null): Promise<void> {
+export async function startQuizAction(
+  modeOrForm?: QuizModeId | FormData,
+  entryTopic: IssueId | null = null,
+): Promise<void> {
   // Most entry points submit ordinary named fields, while the interactive
   // landing hero binds its selected mode before submitting. Accept both so a
   // UI refactor cannot silently turn Snapshot or Deep Map back into Profile.
@@ -50,9 +70,7 @@ export async function startQuizAction(modeOrForm?: QuizModeId | FormData, entryT
       ? validQuizMode(modeOrForm)
       : validQuizMode(typeof rawMode === "string" ? rawMode : undefined);
   const topic =
-    typeof rawTopic === "string" && issues.some((issue) => issue.id === rawTopic)
-      ? (rawTopic as IssueId)
-      : null;
+    typeof rawTopic === "string" && issues.some((issue) => issue.id === rawTopic) ? (rawTopic as IssueId) : null;
   const slug = newSlug();
   const token = newEditToken();
   await quizDb.createQuizSession({
@@ -78,7 +96,11 @@ export async function startQuizAction(modeOrForm?: QuizModeId | FormData, entryT
 // Starts a quiz with the statements already answered on the landing page, so
 // they count instead of being asked again. Each answer is validated and
 // snapshotted here; the client only supplies ids and values.
-export async function startQuizWithAnswersAction(mode: QuizModeId, entryTopic: IssueId | null, answers: QuizAnswer[]): Promise<void> {
+export async function startQuizWithAnswersAction(
+  mode: QuizModeId,
+  entryTopic: IssueId | null,
+  answers: QuizAnswer[],
+): Promise<void> {
   const targetMode = validQuizMode(mode);
   const topic = entryTopic && issues.some((issue) => issue.id === entryTopic) ? entryTopic : null;
   const clean: QuizAnswer[] = [];
@@ -131,6 +153,12 @@ export async function submitAnswerAction(slug: string, answer: QuizAnswer): Prom
       ? { kind: "statement", id: String(answer.id), value: answer.value }
       : { kind: "choice", id: String(answer.id), value: answer.value, importance: answer.importance };
   if (!isValidAnswer(clean)) return { ok: false, error: "Invalid answer." };
+  // Importance is set on the priorities board, not with the answer: keep it
+  // when an issue's answer is changed.
+  if (clean.kind === "choice" && clean.importance === undefined) {
+    const previous = session.answers.find((a) => a.kind === "choice" && a.id === clean.id);
+    if (previous?.kind === "choice" && previous.importance) clean.importance = previous.importance;
+  }
   // Saved server side from the bank, never taken from the client.
   clean.shown = answerSnapshot(clean) ?? undefined;
 
@@ -139,9 +167,13 @@ export async function submitAnswerAction(slug: string, answer: QuizAnswer): Prom
   const complete = modeComplete(state, answers.length, session.targetMode);
   const highest = highestCompletedMode(state, answers.length);
   const deferred = session.deferred.filter((item) => item.kind !== clean.kind || item.id !== clean.id);
-  const checkpointHistory = complete && !session.checkpointHistory.some((checkpoint) => checkpoint.mode === session.targetMode)
-    ? [...session.checkpointHistory, { mode: session.targetMode, completedAt: new Date().toISOString(), answerCount: answers.length }]
-    : session.checkpointHistory;
+  const checkpointHistory =
+    complete && !session.checkpointHistory.some((checkpoint) => checkpoint.mode === session.targetMode)
+      ? [
+          ...session.checkpointHistory,
+          { mode: session.targetMode, completedAt: new Date().toISOString(), answerCount: answers.length },
+        ]
+      : session.checkpointHistory;
   await quizDb.saveQuizProgress(session.id, {
     answers,
     refine: session.refine,
@@ -152,14 +184,51 @@ export async function submitAnswerAction(slug: string, answer: QuizAnswer): Prom
     status: complete ? "complete" : "in_progress",
     completedAt: complete ? (session.completedAt ?? new Date()) : session.completedAt,
   });
-  return { ok: true, data: runnerState(answers, session.refine, slug, session.targetMode, deferred, session.entryTopic) };
+  return {
+    ok: true,
+    data: runnerState(answers, session.refine, slug, session.targetMode, deferred, session.entryTopic),
+  };
+}
+
+// The priorities board: importance for every answered issue at once. Only
+// issues already answered can be ranked; the rest of the input is ignored.
+export async function setPrioritiesAction(
+  slug: string,
+  levels: Record<string, 1 | 2 | 3>,
+): Promise<ActionResult<null>> {
+  const session = await loadEditable(slug);
+  if (!session) return { ok: false, error: "This quiz can't be edited from here." };
+  const ranked = new Set(priorityItems(session.answers).map((p) => p.screenerId));
+  const answers = session.answers.map((a): QuizAnswer => {
+    const level = levels?.[a.id];
+    if (a.kind !== "choice" || !ranked.has(a.id) || ![1, 2, 3].includes(level)) return a;
+    return {
+      ...a,
+      importance: level,
+      ...(a.shown ? { shown: { ...a.shown, importance: IMPORTANCE_LABELS[level] } } : {}),
+    };
+  });
+  await quizDb.saveQuizProgress(session.id, {
+    answers,
+    refine: session.refine,
+    deferred: session.deferred,
+    targetMode: session.targetMode,
+    highestCompletedMode: session.highestCompletedMode,
+    checkpointHistory: session.checkpointHistory,
+    status: session.status,
+    completedAt: session.completedAt,
+  });
+  return { ok: true, data: null };
 }
 
 // The live runner state, for a quiz page restored from the client cache.
 export async function runnerStateAction(slug: string): Promise<ActionResult<RunnerState>> {
   const session = await loadEditable(slug);
   if (!session) return { ok: false, error: "This quiz can't be edited from here." };
-  return { ok: true, data: runnerState(session.answers, session.refine, slug, session.targetMode, session.deferred, session.entryTopic) };
+  return {
+    ok: true,
+    data: runnerState(session.answers, session.refine, slug, session.targetMode, session.deferred, session.entryTopic),
+  };
 }
 
 export async function deferQuestionAction(
@@ -169,8 +238,16 @@ export async function deferQuestionAction(
 ): Promise<ActionResult<RunnerState>> {
   const session = await loadEditable(slug);
   if (!session) return { ok: false, error: "This quiz can't be edited from here." };
-  const live = runnerState(session.answers, session.refine, slug, session.targetMode, session.deferred, session.entryTopic);
-  if (!live.next || live.next.kind !== kind || live.next.id !== id) return { ok: false, error: "That question is no longer current." };
+  const live = runnerState(
+    session.answers,
+    session.refine,
+    slug,
+    session.targetMode,
+    session.deferred,
+    session.entryTopic,
+  );
+  if (!live.next || live.next.kind !== kind || live.next.id !== id)
+    return { ok: false, error: "That question is no longer current." };
   const previous = session.deferred.find((item) => item.kind === kind && item.id === id);
   const deferred = [
     ...session.deferred.filter((item) => item.kind !== kind || item.id !== id),
@@ -186,7 +263,10 @@ export async function deferQuestionAction(
     status: "in_progress",
     completedAt: session.completedAt,
   });
-  return { ok: true, data: runnerState(session.answers, session.refine, slug, session.targetMode, deferred, session.entryTopic) };
+  return {
+    ok: true,
+    data: runnerState(session.answers, session.refine, slug, session.targetMode, deferred, session.entryTopic),
+  };
 }
 
 export async function reviewDeferredAction(slug: string): Promise<void> {
@@ -209,7 +289,8 @@ export async function continueQuizAction(slug: string, requested: QuizModeId): P
   const session = await loadEditable(slug);
   if (!session) redirect(`/quiz/${slug}`);
   const next = nextQuizMode(session.targetMode);
-  if (!next || requested !== next || modeRank(requested) <= modeRank(session.targetMode)) redirect(`/quiz/${slug}?view=results`);
+  if (!next || requested !== next || modeRank(requested) <= modeRank(session.targetMode))
+    redirect(`/quiz/${slug}?view=results`);
   await quizDb.saveQuizProgress(session.id, {
     answers: session.answers,
     refine: session.refine,
@@ -278,7 +359,12 @@ function roundHref(
   const left = roundLeft(after);
   if (left === 0) return `/quiz/${slug}?take=1`;
   const top = result.ideologies[0];
-  const params = new URLSearchParams({ take: "1", round: String(left), was: top.ideology.id, wasPct: String(top.match) });
+  const params = new URLSearchParams({
+    take: "1",
+    round: String(left),
+    was: top.ideology.id,
+    wasPct: String(top.match),
+  });
   return `/quiz/${slug}?${params}`;
 }
 
@@ -314,6 +400,15 @@ export async function deleteQuizAction(slug: string): Promise<void> {
   }
   revalidatePath("/quiz");
   redirect("/quiz");
+}
+
+// Drops an unclaimed quiz from this browser's history by forgetting its edit
+// key. The quiz itself stays at its link; this browser can no longer edit it.
+export async function forgetQuizAction(slug: string): Promise<void> {
+  if (!SLUG_PATTERN.test(slug)) return;
+  (await cookies()).delete(editCookieName(slug));
+  revalidatePath("/atlas");
+  revalidatePath("/quiz");
 }
 
 // /quiz/stats: mark a session as a test so analytics leave it out.

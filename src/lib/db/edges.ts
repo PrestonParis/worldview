@@ -1,4 +1,4 @@
-import { count, desc, eq, gte, or } from "drizzle-orm";
+import { count, desc, eq } from "drizzle-orm";
 import { db } from "./client";
 import { entityEdges } from "./schema";
 import type { Edge, EdgeInput } from "../validation/edge";
@@ -25,22 +25,8 @@ export async function countEdges(): Promise<number> {
   return row.value;
 }
 
-export async function countEdgesCreatedSince(since: Date): Promise<number> {
-  const [row] = await db.select({ value: count() }).from(entityEdges).where(gte(entityEdges.createdAt, since));
-  return row.value;
-}
-
 export async function listEdges(): Promise<Edge[]> {
   const rows = await db.select().from(entityEdges).orderBy(desc(entityEdges.createdAt));
-  return rows.map(toEdge);
-}
-
-// Every edge touching the entity, in either direction.
-export async function listEdgesForEntity(entityId: string): Promise<Edge[]> {
-  const rows = await db
-    .select()
-    .from(entityEdges)
-    .where(or(eq(entityEdges.sourceEntityId, entityId), eq(entityEdges.targetEntityId, entityId)));
   return rows.map(toEdge);
 }
 

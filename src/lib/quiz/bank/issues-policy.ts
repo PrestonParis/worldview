@@ -7,7 +7,8 @@ import { item, L, noneOfThese, o, when } from "./helpers";
 // Foundation answers that rule out a module's premise. Someone who wants
 // private enterprise abolished isn't asked to tune tax brackets or the
 // minimum wage; someone who rejects elections isn't asked about mail ballots.
-const communist: Condition = when("economic-system.system", "communism");
+const communist: Condition = when("economic-system.scope", "all", "cooperative");
+const anticapitalist: Condition = when("economic-system.ownership", "common");
 const noState: Condition = when("regime.authority", "no-state");
 const undemocratic: Condition = when("regime.authority", "unelected");
 
@@ -16,25 +17,79 @@ export const policyIssues: IssueModule[] = [
     id: "economic-system",
     name: "Economic system",
     foundation: true,
+    // Split in two like the political system: who owns business first, then
+    // one question that narrows within that branch. Most people see three
+    // options and then four or five, not eight.
     screener: {
-      id: "economic-system.system",
+      id: "economic-system.ownership",
       attribute: "Economic system",
-      prompt: "Which economic system comes closest to the one you want?",
-      options: [
-        o("communism", "Communism: private ownership of business abolished, with production planned in common", "Communism", L(["ownership", -1, 0.5], ["regulation", -0.9, 0.4], ["redistribution", -1, 0.4])),
-        o("socialism", "Socialism: major industries owned by the public or by their workers", "Socialism", L(["ownership", -0.7, 0.5], ["regulation", -0.6, 0.4], ["redistribution", -0.8, 0.4])),
-        o("social-democracy", "Capitalism with a large welfare state, strong unions, and tight regulation", "Social democracy", L(["ownership", -0.3, 0.5], ["regulation", -0.6, 0.4], ["redistribution", -0.7, 0.4])),
-        o("state-directed", "Private enterprise steered by the state toward national goals", "State-directed capitalism", L(["ownership", -0.2, 0.5], ["regulation", -0.5, 0.4], ["redistribution", -0.2, 0.4])),
-        o("mixed", "A market economy with moderate regulation and a basic safety net", "Mixed market economy", L(["ownership", 0.2, 0.5], ["regulation", 0, 0.4], ["redistribution", 0, 0.4])),
-        o("free-market", "Free-market capitalism with low taxes and light regulation", "Free-market capitalism", L(["ownership", 0.6, 0.5], ["regulation", 0.6, 0.4], ["redistribution", 0.6, 0.4])),
-        o("laissez-faire", "Laissez-faire: the market decides nearly everything, and government does little beyond protecting property", "Laissez-faire capitalism", L(["ownership", 0.9, 0.5], ["regulation", 0.95, 0.4], ["redistribution", 0.95, 0.4])),
-      ],
+      prompt: "Who should own and run the country's businesses?",
+      options: [o("common", "The public or the workers, in common, rather than private owners", "Common ownership", L(["ownership", -0.8, 0.5], ["redistribution", -0.7, 0.2])), o("market", "Private owners, competing in a market", "Market economy", L(["ownership", 0.4, 0.5])), o("directed", "Private owners, but with the state steering them toward national goals", "State-directed capitalism", L(["ownership", -0.1, 0.5], ["regulation", -0.5, 0.3], ["trade", -0.5, 0.2]))],
     },
-    followUps: [],
+    // Communists and socialists disagree with each other as much as with
+    // capitalists: on how far ownership goes, on planning, on the communist
+    // states. Capitalists disagree on how much the state should do.
+    followUps: [
+      {
+        id: "economic-system.scope",
+        attribute: "Common ownership",
+        prompt: "How much of the economy should be owned in common?",
+        when: anticapitalist,
+        options: [
+          o("all", "All of it, down to the corner shop: private business abolished and production planned in common", "Communism", L(["ownership", -1, 0.4], ["regulation", -0.9, 0.4], ["redistribution", -1, 0.4])),
+          o("cooperative", "All of it, with small businesses run as cooperatives by the people who work there", "Socialism with small firms as cooperatives", L(["ownership", -0.85, 0.4], ["regulation", -0.7, 0.4], ["redistribution", -0.9, 0.4])),
+          o("major", "The major industries; small businesses can stay private", "Socialism", L(["ownership", -0.6, 0.4], ["regulation", -0.6, 0.4], ["redistribution", -0.8, 0.4])),
+        ],
+      },
+      {
+        id: "economic-system.market-role",
+        attribute: "Government's role in the market",
+        prompt: "How much should government do in a market economy?",
+        when: when("economic-system.ownership", "market"),
+        options: [
+          o("social-democracy", "A lot: a large welfare state, strong unions, and tight regulation", "Social democracy", L(["ownership", -0.3, 0.3], ["regulation", -0.6, 0.4], ["redistribution", -0.7, 0.4])),
+          o("mixed", "A moderate amount: sensible regulation and a basic safety net", "Mixed market economy", L(["regulation", 0, 0.4], ["redistribution", 0, 0.4])),
+          o("free-market", "Little: low taxes and light regulation", "Free-market capitalism", L(["ownership", 0.6, 0.3], ["regulation", 0.6, 0.4], ["redistribution", 0.6, 0.4])),
+          o("laissez-faire", "Almost nothing beyond protecting property and enforcing contracts", "Laissez-faire capitalism", L(["ownership", 0.9, 0.3], ["regulation", 0.95, 0.4], ["redistribution", 0.95, 0.4])),
+        ],
+      },
+      {
+        id: "economic-system.direction",
+        attribute: "How the state steers business",
+        prompt: "How should the state steer private business?",
+        when: when("economic-system.ownership", "directed"),
+        options: [
+          o("industrial-policy", "With industrial policy: tariffs, subsidies, and public investment in strategic industries", "industrial policy", L(["trade", -0.7, 0.4], ["regulation", -0.4, 0.3], ["redistribution", -0.2, 0.2])),
+          o("state-firms", "Through state-controlled companies that lead key sectors alongside private ones", "state-led firms in key sectors", L(["ownership", -0.4, 0.4], ["regulation", -0.6, 0.3])),
+          o("corporatist", "Through corporatism: employers and workers organized by industry into state-sanctioned bodies that settle wages and output", "corporatism", L(["regulation", -0.7, 0.4], ["democracy", 0.5, 0.2], ["redistribution", -0.3, 0.2])),
+        ],
+      },
+      {
+        id: "economic-system.coordination",
+        later: true,
+        attribute: "Coordination",
+        prompt: "In an economy owned in common, how should production be coordinated?",
+        when: anticapitalist,
+        options: [o("central", "A central plan drawn up by the state", "central state planning", L(["regulation", -1, 0.4], ["federalism", 0.7, 0.2], ["executive", 0.5, 0.2])), o("councils", "Democratic planning by federated workers' and community councils", "planning by workers' councils", L(["regulation", -0.8, 0.4], ["federalism", -0.7, 0.2], ["democracy", -0.6, 0.2])), o("market", "Worker-owned firms competing in markets", "worker-owned firms in markets", L(["regulation", -0.1, 0.4], ["trade", 0.3, 0.2]))],
+      },
+      {
+        id: "economic-system.legacy",
+        later: true,
+        attribute: "Communist states",
+        prompt: "How do you judge the 20th-century communist states, like the Soviet Union, Mao's China, and Cuba?",
+        when: anticapitalist,
+        options: [
+          o("achievement", "Real socialist achievements, whatever their flaws", "socialist achievements", L(["democracy", 0.6, 0.3], ["violence", 0.4, 0.2]), { legacy: "achievement" }),
+          o("degenerated", "Workers' revolutions that a bureaucracy took over", "revolutions taken over by bureaucracy", L(["democracy", 0.1, 0.3], ["violence", 0.3, 0.2]), { legacy: "degenerated" }),
+          o("state-capitalist", "Not socialism at all: the state simply replaced the boss", "state capitalism, not socialism", L(["democracy", -0.5, 0.3], ["federalism", -0.4, 0.2]), { legacy: "state-capitalist" }),
+          o("dictatorship", "Dictatorships that gave socialism a bad name", "dictatorships that discredited socialism", L(["democracy", -0.8, 0.3], ["violence", -0.5, 0.2]), { legacy: "dictatorship" }),
+        ],
+      },
+    ],
   },
   {
     id: "healthcare",
-    name: "Health care",
+    name: "Healthcare",
     unless: communist,
     screener: {
       id: "healthcare.system",
@@ -45,64 +100,21 @@ export const policyIssues: IssueModule[] = [
         o("public-option", "Private insurance plus a government plan anyone can buy into", "Public option", L(["ownership", -0.3, 0.5], ["redistribution", -0.4, 0.4])),
         o("regulated", "Private insurers operating under strong federal rules", "Regulated private insurance", L(["regulation", -0.4, 0.4])),
         o("market", "Private insurers operating under limited federal rules", "Market-based private insurance", L(["regulation", 0.5, 0.4])),
-        o("private", "Fully private; the government should not be involved in health care", "Fully private health care", L(["ownership", 1, 0.5], ["redistribution", 0.9, 0.4])),
+        o("private", "Fully private; the government should not be involved in healthcare", "Fully private healthcare", L(["ownership", 1, 0.5], ["redistribution", 0.9, 0.4])),
       ],
     },
     followUps: [
-      {
-        id: "healthcare.private-insurance",
-        attribute: "Private insurance",
-        prompt: "Under single-payer, should private insurance still be allowed?",
-        when: when("healthcare.system", "single-payer"),
-        options: [
-          o("supplemental", "Yes, as optional extra coverage", "private supplemental insurance allowed", L(["ownership", -0.6, 0.3])),
-          o("no", "No", "private insurance eliminated", L(["ownership", -1, 0.3])),
-        ],
-      },
-      {
-        id: "healthcare.drug-prices",
-        attribute: "Drug prices",
-        prompt: "What should the government do about prescription drug prices?",
-        when: when("healthcare.system", "single-payer", "public-option", "regulated", "market"),
-        options: [
-          o("cap", "Cap prices for all drugs", "price caps on all drugs", L(["regulation", -0.8, 0.3])),
-          o("negotiate", "Let Medicare negotiate prices for some drugs", "Medicare drug price negotiation", L(["regulation", -0.3, 0.3])),
-          o("market", "Leave prices to the market and speed up generic approvals", "market drug pricing", L(["regulation", 0.6, 0.3])),
-        ],
-      },
+      { id: "healthcare.private-insurance", attribute: "Private insurance", prompt: "Under single-payer, should private insurance still be allowed?", when: when("healthcare.system", "single-payer"), options: [o("supplemental", "Yes, as optional extra coverage", "private supplemental insurance allowed", L(["ownership", -0.6, 0.3])), o("no", "No", "private insurance eliminated", L(["ownership", -1, 0.3]))] },
+      { id: "healthcare.drug-prices", attribute: "Drug prices", prompt: "What should the government do about prescription drug prices?", when: when("healthcare.system", "single-payer", "public-option", "regulated", "market"), options: [o("cap", "Cap prices for all drugs", "price caps on all drugs", L(["regulation", -0.8, 0.3])), o("negotiate", "Let Medicare negotiate prices for some drugs", "Medicare drug price negotiation", L(["regulation", -0.3, 0.3])), o("market", "Leave prices to the market and speed up generic approvals", "market drug pricing", L(["regulation", 0.6, 0.3]))] },
       {
         id: "healthcare.preexisting",
         attribute: "Pre-existing conditions",
         prompt: "Should insurers be required to cover pre-existing conditions without charging more because of a person's health history?",
         when: when("healthcare.system", "market", "private"),
-        options: [
-          o("yes", "Yes", "pre-existing conditions covered", L(["regulation", -0.3, 0.3])),
-          o("pools", "No, but government should fund high-risk pools", "high-risk pools for pre-existing conditions", L(["regulation", 0.4, 0.3], ["redistribution", 0.2, 0.2])),
-          o("no", "No", "no pre-existing condition mandate", L(["regulation", 0.9, 0.3])),
-        ],
+        options: [o("yes", "Yes", "pre-existing conditions covered", L(["regulation", -0.3, 0.3])), o("pools", "No, but government should fund high-risk pools", "high-risk pools for pre-existing conditions", L(["regulation", 0.4, 0.3], ["redistribution", 0.2, 0.2])), o("no", "No", "no pre-existing condition mandate", L(["regulation", 0.9, 0.3]))],
       },
-      {
-        id: "healthcare.medicaid",
-        attribute: "Medicaid eligibility",
-        prompt: "Should Medicaid cover all low-income adults?",
-        when: when("healthcare.system", "public-option", "regulated", "market"),
-        options: [
-          o("yes", "Yes, nationwide", "Medicaid for all low-income adults", L(["redistribution", -0.5, 0.3], ["federalism", 0.4, 0.2])),
-          o("states", "States should decide", "Medicaid eligibility left to states", L(["federalism", -0.6, 0.3])),
-          o("no", "No, it should be limited to children, the disabled, and the elderly", "Medicaid limited to the most vulnerable", L(["redistribution", 0.6, 0.3])),
-        ],
-      },
-      {
-        id: "healthcare.undocumented",
-        attribute: "Coverage for undocumented immigrants",
-        prompt: "Should undocumented immigrants be covered by government health programs?",
-        when: when("healthcare.system", "single-payer", "public-option"),
-        options: [
-          o("yes", "Yes", "coverage for undocumented immigrants", L(["immigration", -0.7, 0.3])),
-          o("emergency", "Emergency care only", "emergency care only for undocumented immigrants", L(["immigration", 0.2, 0.3])),
-          o("no", "No", "no government coverage for undocumented immigrants", L(["immigration", 0.7, 0.3])),
-        ],
-      },
+      { id: "healthcare.medicaid", attribute: "Medicaid eligibility", prompt: "Should Medicaid cover all low-income adults?", when: when("healthcare.system", "public-option", "regulated", "market"), options: [o("yes", "Yes, nationwide", "Medicaid for all low-income adults", L(["redistribution", -0.5, 0.3], ["federalism", 0.4, 0.2])), o("states", "States should decide", "Medicaid eligibility left to states", L(["federalism", -0.6, 0.3])), o("no", "No, it should be limited to children, the disabled, and the elderly", "Medicaid limited to the most vulnerable", L(["redistribution", 0.6, 0.3]))] },
+      { id: "healthcare.undocumented", attribute: "Coverage for undocumented immigrants", prompt: "Should undocumented immigrants be covered by government health programs?", when: when("healthcare.system", "single-payer", "public-option"), options: [o("yes", "Yes", "coverage for undocumented immigrants", L(["immigration", -0.7, 0.3])), o("emergency", "Emergency care only", "emergency care only for undocumented immigrants", L(["immigration", 0.2, 0.3])), o("no", "No", "no government coverage for undocumented immigrants", L(["immigration", 0.7, 0.3]))] },
     ],
   },
   {
@@ -128,13 +140,7 @@ export const policyIssues: IssueModule[] = [
         id: "taxes.corporate",
         attribute: "Corporate tax rate",
         prompt: "What should the federal corporate tax rate be?",
-        options: [
-          o("35", "35% or higher", "corporate rate of 35%+", L(["redistribution", -0.7, 0.3], ["regulation", -0.4, 0.2])),
-          o("28", "Around 28%", "corporate rate around 28%", L(["redistribution", -0.3, 0.3])),
-          o("21", "Around 21%, the current rate", "corporate rate kept around 21%", L(["redistribution", 0.2, 0.3])),
-          o("15", "15% or lower", "corporate rate of 15% or lower", L(["redistribution", 0.6, 0.3])),
-          o("0", "Zero", "no corporate income tax", L(["redistribution", 0.9, 0.3])),
-        ],
+        options: [o("35", "35% or higher", "corporate rate of 35%+", L(["redistribution", -0.7, 0.3], ["regulation", -0.4, 0.2])), o("28", "Around 28%", "corporate rate around 28%", L(["redistribution", -0.3, 0.3])), o("21", "Around 21%, the current rate", "corporate rate kept around 21%", L(["redistribution", 0.2, 0.3])), o("15", "15% or lower", "corporate rate of 15% or lower", L(["redistribution", 0.6, 0.3])), o("0", "Zero", "no corporate income tax", L(["redistribution", 0.9, 0.3]))],
       },
       {
         id: "taxes.policies",
@@ -158,25 +164,10 @@ export const policyIssues: IssueModule[] = [
       id: "labor.minimum-wage",
       attribute: "Minimum wage",
       prompt: "What should the federal minimum wage be?",
-      options: [
-        o("20", "$20 or more", "Minimum wage of $20+", L(["regulation", -0.9, 0.5], ["redistribution", -0.6, 0.3])),
-        o("15", "Around $15", "Minimum wage around $15", L(["regulation", -0.5, 0.5], ["redistribution", -0.3, 0.3])),
-        o("12", "Around $12", "Minimum wage around $12", L(["regulation", -0.1, 0.5])),
-        o("7", "$7.25, the level since 2009", "Minimum wage of $7.25", L(["regulation", 0.4, 0.5])),
-        o("none", "There should be no federal minimum wage", "No federal minimum wage", L(["regulation", 0.9, 0.5], ["federalism", -0.4, 0.2])),
-      ],
+      options: [o("20", "$20 or more", "Minimum wage of $20+", L(["regulation", -0.9, 0.5], ["redistribution", -0.6, 0.3])), o("15", "Around $15", "Minimum wage around $15", L(["regulation", -0.5, 0.5], ["redistribution", -0.3, 0.3])), o("12", "Around $12", "Minimum wage around $12", L(["regulation", -0.1, 0.5])), o("7", "$7.25, the level since 2009", "Minimum wage of $7.25", L(["regulation", 0.4, 0.5])), o("none", "There should be no federal minimum wage", "No federal minimum wage", L(["regulation", 0.9, 0.5], ["federalism", -0.4, 0.2]))],
     },
     followUps: [
-      {
-        id: "labor.unions",
-        attribute: "Unions",
-        prompt: "Which comes closest to your view of labor unions?",
-        options: [
-          o("strengthen", "Essential; laws should make organizing easier", "unions strengthened", L(["regulation", -0.7, 0.4])),
-          o("voluntary", "Useful, but membership and dues should always be voluntary", "voluntary union membership", L(["regulation", 0.3, 0.4])),
-          o("harmful", "Mostly harmful to the economy", "unions viewed as harmful", L(["regulation", 0.8, 0.4])),
-        ],
-      },
+      { id: "labor.unions", attribute: "Unions", prompt: "Which comes closest to your view of labor unions?", options: [o("strengthen", "Essential; laws should make organizing easier", "unions strengthened", L(["regulation", -0.7, 0.4])), o("voluntary", "Useful, but membership and dues should always be voluntary", "voluntary union membership", L(["regulation", 0.3, 0.4])), o("harmful", "Mostly harmful to the economy", "unions viewed as harmful", L(["regulation", 0.8, 0.4]))] },
       {
         id: "labor.benefits",
         attribute: "Gig work & paid leave",
@@ -300,35 +291,12 @@ export const policyIssues: IssueModule[] = [
         o("amendment", "Require a balanced budget every year by constitutional amendment", "Balanced budget amendment", L(["redistribution", 0.8, 0.4], ["executive", -0.2, 0.1])),
       ],
     },
-    followUps: [
-      {
-        id: "debt.cut-first",
-        attribute: "First cuts",
-        prompt: "What should be cut first?",
-        when: when("debt.priority", "balanced", "cuts", "amendment"),
-        options: [
-          o("defense", "Defense", "cut defense first", L(["force", 0.6, 0.3])),
-          o("social", "Social programs", "cut social programs first", L(["redistribution", 0.7, 0.3])),
-          o("aid", "Foreign aid", "cut foreign aid first", L(["engagement", 0.6, 0.3])),
-          o("all", "Everything equally", "cut across the board", L(["redistribution", 0.4, 0.2])),
-        ],
-      },
-    ],
+    followUps: [{ id: "debt.cut-first", attribute: "First cuts", prompt: "What should be cut first?", when: when("debt.priority", "balanced", "cuts", "amendment"), options: [o("defense", "Defense", "cut defense first", L(["force", 0.6, 0.3])), o("social", "Social programs", "cut social programs first", L(["redistribution", 0.7, 0.3])), o("aid", "Foreign aid", "cut foreign aid first", L(["engagement", 0.6, 0.3])), o("all", "Everything equally", "cut across the board", L(["redistribution", 0.4, 0.2]))] }],
   },
   {
     id: "tariffs",
     name: "Trade & tariffs",
-    screener: {
-      id: "tariffs.level",
-      attribute: "Tariff level",
-      prompt: "Which comes closest to your view on tariffs?",
-      options: [
-        o("high", "High tariffs on most imported goods", "High tariffs on most imports", L(["trade", -0.9, 0.5])),
-        o("targeted", "Targeted tariffs on strategic goods and unfair trading partners", "Targeted tariffs", L(["trade", -0.3, 0.5])),
-        o("low", "Low tariffs; mostly free trade", "Low tariffs", L(["trade", 0.5, 0.5])),
-        o("none", "No tariffs at all", "No tariffs", L(["trade", 1, 0.5])),
-      ],
-    },
+    screener: { id: "tariffs.level", attribute: "Tariff level", prompt: "Which comes closest to your view on tariffs?", options: [o("high", "High tariffs on most imported goods", "High tariffs on most imports", L(["trade", -0.9, 0.5])), o("targeted", "Targeted tariffs on strategic goods and unfair trading partners", "Targeted tariffs", L(["trade", -0.3, 0.5])), o("low", "Low tariffs; mostly free trade", "Low tariffs", L(["trade", 0.5, 0.5])), o("none", "No tariffs at all", "No tariffs", L(["trade", 1, 0.5]))] },
     followUps: [
       {
         id: "tariffs.authority",
@@ -336,20 +304,13 @@ export const policyIssues: IssueModule[] = [
         prompt: "Who should have the authority to impose tariffs?",
         when: when("tariffs.level", "high", "targeted", "low"),
         options: [
-          o("president", "The president, acting alone", "tariffs set by the president", L(["executive", 0.7, 0.4])),
-          o("congress", "Only Congress", "tariffs set by Congress", L(["executive", -0.6, 0.4])),
+          o("president", "The president, acting alone whenever they see fit", "tariffs set by the president", L(["executive", 0.8, 0.4])),
+          o("delegated", "The president, but only for national security or trade abuses, within limits Congress sets", "presidential tariffs within limits set by Congress", L(["executive", 0.3, 0.4])),
+          o("approval", "The president can impose them, but they expire unless Congress approves them within a few months", "presidential tariffs subject to congressional approval", L(["executive", -0.2, 0.4])),
+          o("congress", "Only Congress, by passing a law", "tariffs set by Congress", L(["executive", -0.7, 0.4])),
         ],
       },
-      {
-        id: "tariffs.displaced",
-        attribute: "Displaced workers",
-        prompt: "Should the government help workers who lose jobs to foreign competition?",
-        when: when("tariffs.level", "low", "none"),
-        options: [
-          o("yes", "Yes, with retraining and income support", "help for displaced workers", L(["redistribution", -0.4, 0.3])),
-          o("no", "No", "no special help for displaced workers", L(["redistribution", 0.6, 0.3])),
-        ],
-      },
+      { id: "tariffs.displaced", attribute: "Displaced workers", prompt: "Should the government help workers who lose jobs to foreign competition?", when: when("tariffs.level", "low", "none"), options: [o("yes", "Yes, with retraining and income support", "help for displaced workers", L(["redistribution", -0.4, 0.3])), o("no", "No", "no special help for displaced workers", L(["redistribution", 0.6, 0.3]))] },
     ],
   },
   {
@@ -359,34 +320,11 @@ export const policyIssues: IssueModule[] = [
       id: "ai.governance",
       attribute: "Frontier AI",
       prompt: "How should the most powerful AI systems be governed?",
-      options: [
-        o("pause", "Pause their development until they're proven safe", "Pause frontier AI", L(["technology", -1, 0.5], ["regulation", -0.7, 0.3])),
-        o("license", "Require government licensing and safety testing before release", "License frontier AI", L(["technology", -0.5, 0.5], ["regulation", -0.5, 0.3])),
-        o("targeted", "Rules only for specific harms, like fraud or deepfakes", "Targeted AI rules", L(["technology", 0.2, 0.5], ["regulation", 0.1, 0.3])),
-        o("minimal", "Use minimal regulation", "Minimal AI regulation", L(["technology", 0.8, 0.5], ["regulation", 0.7, 0.3])),
-      ],
+      options: [o("pause", "Pause their development until they're proven safe", "Pause frontier AI", L(["technology", -1, 0.5], ["regulation", -0.7, 0.3])), o("license", "Require government licensing and safety testing before release", "License frontier AI", L(["technology", -0.5, 0.5], ["regulation", -0.5, 0.3])), o("targeted", "Rules only for specific harms, like fraud or deepfakes", "Targeted AI rules", L(["technology", 0.2, 0.5], ["regulation", 0.1, 0.3])), o("minimal", "Use minimal regulation", "Minimal AI regulation", L(["technology", 0.8, 0.5], ["regulation", 0.7, 0.3]))],
     },
     followUps: [
-      {
-        id: "ai.jobs",
-        attribute: "Job displacement",
-        prompt: "If AI displaces many jobs, what should the government do?",
-        options: [
-          o("income", "Provide a guaranteed basic income", "basic income if AI displaces jobs", L(["redistribution", -0.8, 0.3])),
-          o("retrain", "Fund retraining and transition help", "retraining for displaced workers", L(["redistribution", -0.2, 0.3])),
-          o("market", "Let the market adjust", "let the labor market adjust", L(["redistribution", 0.7, 0.3])),
-        ],
-      },
-      {
-        id: "ai.states",
-        attribute: "State AI laws",
-        prompt: "Should states be able to pass their own AI laws?",
-        when: when("ai.governance", "license", "targeted", "minimal"),
-        options: [
-          o("yes", "Yes", "state AI laws allowed", L(["federalism", -0.6, 0.3])),
-          o("no", "No, there should be one national standard", "one national AI standard", L(["federalism", 0.6, 0.3])),
-        ],
-      },
+      { id: "ai.jobs", attribute: "Job displacement", prompt: "If AI displaces many jobs, what should the government do?", options: [o("income", "Provide a guaranteed basic income", "basic income if AI displaces jobs", L(["redistribution", -0.8, 0.3])), o("retrain", "Fund retraining and transition help", "retraining for displaced workers", L(["redistribution", -0.2, 0.3])), o("market", "Let the market adjust", "let the labor market adjust", L(["redistribution", 0.7, 0.3]))] },
+      { id: "ai.states", attribute: "State AI laws", prompt: "Should states be able to pass their own AI laws?", when: when("ai.governance", "license", "targeted", "minimal"), options: [o("yes", "Yes", "state AI laws allowed", L(["federalism", -0.6, 0.3])), o("no", "No, there should be one national standard", "one national AI standard", L(["federalism", 0.6, 0.3]))] },
     ],
   },
   {
@@ -399,13 +337,7 @@ export const policyIssues: IssueModule[] = [
       id: "voting-rules.priority",
       attribute: "Access vs. safeguards",
       prompt: "When setting voting rules, what should come first?",
-      options: [
-        o("access", "Making voting as easy as possible", "access first", L(["voting", -0.8, 0.5])),
-        o("lean-access", "Mostly ease of voting, with basic safeguards", "mostly access", L(["voting", -0.4, 0.5])),
-        o("both", "Ease of voting and security equally", "access and security equally", L(["voting", 0, 0.5])),
-        o("lean-security", "Mostly security, while keeping voting accessible", "mostly security", L(["voting", 0.4, 0.5])),
-        o("security", "Preventing fraud, even if voting becomes harder", "security first", L(["voting", 0.8, 0.5])),
-      ],
+      options: [o("access", "Making voting as easy as possible", "access first", L(["voting", -0.8, 0.5])), o("lean-access", "Mostly ease of voting, with basic safeguards", "mostly access", L(["voting", -0.4, 0.5])), o("both", "Ease of voting and security equally", "access and security equally", L(["voting", 0, 0.5])), o("lean-security", "Mostly security, while keeping voting accessible", "mostly security", L(["voting", 0.4, 0.5])), o("security", "Preventing fraud, even if voting becomes harder", "security first", L(["voting", 0.8, 0.5]))],
     },
     followUps: [
       {
@@ -420,6 +352,8 @@ export const policyIssues: IssueModule[] = [
           item("ranked-choice", "Ranked-choice voting", "ranked-choice voting", L(["voting", -0.3, 0.2]), "no ranked-choice voting", L(["voting", 0.3, 0.2])),
           item("dc", "Statehood for Washington, D.C.", "D.C. statehood", L(["voting", -0.6, 0.3]), "no D.C. statehood", L(["voting", 0.5, 0.3])),
           item("term-limits", "Term limits for members of Congress", "congressional term limits", {}, "no congressional term limits", {}),
+          item("age-16", "Lowering the voting age to 16", "voting at 16", L(["voting", -0.7, 0.3]), "voting age stays 18", L(["voting", 0.2, 0.3])),
+          item("noncitizen", "Letting noncitizen residents vote in local elections", "noncitizens vote locally", L(["voting", -0.9, 0.3], ["immigration", -0.6, 0.2]), "citizens only", L(["voting", 0.2, 0.3], ["immigration", 0.2, 0.2])),
           noneOfThese,
         ],
       },
@@ -429,35 +363,10 @@ export const policyIssues: IssueModule[] = [
     id: "judiciary",
     name: "Supreme Court & judiciary",
     unless: { any: [noState, undemocratic] },
-    screener: {
-      id: "judiciary.court",
-      attribute: "Court structure",
-      prompt: "What should happen to the Supreme Court?",
-      options: [
-        o("expand", "Add more justices", "Expand the Supreme Court", L(["voting", -0.6, 0.3], ["executive", 0.2, 0.2])),
-        o("term-limits", "Keep nine justices, but with 18-year term limits", "Term limits for justices", L(["voting", -0.3, 0.3])),
-        o("keep", "Keep nine justices with lifetime appointments", "Keep nine justices for life", L(["voting", 0.4, 0.3])),
-      ],
-    },
+    screener: { id: "judiciary.court", attribute: "Court structure", prompt: "What should happen to the Supreme Court?", options: [o("expand", "Add more justices", "Expand the Supreme Court", L(["voting", -0.6, 0.3], ["executive", 0.2, 0.2])), o("term-limits", "Keep nine justices, but with 18-year term limits", "Term limits for justices", L(["voting", -0.3, 0.3])), o("keep", "Keep nine justices with lifetime appointments", "Keep nine justices for life", L(["voting", 0.4, 0.3]))] },
     followUps: [
-      {
-        id: "judiciary.interpretation",
-        attribute: "Constitutional interpretation",
-        prompt: "How should judges interpret the Constitution?",
-        options: [
-          o("original", "By its original meaning when written", "originalist interpretation", L(["social", 0.5, 0.3], ["executive", -0.1, 0.1])),
-          o("living", "As a living document that adapts to modern values", "living-constitution interpretation", L(["social", -0.5, 0.3])),
-        ],
-      },
-      {
-        id: "judiciary.ethics",
-        attribute: "Ethics code",
-        prompt: "Should Supreme Court justices be bound by an enforceable ethics code?",
-        options: [
-          o("yes", "Yes", "binding ethics code for justices", L(["executive", -0.3, 0.2])),
-          o("no", "No, that would undermine judicial independence", "no external ethics code for justices", L(["voting", 0.3, 0.2])),
-        ],
-      },
+      { id: "judiciary.interpretation", attribute: "Constitutional interpretation", prompt: "How should judges interpret the Constitution?", options: [o("original", "By its original meaning when written", "originalist interpretation", L(["social", 0.5, 0.3], ["executive", -0.1, 0.1])), o("living", "As a living document that adapts to modern values", "living-constitution interpretation", L(["social", -0.5, 0.3]))] },
+      { id: "judiciary.ethics", attribute: "Ethics code", prompt: "Should Supreme Court justices be bound by an enforceable ethics code?", options: [o("yes", "Yes", "binding ethics code for justices", L(["executive", -0.3, 0.2])), o("no", "No, that would undermine judicial independence", "no external ethics code for justices", L(["voting", 0.3, 0.2]))] },
     ],
   },
   {
@@ -468,10 +377,11 @@ export const policyIssues: IssueModule[] = [
       attribute: "U.S. support",
       prompt: "What should U.S. policy toward Israel be?",
       options: [
-        o("strong", "Strong support, including military aid without conditions", "Unconditional support for Israel", L(["force", -0.6, 0.4], ["religion", 0.3, 0.1])),
-        o("conditional", "Support, but with conditions on how military aid is used", "Conditional support for Israel", L(["force", -0.1, 0.4])),
-        o("neutral", "Even-handed between Israel and the Palestinians", "Even-handed policy", L(["force", 0.3, 0.4])),
-        o("end-aid", "End military aid to Israel", "End military aid to Israel", L(["force", 0.7, 0.4])),
+        o("strong", "Strong support, including military aid without conditions", "Unconditional support for Israel", L(["engagement", -0.6, 0.4], ["force", -0.3, 0.15], ["religion", 0.3, 0.1])),
+        o("conditional", "Support, but with conditions on how military aid is used", "Conditional support for Israel", L(["engagement", -0.2, 0.4], ["force", -0.1, 0.15])),
+        o("neutral", "Even-handed between Israel and the Palestinians", "Even-handed policy", L(["engagement", 0.2, 0.4], ["force", 0.1, 0.15])),
+        o("end-aid", "End military aid to Israel", "End military aid to Israel", L(["engagement", 0.7, 0.4], ["force", 0.2, 0.15])),
+        o("sanctions", "Sanction Israel and cut off all arms sales", "Sanctions on Israel", L(["engagement", -0.2, 0.3], ["force", 0.3, 0.15])),
       ],
     },
     followUps: [
@@ -483,19 +393,15 @@ export const policyIssues: IssueModule[] = [
           o("two-state", "Two states, Israel and Palestine", "a two-state solution"),
           o("israel", "Israeli sovereignty over the territories", "Israeli sovereignty over the territories", L(["religion", 0.4, 0.2])),
           o("one-state", "One democratic state with equal rights for all", "a single democratic state", L(["identity", -0.3, 0.1])),
+          o("resettle", "Israeli sovereignty, with Palestinians resettled in other countries", "Israeli sovereignty with Palestinians resettled abroad", L(["religion", 0.5, 0.2], ["force", -0.6, 0.2])),
+          o("palestine", "Israel ceases to exist, replaced by a Palestinian state in all of historic Palestine", "Israel replaced by one Palestinian state", L(["force", 0.6, 0.2], ["identity", -0.6, 0.1])),
+          o("christian", "The Holy Land under Christian rule", "Christian rule of the Holy Land", L(["religion", 0.9, 0.2], ["force", -0.4, 0.2])),
+          o("american", "The Holy Land under American control", "American control of the Holy Land", L(["engagement", -0.9, 0.2], ["force", -0.8, 0.2])),
+          o("international", "Jerusalem and the holy sites under international administration", "international control of Jerusalem", L(["engagement", -0.6, 0.2])),
           o("none", "It's not America's place to decide", "no U.S. position on the outcome", L(["engagement", 0.6, 0.3])),
         ],
       },
-      {
-        id: "israel.boycotts",
-        attribute: "Anti-boycott laws",
-        prompt: "Should states be able to refuse contracts with companies that boycott Israel?",
-        when: when("israel.support", "strong", "conditional", "neutral"),
-        options: [
-          o("yes", "Yes", "anti-boycott laws", L(["liberty", 0.3, 0.2])),
-          o("no", "No, boycotts are protected speech", "boycotts protected", L(["liberty", -0.5, 0.2])),
-        ],
-      },
+      { id: "israel.boycotts", attribute: "Anti-boycott laws", prompt: "Should states be able to refuse contracts with companies that boycott Israel?", when: when("israel.support", "strong", "conditional", "neutral"), options: [o("yes", "Yes", "anti-boycott laws", L(["liberty", 0.3, 0.2])), o("no", "No, boycotts are protected speech", "boycotts protected", L(["liberty", -0.5, 0.2]))] },
     ],
   },
   {
@@ -506,59 +412,22 @@ export const policyIssues: IssueModule[] = [
       attribute: "U.S. support",
       prompt: "How should the U.S. support Ukraine against Russia?",
       options: [
-        o("full", "Whatever it takes, including the most advanced weapons", "Full support for Ukraine", L(["force", -0.8, 0.4], ["engagement", -0.7, 0.4])),
-        o("continue", "Continued military and economic aid", "Continued aid to Ukraine", L(["force", -0.4, 0.4], ["engagement", -0.4, 0.4])),
-        o("negotiate", "Limit aid and push both sides to a negotiated settlement", "Push for a settlement", L(["force", 0.4, 0.4], ["engagement", 0.3, 0.4])),
-        o("end", "End all aid", "End aid to Ukraine", L(["force", 0.8, 0.4], ["engagement", 0.8, 0.4])),
+        o("full", "Whatever it takes, including the most advanced weapons", "Full support for Ukraine", L(["engagement", -0.8, 0.5], ["force", -0.5, 0.2])),
+        o("continue", "Continued military and economic aid", "Continued aid to Ukraine", L(["engagement", -0.5, 0.5], ["force", -0.3, 0.2])),
+        o("negotiate", "Limit aid and push both sides to a negotiated settlement", "Push for a settlement", L(["engagement", 0.4, 0.5], ["force", 0.3, 0.2])),
+        o("end", "End all aid", "End aid to Ukraine", L(["engagement", 0.8, 0.5], ["force", 0.5, 0.2])),
+        o("russia", "Recognize Russia's claims, lift sanctions, and restore normal relations with Russia", "Recognize Russia's claims", L(["engagement", 1, 0.5], ["force", 0.6, 0.2])),
       ],
     },
     followUps: [
-      {
-        id: "ukraine.nato",
-        attribute: "NATO membership",
-        prompt: "Should the U.S. support Ukraine joining NATO?",
-        when: when("ukraine.aid", "full", "continue"),
-        options: [
-          o("yes", "Yes", "Ukraine in NATO", L(["engagement", -0.7, 0.3], ["force", -0.4, 0.2])),
-          o("no", "No", "Ukraine outside NATO", L(["engagement", 0.2, 0.3])),
-        ],
-      },
-      {
-        id: "ukraine.territory",
-        attribute: "Territorial concessions",
-        prompt: "Should Ukraine give up territory to end the war?",
-        when: when("ukraine.aid", "negotiate", "end"),
-        options: [
-          o("yes", "Yes, if that's what peace requires", "territorial concessions for peace", L(["force", 0.6, 0.3])),
-          o("no", "No", "no territorial concessions", L(["force", -0.3, 0.3])),
-        ],
-      },
+      { id: "ukraine.nato", attribute: "NATO membership", prompt: "Should the U.S. support Ukraine joining NATO?", when: when("ukraine.aid", "full", "continue"), options: [o("yes", "Yes", "Ukraine in NATO", L(["engagement", -0.7, 0.3], ["force", -0.4, 0.2])), o("no", "No", "Ukraine outside NATO", L(["engagement", 0.2, 0.3]))] },
+      { id: "ukraine.territory", attribute: "Territorial concessions", prompt: "Should Ukraine give up territory to end the war?", when: when("ukraine.aid", "negotiate", "end"), options: [o("yes", "Yes, if that's what peace requires", "territorial concessions for peace", L(["force", 0.6, 0.3])), o("no", "No", "no territorial concessions", L(["force", -0.3, 0.3]))] },
     ],
   },
   {
     id: "china",
     name: "China",
-    screener: {
-      id: "china.stance",
-      attribute: "Overall stance",
-      prompt: "How should the U.S. manage its economic relationship with China?",
-      options: [
-        o("rival", "Broadly reduce trade and investment ties", "Broadly reduce economic ties with China", L(["trade", -0.7, 0.5])),
-        o("competitor", "Restrict strategic sectors while allowing other trade", "Restrict strategic trade with China", L(["trade", -0.1, 0.5], ["engagement", -0.2, 0.2])),
-        o("partner", "Keep trade broadly open", "Keep trade with China broadly open", L(["trade", 0.7, 0.5])),
-      ],
-    },
-    followUps: [
-      {
-        id: "china.human-rights",
-        attribute: "Human rights",
-        prompt: "Should human rights concerns shape U.S. policy toward China?",
-        options: [
-          o("central", "Yes, they should be central", "human rights central to China policy", L(["engagement", -0.6, 0.3], ["force", -0.3, 0.1])),
-          o("secondary", "Somewhat, but interests come first", "human rights secondary to interests", L(["engagement", 0.1, 0.3])),
-          o("no", "No, that's China's business", "human rights left out of China policy", L(["engagement", 0.7, 0.3])),
-        ],
-      },
-    ],
+    screener: { id: "china.stance", attribute: "Overall stance", prompt: "How should the U.S. manage its economic relationship with China?", options: [o("rival", "Broadly reduce trade and investment ties", "Broadly reduce economic ties with China", L(["trade", -0.7, 0.5])), o("competitor", "Restrict strategic sectors while allowing other trade", "Restrict strategic trade with China", L(["trade", -0.1, 0.5], ["engagement", -0.2, 0.2])), o("partner", "Keep trade broadly open", "Keep trade with China broadly open", L(["trade", 0.7, 0.5]))] },
+    followUps: [{ id: "china.human-rights", attribute: "Human rights", prompt: "Should human rights concerns shape U.S. policy toward China?", options: [o("central", "Yes, they should be central", "human rights central to China policy", L(["engagement", -0.6, 0.3], ["force", -0.3, 0.1])), o("secondary", "Somewhat, but interests come first", "human rights secondary to interests", L(["engagement", 0.1, 0.3])), o("no", "No, that's China's business", "human rights left out of China policy", L(["engagement", 0.7, 0.3]))] }],
   },
 ];

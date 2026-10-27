@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import type { ReactNode } from "react";
 import { ChartCard } from "@/components/charts/chart-card";
+import { citeSources, type SourceSpec } from "@/components/charts/citation";
 import { PeriodTag, periodTags } from "@/components/charts/period-tag";
 import { StateExplorer } from "@/components/charts/state-explorer";
 import { seriesTable } from "@/components/charts/tables";
 import { TimeSeriesChart } from "@/components/charts/time-series-chart";
-import { DatasetList } from "@/components/data/dataset-list";
 import { EncounterExplorer } from "@/components/immigration/encounter-explorer";
 import { ImmigrationChapterDeck, type ImmigrationChapter } from "@/components/immigration/chapter-deck";
 import { ChapterExplorer, EnforcementExplorer } from "@/components/immigration/chapter-explorer";
@@ -21,7 +20,7 @@ import { Term } from "@/components/ui/term";
 import { formatPeriod, formatValue } from "@/lib/format";
 import { GLOSSARY } from "@/lib/glossary";
 import { loadImmigration } from "@/lib/immigration/data";
-import { FeatureList } from "@/components/ui/feature-list";
+import { IssueHeader } from "@/components/data/issue-layout";
 
 export const revalidate = 86400;
 
@@ -32,7 +31,8 @@ export const metadata: Metadata = {
 };
 
 const CHAPTERS: ImmigrationChapter[] = [
-  { id: "snapshot", label: "At a glance", group: "Start" },
+  { id: "snapshot", label: "Foreign-born share", group: "Start" },
+  { id: "overview", label: "How it works", group: "Start" },
   { id: "border", label: "Border", group: "Core system" },
   { id: "legal", label: "Green cards", group: "Core system" },
   { id: "humanitarian", label: "Humanitarian", group: "Core system" },
@@ -44,10 +44,9 @@ const CHAPTERS: ImmigrationChapter[] = [
   { id: "related", label: "Related migration", group: "Population & places" },
   { id: "questions", label: "Questions", group: "Reference" },
   { id: "glossary", label: "Glossary", group: "Reference" },
-  { id: "sources", label: "Sources", group: "Reference" },
 ];
 
-const SOURCES = {
+const SOURCE_SPECS = {
   cbp: { label: "U.S. Customs and Border Protection", href: "/datasets/cbp" },
   yearbook: { label: "DHS Yearbook of Immigration Statistics", href: "/datasets/dhs-yearbook" },
   unauthorized: { label: "DHS Office of Homeland Security Statistics", href: "/datasets/dhs-unauthorized" },
@@ -57,19 +56,7 @@ const SOURCES = {
   ice: { label: "ICE Detention Statistics", href: "/datasets/ice-detention" },
   flows: { label: "Census Bureau State-to-State Migration Flows", href: "/datasets/census-state-migration" },
   un: { label: "UN DESA International Migrant Stock", href: "/datasets/un-migrant-stock" },
-};
-
-const USES: Record<string, string> = {
-  cbp: "border encounters — monthly totals by legal authority, agency, region, sector or field office, state, and citizenship",
-  "dhs-yearbook": "green cards, naturalizations, refugee arrivals, asylum grants, temporary admissions, and removals and returns",
-  "dhs-unauthorized": "the unauthorized immigrant population, by country of birth, state, and period of entry",
-  "census-pep": "net international migration, sources of population growth, and net moves between states",
-  "census-acs1-immigration": "the foreign-born population, citizenship, and countries of birth",
-  "census-historical-nativity": "the foreign-born share of the population at each census, 1850–2000",
-  "ice-detention": "the detained population, conviction status, facilities, and length of stay",
-  "census-state-migration": "moves between states and residents who lived abroad a year earlier",
-  "un-migrant-stock": "Americans living abroad",
-};
+} satisfies Record<string, SourceSpec>;
 
 const NUMBER_WORDS: Record<number, string> = { 5: "five", 6: "six", 7: "seven", 8: "eight", 9: "nine", 10: "ten", 11: "eleven", 12: "twelve" };
 const compact = (v: number | null | undefined, unit = "people") => formatValue(v, unit, { compact: true });
@@ -456,22 +443,12 @@ export default async function ImmigrationPage() {
     },
   };
 
+  const SOURCES = citeSources(SOURCE_SPECS, d.datasets);
+
   return (
     <ImmigrationExplorerProvider>
     <div className="mx-auto max-w-7xl space-y-14">
-      <header className="max-w-3xl">
-        <p className="text-sm font-semibold tracking-[0.14em] text-blue-700 uppercase dark:text-blue-400">United States</p>
-        <h1 className="mt-2 text-4xl font-bold tracking-tight text-slate-950 sm:text-5xl dark:text-white">Immigration</h1>
-        <FeatureList
-          className="mt-4"
-          items={[
-            "Border encounters and enforcement",
-            "Green cards, asylum and visas",
-            "Every state compared",
-            "From the agencies that count them",
-          ]}
-        />
-      </header>
+      <IssueHeader title="Immigration" />
 
       <ImmigrationChapterDeck chapters={CHAPTERS}>
 
@@ -511,8 +488,23 @@ export default async function ImmigrationPage() {
       )}
       </section>
 
+      {/* ------------------------------------------------------------ Overview */}
+      <Section
+        id="overview"
+        title="How immigration works"
+        question="Yearly flows on the left, the population they add up to on the right."
+      >
+        <Prose>
+          <p>
+            Each yearly flow and the <Term id="stock">population</Term> is counted by a different agency, in its own unit and on its own{" "}
+            <Term id="fiscal-year">calendar</Term>.
+          </p>
+        </Prose>
+        <ImmigrationOverviewExplorer flow={flowData} data={explorerData} />
+      </Section>
+
       {/* -------------------------------------------------------------- Border */}
-      <Section id="border" title="The border" question="How often does CBP stop people at the border, where, under what legal authority — and what happens next?">
+      <Section id="border" title="The border" question="How often CBP stops people at the border, and what happens next.">
         <EncounterExplorer
           regions={d.border.regions}
           breakdowns={[
@@ -620,7 +612,7 @@ export default async function ImmigrationPage() {
       </Section>
 
       {/* -------------------------------------------------------- Legal / LPR */}
-      <Section id="legal" title="Green cards" question="How many people become permanent residents each year, through which programs, and from where?">
+      <Section id="legal" title="Green cards" question="How many become permanent residents each year, and how?">
         <GreenCardChapter data={greenCardData} />
       </Section>
 
@@ -674,7 +666,7 @@ export default async function ImmigrationPage() {
       </Section>
 
       {/* -------------------------------------------------------- Unauthorized */}
-      <Section id="unauthorized" title="The unauthorized population" question="How many people live in the U.S. without legal status, where are they from, and where do they live?">
+      <Section id="unauthorized" title="The unauthorized population" question="How many live here without legal status, and from where?">
         <KeyPoint title="Border encounters are not a measure of this population.">
           It includes people who entered legally and overstayed, and people who arrived decades ago.
         </KeyPoint>
@@ -730,7 +722,7 @@ export default async function ImmigrationPage() {
       </Section>
 
       {/* ---------------------------------------------------------- Population */}
-      <Section id="population" title="Immigration and population" question="How many immigrants live in the U.S., and how much does migration change the population?">
+      <Section id="population" title="Immigration and population" question="How many immigrants live in the U.S.?">
         <ChapterExplorer
           metrics={[
             { label: "Foreign-born residents", value: s.foreignBorn?.value, unit: "people", period: s.foreignBorn?.period, change: s.foreignBorn?.change, compare: s.foreignBorn?.compare },
@@ -754,7 +746,7 @@ export default async function ImmigrationPage() {
       </Section>
 
       {/* --------------------------------------------------------- Enforcement */}
-      <Section id="enforcement" title="Enforcement" question="How many people are removed or returned, and how many are held in immigration detention?">
+      <Section id="enforcement" title="Enforcement" question="How many are removed, returned, or detained?">
         <EnforcementExplorer
           departures={{
             metrics: [
@@ -785,12 +777,12 @@ export default async function ImmigrationPage() {
       </Section>
 
       {/* -------------------------------------------------------------- States */}
-      <Section id="states" title="Across the states" question="How do the states compare? Pick a measure to map it; sort the table by any column.">
+      <Section id="states" title="Across the states" question="How do the states compare?">
         <StateExplorer metrics={d.states.metrics} rows={d.states.rows} />
       </Section>
 
       {/* ---------------------------------------------------- Related migration */}
-      <Section id="related" title="Related migration" question="Moves between states and Americans living abroad — migration, but not immigration.">
+      <Section id="related" title="Related migration" question="Moves between states and Americans abroad.">
         <Prose>
           <p>
             These are often mixed up with immigration. Moving from California to Texas is <em>domestic</em> migration, and Americans who move abroad
@@ -810,8 +802,6 @@ export default async function ImmigrationPage() {
           primaryLabel="View"
           primary={[
             { key: "trend", label: "Total moving", title: "People who moved between states", subtitle: "Per survey year, 50 states and DC", kind: "time", type: "column", series: d.domestic.interstate, unit: "people", source: SOURCES.flows },
-            { key: "gains", label: "Net gains", title: "Largest net gains from other states", subtitle: `Year to July 1, ${d.domestic.period}`, kind: "ranked", items: d.domestic.gains, itemLabel: "State", unit: "people", slot: 3, source: SOURCES.pep },
-            { key: "losses", label: "Net losses", title: "Largest net losses to other states", subtitle: `Year to July 1, ${d.domestic.period}`, kind: "ranked", items: d.domestic.losses, itemLabel: "State", unit: "people", slot: 2, source: SOURCES.pep },
           ]}
           secondaryLabel="Routes"
           secondary={[{ key: "corridors", label: "Largest", title: "Largest state-to-state moves", subtitle: `${d.domestic.flows.period} survey`, kind: "ranked", items: d.domestic.flows.corridors, itemLabel: "Move", unit: "people", source: SOURCES.flows }]}
@@ -859,7 +849,7 @@ export default async function ImmigrationPage() {
       </Section>
 
       {/* ------------------------------------------------------------ Glossary */}
-      <Section id="glossary" title="Glossary" question="The terms used on this page. Underlined terms anywhere on Worldview show these definitions.">
+      <Section id="glossary" title="Glossary" question="Terms used on this page.">
         <dl className="grid gap-x-8 gap-y-4 md:grid-cols-2">
           {glossary.map(([id, g]) => (
             <div key={id} id={`term-${id}`} className="scroll-mt-28">
@@ -869,37 +859,7 @@ export default async function ImmigrationPage() {
           ))}
         </dl>
       </Section>
-
-      {/* ------------------------------------------------------------- Sources */}
-      <Section
-        id="sources"
-        title="Sources and methods"
-        question="Every figure on this page comes from the datasets below, refreshed automatically from each publisher."
-      >
-        <DatasetList datasets={d.datasets} uses={USES} />
-        <p className="text-sm text-slate-500 dark:text-slate-400">
-          Open a dataset for its full methodology, coverage, and API access.{" "}
-          <Link href="/datasets" className="font-medium text-slate-900 underline underline-offset-2 dark:text-white">
-            Browse all datasets
-          </Link>{" "}
-          · <Link href="/datasets/publish" className="underline underline-offset-2">Publish your institution&apos;s data</Link>
-        </p>
-      </Section>
       </ImmigrationChapterDeck>
-
-      {/* ------------------------------------------------------------ Overview */}
-      <section id="overview" className="scroll-mt-28 space-y-10">
-        <div className="space-y-4">
-          <div className="max-w-3xl">
-            <h2 className="text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">How immigration works</h2>
-            <p className="mt-2 text-slate-600 dark:text-slate-300">
-              Yearly flows on the left, the <Term id="stock">population</Term> they add up to on the right. Each is counted by a different
-              agency, in its own unit and on its own <Term id="fiscal-year">calendar</Term>.
-            </p>
-          </div>
-          <ImmigrationOverviewExplorer flow={flowData} data={explorerData} />
-        </div>
-      </section>
     </div>
     </ImmigrationExplorerProvider>
   );

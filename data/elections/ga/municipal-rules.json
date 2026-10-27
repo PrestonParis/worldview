@@ -1,0 +1,3 @@
+{
+  "_comment": "Sourced decision rules for municipal contests, keyed by lowercased city name: { \"rule\": \"majority\" | \"plurality\", \"source\": \"<charter or ordinance citation and URL>\" }. A city not listed stays `unknown` and shows \"Runoff rule unverified\" instead of a runoff badge (src/lib/elections/close-races/rules.ts). Add a city only with a cited source."
+}

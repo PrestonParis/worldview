@@ -2,14 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { ChartCard } from "@/components/charts/chart-card";
+import { citeSources, type SourceSpec } from "@/components/charts/citation";
 import { RankedBars } from "@/components/charts/ranked-bars";
 import { StatTile } from "@/components/charts/stat-tile";
 import { StateExplorer } from "@/components/charts/state-explorer";
 import { rankedTable, seriesTable } from "@/components/charts/tables";
 import { TimeSeriesChart } from "@/components/charts/time-series-chart";
-import { DatasetList } from "@/components/data/dataset-list";
 import { SectionNav } from "@/components/data/section-nav";
 import { loadSpending } from "@/lib/spending/data";
+import { IssueHeader } from "@/components/data/issue-layout";
 
 // Rebuilt at most daily; crawlers and visitors share the cached render.
 export const revalidate = 86400;
@@ -21,29 +22,20 @@ export const metadata: Metadata = {
 };
 
 const SECTIONS = [
-  ["overview", "Overview"],
   ["where", "Where it goes"],
   ["trends", "Over time"],
   ["debt", "Debt & interest"],
   ["this-year", "This year"],
   ["programs", "Programs"],
   ["states", "States"],
-  ["sources", "Sources"],
 ] as const;
 
-const SOURCES = {
+const SOURCE_SPECS = {
   omb: { label: "OMB Historical Tables", href: "/datasets/omb-historical-tables" },
   treasury: { label: "Treasury Fiscal Data", href: "/datasets/treasury-fiscal-data" },
   accuracy: { label: "PaymentAccuracy.gov", href: "/datasets/payment-accuracy" },
   awards: { label: "USAspending.gov", href: "/datasets/usaspending" },
-};
-
-const USES: Record<string, string> = {
-  "omb-historical-tables": "receipts, outlays, deficits, spending by function and program, grants to states, and debt as a share of GDP",
-  "treasury-fiscal-data": "today's debt, monthly receipts and outlays, and the interest rate on the debt",
-  usaspending: "federal contracts, grants, loans, and direct payments by state and congressional district",
-  "payment-accuracy": "improper payment rates",
-};
+} satisfies Record<string, SourceSpec>;
 
 
 function Section({ id, title, question, children }: { id: string; title: string; question: string; children: ReactNode }) {
@@ -74,35 +66,29 @@ export default async function SpendingPage() {
   }
   const h = d.headline;
 
+  const SOURCES = citeSources(SOURCE_SPECS, d.datasets);
+
   return (
     <div className="mx-auto max-w-7xl space-y-14">
-      <header className="max-w-3xl">
-        <p className="text-sm font-semibold tracking-[0.14em] text-blue-700 uppercase dark:text-blue-400">United States</p>
-        <h1 className="mt-2 text-4xl font-bold tracking-tight text-slate-950 sm:text-5xl dark:text-white">Government Spending</h1>
-        <p className="mt-4 text-lg leading-8 text-slate-600 dark:text-slate-300">
-          What the federal government spends, on what, and how it pays for it: spending by function and program, deficits since 1901, the
-          national debt and its interest cost, and where federal money lands by state and congressional district.
-        </p>
-      </header>
+      <IssueHeader title="Government Spending" />
 
       <ChartCard title="Receipts and outlays" subtitle="Share of GDP, since 1930" source={SOURCES.omb} table={seriesTable(d.balance, "percent")}>
-        <TimeSeriesChart series={d.balance} unit="percent" height={340} />
+        <TimeSeriesChart
+          series={d.balance}
+          unit="percent"
+          height={340}
+          markers={[
+            { x: 2007, to: 2009.5, label: "Financial crisis" },
+            { x: 2020, label: "Pandemic relief" },
+          ]}
+        />
       </ChartCard>
 
       <SectionNav sections={SECTIONS} />
 
-      {/* ------------------------------------------------------------ Overview */}
-      <section id="overview" className="scroll-mt-28 space-y-6">
-        <h2 className="text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">At a glance</h2>
+      {/* -------------------------------------------------------- Where it goes */}
+      <Section id="where" title="Where the money goes" question={`What did the federal government spend its money on in ${d.fy}?`}>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <StatTile
-            label="National debt"
-            unit="usd"
-            value={h.debt.point?.value ?? null}
-            period={h.debt.asOf ? `as of ${new Date(`${h.debt.asOf}T12:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}` : undefined}
-            note="Total public debt outstanding"
-            spark={h.debt.spark}
-          />
           <StatTile
             label="Federal spending"
             unit="usd"
@@ -113,32 +99,7 @@ export default async function SpendingPage() {
             compareLabel="vs prior year"
             spark={h.outlays.spark}
           />
-          <StatTile
-            label="Deficit"
-            unit="usd"
-            value={h.deficit.value}
-            period={h.fy}
-            extra={h.deficit.share !== null ? ` · ${h.deficit.share.toFixed(1)}% of GDP` : undefined}
-            note="Spending minus receipts"
-            spark={h.deficit.spark}
-          />
-          <StatTile label="Interest on the debt" unit="usd" value={h.interest.value} period={h.fy} note="Net interest outlays" spark={h.interest.spark} />
         </div>
-        <div className="rounded-2xl bg-slate-50 p-5 dark:bg-slate-900/60">
-          <h3 className="text-base font-semibold text-slate-950 dark:text-white">Key findings</h3>
-          <ul className="mt-3 space-y-2.5 text-sm leading-6 text-slate-700 dark:text-slate-300">
-            {d.findings.map((f) => (
-              <li key={f} className="flex gap-2.5">
-                <span className="mt-2.5 size-1.5 shrink-0 rounded-full bg-blue-600 dark:bg-blue-400" aria-hidden />
-                {f}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      {/* -------------------------------------------------------- Where it goes */}
-      <Section id="where" title="Where the money goes" question={`What did the federal government spend its money on in ${d.fy}?`}>
         <div className="grid gap-6 lg:grid-cols-2">
           <ChartCard title="Spending by budget function" subtitle={`${d.fy} · outlays`} source={SOURCES.omb} table={rankedTable(d.byFunction, "Function", "usd")}>
             <RankedBars items={d.byFunction} unit="usd" limit={d.byFunction.length} />
@@ -155,6 +116,17 @@ export default async function SpendingPage() {
 
       {/* ------------------------------------------------------------ Over time */}
       <Section id="trends" title="Spending, taxes, and deficits over time" question="How have federal spending and revenue changed relative to the economy?">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <StatTile
+            label="Deficit"
+            unit="usd"
+            value={h.deficit.value}
+            period={h.fy}
+            extra={h.deficit.share !== null ? ` · ${h.deficit.share.toFixed(1)}% of GDP` : undefined}
+            note="Spending minus receipts"
+            spark={h.deficit.spark}
+          />
+        </div>
         <div className="grid gap-6 lg:grid-cols-2">
           <ChartCard title="Deficit" subtitle="Share of GDP · negative is a surplus" source={SOURCES.omb} table={seriesTable(d.deficitShare, "percent")}>
             <TimeSeriesChart series={d.deficitShare} unit="percent" height={280} fromZero={false} reference={{ value: 0, label: "Balanced" }} />
@@ -162,7 +134,7 @@ export default async function SpendingPage() {
           <ChartCard title="Social Security, defense, and interest" subtitle="Share of GDP, since 1940" source={SOURCES.omb} table={seriesTable(d.bigThree, "percent")}>
             <TimeSeriesChart series={d.bigThree} unit="percent" height={280} />
           </ChartCard>
-          <ChartCard title="Health care and the safety net" subtitle="Share of GDP, since 1940" source={SOURCES.omb} table={seriesTable(d.healthSeries, "percent")}>
+          <ChartCard title="Healthcare and the safety net" subtitle="Share of GDP, since 1940" source={SOURCES.omb} table={seriesTable(d.healthSeries, "percent")}>
             <TimeSeriesChart series={d.healthSeries} unit="percent" height={280} />
           </ChartCard>
         </div>
@@ -170,6 +142,17 @@ export default async function SpendingPage() {
 
       {/* ------------------------------------------------------- Debt & interest */}
       <Section id="debt" title="Debt and interest" question="How large is the national debt, and what does it cost to carry?">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <StatTile
+            label="National debt"
+            unit="usd"
+            value={h.debt.point?.value ?? null}
+            period={h.debt.asOf ? `as of ${new Date(`${h.debt.asOf}T12:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}` : undefined}
+            note="Total public debt outstanding"
+            spark={h.debt.spark}
+          />
+          <StatTile label="Interest on the debt" unit="usd" value={h.interest.value} period={h.fy} note="Net interest outlays" spark={h.interest.spark} />
+        </div>
         <Prose>
           <p>
             Debt held by the public is what the government owes to investors, including the Federal Reserve and foreign governments. Gross
@@ -223,49 +206,29 @@ export default async function SpendingPage() {
       </Section>
 
       {/* --------------------------------------------------------------- States */}
-      <Section id="states" title="Where federal money lands" question="How much in federal contracts, grants, and payments goes to each state and district?">
+      <Section id="states" title="Where federal money lands" question="How much federal money goes to each state and district?">
         <Prose>
           <p>
             Awards are counted by place of performance as recorded on USAspending.gov. Grants mostly go to state and local governments;
-            contracts follow where the work is done, so districts with large defense or health-care contractors rank high. Direct payments
+            contracts follow where the work is done, so districts with large defense or healthcare contractors rank high. Direct payments
             are recorded where USAspending places the payment, which puts very large totals in a few states.
           </p>
         </Prose>
-        <div className="grid gap-6 lg:grid-cols-2">
-          <ChartCard title="Most federal grants per resident" subtitle={d.awardYear} source={SOURCES.awards} table={rankedTable(d.perCapitaTop, "State", "usd")}>
-            <RankedBars items={d.perCapitaTop} unit="usd" />
-          </ChartCard>
-          <ChartCard title="Fewest federal grants per resident" subtitle={d.awardYear} source={SOURCES.awards} table={rankedTable(d.perCapitaBottom, "State", "usd")}>
-            <RankedBars items={d.perCapitaBottom} unit="usd" slot={2} />
-          </ChartCard>
-          <ChartCard
-            title="Federal contracts by congressional district"
-            subtitle={`${d.awardYear} · largest 15, by where the work is performed`}
-            source={SOURCES.awards}
-            table={rankedTable(d.topDistricts, "District", "usd")}
-            className="lg:col-span-2"
-          >
-            <RankedBars items={d.topDistricts} unit="usd" limit={d.topDistricts.length} slot={3} />
-          </ChartCard>
-        </div>
-        <StateExplorer metrics={d.states.metrics} rows={d.states.rows} />
+        <StateExplorer metrics={d.states.metrics} rows={d.states.rows} initial="federal_grants_per_capita" />
+        <ChartCard
+          title="Federal contracts by congressional district"
+          subtitle={`${d.awardYear} · largest 15, by where the work is performed`}
+          source={SOURCES.awards}
+          table={rankedTable(d.topDistricts, "District", "usd")}
+        >
+          <RankedBars items={d.topDistricts} unit="usd" limit={d.topDistricts.length} slot={3} />
+        </ChartCard>
         <p className="text-sm text-slate-500 dark:text-slate-400">
           Your own district&apos;s representatives are on{" "}
           <Link href="/my-government" className="underline underline-offset-2">
             My Government
           </Link>
           .
-        </p>
-      </Section>
-
-      {/* -------------------------------------------------------------- Sources */}
-      <Section id="sources" title="Sources and methods" question="Every figure on this page comes from the datasets below.">
-        <DatasetList datasets={d.datasets} uses={USES} />
-        <p className="text-sm text-slate-500 dark:text-slate-400">
-          Fiscal years run October to September. Dollar figures are nominal.{" "}
-          <Link href="/datasets" className="font-medium text-slate-900 underline underline-offset-2 dark:text-white">
-            Browse all datasets
-          </Link>
         </p>
       </Section>
     </div>

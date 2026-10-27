@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { matchedAddressError } from "./address";
 
 const ARCGIS_SUGGEST_URL =
   "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/suggest";
@@ -89,7 +90,8 @@ export function parseResolvedSuggestion(payload: unknown, selected: string): Res
   const candidate = parsed.data.candidates?.find((item) =>
     item.score >= 90
     && ADDRESS_MATCH_TYPES.has(item.attributes?.Addr_type ?? "")
-    && item.address.trim().match(/^(\d+[A-Z]?)(?:\s|$)/i)?.[1]?.toUpperCase() === selectedNumber,
+    && item.address.trim().match(/^(\d+[A-Z]?)(?:\s|$)/i)?.[1]?.toUpperCase() === selectedNumber
+    && !matchedAddressError(selected, item.address),
   );
   if (!candidate) return null;
   return { address: selected.replace(/,\s*USA$/i, ""), longitude: candidate.location.x, latitude: candidate.location.y };
@@ -98,14 +100,16 @@ export function parseResolvedSuggestion(payload: unknown, selected: string): Res
 // A selected suggestion already identifies one address point, so resolve it
 // directly instead of re-geocoding its text, which can land on a different
 // address range (e.g. ArcGIS "Piedmont Ave NE" vs. Census "Piedmont Ave SE").
-export async function resolveSuggestion(text: string, magicKey: string): Promise<ResolvedAddress> {
+// Complete free-typed addresses use the same resolver as a fallback when the
+// Census address matcher changes a meaningful part of the street address.
+export async function resolveSuggestion(text: string, magicKey?: string): Promise<ResolvedAddress> {
   const parameters = new URLSearchParams({
     SingleLine: text,
-    magicKey,
     outFields: "Addr_type",
     maxLocations: "1",
     f: "json",
   });
+  if (magicKey) parameters.set("magicKey", magicKey);
 
   const response = await fetch(ARCGIS_CANDIDATES_URL, {
     method: "POST",

@@ -1,4 +1,4 @@
-import { and, desc, eq, isNull } from "drizzle-orm";
+import { and, desc, eq, inArray, isNull } from "drizzle-orm";
 import { db } from "./client";
 import { quizSessions } from "./schema";
 import type { QuizAnswer, RefineTargets } from "../quiz/engine";
@@ -7,9 +7,6 @@ import type { IssueId } from "../quiz/types";
 
 export type QuizVisibility = "public" | "private";
 export type QuizStatus = "in_progress" | "complete";
-
-// Unclaimed quizzes are deleted after this long (docs/quiz-plan.md).
-export const UNCLAIMED_TTL_DAYS = 7;
 
 export interface QuizSession {
   id: string;
@@ -51,10 +48,6 @@ function toSession(row: typeof quizSessions.$inferSelect): QuizSession {
   };
 }
 
-export function expiresAt(session: Pick<QuizSession, "createdAt">): Date {
-  return new Date(session.createdAt.getTime() + UNCLAIMED_TTL_DAYS * 86_400_000);
-}
-
 export async function createQuizSession(input: {
   slug: string;
   editTokenHash: string;
@@ -69,13 +62,9 @@ export async function createQuizSession(input: {
   return toSession(row);
 }
 
-// Expired unclaimed quizzes read as missing even before the purge job runs.
 export async function getQuizSession(slug: string): Promise<QuizSession | null> {
   const row = await db.query.quizSessions.findFirst({ where: eq(quizSessions.slug, slug) });
-  if (!row) return null;
-  const session = toSession(row);
-  if (!session.ownerId && expiresAt(session) < new Date()) return null;
-  return session;
+  return row ? toSession(row) : null;
 }
 
 export async function saveQuizProgress(
@@ -126,5 +115,11 @@ export async function listQuizSessions(ownerId: string): Promise<QuizSession[]> 
     where: eq(quizSessions.ownerId, ownerId),
     orderBy: desc(quizSessions.updatedAt),
   });
+  return rows.map(toSession);
+}
+
+export async function getQuizSessionsBySlugs(slugs: string[]): Promise<QuizSession[]> {
+  if (slugs.length === 0) return [];
+  const rows = await db.query.quizSessions.findMany({ where: inArray(quizSessions.slug, slugs) });
   return rows.map(toSession);
 }

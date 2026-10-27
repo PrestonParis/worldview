@@ -35,6 +35,8 @@ export function partyLetter(party: string | null | undefined): PartyLetter | nul
 export interface RaceSummary {
   id: string;
   name: string;
+  // elections.office: "U.S. Senate", "Governor"…
+  office: string;
   // "MI", "MI-03", or "US" for a national presidential row.
   code: string;
   stateAbbr: string | null;

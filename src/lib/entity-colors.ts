@@ -8,6 +8,7 @@ export interface EntityColor {
 
 export const entityColors: Record<EntityType, EntityColor> = {
   politician: { bg: "#EFF6FF", border: "#3B82F6", text: "#1D4ED8" },
+  judge: { bg: "#EEF2FF", border: "#6366F1", text: "#4338CA" },
   pundit: { bg: "#FFF7ED", border: "#F97316", text: "#C2410C" },
   journalist: { bg: "#ECFDF5", border: "#10B981", text: "#047857" },
   organization: { bg: "#FAF5FF", border: "#A855F7", text: "#7E22CE" },
