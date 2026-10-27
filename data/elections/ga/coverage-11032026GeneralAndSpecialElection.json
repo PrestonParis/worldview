@@ -1,0 +1,962 @@
+{
+  "_comment": "Expected contests per county (all contests on any ballot style in the county, state and local) from qualified-candidate lists, sample ballots and county notices. Leave expected null until checked: the report shows null as unverified. municipalities: cities that may run their own election outside the county board.",
+  "election": "11032026GeneralAndSpecialElection",
+  "verifiedAt": null,
+  "counties": {
+    "appling-county-ga": {
+      "name": "Appling County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 23 contests on 2026-10-24 (feed, not a check)"
+    },
+    "atkinson-county-ga": {
+      "name": "Atkinson County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 21 contests on 2026-10-24 (feed, not a check)"
+    },
+    "bacon-county-ga": {
+      "name": "Bacon County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 25 contests on 2026-10-24 (feed, not a check)"
+    },
+    "baker-county-ga": {
+      "name": "Baker County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 18 contests on 2026-10-24 (feed, not a check)"
+    },
+    "baldwin-county-ga": {
+      "name": "Baldwin County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 21 contests on 2026-10-24 (feed, not a check)"
+    },
+    "banks-county-ga": {
+      "name": "Banks County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 22 contests on 2026-10-24 (feed, not a check)"
+    },
+    "barrow-county-ga": {
+      "name": "Barrow County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 33 contests on 2026-10-24 (feed, not a check)"
+    },
+    "bartow-county-ga": {
+      "name": "Bartow County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 28 contests on 2026-10-24 (feed, not a check)"
+    },
+    "ben-hill-county-ga": {
+      "name": "Ben Hill County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 19 contests on 2026-10-24 (feed, not a check)"
+    },
+    "berrien-county-ga": {
+      "name": "Berrien County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 26 contests on 2026-10-24 (feed, not a check)"
+    },
+    "bibb-county-ga": {
+      "name": "Bibb County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 27 contests on 2026-10-24 (feed, not a check)"
+    },
+    "bleckley-county-ga": {
+      "name": "Bleckley County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 18 contests on 2026-10-24 (feed, not a check)"
+    },
+    "brantley-county-ga": {
+      "name": "Brantley County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 21 contests on 2026-10-24 (feed, not a check)"
+    },
+    "brooks-county-ga": {
+      "name": "Brooks County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 26 contests on 2026-10-24 (feed, not a check)"
+    },
+    "bryan-county-ga": {
+      "name": "Bryan County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 28 contests on 2026-10-24 (feed, not a check)"
+    },
+    "bulloch-county-ga": {
+      "name": "Bulloch County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 24 contests on 2026-10-24 (feed, not a check)"
+    },
+    "burke-county-ga": {
+      "name": "Burke County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 20 contests on 2026-10-24 (feed, not a check)"
+    },
+    "butts-county-ga": {
+      "name": "Butts County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 21 contests on 2026-10-24 (feed, not a check)"
+    },
+    "calhoun-county-ga": {
+      "name": "Calhoun County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 22 contests on 2026-10-24 (feed, not a check)"
+    },
+    "camden-county-ga": {
+      "name": "Camden County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 27 contests on 2026-10-24 (feed, not a check)"
+    },
+    "candler-county-ga": {
+      "name": "Candler County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 24 contests on 2026-10-24 (feed, not a check)"
+    },
+    "carroll-county-ga": {
+      "name": "Carroll County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 26 contests on 2026-10-24 (feed, not a check)"
+    },
+    "catoosa-county-ga": {
+      "name": "Catoosa County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 23 contests on 2026-10-24 (feed, not a check)"
+    },
+    "charlton-county-ga": {
+      "name": "Charlton County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 26 contests on 2026-10-24 (feed, not a check)"
+    },
+    "chatham-county-ga": {
+      "name": "Chatham County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 31 contests on 2026-10-24 (feed, not a check)"
+    },
+    "chattahoochee-county-ga": {
+      "name": "Chattahoochee County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 17 contests on 2026-10-24 (feed, not a check)"
+    },
+    "chattooga-county-ga": {
+      "name": "Chattooga County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 24 contests on 2026-10-24 (feed, not a check)"
+    },
+    "cherokee-county-ga": {
+      "name": "Cherokee County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 41 contests on 2026-10-24 (feed, not a check)"
+    },
+    "clarke-county-ga": {
+      "name": "Clarke County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 25 contests on 2026-10-24 (feed, not a check)"
+    },
+    "clay-county-ga": {
+      "name": "Clay County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 22 contests on 2026-10-24 (feed, not a check)"
+    },
+    "clayton-county-ga": {
+      "name": "Clayton County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 31 contests on 2026-10-24 (feed, not a check)"
+    },
+    "clinch-county-ga": {
+      "name": "Clinch County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 21 contests on 2026-10-24 (feed, not a check)"
+    },
+    "cobb-county-ga": {
+      "name": "Cobb County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 49 contests on 2026-10-24 (feed, not a check)"
+    },
+    "coffee-county-ga": {
+      "name": "Coffee County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 24 contests on 2026-10-24 (feed, not a check)"
+    },
+    "colquitt-county-ga": {
+      "name": "Colquitt County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 21 contests on 2026-10-24 (feed, not a check)"
+    },
+    "columbia-county-ga": {
+      "name": "Columbia County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 27 contests on 2026-10-24 (feed, not a check)"
+    },
+    "cook-county-ga": {
+      "name": "Cook County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 22 contests on 2026-10-24 (feed, not a check)"
+    },
+    "coweta-county-ga": {
+      "name": "Coweta County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 27 contests on 2026-10-24 (feed, not a check)"
+    },
+    "crawford-county-ga": {
+      "name": "Crawford County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 19 contests on 2026-10-24 (feed, not a check)"
+    },
+    "crisp-county-ga": {
+      "name": "Crisp County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 25 contests on 2026-10-24 (feed, not a check)"
+    },
+    "dade-county-ga": {
+      "name": "Dade County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 23 contests on 2026-10-24 (feed, not a check)"
+    },
+    "dawson-county-ga": {
+      "name": "Dawson County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 25 contests on 2026-10-24 (feed, not a check)"
+    },
+    "decatur-county-ga": {
+      "name": "Decatur County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 22 contests on 2026-10-24 (feed, not a check)"
+    },
+    "dekalb-county-ga": {
+      "name": "DeKalb County",
+      "expected": 52,
+      "source": "https://dekalbcountyga.gov/sites/default/files/2026-09/sample-booklet.pdf",
+      "notes": "Composite sample ballot: 14 federal/statewide, 23 legislative, 3 commission, Soil & Water, 5 city contests; ESPLOST, Brookhaven homestead, Tucker annexation, 3 constitutional amendments. Checked 2026-10-27."
+    },
+    "dodge-county-ga": {
+      "name": "Dodge County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 20 contests on 2026-10-24 (feed, not a check)"
+    },
+    "dooly-county-ga": {
+      "name": "Dooly County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 23 contests on 2026-10-24 (feed, not a check)"
+    },
+    "dougherty-county-ga": {
+      "name": "Dougherty County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 27 contests on 2026-10-24 (feed, not a check)"
+    },
+    "douglas-county-ga": {
+      "name": "Douglas County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 29 contests on 2026-10-24 (feed, not a check)"
+    },
+    "early-county-ga": {
+      "name": "Early County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 21 contests on 2026-10-24 (feed, not a check)"
+    },
+    "echols-county-ga": {
+      "name": "Echols County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 19 contests on 2026-10-24 (feed, not a check)"
+    },
+    "effingham-county-ga": {
+      "name": "Effingham County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 26 contests on 2026-10-24 (feed, not a check)"
+    },
+    "elbert-county-ga": {
+      "name": "Elbert County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 24 contests on 2026-10-24 (feed, not a check)"
+    },
+    "emanuel-county-ga": {
+      "name": "Emanuel County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 22 contests on 2026-10-24 (feed, not a check)"
+    },
+    "evans-county-ga": {
+      "name": "Evans County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 22 contests on 2026-10-24 (feed, not a check)"
+    },
+    "fannin-county-ga": {
+      "name": "Fannin County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 21 contests on 2026-10-24 (feed, not a check)"
+    },
+    "fayette-county-ga": {
+      "name": "Fayette County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 29 contests on 2026-10-24 (feed, not a check)"
+    },
+    "floyd-county-ga": {
+      "name": "Floyd County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 25 contests on 2026-10-24 (feed, not a check)"
+    },
+    "forsyth-county-ga": {
+      "name": "Forsyth County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 31 contests on 2026-10-24 (feed, not a check)"
+    },
+    "franklin-county-ga": {
+      "name": "Franklin County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 23 contests on 2026-10-24 (feed, not a check)"
+    },
+    "fulton-county-ga": {
+      "name": "Fulton County",
+      "expected": 58,
+      "source": "https://www.fultoncountyga.gov/-/media/2026-Election/November-3-Election/Sample-Ballot--Consolidated--Nov-32026-General--Special-Election--1082026.pdf",
+      "notes": "Consolidated sample ballot: 14 federal/statewide, 31 legislative, commission chair + 4 commissioners (D4 special), Soil & Water; TSPLOST, ESPLOST, Sandy Springs redevelopment, Palmetto senior exemption, 3 constitutional amendments. Checked 2026-10-27."
+    },
+    "gilmer-county-ga": {
+      "name": "Gilmer County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 20 contests on 2026-10-24 (feed, not a check)"
+    },
+    "glascock-county-ga": {
+      "name": "Glascock County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 21 contests on 2026-10-24 (feed, not a check)"
+    },
+    "glynn-county-ga": {
+      "name": "Glynn County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 25 contests on 2026-10-24 (feed, not a check)"
+    },
+    "gordon-county-ga": {
+      "name": "Gordon County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 25 contests on 2026-10-24 (feed, not a check)"
+    },
+    "grady-county-ga": {
+      "name": "Grady County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 23 contests on 2026-10-24 (feed, not a check)"
+    },
+    "greene-county-ga": {
+      "name": "Greene County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 25 contests on 2026-10-24 (feed, not a check)"
+    },
+    "gwinnett-county-ga": {
+      "name": "Gwinnett County",
+      "expected": 54,
+      "source": "https://www.gwinnettcounty.com/documents/d/gwinnett-county/nov-3-general-election-special-election-consolidated-sample-ballot-english-spanish",
+      "notes": "Consolidated sample ballot (all possible races): 15 federal/statewide, 31 legislative, Solicitor General, 2 commission, Soil & Water, 3 constitutional amendments, 1 school homestead special election. Checked 2026-10-27."
+    },
+    "habersham-county-ga": {
+      "name": "Habersham County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 25 contests on 2026-10-24 (feed, not a check)"
+    },
+    "hall-county-ga": {
+      "name": "Hall County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 38 contests on 2026-10-24 (feed, not a check)"
+    },
+    "hancock-county-ga": {
+      "name": "Hancock County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 19 contests on 2026-10-24 (feed, not a check)"
+    },
+    "haralson-county-ga": {
+      "name": "Haralson County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 24 contests on 2026-10-24 (feed, not a check)"
+    },
+    "harris-county-ga": {
+      "name": "Harris County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 22 contests on 2026-10-24 (feed, not a check)"
+    },
+    "hart-county-ga": {
+      "name": "Hart County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 22 contests on 2026-10-24 (feed, not a check)"
+    },
+    "heard-county-ga": {
+      "name": "Heard County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 23 contests on 2026-10-24 (feed, not a check)"
+    },
+    "henry-county-ga": {
+      "name": "Henry County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 35 contests on 2026-10-24 (feed, not a check)"
+    },
+    "houston-county-ga": {
+      "name": "Houston County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 26 contests on 2026-10-24 (feed, not a check)"
+    },
+    "irwin-county-ga": {
+      "name": "Irwin County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 19 contests on 2026-10-24 (feed, not a check)"
+    },
+    "jackson-county-ga": {
+      "name": "Jackson County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 57 contests on 2026-10-24 (feed, not a check)"
+    },
+    "jasper-county-ga": {
+      "name": "Jasper County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 19 contests on 2026-10-24 (feed, not a check)"
+    },
+    "jeff-davis-county-ga": {
+      "name": "Jeff Davis County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 25 contests on 2026-10-24 (feed, not a check)"
+    },
+    "jefferson-county-ga": {
+      "name": "Jefferson County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 20 contests on 2026-10-24 (feed, not a check)"
+    },
+    "jenkins-county-ga": {
+      "name": "Jenkins County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 20 contests on 2026-10-24 (feed, not a check)"
+    },
+    "johnson-county-ga": {
+      "name": "Johnson County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 23 contests on 2026-10-24 (feed, not a check)"
+    },
+    "jones-county-ga": {
+      "name": "Jones County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 18 contests on 2026-10-24 (feed, not a check)"
+    },
+    "lamar-county-ga": {
+      "name": "Lamar County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 26 contests on 2026-10-24 (feed, not a check)"
+    },
+    "lanier-county-ga": {
+      "name": "Lanier County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 22 contests on 2026-10-24 (feed, not a check)"
+    },
+    "laurens-county-ga": {
+      "name": "Laurens County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 22 contests on 2026-10-24 (feed, not a check)"
+    },
+    "lee-county-ga": {
+      "name": "Lee County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 21 contests on 2026-10-24 (feed, not a check)"
+    },
+    "liberty-county-ga": {
+      "name": "Liberty County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 22 contests on 2026-10-24 (feed, not a check)"
+    },
+    "lincoln-county-ga": {
+      "name": "Lincoln County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 22 contests on 2026-10-24 (feed, not a check)"
+    },
+    "long-county-ga": {
+      "name": "Long County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 21 contests on 2026-10-24 (feed, not a check)"
+    },
+    "lowndes-county-ga": {
+      "name": "Lowndes County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 26 contests on 2026-10-24 (feed, not a check)"
+    },
+    "lumpkin-county-ga": {
+      "name": "Lumpkin County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 22 contests on 2026-10-24 (feed, not a check)"
+    },
+    "macon-county-ga": {
+      "name": "Macon County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 27 contests on 2026-10-24 (feed, not a check)"
+    },
+    "madison-county-ga": {
+      "name": "Madison County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 24 contests on 2026-10-24 (feed, not a check)"
+    },
+    "marion-county-ga": {
+      "name": "Marion County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 20 contests on 2026-10-24 (feed, not a check)"
+    },
+    "mcduffie-county-ga": {
+      "name": "McDuffie County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 21 contests on 2026-10-24 (feed, not a check)"
+    },
+    "mcintosh-county-ga": {
+      "name": "McIntosh County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 25 contests on 2026-10-24 (feed, not a check)"
+    },
+    "meriwether-county-ga": {
+      "name": "Meriwether County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 26 contests on 2026-10-24 (feed, not a check)"
+    },
+    "miller-county-ga": {
+      "name": "Miller County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 22 contests on 2026-10-24 (feed, not a check)"
+    },
+    "mitchell-county-ga": {
+      "name": "Mitchell County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 19 contests on 2026-10-24 (feed, not a check)"
+    },
+    "monroe-county-ga": {
+      "name": "Monroe County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 22 contests on 2026-10-24 (feed, not a check)"
+    },
+    "montgomery-county-ga": {
+      "name": "Montgomery County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 21 contests on 2026-10-24 (feed, not a check)"
+    },
+    "morgan-county-ga": {
+      "name": "Morgan County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 21 contests on 2026-10-24 (feed, not a check)"
+    },
+    "murray-county-ga": {
+      "name": "Murray County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 20 contests on 2026-10-24 (feed, not a check)"
+    },
+    "muscogee-county-ga": {
+      "name": "Muscogee County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 23 contests on 2026-10-24 (feed, not a check)"
+    },
+    "newton-county-ga": {
+      "name": "Newton County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 28 contests on 2026-10-24 (feed, not a check)"
+    },
+    "oconee-county-ga": {
+      "name": "Oconee County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 26 contests on 2026-10-24 (feed, not a check)"
+    },
+    "oglethorpe-county-ga": {
+      "name": "Oglethorpe County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 24 contests on 2026-10-24 (feed, not a check)"
+    },
+    "paulding-county-ga": {
+      "name": "Paulding County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 30 contests on 2026-10-24 (feed, not a check)"
+    },
+    "peach-county-ga": {
+      "name": "Peach County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 27 contests on 2026-10-24 (feed, not a check)"
+    },
+    "pickens-county-ga": {
+      "name": "Pickens County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 24 contests on 2026-10-24 (feed, not a check)"
+    },
+    "pierce-county-ga": {
+      "name": "Pierce County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 22 contests on 2026-10-24 (feed, not a check)"
+    },
+    "pike-county-ga": {
+      "name": "Pike County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 27 contests on 2026-10-24 (feed, not a check)"
+    },
+    "polk-county-ga": {
+      "name": "Polk County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 24 contests on 2026-10-24 (feed, not a check)"
+    },
+    "pulaski-county-ga": {
+      "name": "Pulaski County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 18 contests on 2026-10-24 (feed, not a check)"
+    },
+    "putnam-county-ga": {
+      "name": "Putnam County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 25 contests on 2026-10-24 (feed, not a check)"
+    },
+    "quitman-county-ga": {
+      "name": "Quitman County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 20 contests on 2026-10-24 (feed, not a check)"
+    },
+    "rabun-county-ga": {
+      "name": "Rabun County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 24 contests on 2026-10-24 (feed, not a check)"
+    },
+    "randolph-county-ga": {
+      "name": "Randolph County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 22 contests on 2026-10-24 (feed, not a check)"
+    },
+    "richmond-county-ga": {
+      "name": "Richmond County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 29 contests on 2026-10-24 (feed, not a check)"
+    },
+    "rockdale-county-ga": {
+      "name": "Rockdale County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 23 contests on 2026-10-24 (feed, not a check)"
+    },
+    "schley-county-ga": {
+      "name": "Schley County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 22 contests on 2026-10-24 (feed, not a check)"
+    },
+    "screven-county-ga": {
+      "name": "Screven County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 22 contests on 2026-10-24 (feed, not a check)"
+    },
+    "seminole-county-ga": {
+      "name": "Seminole County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 22 contests on 2026-10-24 (feed, not a check)"
+    },
+    "spalding-county-ga": {
+      "name": "Spalding County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 23 contests on 2026-10-24 (feed, not a check)"
+    },
+    "stephens-county-ga": {
+      "name": "Stephens County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 27 contests on 2026-10-24 (feed, not a check)"
+    },
+    "stewart-county-ga": {
+      "name": "Stewart County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 19 contests on 2026-10-24 (feed, not a check)"
+    },
+    "sumter-county-ga": {
+      "name": "Sumter County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 24 contests on 2026-10-24 (feed, not a check)"
+    },
+    "talbot-county-ga": {
+      "name": "Talbot County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 26 contests on 2026-10-24 (feed, not a check)"
+    },
+    "taliaferro-county-ga": {
+      "name": "Taliaferro County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 20 contests on 2026-10-24 (feed, not a check)"
+    },
+    "tattnall-county-ga": {
+      "name": "Tattnall County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 22 contests on 2026-10-24 (feed, not a check)"
+    },
+    "taylor-county-ga": {
+      "name": "Taylor County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 17 contests on 2026-10-24 (feed, not a check)"
+    },
+    "telfair-county-ga": {
+      "name": "Telfair County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 25 contests on 2026-10-24 (feed, not a check)"
+    },
+    "terrell-county-ga": {
+      "name": "Terrell County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 22 contests on 2026-10-24 (feed, not a check)"
+    },
+    "thomas-county-ga": {
+      "name": "Thomas County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 28 contests on 2026-10-24 (feed, not a check)"
+    },
+    "tift-county-ga": {
+      "name": "Tift County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 28 contests on 2026-10-24 (feed, not a check)"
+    },
+    "toombs-county-ga": {
+      "name": "Toombs County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 19 contests on 2026-10-24 (feed, not a check)"
+    },
+    "towns-county-ga": {
+      "name": "Towns County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 19 contests on 2026-10-24 (feed, not a check)"
+    },
+    "treutlen-county-ga": {
+      "name": "Treutlen County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 23 contests on 2026-10-24 (feed, not a check)"
+    },
+    "troup-county-ga": {
+      "name": "Troup County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 25 contests on 2026-10-24 (feed, not a check)"
+    },
+    "turner-county-ga": {
+      "name": "Turner County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 24 contests on 2026-10-24 (feed, not a check)"
+    },
+    "twiggs-county-ga": {
+      "name": "Twiggs County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 22 contests on 2026-10-24 (feed, not a check)"
+    },
+    "union-county-ga": {
+      "name": "Union County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 24 contests on 2026-10-24 (feed, not a check)"
+    },
+    "upson-county-ga": {
+      "name": "Upson County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 19 contests on 2026-10-24 (feed, not a check)"
+    },
+    "walker-county-ga": {
+      "name": "Walker County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 23 contests on 2026-10-24 (feed, not a check)"
+    },
+    "walton-county-ga": {
+      "name": "Walton County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 27 contests on 2026-10-24 (feed, not a check)"
+    },
+    "ware-county-ga": {
+      "name": "Ware County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 25 contests on 2026-10-24 (feed, not a check)"
+    },
+    "warren-county-ga": {
+      "name": "Warren County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 19 contests on 2026-10-24 (feed, not a check)"
+    },
+    "washington-county-ga": {
+      "name": "Washington County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 28 contests on 2026-10-24 (feed, not a check)"
+    },
+    "wayne-county-ga": {
+      "name": "Wayne County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 20 contests on 2026-10-24 (feed, not a check)"
+    },
+    "webster-county-ga": {
+      "name": "Webster County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 20 contests on 2026-10-24 (feed, not a check)"
+    },
+    "wheeler-county-ga": {
+      "name": "Wheeler County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 18 contests on 2026-10-24 (feed, not a check)"
+    },
+    "white-county-ga": {
+      "name": "White County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 25 contests on 2026-10-24 (feed, not a check)"
+    },
+    "whitfield-county-ga": {
+      "name": "Whitfield County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 24 contests on 2026-10-24 (feed, not a check)"
+    },
+    "wilcox-county-ga": {
+      "name": "Wilcox County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 24 contests on 2026-10-24 (feed, not a check)"
+    },
+    "wilkes-county-ga": {
+      "name": "Wilkes County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 21 contests on 2026-10-24 (feed, not a check)"
+    },
+    "wilkinson-county-ga": {
+      "name": "Wilkinson County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 30 contests on 2026-10-24 (feed, not a check)"
+    },
+    "worth-county-ga": {
+      "name": "Worth County",
+      "expected": null,
+      "source": null,
+      "notes": "SOS ballot definition had 25 contests on 2026-10-24 (feed, not a check)"
+    }
+  },
+  "municipalities": []
+}
