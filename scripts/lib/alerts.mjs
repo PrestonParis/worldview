@@ -29,7 +29,8 @@ export async function sendWebhook(message, url = process.env.ALERT_WEBHOOK_URL) 
 
 const ICON = { info: "ℹ️", warning: "⚠️", critical: "🚨" };
 
-// Returns true when the alert is new (and was sent).
+// Returns true when the alert is new. Info alerts (merge checks, ~20 on a
+// first load) stay in tracked_alerts for the operator panel and aren't pushed.
 export async function raiseAlert(pg, { election, key, kind, severity = "warning", contestId = null, message, payload = {} }, { dryRun = false } = {}) {
   const line = `${ICON[severity] ?? ""} [${election}] ${message}`;
   if (dryRun) {
@@ -43,7 +44,7 @@ export async function raiseAlert(pg, { election, key, kind, severity = "warning"
   );
   if (!rows.length) return false;
   console.log(`  alert: ${line}`);
-  if (await sendWebhook(line)) await pg.query("update tracked_alerts set sent_at = now() where id = $1", [rows[0].id]);
+  if (severity !== "info" && (await sendWebhook(line))) await pg.query("update tracked_alerts set sent_at = now() where id = $1", [rows[0].id]);
   return true;
 }
 

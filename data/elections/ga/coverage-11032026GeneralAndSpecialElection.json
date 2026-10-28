@@ -1,0 +1,1136 @@
+{
+  "_comment": "Expected contests per county (all contests on any ballot style in the county, state and local) from qualified-candidate lists, sample ballots and county notices. Leave expected null until checked: the report shows null as unverified. municipalities: cities that may run their own election outside the county board.",
+  "election": "11032026GeneralAndSpecialElection",
+  "verifiedAt": null,
+  "counties": {
+    "appling-county-ga": {
+      "name": "Appling County",
+      "expected": 23,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/appling-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "atkinson-county-ga": {
+      "name": "Atkinson County",
+      "expected": 21,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/atkinson-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "bacon-county-ga": {
+      "name": "Bacon County",
+      "expected": 25,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/bacon-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "baker-county-ga": {
+      "name": "Baker County",
+      "expected": 18,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/baker-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "baldwin-county-ga": {
+      "name": "Baldwin County",
+      "expected": 21,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/baldwin-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "banks-county-ga": {
+      "name": "Banks County",
+      "expected": 22,
+      "source": "https://www.bankscountyga.org/DocumentCenter/View/1183/OFFICIAL-NOVEMBER-2026-SAMPLE-BALLOT",
+      "notes": "Official sample ballot: 18 candidate contests, 4 questions; every SOS contest's candidates on the ballot. Checked 2026-10-28.",
+      "basis": "sample-ballot",
+      "verifiedAt": "2026-10-28"
+    },
+    "barrow-county-ga": {
+      "name": "Barrow County",
+      "expected": 33,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/barrow-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "bartow-county-ga": {
+      "name": "Bartow County",
+      "expected": 28,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/bartow-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "ben-hill-county-ga": {
+      "name": "Ben Hill County",
+      "expected": 19,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/ben-hill-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "berrien-county-ga": {
+      "name": "Berrien County",
+      "expected": 26,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/berrien-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "bibb-county-ga": {
+      "name": "Bibb County",
+      "expected": 27,
+      "source": "https://www.maconbibb.us/wp-content/uploads/2026/10/Sample-Ballot-for-November-3-2026-General-and-Special-Election-rev-9-17_10-15.pdf",
+      "notes": "Sample ballot (rev 10-15): 22 candidate contests, 5 questions; every SOS contest's candidates on the ballot. Checked 2026-10-28.",
+      "basis": "sample-ballot",
+      "verifiedAt": "2026-10-28"
+    },
+    "bleckley-county-ga": {
+      "name": "Bleckley County",
+      "expected": 18,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/bleckley-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "brantley-county-ga": {
+      "name": "Brantley County",
+      "expected": 21,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/brantley-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "brooks-county-ga": {
+      "name": "Brooks County",
+      "expected": 26,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/brooks-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "bryan-county-ga": {
+      "name": "Bryan County",
+      "expected": 28,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/bryan-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "bulloch-county-ga": {
+      "name": "Bulloch County",
+      "expected": 24,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/bulloch-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "burke-county-ga": {
+      "name": "Burke County",
+      "expected": 20,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/burke-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "butts-county-ga": {
+      "name": "Butts County",
+      "expected": 21,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/butts-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "calhoun-county-ga": {
+      "name": "Calhoun County",
+      "expected": 22,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/calhoun-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "camden-county-ga": {
+      "name": "Camden County",
+      "expected": 27,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/camden-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "candler-county-ga": {
+      "name": "Candler County",
+      "expected": 24,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/candler-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "carroll-county-ga": {
+      "name": "Carroll County",
+      "expected": 26,
+      "source": "https://www.carrollcountyga.gov/DocumentCenter/View/7466",
+      "notes": "Composite sample ballot (image pages, read by eye): 22 candidate contests, 3 constitutional amendments, Bremen homestead exemption; every SOS contest's candidates on the ballot. Checked 2026-10-28.",
+      "basis": "sample-ballot",
+      "verifiedAt": "2026-10-28"
+    },
+    "catoosa-county-ga": {
+      "name": "Catoosa County",
+      "expected": 23,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/catoosa-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "charlton-county-ga": {
+      "name": "Charlton County",
+      "expected": 26,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/charlton-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "chatham-county-ga": {
+      "name": "Chatham County",
+      "expected": 31,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/chatham-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "chattahoochee-county-ga": {
+      "name": "Chattahoochee County",
+      "expected": 17,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/chattahoochee-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "chattooga-county-ga": {
+      "name": "Chattooga County",
+      "expected": 24,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/chattooga-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "cherokee-county-ga": {
+      "name": "Cherokee County",
+      "expected": 41,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/cherokee-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "clarke-county-ga": {
+      "name": "Clarke County",
+      "expected": 25,
+      "source": "https://www.accgov.com/DocumentCenter/View/120655/ENGLISH-Sample-Ballot-November-2026",
+      "notes": "Composite sample ballot (image pages, read by eye): 20 candidate contests, 3 constitutional amendments, FLOST, ESPLOST; every SOS contest's candidates on the ballot. Checked 2026-10-28.",
+      "basis": "sample-ballot",
+      "verifiedAt": "2026-10-28"
+    },
+    "clay-county-ga": {
+      "name": "Clay County",
+      "expected": 22,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/clay-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "clayton-county-ga": {
+      "name": "Clayton County",
+      "expected": 31,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/clayton-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "clinch-county-ga": {
+      "name": "Clinch County",
+      "expected": 21,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/clinch-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "cobb-county-ga": {
+      "name": "Cobb County",
+      "expected": 49,
+      "source": "https://assets.cobbcounty.gov/files/2026-09/SAMPLE%20BALLOT%20DRAFT%20v4%20WEB.pdf",
+      "notes": "Consolidated sample ballot (posted as DRAFT v4, Sep 2026): 14 federal/statewide, 6 Senate, 16 House, solicitor, surveyor, 2 commissioners, 3 BOE posts, Soil & Water; SPLOST, Mableton redevelopment, 3 constitutional amendments. Every SOS contest on the ballot; spellings differ for Loyd/Lloyd (Soil & Water) and Solomon/Soloman Adesanya (HD 43). Checked 2026-10-28.",
+      "basis": "sample-ballot",
+      "verifiedAt": "2026-10-28"
+    },
+    "coffee-county-ga": {
+      "name": "Coffee County",
+      "expected": 24,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/coffee-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "colquitt-county-ga": {
+      "name": "Colquitt County",
+      "expected": 21,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/colquitt-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "columbia-county-ga": {
+      "name": "Columbia County",
+      "expected": 27,
+      "source": "https://columbiacountyga.gov/DocumentCenter/View/10721/OFFICIAL-COLUMBIA-COUNTY-COMPOSITE--SAMPLE-BALLOT--NOVEMBER-3-2026-GENERAL--SPECIAL-ELECTION",
+      "notes": "Composite sample ballot: 23 candidate contests, 3 constitutional amendments, HB 439 homeowner referendum; every SOS contest's candidates on the ballot. Checked 2026-10-28.",
+      "basis": "sample-ballot",
+      "verifiedAt": "2026-10-28"
+    },
+    "cook-county-ga": {
+      "name": "Cook County",
+      "expected": 22,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/cook-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "coweta-county-ga": {
+      "name": "Coweta County",
+      "expected": 27,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/coweta-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "crawford-county-ga": {
+      "name": "Crawford County",
+      "expected": 19,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/crawford-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "crisp-county-ga": {
+      "name": "Crisp County",
+      "expected": 25,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/crisp-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "dade-county-ga": {
+      "name": "Dade County",
+      "expected": 23,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/dade-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "dawson-county-ga": {
+      "name": "Dawson County",
+      "expected": 25,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/dawson-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "decatur-county-ga": {
+      "name": "Decatur County",
+      "expected": 22,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/decatur-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "dekalb-county-ga": {
+      "name": "DeKalb County",
+      "expected": 52,
+      "source": "https://dekalbcountyga.gov/sites/default/files/2026-09/sample-booklet.pdf",
+      "notes": "Composite sample ballot: 14 federal/statewide, 23 legislative, 3 commission, Soil & Water, 5 city contests; ESPLOST, Brookhaven homestead, Tucker annexation, 3 constitutional amendments. Checked 2026-10-27.",
+      "basis": "sample-ballot",
+      "verifiedAt": "2026-10-27"
+    },
+    "dodge-county-ga": {
+      "name": "Dodge County",
+      "expected": 20,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/dodge-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "dooly-county-ga": {
+      "name": "Dooly County",
+      "expected": 23,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/dooly-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "dougherty-county-ga": {
+      "name": "Dougherty County",
+      "expected": 27,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/dougherty-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "douglas-county-ga": {
+      "name": "Douglas County",
+      "expected": 29,
+      "source": "https://www.douglascountyga.gov/712/Sample-Ballots",
+      "notes": "Composite sample ballot (2 page images): 25 candidate contests, 3 constitutional amendments, TSPLOST; read by eye, every SOS contest's candidates on the ballot. Checked 2026-10-28.",
+      "basis": "sample-ballot",
+      "verifiedAt": "2026-10-28"
+    },
+    "early-county-ga": {
+      "name": "Early County",
+      "expected": 21,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/early-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "echols-county-ga": {
+      "name": "Echols County",
+      "expected": 19,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/echols-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "effingham-county-ga": {
+      "name": "Effingham County",
+      "expected": 26,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/effingham-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "elbert-county-ga": {
+      "name": "Elbert County",
+      "expected": 24,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/elbert-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "emanuel-county-ga": {
+      "name": "Emanuel County",
+      "expected": 22,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/emanuel-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "evans-county-ga": {
+      "name": "Evans County",
+      "expected": 22,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/evans-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "fannin-county-ga": {
+      "name": "Fannin County",
+      "expected": 21,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/fannin-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "fayette-county-ga": {
+      "name": "Fayette County",
+      "expected": 29,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/fayette-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "floyd-county-ga": {
+      "name": "Floyd County",
+      "expected": 25,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/floyd-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "forsyth-county-ga": {
+      "name": "Forsyth County",
+      "expected": 31,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/forsyth-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "franklin-county-ga": {
+      "name": "Franklin County",
+      "expected": 23,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/franklin-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "fulton-county-ga": {
+      "name": "Fulton County",
+      "expected": 58,
+      "source": "https://www.fultoncountyga.gov/-/media/2026-Election/November-3-Election/Sample-Ballot--Consolidated--Nov-32026-General--Special-Election--1082026.pdf",
+      "notes": "Consolidated sample ballot: 14 federal/statewide, 31 legislative, commission chair + 4 commissioners (D4 special), Soil & Water; TSPLOST, ESPLOST, Sandy Springs redevelopment, Palmetto senior exemption, 3 constitutional amendments. Checked 2026-10-27.",
+      "basis": "sample-ballot",
+      "verifiedAt": "2026-10-27"
+    },
+    "gilmer-county-ga": {
+      "name": "Gilmer County",
+      "expected": 20,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/gilmer-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "glascock-county-ga": {
+      "name": "Glascock County",
+      "expected": 21,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/glascock-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "glynn-county-ga": {
+      "name": "Glynn County",
+      "expected": 25,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/glynn-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "gordon-county-ga": {
+      "name": "Gordon County",
+      "expected": 25,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/gordon-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "grady-county-ga": {
+      "name": "Grady County",
+      "expected": 23,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/grady-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "greene-county-ga": {
+      "name": "Greene County",
+      "expected": 25,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/greene-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "gwinnett-county-ga": {
+      "name": "Gwinnett County",
+      "expected": 54,
+      "source": "https://www.gwinnettcounty.com/documents/d/gwinnett-county/nov-3-general-election-special-election-consolidated-sample-ballot-english-spanish",
+      "notes": "Consolidated sample ballot (all possible races): 15 federal/statewide, 31 legislative, Solicitor General, 2 commission, Soil & Water, 3 constitutional amendments, 1 school homestead special election. Checked 2026-10-27.",
+      "basis": "sample-ballot",
+      "verifiedAt": "2026-10-27"
+    },
+    "habersham-county-ga": {
+      "name": "Habersham County",
+      "expected": 25,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/habersham-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "hall-county-ga": {
+      "name": "Hall County",
+      "expected": 38,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/hall-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "hancock-county-ga": {
+      "name": "Hancock County",
+      "expected": 19,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/hancock-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "haralson-county-ga": {
+      "name": "Haralson County",
+      "expected": 24,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/haralson-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "harris-county-ga": {
+      "name": "Harris County",
+      "expected": 22,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/harris-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "hart-county-ga": {
+      "name": "Hart County",
+      "expected": 22,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/hart-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "heard-county-ga": {
+      "name": "Heard County",
+      "expected": 23,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/heard-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "henry-county-ga": {
+      "name": "Henry County",
+      "expected": 35,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/henry-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "houston-county-ga": {
+      "name": "Houston County",
+      "expected": 26,
+      "source": "https://www.houstoncountyga.gov/skins/userfiles/files/November%202026%20Sample%20Ballot.pdf",
+      "notes": "Sample ballot (all races and questions): 23 candidate contests, 3 constitutional amendments; every SOS contest's candidates on the ballot. Checked 2026-10-28.",
+      "basis": "sample-ballot",
+      "verifiedAt": "2026-10-28"
+    },
+    "irwin-county-ga": {
+      "name": "Irwin County",
+      "expected": 19,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/irwin-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "jackson-county-ga": {
+      "name": "Jackson County",
+      "expected": 61,
+      "source": "https://jacksoncountygov.com/DocumentCenter/View/6238/11326_SampleConsolidatedBallot",
+      "notes": "Consolidated sample ballot (image pages, read by eye): 58 candidate contests, 3 constitutional amendments. All 57 SOS contests are on it; 4 write-in-only fire advisory seats (Arcade Post 3, East Jackson Post 5, Harrisburg Posts 1 and 2) were not in the SOS ballot definition on 2026-10-24.",
+      "basis": "sample-ballot",
+      "verifiedAt": "2026-10-28"
+    },
+    "jasper-county-ga": {
+      "name": "Jasper County",
+      "expected": 19,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/jasper-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "jeff-davis-county-ga": {
+      "name": "Jeff Davis County",
+      "expected": 25,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/jeff-davis-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "jefferson-county-ga": {
+      "name": "Jefferson County",
+      "expected": 20,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/jefferson-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "jenkins-county-ga": {
+      "name": "Jenkins County",
+      "expected": 20,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/jenkins-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "johnson-county-ga": {
+      "name": "Johnson County",
+      "expected": 23,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/johnson-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "jones-county-ga": {
+      "name": "Jones County",
+      "expected": 18,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/jones-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "lamar-county-ga": {
+      "name": "Lamar County",
+      "expected": 26,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/lamar-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "lanier-county-ga": {
+      "name": "Lanier County",
+      "expected": 22,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/lanier-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "laurens-county-ga": {
+      "name": "Laurens County",
+      "expected": 22,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/laurens-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "lee-county-ga": {
+      "name": "Lee County",
+      "expected": 21,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/lee-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "liberty-county-ga": {
+      "name": "Liberty County",
+      "expected": 22,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/liberty-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "lincoln-county-ga": {
+      "name": "Lincoln County",
+      "expected": 22,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/lincoln-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "long-county-ga": {
+      "name": "Long County",
+      "expected": 21,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/long-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "lowndes-county-ga": {
+      "name": "Lowndes County",
+      "expected": 26,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/lowndes-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "lumpkin-county-ga": {
+      "name": "Lumpkin County",
+      "expected": 22,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/lumpkin-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "macon-county-ga": {
+      "name": "Macon County",
+      "expected": 27,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/macon-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "madison-county-ga": {
+      "name": "Madison County",
+      "expected": 24,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/madison-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "marion-county-ga": {
+      "name": "Marion County",
+      "expected": 20,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/marion-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "mcduffie-county-ga": {
+      "name": "McDuffie County",
+      "expected": 21,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/mcduffie-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "mcintosh-county-ga": {
+      "name": "McIntosh County",
+      "expected": 25,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/mcintosh-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "meriwether-county-ga": {
+      "name": "Meriwether County",
+      "expected": 26,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/meriwether-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "miller-county-ga": {
+      "name": "Miller County",
+      "expected": 22,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/miller-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "mitchell-county-ga": {
+      "name": "Mitchell County",
+      "expected": 19,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/mitchell-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "monroe-county-ga": {
+      "name": "Monroe County",
+      "expected": 22,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/monroe-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "montgomery-county-ga": {
+      "name": "Montgomery County",
+      "expected": 21,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/montgomery-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "morgan-county-ga": {
+      "name": "Morgan County",
+      "expected": 21,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/morgan-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "murray-county-ga": {
+      "name": "Murray County",
+      "expected": 20,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/murray-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "muscogee-county-ga": {
+      "name": "Muscogee County",
+      "expected": 23,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/muscogee-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "newton-county-ga": {
+      "name": "Newton County",
+      "expected": 28,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/newton-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "oconee-county-ga": {
+      "name": "Oconee County",
+      "expected": 26,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/oconee-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "oglethorpe-county-ga": {
+      "name": "Oglethorpe County",
+      "expected": 24,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/oglethorpe-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "paulding-county-ga": {
+      "name": "Paulding County",
+      "expected": 30,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/paulding-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "peach-county-ga": {
+      "name": "Peach County",
+      "expected": 27,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/peach-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "pickens-county-ga": {
+      "name": "Pickens County",
+      "expected": 24,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/pickens-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "pierce-county-ga": {
+      "name": "Pierce County",
+      "expected": 22,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/pierce-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "pike-county-ga": {
+      "name": "Pike County",
+      "expected": 27,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/pike-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "polk-county-ga": {
+      "name": "Polk County",
+      "expected": 24,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/polk-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "pulaski-county-ga": {
+      "name": "Pulaski County",
+      "expected": 18,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/pulaski-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "putnam-county-ga": {
+      "name": "Putnam County",
+      "expected": 25,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/putnam-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "quitman-county-ga": {
+      "name": "Quitman County",
+      "expected": 20,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/quitman-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "rabun-county-ga": {
+      "name": "Rabun County",
+      "expected": 24,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/rabun-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "randolph-county-ga": {
+      "name": "Randolph County",
+      "expected": 22,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/randolph-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "richmond-county-ga": {
+      "name": "Richmond County",
+      "expected": 29,
+      "source": "https://www.augustaga.gov/DocumentCenter/View/21864/Composite-Sample-Ballot-Nov-2026",
+      "notes": "Composite sample ballot: 26 candidate contests, 3 constitutional amendments; every SOS contest's candidates on the ballot. Checked 2026-10-28.",
+      "basis": "sample-ballot",
+      "verifiedAt": "2026-10-28"
+    },
+    "rockdale-county-ga": {
+      "name": "Rockdale County",
+      "expected": 23,
+      "source": "https://www.rockdalecountyga.gov/wp-content/uploads/2026/09/For-Emailing-2026-nov-03-general-sample-V2.pdf",
+      "notes": "Sample ballot: 19 candidate contests, 4 questions; every SOS contest's candidates on the ballot. Checked 2026-10-28.",
+      "basis": "sample-ballot",
+      "verifiedAt": "2026-10-28"
+    },
+    "schley-county-ga": {
+      "name": "Schley County",
+      "expected": 22,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/schley-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "screven-county-ga": {
+      "name": "Screven County",
+      "expected": 22,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/screven-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "seminole-county-ga": {
+      "name": "Seminole County",
+      "expected": 22,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/seminole-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "spalding-county-ga": {
+      "name": "Spalding County",
+      "expected": 23,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/spalding-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "stephens-county-ga": {
+      "name": "Stephens County",
+      "expected": 27,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/stephens-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "stewart-county-ga": {
+      "name": "Stewart County",
+      "expected": 19,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/stewart-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "sumter-county-ga": {
+      "name": "Sumter County",
+      "expected": 24,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/sumter-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "talbot-county-ga": {
+      "name": "Talbot County",
+      "expected": 26,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/talbot-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "taliaferro-county-ga": {
+      "name": "Taliaferro County",
+      "expected": 20,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/taliaferro-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "tattnall-county-ga": {
+      "name": "Tattnall County",
+      "expected": 22,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/tattnall-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "taylor-county-ga": {
+      "name": "Taylor County",
+      "expected": 17,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/taylor-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "telfair-county-ga": {
+      "name": "Telfair County",
+      "expected": 25,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/telfair-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "terrell-county-ga": {
+      "name": "Terrell County",
+      "expected": 22,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/terrell-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "thomas-county-ga": {
+      "name": "Thomas County",
+      "expected": 28,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/thomas-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "tift-county-ga": {
+      "name": "Tift County",
+      "expected": 28,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/tift-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "toombs-county-ga": {
+      "name": "Toombs County",
+      "expected": 19,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/toombs-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "towns-county-ga": {
+      "name": "Towns County",
+      "expected": 19,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/towns-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "treutlen-county-ga": {
+      "name": "Treutlen County",
+      "expected": 23,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/treutlen-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "troup-county-ga": {
+      "name": "Troup County",
+      "expected": 25,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/troup-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "turner-county-ga": {
+      "name": "Turner County",
+      "expected": 24,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/turner-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "twiggs-county-ga": {
+      "name": "Twiggs County",
+      "expected": 22,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/twiggs-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "union-county-ga": {
+      "name": "Union County",
+      "expected": 24,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/union-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "upson-county-ga": {
+      "name": "Upson County",
+      "expected": 19,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/upson-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "walker-county-ga": {
+      "name": "Walker County",
+      "expected": 23,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/walker-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "walton-county-ga": {
+      "name": "Walton County",
+      "expected": 27,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/walton-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "ware-county-ga": {
+      "name": "Ware County",
+      "expected": 25,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/ware-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "warren-county-ga": {
+      "name": "Warren County",
+      "expected": 19,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/warren-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "washington-county-ga": {
+      "name": "Washington County",
+      "expected": 28,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/washington-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "wayne-county-ga": {
+      "name": "Wayne County",
+      "expected": 20,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/wayne-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "webster-county-ga": {
+      "name": "Webster County",
+      "expected": 20,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/webster-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "wheeler-county-ga": {
+      "name": "Wheeler County",
+      "expected": 18,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/wheeler-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "white-county-ga": {
+      "name": "White County",
+      "expected": 25,
+      "source": "https://www.whitecountyga.gov/DocumentCenter/View/3746/11032026-Consolidated-Sample-Ballot-Write-Ins",
+      "notes": "Consolidated sample ballot: 22 candidate contests, 3 constitutional amendments; every SOS contest's candidates on the ballot. Checked 2026-10-28.",
+      "basis": "sample-ballot",
+      "verifiedAt": "2026-10-28"
+    },
+    "whitfield-county-ga": {
+      "name": "Whitfield County",
+      "expected": 24,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/whitfield-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "wilcox-county-ga": {
+      "name": "Wilcox County",
+      "expected": 24,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/wilcox-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "wilkes-county-ga": {
+      "name": "Wilkes County",
+      "expected": 21,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/wilkes-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "wilkinson-county-ga": {
+      "name": "Wilkinson County",
+      "expected": 30,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/wilkinson-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    },
+    "worth-county-ga": {
+      "name": "Worth County",
+      "expected": 25,
+      "source": "https://results.sos.ga.gov/results/public/api/elections/worth-county-ga/11032026GeneralAndSpecialElection/data",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "basis": "ballot-definition"
+    }
+  },
+  "municipalities": []
+}

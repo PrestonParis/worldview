@@ -43,7 +43,7 @@ The Nov 3 general is `11032026GeneralAndSpecialElection`. It is not in the SOS l
 
 - **Counties:** 159 county feeds for a general. A special election lists only the counties taking part. The run prints `n/159 counties`.
 - **Contests:** the May 19, 2026 primary had 1,780 contests (554 on the state feed). The general will be about that size: fewer partisan pairs, more county, city and school contests.
-- **Coverage manifest:** `data/elections/ga/coverage-<id>.json`. Create it with `npm run sync:ga-results -- --election=<id> --coverage-template`, then fill `expected` per county from qualified-candidate lists and sample ballots. Add each city that runs its own election under `municipalities` (with `resultsUrl`). Until a county is filled in, the report says it's unverified.
+- **Coverage manifest:** `data/elections/ga/coverage-<id>.json`. Create it with `npm run sync:ga-results -- --election=<id> --coverage-template`, then fill `expected` per county from qualified-candidate lists and sample ballots. Add each city that runs its own election under `municipalities` (with `resultsUrl`). Until a county is filled in, the report says it's unverified. Each county records its `basis`: `sample-ballot` (the county's composite ballot) or `notice` (its legal notices added up) are checked and carry `verifiedAt`; `ballot-definition` is a baseline copied from the SOS feed before the election, with no `verifiedAt`. Count one per candidate contest (each district or post) and one per question; write-in lines don't count.
 - **Municipal runoff rules:** `data/elections/ga/municipal-rules.json`. Add a city only with a cited charter or ordinance.
 
 ## 5. Health checks
@@ -68,7 +68,7 @@ The Nov 3 general is `11032026GeneralAndSpecialElection`. It is not in the SOS l
 | Exact tie | Margin 0 | Confirm. Ties rank first and name no winner. |
 | Certification went backwards | A contest was un-certified | Confirm with the county. Set `recount_pending` or `contested` in `overrides-<id>.json` if that's the reason. |
 | Coverage below 100% | A county feed failed, or a manifest count isn't met | Check the coverage panel. Fetch from the local authority if needed and note it in the manifest. |
-| Check merge | A cross-county race merged under different names, or a same-named question didn't merge | Confirm. Use `split` or `merge` in `overrides-<id>.json`. |
+| Check merge (operator panel only, not pushed) | A cross-county race merged under different names, or a same-named question didn't merge | Confirm. Use `split` or `merge` in `overrides-<id>.json`. |
 | Heartbeat (watchdog) | The worker is dead or didn't hand off | Start the laptop backup now, then restart the workflow. |
 | GA results watch run failed | The Actions job failed | Read the log, rerun the workflow, and cover from the laptop meanwhile. |
 
