@@ -41,8 +41,8 @@ import { arg, connectPg, finishRun, flag, loadEnv, sleep, startRun } from "./lib
 import { archiveRaw, lakeUrl, upload } from "./lib/lake.mjs";
 import { sosClient, SOS_BASE } from "./lib/ga-sos.mjs";
 import { bucket, raiseAlert, sendWebhook } from "./lib/alerts.mjs";
-import { bumpError, coverageRows, electionLinks, updateStatus, writeContests, writeCoverage } from "./lib/close-races-store.mjs";
-import { electionKind, parseElectionList, parseFeed } from "../src/lib/elections/close-races/parse.ts";
+import { bumpError, coverageRows, dropEmptyStatus, electionLinks, ensureStatus, updateStatus, writeContests, writeCoverage } from "./lib/close-races-store.mjs";
+import { electionKind, parseElectionList, parseFeed, replacementElection } from "../src/lib/elections/close-races/parse.ts";
 import { assembleContests, normalizeName, stableHash } from "../src/lib/elections/close-races/merge.ts";
 import { evaluateContest } from "../src/lib/elections/close-races/evaluate.ts";
 import { compareByPercent, compareByVotes } from "../src/lib/elections/close-races/margin.ts";
@@ -396,7 +396,9 @@ async function watch(ctx) {
 
   // SOS can take an election's feed down before results start (Nov 3 2026's
   // went 404/empty after Oct 24), so a run started early waits for it
-  // instead of failing. Only a missing feed is retried.
+  // instead of failing. Only a missing feed is retried. While waiting, the
+  // election list is checked in case SOS republishes under another id.
+  const date = ctx.election.date ?? arg("date", null);
   while (!stopping && Date.now() < deadline) {
     try {
       await loadOnce(ctx, "watch");
@@ -404,7 +406,34 @@ async function watch(ctx) {
     } catch (err) {
       if (ctx.state) throw err;
       console.warn(`  ${new Date().toISOString()} no feed for ${ctx.election.id} yet (${err.message}); retrying in ${every / 1000}s`);
-      if (!DRY_RUN) await updateStatus(ctx.pg, ctx.election.id, { heartbeat_at: new Date(), worker_id: WORKER, mode: "waiting" }).catch(() => {});
+      if (!DRY_RUN) {
+        try {
+          // An unlisted id has no SOS name yet; the first load replaces this one.
+          const name = ctx.election.name === ctx.election.id ? `Georgia ${ctx.election.kind} election, ${date}` : ctx.election.name;
+          if (date) await ensureStatus(ctx.pg, ctx.election.id, { name, date, kind: ctx.election.kind });
+          await updateStatus(ctx.pg, ctx.election.id, { heartbeat_at: new Date(), worker_id: WORKER, mode: "waiting" });
+        } catch (statusErr) {
+          console.warn(`  waiting heartbeat failed: ${statusErr.message}`);
+        }
+      }
+      const next = await listElections()
+        .then((list) => replacementElection(list, { id: ctx.election.id, date, kind: ctx.election.kind }))
+        .catch(() => null);
+      if (next) {
+        const from = ctx.election.id;
+        console.warn(`  ${from} isn't listed; SOS lists ${next.id} (${next.name}) for ${date}. Switching.`);
+        if (!DRY_RUN) {
+          await dropEmptyStatus(ctx.pg, from).catch(() => {});
+          await raiseAlert(ctx.pg, {
+            election: next.id,
+            key: `switched:${from}`,
+            kind: "election-id",
+            message: `Watching ${next.id} instead of ${from}: SOS lists the ${date} election under the new id. The report is /writ/close-races/${next.id}`,
+          }).catch(() => {});
+        }
+        Object.assign(ctx, newContext(next, ctx.pg));
+        continue;
+      }
       await sleep(every);
     }
   }

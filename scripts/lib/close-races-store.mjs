@@ -288,6 +288,23 @@ export async function updateStatus(pg, electionId, fields) {
   );
 }
 
+// A watch started before the feed exists has no row for its heartbeats to
+// update. Create a bare one so the watchdog and the workflow hand-off see
+// the worker waiting; the first full load fills in the rest.
+export async function ensureStatus(pg, electionId, { name, date, kind }) {
+  await pg.query(
+    `insert into tracked_ingest_status (source_election_id, source, election_name, election_date, election_kind, mode)
+     values ($1, 'ga-sos', $2, $3, $4, 'waiting')
+     on conflict (source_election_id) do nothing`,
+    [electionId, name, date, kind],
+  );
+}
+
+// An id that never got a feed (SOS published the election under another id).
+export async function dropEmptyStatus(pg, electionId) {
+  await pg.query("delete from tracked_ingest_status where source_election_id = $1 and contests = 0", [electionId]);
+}
+
 export async function bumpError(pg, electionId, message) {
   await pg.query(
     "update tracked_ingest_status set error_count = error_count + 1, last_error = $2, updated_at = now() where source_election_id = $1",

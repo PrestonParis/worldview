@@ -10,7 +10,7 @@ import type { CloseRaceFilters, ReportRow } from "@/lib/elections/close-races/ro
 import { countyNameFromSlug } from "@/lib/elections/close-races/csv";
 import { closeRaceQuery, FILTER_FLAGS, FLAG_LABELS, LEVEL_LABELS, STATUS_LABELS } from "@/lib/elections/close-races/filters";
 import { CONTEST_LEVELS, RESULT_STATUSES, type ContestFlag, type ResultStatus } from "@/lib/elections/close-races/types";
-import { ContestDetailToggle, ElectionPicker } from "./close-races-client";
+import { AutoRefresh, ContestDetailToggle, ElectionPicker } from "./close-races-client";
 
 // Writ's close-races report: every contest in the state's official results
 // feed, ranked by the votes separating the last winner from the first loser.
@@ -57,8 +57,11 @@ export function CloseRacesView({
   const shown = limit == null ? report.ranked : report.ranked.slice(0, limit);
   const filtered = Boolean(filters.level || filters.county || filters.municipality || filters.office || filters.maxPct != null || filters.maxVotes != null || filters.status || filters.flag);
 
+  const waiting = data.totalContests === 0 && !election.isOfficial;
+
   return (
     <div className="space-y-6">
+      {election.isOfficial ? null : <AutoRefresh />}
       <Surface className="p-5 sm:p-6">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="min-w-0">
@@ -68,7 +71,9 @@ export function CloseRacesView({
             </p>
             <h1 className="mt-2 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl dark:text-white">{election.name}</h1>
             <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-              {fmt(data.totalContests)} contests from the Georgia Secretary of State&apos;s results system, closest first.
+              {waiting
+                ? "Waiting for the Georgia Secretary of State to publish results. This page updates on its own."
+                : `${fmt(data.totalContests)} contests from the Georgia Secretary of State's results system, closest first.`}
             </p>
           </div>
           <div className="w-full lg:w-96">
@@ -141,7 +146,7 @@ export function CloseRacesView({
             ) : null}
           </>
         ) : (
-          <Surface className="p-6 text-sm text-slate-500">No contests match these filters.</Surface>
+          <Surface className="p-6 text-sm text-slate-500">{waiting ? "No results yet." : "No contests match these filters."}</Surface>
         )}
       </section>
 

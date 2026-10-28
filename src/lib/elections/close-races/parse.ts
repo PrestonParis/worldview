@@ -174,10 +174,29 @@ export function parseFeed(raw: Raw): ParsedFeed {
   };
 }
 
+export interface ListedElection {
+  id: string;
+  date: string;
+  name: string;
+  kind: ElectionKind;
+}
+
 /** The election list on /jurisdictions/Georgia. */
-export function parseElectionList(raw: Raw): { id: string; date: string; name: string; kind: ElectionKind }[] {
+export function parseElectionList(raw: Raw): ListedElection[] {
   return (raw?.elections ?? []).map((e: Raw) => {
     const name = text(e.name).trim();
     return { id: String(e.publicElectionId), date: String(e.electionDate), name, kind: electionKind(name) };
   });
+}
+
+/**
+ * The listed election a waiting watch should switch to: SOS can publish an
+ * election under a different id than the one it used before (Nov 3 2026's
+ * feed went 404 after Oct 24). Only when the given id isn't listed and
+ * exactly one election of the same kind is listed for the date.
+ */
+export function replacementElection(elections: ListedElection[], { id, date, kind }: { id: string; date: string | null; kind: ElectionKind }): ListedElection | null {
+  if (!date || elections.some((e) => e.id === id)) return null;
+  const onDate = elections.filter((e) => e.date === date && e.kind === kind);
+  return onDate.length === 1 ? onDate[0] : null;
 }

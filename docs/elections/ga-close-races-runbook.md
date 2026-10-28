@@ -17,7 +17,9 @@ Both of you subscribe to `ALERT_WEBHOOK_URL`. An ntfy.sh topic gives phone push.
 ## 2. Commands
 
 ```sh
-# Primary: GitHub → Actions → "GA results watch" → Run workflow
+# Primary: "GA results watch" starts itself at 4:17 pm ET on Nov 3 (schedule,
+# Nov 3 defaults). Check by 4:45 pm that a run is in progress; GitHub can delay
+# or drop scheduled runs. If none is, start it: Actions → Run workflow
 #   election=11032026GeneralAndSpecialElection, date=2026-11-03, every=180, until=5h45m, chain=true
 # It hands off to a fresh run every ~6 h until results are official.
 
@@ -37,7 +39,7 @@ SOS adds the election to its list close to the day. Check it:
 npm run sync:ga-results -- --list | head
 ```
 
-The Nov 3 general is `11032026GeneralAndSpecialElection`. It is not in the SOS list, so `--election=auto` can't find it: pass the id. Its feed was live on Oct 24 and returned 404/empty again on Oct 26; a watch started before the feed is back waits (mode `waiting`) and loads once it appears. Once the id is known (e.g. `2026NovGen`), pass it explicitly. The report is then at `/writ/close-races/<id>`.
+The Nov 3 general is `11032026GeneralAndSpecialElection`. It is not in the SOS list, so `--election=auto` can't find it: pass the id. Its feed was live on Oct 24 and returned 404/empty again on Oct 26. A watch started before the feed is back waits (mode `waiting`, with a status row so the watchdog and the hand-off can see it) and loads once it appears. The report shows "Waiting for … results" meanwhile. If SOS lists the date under a different id (e.g. `2026NovGen`) while the given id stays unlisted, the watch switches to it on its own, drops the empty row for the old id, and sends a warning alert with the new report URL (`/writ/close-races/<id>`). It only switches when exactly one election of the same kind is listed for the date; otherwise pass the id by hand.
 
 ## 4. Expected counts
 
@@ -113,5 +115,6 @@ Each command writes `exports/close-races/ga-close-races-<id>-by-<sort>-<timestam
 3. Send a test alert: `node -e 'import("./scripts/lib/alerts.mjs").then(m => m.sendWebhook("test"))'`.
 4. Check the source without writing: `npm run sync:ga-results -- --election=<id> --dry-run`.
 5. Load the 2026 cycle so far on cloud (primary, runoffs, specials): `ENV_FILE=.env.cloud npm run sync:ga-results -- --all`. The ingester refuses elections outside 2026.
-6. Run the rehearsal (§7). Check the public page loads on the production host.
-7. Export a database backup.
+6. Run the rehearsal (§7). Open the public page on the production host in a browser: the whole site sits behind Vercel's Security Checkpoint, so scripted requests (curl, a client's CSV script) get 429, and the ingester's revalidate call is blocked too (the data cache still expires every 60 s). Add a firewall bypass for `/writ/close-races` and `/api/writ/close-races` if anyone will fetch them by script.
+7. Test the hand-off on cloud once: Run workflow with `until=5m, chain=true`. A second run should start and `tracked_ingest_status` should hold a `waiting` row for the Nov 3 id. Cancel the second run.
+8. Export a database backup.

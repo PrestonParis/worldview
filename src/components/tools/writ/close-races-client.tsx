@@ -1,12 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronDown } from "lucide-react";
 import type { ContestDetail } from "@/lib/db/closeRaces";
 
-// Client pieces of the close-races report: the election picker and the
-// expandable contest detail (fetched on first open).
+// Client pieces of the close-races report: the election picker, the
+// expandable contest detail (fetched on first open), and the refresh that
+// keeps an open election's page current.
+
+/** Re-renders the page from the server every `seconds` while the tab is visible. */
+export function AutoRefresh({ seconds = 60 }: { seconds?: number }) {
+  const router = useRouter();
+  useEffect(() => {
+    const id = setInterval(() => {
+      if (document.visibilityState === "visible") router.refresh();
+    }, seconds * 1000);
+    const onVisible = () => document.visibilityState === "visible" && router.refresh();
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      clearInterval(id);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, [router, seconds]);
+  return null;
+}
 
 export function ElectionPicker({ current, elections, query }: { current: string; elections: { id: string; label: string }[]; query: string }) {
   const router = useRouter();
