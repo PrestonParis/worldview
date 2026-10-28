@@ -19,7 +19,7 @@ import {
 import { loadProfileRoute } from "@/lib/people/profile-route";
 import { directTies, nameOf, sourcesFor, sourcesByKey } from "@/lib/people/profile-view";
 
-export const revalidate = 86400;
+export const revalidate = 604800;
 
 type Props = { params: Promise<{ slug: string }> };
 

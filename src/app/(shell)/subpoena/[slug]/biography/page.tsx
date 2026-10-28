@@ -7,7 +7,7 @@ import { chapterCitations, formatPartialDate, parseChapterBody, type Block, type
 import { loadProfileRoute } from "@/lib/people/profile-route";
 import { sourcesByKey } from "@/lib/people/profile-view";
 
-export const revalidate = 86400;
+export const revalidate = 604800;
 
 type Props = { params: Promise<{ slug: string }> };
 

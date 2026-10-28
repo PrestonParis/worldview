@@ -7,7 +7,7 @@ import { getEntityByPublicSlug } from "@/lib/db/entities";
 import { quoteDate, type StatementRecord } from "@/lib/people/profile-model";
 import { loadProfileRoute } from "@/lib/people/profile-route";
 
-export const revalidate = 86400;
+export const revalidate = 604800;
 
 type Props = { params: Promise<{ slug: string }> };
 

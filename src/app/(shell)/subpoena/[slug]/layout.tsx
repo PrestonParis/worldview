@@ -7,7 +7,13 @@ import { profileTabs, tabHref } from "@/lib/people/profile-modules";
 import { loadProfileShell } from "@/lib/people/profile-route";
 import { heroRoles, keyFacts, updatedOn } from "@/lib/people/profile-view";
 
-export const revalidate = 86400;
+export const revalidate = 604800;
+
+// Nothing prebuilt; each case file and tab is rendered on first request, then
+// cached. Declared on the layout so every tab below it is cached too.
+export async function generateStaticParams() {
+  return [];
+}
 
 const ORG_TYPES = new Set(["organization", "company"]);
 

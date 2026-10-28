@@ -36,7 +36,7 @@ export const TOOL_SHELLS: Record<SuiteToolId, ToolShellConfig> = {
     name: "Subpoena",
     tagline: "People & money",
     home: "/subpoena",
-    search: { action: "/subpoena", placeholder: "Search people, PACs and companies" },
+    search: { action: "/subpoena/search", placeholder: "Search people, PACs and companies" },
     recentLabel: "Recent case files",
     rail: [
       { label: "Subpoena", links: [{ label: "Search", href: "/subpoena", exact: true }] },

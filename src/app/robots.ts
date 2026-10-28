@@ -27,10 +27,26 @@ const TRAINING_CRAWLERS = [
   "Timpibot",
 ];
 
+// SEO and backlink crawlers walk every long-tail page and send no visitors
+// (in Oct 2026 AhrefsBot was 83% of requests); the firewall denies them too.
+const SEO_CRAWLERS = [
+  "AhrefsBot",
+  "SemrushBot",
+  "MJ12bot",
+  "DotBot",
+  "PetalBot",
+  "DataForSeoBot",
+  "BLEXBot",
+  "serpstatbot",
+  "Barkrowler",
+  "SeznamBot",
+  "AwarioBot",
+];
+
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
-      { userAgent: TRAINING_CRAWLERS, disallow: "/" },
+      { userAgent: [...TRAINING_CRAWLERS, ...SEO_CRAWLERS], disallow: "/" },
       { userAgent: "*", allow: "/", disallow: [...PRIVATE, "/*?"] },
     ],
     sitemap: `${SITE_URL}/sitemap.xml`,

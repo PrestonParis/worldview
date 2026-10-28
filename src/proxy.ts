@@ -18,6 +18,14 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(plain, 301);
   }
 
+  // The /subpoena directory is cached; its search (and the old ?entity= links)
+  // moved to /subpoena/search.
+  if (request.nextUrl.pathname === "/subpoena" && request.nextUrl.search) {
+    const search = request.nextUrl.clone();
+    search.pathname = "/subpoena/search";
+    return NextResponse.redirect(search, 308);
+  }
+
   // /states opens on the visitor's own state, from Vercel's IP geolocation.
   // Crawlers and "/states?all" (the state pages' breadcrumb) get the index.
   if (request.nextUrl.pathname === "/states" && !request.nextUrl.search && !CRAWLER.test(request.headers.get("user-agent") ?? "")) {
