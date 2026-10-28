@@ -41,9 +41,10 @@
     "banks-county-ga": {
       "name": "Banks County",
       "expected": 22,
-      "source": "https://results.sos.ga.gov/results/public/api/elections/banks-county-ga/11032026GeneralAndSpecialElection/data",
-      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
-      "basis": "ballot-definition"
+      "source": "https://www.bankscountyga.org/DocumentCenter/View/1183/OFFICIAL-NOVEMBER-2026-SAMPLE-BALLOT",
+      "notes": "Official sample ballot: 18 candidate contests, 4 questions; every SOS contest's candidates on the ballot. Checked 2026-10-28.",
+      "basis": "sample-ballot",
+      "verifiedAt": "2026-10-28"
     },
     "barrow-county-ga": {
       "name": "Barrow County",
@@ -202,9 +203,10 @@
     "clarke-county-ga": {
       "name": "Clarke County",
       "expected": 25,
-      "source": "https://results.sos.ga.gov/results/public/api/elections/clarke-county-ga/11032026GeneralAndSpecialElection/data",
-      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
-      "basis": "ballot-definition"
+      "source": "https://www.accgov.com/DocumentCenter/View/120655/ENGLISH-Sample-Ballot-November-2026",
+      "notes": "Composite sample ballot (image pages, read by eye): 20 candidate contests, 3 constitutional amendments, FLOST, ESPLOST; every SOS contest's candidates on the ballot. Checked 2026-10-28.",
+      "basis": "sample-ballot",
+      "verifiedAt": "2026-10-28"
     },
     "clay-county-ga": {
       "name": "Clay County",
@@ -251,9 +253,10 @@
     "columbia-county-ga": {
       "name": "Columbia County",
       "expected": 27,
-      "source": "https://results.sos.ga.gov/results/public/api/elections/columbia-county-ga/11032026GeneralAndSpecialElection/data",
-      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
-      "basis": "ballot-definition"
+      "source": "https://columbiacountyga.gov/DocumentCenter/View/10721/OFFICIAL-COLUMBIA-COUNTY-COMPOSITE--SAMPLE-BALLOT--NOVEMBER-3-2026-GENERAL--SPECIAL-ELECTION",
+      "notes": "Composite sample ballot: 23 candidate contests, 3 constitutional amendments, HB 439 homeowner referendum; every SOS contest's candidates on the ballot. Checked 2026-10-28.",
+      "basis": "sample-ballot",
+      "verifiedAt": "2026-10-28"
     },
     "cook-county-ga": {
       "name": "Cook County",
@@ -336,9 +339,10 @@
     "douglas-county-ga": {
       "name": "Douglas County",
       "expected": 29,
-      "source": "https://results.sos.ga.gov/results/public/api/elections/douglas-county-ga/11032026GeneralAndSpecialElection/data",
-      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
-      "basis": "ballot-definition"
+      "source": "https://www.douglascountyga.gov/712/Sample-Ballots",
+      "notes": "Composite sample ballot (2 page images): 25 candidate contests, 3 constitutional amendments, TSPLOST; read by eye, every SOS contest's candidates on the ballot. Checked 2026-10-28.",
+      "basis": "sample-ballot",
+      "verifiedAt": "2026-10-28"
     },
     "early-county-ga": {
       "name": "Early County",
@@ -534,9 +538,10 @@
     "houston-county-ga": {
       "name": "Houston County",
       "expected": 26,
-      "source": "https://results.sos.ga.gov/results/public/api/elections/houston-county-ga/11032026GeneralAndSpecialElection/data",
-      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
-      "basis": "ballot-definition"
+      "source": "https://www.houstoncountyga.gov/skins/userfiles/files/November%202026%20Sample%20Ballot.pdf",
+      "notes": "Sample ballot (all races and questions): 23 candidate contests, 3 constitutional amendments; every SOS contest's candidates on the ballot. Checked 2026-10-28.",
+      "basis": "sample-ballot",
+      "verifiedAt": "2026-10-28"
     },
     "irwin-county-ga": {
       "name": "Irwin County",
@@ -547,10 +552,11 @@
     },
     "jackson-county-ga": {
       "name": "Jackson County",
-      "expected": 57,
-      "source": "https://results.sos.ga.gov/results/public/api/elections/jackson-county-ga/11032026GeneralAndSpecialElection/data",
-      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
-      "basis": "ballot-definition"
+      "expected": 61,
+      "source": "https://jacksoncountygov.com/DocumentCenter/View/6238/11326_SampleConsolidatedBallot",
+      "notes": "Consolidated sample ballot (image pages, read by eye): 58 candidate contests, 3 constitutional amendments. All 57 SOS contests are on it; 4 write-in-only fire advisory seats (Arcade Post 3, East Jackson Post 5, Harrisburg Posts 1 and 2) were not in the SOS ballot definition on 2026-10-24.",
+      "basis": "sample-ballot",
+      "verifiedAt": "2026-10-28"
     },
     "jasper-county-ga": {
       "name": "Jasper County",
@@ -849,16 +855,18 @@
     "richmond-county-ga": {
       "name": "Richmond County",
       "expected": 29,
-      "source": "https://results.sos.ga.gov/results/public/api/elections/richmond-county-ga/11032026GeneralAndSpecialElection/data",
-      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
-      "basis": "ballot-definition"
+      "source": "https://www.augustaga.gov/DocumentCenter/View/21864/Composite-Sample-Ballot-Nov-2026",
+      "notes": "Composite sample ballot: 26 candidate contests, 3 constitutional amendments; every SOS contest's candidates on the ballot. Checked 2026-10-28.",
+      "basis": "sample-ballot",
+      "verifiedAt": "2026-10-28"
     },
     "rockdale-county-ga": {
       "name": "Rockdale County",
       "expected": 23,
-      "source": "https://results.sos.ga.gov/results/public/api/elections/rockdale-county-ga/11032026GeneralAndSpecialElection/data",
-      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
-      "basis": "ballot-definition"
+      "source": "https://www.rockdalecountyga.gov/wp-content/uploads/2026/09/For-Emailing-2026-nov-03-general-sample-V2.pdf",
+      "notes": "Sample ballot: 19 candidate contests, 4 questions; every SOS contest's candidates on the ballot. Checked 2026-10-28.",
+      "basis": "sample-ballot",
+      "verifiedAt": "2026-10-28"
     },
     "schley-county-ga": {
       "name": "Schley County",
@@ -1080,9 +1088,10 @@
     "white-county-ga": {
       "name": "White County",
       "expected": 25,
-      "source": "https://results.sos.ga.gov/results/public/api/elections/white-county-ga/11032026GeneralAndSpecialElection/data",
-      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
-      "basis": "ballot-definition"
+      "source": "https://www.whitecountyga.gov/DocumentCenter/View/3746/11032026-Consolidated-Sample-Ballot-Write-Ins",
+      "notes": "Consolidated sample ballot: 22 candidate contests, 3 constitutional amendments; every SOS contest's candidates on the ballot. Checked 2026-10-28.",
+      "basis": "sample-ballot",
+      "verifiedAt": "2026-10-28"
     },
     "whitfield-county-ga": {
       "name": "Whitfield County",
