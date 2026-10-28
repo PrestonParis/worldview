@@ -36,25 +36,25 @@ Quirks:
 - Uncontested races have one option (21 of Fulton's 50 contests in 2024). Count them but don't rank them.
 - A local contest that crosses county lines (Atlanta is in both Fulton and DeKalb) shows up in each county feed with `parentId: null`. Merge by normalized name plus election and sum the votes, and flag the merge in the run report.
 - SOS adds an election to the list close to election day, so poll the list.
-- Cities that run their own elections, outside the county board, may not be in this feed. The election-night reporting rule guarantees transmission of state-office results to the SOS, not a complete set of independently administered municipal contests. Inventory and measure this before each election.
+- Cities that run their own elections, outside the county board, may not be in this feed. The election-night reporting rule guarantees transmission of state-office results to the SOS, not a complete set of independently administered municipal contests. They are listed per election in `data/elections/ga/schedule.json` and read from the city's own page (see "City-run elections").
 
 Fallbacks:
 - OpenElections GA and Redistricting Data Hub precinct files cover federal, state, and legislative races only. MEDSL covers federal only.
 - No single alternative source has all local races. The SOS feed is the primary source; county and municipal election pages are the exception path for contests missing from it.
 
-### Coverage manifest
+### Coverage
 
-"All Georgia races" is a measured claim, not an assumption about the feed. Before election night, build an expected-contest manifest from the SOS election definition, qualified-candidate lists, sample ballots, and county or municipal notices.
+"All Georgia races" is a measured claim, not an assumption about the feed, and it is measured without hand counts. SOS publishes each election's ballot definition before polls close: every contest in every county feed, with zero votes. The first copy of each county feed is stored as that county's baseline (`tracked_contest_baseline`, keyed by normalized contest name; later feeds only add to it). Every load then compares each county feed with its baseline (`src/lib/elections/close-races/coverage.ts`):
 
-For every jurisdiction, record:
+- `complete`: every baseline contest is still in the feed;
+- `partial`: a baseline contest left the feed (the coverage row and alert name it);
+- `missing`: the county feed couldn't be fetched.
 
-- expected contest count and source;
-- observed SOS contest count;
-- missing, duplicate, or ambiguous contests;
-- whether the county or municipality administers and publishes its own election;
-- last verification time and reviewer note.
+City-run elections are listed as municipalities: expected is the contests configured for the city, observed is the contests tracked. The report header shows `observed / expected` contests and jurisdictions complete, and links to the coverage panel; it never claims a county complete that it hasn't fetched.
 
-The report header shows `observed / expected` and links to a coverage panel. A contest absent from the SOS feed is fetched from its local election authority when a machine-readable or stable published result is available. Otherwise the report names the missing jurisdiction; it never silently claims complete coverage.
+### City-run elections
+
+`schedule.json` lists, per election date, each city that runs its own election: its results page, poll-closing time, and each contest with its qualified candidates. `scripts/lib/city-results.mjs` stores the contests with no votes from the start. After polls close, every 10 minutes, it reads the page and any results document it links to (HTML or PDF, `unpdf`). A contest gets votes once every candidate has a vote count printed after their name (`src/lib/elections/close-races/city.ts`: percentages, dates, times and years are skipped; two different readings for one name are refused). Rows are stored under source `city:{id}` beside the SOS rows of the same election and ranked with them; a complete SOS round never removes them.
 
 Sanity check: a quick ranking of `2024NovGen` (state feed plus Fulton and
 Appling) puts State House 128 first (48 votes, 0.17 pts) and HD 105 second
@@ -93,9 +93,12 @@ New tables, independent of entities. The pattern follows `election_results`: key
 
 **`tracked_contest_coverage`**
 - `source_election_id`, jurisdiction id and name, jurisdiction type.
-- `expected_count`, `observed_count`, `status` (`complete | partial | missing | unverified`).
-- source URL, verification time, notes, and any locally published results URL.
-- Powers the report's completeness statement and the operator's missing-jurisdiction queue.
+- `expected_count` (baseline contests), `observed_count`, `status` (`complete | partial | missing`).
+- source URL, notes (dropped contests, city read status), and any locally published results URL.
+- Powers the report's completeness statement.
+
+**`tracked_contest_baseline`**
+- `source_election_id`, `jurisdiction_id` (county slug), `contest_key`, `name`, `captured_at`: the first copy of each county feed's contests.
 
 Precincts and raw JSON: write the raw `/data` payloads to the data lake (`src/lib/db/lake.ts`, `export-lake.yml`), not Postgres. That keeps every snapshot replayable without touching the 500 MB cap.
 
@@ -138,10 +141,19 @@ Source fallback order:
 
 Every fetch writes source URL, response timestamp, content hash, status and error information to the sync run. Apply bounded concurrency, exponential backoff and a request ceiling. Cache unchanged responses; election night is not permission to overload an undocumented public API.
 
-Where it runs:
-- **Election night:** the `GA results watch` workflow (`.github/workflows/ga-results-watch.yml`), which polls for up to 5h45m and then dispatches the next run while results are unofficial. It writes a heartbeat, last fetch, last write and error count to `tracked_ingest_status`; `GA results health` checks it every 10 minutes.
-- **Backup:** the same command from a laptop against `ENV_FILE=.env.cloud`. The importer is idempotent, so failover needs no cleanup.
-- **After election night:** `GA results daily` until every contest is official.
+### Unattended operation
+
+Nothing needs an operator. `data/elections/ga/schedule.json` lists the elections to follow (date, kind, SOS id if known, watch start, `stopAfter`, city-run elections).
+
+- **Start:** `GA results watch` (`.github/workflows/ga-results-watch.yml`) starts itself at 4:17 pm ET on each scheduled date and reads the election from the schedule. `--election=auto --date --kind` finds the listed election. If SOS hasn't listed it, the run watches the scheduled id, or a placeholder when that's null.
+- **Waiting:** while the feed is missing, the run waits (mode `waiting`, with a heartbeat).
+- **Id changes:** the run switches when SOS lists the election under another id. It records `replaces` on the new status row, and the report redirects the old URL.
+- **Every election on the date:** each one SOS lists for the date (a special runoff beside the general runoff, a recount) is followed in the same loop.
+- **Errors:** a failed fetch or write is logged and retried on the next round; it doesn't end the run.
+- **Hand-off:** each run polls for up to 5h45m. It then dispatches the next one, even after a failed or timed-out run, until every status row for the date is official or `stopAfter` passes (`scripts/ga-results-schedule.mjs --handoff`).
+- **Watchdog:** `GA results health` (`scripts/ga-results-health.mjs`) runs every 10 minutes. When no worker for a scheduled election is alive and no watch run is queued or running, it dispatches the watch itself (`actions: write`). That covers a dropped scheduled start, a broken chain and a crashed run.
+- **After election night:** `GA results daily` loads every unofficial election and every scheduled one past its day, one at a time, so one failure doesn't stop the others. It publishes the morning CSV and reconciles an election against the SOS media export once it turns official.
+- **Laptop:** the same command can run from a laptop against `ENV_FILE=.env.cloud` alongside Actions. The importer is idempotent.
 
 Operational alerts:
 
@@ -149,7 +161,11 @@ Operational alerts:
 - any jurisdiction stale for 15 minutes while the source shows it reporting;
 - expected contest missing, duplicate contest merge, vote total decreasing, leader changing, exact tie, or certification regressing;
 - database write failure or report cache older than the latest ingest;
-- coverage below 100%, with the missing jurisdictions named.
+- coverage below 100%, with the missing jurisdictions and dropped contests named;
+- a city results page that changed after polls closed but couldn't be read;
+- the watch restarted by the watchdog, and reconcile mismatches after certification.
+
+Alerts report what already happened; none asks for a reply.
 
 ## Report (Writ)
 
@@ -180,7 +196,7 @@ Operational alerts:
 
 Before each election, confirm:
 
-- every expected federal, state, county and available municipal contest is either loaded or explicitly reported missing;
+- every federal, state, county and city-run contest is either loaded or explicitly reported missing;
 - the default order is ascending raw vote margin, with percentage order available separately;
 - single-seat, multi-seat, referendum, uncontested, tie and no-result cases pass fixtures;
 - municipal runoff badges appear only when the decision rule is verified;
@@ -190,8 +206,8 @@ Before each election, confirm:
 - the API, media export and last-known-good fallback paths have been exercised;
 - a full replay completes under election-night polling cadence;
 - the live page and CSV contain the same filtered contests and ordering;
-- stale data is visible within 10 minutes and alerts an operator;
-- the backup operator can take over without database cleanup;
+- stale data is visible within 10 minutes, and a dead worker is restarted by the watchdog within 10 minutes;
+- a second worker (laptop) can run alongside without database cleanup;
 - the morning snapshot can be produced even if the public host is unavailable.
 
 ## Deferred work

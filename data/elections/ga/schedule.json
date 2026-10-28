@@ -1,0 +1,38 @@
+{
+  "_comment": "Elections the close-races tracker follows on its own (docs/elections/ga-close-races.md, \"Unattended operation\"). Per entry: the election date and kind; the SOS id if known (null: found in the SOS election list by date and kind); watchStartUtc, when the watch workflow and watchdog start it; stopAfter, the last day either keeps it running (past state certification). cities: elections a city runs itself, outside the SOS feed, read from its own results page (scripts/lib/city-results.mjs). Each city contest lists its candidates as the city qualified them.",
+  "elections": [
+    {
+      "date": "2026-11-03",
+      "kind": "general",
+      "id": "11032026GeneralAndSpecialElection",
+      "watchStartUtc": "2026-11-03T20:17:00Z",
+      "stopAfter": "2026-11-30",
+      "cities": [
+        {
+          "id": "norcross",
+          "name": "Norcross",
+          "county": "Gwinnett County",
+          "countySlug": "gwinnett-county-ga",
+          "resultsUrl": "https://norcrossga.net/elections",
+          "source": "https://norcrossga.net/278/CandidatesQualifying",
+          "pollsCloseUtc": "2026-11-04T00:00:00Z",
+          "contests": [
+            {
+              "name": "City of Norcross - City Council (Special)",
+              "voteFor": 1,
+              "candidates": ["Jeffrey Allen", "Bucky Johnson"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-12-01",
+      "kind": "runoff",
+      "id": null,
+      "watchStartUtc": "2026-12-01T20:17:00Z",
+      "stopAfter": "2026-12-20",
+      "cities": []
+    }
+  ]
+}

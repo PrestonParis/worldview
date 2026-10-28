@@ -84,7 +84,8 @@ export function primaryPartyFromName(name: string): string | null {
 
 export function electionKind(name: string): ElectionKind {
   if (/recount/i.test(name)) return "recount";
-  if (/runoff/i.test(name)) return "runoff";
+  // Ids abbreviate it: "2020DecStateRun", "2026DecGenRun".
+  if (/runoff/i.test(name) || /Run(?![a-z])/.test(name)) return "runoff";
   if (/primary/i.test(name)) return "primary";
   if (/general/i.test(name)) return "general";
   if (/special/i.test(name)) return "special";
@@ -193,7 +194,8 @@ export function parseElectionList(raw: Raw): ListedElection[] {
  * The listed election a waiting watch should switch to: SOS can publish an
  * election under a different id than the one it used before (Nov 3 2026's
  * feed went 404 after Oct 24). Only when the given id isn't listed and
- * exactly one election of the same kind is listed for the date.
+ * exactly one election of the same kind is listed for the date; any other
+ * election that day is followed alongside it, not instead of it.
  */
 export function replacementElection(elections: ListedElection[], { id, date, kind }: { id: string; date: string | null; kind: ElectionKind }): ListedElection | null {
   if (!date || elections.some((e) => e.id === id)) return null;

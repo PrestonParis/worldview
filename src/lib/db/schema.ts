@@ -1856,6 +1856,19 @@ export const trackedContestCoverage = pgTable(
   (table) => [uniqueIndex("tracked_contest_coverage_jurisdiction_idx").on(table.sourceElectionId, table.jurisdictionId)],
 );
 
+// First copy of each county feed's contests: what later feeds are measured against.
+export const trackedContestBaseline = pgTable(
+  "tracked_contest_baseline",
+  {
+    sourceElectionId: text("source_election_id").notNull(),
+    jurisdictionId: text("jurisdiction_id").notNull(),
+    contestKey: text("contest_key").notNull(),
+    name: text("name").notNull(),
+    capturedAt: timestamp("captured_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [primaryKey({ name: "tracked_contest_baseline_pkey", columns: [table.sourceElectionId, table.jurisdictionId, table.contestKey] })],
+);
+
 export const trackedIngestStatus = pgTable("tracked_ingest_status", {
   sourceElectionId: text("source_election_id").primaryKey(),
   source: text("source").notNull(),
@@ -1875,6 +1888,7 @@ export const trackedIngestStatus = pgTable("tracked_ingest_status", {
   lastError: text("last_error"),
   contests: integer("contests").notNull().default(0),
   countiesFetched: integer("counties_fetched").notNull().default(0),
+  replaces: text("replaces"),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
