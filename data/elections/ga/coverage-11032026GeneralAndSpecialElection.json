@@ -49,16 +49,18 @@
     "barrow-county-ga": {
       "name": "Barrow County",
       "expected": 33,
-      "source": "https://results.sos.ga.gov/results/public/api/elections/barrow-county-ga/11032026GeneralAndSpecialElection/data",
-      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
-      "basis": "ballot-definition"
+      "source": "https://barrowga.org/DocumentCenter/View/1792/Consolidated-SAMPLE-Ballot",
+      "notes": "Consolidated sample ballot: 14 federal/statewide, US House 10, Senate 45-47, House 104, 119 and 120, State Court Solicitor, Commission 4-6, BOE 1, 3, 4, 7 and 9 At Large, Oconee River Soil & Water; Statham retail package sales and homestead questions. Every SOS contest and candidate on it. Checked 2026-10-28.",
+      "basis": "sample-ballot",
+      "verifiedAt": "2026-10-28"
     },
     "bartow-county-ga": {
       "name": "Bartow County",
       "expected": 28,
-      "source": "https://results.sos.ga.gov/results/public/api/elections/bartow-county-ga/11032026GeneralAndSpecialElection/data",
-      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
-      "basis": "ballot-definition"
+      "source": "https://www.bartowcountyga.gov/departments/elections/2026%20Sample%20Ballots/General%20Election/Conslidated%20Sample%20Ballot.pdf",
+      "notes": "Consolidated sample ballot (scanned, 2 pages): 14 federal/statewide, US House 11, Senate 37 and 52, House 14 and 15, BOE 1-3, Coosa River Soil & Water; Bartow homestead, White Sunday sales by the drink and Sunday package sales, Euharlee Council special (unexpired term), Cartersville homestead. Every SOS contest and candidate on it. Checked 2026-10-28.",
+      "basis": "sample-ballot",
+      "verifiedAt": "2026-10-28"
     },
     "ben-hill-county-ga": {
       "name": "Ben Hill County",
@@ -400,9 +402,10 @@
     "fayette-county-ga": {
       "name": "Fayette County",
       "expected": 29,
-      "source": "https://results.sos.ga.gov/results/public/api/elections/fayette-county-ga/11032026GeneralAndSpecialElection/data",
-      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
-      "basis": "ballot-definition"
+      "source": "https://fayettecountyga.gov/Documents/Departments/Elections/Sample%20Ballots/November%203-2026%20Composite%20Sample%20Ballot.pdf",
+      "notes": "Composite sample ballot (scanned, 2 pages): 14 federal/statewide, US House 3 and 6, Senate 16 and 34, House 68, 69, 73 and 82, Commission 3 and 4, BOE 2 and 4; county, school and Fayetteville homestead questions. No Soil & Water contest. Every SOS contest and candidate on it. Checked 2026-10-28.",
+      "basis": "sample-ballot",
+      "verifiedAt": "2026-10-28"
     },
     "floyd-county-ga": {
       "name": "Floyd County",
@@ -785,9 +788,10 @@
     "paulding-county-ga": {
       "name": "Paulding County",
       "expected": 30,
-      "source": "https://results.sos.ga.gov/results/public/api/elections/paulding-county-ga/11032026GeneralAndSpecialElection/data",
-      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
-      "basis": "ballot-definition"
+      "source": "https://paulding.gov/DocumentCenter/View/19236/Paulding-County-Composite-Sample-Ballot-November-3-2026-General-Election",
+      "notes": "Composite sample ballot: 14 federal/statewide, US House 14, Senate 30 and 31, House 16-19 and 40, Paulding DA, State Court Solicitor, Commission Posts 2-4, BOE 2, 5 and 6. No local questions. Every SOS contest and candidate on it. Checked 2026-10-28.",
+      "basis": "sample-ballot",
+      "verifiedAt": "2026-10-28"
     },
     "peach-county-ga": {
       "name": "Peach County",
@@ -1103,9 +1107,10 @@
     "whitfield-county-ga": {
       "name": "Whitfield County",
       "expected": 24,
-      "source": "https://results.sos.ga.gov/results/public/api/elections/whitfield-county-ga/11032026GeneralAndSpecialElection/data",
-      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
-      "basis": "ballot-definition"
+      "source": "https://www.whitfieldcountyga.com/NOV%20SAMPLE%20BALLOT%20COMPOSITE%20(3).pdf",
+      "notes": "Composite sample ballot (scanned, 2 pages): 14 federal/statewide, US House 14, Senate 54, House 2, 4 and 6, Commission 1 and 3, BOE At Large, 2 and 4. No local questions or Soil & Water contest. Every SOS contest and candidate on it. Checked 2026-10-28.",
+      "basis": "sample-ballot",
+      "verifiedAt": "2026-10-28"
     },
     "wilcox-county-ga": {
       "name": "Wilcox County",
