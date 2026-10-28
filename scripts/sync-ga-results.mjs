@@ -10,10 +10,10 @@
 // Usage:
 //   npm run sync:ga-results -- --list
 //   npm run sync:ga-results -- --election=GeneralPrimary51926 [--dry-run]
-//   npm run sync:ga-results -- --election=auto --date=2026-11-03 --watch [--every=180] [--until=5h45m]
+//   npm run sync:ga-results -- --election=auto --date=2026-11-03 [--kind=general] --watch [--every=180] [--until=5h45m]
 //   npm run sync:ga-results -- --election=GeneralPrimary51926 --snapshot [--sort=votes|percent]
 //   npm run sync:ga-results -- --election=GeneralPrimary51926 --reconcile
-//   npm run sync:ga-results -- --election=2026NovGen --coverage-template
+//   npm run sync:ga-results -- --election=<id> --reconcile-when-official   (load, then reconcile once certified)
 //   npm run sync:ga-results -- --all            (every 2026-cycle election listed so far)
 //   ENV_FILE=.env.cloud npm run sync:ga-results -- …        (cloud)
 //
@@ -21,10 +21,15 @@
 // scripts/ga-results-replay.mjs), --concurrency=4, --max-requests=30000,
 // --archive-counties-every=60 (minutes).
 //
-// Hand-kept inputs in data/elections/ga/: municipal-rules.json (sourced
-// majority/plurality rules by city), coverage-{id}.json (expected contests
-// per county and named municipalities), overrides-{id}.json (manual
-// recount_pending / contested statuses, merge splits).
+// Hand-kept inputs in data/elections/ga/: schedule.json (the elections it
+// follows on its own, and city-run elections read from city pages),
+// municipal-rules.json (sourced majority/plurality rules by city),
+// overrides-{id}.json (recount_pending / contested statuses, merge splits).
+//
+// A watch follows every SOS election listed on its date (a runoff and a
+// special runoff can share one), waits while a feed is missing, and keeps
+// going through a failed fetch or write; the watchdog restarts it if the
+// process itself dies (scripts/ga-results-health.mjs).
 //
 // Scope: the 2026 cycle only (--cycle, default 2026). Elections dated in any
 // other year are refused; the tracker is not a historical archive.
@@ -41,7 +46,8 @@ import { arg, connectPg, finishRun, flag, loadEnv, sleep, startRun } from "./lib
 import { archiveRaw, lakeUrl, upload } from "./lib/lake.mjs";
 import { sosClient, SOS_BASE } from "./lib/ga-sos.mjs";
 import { bucket, raiseAlert, sendWebhook } from "./lib/alerts.mjs";
-import { bumpError, coverageRows, dropEmptyStatus, electionLinks, ensureStatus, updateStatus, writeContests, writeCoverage } from "./lib/close-races-store.mjs";
+import { addBaseline, bumpError, dropEmptyStatus, electionLinks, ensureStatus, loadBaseline, updateStatus, writeContests, writeCoverage } from "./lib/close-races-store.mjs";
+import { syncCities } from "./lib/city-results.mjs";
 import { electionKind, parseElectionList, parseFeed, replacementElection } from "../src/lib/elections/close-races/parse.ts";
 import { assembleContests, normalizeName, stableHash } from "../src/lib/elections/close-races/merge.ts";
 import { evaluateContest } from "../src/lib/elections/close-races/evaluate.ts";
@@ -49,6 +55,8 @@ import { compareByPercent, compareByVotes } from "../src/lib/elections/close-rac
 import { parseMediaExport } from "../src/lib/elections/close-races/media-export.ts";
 import { CLOSE_RACE_ROWS_SQL, filterReport, toReportRow } from "../src/lib/elections/close-races/rows.ts";
 import { closeRacesCsv, closeRacesFilename } from "../src/lib/elections/close-races/csv.ts";
+import { coverageRecords, feedContests, newBaselineContests } from "../src/lib/elections/close-races/coverage.ts";
+import { etDate, parseSchedule, scheduledOn } from "../src/lib/elections/close-races/schedule.ts";
 
 loadEnv();
 
@@ -65,6 +73,7 @@ const MIN = 60_000;
 const STATE_STALE_MS = 10 * MIN;
 const COUNTY_STALE_MS = 15 * MIN;
 const FULL_SWEEP_MS = 15 * MIN;
+const CITY_EVERY_MS = 10 * MIN;
 
 const client = sosClient({
   base: BASE,
@@ -81,10 +90,11 @@ function readJson(file, fallback) {
 function inputs(id) {
   return {
     municipalRules: readJson(path.join(DATA_DIR, "municipal-rules.json"), {}),
-    manifest: readJson(path.join(DATA_DIR, `coverage-${id}.json`), null),
     overrides: readJson(path.join(DATA_DIR, `overrides-${id}.json`), {}),
   };
 }
+
+const SCHEDULE = parseSchedule(readJson(path.join(DATA_DIR, "schedule.json"), {}));
 
 function duration(spec) {
   const m = String(spec).match(/^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/);
@@ -101,27 +111,46 @@ async function listElections({ all = false } = {}) {
   return all ? elections : elections.filter((e) => inCycle(e.date));
 }
 
+// The election a run starts on. Never fails for want of a listing: an id
+// SOS hasn't listed (or a scheduled election it hasn't published yet) is
+// watched as given, and the waiting watch switches once SOS lists it.
 async function resolveElection(spec) {
-  const elections = await listElections();
+  const date = arg("date", null);
+  let elections = [];
+  try {
+    elections = await listElections();
+  } catch (err) {
+    console.warn(`  SOS election list failed (${err.message}); continuing without it`);
+  }
   if (spec && spec !== "auto") {
     const found = elections.find((e) => e.id === spec);
-    const elsewhere = !found && (await listElections({ all: true })).find((e) => e.id === spec);
+    if (found) return found;
+    const elsewhere = elections.length ? (await listElections({ all: true }).catch(() => [])).find((e) => e.id === spec) : null;
     if (elsewhere) throw new Error(`${spec} (${elsewhere.date}) is outside the ${CYCLE} cycle; the tracker only follows ${CYCLE} elections`);
-    if (!found) console.warn(`  ${spec} isn't in the SOS election list (yet); continuing with it as given`);
-    return found ?? { id: spec, date: null, name: spec, kind: electionKind(spec) };
+    const kind = arg("kind", null) ?? scheduledOn(SCHEDULE, date)?.kind ?? electionKind(spec);
+    const next = replacementElection(elections, { id: spec, date, kind });
+    if (next) {
+      console.log(`  ${spec} isn't listed; SOS lists ${next.id} (${next.name}) for ${date}`);
+      return { ...next, replaces: spec };
+    }
+    console.warn(`  ${spec} isn't in the SOS election list (yet); continuing with it as given`);
+    return { id: spec, date, name: spec, kind };
   }
-  const date = arg("date", new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" }));
-  const onDate = elections.filter((e) => e.date === date);
-  const pick = onDate.find((e) => e.kind === "general") ?? (onDate.length === 1 ? onDate[0] : null);
-  if (!pick) {
-    throw new Error(
-      onDate.length
-        ? `several elections on ${date}; pass --election=: ${onDate.map((e) => e.id).join(", ")}`
-        : `no election on ${date} in the SOS list yet (latest: ${elections[0]?.id} ${elections[0]?.date})`,
-    );
+  const day = date ?? etDate();
+  const scheduled = scheduledOn(SCHEDULE, day);
+  const want = arg("kind", null) ?? scheduled?.kind ?? null;
+  const onDate = elections.filter((e) => e.date === day);
+  const sameKind = want ? onDate.filter((e) => e.kind === want) : onDate;
+  const pick = sameKind.find((e) => e.id === scheduled?.id) ?? sameKind.find((e) => e.kind === "general") ?? sameKind[0] ?? (want ? null : onDate[0]);
+  if (pick) {
+    console.log(`  --election=auto → ${pick.id} (${pick.name})${onDate.length > 1 ? `; also following ${onDate.filter((e) => e !== pick).map((e) => e.id).join(", ")}` : ""}`);
+    return pick;
   }
-  console.log(`  --election=auto → ${pick.id} (${pick.name})`);
-  return pick;
+  if (!scheduled) throw new Error(`no election on ${day} in the SOS list or data/elections/ga/schedule.json`);
+  // Not published yet: watch a placeholder until SOS lists it.
+  const id = scheduled.id ?? `scheduled-${day}-${scheduled.kind}`;
+  console.log(`  --election=auto → ${id} (scheduled; not in the SOS list yet)`);
+  return { id, date: day, name: id, kind: scheduled.kind };
 }
 
 // ── fetching ────────────────────────────────────────────────────────────
@@ -140,6 +169,8 @@ function newContext(election, pg) {
     fetchSource: null,
     links: () => null,
     linksLoaded: false,
+    baseline: null, // county slug -> [{ key, name }], from tracked_contest_baseline
+    replaces: election.replaces ?? null,
   };
 }
 
@@ -321,27 +352,32 @@ async function persist(ctx, mode) {
     await raiseAlert(pg, { election: id, key: `unlinked:${stableHash(w)}`, kind: "unlinked", severity: "warning", message: `Statewide total may be incomplete — ${w.replace(/^unlinked: /, "")}` });
   }
 
-  // Coverage: observed contests per county feed and per named municipality.
-  const { manifest } = inputs(id);
-  const countyRows = expectedCounties.map((c) => {
+  // Coverage: each county feed against its first copy (the ballot definition).
+  if (!ctx.baseline) ctx.baseline = await loadBaseline(pg, id);
+  const observations = expectedCounties.map((c) => {
     const cached = ctx.exportCounties?.find((x) => x.slug === c.slug) ?? ctx.counties.get(c.slug);
-    return { slug: c.slug, name: c.name, fetched: Boolean(cached?.feed) && !ctx.countyErrors.has(c.slug), observed: cached?.feed?.contests.length ?? 0 };
+    const fetched = Boolean(cached?.feed) && !ctx.countyErrors.has(c.slug);
+    return { slug: c.slug, name: c.name, contests: fetched ? feedContests(cached.feed) : null, feedUrl: `${BASE}/results/public/api/elections/${c.slug}/${id}/data` };
   });
-  const municipalities = (manifest?.municipalities ?? []).map((m) => ({
-    ...m,
-    observed: evaluated.filter((e) => (e.municipality ?? "").toLowerCase() === String(m.name).toLowerCase()).length,
-  }));
-  const coverage = coverageRows({ electionId: id, counties: countyRows, manifest: manifest && { ...manifest, municipalities } });
+  const additions = observations.flatMap((o) => (o.contests ? newBaselineContests(ctx.baseline.get(o.slug), o.contests).map((x) => ({ ...x, jurisdictionId: o.slug })) : []));
+  if (additions.length) {
+    await addBaseline(pg, id, additions);
+    for (const a of additions) {
+      if (!ctx.baseline.has(a.jurisdictionId)) ctx.baseline.set(a.jurisdictionId, []);
+      ctx.baseline.get(a.jurisdictionId).push({ key: a.key, name: a.name });
+    }
+  }
+  const coverage = coverageRecords({ electionId: id, counties: observations, baseline: ctx.baseline });
   await writeCoverage(pg, coverage);
   const short = coverage.filter((r) => r.status === "missing" || r.status === "partial");
   if (short.length) {
     const names = short.map((r) => r.jurisdiction_name).sort();
     await raiseAlert(pg, {
       election: id,
-      key: `coverage:${stableHash(names.join("|"))}`,
+      key: `coverage:${stableHash(short.map((r) => `${r.jurisdiction_name}:${r.notes}`).sort().join("|"))}`,
       kind: "coverage",
       message: `Coverage below 100%: ${names.slice(0, 12).join(", ")}${names.length > 12 ? ` and ${names.length - 12} more` : ""}`,
-      payload: { jurisdictions: names },
+      payload: { jurisdictions: short.map((r) => ({ name: r.jurisdiction_name, status: r.status, notes: r.notes })) },
     });
   }
 
@@ -360,12 +396,13 @@ async function persist(ctx, mode) {
     is_official: header.isOfficialResults,
     fetch_source: ctx.fetchSource,
     contests: evaluated.length,
-    counties_fetched: countyRows.filter((c) => c.fetched).length,
+    counties_fetched: observations.filter((c) => c.contests).length,
+    ...(ctx.replaces ? { replaces: ctx.replaces } : {}),
   });
   if (result.inserted || result.updated || result.removed) await revalidate();
   console.log(
     `  wrote ${result.inserted} new, ${result.updated} changed, ${result.unchanged} unchanged, ${result.removed} removed ` +
-      `(${evaluated.length} contests, ${countyRows.filter((c) => c.fetched).length}/${countyRows.length} counties, ${ctx.fetchSource})`,
+      `(${evaluated.length} contests, ${observations.filter((c) => c.contests).length}/${observations.length} counties, ${ctx.fetchSource})`,
   );
   return result;
 }
@@ -385,72 +422,100 @@ async function loadOnce(ctx, mode = "load") {
   return persist(ctx, mode);
 }
 
+// ── cities ──────────────────────────────────────────────────────────────
+
+// City-run elections scheduled for this election's date, stored under its id.
+async function cities(ctx) {
+  const date = ctx.election.date || ctx.state?.feed.election.electionDate || arg("date", null);
+  const list = scheduledOn(SCHEDULE, date)?.cities ?? [];
+  if (!list.length) return;
+  ctx.lastCitySync = new Date();
+  const { municipalRules, overrides } = inputs(ctx.election.id);
+  const observations = await syncCities(ctx.pg, {
+    electionId: ctx.election.id,
+    electionDate: date,
+    kind: ctx.election.kind,
+    cities: list,
+    municipalRules,
+    overrides,
+    dryRun: DRY_RUN || !ctx.pg,
+  });
+  if (!DRY_RUN && ctx.pg) await writeCoverage(ctx.pg, coverageRecords({ electionId: ctx.election.id, counties: [], baseline: new Map(), cities: observations }));
+}
+
 // ── watch ───────────────────────────────────────────────────────────────
 
-async function watch(ctx) {
-  const every = Math.max(Number(arg("every", 180)) * 1000, BASE === SOS_BASE ? 30_000 : 1000);
-  const deadline = Date.now() + duration(arg("until", "5h45m"));
-  const archiveEveryMs = Number(arg("archive-counties-every", 60)) * MIN;
-  let stopping = false;
-  for (const sig of ["SIGINT", "SIGTERM"]) process.on(sig, () => ((stopping = true), console.log(`\n${sig}: finishing this round`)));
+const official = (ctx) => Boolean(ctx.state?.feed.election.isOfficialResults) && participating(ctx).every((c) => c.isOfficial);
 
-  // SOS can take an election's feed down before results start (Nov 3 2026's
-  // went 404/empty after Oct 24), so a run started early waits for it
-  // instead of failing. Only a missing feed is retried. While waiting, the
-  // election list is checked in case SOS republishes under another id.
-  const date = ctx.election.date ?? arg("date", null);
-  while (!stopping && Date.now() < deadline) {
-    try {
-      await loadOnce(ctx, "watch");
-      break;
-    } catch (err) {
-      if (ctx.state) throw err;
-      console.warn(`  ${new Date().toISOString()} no feed for ${ctx.election.id} yet (${err.message}); retrying in ${every / 1000}s`);
-      if (!DRY_RUN) {
-        try {
-          // An unlisted id has no SOS name yet; the first load replaces this one.
-          const name = ctx.election.name === ctx.election.id ? `Georgia ${ctx.election.kind} election, ${date}` : ctx.election.name;
-          if (date) await ensureStatus(ctx.pg, ctx.election.id, { name, date, kind: ctx.election.kind });
-          await updateStatus(ctx.pg, ctx.election.id, { heartbeat_at: new Date(), worker_id: WORKER, mode: "waiting" });
-        } catch (statusErr) {
-          console.warn(`  waiting heartbeat failed: ${statusErr.message}`);
-        }
-      }
-      const next = await listElections()
-        .then((list) => replacementElection(list, { id: ctx.election.id, date, kind: ctx.election.kind }))
-        .catch(() => null);
-      if (next) {
-        const from = ctx.election.id;
-        console.warn(`  ${from} isn't listed; SOS lists ${next.id} (${next.name}) for ${date}. Switching.`);
-        if (!DRY_RUN) {
-          await dropEmptyStatus(ctx.pg, from).catch(() => {});
-          await raiseAlert(ctx.pg, {
-            election: next.id,
-            key: `switched:${from}`,
-            kind: "election-id",
-            message: `Watching ${next.id} instead of ${from}: SOS lists the ${date} election under the new id. The report is /writ/close-races/${next.id}`,
-          }).catch(() => {});
-        }
-        Object.assign(ctx, newContext(next, ctx.pg));
-        continue;
-      }
-      await sleep(every);
-    }
+// Every listed election on the watched date, and its replacement when SOS
+// published the watched one under another id (Nov 3 2026's feed went
+// 404/empty after Oct 24). Siblings — a special runoff next to a general
+// runoff, a recount — are followed in the same loop.
+async function discover(ctxs, date) {
+  if (!date) return;
+  let list;
+  try {
+    list = await listElections();
+  } catch (err) {
+    console.warn(`  election list failed: ${err.message}`);
+    return;
   }
-  if (!ctx.state) console.warn("  run ended before the feed appeared; the next run keeps waiting");
-  let staleWebhookAt = 0;
-  while (ctx.state && !stopping && Date.now() < deadline) {
-    await sleep(every);
-    if (stopping) break;
-    const round = new Date();
-    let header = null;
-    try {
-      header = (await client.header(ctx.election.id)).json;
-    } catch (err) {
-      console.warn(`  header failed: ${err.message}`);
-      await noteError(ctx, `header: ${err.message}`);
+  for (const [i, ctx] of ctxs.entries()) {
+    if (ctx.state) continue;
+    const next = replacementElection(list, { id: ctx.election.id, date, kind: ctx.election.kind });
+    if (!next || ctxs.some((c) => c.election.id === next.id)) continue;
+    const from = ctx.election.id;
+    console.warn(`  ${from} isn't listed; SOS lists ${next.id} (${next.name}) for ${date}. Switching.`);
+    if (!DRY_RUN) {
+      await dropEmptyStatus(ctx.pg, from).catch(() => {});
+      await raiseAlert(ctx.pg, {
+        election: next.id,
+        key: `switched:${from}`,
+        kind: "election-id",
+        severity: "info",
+        message: `Watching ${next.id} instead of ${from}: SOS lists the ${date} election under the new id. /writ/close-races/${from} now redirects to /writ/close-races/${next.id}`,
+      }).catch(() => {});
     }
-    let changed = false;
+    ctxs[i] = newContext({ ...next, replaces: from }, ctx.pg);
+  }
+  for (const e of list.filter((e) => e.date === date && !ctxs.some((c) => c.election.id === e.id))) {
+    console.log(`  also following ${e.id} (${e.name}), listed for ${date}`);
+    ctxs.push(newContext(e, ctxs[0].pg));
+  }
+}
+
+// One attempt at a first load. A missing feed is normal before results
+// start (mode "waiting"); any other failure is logged and retried next round.
+async function waitRound(ctx, date) {
+  try {
+    await loadOnce(ctx, "watch");
+    return;
+  } catch (err) {
+    console.warn(`  ${new Date().toISOString()} no load for ${ctx.election.id} yet (${err.message})`);
+    await noteError(ctx, `load: ${err.message}`);
+  }
+  if (DRY_RUN || !date) return;
+  try {
+    // An unlisted id has no SOS name yet; the first load replaces this one.
+    const name = ctx.election.name === ctx.election.id ? `Georgia ${ctx.election.kind} election, ${date}` : ctx.election.name;
+    await ensureStatus(ctx.pg, ctx.election.id, { name, date, kind: ctx.election.kind, replaces: ctx.replaces });
+    await updateStatus(ctx.pg, ctx.election.id, { heartbeat_at: new Date(), worker_id: WORKER, mode: ctx.state ? "watch" : "waiting" });
+  } catch (statusErr) {
+    console.warn(`  waiting heartbeat failed: ${statusErr.message}`);
+  }
+}
+
+async function watchRound(ctx, { archiveEveryMs, webhook }) {
+  const round = new Date();
+  let header = null;
+  try {
+    header = (await client.header(ctx.election.id)).json;
+  } catch (err) {
+    console.warn(`  header failed: ${err.message}`);
+    await noteError(ctx, `header: ${err.message}`);
+  }
+  let changed = false;
+  try {
     const headerMoved = header && header.lastUpdated !== ctx.lastHeaderUpdated;
     if (!header || headerMoved || since(ctx.lastStateOk) >= STATE_STALE_MS / 2) {
       changed = (await fetchState(ctx)) || changed;
@@ -466,31 +531,61 @@ async function watch(ctx) {
       if (due.length) changed = (await fetchCounties(ctx, due, { archiveEveryMs })) > 0 || changed;
       if (fullSweep) ctx.lastSweep = round;
     }
+  } catch (err) {
+    console.warn(`  fetch round failed: ${err.message}`);
+    await noteError(ctx, `fetch: ${err.message}`);
+  }
 
-    try {
-      if (changed) await persist(ctx, "watch");
-      else if (!DRY_RUN) {
-        await updateStatus(ctx.pg, ctx.election.id, { heartbeat_at: new Date(), last_state_fetch_at: ctx.lastStateOk, last_county_sweep_at: ctx.lastSweep, fetch_source: ctx.fetchSource, worker_id: WORKER, mode: "watch" });
-        console.log(`  ${round.toISOString()} no change (${client.requests} requests so far)`);
-      }
-    } catch (err) {
-      console.error(`  write failed: ${err.message}`);
-      if (Date.now() - staleWebhookAt > 10 * MIN) {
-        staleWebhookAt = Date.now();
-        await sendWebhook(`🚨 [${ctx.election.id}] database write failed: ${err.message}`);
-      }
-      await noteError(ctx, `write: ${err.message}`);
-      continue;
+  try {
+    if (changed) await persist(ctx, "watch");
+    else if (!DRY_RUN) {
+      await updateStatus(ctx.pg, ctx.election.id, { heartbeat_at: new Date(), last_state_fetch_at: ctx.lastStateOk, last_county_sweep_at: ctx.lastSweep, fetch_source: ctx.fetchSource, worker_id: WORKER, mode: "watch" });
+      console.log(`  ${round.toISOString()} ${ctx.election.id}: no change (${client.requests} requests so far)`);
     }
+  } catch (err) {
+    console.error(`  write failed: ${err.message}`);
+    await webhook(`🚨 [${ctx.election.id}] database write failed: ${err.message}`);
+    await noteError(ctx, `write: ${err.message}`);
+    return;
+  }
+  if (!DRY_RUN) await staleChecks(ctx).catch((err) => console.warn(`  stale checks failed: ${err.message}`));
+}
 
-    if (!DRY_RUN) await staleChecks(ctx);
-    const feed = ctx.state?.feed;
-    if (feed?.election.isOfficialResults && participating(ctx).every((c) => c.isOfficial)) {
+async function watch(primary) {
+  const every = Math.max(Number(arg("every", 180)) * 1000, BASE === SOS_BASE ? 30_000 : 1000);
+  const deadline = Date.now() + duration(arg("until", "5h45m"));
+  const archiveEveryMs = Number(arg("archive-counties-every", 60)) * MIN;
+  let stopping = false;
+  for (const sig of ["SIGINT", "SIGTERM"]) process.on(sig, () => ((stopping = true), console.log(`\n${sig}: finishing this round`)));
+
+  let webhookAt = 0;
+  const webhook = async (message) => {
+    if (Date.now() - webhookAt < 10 * MIN) return;
+    webhookAt = Date.now();
+    await sendWebhook(message);
+  };
+
+  const date = primary.election.date ?? arg("date", null);
+  const ctxs = [primary];
+  for (let first = true; !stopping && Date.now() < deadline; first = false) {
+    if (!first) await sleep(every);
+    if (stopping) break;
+    await discover(ctxs, date);
+    for (const ctx of ctxs) {
+      if (stopping) break;
+      if (!ctx.state) await waitRound(ctx, date);
+      else if (!official(ctx)) await watchRound(ctx, { archiveEveryMs, webhook });
+    }
+    if (since(ctxs[0].lastCitySync ?? null) >= CITY_EVERY_MS) await cities(ctxs[0]).catch((err) => console.warn(`  city results failed: ${err.message}`));
+    if (ctxs.every((c) => c.state && official(c))) {
       console.log("  results are official everywhere; stopping");
       break;
     }
   }
-  if (!DRY_RUN) await updateStatus(ctx.pg, ctx.election.id, { heartbeat_at: new Date(), mode: stopping ? "stopped" : "watch-ended", worker_id: WORKER });
+  for (const ctx of ctxs) {
+    if (!ctx.state) console.warn(`  run ended before ${ctx.election.id}'s feed appeared; the next run keeps waiting`);
+    if (!DRY_RUN) await updateStatus(ctx.pg, ctx.election.id, { heartbeat_at: new Date(), mode: stopping ? "stopped" : "watch-ended", worker_id: WORKER }).catch(() => {});
+  }
 }
 
 async function staleChecks(ctx) {
@@ -518,7 +613,7 @@ async function staleChecks(ctx) {
   }
 }
 
-// ── snapshot, reconcile, coverage template ──────────────────────────────
+// ── snapshot, reconcile ─────────────────────────────────────────────────
 
 async function snapshot(pg, id) {
   const sort = arg("sort", "votes") === "percent" ? "percent" : "votes";
@@ -577,24 +672,17 @@ async function reconcile(pg, id) {
   for (const r of db.values()) problems.push(`in DB but not in export: ${r.external_id}`);
   console.log(`  reconcile ${id} against media export (${res.json.createdAt}): ${contests.length} contests, ${problems.length} mismatches`);
   for (const p of problems.slice(0, 40)) console.log(`    ${p}`);
-  if (problems.length) process.exitCode = 1;
-}
-
-async function coverageTemplate(id) {
-  const file = path.join(DATA_DIR, `coverage-${id}.json`);
-  if (fs.existsSync(file)) throw new Error(`${file} exists; edit it instead`);
-  const feed = parseFeed((await client.state(id)).json);
-  const template = {
-    _comment:
-      "Expected contests per county (all contests on any ballot style in the county, state and local) from qualified-candidate lists, sample ballots and county notices. Leave expected null until checked: the report shows null as unverified. municipalities: cities that may run their own election outside the county board.",
+  await raiseAlert(pg, {
     election: id,
-    verifiedAt: null,
-    counties: Object.fromEntries(feed.localities.map((l) => [l.shortName, { name: l.name, expected: null, source: null, notes: null }])),
-    municipalities: [],
-  };
-  fs.mkdirSync(DATA_DIR, { recursive: true });
-  fs.writeFileSync(file, JSON.stringify(template, null, 2) + "\n");
-  console.log(`  wrote ${file} (${feed.localities.length} counties)`);
+    key: `reconcile:${stableHash(problems.join("|"))}`,
+    kind: "reconcile",
+    severity: problems.length ? "warning" : "info",
+    message: problems.length
+      ? `Certified results differ from the SOS media export in ${problems.length} place(s), e.g. ${problems.slice(0, 3).join("; ")}`
+      : `Certified results match the SOS media export (${contests.length} contests)`,
+    payload: { problems: problems.slice(0, 200) },
+  });
+  if (problems.length) process.exitCode = 1;
 }
 
 // ── main ────────────────────────────────────────────────────────────────
@@ -617,10 +705,12 @@ async function main() {
     return;
   }
 
-  if (flag("coverage-template")) return coverageTemplate(arg("election"));
-
   const election = await resolveElection(arg("election"));
-  if (DRY_RUN && !flag("watch")) return void (await loadOnce(newContext(election, null)));
+  if (DRY_RUN && !flag("watch")) {
+    const ctx = newContext(election, null);
+    await loadOnce(ctx);
+    return void (await cities(ctx));
+  }
 
   const pg = await connectPg();
   const runId = DRY_RUN ? null : await startRun(pg, "ga-sos-results");
@@ -629,7 +719,10 @@ async function main() {
     else if (flag("reconcile")) await reconcile(pg, election.id);
     else if (flag("watch")) await watch(newContext(election, DRY_RUN ? null : pg));
     else {
-      const result = await loadOnce(newContext(election, pg));
+      const ctx = newContext(election, pg);
+      const result = await loadOnce(ctx);
+      await cities(ctx);
+      if (flag("reconcile-when-official") && official(ctx)) await reconcile(pg, election.id);
       if (runId) await finishRun(pg, runId, { inserted: result.inserted, updated: result.updated, skipped: result.unchanged, cursor: election.id });
       console.log(`  ${client.requests} requests`);
       return;

@@ -1,3 +1,19 @@
 {
-  "_comment": "Sourced decision rules for municipal contests, keyed by lowercased city name: { \"rule\": \"majority\" | \"plurality\", \"source\": \"<charter or ordinance citation and URL>\" }. A city not listed stays `unknown` and shows \"Runoff rule unverified\" instead of a runoff badge (src/lib/elections/close-races/rules.ts). Add a city only with a cited source."
+  "_comment": "Sourced decision rules for municipal contests, keyed by lowercased city name: { \"rule\": \"majority\" | \"plurality\", \"source\": \"<charter or ordinance citation and URL>\" }. A city not listed stays `unknown` and shows \"Runoff rule unverified\" instead of a runoff badge (src/lib/elections/close-races/rules.ts). Add a city only with a cited source.",
+  "doraville": {
+    "rule": "majority",
+    "source": "No plurality provision: DeKalb VRE sent Doraville City Council District 1, Post 2 (Yeoman 41.08%) to the Dec 3, 2024 runoff under O.C.G.A. § 21-2-501. https://dekalbcountyga.gov/news/dekalb-county-voter-registration-and-elections-announces-generalspecial-election-runoff"
+  },
+  "lagrange": {
+    "rule": "majority",
+    "source": "City Council resolution (Aug 2026) calling the District 2C special election sets a Dec 1, 2026 runoff if needed. https://www.wtvm.com/2026/08/18/lagrange-council-calls-special-election-vacant-district-2c-seat/"
+  },
+  "st. marys": {
+    "rule": "majority",
+    "source": "No plurality provision: the 2024 mayor's race (Lockhart 40.2%) and a council post went to the Dec 3, 2024 runoff. https://www.tribune-georgian.com/local-news-newsletter/6-candidates-3-runoff-races-camden-ballots"
+  },
+  "stonecrest": {
+    "rule": "majority",
+    "source": "No plurality provision: DeKalb VRE sent Stonecrest City Councilmember, District Post 5 to the Dec 2, 2025 runoff. https://www.dekalbcountyga.gov/news/dekalb-county-voter-registration-and-elections-announces-official-and-complete-municipal"
+  }
 }

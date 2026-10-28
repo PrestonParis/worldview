@@ -45,14 +45,17 @@ export function contestHash(ev) {
   return createHash("sha1").update(JSON.stringify(shape)).digest("hex");
 }
 
-export const externalId = (electionId, key) => `ga-sos:${electionId}:${key}`;
+// Sources: "ga-sos" (the SOS feed) and "city:{id}" for an election a city
+// runs itself (scripts/lib/city-results.mjs). Each source owns its rows: a
+// complete SOS round never marks a city contest removed, or the reverse.
+export const externalId = (electionId, key, source = "ga-sos") => `${source}:${electionId}:${key}`;
 
-export async function loadExisting(pg, electionId) {
+export async function loadExisting(pg, electionId, source = "ga-sos") {
   const { rows } = await pg.query(
     `select c.id, c.external_id, c.source_hash, c.result_status, c.total_votes, c.margin_votes, c.ranked, c.removed_at,
             (select o.name_key from tracked_contest_options o where o.contest_id = c.id and o.is_current_leader limit 1) as leader_key
-       from tracked_contests c where c.source_election_id = $1`,
-    [electionId],
+       from tracked_contests c where c.source_election_id = $1 and c.source = $2`,
+    [electionId, source],
   );
   return new Map(rows.map((r) => [r.external_id, r]));
 }
@@ -81,11 +84,11 @@ export async function electionLinks(pg, { electionDate, kind }) {
   };
 }
 
-function contestRow(ev, { electionId, header, kind, hash, link, now }) {
+function contestRow(ev, { source, electionId, header, kind, hash, link, now }) {
   const m = ev.margin;
   return {
-    source: "ga-sos",
-    external_id: externalId(electionId, ev.key),
+    source,
+    external_id: externalId(electionId, ev.key, source),
     source_election_id: electionId,
     source_contest_ids: ev.sourceContestIds,
     election_date: header.electionDate,
@@ -130,25 +133,25 @@ function contestRow(ev, { electionId, header, kind, hash, link, now }) {
  * Upserts changed contests. `complete` means every feed was fetched this
  * round, so contests missing from it can be marked removed.
  */
-export async function writeContests(pg, { electionId, header, kind, evaluated, complete, link = () => null }) {
+export async function writeContests(pg, { source = "ga-sos", electionId, header, kind, evaluated, complete, link = () => null }) {
   const now = new Date();
-  const existing = await loadExisting(pg, electionId);
+  const existing = await loadExisting(pg, electionId, source);
   const changed = [];
   for (const ev of evaluated) {
     const hash = contestHash(ev);
-    const prev = existing.get(externalId(electionId, ev.key));
+    const prev = existing.get(externalId(electionId, ev.key, source));
     if (prev && prev.source_hash === hash && !prev.removed_at) continue;
     changed.push({ ev, hash, prev });
   }
 
   const events = [];
   if (changed.length) {
-    const columns = Object.keys(contestRow(changed[0].ev, { electionId, header, kind, hash: "", link, now }));
+    const columns = Object.keys(contestRow(changed[0].ev, { source, electionId, header, kind, hash: "", link, now }));
     const saved = await upsertReturning(
       pg,
       "tracked_contests",
       columns,
-      changed.map(({ ev, hash }) => contestRow(ev, { electionId, header, kind, hash, link, now })),
+      changed.map(({ ev, hash }) => contestRow(ev, { source, electionId, header, kind, hash, link, now })),
       ["external_id"],
       "id, external_id",
     );
@@ -156,7 +159,7 @@ export async function writeContests(pg, { electionId, header, kind, evaluated, c
 
     const optionRows = [];
     for (const { ev } of changed) {
-      const contestId = idByExternal.get(externalId(electionId, ev.key));
+      const contestId = idByExternal.get(externalId(electionId, ev.key, source));
       const seen = new Set();
       for (const o of ev.margin.ranked) {
         // Two lines with one name (e.g. two "Write-in" rows) stay distinct.
@@ -192,7 +195,7 @@ export async function writeContests(pg, { electionId, header, kind, evaluated, c
 
     const areaRows = [];
     for (const { ev } of changed) {
-      const contestId = idByExternal.get(externalId(electionId, ev.key));
+      const contestId = idByExternal.get(externalId(electionId, ev.key, source));
       for (const area of ev.areas) {
         for (const o of area.options) {
           const id = optionId.get(`${contestId}\u0000${normalizeName(o.name)}`);
@@ -204,7 +207,7 @@ export async function writeContests(pg, { electionId, header, kind, evaluated, c
     if (areaRows.length) await upsertReturning(pg, "tracked_contest_areas", Object.keys(areaRows[0]), areaRows, ["option_id", "county_slug"], "id", { batchSize: 500 });
 
     const snapshotRows = changed.map(({ ev, hash }) => {
-      const contestId = idByExternal.get(externalId(electionId, ev.key));
+      const contestId = idByExternal.get(externalId(electionId, ev.key, source));
       const m = ev.margin;
       const w = m.cutoffWinner ?? m.leader;
       const l = m.cutoffLoser ?? m.runnerUp;
@@ -253,7 +256,7 @@ export async function writeContests(pg, { electionId, header, kind, evaluated, c
   }
 
   let removed = 0;
-  const present = new Set(evaluated.map((ev) => externalId(electionId, ev.key)));
+  const present = new Set(evaluated.map((ev) => externalId(electionId, ev.key, source)));
   if (complete) {
     const gone = [...existing.values()].filter((r) => !present.has(r.external_id) && !r.removed_at).map((r) => r.id);
     if (gone.length) {
@@ -291,18 +294,20 @@ export async function updateStatus(pg, electionId, fields) {
 // A watch started before the feed exists has no row for its heartbeats to
 // update. Create a bare one so the watchdog and the workflow hand-off see
 // the worker waiting; the first full load fills in the rest.
-export async function ensureStatus(pg, electionId, { name, date, kind }) {
+export async function ensureStatus(pg, electionId, { name, date, kind, replaces = null }) {
   await pg.query(
-    `insert into tracked_ingest_status (source_election_id, source, election_name, election_date, election_kind, mode)
-     values ($1, 'ga-sos', $2, $3, $4, 'waiting')
+    `insert into tracked_ingest_status (source_election_id, source, election_name, election_date, election_kind, mode, replaces)
+     values ($1, 'ga-sos', $2, $3, $4, 'waiting', $5)
      on conflict (source_election_id) do nothing`,
-    [electionId, name, date, kind],
+    [electionId, name, date, kind, replaces],
   );
 }
 
 // An id that never got a feed (SOS published the election under another id).
+// City contests stored under it move with the next city sync, so they go too.
 export async function dropEmptyStatus(pg, electionId) {
-  await pg.query("delete from tracked_ingest_status where source_election_id = $1 and contests = 0", [electionId]);
+  const { rowCount } = await pg.query("delete from tracked_ingest_status where source_election_id = $1 and contests = 0", [electionId]);
+  if (rowCount) await pg.query("delete from tracked_contests where source_election_id = $1 and source like 'city:%'", [electionId]);
 }
 
 export async function bumpError(pg, electionId, message) {
@@ -312,55 +317,30 @@ export async function bumpError(pg, electionId, message) {
   );
 }
 
-/**
- * Coverage rows: one per county feed, plus every municipality the manifest
- * names. A county with no expected count is `unverified`; nothing claims
- * completeness the manifest hasn't checked.
- */
-export function coverageRows({ electionId, counties, manifest }) {
-  const now = new Date();
-  const rows = [];
-  for (const c of counties) {
-    const expected = manifest?.counties?.[c.slug] ?? null;
-    const exp = expected?.expected ?? null;
-    let status;
-    if (!c.fetched) status = "missing";
-    else if (exp == null) status = "unverified";
-    else if (c.observed >= exp) status = "complete";
-    else status = c.observed === 0 ? "missing" : "partial";
-    rows.push({
-      source_election_id: electionId,
-      jurisdiction_id: c.slug,
-      jurisdiction_name: c.name,
-      jurisdiction_type: "county",
-      expected_count: exp,
-      observed_count: c.observed,
-      status,
-      source_url: expected?.source ?? null,
-      local_results_url: expected?.resultsUrl ?? null,
-      verified_at: expected?.verifiedAt ?? manifest?.verifiedAt ?? null,
-      notes: [!c.fetched ? "county feed unavailable this round" : null, expected?.notes ?? null, exp != null && c.observed > exp ? `${c.observed - exp} more contests than expected` : null].filter(Boolean).join("; ") || null,
-      updated_at: now,
-    });
+// The first copy of each county feed's contests (src/lib/elections/close-races/coverage.ts).
+export async function loadBaseline(pg, electionId) {
+  const { rows } = await pg.query(
+    "select jurisdiction_id, contest_key, name from tracked_contest_baseline where source_election_id = $1 order by captured_at, name",
+    [electionId],
+  );
+  const out = new Map();
+  for (const r of rows) {
+    if (!out.has(r.jurisdiction_id)) out.set(r.jurisdiction_id, []);
+    out.get(r.jurisdiction_id).push({ key: r.contest_key, name: r.name });
   }
-  for (const m of manifest?.municipalities ?? []) {
-    const observed = m.observed ?? 0;
-    rows.push({
-      source_election_id: electionId,
-      jurisdiction_id: `municipality:${m.id}`,
-      jurisdiction_name: m.name,
-      jurisdiction_type: "municipality",
-      expected_count: m.expected ?? null,
-      observed_count: observed,
-      status: m.expected == null ? "unverified" : observed >= m.expected ? "complete" : observed === 0 ? "missing" : "partial",
-      source_url: m.source ?? null,
-      local_results_url: m.resultsUrl ?? null,
-      verified_at: m.verifiedAt ?? manifest?.verifiedAt ?? null,
-      notes: [m.selfAdministered ? "runs its own election" : null, m.notes ?? null].filter(Boolean).join("; ") || null,
-      updated_at: now,
-    });
+  return out;
+}
+
+export async function addBaseline(pg, electionId, rows) {
+  for (const batch of chunk(rows, 500)) {
+    const params = [electionId];
+    const values = batch.map((r) => (params.push(r.jurisdictionId, r.key, r.name), `($1, $${params.length - 2}, $${params.length - 1}, $${params.length})`));
+    await pg.query(
+      `insert into tracked_contest_baseline (source_election_id, jurisdiction_id, contest_key, name) values ${values.join(", ")}
+       on conflict do nothing`,
+      params,
+    );
   }
-  return rows;
 }
 
 export async function writeCoverage(pg, rows) {

@@ -34,6 +34,8 @@ export interface TrackedElection {
   workerId: string | null;
   errorCount: number;
   lastError: string | null;
+  /** The id this election was first watched under, before SOS listed it under this one. */
+  replaces: string | null;
 }
 
 export const listTrackedElections = cached("elections", async (): Promise<TrackedElection[]> => {
@@ -57,6 +59,7 @@ export const listTrackedElections = cached("elections", async (): Promise<Tracke
     workerId: r.worker_id,
     errorCount: r.error_count,
     lastError: r.last_error,
+    replaces: r.replaces ?? null,
   }));
 });
 
@@ -81,7 +84,7 @@ export interface CoverageRow {
   type: string;
   expected: number | null;
   observed: number;
-  status: "complete" | "partial" | "missing" | "unverified";
+  status: "complete" | "partial" | "missing";
   sourceUrl: string | null;
   resultsUrl: string | null;
   notes: string | null;
@@ -92,7 +95,6 @@ export interface CoverageSummary {
   complete: number;
   partial: number;
   missing: number;
-  unverified: number;
   expectedContests: number;
   observedContests: number;
   rows: CoverageRow[];
@@ -116,15 +118,13 @@ const loadCoverage = cached("coverage", async (election: string): Promise<Covera
     notes: r.notes,
   }));
   const count = (s: CoverageRow["status"]) => list.filter((r) => r.status === s).length;
-  const verified = list.filter((r) => r.expected != null);
   return {
     jurisdictions: list.length,
     complete: count("complete"),
     partial: count("partial"),
     missing: count("missing"),
-    unverified: count("unverified"),
-    expectedContests: verified.reduce((s, r) => s + (r.expected ?? 0), 0),
-    observedContests: verified.reduce((s, r) => s + Math.min(r.observed, r.expected ?? 0), 0),
+    expectedContests: list.reduce((s, r) => s + (r.expected ?? 0), 0),
+    observedContests: list.reduce((s, r) => s + Math.min(r.observed, r.expected ?? 0), 0),
     rows: list,
   };
 });
@@ -186,6 +186,12 @@ export async function loadCloseRaces(electionId: string, filters: CloseRaceFilte
     coverage,
     alerts,
   };
+}
+
+/** The election a retired id now lives under (SOS published it under a new id). */
+export function movedElection(elections: TrackedElection[], id: string): TrackedElection | null {
+  if (elections.some((e) => e.id === id)) return null;
+  return elections.find((e) => e.replaces === id) ?? null;
 }
 
 /** The ranked rows only, for the CSV route. */

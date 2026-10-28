@@ -1,41 +1,42 @@
 name: GA results health
 
-# Watchdog for the election-night worker: every 10 minutes, posts to the
-# alert webhook when a tracked election that isn't official yet has a stale
-# heartbeat (the worker died or stopped). Scheduled runs only act during the
-# 2026 window (Nov 3 – Dec 15); move the year for the next cycle.
+# Watchdog for the election-night worker (scripts/ga-results-health.mjs):
+# every 10 minutes during the windows in data/elections/ga/schedule.json, it
+# restarts the watch workflow when no worker is alive and no watch run is
+# queued or running, and alerts on any other tracked election whose worker
+# died. Outside a scheduled window the script finds nothing to do.
 on:
   schedule:
     - cron: "*/10 * 3-30 11 *"
-    - cron: "*/10 * 1-15 12 *"
+    - cron: "*/10 * 1-20 12 *"
   workflow_dispatch:
 
 permissions:
   contents: read
+  actions: write
+
+concurrency:
+  group: ga-results-health
+  cancel-in-progress: false
 
 jobs:
   check:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Election window
-        id: window
-        run: echo "active=$([ "$(date -u +%Y)" = 2026 ] || [ "${{ github.event_name }}" = workflow_dispatch ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
       - uses: actions/checkout@v4
-        if: steps.window.outputs.active == 'true'
       - uses: actions/setup-node@v4
-        if: steps.window.outputs.active == 'true'
         with:
           node-version: 24
           cache: npm
       - run: npm ci
-        if: steps.window.outputs.active == 'true'
       - name: Write .env.local
-        if: steps.window.outputs.active == 'true'
         run: |
           {
             echo "DATABASE_URL=${{ secrets.DATABASE_URL }}"
             echo "ALERT_WEBHOOK_URL=${{ secrets.ALERT_WEBHOOK_URL }}"
           } > .env.local
       - run: node scripts/ga-results-health.mjs
-        if: steps.window.outputs.active == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}

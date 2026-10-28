@@ -86,8 +86,8 @@ export function CloseRacesView({
           <Fact label="Worldview updated" value={et(election.lastWriteAt)} tone={stale ? "warn" : undefined} note={stale ? `No state fetch since ${et(election.lastStateFetchAt)}` : undefined} />
           <Fact
             label="Coverage"
-            value={coverage.expectedContests ? `${fmt(coverage.observedContests)} / ${fmt(coverage.expectedContests)} expected` : `${coverage.jurisdictions - coverage.missing} of ${coverage.jurisdictions} feeds`}
-            note={coverage.unverified ? `${coverage.unverified} not yet checked against ballots` : undefined}
+            value={coverage.expectedContests ? `${fmt(coverage.observedContests)} / ${fmt(coverage.expectedContests)} contests` : `${coverage.jurisdictions - coverage.missing} of ${coverage.jurisdictions} feeds`}
+            note={`${fmt(coverage.complete)} of ${fmt(coverage.jurisdictions)} jurisdictions complete`}
             href="#coverage"
           />
           <Fact label="Results" value={election.isOfficial ? "State certified" : resultSummary(data.statusCounts)} />
@@ -171,9 +171,9 @@ export function CloseRacesView({
       ) : null}
 
       <div id="coverage" className="scroll-mt-28">
-        <Section title={`Coverage: ${coverage.complete} complete, ${coverage.partial} partial, ${coverage.missing} missing, ${coverage.unverified} unverified`} open={coverage.missing + coverage.partial > 0}>
+        <Section title={`Coverage: ${coverage.complete} complete, ${coverage.partial} partial, ${coverage.missing} missing`} open={coverage.missing + coverage.partial > 0}>
           <p className="mb-3 text-xs text-slate-500">
-            Expected contest counts come from qualified-candidate lists, sample ballots, and county notices. A jurisdiction is unverified until its count has been checked.
+            Each county is measured against its first published ballot definition: the Secretary of State lists every contest, with no votes, before polls close. A contest that later drops out of a county&apos;s feed makes it partial. Cities that run their own elections are read from their own results pages.
           </p>
           <CoverageTable rows={coverage.rows} />
         </Section>
@@ -471,7 +471,7 @@ function NameList({ rows }: { rows: ReportRow[] }) {
 }
 
 function CoverageTable({ rows }: { rows: CloseRacesData["coverage"]["rows"] }) {
-  const order = { missing: 0, partial: 1, unverified: 2, complete: 3 };
+  const order = { missing: 0, partial: 1, complete: 2 };
   const sorted = [...rows].sort((a, b) => order[a.status] - order[b.status] || a.name.localeCompare(b.name));
   return (
     <div className="max-h-96 overflow-auto">

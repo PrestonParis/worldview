@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { ToolBreadcrumb } from "@/components/tools/shell/tool-shell";
 import { CloseRacesView, PAGE } from "@/components/tools/writ/close-races-view";
 import { currentUserIsOwner } from "@/lib/auth/guard";
-import { listTrackedElections, loadCloseRaces } from "@/lib/db/closeRaces";
+import { listTrackedElections, loadCloseRaces, movedElection } from "@/lib/db/closeRaces";
 import { parseCloseRaceFilters } from "@/lib/elections/close-races/filters";
 
 // Rendered per request; the data underneath is cached for 60 s and expired
@@ -31,7 +31,12 @@ export default async function CloseRacesPage({ params, searchParams }: Props) {
   const show = typeof query.show === "string" ? query.show : null;
   const limit = show === "all" ? null : Math.max(PAGE, Number(show) || PAGE);
   const data = await loadCloseRaces(id, filters, { withAlerts: isOwner });
-  if (!data) notFound();
+  if (!data) {
+    // An id SOS later replaced: the report lives under the new one.
+    const moved = movedElection(await listTrackedElections(), id);
+    if (moved) redirect(`/writ/close-races/${encodeURIComponent(moved.id)}`);
+    notFound();
+  }
   return (
     <>
       <ToolBreadcrumb items={[{ label: "Writ", href: "/writ" }, { label: "Close races", href: "/writ/close-races" }, { label: data.election.name }]} />

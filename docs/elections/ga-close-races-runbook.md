@@ -1,120 +1,105 @@
-# Writ close races: election-night runbook
+# Writ close races: runbook
 
-For the operators running Georgia's Nov 3, 2026 general (and the Dec 1
-runoff). Design: [ga-close-races.md](ga-close-races.md). Every command
-runs from the repo root. `ENV_FILE=.env.cloud` points a command at
-production; leave it off to work against the local stack.
+Georgia's Nov 3, 2026 general and the Dec 1 runoff run unattended: nothing
+below needs a person on the night. Design: [ga-close-races.md](ga-close-races.md).
+Every command runs from the repo root. `ENV_FILE=.env.cloud` points a
+command at production; leave it off to work against the local stack.
 
-## 1. People
+## 1. What runs on its own
 
-| Role | Name | Contact | Machine |
-|---|---|---|---|
-| Primary operator | | | GitHub Actions `GA results watch` |
-| Backup operator | | | Laptop with `.env.cloud` |
+| Workflow | When | Does |
+|---|---|---|
+| `GA results watch` | 4:17 pm ET on each date in `data/elections/ga/schedule.json` (Nov 3, Dec 1) | Finds the election, waits while its feed is missing, polls every 3 min, loads every county feed and every city-run election, and writes. Each run lasts 5h45m, then starts the next one, even after a failure, until results are official or the entry's `stopAfter` date passes. |
+| `GA results health` | Every 10 min, Nov 3–30 and Dec 1–20 | When no worker is alive for a scheduled election and no watch run is queued or running, starts the watch again. This covers a dropped scheduled start, a broken hand-off, and a crashed or timed-out run. |
+| `GA results daily` | 13:00 UTC, Nov 4–30 and Dec 1–20 | Full load of every unofficial election (one failure doesn't stop the rest), then the morning CSV snapshot. When an election turns official, it is reconciled once against the SOS media export. |
 
-Both of you subscribe to `ALERT_WEBHOOK_URL`. An ntfy.sh topic gives phone push.
+All three post to `ALERT_WEBHOOK_URL`. Alerts are informational: each says what already happened, and none needs a reply.
 
-## 2. Commands
+## 2. Election ids
 
-```sh
-# Primary: "GA results watch" starts itself at 4:17 pm ET on Nov 3 (schedule,
-# Nov 3 defaults). Check by 4:45 pm that a run is in progress; GitHub can delay
-# or drop scheduled runs. If none is, start it: Actions → Run workflow
-#   election=11032026GeneralAndSpecialElection, date=2026-11-03, every=180, until=5h45m, chain=true
-# It hands off to a fresh run every ~6 h until results are official.
+- **Unlisted id:** SOS adds an election to its list close to the day. The Nov 3 id `11032026GeneralAndSpecialElection` is in `schedule.json` because SOS hasn't listed it. Its feed was live on Oct 24 and has been 404/empty since Oct 26. The watch waits (mode `waiting`) and loads once the feed appears.
+- **Id published later:** the Dec 1 runoff has `id: null`. The watch starts under a placeholder and switches when SOS lists a runoff for the date.
+- **Republished id:** if SOS publishes an election under a new id, the watch switches to it.
+- **What a switch does:** it drops the empty row for the old id and records the old id in `replaces`. The old report URL redirects to the new one.
+- **Several elections on one date:** every election SOS lists for the date is followed in the same run (Dec 1, 2020 had a state runoff and a special runoff, and recounts share dates).
 
-# Backup, or takeover from a laptop (same writes; safe to run alongside):
-ENV_FILE=.env.cloud npm run sync:ga-results -- --election=11032026GeneralAndSpecialElection --date=2026-11-03 --watch --every=180 --until=8h
+## 3. Coverage
 
-# One-off full load / dry run that writes nothing:
-ENV_FILE=.env.cloud npm run sync:ga-results -- --election=<id>
-npm run sync:ga-results -- --election=<id> --dry-run
-```
+Coverage is measured, not hand-counted.
 
-## 3. Election id
+- **Baseline:** SOS lists every contest, with zero votes, before polls close. The first copy of each county feed is stored as that county's baseline (`tracked_contest_baseline`).
+- **Partial:** a contest that later drops out of a county feed makes the county partial, and the alert names the contest.
+- **Missing:** a county feed that can't be fetched makes the county missing.
+- **City-run elections:** each one is listed as its own municipality.
 
-SOS adds the election to its list close to the day. Check it:
+## 4. City-run elections
 
-```sh
-npm run sync:ga-results -- --list | head
-```
+- **Where they come from:** cities that run their own election aren't in the SOS feed. They are listed under `cities` in `schedule.json`, with the results page and the qualified candidates.
+- **How results are read:** after polls close, the watch reads the page every 10 minutes, plus any results document it links to (HTML or PDF). It stores a contest once every candidate has a vote count next to their name.
+- **Before results:** the contest is listed with no results.
+- **Unreadable page:** a posted page that doesn't parse raises one info alert per version of the page.
+- **Nov 3:** Norcross, one council seat, hand-counted at City Hall.
+- **Adding a city:** add its entry with `resultsUrl`, `pollsCloseUtc` and `contests[].candidates`.
 
-The Nov 3 general is `11032026GeneralAndSpecialElection`. It is not in the SOS list, so `--election=auto` can't find it: pass the id. Its feed was live on Oct 24 and returned 404/empty again on Oct 26. A watch started before the feed is back waits (mode `waiting`, with a status row so the watchdog and the hand-off can see it) and loads once it appears. The report shows "Waiting for … results" meanwhile. If SOS lists the date under a different id (e.g. `2026NovGen`) while the given id stays unlisted, the watch switches to it on its own, drops the empty row for the old id, and sends a warning alert with the new report URL (`/writ/close-races/<id>`). It only switches when exactly one election of the same kind is listed for the date; otherwise pass the id by hand.
-
-## 4. Expected counts
-
-- **Counties:** 159 county feeds for a general. A special election lists only the counties taking part. The run prints `n/159 counties`.
-- **Contests:** the May 19, 2026 primary had 1,780 contests (554 on the state feed). The general will be about that size: fewer partisan pairs, more county, city and school contests.
-- **Coverage manifest:** `data/elections/ga/coverage-<id>.json`. Create it with `npm run sync:ga-results -- --election=<id> --coverage-template`, then fill `expected` per county from qualified-candidate lists and sample ballots. Add each city that runs its own election under `municipalities` (with `resultsUrl`). Until a county is filled in, the report says it's unverified. Each county records its `basis`: `sample-ballot` (the county's composite ballot) or `notice` (its legal notices added up) are checked and carry `verifiedAt`; `ballot-definition` is a baseline copied from the SOS feed before the election, with no `verifiedAt`. Count one per candidate contest (each district or post) and one per question; write-in lines don't count.
-- **Municipal runoff rules:** `data/elections/ga/municipal-rules.json`. Add a city only with a cited charter or ordinance.
-
-## 5. Health checks
+## 5. Health at a glance
 
 | Check | Healthy |
 |---|---|
 | Report header "Worldview updated" | Within a few minutes of "Source updated" |
 | Operator panel on the report (owner login) | Heartbeat < 5 min, fetch source `api`, error count flat |
-| `tracked_ingest_status` | `mode = watch`, `heartbeat_at` recent |
-| GitHub Actions | One `GA results watch` run in progress |
-| Watchdog (`GA results health`, every 10 min) | No heartbeat alerts |
-| CSV download | Same rows and order as the page |
+| `tracked_ingest_status` | `mode = watch` (or `waiting` before results), `heartbeat_at` recent |
+| GitHub Actions | One `GA results watch` run in progress or queued |
 
 ## 6. Alerts
 
-| Alert | Means | Do |
-|---|---|---|
-| No successful state fetch for N min | API and media export both failing; page serves last-known-good | Open results.sos.ga.gov in a browser. If SOS is down, wait. If only we're blocked, start the laptop backup. |
-| County stale | A county shows newer results than our copy | Usually clears on the next poll. If it persists, check that county's page on the SOS site. |
-| Leader changed | A ranked race flipped | Expected on election night. Check the race on the SOS site if the margin is tiny. |
-| Vote total went down | SOS corrected a count | Confirm on the SOS site. The new number is the record; note it. |
-| Exact tie | Margin 0 | Confirm. Ties rank first and name no winner. |
-| Certification went backwards | A contest was un-certified | Confirm with the county. Set `recount_pending` or `contested` in `overrides-<id>.json` if that's the reason. |
-| Coverage below 100% | A county feed failed, or a manifest count isn't met | Check the coverage panel. Fetch from the local authority if needed and note it in the manifest. |
-| Check merge (operator panel only, not pushed) | A cross-county race merged under different names, or a same-named question didn't merge | Confirm. Use `split` or `merge` in `overrides-<id>.json`. |
-| Heartbeat (watchdog) | The worker is dead or didn't hand off | Start the laptop backup now, then restart the workflow. |
-| GA results watch run failed | The Actions job failed | Read the log, rerun the workflow, and cover from the laptop meanwhile. |
+| Alert | Means |
+|---|---|
+| No successful state fetch for N min | API and media export both failing. The page serves last-known-good data. Polling continues. |
+| County stale | A county shows newer results than our copy. Usually clears on the next poll. |
+| Leader changed / Exact tie | A ranked race flipped or tied. |
+| Vote total went down | SOS corrected a count. The new number is the record. |
+| Certification went backwards | A contest was un-certified. `recount_pending` or `contested` can be set in `overrides-<id>.json`. |
+| Coverage below 100% | A county feed failed, or a contest left a county feed. The coverage panel names it. |
+| Check merge (panel only) | A cross-county race merged under different names, or a same-named question didn't merge. `split` / `merge` in `overrides-<id>.json`. |
+| Watch restarted automatically | The watchdog found no live worker and started the watch. |
+| Watch run failed | One Actions run failed. The next run or the watchdog picks it up. |
+| Certified results differ from the media export | Reconcile found mismatches (listed in the alert payload). |
 
-## 7. Failover, restart, replay
-
-- **Takeover:** run the backup command (§2). Nothing needs cleaning up: contests key on election and name, and unchanged data writes nothing.
-- **Restart:** rerun the workflow. The first poll does a full load.
-- **Rehearsal:** play a past election back as election night, with a leader flip, a downward correction and a feed outage. Do this before every election:
-
-  ```sh
-  node scripts/ga-results-replay.mjs --election=GeneralPrimary51926 --frames=8 --step=20
-  npm run sync:ga-results -- --base-url=http://localhost:4319 --election=REPLAYGeneralPrimary51926 --watch --every=5 --until=4m
-  ```
-
-  Delete the `REPLAY…` rows afterwards; never run a rehearsal against cloud.
-
-## 8. Morning snapshot (Nov 4)
+## 7. Commands (optional)
 
 ```sh
-ENV_FILE=.env.cloud npm run sync:ga-results -- --election=<id> --snapshot
-ENV_FILE=.env.cloud npm run sync:ga-results -- --election=<id> --snapshot --sort=percent
+# Watch from a laptop alongside Actions (same writes; idempotent):
+ENV_FILE=.env.cloud npm run sync:ga-results -- --election=auto --date=2026-11-03 --watch --every=180 --until=8h
+
+# One-off full load / dry run that writes nothing:
+ENV_FILE=.env.cloud npm run sync:ga-results -- --election=<id>
+npm run sync:ga-results -- --election=<id> --dry-run
+
+# Watchdog decision for a moment in the window, without acting:
+node scripts/ga-results-health.mjs --dry-run --at=2026-11-03T21:00:00Z
 ```
 
-Each command writes `exports/close-races/ga-close-races-<id>-by-<sort>-<timestamp>.csv` and publishes it to the lake bucket (`writ/close-races/<id>/…`). It prints the public URL. This works even if the site is down. Send it with a short note: the coverage line from the report header, and that results are unofficial until certified.
+## 8. Rehearsal
 
-## 9. After election night
+Play a past election back as election night, with a leader flip, a downward correction and a feed outage:
 
-- `GA results daily` loads every unofficial election at 13:00 UTC and publishes a snapshot, until Dec 15.
-- Georgia counties certify within days of the election; the state certifies after that. Contests move to `county_certified` and then `state_certified` on their own.
-- **Dec 1 runoff:** same steps with the runoff's id and a runoff manifest.
-- **Shut down** when every tracked contest is certified: disable `GA results health` and `GA results daily`.
+```sh
+node scripts/ga-results-replay.mjs --election=GeneralPrimary51926 --frames=8 --step=20
+npm run sync:ga-results -- --base-url=http://localhost:4319 --election=auto --date=2026-11-03 --watch --every=5 --until=4m
+```
 
-## 10. Notes and reconciliation
+The replay lists its election under 2026-11-03, so this also exercises the scheduled-id wait and the following of every listed election. Delete the `REPLAY…` rows afterwards, and never run a rehearsal against cloud.
 
-- Log incidents as you go: time, alert, action, outcome.
-- After certification, run `npm run sync:ga-results -- --election=<id> --reconcile`. It compares every contest's total with the SOS media export, and should report 0 mismatches.
+## 9. Snapshots
 
-## Preflight (Nov 2)
+`GA results daily` writes `exports/close-races/ga-close-races-<id>-by-votes-<timestamp>.csv` each morning. It publishes it to the lake bucket (`writ/close-races/<id>/…`) and prints the public URL. By hand:
 
-1. Apply the migration on cloud (`ENV_FILE=.env.cloud node scripts/migrate.mjs`, or deploy). Check database size first (the Supabase free plan caps at 500 MB): the Nov 3 general needs about 25–45 MB through certification (contests ~5 MB, county rows 5–18 MB, snapshot history 15–20 MB), the Dec 1 runoff 2–5 MB. Keep 100 MB free.
-2. Set secrets: repo secrets `ALERT_WEBHOOK_URL`, `SITE_URL`, `REVALIDATE_SECRET`, `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, plus `REVALIDATE_SECRET` in the site's env.
-3. Send a test alert: `node -e 'import("./scripts/lib/alerts.mjs").then(m => m.sendWebhook("test"))'`.
-4. Check the source without writing: `npm run sync:ga-results -- --election=<id> --dry-run`.
-5. Load the 2026 cycle so far on cloud (primary, runoffs, specials): `ENV_FILE=.env.cloud npm run sync:ga-results -- --all`. The ingester refuses elections outside 2026.
-6. Run the rehearsal (§7). Open the public page on the production host in a browser: the whole site sits behind Vercel's Security Checkpoint, so scripted requests (curl, a client's CSV script) get 429, and the ingester's revalidate call is blocked too (the data cache still expires every 60 s). Add a firewall bypass for `/writ/close-races` and `/api/writ/close-races` if anyone will fetch them by script.
-7. Test the hand-off on cloud once: Run workflow with `until=5m, chain=true`. A second run should start and `tracked_ingest_status` should hold a `waiting` row for the Nov 3 id. Cancel the second run.
-8. Export a database backup.
+```sh
+ENV_FILE=.env.cloud npm run sync:ga-results -- --election=<id> --snapshot [--sort=percent]
+```
+
+## 10. One-time setup (before Nov 3)
+
+1. Deploy, which applies the migrations, including `2026-10-28-tracked-baseline.sql`.
+2. Set the repo secrets: `DATABASE_URL`, `ALERT_WEBHOOK_URL`, `SITE_URL`, `REVALIDATE_SECRET`, `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`. Set `REVALIDATE_SECRET` in the site's env too.
+3. Optional: add a Vercel firewall bypass for `/api/writ/revalidate`, `/writ/close-races` and `/api/writ/close-races`. The Security Checkpoint returns 429 to scripted requests. Without the bypass, pages still refresh within 60 s.

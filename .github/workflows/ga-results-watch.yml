@@ -1,22 +1,28 @@
 name: GA results watch
 
 # Election-night ingest for Writ's close-races report (docs/elections/ga-close-races-runbook.md).
-# Starts itself at 4:17 pm ET on Nov 3, 2026 (or by hand). Each run polls the
-# Georgia SOS results feed for up to 5h45m, then starts the next run while
-# results are still unofficial. A laptop can take over at any time with the
-# same command; the ingest is idempotent.
+# Starts itself at 4:17 pm ET on each election day in
+# data/elections/ga/schedule.json (Nov 3 general, Dec 1 runoff). Each run
+# polls the Georgia SOS results feed for up to 5h45m, then starts the next
+# run — even after a failure — until results are official or the schedule's
+# stopAfter date passes. The watchdog (ga-results-health.yml) restarts the
+# chain if it breaks anyway. A laptop can run the same command alongside;
+# the ingest is idempotent.
 on:
   schedule:
     - cron: "17 20 3 11 *"
+    - cron: "17 20 1 12 *"
   workflow_dispatch:
     inputs:
       election:
-        # The Nov 3 id isn't in SOS's election list, so auto can't find it.
-        description: "SOS election id, or auto (uses date)"
-        default: 11032026GeneralAndSpecialElection
+        description: "SOS election id, or auto (finds it by date and kind)"
+        default: auto
       date:
-        description: "Election date for auto (YYYY-MM-DD)"
+        description: "Election date (YYYY-MM-DD)"
         default: "2026-11-03"
+      kind:
+        description: "general, runoff, special, primary (for auto)"
+        default: ""
       every:
         description: "Seconds between polls"
         default: "180"
@@ -36,29 +42,47 @@ permissions:
   contents: read
   actions: write
 
-# Scheduled runs have no inputs, so each falls back to the Nov 3 defaults.
-env:
-  ELECTION: ${{ inputs.election || '11032026GeneralAndSpecialElection' }}
-  DATE: ${{ inputs.date || '2026-11-03' }}
-  EVERY: ${{ inputs.every || '180' }}
-  UNTIL: ${{ inputs.until || '5h45m' }}
-  CHAIN: ${{ github.event_name == 'schedule' || inputs.chain }}
-
 jobs:
-  # The schedule fires every Nov 3; only 2026's start a watch.
-  gate:
+  # Scheduled runs take the election from schedule.json for today's date;
+  # a date with no entry (any other year) does nothing.
+  plan:
     runs-on: ubuntu-latest
     outputs:
-      active: ${{ steps.window.outputs.active }}
+      active: ${{ steps.plan.outputs.active }}
+      election: ${{ steps.plan.outputs.election }}
+      date: ${{ steps.plan.outputs.date }}
+      kind: ${{ steps.plan.outputs.kind }}
     steps:
-      - id: window
-        run: echo "active=$([ "$(date -u +%Y)" = 2026 ] || [ "${{ github.event_name }}" = workflow_dispatch ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - id: plan
+        env:
+          EVENT: ${{ github.event_name }}
+          IN_ELECTION: ${{ inputs.election }}
+          IN_DATE: ${{ inputs.date }}
+          IN_KIND: ${{ inputs.kind }}
+        run: |
+          if [ "$EVENT" = workflow_dispatch ]; then
+            { echo "active=true"; echo "election=${IN_ELECTION:-auto}"; echo "date=$IN_DATE"; echo "kind=$IN_KIND"; } >> "$GITHUB_OUTPUT"
+          else
+            node scripts/ga-results-schedule.mjs --for-date="$(TZ=America/New_York date +%F)" >> "$GITHUB_OUTPUT"
+          fi
+          cat "$GITHUB_OUTPUT"
 
   watch:
-    needs: gate
-    if: needs.gate.outputs.active == 'true'
+    needs: plan
+    if: needs.plan.outputs.active == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 355
+    timeout-minutes: 358
+    env:
+      ELECTION: ${{ needs.plan.outputs.election }}
+      DATE: ${{ needs.plan.outputs.date }}
+      KIND: ${{ needs.plan.outputs.kind }}
+      EVERY: ${{ inputs.every || '180' }}
+      UNTIL: ${{ inputs.until || '5h45m' }}
+      CHAIN: ${{ github.event_name == 'schedule' || inputs.chain }}
     steps:
       - uses: actions/checkout@v4
 
@@ -81,35 +105,29 @@ jobs:
             echo "REVALIDATE_SECRET=${{ secrets.REVALIDATE_SECRET }}"
           } > .env.local
 
+      # Its own timeout, shorter than the job's, so a stuck run still
+      # reaches the hand-off below.
       - name: Watch
-        run: npm run sync:ga-results -- --election="$ELECTION" --date="$DATE" --watch --every="$EVERY" --until="$UNTIL"
+        timeout-minutes: 350
+        run: npm run sync:ga-results -- --election="$ELECTION" --date="$DATE" ${KIND:+--kind="$KIND"} --watch --every="$EVERY" --until="$UNTIL"
 
-      # Chains only while the date has tracked contests that aren't all
-      # official. No rows at all (a wrong date, or an ingest that never
-      # wrote) stops the chain and fails the run so the alert below fires.
+      # Runs after a failed or timed-out watch too; only a cancelled run
+      # (someone stopping it on purpose) ends the chain here.
       - name: Hand off to the next run
-        if: success() && env.CHAIN == 'true'
+        if: ${{ !cancelled() && env.CHAIN == 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
-          state=$(node -e '
-            const { Client } = require("pg");
-            const c = new Client({ connectionString: process.env.DATABASE_URL });
-            c.connect()
-              .then(() => c.query("select bool_and(is_official) as done from tracked_ingest_status where election_date = $1", [process.env.DATE]))
-              .then((r) => { const done = r.rows[0].done; console.log(done === null ? "none" : done ? "official" : "open"); return c.end(); })
-              .catch((err) => { console.error(err.message); process.exit(1); });')
-          case "$state" in
-            official) echo "Results are official; not chaining." ;;
-            none) echo "No tracked contests for $DATE; not chaining."; exit 1 ;;
-            *) gh workflow run ga-results-watch.yml --ref "${{ github.ref_name }}" \
-                 -f election="$ELECTION" -f date="$DATE" -f every="$EVERY" -f until="$UNTIL" -f chain=true ;;
-          esac
+          state=$(node scripts/ga-results-schedule.mjs --handoff --date="$DATE")
+          echo "Hand-off for $DATE: $state"
+          if [ "$state" = continue ]; then
+            gh workflow run ga-results-watch.yml --ref "${{ github.ref_name }}" \
+              -f election="$ELECTION" -f date="$DATE" -f kind="$KIND" -f every="$EVERY" -f until="$UNTIL" -f chain=true
+          fi
 
       - name: Alert on failure
         if: failure()
         env:
           ALERT_WEBHOOK_URL: ${{ secrets.ALERT_WEBHOOK_URL }}
         run: |
-          node -e 'import("./scripts/lib/alerts.mjs").then((m) => m.sendWebhook("🚨 GA results watch run failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"))'
+          node -e 'import("./scripts/lib/alerts.mjs").then((m) => m.sendWebhook("⚠️ GA results watch run failed (the next run or the watchdog picks it up): ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"))'
