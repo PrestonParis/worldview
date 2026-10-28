@@ -12,7 +12,7 @@ import muniDekalb from "./fixtures/2025-muni-dekalb.json";
 import muniClayton from "./fixtures/2025-muni-clayton.json";
 import mediaExport2024 from "./fixtures/2024-media-export.json";
 import { parseMediaExport } from "./media-export";
-import { electionKind, englishName, parseCandidateName, parseFeed } from "./parse";
+import { electionKind, englishName, parseCandidateName, parseFeed, replacementElection } from "./parse";
 import { classifyContest, municipalityOf } from "./level";
 import { decisionRule } from "./rules";
 import { compareByPercent, compareByVotes, computeMargin, resultStatus } from "./margin";
@@ -67,6 +67,20 @@ describe("parse", () => {
     expect(electionKind("June 16th, 2026 General Primary Runoff")).toBe("runoff");
     expect(electionKind("RECOUNT - May 19th, 2026 PSC District 3-REP")).toBe("recount");
     expect(electionKind("July 28th, 2026 - Special Election")).toBe("special");
+  });
+
+  it("switches a waiting watch only to the one listed election of its kind on the date", () => {
+    const listed = [
+      { id: "2026NovGen", date: "2026-11-03", name: "November 3, 2026 General Election", kind: "general" as const },
+      { id: "11032026Special", date: "2026-11-03", name: "November 3, 2026 Special Election", kind: "special" as const },
+      { id: "GeneralPrimary51926", date: "2026-05-19", name: "May 19, 2026 - General Primary", kind: "primary" as const },
+    ];
+    const want = { id: "11032026GeneralAndSpecialElection", date: "2026-11-03", kind: "general" as const };
+    expect(replacementElection(listed, want)?.id).toBe("2026NovGen");
+    expect(replacementElection([...listed, { ...want, name: "General" }], want)).toBeNull();
+    expect(replacementElection([...listed, { ...listed[0], id: "2026NovGen2" }], want)).toBeNull();
+    expect(replacementElection(listed, { ...want, date: null })).toBeNull();
+    expect(replacementElection(listed, { ...want, date: "2026-12-01" })).toBeNull();
   });
 
   it("parses votes by method and county headers", () => {

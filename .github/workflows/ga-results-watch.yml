@@ -1,11 +1,13 @@
 name: GA results watch
 
 # Election-night ingest for Writ's close-races report (docs/elections/ga-close-races-runbook.md).
-# Started by hand before polls close. Each run polls the Georgia SOS results
-# feed for up to 5h45m, then starts the next run while results are still
-# unofficial. A laptop can take over at any time with the same command; the
-# ingest is idempotent.
+# Starts itself at 4:17 pm ET on Nov 3, 2026 (or by hand). Each run polls the
+# Georgia SOS results feed for up to 5h45m, then starts the next run while
+# results are still unofficial. A laptop can take over at any time with the
+# same command; the ingest is idempotent.
 on:
+  schedule:
+    - cron: "17 20 3 11 *"
   workflow_dispatch:
     inputs:
       election:
@@ -34,8 +36,27 @@ permissions:
   contents: read
   actions: write
 
+# Scheduled runs have no inputs, so each falls back to the Nov 3 defaults.
+env:
+  ELECTION: ${{ inputs.election || '11032026GeneralAndSpecialElection' }}
+  DATE: ${{ inputs.date || '2026-11-03' }}
+  EVERY: ${{ inputs.every || '180' }}
+  UNTIL: ${{ inputs.until || '5h45m' }}
+  CHAIN: ${{ github.event_name == 'schedule' || inputs.chain }}
+
 jobs:
+  # The schedule fires every Nov 3; only 2026's start a watch.
+  gate:
+    runs-on: ubuntu-latest
+    outputs:
+      active: ${{ steps.window.outputs.active }}
+    steps:
+      - id: window
+        run: echo "active=$([ "$(date -u +%Y)" = 2026 ] || [ "${{ github.event_name }}" = workflow_dispatch ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
   watch:
+    needs: gate
+    if: needs.gate.outputs.active == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 355
     steps:
@@ -61,25 +82,16 @@ jobs:
           } > .env.local
 
       - name: Watch
-        env:
-          ELECTION: ${{ inputs.election }}
-          DATE: ${{ inputs.date }}
-          EVERY: ${{ inputs.every }}
-          UNTIL: ${{ inputs.until }}
         run: npm run sync:ga-results -- --election="$ELECTION" --date="$DATE" --watch --every="$EVERY" --until="$UNTIL"
 
       # Chains only while the date has tracked contests that aren't all
       # official. No rows at all (a wrong date, or an ingest that never
       # wrote) stops the chain and fails the run so the alert below fires.
       - name: Hand off to the next run
-        if: success() && inputs.chain
+        if: success() && env.CHAIN == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          ELECTION: ${{ inputs.election }}
-          DATE: ${{ inputs.date }}
-          EVERY: ${{ inputs.every }}
-          UNTIL: ${{ inputs.until }}
         run: |
           state=$(node -e '
             const { Client } = require("pg");
