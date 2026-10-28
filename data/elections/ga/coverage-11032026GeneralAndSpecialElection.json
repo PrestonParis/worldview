@@ -234,9 +234,10 @@
     "cobb-county-ga": {
       "name": "Cobb County",
       "expected": 49,
-      "source": "https://results.sos.ga.gov/results/public/api/elections/cobb-county-ga/11032026GeneralAndSpecialElection/data",
-      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
-      "basis": "ballot-definition"
+      "source": "https://assets.cobbcounty.gov/files/2026-09/SAMPLE%20BALLOT%20DRAFT%20v4%20WEB.pdf",
+      "notes": "Consolidated sample ballot (posted as DRAFT v4, Sep 2026): 14 federal/statewide, 6 Senate, 16 House, solicitor, surveyor, 2 commissioners, 3 BOE posts, Soil & Water; SPLOST, Mableton redevelopment, 3 constitutional amendments. Every SOS contest on the ballot; spellings differ for Loyd/Lloyd (Soil & Water) and Solomon/Soloman Adesanya (HD 43). Checked 2026-10-28.",
+      "basis": "sample-ballot",
+      "verifiedAt": "2026-10-28"
     },
     "coffee-county-ga": {
       "name": "Coffee County",

@@ -68,7 +68,7 @@ The Nov 3 general is `11032026GeneralAndSpecialElection`. It is not in the SOS l
 | Exact tie | Margin 0 | Confirm. Ties rank first and name no winner. |
 | Certification went backwards | A contest was un-certified | Confirm with the county. Set `recount_pending` or `contested` in `overrides-<id>.json` if that's the reason. |
 | Coverage below 100% | A county feed failed, or a manifest count isn't met | Check the coverage panel. Fetch from the local authority if needed and note it in the manifest. |
-| Check merge | A cross-county race merged under different names, or a same-named question didn't merge | Confirm. Use `split` or `merge` in `overrides-<id>.json`. |
+| Check merge (operator panel only, not pushed) | A cross-county race merged under different names, or a same-named question didn't merge | Confirm. Use `split` or `merge` in `overrides-<id>.json`. |
 | Heartbeat (watchdog) | The worker is dead or didn't hand off | Start the laptop backup now, then restart the workflow. |
 | GA results watch run failed | The Actions job failed | Read the log, rerun the workflow, and cover from the laptop meanwhile. |
 
