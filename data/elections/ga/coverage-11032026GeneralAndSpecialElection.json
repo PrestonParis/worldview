@@ -77,9 +77,10 @@
     "bibb-county-ga": {
       "name": "Bibb County",
       "expected": 27,
-      "source": "https://results.sos.ga.gov/results/public/api/elections/bibb-county-ga/11032026GeneralAndSpecialElection/data",
-      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
-      "basis": "ballot-definition"
+      "source": "https://www.maconbibb.us/wp-content/uploads/2026/10/Sample-Ballot-for-November-3-2026-General-and-Special-Election-rev-9-17_10-15.pdf",
+      "notes": "Sample ballot (rev 10-15): 22 candidate contests, 5 questions; every SOS contest's candidates on the ballot. Checked 2026-10-28.",
+      "basis": "sample-ballot",
+      "verifiedAt": "2026-10-28"
     },
     "bleckley-county-ga": {
       "name": "Bleckley County",
@@ -154,9 +155,10 @@
     "carroll-county-ga": {
       "name": "Carroll County",
       "expected": 26,
-      "source": "https://results.sos.ga.gov/results/public/api/elections/carroll-county-ga/11032026GeneralAndSpecialElection/data",
-      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
-      "basis": "ballot-definition"
+      "source": "https://www.carrollcountyga.gov/DocumentCenter/View/7466",
+      "notes": "Composite sample ballot (image pages, read by eye): 22 candidate contests, 3 constitutional amendments, Bremen homestead exemption; every SOS contest's candidates on the ballot. Checked 2026-10-28.",
+      "basis": "sample-ballot",
+      "verifiedAt": "2026-10-28"
     },
     "catoosa-county-ga": {
       "name": "Catoosa County",
