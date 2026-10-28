@@ -177,9 +177,10 @@
     "chatham-county-ga": {
       "name": "Chatham County",
       "expected": 31,
-      "source": "https://results.sos.ga.gov/results/public/api/elections/chatham-county-ga/11032026GeneralAndSpecialElection/data",
-      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
-      "basis": "ballot-definition"
+      "source": "https://elections.chathamcountyga.gov/",
+      "notes": "Notices: calls for election for the school board ad valorem tax referendum and SCCPSS District 2 (Grimes, Snowden, Jackson); the qualifying notice (Jan 30) sets 4 partisan Board of Elections seats, and its other local offices were on May 19. With Soil & Water that is 7 county contests, plus 14 federal/statewide and 10 district. No other call is posted. Matches SOS. Checked 2026-10-28.",
+      "basis": "notice",
+      "verifiedAt": "2026-10-28"
     },
     "chattahoochee-county-ga": {
       "name": "Chattahoochee County",
@@ -199,7 +200,7 @@
       "name": "Cherokee County",
       "expected": 41,
       "source": "https://results.sos.ga.gov/results/public/api/elections/cherokee-county-ga/11032026GeneralAndSpecialElection/data",
-      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot. No sample ballot or call for election posted on cherokeegavotes.com as of 2026-10-28 (only procedural notices). SOS local set: Commission Chairman, 1 and 4, BOE 3-6, Solicitor, Ball Ground Council Posts 1-3, school homestead and ESPLOST questions. SOS spells the BOE 4 candidate \"Rick Steiner Rechsteiner\".",
       "basis": "ballot-definition"
     },
     "clarke-county-ga": {
@@ -221,7 +222,7 @@
       "name": "Clayton County",
       "expected": 31,
       "source": "https://results.sos.ga.gov/results/public/api/elections/clayton-county-ga/11032026GeneralAndSpecialElection/data",
-      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot. No sample ballot or call for election found as of 2026-10-28 (county elections page redirects in a loop to scripted fetches). SOS local set: Commission 1 and 4, BOE 1, 4, 8 and 9, all one candidate each.",
       "basis": "ballot-definition"
     },
     "clinch-county-ga": {
@@ -413,9 +414,10 @@
     "forsyth-county-ga": {
       "name": "Forsyth County",
       "expected": 31,
-      "source": "https://results.sos.ga.gov/results/public/api/elections/forsyth-county-ga/11032026GeneralAndSpecialElection/data",
-      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
-      "basis": "ballot-definition"
+      "source": "https://forsythco.b-cdn.net/app/uploads/2026/09/FINAL-11.03.26-Sample-Ballot-Remediated.pdf",
+      "notes": "Consolidated sample ballot (2 sides): 14 federal/statewide, US House 7, Senate 27 and 48, House 11, 24-26, 28 and 100, Solicitor, Commission 1 and 3, BOE 1 and 5, Soil & Water, Tax Commissioner (special, unexpired term), and the BOC term limits question (SB 469). Every SOS contest on it; the ballot spells the HD 28 candidate Mateo Sanbria (SOS: Sanabria). Checked 2026-10-28.",
+      "basis": "sample-ballot",
+      "verifiedAt": "2026-10-28"
     },
     "franklin-county-ga": {
       "name": "Franklin County",
@@ -492,9 +494,10 @@
     "hall-county-ga": {
       "name": "Hall County",
       "expected": 38,
-      "source": "https://results.sos.ga.gov/results/public/api/elections/hall-county-ga/11032026GeneralAndSpecialElection/data",
-      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
-      "basis": "ballot-definition"
+      "source": "https://www.hallcounty.org/DocumentCenter/View/23311",
+      "notes": "Consolidated sample ballot (scanned, 4 pages): 14 federal/statewide, US House 7 and 9, Senate 49 and 50, House 27-31, 100 and 103, Northeastern DA, Solicitor, Commission 1 and 3, Soil & Water, BOE At Large and Posts 1-2, Flowery Branch Council Post 3 (special); HB 1340, 1341, 1601, 1602. Every SOS contest and candidate on it. Checked 2026-10-28.",
+      "basis": "sample-ballot",
+      "verifiedAt": "2026-10-28"
     },
     "hancock-county-ga": {
       "name": "Hancock County",
@@ -535,7 +538,7 @@
       "name": "Henry County",
       "expected": 35,
       "source": "https://results.sos.ga.gov/results/public/api/elections/henry-county-ga/11032026GeneralAndSpecialElection/data",
-      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
+      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot. Partial check 2026-10-28: the county's FLOST call (mcdonoughga.org newsflash 60, Aug 5) matches; the TSPLOST, Hampton homestead and McDonough package-sales calls are not found yet. Commission D5: SOS lists Kevin J. Lewis alone, while theballotbrief.com lists independent Victor Appiah (petition) too. Confirm whether his petition qualified.",
       "basis": "ballot-definition"
     },
     "houston-county-ga": {
@@ -753,9 +756,10 @@
     "muscogee-county-ga": {
       "name": "Muscogee County",
       "expected": 23,
-      "source": "https://results.sos.ga.gov/results/public/api/elections/muscogee-county-ga/11032026GeneralAndSpecialElection/data",
-      "notes": "Baseline: SOS ballot definition captured 2026-10-24, not yet checked against a county sample ballot",
-      "basis": "ballot-definition"
+      "source": "https://www.columbusga.gov/elections/Home",
+      "notes": "Notices: the elections page posts no local question for Nov 3, only the constitutional amendments booklet (Amendments 1-3, no statewide referendums). The 2026 qualified candidates list (Mar 10) is all May 19 nonpartisan offices (mayor, council, school board, State Court), so there are no county contests. 14 federal/statewide, US House 2 and 3, Senate 15 and 29, House 137-141. Matches SOS. Checked 2026-10-28.",
+      "basis": "notice",
+      "verifiedAt": "2026-10-28"
     },
     "newton-county-ga": {
       "name": "Newton County",
