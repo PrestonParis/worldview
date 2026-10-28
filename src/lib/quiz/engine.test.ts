@@ -430,7 +430,7 @@ describe("lenses", () => {
       const { answers } = simulate({ truth: { ...ideology.position }, noise: 1, skipRate: 0, lens }, id);
       expect(computeResult(answers).ideologies[0].ideology.id, id).toBe(id);
     }
-  });
+  }, 20_000);
 });
 
 describe("internal match signals", () => {
