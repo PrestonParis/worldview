@@ -6,8 +6,9 @@ import { brokeWithParty, normalizeParty } from "@/lib/legislation/votingRecord";
 import { MemberVotingRecord } from "@/components/legislation/member-voting-record";
 import { publicEntityPath } from "@/lib/people/public";
 
-// Rebuilt at most daily; crawlers and visitors share the cached render.
-export const revalidate = 86400;
+// Rebuilt at most weekly (the syncs are weekly); crawlers and visitors share
+// the cached render.
+export const revalidate = 604800;
 
 // Nothing prebuilt; each page is rendered on first request, then cached.
 export async function generateStaticParams() {

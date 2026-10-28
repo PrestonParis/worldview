@@ -14,11 +14,7 @@ import { attributeGroups, directTies, nameOf, possessive } from "@/lib/people/pr
 import { publicEntityPath } from "@/lib/people/public";
 import { recipientKindLabels } from "@/lib/money/recipient-kinds";
 
-export const revalidate = 86400;
-
-export async function generateStaticParams() {
-  return [];
-}
+export const revalidate = 604800;
 
 type ProfilePageProps = { params: Promise<{ slug: string }> };
 
