@@ -258,7 +258,7 @@
       "name": "Columbia County",
       "expected": 27,
       "source": "https://columbiacountyga.gov/DocumentCenter/View/10721/OFFICIAL-COLUMBIA-COUNTY-COMPOSITE--SAMPLE-BALLOT--NOVEMBER-3-2026-GENERAL--SPECIAL-ELECTION",
-      "notes": "Composite sample ballot: 23 candidate contests, 3 constitutional amendments, HB 439 homeowner referendum; every SOS contest's candidates on the ballot. Checked 2026-10-28.",
+      "notes": "Composite sample ballot: 23 candidate contests, 3 constitutional amendments, HB 439 homeowner referendum; every SOS contest's candidates on the ballot. The Grovetown mayor special election was called and then cancelled (https://www.columbiacountyga.gov/DocumentCenter/View/10427), so it isn't on the ballot. Checked 2026-10-28.",
       "basis": "sample-ballot",
       "verifiedAt": "2026-10-28"
     },
@@ -1136,5 +1136,17 @@
       "basis": "ballot-definition"
     }
   },
-  "municipalities": []
+  "municipalities": [
+    {
+      "id": "norcross",
+      "name": "Norcross",
+      "county": "Gwinnett County",
+      "expected": 1,
+      "selfAdministered": true,
+      "source": "https://norcrossga.net/278/CandidatesQualifying",
+      "resultsUrl": "https://norcrossga.net/elections",
+      "notes": "City-run special election for the unexpired council term of Marshall Cheek: Jeffrey Allen vs Bucky Johnson. Voting at Norcross City Hall, hand-counted paper ballots, so it is not in the SOS feed or Gwinnett's ballot. Checked 2026-10-28.",
+      "verifiedAt": "2026-10-28"
+    }
+  ]
 }
