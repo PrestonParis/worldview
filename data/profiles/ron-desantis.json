@@ -1,0 +1,2145 @@
+{
+  "subject": "ron-desantis",
+  "reviewedAt": "2026-10-28",
+  "sourcesVerifiedAt": "2026-10-28",
+  "brief": {
+    "inclusion": "State governing benchmark invoked in Fishback 2026 gubernatorial campaign; institution-builder whose policy choices shape GOP successor politics.",
+    "coverage": {
+      "from": "1978",
+      "through": "2026-10-28",
+      "lags": "Converted from an external research handoff; unresolved items remain listed below."
+    },
+    "openQuestions": [
+      "Obtain the repo profile guide, model, canonical database ID and current relationship types before converting this research bundle to importer JSON.",
+      "Validate 2018 governor statewide totals against a state statewide summary rather than only county-detail output.",
+      "Retrieve original video of June 2026 debate remarks, August 2026 neutrality and September 1 GOP endorsement for verbatim statement fields.",
+      "Retrieve governor 2022 and 2018 state candidate account full filings and historical Friends of Ron DeSantis/Empower Parents committee amendments and transfers.",
+      "Reconcile Never Back Down FEC 2024 cycle, DeSantis authorized campaign entity conversion, and Restore Our Nation PAC to avoid double-counting receipts.",
+      "Independently verify single donors such as Griffin and Bigelow from Florida original PAC reports and their exact entity identities.",
+      "Track 2026 redistricting cases to latest merits orders, not only preliminary injunction rulings.",
+      "Obtain current October 2026 detention-center litigation, audited removal numbers, civil rights investigations, contracts, costs and detainee conditions for Alligator Alcatraz.",
+      "Verify whether any statewide agency independently purchased Israel Bonds or whether the publicly prominent investment is exclusively Miami-Dade county policy.",
+      "Read operative HB741, HB269 and SB1678 full statute text for exact antisemitism and boycott provisions and any First Amendment litigation.",
+      "Independently analyze 2022-2026 Florida property insurance premiums, exposure, costs and claims rather than attributing changes to governor alone.",
+      "Update November 2026 electoral outcomes only after votes and certification; do not treat future Amendment 3, Donalds election, or redistricting effects as settled.",
+      "Complete independent expert legal and numeric reviews before publication."
+    ],
+    "review": [
+      {
+        "kind": "evidence",
+        "by": "Codex conversion review",
+        "at": "2026-10-28",
+        "note": "Official law and state records cross-checked selectively with reporting and litigation trackers; full primary source video and court judgments not checked."
+      },
+      {
+        "kind": "quantitative",
+        "by": "Codex conversion review",
+        "at": "2026-10-28",
+        "note": "2022 result and 2025-26 FEC committee ledger dates verified; 2022 Florida PAC aggregator not reconciled to primary state filings, no donor attribution totals published."
+      },
+      {
+        "kind": "editorial",
+        "by": "Codex conversion review",
+        "at": "2026-10-28",
+        "note": "Partisan government claims, advocacy claims, allegations, and court findings are separated, but independent editor not engaged."
+      },
+      {
+        "kind": "product",
+        "by": "Codex conversion review",
+        "at": "2026-10-28",
+        "note": "No repo access, local import, schema validation, UI, canonical entity matching, dark-mode or mobile checks."
+      }
+    ]
+  },
+  "summary": "Ron DeSantis is Florida’s Republican governor, whose 2019–2026 administration used state executive power to reshape school choice and higher education, build immigration enforcement partnerships, regulate a major corporate special district, strengthen anti-boycott-of-Israel policies and advance new congressional maps. After declining to take sides in the August 2026 Republican primary to succeed him, DeSantis endorsed Byron Donalds for the general election despite prior public disagreements, while James Fishback, Jay Collins and Paul Renner each represented a different claim to the DeSantis legacy.",
+  "roles": [
+    {
+      "label": "U.S. Navy judge advocate; military service in Iraq",
+      "detail": "before elected office",
+      "sources": [
+        "RD01",
+        "RD02"
+      ]
+    },
+    {
+      "label": "U.S. House member, Florida 6th Congressional District",
+      "detail": "2013-2018",
+      "sources": [
+        "RD05"
+      ]
+    },
+    {
+      "label": "Governor of Florida, first term",
+      "detail": "2019-01-08 to 2023-01-03",
+      "sources": [
+        "RD02"
+      ]
+    },
+    {
+      "label": "Governor of Florida, second term",
+      "detail": "2023-01-03 to present (2026-10-28)",
+      "sources": [
+        "RD02"
+      ]
+    },
+    {
+      "label": "2024 Republican presidential primary candidate",
+      "detail": "2023-05 through 2024-01-21",
+      "sources": [
+        "RD05",
+        "RD40"
+      ]
+    },
+    {
+      "label": "Florida executive-branch administrator and leader of state political coalition",
+      "detail": "2019-present",
+      "sources": [
+        "RD01",
+        "RD17",
+        "RD51",
+        "RD48"
+      ]
+    }
+  ],
+  "entities": {
+    "ron-desantis": {
+      "match": {
+        "name": "Ron DeSantis",
+        "type": "politician"
+      }
+    },
+    "state-of-florida": {
+      "create": {
+        "name": "State of Florida",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "florida-legislature": {
+      "create": {
+        "name": "Florida Legislature",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "donald-trump": {
+      "create": {
+        "name": "Donald Trump",
+        "type": "politician",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "byron-donalds": {
+      "create": {
+        "name": "Byron Donalds",
+        "type": "politician",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "jay-collins": {
+      "create": {
+        "name": "Jay Collins",
+        "type": "politician",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "paul-renner": {
+      "create": {
+        "name": "Paul Renner",
+        "type": "politician",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "james-fishback": {
+      "create": {
+        "name": "James Fishback",
+        "type": "politician",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "republican-party-of-florida": {
+      "create": {
+        "name": "Republican Party of Florida",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "walt-disney-company": {
+      "create": {
+        "name": "Walt Disney Company",
+        "type": "company",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "florida-department-of-law-enforcement": {
+      "create": {
+        "name": "Florida Department of Law Enforcement",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "u-s-immigration-and-customs-enforcement": {
+      "create": {
+        "name": "U.S. Immigration and Customs Enforcement",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "florida-state-board-of-administration": {
+      "create": {
+        "name": "Florida State Board of Administration",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "miami-dade-county": {
+      "create": {
+        "name": "Miami-Dade County",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "state-university-system-of-florida": {
+      "create": {
+        "name": "State University System of Florida",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "ken-griffin": {
+      "create": {
+        "name": "Ken Griffin",
+        "type": "politician",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "robert-bigelow": {
+      "create": {
+        "name": "Robert Bigelow",
+        "type": "politician",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "republican-governors-association": {
+      "create": {
+        "name": "Republican Governors Association",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "david-jolly": {
+      "create": {
+        "name": "David Jolly",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    }
+  },
+  "sources": [
+    {
+      "key": "RD01",
+      "title": "Florida governors: Ronald Dion DeSantis",
+      "publisher": "Florida Department of State",
+      "type": "official_statement",
+      "url": "https://dos.fl.gov/florida-facts/florida-history/florida-governors/ronald-dion-desantis",
+      "publishedAt": "2026",
+      "notes": "Government biography has self-promotional descriptions; independently verify performance metrics."
+    },
+    {
+      "key": "RD02",
+      "title": "National Governors Association: Florida governor",
+      "publisher": "National Governors Association",
+      "type": "official_statement",
+      "url": "https://www.nga.org/governors/florida/",
+      "publishedAt": "2026-10-28",
+      "notes": "Confirms 2019 and 2023 gubernatorial terms, birth date and education."
+    },
+    {
+      "key": "RD03",
+      "title": "November 6 2018 official governor results",
+      "publisher": "Florida Division of Elections",
+      "type": "filing",
+      "url": "https://results.elections.myflorida.com/DetailRpt.Asp?DATAMODE=&DIST=&ELECTIONDATE=11%2F6%2F2018&GRP=&PARTY=&RACE=GOV",
+      "publishedAt": "2018-11-06",
+      "notes": "County-level certified results; use statewide summary for cross-check."
+    },
+    {
+      "key": "RD04",
+      "title": "November 8 2022 official statewide election results",
+      "publisher": "Florida Division of Elections",
+      "type": "filing",
+      "url": "https://results.elections.myflorida.com/SummaryRpt.asp?DATAMODE=&ElectionDate=11%2F8%2F2022&Race=CAB",
+      "publishedAt": "2022-11-08",
+      "notes": "DeSantis/Nuñez 4,614,210 votes, 59.4%; Crist/Hernandez 3,106,313, 40.0%."
+    },
+    {
+      "key": "RD05",
+      "title": "DeSantis career and 2024 withdrawal",
+      "publisher": "PolitiFact",
+      "type": "article",
+      "url": "https://www.politifact.com/personalities/ron-desantis/",
+      "publishedAt": "2024-01-21",
+      "notes": "Served in U.S. House starting 2013; withdrew presidential bid Jan 21 2024."
+    },
+    {
+      "key": "RD06",
+      "title": "Florida reopens economy in September 2020",
+      "publisher": "Associated Press via Washington Post",
+      "type": "secondary",
+      "url": "https://www.washingtonpost.com/health/florida-governor-reopening-states-economy-despite-spread/2020/09/25/fe9da9a6-ff4a-11ea-b0e4-350e4e60cc91_story.html",
+      "publishedAt": "2020-09-25",
+      "notes": "Reopening and curbs on local mask fines; article summarizes policy at the time."
+    },
+    {
+      "key": "RD07",
+      "title": "Governor signs HB1557 parental rights",
+      "publisher": "Executive Office of the Governor",
+      "type": "official_statement",
+      "url": "https://www.flgov.com/eog/news/press/2022/governor-ron-desantis-signs-historic-bill-protect-parental-rights-education",
+      "publishedAt": "2022-03-28",
+      "notes": "First-party advocacy description; distinguish original text from later expanded regulations."
+    },
+    {
+      "key": "RD08",
+      "title": "Governor signs HB7 Individual Freedom / Stop WOKE",
+      "publisher": "Executive Office of the Governor",
+      "type": "official_statement",
+      "url": "https://www.flgov.com/eog/news/press/2022/governor-ron-desantis-signs-legislation-protect-floridians-discrimination-and-woke",
+      "publishedAt": "2022-04-22",
+      "notes": "Original bill rationale; important private employer limits subsequently enjoined."
+    },
+    {
+      "key": "RD09",
+      "title": "11th Circuit ruling on corporate training restrictions",
+      "publisher": "Associated Press",
+      "type": "filing",
+      "url": "https://apnews.com/article/fcf6c1678bb90709f5941f89d0c193af",
+      "publishedAt": "2024-03-04",
+      "notes": "11th Circuit held employer-training restrictions violated First Amendment. Obtain opinion for legal-grade final edit."
+    },
+    {
+      "key": "RD10",
+      "title": "Florida HB1 education 2023 bill status",
+      "publisher": "Florida Senate",
+      "type": "secondary",
+      "url": "https://www.flsenate.gov/Session/Bill/2023/1",
+      "publishedAt": "2023-03-27",
+      "notes": "Chapter 2023-16; education choice expansion."
+    },
+    {
+      "key": "RD11",
+      "title": "Governor signs universal school choice expansion HB1",
+      "publisher": "Executive Office of the Governor",
+      "type": "official_statement",
+      "url": "https://www.flgov.com/eog/news/press/2023/governor-ron-desantis-signs-historic-legislation-expand-school-choice-options-all",
+      "publishedAt": "2023-03-27",
+      "notes": "Claims of impact made by administration are not independent evaluations."
+    },
+    {
+      "key": "RD12",
+      "title": "Governor signs SB266 DEI and higher-ed reforms",
+      "publisher": "Executive Office of the Governor",
+      "type": "official_statement",
+      "url": "https://www.flgov.com/eog/news/press/2023/governor-ron-desantis-signs-legislation-strengthen-floridas-position-national",
+      "publishedAt": "2023-05-15",
+      "notes": "SB266, HB931, SB240; distinguish appropriated budget plans from implemented results."
+    },
+    {
+      "key": "RD13",
+      "title": "Florida SB1718 immigration bill summary",
+      "publisher": "Florida Senate",
+      "type": "secondary",
+      "url": "https://www.flsenate.gov/Committees/billsummaries/2023/html/1718",
+      "publishedAt": "2023-05-10",
+      "notes": "Details E-Verify for employers with 25+ staff, hospital data collection and penalties."
+    },
+    {
+      "key": "RD14",
+      "title": "Florida SB1718 final bill record",
+      "publisher": "Florida Senate",
+      "type": "secondary",
+      "url": "https://www.flsenate.gov/Session/Bill/2023/1718/?Tab=BillText",
+      "publishedAt": "2023-05-10",
+      "notes": "Chapter 2023-40, approved May 10, effective July 1 except phased provisions."
+    },
+    {
+      "key": "RD15",
+      "title": "DeSantis 2025 immigration special session proposals",
+      "publisher": "Executive Office of the Governor",
+      "type": "official_statement",
+      "url": "https://flgov.com/eog/news/press/2025/governor-ron-desantis-announces-proposals-immigration-special-session",
+      "publishedAt": "2025-01-15",
+      "notes": "A proposal is not an enacted outcome; compare final SB 2-C."
+    },
+    {
+      "key": "RD16",
+      "title": "February 2025 governor and legislature immigration compromise",
+      "publisher": "Executive Office of the Governor",
+      "type": "official_statement",
+      "url": "https://www.flgov.com/eog/news/press/2025/note-press-florida-legislation-joint-proclamation",
+      "publishedAt": "2025-02-10",
+      "notes": "Gov explicitly credits legislative leadership; supersedes initial January proposals."
+    },
+    {
+      "key": "RD17",
+      "title": "Florida SB2-C immigration, chapter 2025-1",
+      "publisher": "Florida Senate",
+      "type": "secondary",
+      "url": "https://www.flsenate.gov/Session/Bill/2025C/2C",
+      "publishedAt": "2025-02-13",
+      "notes": "Approved 2/13; chapter 2025-1 recorded 2/14; appropriation $298,830,552."
+    },
+    {
+      "key": "RD18",
+      "title": "Florida governor expanded ICE 287(g) agreements",
+      "publisher": "Executive Office of the Governor",
+      "type": "official_statement",
+      "url": "https://www.flgov.com/eog/news/press/2025/governor-ron-desantis-announces-additional-memoranda-agreement-between-florida-law",
+      "publishedAt": "2025-02-19",
+      "notes": "Describes delegation from ICE; distinguish signed MOUs from trained personnel and completed removals."
+    },
+    {
+      "key": "RD19",
+      "title": "FDLE agents 287(g) certified",
+      "publisher": "Florida Department of Law Enforcement",
+      "type": "official_statement",
+      "url": "https://www.fdle.state.fl.us/news/2025/july/fdle-members-officially-become-287-g-certified-task-force-officers",
+      "publishedAt": "2025-07-10",
+      "notes": "Government certification announcement; case and outcome data not independently audited."
+    },
+    {
+      "key": "RD20",
+      "title": "2026 report Florida local 287(g) participation",
+      "publisher": "WUSF/News Service of Florida",
+      "type": "article",
+      "url": "https://www.wusf.org/politics-issues/2026-07-01/florida-pushes-police-to-step-up-immigration-enforcement",
+      "publishedAt": "2026-07-01",
+      "notes": "Cited state agency numbers: 272 of 394 agencies with active 287(g) task force agreements; participation and operational activity not synonymous."
+    },
+    {
+      "key": "RD21",
+      "title": "2026 May immigration enforcement operations results",
+      "publisher": "Executive Office of the Governor",
+      "type": "official_statement",
+      "url": "https://flgov.com/eog/news/press/2026/governor-ron-desantis-announces-results-major-immigration-enforcement-operations",
+      "publishedAt": "2026-05-29",
+      "notes": "Arrests are not necessarily criminal convictions or deportations."
+    },
+    {
+      "key": "RD22",
+      "title": "2026 Operation Tidal Wave milestone",
+      "publisher": "Executive Office of the Governor",
+      "type": "official_statement",
+      "url": "https://www.flgov.com/eog/news/press/2026/governor-ron-desantis-highlights-success-florida-federal-immigration-partnership",
+      "publishedAt": "2026-01",
+      "notes": "Claim of more than 10,000 arrests is agency self-report; avoid treating arrests as removals."
+    },
+    {
+      "key": "RD23",
+      "title": "Alligator Alcatraz 2026 state description",
+      "publisher": "Executive Office of the Governor",
+      "type": "official_statement",
+      "url": "https://flgov.com/eog/news/press/2026/governor-ron-desantis-highlights-success-alligator-alcatraz-and-floridas-continued",
+      "publishedAt": "2026-06",
+      "notes": "State says detainees began arriving July 2025; detention site legal proceedings require separate verification."
+    },
+    {
+      "key": "RD24",
+      "title": "Disney state control board bill signed HB9-B",
+      "publisher": "Executive Office of the Governor",
+      "type": "official_statement",
+      "url": "https://www.flgov.com/eog/news/press/2023/governor-ron-desantis-signs-legislation-ending-corporate-kingdom-walt-disney-world",
+      "publishedAt": "2023-02-27",
+      "notes": "State version of legislation; separate political motive and legal consequences."
+    },
+    {
+      "key": "RD25",
+      "title": "Disney First Amendment complaint dismissed January 2024",
+      "publisher": "Associated Press",
+      "type": "filing",
+      "url": "https://apnews.com/article/e92db2d9fe7e6d2a85f90bdc90faf5ff",
+      "publishedAt": "2024-01-31",
+      "notes": "Dismissal on standing and claims, not a finding about whether any retaliation was ethically justified."
+    },
+    {
+      "key": "RD26",
+      "title": "Disney and Florida board settle district dispute",
+      "publisher": "Associated Press",
+      "type": "article",
+      "url": "https://apnews.com/article/91040178ad4708939e621dd57bc5e494",
+      "publishedAt": "2024-03-27",
+      "notes": "State-court development deal settlement; separate federal litigation procedural history."
+    },
+    {
+      "key": "RD27",
+      "title": "DeSantis Israel 2019 cabinet meeting",
+      "publisher": "Executive Office of the Governor",
+      "type": "official_statement",
+      "url": "https://www.flgov.com/eog/news/press/2019/governor-ron-desantis-leads-historic-ceremonial-meeting-florida-cabinet-members-us",
+      "publishedAt": "2019-05-29",
+      "notes": "Cabinet meeting was ceremonial; no inference about bonds or transfers."
+    },
+    {
+      "key": "RD28",
+      "title": "Florida HB741 antisemitism public education law",
+      "publisher": "Executive Office of the Governor",
+      "type": "official_statement",
+      "url": "https://www.flgov.com/eog/news/press/2019/governor-ron-desantis-signs-anti-semitism-protections-bill-cscshb-741",
+      "publishedAt": "2019-05-31",
+      "notes": "Adds religion as protected K-20 class; government quotes not independent proof of effectiveness."
+    },
+    {
+      "key": "RD29",
+      "title": "Florida HB269 2023 antisemitism penalties",
+      "publisher": "Executive Office of the Governor",
+      "type": "official_statement",
+      "url": "https://flgov.com/eog/news/press/2023/governor-ron-desantis-signs-legislation-israel-further-combatting-antisemitism",
+      "publishedAt": "2023-04-27",
+      "notes": "Signed during Israel visit; law covers several intimidation/trespass/littering behaviors."
+    },
+    {
+      "key": "RD30",
+      "title": "DeSantis personal 7 October 2023 Israel statement",
+      "publisher": "American Presidency Project",
+      "type": "official_statement",
+      "url": "https://www.presidency.ucsb.edu/documents/statement-ron-desantis-the-hamas-terrorist-attacks-israel",
+      "publishedAt": "2023-10-07",
+      "notes": "Reproduces candidate video statement; first-person text archive; no inference on specific later military policies."
+    },
+    {
+      "key": "RD31",
+      "title": "Florida flags/memorial for Israel October 2023",
+      "publisher": "Executive Office of the Governor",
+      "type": "secondary",
+      "url": "https://www.flgov.com/eog/news/press/2023/memorandum-flags-half-staff-and-florida-capitol-be-lit-blue-and-white-honor-victims",
+      "publishedAt": "2023-10-09",
+      "notes": "Direct primary text of order."
+    },
+    {
+      "key": "RD32",
+      "title": "Florida SB1678 entities boycotting Israel legislative summary",
+      "publisher": "Florida Senate",
+      "type": "secondary",
+      "url": "https://flsenate.gov/Committees/BillSummaries/2025/html/1678",
+      "publishedAt": "2025-06-26",
+      "notes": "Public investments and academic boycotts; spending/contract thresholds require exact reading."
+    },
+    {
+      "key": "RD33",
+      "title": "Florida SB1678 final law status",
+      "publisher": "Florida Senate",
+      "type": "secondary",
+      "url": "https://www.flsenate.gov/Session/Bill/2025/1678",
+      "publishedAt": "2025-06-26",
+      "notes": "Approved June 26, 2025; chapter 2025-192, effective July 1."
+    },
+    {
+      "key": "RD34",
+      "title": "SJP lawsuit procedural record",
+      "publisher": "Civil Rights Litigation Clearinghouse",
+      "type": "secondary",
+      "url": "https://clearinghouse.net/case/45168/",
+      "publishedAt": "2024-02-16",
+      "notes": "Dismissed for standing/no imminent injury; no merits ruling that all threatened deactivations were constitutional."
+    },
+    {
+      "key": "RD35",
+      "title": "ACLU statement on Florida SJP lawsuit",
+      "publisher": "ACLU",
+      "type": "secondary",
+      "url": "https://www.aclu.org/cases/students-for-justice-in-palestine-at-the-university-of-florida-v-raymond-rodrigues",
+      "publishedAt": "2024-01-31",
+      "notes": "Advocacy/litigation position; pair with court docket summary; do not present as impartial account."
+    },
+    {
+      "key": "RD36",
+      "title": "2022 Florida gubernatorial donor committee aggregated historical numbers",
+      "publisher": "Transparency USA",
+      "type": "secondary",
+      "url": "https://www.transparencyusa.org/fl/committee/friends-of-ron-desantis-70275-pac/contributors?cycle=2022-election-cycle",
+      "publishedAt": "2022",
+      "notes": "Committee renamed Empower Parents PAC; $164,201,933 aggregate contributions and $99,896,062 aggregate expenditures reported on this secondary index; recheck state raw filings before import."
+    },
+    {
+      "key": "RD37",
+      "title": "Empower Parents PAC historical 527 identity",
+      "publisher": "ProPublica",
+      "type": "secondary",
+      "url": "https://projects.propublica.org/527-explorer/orgs/823855986",
+      "publishedAt": "2026",
+      "notes": "527 reports not substitutes for Florida state candidate committee returns."
+    },
+    {
+      "key": "RD38",
+      "title": "RON PAC federal financial summary (2025 to Sep 2026)",
+      "publisher": "Federal Election Commission",
+      "type": "filing",
+      "url": "https://www.fec.gov/data/committee/C00841130/",
+      "publishedAt": "2026-09-30",
+      "notes": "Hybrid PAC C00841130, historically tied to DeSantis; not a current gubernatorial candidate campaign."
+    },
+    {
+      "key": "RD39",
+      "title": "Never Back Down federal Super PAC",
+      "publisher": "Federal Election Commission",
+      "type": "secondary",
+      "url": "https://www.fec.gov/data/committee/C00834077/",
+      "publishedAt": "2026-06-30",
+      "notes": "Super PAC C00834077, not same as authorized presidential candidate committee; FEC default cycle can be 2025-26."
+    },
+    {
+      "key": "RD40",
+      "title": "DeSantis 2024 presidential candidate finance page",
+      "publisher": "Federal Election Commission",
+      "type": "secondary",
+      "url": "https://www.fec.gov/data/candidate/P40013039/?cycle=2024&election_full=false",
+      "publishedAt": "2024",
+      "notes": "FEC warns principal campaign committee converted to PAC; a draft committee appears separately; do not misread candidate overview as total campaign financing."
+    },
+    {
+      "key": "RD41",
+      "title": "Florida governor picks Jay Collins as lieutenant governor",
+      "publisher": "Associated Press",
+      "type": "article",
+      "url": "https://apnews.com/article/61c7ae81f347b6a12b64907006929752",
+      "publishedAt": "2025-08-12",
+      "notes": "Political positioning suggested, not proof gubernatorial primary endorsement."
+    },
+    {
+      "key": "RD42",
+      "title": "Florida Lt Gov Jay Collins state official page",
+      "publisher": "Executive Office of the Governor",
+      "type": "official_statement",
+      "url": "https://flgov.com/eog/leadership/people/jay-collins",
+      "publishedAt": "2025-08-12",
+      "notes": "Official date of lieutenant-governor tenure."
+    },
+    {
+      "key": "RD43",
+      "title": "DeSantis urges GOP gubernatorial debate, party rescinds Fishback invite",
+      "publisher": "WUSF/News Service of Florida",
+      "type": "article",
+      "url": "https://www.wusf.org/politics-issues/2026-06-16/desantis-clashes-florida-gop-lack-gubernatorial-debate",
+      "publishedAt": "2026-06-16",
+      "notes": "Differentiate DeSantis debate advocacy, RPOF gatekeeping, and statements by other officials."
+    },
+    {
+      "key": "RD44",
+      "title": "Republican Party of Florida June 12 Fishback decision",
+      "publisher": "Republican Party of Florida",
+      "type": "official_statement",
+      "url": "https://florida.gop/republican-party-of-florida-rescinds-james-fishbacks-invitation-to-sunshine-state-showdown/",
+      "publishedAt": "2026-06-12",
+      "notes": "Partisan source: gives party stated grounds, not independent finding of rule breach."
+    },
+    {
+      "key": "RD45",
+      "title": "DeSantis stays neutral in August governor primary",
+      "publisher": "Florida Politics",
+      "type": "article",
+      "url": "https://floridapolitics.com/archives/811930-ron-desantis-closes-door-on-gubernatorial-endorsement-before-gop-primary/",
+      "publishedAt": "2026-08-06",
+      "notes": "Direct quotations from DeSantis at press event; verify original video for quotation use."
+    },
+    {
+      "key": "RD46",
+      "title": "DeSantis praises Paul Renner, refuses endorsement",
+      "publisher": "Florida Voice",
+      "type": "article",
+      "url": "https://flvoicenews.com/desantis-says-renner-would-be-really-as-good-governor-as-collins-pushes-for-endorsement/",
+      "publishedAt": "2026-08-06",
+      "notes": "Praise is not endorsement; may be pro-Renner editorial framing."
+    },
+    {
+      "key": "RD47",
+      "title": "DeSantis primary no endorsement and candidate statements",
+      "publisher": "WESH",
+      "type": "secondary",
+      "url": "https://www.wesh.com/article/desantis-withholds-endorsement-in-florida-governors-race-as-primary-nears/73371986",
+      "publishedAt": "2026-08-07",
+      "notes": "Includes attributed candidate campaign statements; do not promote to direct person-person relationships."
+    },
+    {
+      "key": "RD48",
+      "title": "DeSantis endorses Donalds post-primary",
+      "publisher": "WUSF",
+      "type": "article",
+      "url": "https://wusf.org/text/politics-issues/2026-09-03/desantis-endorses-donalds-florida-governor-despite-past-tensions",
+      "publishedAt": "2026-09-03",
+      "notes": "DeSantis endorses full GOP slate Sept 1, including Donalds; prior 2023 classroom standards tension."
+    },
+    {
+      "key": "RD49",
+      "title": "DeSantis Donalds Sept 1 endorsement video event account",
+      "publisher": "WESH",
+      "type": "secondary",
+      "url": "https://www.wesh.com/article/florida-governor-candidate-byron-donalds-says-desantis-has-endorsed-him/73584717",
+      "publishedAt": "2026-09-02",
+      "notes": "State GOP Sept 1 leadership forum, formal post-primary endorsement."
+    },
+    {
+      "key": "RD50",
+      "title": "2026 congressional redistricting official retrospective",
+      "publisher": "Florida Office of Economic & Demographic Research",
+      "type": "official_statement",
+      "url": "https://edr.state.fl.us/Content/redistricting/index.cfm",
+      "publishedAt": "2026-05-27",
+      "notes": "HB1-D signed May 4 2026; official map files available."
+    },
+    {
+      "key": "RD51",
+      "title": "Florida Senate 2026 map legislative history",
+      "publisher": "Florida Senate",
+      "type": "official_statement",
+      "url": "https://www.flsenate.gov/Session/Redistricting/Congressional",
+      "publishedAt": "2026-05",
+      "notes": "Jan 2026 proclamation; April redistricting special session, governor-drafted plan."
+    },
+    {
+      "key": "RD52",
+      "title": "2026 HB1-D final statutory record",
+      "publisher": "Florida Senate",
+      "type": "official_statement",
+      "url": "https://flsenate.gov/Session/Bill/2026D/1D/ByVersion",
+      "publishedAt": "2026-07-01",
+      "notes": "HB1-D chapter 2026-229; effective timing specified, avoid presuming map unchallenged."
+    },
+    {
+      "key": "RD53",
+      "title": "2026 Florida maps under constitutional challenge",
+      "publisher": "Loyola Law School All About Redistricting",
+      "type": "secondary",
+      "url": "https://redistricting.lls.edu/case/equal-ground-education-fund-v-byrd/",
+      "publishedAt": "2026-08-31",
+      "notes": "PI denied May 26; appellate litigation continuing; update after source cutoff."
+    },
+    {
+      "key": "RD54",
+      "title": "Florida SB2A property insurance changes",
+      "publisher": "Florida CFO Insurance Consumer Advocate",
+      "type": "secondary",
+      "url": "https://www.myfloridacfo.com/division/ica/propertyinsurancechanges",
+      "publishedAt": "2022",
+      "notes": "Lists reforms and effective dates; does not prove premiums fell because of reforms."
+    },
+    {
+      "key": "RD55",
+      "title": "Florida HB1365 unauthorized camping law summary",
+      "publisher": "Florida Senate",
+      "type": "official_statement",
+      "url": "https://www.flsenate.gov/Committees/billsummaries/2024/html/1365",
+      "publishedAt": "2024",
+      "notes": "Law allows civil remedy against local governments; does not criminalize individual camping under bill."
+    },
+    {
+      "key": "RD56",
+      "title": "Florida abortion ballot amendment 2024 outcome",
+      "publisher": "Florida Department of State",
+      "type": "official_statement",
+      "url": "https://constitutionalinitiatives.dos.fl.gov/Home/InitDetail?account=83927&seqnum=1",
+      "publishedAt": "2024-11-05",
+      "notes": "Amendment status defeated."
+    },
+    {
+      "key": "RD57",
+      "title": "2024 Florida amendment vote counts",
+      "publisher": "Ballotpedia",
+      "type": "secondary",
+      "url": "https://ballotpedia.org/Florida_Amendment_4%2C_Right_to_Abortion_Initiative_%282024%29",
+      "publishedAt": "2024-11-05",
+      "notes": "57.17% yes, threshold 60%, 6-week ban remained; verify official election return for final numerical import."
+    },
+    {
+      "key": "RD58",
+      "title": "Fact-check DeSantis statement about abortion ballot",
+      "publisher": "PolitiFact",
+      "type": "secondary",
+      "url": "https://politifact.com/factchecks/2024/apr/30/ron-desantis/no-a-florida-ballot-measure-wouldnt-mandate-aborti/",
+      "publishedAt": "2024-04-30",
+      "notes": "Found governor claim that amendment mandates abortions until birth false; distinguish mandate from protection."
+    },
+    {
+      "key": "RD59",
+      "title": "DeSantis October 2026 property tax amendment roundtable",
+      "publisher": "Executive Office of the Governor",
+      "type": "official_statement",
+      "url": "https://flgov.com/eog/news/press/2026/governor-ron-desantis-hosts-miami-roundtable-support-amendment-3-property-tax",
+      "publishedAt": "2026-10-21",
+      "notes": "He advocates Amendment 3; Oct 28 election has not happened; claimed average savings are forecasts, not realized."
+    },
+    {
+      "key": "RD60",
+      "title": "Miami-Dade Israel Bonds investment 2023",
+      "publisher": "Miami-Dade County Mayor",
+      "type": "official_statement",
+      "url": "https://www.miamidade.gov/global/release.page?Mduid_release=rel1697579815448444",
+      "publishedAt": "2023-10-17",
+      "notes": "County announces +$25m to $76m total; not a governor-directed decision; do not attribute to DeSantis."
+    },
+    {
+      "key": "RD61",
+      "title": "Alianza Americas v DeSantis Martha Vineyard litigation overview",
+      "publisher": "Civil Rights Litigation Clearinghouse",
+      "type": "secondary",
+      "url": "https://clearinghouse.net/case/43594/",
+      "publishedAt": "2022",
+      "notes": "Relocation allegations versus legal findings; 2026 final status not checked."
+    },
+    {
+      "key": "RD62",
+      "title": "2024 Florida GOP primary candidate debate rule coverage",
+      "publisher": "WFLX / WFTS",
+      "type": "article",
+      "url": "https://www.wflx.com/2026/06/12/desantis-joins-calls-florida-gop-governor-debate-party-bars-fishback-june-event/?outputType=amp",
+      "publishedAt": "2026-06-12",
+      "notes": "Debate thresholds and party forum; based on the party-reported numbers, independent certification of campaign donors not established."
+    }
+  ],
+  "facts": [
+    {
+      "key": "identity-1",
+      "label": "Identity",
+      "value": "Ronald Dion DeSantis born September 14, 1978; Florida governor as of Oct 28 2026.",
+      "featured": true,
+      "sources": [
+        "RD01",
+        "RD02"
+      ]
+    },
+    {
+      "key": "career-2",
+      "label": "Career",
+      "value": "U.S. Navy JAG and Iraq service preceded elected office.",
+      "featured": true,
+      "sources": [
+        "RD01",
+        "RD02"
+      ]
+    },
+    {
+      "key": "career-3",
+      "label": "Career",
+      "value": "Represented Florida 6th congressional district during 2013-2018.",
+      "featured": true,
+      "sources": [
+        "RD05"
+      ]
+    },
+    {
+      "key": "electoral-4",
+      "label": "Electoral",
+      "value": "2018 Florida governor election won narrowly over Andrew Gillum.",
+      "featured": true,
+      "sources": [
+        "RD03"
+      ]
+    },
+    {
+      "key": "electoral-5",
+      "label": "Electoral",
+      "value": "2022 reelection: 4,614,210 votes and 59.4%; Charlie Crist 3,106,313 and 40.0%.",
+      "featured": false,
+      "sources": [
+        "RD04"
+      ]
+    },
+    {
+      "key": "electoral-6",
+      "label": "Electoral",
+      "value": "Withdrew from 2024 Republican presidential nominating contest on January 21, 2024.",
+      "featured": false,
+      "sources": [
+        "RD05"
+      ]
+    },
+    {
+      "key": "education-7",
+      "label": "Education",
+      "value": "HB1557 originally barred K-3 instruction on sexual orientation and gender identity and required other age appropriateness and parental notices.",
+      "featured": false,
+      "sources": [
+        "RD07"
+      ]
+    },
+    {
+      "key": "education-8",
+      "label": "Education",
+      "value": "2022 HB7 regulates workplace and public-school instruction concerning specified race and sex concepts; workplace part subsequently invalidated by federal appellate court.",
+      "featured": false,
+      "sources": [
+        "RD08",
+        "RD09"
+      ]
+    },
+    {
+      "key": "education-9",
+      "label": "Education",
+      "value": "2023 HB1 expands private school scholarship eligibility by removing income eligibility restrictions and prior enrollment cap; awards still depend on program rules/resources.",
+      "featured": false,
+      "sources": [
+        "RD10",
+        "RD11"
+      ]
+    },
+    {
+      "key": "education-10",
+      "label": "Education",
+      "value": "SB266 restricts public higher education institutional spending on DEI initiatives and changes curricula/governance rules.",
+      "featured": false,
+      "sources": [
+        "RD12"
+      ]
+    },
+    {
+      "key": "immigration-11",
+      "label": "Immigration",
+      "value": "2023 SB1718 required E-Verify for private employers with 25 or more employees for new hires, subject to bill terms.",
+      "featured": false,
+      "sources": [
+        "RD13",
+        "RD14"
+      ]
+    },
+    {
+      "key": "immigration-12",
+      "label": "Immigration",
+      "value": "2023 SB1718 requires Medicaid-accepting hospitals to ask patients immigration status and report categories; it does not require denial of emergency care.",
+      "featured": false,
+      "sources": [
+        "RD13"
+      ]
+    },
+    {
+      "key": "immigration-13",
+      "label": "Immigration",
+      "value": "2025 January special-session proposal contained wider measures; final SB2-C was a negotiated statutory package.",
+      "featured": false,
+      "sources": [
+        "RD15",
+        "RD16",
+        "RD17"
+      ]
+    },
+    {
+      "key": "immigration-14",
+      "label": "Immigration",
+      "value": "2025 SB2-C appropriated $298,830,552, created a State Board and Council of Immigration Enforcement and expanded legal tools.",
+      "featured": false,
+      "sources": [
+        "RD17"
+      ]
+    },
+    {
+      "key": "immigration-15",
+      "label": "Immigration",
+      "value": "ICE 287(g) agreements delegate specified federal immigration functions to trained state officers under ICE supervision, not unfettered state power.",
+      "featured": false,
+      "sources": [
+        "RD18",
+        "RD19"
+      ]
+    },
+    {
+      "key": "immigration-16",
+      "label": "Immigration",
+      "value": "July 2026 report counted 272 of 394 agencies with active 287(g) taskforce officer agreements; active agreements do not establish enforcement volume.",
+      "detail": "Counts attributed to FDLE figures in WUSF.",
+      "featured": false,
+      "sources": [
+        "RD20"
+      ]
+    },
+    {
+      "key": "immigration-17",
+      "label": "Immigration",
+      "value": "Operation Tidal Wave claimed over 10,000 arrests through state-federal partnership; arrests should not be counted as deportations.",
+      "detail": "Government announcement; unaudited denominator, no adjudication or removal ledger.",
+      "featured": false,
+      "sources": [
+        "RD22"
+      ]
+    },
+    {
+      "key": "immigration-18",
+      "label": "Immigration",
+      "value": "Alligator Alcatraz was reported operational by July 2025 and described as state-supported federal detention capacity.",
+      "detail": "Ownership, costs, legal rulings and conditions need independent verification.",
+      "featured": false,
+      "sources": [
+        "RD23"
+      ]
+    },
+    {
+      "key": "corporations-19",
+      "label": "Corporations",
+      "value": "2023 HB9-B replaced Reedy Creek Improvement District self-governance with governor-appointed oversight body.",
+      "featured": false,
+      "sources": [
+        "RD24"
+      ]
+    },
+    {
+      "key": "corporations-20",
+      "label": "Corporations",
+      "value": "Disney alleged political retaliation after opposing education policy; federal case dismissed, state planning dispute settled.",
+      "detail": "Dismissal is a procedural/legal outcome, not conclusive ruling on political motive.",
+      "featured": false,
+      "sources": [
+        "RD25",
+        "RD26"
+      ]
+    },
+    {
+      "key": "use-of-state-power-21",
+      "label": "Use Of State Power",
+      "value": "2026 redistricting special session initiated by governor; HB1-D signed May 4 after legislature acted.",
+      "featured": false,
+      "sources": [
+        "RD50",
+        "RD51",
+        "RD52"
+      ]
+    },
+    {
+      "key": "use-of-state-power-22",
+      "label": "Use Of State Power",
+      "value": "2026 congressional map under state court constitutional challenge; preliminary injunction denied in May.",
+      "detail": "Do not treat denial of preliminary injunction as final merits judgment.",
+      "featured": false,
+      "sources": [
+        "RD53"
+      ]
+    },
+    {
+      "key": "use-of-state-power-23",
+      "label": "Use Of State Power",
+      "value": "Governor signed 2024 HB1365 restricting unauthorized public sleeping/camping and providing a civil enforcement mechanism against local governments.",
+      "featured": false,
+      "sources": [
+        "RD55"
+      ]
+    },
+    {
+      "key": "israel-24",
+      "label": "Israel",
+      "value": "2019 Florida cabinet ceremonial meeting held at U.S. Embassy in Jerusalem.",
+      "featured": false,
+      "sources": [
+        "RD27"
+      ]
+    },
+    {
+      "key": "israel-25",
+      "label": "Israel",
+      "value": "HB741 adds religion as a protected K-20 education class; 2019 bill includes an antisemitism definition.",
+      "featured": false,
+      "sources": [
+        "RD28"
+      ]
+    },
+    {
+      "key": "israel-26",
+      "label": "Israel",
+      "value": "2023 HB269 includes specified acts of harassment, intimidation and trespass; not simply a blanket criminalization of criticism of Israel.",
+      "featured": false,
+      "sources": [
+        "RD29"
+      ]
+    },
+    {
+      "key": "israel-27",
+      "label": "Israel",
+      "value": "DeSantis unequivocally supported Israel publicly after October 7 attacks and condemned Iran and Hamas.",
+      "featured": false,
+      "sources": [
+        "RD30",
+        "RD31"
+      ]
+    },
+    {
+      "key": "israel-28",
+      "label": "Israel",
+      "value": "2025 SB1678 expands state divestment and contracting scrutiny of entities that boycott Israel, including academic-boycott provisions.",
+      "featured": false,
+      "sources": [
+        "RD32",
+        "RD33"
+      ]
+    },
+    {
+      "key": "israel-29",
+      "label": "Israel",
+      "value": "Miami-Dade county 2023 purchase of additional $25 million Israel Bonds was announced by the county mayor, not by the governor.",
+      "detail": "Do not record DeSantis as buyer or approving officer without further state-level records.",
+      "featured": false,
+      "sources": [
+        "RD60"
+      ]
+    },
+    {
+      "key": "israel-30",
+      "label": "Israel",
+      "value": "State university system SJP deactivation memo issued in consultation with DeSantis; federal lawsuit dismissed due to standing/imminent enforcement issues.",
+      "detail": "Parties disputed order legality; no merits holding that expression could be constitutionally barred.",
+      "featured": false,
+      "sources": [
+        "RD34",
+        "RD35"
+      ]
+    },
+    {
+      "key": "succession-31",
+      "label": "Succession",
+      "value": "DeSantis appointed Jay Collins lieutenant governor in August 2025, providing official governing relationship, not an automatic primary endorsement.",
+      "featured": false,
+      "sources": [
+        "RD41",
+        "RD42"
+      ]
+    },
+    {
+      "key": "succession-32",
+      "label": "Succession",
+      "value": "DeSantis supported a competitive GOP debate in June 2026 while state Republican Party excluded Fishback from party programming.",
+      "featured": false,
+      "sources": [
+        "RD43",
+        "RD44",
+        "RD62"
+      ]
+    },
+    {
+      "key": "succession-33",
+      "label": "Succession",
+      "value": "DeSantis declined to endorse any candidate in August 2026 primary, despite praising Paul Renner.",
+      "featured": false,
+      "sources": [
+        "RD45",
+        "RD46",
+        "RD47"
+      ]
+    },
+    {
+      "key": "succession-34",
+      "label": "Succession",
+      "value": "DeSantis endorsed Donalds within broader GOP general-election slate on September 1, 2026.",
+      "featured": false,
+      "sources": [
+        "RD48",
+        "RD49"
+      ]
+    },
+    {
+      "key": "succession-35",
+      "label": "Succession",
+      "value": "2023 Florida Black history education standards were one of the public disputes between DeSantis allies and Donalds.",
+      "detail": "Independent news account; source primary standards/Donalds post before detailed quote.",
+      "featured": false,
+      "sources": [
+        "RD48"
+      ]
+    },
+    {
+      "key": "finance-36",
+      "label": "Finance",
+      "value": "FEC C00841130 is a hybrid PAC labeled Restore Our Nation, with $2,884,109.25 in total receipts 2025-01-01 to 2026-09-30.",
+      "detail": "Not current Florida governor candidate receipts or DeSantis personal donations.",
+      "featured": false,
+      "sources": [
+        "RD38"
+      ]
+    },
+    {
+      "key": "finance-37",
+      "label": "Finance",
+      "value": "Never Back Down C00834077 is a Super PAC; must be reported separately from presidential authorized committee and Florida state PAC.",
+      "featured": false,
+      "sources": [
+        "RD39",
+        "RD40"
+      ]
+    },
+    {
+      "key": "finance-38",
+      "label": "Finance",
+      "value": "A secondary Florida PAC aggregator associates historical Friends of Ron DeSantis/Empower Parents PAC with $164,201,933 in 2022 contributions.",
+      "detail": "Do not elevate this into verified primary-source money value absent state filing comparison.",
+      "featured": false,
+      "sources": [
+        "RD36",
+        "RD37"
+      ]
+    },
+    {
+      "key": "abortion-39",
+      "label": "Abortion",
+      "value": "2024 Florida Amendment 4 received 57.17% but failed to reach required 60% and six-week restriction remained.",
+      "featured": false,
+      "sources": [
+        "RD56",
+        "RD57"
+      ]
+    },
+    {
+      "key": "abortion-40",
+      "label": "Abortion",
+      "value": "Independent fact-check found DeSantis claim that 2024 amendment mandated abortion until birth misleading/false.",
+      "detail": "Differentiate restrictions on prohibitions from mandating abortions.",
+      "featured": false,
+      "sources": [
+        "RD58"
+      ]
+    },
+    {
+      "key": "economy-41",
+      "label": "Economy",
+      "value": "2022 Florida special-session property insurance reforms changed claims/litigation/reinsurance rules; direct premium effect is not established here.",
+      "featured": false,
+      "sources": [
+        "RD54"
+      ]
+    },
+    {
+      "key": "tax-42",
+      "label": "Tax",
+      "value": "As of 2026-10-21 DeSantis advocated 2026 Amendment 3 property-tax relief; statutory or voter approval is unconfirmed at October 28 cutoff.",
+      "detail": "Governor estimates tax savings; no realized outcome yet.",
+      "featured": false,
+      "sources": [
+        "RD59"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "ron-desantis-state-of-florida-serves-as-governor-executive-authority",
+      "source": "ron-desantis",
+      "target": "state-of-florida",
+      "relType": "governor-of",
+      "role": "serves as governor, executive authority",
+      "status": "verified",
+      "prominence": 3,
+      "notes": "",
+      "sources": [
+        "RD01",
+        "RD02"
+      ]
+    },
+    {
+      "key": "ron-desantis-florida-legislature-signed-multiple-major-bills-and-convened-redistricting-session",
+      "source": "ron-desantis",
+      "target": "florida-legislature",
+      "relType": "affiliated-with",
+      "role": "signed multiple major bills and convened redistricting session",
+      "status": "verified",
+      "prominence": 3,
+      "notes": "",
+      "sources": [
+        "RD17",
+        "RD51",
+        "RD50"
+      ]
+    },
+    {
+      "key": "ron-desantis-donald-trump-trump-endorsed-desantis-in-2018-desantis-challenged-trump-in-2024-primary-then-backed-him-aligned-on-2025-immigration-policy",
+      "source": "ron-desantis",
+      "target": "donald-trump",
+      "relType": "endorsed",
+      "role": "Trump endorsed DeSantis in 2018; DeSantis challenged Trump in 2024 primary then backed him; aligned on 2025 immigration policy",
+      "status": "verified",
+      "prominence": 3,
+      "notes": "2018 Trump endorsement not independently ledger-backed here; must verify before structured import.",
+      "sources": [
+        "RD05",
+        "RD12",
+        "RD16"
+      ]
+    },
+    {
+      "key": "ron-desantis-byron-donalds-public-policy-disputes-in-2023-endorsed-for-governor-after-aug-2026-primary-on-sep-1",
+      "source": "ron-desantis",
+      "target": "byron-donalds",
+      "relType": "governor-of",
+      "role": "public policy disputes in 2023; endorsed for governor after Aug 2026 primary on Sep 1",
+      "status": "verified",
+      "prominence": 3,
+      "notes": "Do not label endorsed in primary.",
+      "sources": [
+        "RD48",
+        "RD49"
+      ]
+    },
+    {
+      "key": "ron-desantis-jay-collins-appointed-florida-lieutenant-governor-august-12-2025",
+      "source": "ron-desantis",
+      "target": "jay-collins",
+      "relType": "governor-of",
+      "role": "appointed Florida lieutenant governor, August 12 2025",
+      "status": "verified",
+      "prominence": 3,
+      "notes": "No primary endorsement established.",
+      "sources": [
+        "RD41",
+        "RD42"
+      ]
+    },
+    {
+      "key": "ron-desantis-paul-renner-collaborated-on-2023-school-choice-legislative-agenda-praised-him-in-august-2026-without-endorsement",
+      "source": "ron-desantis",
+      "target": "paul-renner",
+      "relType": "endorsed",
+      "role": "collaborated on 2023 school-choice legislative agenda; praised him in August 2026 without endorsement",
+      "status": "verified",
+      "prominence": 3,
+      "notes": "Legislative partnership, not formal 2026 campaign endorsement.",
+      "sources": [
+        "RD11",
+        "RD46"
+      ]
+    },
+    {
+      "key": "ron-desantis-james-fishback-public-primary-season-debate-context-fishback-praised-desantis-as-governing-model",
+      "source": "ron-desantis",
+      "target": "james-fishback",
+      "relType": "affiliated-with",
+      "role": "public primary-season debate context; Fishback praised DeSantis as governing model",
+      "status": "verified",
+      "prominence": 2,
+      "notes": "Fishback praise not reciprocal endorsement, personal meeting or formal alliance.",
+      "sources": [
+        "RD43",
+        "RD47"
+      ]
+    },
+    {
+      "key": "ron-desantis-republican-party-of-florida-disagreed-over-2026-debate-format-subsequently-endorsed-party-general-election-slate",
+      "source": "ron-desantis",
+      "target": "republican-party-of-florida",
+      "relType": "endorsed",
+      "role": "disagreed over 2026 debate format; subsequently endorsed party general-election slate",
+      "status": "verified",
+      "prominence": 2,
+      "notes": "RPOF independently withdrew Fishback invitation; governor not established as issuing that ban.",
+      "sources": [
+        "RD43",
+        "RD44",
+        "RD48"
+      ]
+    },
+    {
+      "key": "ron-desantis-walt-disney-company-state-governance-conflict-over-reedy-creek-district-and-disney-speech-allegations",
+      "source": "ron-desantis",
+      "target": "walt-disney-company",
+      "relType": "opposed",
+      "role": "state governance conflict over Reedy Creek district and Disney speech allegations",
+      "status": "disputed",
+      "prominence": 2,
+      "notes": "Political motives alleged, not resolved by a liability judgment.",
+      "sources": [
+        "RD24",
+        "RD25",
+        "RD26"
+      ]
+    },
+    {
+      "key": "ron-desantis-florida-department-of-law-enforcement-directed-immigration-enforcement-agreements-through-agency",
+      "source": "ron-desantis",
+      "target": "florida-department-of-law-enforcement",
+      "relType": "affiliated-with",
+      "role": "directed immigration enforcement agreements through agency",
+      "status": "verified",
+      "prominence": 2,
+      "notes": "",
+      "sources": [
+        "RD18",
+        "RD19"
+      ]
+    },
+    {
+      "key": "ron-desantis-u-s-immigration-and-customs-enforcement-state-federal-enforcement-cooperation-under-signed-287-g-memoranda",
+      "source": "ron-desantis",
+      "target": "u-s-immigration-and-customs-enforcement",
+      "relType": "collaborated-with",
+      "role": "state-federal enforcement cooperation under signed 287(g) memoranda",
+      "status": "verified",
+      "prominence": 2,
+      "notes": "",
+      "sources": [
+        "RD18",
+        "RD20"
+      ]
+    },
+    {
+      "key": "ron-desantis-florida-state-board-of-administration-governor-part-of-florida-executive-oversight-2025-legislation-changes-israel-boycott-screening",
+      "source": "ron-desantis",
+      "target": "florida-state-board-of-administration",
+      "relType": "governor-of",
+      "role": "governor part of Florida executive oversight; 2025 legislation changes Israel boycott screening",
+      "status": "verified",
+      "prominence": 2,
+      "notes": "Do not infer any particular investment trade executed by governor.",
+      "sources": [
+        "RD32",
+        "RD33"
+      ]
+    },
+    {
+      "key": "ron-desantis-miami-dade-county-jurisdictionally-distinct-state-governor-county-made-2023-israel-bonds-purchase",
+      "source": "ron-desantis",
+      "target": "miami-dade-county",
+      "relType": "governor-of",
+      "role": "jurisdictionally distinct state governor; county made 2023 Israel Bonds purchase",
+      "status": "verified",
+      "prominence": 1,
+      "notes": "Negative attribution control. Not directly responsible for county investment.",
+      "sources": [
+        "RD60"
+      ]
+    },
+    {
+      "key": "ron-desantis-state-university-system-of-florida-consulted-on-2023-sjp-chapter-directive-disputed-in-litigation",
+      "source": "ron-desantis",
+      "target": "state-university-system-of-florida",
+      "relType": "opposed",
+      "role": "consulted on 2023 SJP chapter directive disputed in litigation",
+      "status": "disputed",
+      "prominence": 1,
+      "notes": "Court dismissed for standing rather than endorsing speech restrictions.",
+      "sources": [
+        "RD34",
+        "RD35"
+      ]
+    },
+    {
+      "key": "ron-desantis-ken-griffin-reported-political-committee-donor-to-desantis-aligned-pac-in-2022",
+      "source": "ron-desantis",
+      "target": "ken-griffin",
+      "relType": "affiliated-with",
+      "role": "reported political committee donor to DeSantis-aligned PAC in 2022",
+      "status": "verified",
+      "prominence": 1,
+      "notes": "Secondary aggregator only; $5m entry requires state primary-source donor verification.",
+      "sources": [
+        "RD36"
+      ]
+    },
+    {
+      "key": "ron-desantis-robert-bigelow-reported-political-committee-donor-in-2022",
+      "source": "ron-desantis",
+      "target": "robert-bigelow",
+      "relType": "affiliated-with",
+      "role": "reported political committee donor in 2022",
+      "status": "verified",
+      "prominence": 1,
+      "notes": "Secondary aggregator only; $10m entry requires state primary-source donor verification.",
+      "sources": [
+        "RD36"
+      ]
+    },
+    {
+      "key": "ron-desantis-republican-governors-association-listed-as-pac-contributor-to-pro-desantis-state-committee-in-2022",
+      "source": "ron-desantis",
+      "target": "republican-governors-association",
+      "relType": "donated-to",
+      "role": "listed as PAC contributor to pro-DeSantis state committee in 2022",
+      "status": "verified",
+      "prominence": 1,
+      "notes": "No statement that RGA money was personal gift to DeSantis.",
+      "sources": [
+        "RD36"
+      ]
+    },
+    {
+      "key": "ron-desantis-david-jolly-opposing-general-election-nominee-to-governor-endorsed-donalds-not-direct-gubernatorial-race-against-desantis",
+      "source": "ron-desantis",
+      "target": "david-jolly",
+      "relType": "governor-of",
+      "role": "opposing general-election nominee to governor-endorsed Donalds, not direct gubernatorial race against DeSantis",
+      "status": "verified",
+      "prominence": 1,
+      "notes": "No formal direct political relationship established.",
+      "sources": [
+        "RD48"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "key": "1978-09-14-born-in-florida",
+      "date": "1978-09-14",
+      "title": "Born in Florida",
+      "summary": "Ronald Dion DeSantis; date recorded by National Governors Association.",
+      "category": "career",
+      "significance": 3,
+      "status": "verified",
+      "chapter": "from-congressional-conservative-to-florida-executive",
+      "sources": [
+        "RD01",
+        "RD02"
+      ]
+    },
+    {
+      "key": "2012-11-elected-to-u-s-house",
+      "date": "2012-11",
+      "title": "Elected to U.S. House",
+      "summary": "Won Florida 6th Congressional District seat, beginning 2013 service.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "chapter": "from-congressional-conservative-to-florida-executive",
+      "sources": [
+        "RD05"
+      ]
+    },
+    {
+      "key": "2018-11-06-wins-florida-governor-election",
+      "date": "2018-11-06",
+      "title": "Wins Florida governor election",
+      "summary": "DeSantis wins against Andrew Gillum by narrow margin.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "chapter": "from-congressional-conservative-to-florida-executive",
+      "sources": [
+        "RD03"
+      ]
+    },
+    {
+      "key": "2019-01-08-inaugurated-governor",
+      "date": "2019-01-08",
+      "title": "Inaugurated governor",
+      "summary": "Began first term as 46th Florida governor.",
+      "category": "career",
+      "significance": 3,
+      "status": "verified",
+      "chapter": "from-congressional-conservative-to-florida-executive",
+      "sources": [
+        "RD01",
+        "RD02"
+      ]
+    },
+    {
+      "key": "2019-05-29-florida-cabinet-ceremonial-meeting-in-jerusalem",
+      "date": "2019-05-29",
+      "title": "Florida Cabinet ceremonial meeting in Jerusalem",
+      "summary": "Meeting at U.S. Embassy with business and government ties on the agenda.",
+      "category": "career",
+      "significance": 3,
+      "status": "verified",
+      "chapter": "covid-governance-and-the-theory-of-executive-restraint",
+      "sources": [
+        "RD27"
+      ]
+    },
+    {
+      "key": "2019-05-31-signs-hb741-antisemitism-protections",
+      "date": "2019-05-31",
+      "title": "Signs HB741 antisemitism protections",
+      "summary": "Adds religion as a protected class in K-20 educational discrimination law.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "covid-governance-and-the-theory-of-executive-restraint",
+      "sources": [
+        "RD28"
+      ]
+    },
+    {
+      "key": "2020-09-25-economic-reopening-amid-covid",
+      "date": "2020-09-25",
+      "title": "Economic reopening amid COVID",
+      "summary": "Moves to reopen businesses and restrict enforcement of local mask fines.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "covid-governance-and-the-theory-of-executive-restraint",
+      "sources": [
+        "RD06"
+      ]
+    },
+    {
+      "key": "2022-03-28-signs-hb1557-parental-rights-in-education",
+      "date": "2022-03-28",
+      "title": "Signs HB1557 parental rights in education",
+      "summary": "Classroom instruction restrictions and parental notification requirements.",
+      "category": "ideas",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "covid-governance-and-the-theory-of-executive-restraint",
+      "sources": [
+        "RD07"
+      ]
+    },
+    {
+      "key": "2022-04-22-signs-hb7-individual-freedom-act",
+      "date": "2022-04-22",
+      "title": "Signs HB7 Individual Freedom Act",
+      "summary": "Workplace and school race/sex instruction restrictions, later partly enjoined.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "education-parental-authority-school-choice-and-higher-education",
+      "sources": [
+        "RD08",
+        "RD09"
+      ]
+    },
+    {
+      "key": "2022-11-08-wins-reelection-by-wide-margin",
+      "date": "2022-11-08",
+      "title": "Wins reelection by wide margin",
+      "summary": "4,614,210 votes (59.4%) vs Charlie Crist 3,106,313 (40.0%).",
+      "category": "politics",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "education-parental-authority-school-choice-and-higher-education",
+      "sources": [
+        "RD04"
+      ]
+    },
+    {
+      "key": "2023-01-03-begins-second-term",
+      "date": "2023-01-03",
+      "title": "Begins second term",
+      "summary": "Florida governorship term starts.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "education-parental-authority-school-choice-and-higher-education",
+      "sources": [
+        "RD02"
+      ]
+    },
+    {
+      "key": "2023-02-27-signs-hb9-b-disney-governance-overhaul",
+      "date": "2023-02-27",
+      "title": "Signs HB9-B Disney governance overhaul",
+      "summary": "Replaces Reedy Creek governance with governor-appointed board.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "education-parental-authority-school-choice-and-higher-education",
+      "sources": [
+        "RD24"
+      ]
+    },
+    {
+      "key": "2023-03-27-signs-school-choice-hb1",
+      "date": "2023-03-27",
+      "title": "Signs school choice HB1",
+      "summary": "Removes prior income restrictions and enrollment cap; eligibility does not equal award.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "immigration-from-employment-checks-to-state-federal-architecture",
+      "sources": [
+        "RD10",
+        "RD11"
+      ]
+    },
+    {
+      "key": "2023-04-27-signs-hb269-while-in-israel",
+      "date": "2023-04-27",
+      "title": "Signs HB269 while in Israel",
+      "summary": "Creates or expands penalties involving threats and harassment tied to religion/ethnic heritage.",
+      "category": "ideas",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "immigration-from-employment-checks-to-state-federal-architecture",
+      "sources": [
+        "RD29"
+      ]
+    },
+    {
+      "key": "2023-05-10-signs-sb1718-immigration-bill",
+      "date": "2023-05-10",
+      "title": "Signs SB1718 immigration bill",
+      "summary": "E-Verify (25+ private employees), hospital status reporting and driver-license provisions.",
+      "category": "ideas",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "immigration-from-employment-checks-to-state-federal-architecture",
+      "sources": [
+        "RD13",
+        "RD14"
+      ]
+    },
+    {
+      "key": "2023-05-15-signs-higher-education-sb266",
+      "date": "2023-05-15",
+      "title": "Signs higher education SB266",
+      "summary": "Limits public spending for DEI initiatives and reforms higher-ed governance.",
+      "category": "ideas",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "immigration-from-employment-checks-to-state-federal-architecture",
+      "sources": [
+        "RD12"
+      ]
+    },
+    {
+      "key": "2023-05-announces-presidential-campaign",
+      "date": "2023-05",
+      "title": "Announces presidential campaign",
+      "summary": "Runs for 2024 Republican nomination.",
+      "category": "politics",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "corporations-and-civil-society-disney-local-order-institutions",
+      "sources": [
+        "RD05",
+        "RD40"
+      ]
+    },
+    {
+      "key": "2023-10-07-publicly-backs-israel-after-hamas-attacks",
+      "date": "2023-10-07",
+      "title": "Publicly backs Israel after Hamas attacks",
+      "summary": "DeSantis frames U.S.-Israel ties and Iran in presidential-candidate statement.",
+      "category": "ideas",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "corporations-and-civil-society-disney-local-order-institutions",
+      "sources": [
+        "RD30"
+      ]
+    },
+    {
+      "key": "2023-10-24-university-sjp-deactivation-directive",
+      "date": "2023-10-24",
+      "title": "University SJP deactivation directive",
+      "summary": "State university system chancellor directs deactivation of SJP chapters in consultation with governor; order challenged.",
+      "category": "career",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "corporations-and-civil-society-disney-local-order-institutions",
+      "sources": [
+        "RD34",
+        "RD35"
+      ]
+    },
+    {
+      "key": "2024-01-21-withdraws-from-2024-gop-presidential-primary",
+      "date": "2024-01-21",
+      "title": "Withdraws from 2024 GOP presidential primary",
+      "summary": "Ends campaign and endorses Donald Trump.",
+      "category": "career",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "israel-policy-state-power-education-law-and-public-alignment",
+      "sources": [
+        "RD05"
+      ]
+    },
+    {
+      "key": "2024-01-31-disney-federal-complaint-dismissed",
+      "date": "2024-01-31",
+      "title": "Disney federal complaint dismissed",
+      "summary": "U.S. district court dismisses federal constitutional suit on jurisdiction and merits grounds by defendant.",
+      "category": "career",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "israel-policy-state-power-education-law-and-public-alignment",
+      "sources": [
+        "RD25"
+      ]
+    },
+    {
+      "key": "2024-02-01-sjp-constitutional-suit-dismissed",
+      "date": "2024-02-01",
+      "title": "SJP constitutional suit dismissed",
+      "summary": "Dismissed for standing/lack of imminent injury; no merits decision authorizing suppressing all SJP speech.",
+      "category": "career",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "israel-policy-state-power-education-law-and-public-alignment",
+      "sources": [
+        "RD34"
+      ]
+    },
+    {
+      "key": "2024-03-11th-circuit-workplace-hb7-restriction-ruling",
+      "date": "2024-03",
+      "title": "11th Circuit workplace HB7 restriction ruling",
+      "summary": "Federal appeals court rejects employer-training viewpoint restrictions.",
+      "category": "career",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "israel-policy-state-power-education-law-and-public-alignment",
+      "sources": [
+        "RD09"
+      ]
+    },
+    {
+      "key": "2024-03-27-disney-state-district-settlement",
+      "date": "2024-03-27",
+      "title": "Disney state district settlement",
+      "summary": "Disney and new district board reach deal resolving state development-governance litigation.",
+      "category": "career",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "elections-and-institutional-power-the-2026-congressional-map",
+      "sources": [
+        "RD26"
+      ]
+    },
+    {
+      "key": "2024-11-05-florida-abortion-amendment-4-fails-despite-majority",
+      "date": "2024-11-05",
+      "title": "Florida abortion Amendment 4 fails despite majority",
+      "summary": "57.17% favor; below 60% constitutional amendment threshold.",
+      "category": "career",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "elections-and-institutional-power-the-2026-congressional-map",
+      "sources": [
+        "RD56",
+        "RD57"
+      ]
+    },
+    {
+      "key": "2025-01-15-proposes-new-florida-immigration-enforcement-measures",
+      "date": "2025-01-15",
+      "title": "Proposes new Florida immigration enforcement measures",
+      "summary": "Governor outlines special-session wish list; not all policies necessarily enacted.",
+      "category": "ideas",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "elections-and-institutional-power-the-2026-congressional-map",
+      "sources": [
+        "RD15"
+      ]
+    },
+    {
+      "key": "2025-02-13-approves-sb2-c-immigration-bill",
+      "date": "2025-02-13",
+      "title": "Approves SB2-C immigration bill",
+      "summary": "Legislature passes a revised enforcement framework; Chapter 2025-1.",
+      "category": "ideas",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "elections-and-institutional-power-the-2026-congressional-map",
+      "sources": [
+        "RD16",
+        "RD17"
+      ]
+    },
+    {
+      "key": "2025-02-19-increases-state-ice-deputization-agreements",
+      "date": "2025-02-19",
+      "title": "Increases state ICE deputization agreements",
+      "summary": "Governor announces new 287(g) memoranda with multiple agencies.",
+      "category": "career",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "presidential-money-state-pacs-and-the-attribution-problem",
+      "sources": [
+        "RD18"
+      ]
+    },
+    {
+      "key": "2025-06-26-signs-sb1678-anti-boycott-of-israel-expansion",
+      "date": "2025-06-26",
+      "title": "Signs SB1678 anti-boycott-of-Israel expansion",
+      "summary": "Florida pension/university endowment and other state-entity rules broadened.",
+      "category": "ideas",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "presidential-money-state-pacs-and-the-attribution-problem",
+      "sources": [
+        "RD32",
+        "RD33"
+      ]
+    },
+    {
+      "key": "2025-07-alligator-alcatraz-begins-receiving-detainees",
+      "date": "2025-07",
+      "title": "Alligator Alcatraz begins receiving detainees",
+      "summary": "State-led detention infrastructure described by governor; independently audit operational and legal claims.",
+      "category": "career",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "presidential-money-state-pacs-and-the-attribution-problem",
+      "sources": [
+        "RD23"
+      ]
+    },
+    {
+      "key": "2025-08-12-appoints-jay-collins-lieutenant-governor",
+      "date": "2025-08-12",
+      "title": "Appoints Jay Collins lieutenant governor",
+      "summary": "Collins fills vacancy following Jeanette Nuñez departure.",
+      "category": "career",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "presidential-money-state-pacs-and-the-attribution-problem",
+      "sources": [
+        "RD41",
+        "RD42"
+      ]
+    },
+    {
+      "key": "2026-01-07-calls-congressional-redistricting-special-session",
+      "date": "2026-01-07",
+      "title": "Calls congressional redistricting special session",
+      "summary": "Governor initiates consideration of mid-decade congressional map replacement.",
+      "category": "politics",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "successor-politics-collins-renner-fishback-and-donalds",
+      "sources": [
+        "RD51"
+      ]
+    },
+    {
+      "key": "2026-05-04-signs-new-congressional-map-hb1-d",
+      "date": "2026-05-04",
+      "title": "Signs new congressional map HB1-D",
+      "summary": "Map enacted by legislature after governor transmits plan; challenged in court.",
+      "category": "politics",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "successor-politics-collins-renner-fishback-and-donalds",
+      "sources": [
+        "RD50",
+        "RD52",
+        "RD53"
+      ]
+    },
+    {
+      "key": "2026-06-12-gop-debate-dispute-and-fishback-party-exclusion",
+      "date": "2026-06-12",
+      "title": "GOP debate dispute and Fishback party exclusion",
+      "summary": "DeSantis calls for debate; RPOF independently rescinds Fishback invitation.",
+      "category": "career",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "successor-politics-collins-renner-fishback-and-donalds",
+      "sources": [
+        "RD43",
+        "RD44",
+        "RD62"
+      ]
+    },
+    {
+      "key": "2026-07-01-287-g-taskforce-compliance-snapshot",
+      "date": "2026-07-01",
+      "title": "287(g) taskforce compliance snapshot",
+      "summary": "272 out of 394 Florida agencies participating according to FDLE data as reported.",
+      "category": "career",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "successor-politics-collins-renner-fishback-and-donalds",
+      "sources": [
+        "RD20"
+      ]
+    },
+    {
+      "key": "2026-08-06-declines-endorsement-in-republican-governor-primary",
+      "date": "2026-08-06",
+      "title": "Declines endorsement in Republican governor primary",
+      "summary": "Praises Renner but does not publicly back Renner, Collins, Fishback or Donalds.",
+      "category": "career",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "2026-priorities-and-unresolved-legacy",
+      "sources": [
+        "RD45",
+        "RD46",
+        "RD47"
+      ]
+    },
+    {
+      "key": "2026-09-01-endorses-gop-general-election-slate-including-donalds",
+      "date": "2026-09-01",
+      "title": "Endorses GOP general election slate including Donalds",
+      "summary": "Publicly reconciles with Donalds for November election after primary.",
+      "category": "politics",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "2026-priorities-and-unresolved-legacy",
+      "sources": [
+        "RD48",
+        "RD49"
+      ]
+    },
+    {
+      "key": "2026-10-21-promotes-florida-property-tax-amendment-3",
+      "date": "2026-10-21",
+      "title": "Promotes Florida property-tax Amendment 3",
+      "summary": "Publicly supports proposed ballot change; November vote still future as of cutoff.",
+      "category": "career",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "2026-priorities-and-unresolved-legacy",
+      "sources": [
+        "RD59"
+      ]
+    }
+  ],
+  "statements": [
+    {
+      "key": "2019-05-29-statement",
+      "date": "2019-05-29",
+      "issue": "Political views",
+      "venue": "Verbatim from governor office original press release.",
+      "quote": "I was honored to take part in this historic meeting today at the United States Embassy in Jerusalem.",
+      "source": "RD27"
+    },
+    {
+      "key": "2019-05-31-statement",
+      "date": "2019-05-31",
+      "issue": "Political views",
+      "venue": "Governor office original press release; self-characterization.",
+      "quote": "Florida is the most Israel-friendly state in the country and as long as I’m Governor, we will continue to stand with the Jewish community.",
+      "source": "RD28"
+    },
+    {
+      "key": "2022-03-28-statement",
+      "date": "2022-03-28",
+      "issue": "Political views",
+      "venue": "Excerpt of longer original governor quote.",
+      "quote": "Parents have every right to be informed about services offered to their child at school",
+      "source": "RD07"
+    },
+    {
+      "key": "2022-04-22-statement",
+      "date": "2022-04-22",
+      "issue": "Political views",
+      "venue": "Original governor quote in law signing release.",
+      "quote": "No one should be instructed to feel as if they are not equal or shamed because of their race.",
+      "source": "RD08"
+    },
+    {
+      "key": "2023-02-27-statement",
+      "date": "2023-02-27",
+      "issue": "Political views",
+      "venue": "Excerpt of original Disney district bill statement.",
+      "quote": "Allowing a corporation to control its own government is bad policy",
+      "source": "RD24"
+    },
+    {
+      "key": "2023-03-27-statement",
+      "date": "2023-03-27",
+      "issue": "Political views",
+      "venue": "Excerpt from governor quote; rank claim is a political value judgment, not verified measurement.",
+      "quote": "Florida is number one when it comes to education freedom and education choice",
+      "source": "RD11"
+    },
+    {
+      "key": "2023-10-07-statement",
+      "date": "2023-10-07",
+      "issue": "Political views",
+      "venue": "Original candidacy statement archived by American Presidency Project.",
+      "quote": "Israel is now under attack. I stand with Israel. America stands with Israel.",
+      "source": "RD30"
+    },
+    {
+      "key": "2025-01-15-statement",
+      "date": "2025-01-15",
+      "issue": "Political views",
+      "venue": "Governor original statement announcing proposed enforcement agenda.",
+      "quote": "Florida is ready to lead.",
+      "source": "RD15"
+    },
+    {
+      "key": "2025-02-19-statement",
+      "date": "2025-02-19",
+      "issue": "Political views",
+      "venue": "Excerpt from first-person press statement.",
+      "quote": "Florida is setting the example for states in combating illegal immigration and working with the Trump Administration to restore the rule of law",
+      "source": "RD18"
+    },
+    {
+      "key": "2026-05-29-statement",
+      "date": "2026-05-29",
+      "issue": "Political views",
+      "venue": "Excerpt from original government release; operational claims require outside verification.",
+      "quote": "Florida will continue to use every available resource to identify dangerous individuals, support federal immigration enforcement, and keep our citizens safe",
+      "source": "RD21"
+    },
+    {
+      "key": "2026-10-21-statement",
+      "date": "2026-10-21",
+      "issue": "Political views",
+      "venue": "Governor original voter-advocacy statement; no claim vote passed.",
+      "quote": "Vote YES on Amendment 3!",
+      "source": "RD59"
+    }
+  ],
+  "finance": {
+    "coverage": "Florida state governor; historical state candidate and state political committee, former federal presidential candidate, connected federal PACs. Distinct entity and reporting structures."
+  },
+  "ideas": {
+    "traditions": [],
+    "influences": [],
+    "works": [],
+    "featuredQuotes": [
+      "2019-05-29-statement",
+      "2019-05-31-statement",
+      "2022-03-28-statement"
+    ]
+  },
+  "chapters": [
+    {
+      "key": "from-congressional-conservative-to-florida-executive",
+      "title": "From congressional conservative to Florida executive",
+      "dek": "Ron DeSantis is Florida’s Republican governor, whose 2019–2026 administration used state executive power to reshape school choice and higher education, build immigration enforcement partnerships, regulate a major corporate special district, strengthen anti-boycott-of-Israel policies and advance new congressional maps. After declining to take sides in the August 2026 Republican primary to succeed him, DeSantis endorsed Byron Donalds for the general election despite prior public disagreements, while James Fishback, Jay Collins and Paul Renner each represented a different claim to the DeSantis legacy.",
+      "body": "DeSantis entered Florida state politics as an ex-Navy judge advocate and congressman, serving the Daytona Beach-area 6th district from 2013 to 2018. He narrowly defeated Democrat Andrew Gillum in 2018 and became the state’s 46th governor in January 2019. His 2022 reelection against Charlie Crist was considerably less competitive: official returns give the incumbent 4,614,210 votes, or 59.4%, versus Crist’s 3,106,313, or 40.0%. [[RD01,RD02,RD03,RD04,RD05]]\n\nHis 2023 presidential launch tried to translate Florida executive results into a national Republican agenda, but he suspended his bid on January 21, 2024. This divide between state-level organizational control and national primary success is important when evaluating his role in Florida’s 2026 gubernatorial succession: governorship, fundraising, and high-profile executive orders did not in themselves prove national electoral viability. [[RD05,RD40]]"
+    },
+    {
+      "key": "covid-governance-and-the-theory-of-executive-restraint",
+      "title": "COVID governance and the theory of executive restraint",
+      "dek": "",
+      "body": "DeSantis’s COVID response changed over time: Florida initially issued health emergency actions, then in September 2020 reopened businesses and narrowed local authority to fine people for mask noncompliance. Supporters presented this as economic liberty and resistance to prolonged restrictions. Public-health critics argued it risked spread while infections continued. This dossier records the decision and controversy, without claiming a causal mortality ranking absent adjusted epidemiological evidence. [[RD06]]\n\nThis experience became a governing precedent for more activist executive action in other domains: rejecting central control over businesses in the pandemic coexisted with far more intervention against corporations, university boards, and local governments later. The contrast is ideological and institutional, not automatically a legal inconsistency. [[RD06,RD08,RD24,RD51]]"
+    },
+    {
+      "key": "education-parental-authority-school-choice-and-higher-education",
+      "title": "Education: parental authority, school choice, and higher education",
+      "dek": "",
+      "body": "HB1557, signed March 28, 2022, constrained classroom instruction on sexual orientation and gender identity in early grades and required specified parental involvement and notification. The legislative text as originally signed matters: later administrative rules or subsequent changes should never be backdated to 2022. HB7, signed the following month, sought to restrict specified compelled teachings about race and sex across public education and workplaces; the 11th Circuit later held the private-employer speech restriction unconstitutional. [[RD07,RD08,RD09]]\n\nIn 2023 the governor signed HB1, expanding scholarship eligibility for Florida school choice and removing previous income requirements, with prioritization rules still applicable. On May 15 he signed SB266, which restricted spending on DEI in public higher education and paired institutional ideology reform with workforce-oriented policy. These were actual laws, not merely campaign promises, but comparative education outcome claims require independent measures. [[RD10,RD11,RD12]]"
+    },
+    {
+      "key": "immigration-from-employment-checks-to-state-federal-architecture",
+      "title": "Immigration: from employment checks to state-federal architecture",
+      "dek": "",
+      "body": "SB1718 (2023) increased Florida’s involvement in immigration-related employment, transportation and public-sector data systems. The required E-Verify population was private employers with at least 25 employees, not all employers, and hospital status collection did not itself abolish emergency-treatment obligations. These distinctions matter for any Worldview eligibility or process flow chart. [[RD13,RD14]]\n\nDeSantis’s January 2025 special-session proposal sought extensive enforcement changes; he ultimately backed the negotiated SB2-C enacted in February. The final statute appropriated roughly $298.83 million and established a State Board of Immigration Enforcement and other state mechanisms. He then sought federal 287(g) agreements for state agencies, meaning trained state officers exercise specified delegated federal functions under federal oversight. [[RD15,RD16,RD17,RD18,RD19]]\n\nBy July 2026 reporting based on Florida law-enforcement data, 272 of 394 agencies had active 287(g) task-force agreements, but signing an agreement is not synonymous with training, arrest or removal. Government releases citing thousands of arrests in Operation Tidal Wave and new Alligator Alcatraz detention capacity are evidence of executive claims; an accurate profile requires adjudication, detention, deportation, cost, complaint, and judicial outcome records before drawing operational success conclusions. [[RD20,RD21,RD22,RD23]]"
+    },
+    {
+      "key": "corporations-and-civil-society-disney-local-order-institutions",
+      "title": "Corporations and civil society: Disney, local order, institutions",
+      "dek": "",
+      "body": "DeSantis’s conflict with Walt Disney World turned into law through HB9-B in February 2023, restructuring the Reedy Creek district and appointing a state control board. Disney said it was being punished for opposing state education policy; DeSantis said ending special privileges was fair corporate governance. A federal lawsuit was dismissed in January 2024, while a development-governance dispute was settled that March. Neither outcome alone proves all rhetorical allegations about retaliatory intent. [[RD24,RD25,RD26]]\n\nBroader state-power examples include HB1365 in 2024, addressing unauthorized public camping and giving residents and businesses a tool to sue noncompliant local governments. Its legislative summary specifies civil mechanisms rather than establishing a new penalty for every person sleeping outside. DeSantis has also promoted property insurance and taxation changes, but the impact of those reforms should not be measured solely by the governor’s announcements. [[RD55,RD54,RD59]]"
+    },
+    {
+      "key": "israel-policy-state-power-education-law-and-public-alignment",
+      "title": "Israel policy: state power, education law and public alignment",
+      "dek": "",
+      "body": "DeSantis has made support for Israel unusually central to Florida executive action: a ceremonial state cabinet meeting at the U.S. Embassy in Jerusalem in May 2019, HB741 protections for religion in public K-20 education that month, another antisemitism-related law (HB269) signed during an April 2023 Israel visit, and a highly explicit pro-Israel statement following the October 7 Hamas attacks. The state actions and the candidate’s statements are separately documented. [[RD27,RD28,RD29,RD30,RD31]]\n\nFlorida’s 2025 SB1678 broadened investment and other state restrictions on entities that boycott Israel, including academic boycotts. Criticism of Israeli government policy, harassment prohibited by particular laws, investment screening and academic free-speech protections are different legal categories; the legislation should be summarized by its operative text. Miami-Dade County’s announced purchase of an additional $25m in Israel Bonds in October 2023 belongs to county administration and must not be recorded as a direct DeSantis purchase. [[RD32,RD33,RD60]]\n\nThe State University System’s October 2023 directive concerning Students for Justice in Palestine chapters was challenged as a speech violation. Court proceedings resulted in dismissal for standing/no imminent injury, not a merits ruling that government is free to eliminate political student organizations for protected speech. Retain the chancellor’s conduct, DeSantis consultation, and litigants’ allegations as distinct records. [[RD34,RD35]]"
+    },
+    {
+      "key": "elections-and-institutional-power-the-2026-congressional-map",
+      "title": "Elections and institutional power: the 2026 congressional map",
+      "dek": "",
+      "body": "DeSantis called a 2026 special session to redraw Florida’s congressional boundaries between censuses; his office submitted an executive-drafted plan. The legislature passed HB1-D in April and he signed it May 4, 2026. This is one of the clearest practical examples of his preference for deploying state political machinery to pursue policy and electoral objectives. [[RD50,RD51,RD52]]\n\nThe 2026 congressional plan was promptly contested under Florida constitutional rules. A trial court denied a preliminary injunction, and judicial proceedings remained live in the available August 2026 case tracker. A validly enacted map and an ultimately constitutional map are not identical findings; pending claims must be marked unresolved. [[RD53]]"
+    },
+    {
+      "key": "presidential-money-state-pacs-and-the-attribution-problem",
+      "title": "Presidential money, state PACs and the attribution problem",
+      "dek": "",
+      "body": "Three different types of financial entities should not be combined: Florida state candidate/committee accounts, DeSantis’s 2024 federal presidential infrastructure, and federal super/hybrid PACs. The 2022 Florida political committee once called Friends of Ron DeSantis later appears as Empower Parents PAC in secondary public indexes. The aggregator’s $164.2m 2022 contribution figure is a lead requiring reconciliation to raw Florida reporting, not a verified all-in donor total for DeSantis personally. [[RD36,RD37]]\n\nFEC records identify Restore Our Nation (RON PAC), C00841130, as a hybrid PAC with $2,884,109.25 receipts from Jan 1, 2025 to Sep 30, 2026 and $1,169,659.51 in disbursements in the same period. Never Back Down (C00834077) is a separate independent expenditure-only Super PAC. DeSantis’s FEC candidate page cautions that an authorized presidential committee was later converted to PAC status. Entity IDs, time periods, authorized status and transfers must be reconciled before calculating donor influence. [[RD38,RD39,RD40]]"
+    },
+    {
+      "key": "successor-politics-collins-renner-fishback-and-donalds",
+      "title": "Successor politics: Collins, Renner, Fishback and Donalds",
+      "dek": "",
+      "body": "DeSantis appointed Jay Collins lieutenant governor in August 2025, giving Collins a real working relationship and positioning him publicly as a potential successor. Paul Renner was a former legislative partner, especially in the 2023 school-choice program, while Fishback campaigned as an admirer of DeSantis’s model of government. These are three distinct kinds of connection: appointment, legislative collaboration and one-sided public praise. None is equivalent to a documented 2026 primary endorsement. [[RD41,RD42,RD11,RD47]]\n\nIn June 2026 DeSantis publicly favored a GOP candidate debate while the Republican Party of Florida declined to stage a full debate and then rescinded Fishback’s invitation to party programming. The party’s stated rationale was Fishback’s decision to participate in a rival unsanctioned event. DeSantis’s position and party officials’ action should not be collapsed into a single actor’s decision. [[RD43,RD44,RD62]]\n\nOn August 6 he declined to endorse any of the GOP primary candidates despite praising Renner’s governing potential. After Donalds won the August primary, DeSantis endorsed the entire GOP statewide ticket at the September 1 party forum, including Donalds, despite earlier disputes over Black history standards and political credit. The accurate relationship record is therefore: public disagreement, neutral primary, post-primary partisan endorsement. [[RD45,RD46,RD47,RD48,RD49]]"
+    },
+    {
+      "key": "2026-priorities-and-unresolved-legacy",
+      "title": "2026 priorities and unresolved legacy",
+      "dek": "",
+      "body": "In October 2026 DeSantis campaigned for proposed Amendment 3, a property-tax-relief constitutional amendment to expand homestead exemptions on non-school taxes. His office projected substantial eventual homeowner savings. These are stated policy aims and modeled effects, not a passed amendment or realized savings as of the October 28 research cutoff. [[RD59]]\n\nThe DeSantis legacy is consequently best evaluated as a set of discrete institutional experiments: aggressive immigration delegation, restrictions and choice in education, state intervention against concentrated corporate privilege, explicit alignment with Israel, mid-decade mapmaking and fiscal reforms. Supporters regard these as proof that a governor can execute conservative policy; critics point to speech rights, legal challenges, minority representation, detention practices and affordability. Worldview should keep enactments, judicial outcomes, public claims and measurable effects in separate, linked records. [[RD09,RD17,RD20,RD23,RD24,RD33,RD34,RD53,RD54,RD59]]"
+    }
+  ]
+}

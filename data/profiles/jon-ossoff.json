@@ -1,0 +1,588 @@
+{
+  "subject": "ossoff",
+  "reviewedAt": "2026-10-25",
+  "sourcesVerifiedAt": "2026-10-25",
+  "brief": {
+    "inclusion": "U.S. senator from Georgia since 2021 whose January 2021 runoff win gave Democrats Senate control, a 2026 reelection candidate, and the record-setting fundraiser at the center of Worldview's Georgia election coverage.",
+    "identifiers": {
+      "wikidata": "Q28839536",
+      "bioguide": "O000174",
+      "fec_candidate": "S8GA00180; H8GA06195"
+    },
+    "namesakes": "No significant namesake; matched on Bioguide O000174.",
+    "coverage": {
+      "from": "1987",
+      "through": "2026-10-25",
+      "lags": "The November 3, 2026 general election (and any December 1 runoff) had not been held at review. Q3 2026 FEC reports are the latest fundraising data; pre-general reports follow."
+    },
+    "openQuestions": [
+      "Update with the November 3, 2026 result and any runoff.",
+      "Final vote shares of the June 16, 2026 Republican runoff (Collins over Dooley) from the Georgia Secretary of State.",
+      "Ossoff's own description of his Jewish identity needs a verbatim primary quote (Moment interview not opened)."
+    ],
+    "review": []
+  },
+  "summary": "Democratic senator from Georgia since January 2021, when his runoff victory over David Perdue, alongside Raphael Warnock's, gave Democrats control of the Senate; at 33 he was the youngest senator and Georgia's first Jewish senator. A former aide to Rep. Hank Johnson and investigative-film executive, he chaired the Senate's Permanent Subcommittee on Investigations and is seeking reelection in 2026 against Rep. Mike Collins, with $33 million raised in the third quarter alone and an eight-point lead in the AJC's October poll.",
+  "roles": [
+    {
+      "label": "U.S. senator",
+      "detail": "Georgia, since January 20, 2021",
+      "sources": ["ossoff-senate-bio", "toi-oath-2021"]
+    },
+    {
+      "label": "Candidate",
+      "detail": "Seeking reelection November 3, 2026, against Rep. Mike Collins",
+      "sources": ["ap-runoff-2026", "fox5-poll-2026"]
+    },
+    {
+      "label": "Former subcommittee chair",
+      "detail": "Chaired the Permanent Subcommittee on Investigations (117th Congress)",
+      "sources": ["wikipedia", "eji-deaths-2022"]
+    },
+    {
+      "label": "Former media executive",
+      "detail": "Managing director and CEO, Insight: The World Investigates, 2013–2021",
+      "sources": ["wikipedia", "ossoff-senate-bio"]
+    },
+    {
+      "label": "Former congressional aide",
+      "detail": "National-security staffer to Rep. Hank Johnson, 2007–2012",
+      "sources": ["wikipedia"]
+    }
+  ],
+  "finance": {
+    "coverage": "Contributions received by Ossoff's committees come from Worldview's FEC committee data. Campaign totals in the text are from the campaigns' quarterly FEC reports as reported by the Georgia Recorder; outside spending in the 2026 race is shown from Schedule E where imported."
+  },
+  "entities": {
+    "ossoff": {
+      "match": { "identifier": ["bioguide", "O000174"] }
+    },
+    "lewis": {
+      "match": { "identifier": ["bioguide", "L000287"] }
+    },
+    "hank-johnson": {
+      "match": { "identifier": ["bioguide", "J000288"] }
+    },
+    "handel": {
+      "match": { "identifier": ["bioguide", "H001078"] }
+    },
+    "perdue": {
+      "match": { "identifier": ["bioguide", "P000612"] }
+    },
+    "warnock": {
+      "match": { "identifier": ["bioguide", "W000790"] }
+    },
+    "collins": {
+      "match": { "identifier": ["fec_candidate", "S6GA00390"] }
+    },
+    "ron-johnson": {
+      "match": { "identifier": ["bioguide", "J000293"] }
+    },
+    "trump": {
+      "match": { "name": "Donald Trump", "type": "politician" }
+    },
+    "insight": {
+      "create": {
+        "name": "Insight: The World Investigates",
+        "type": "company",
+        "description": "London-based producer of investigative documentaries; Jon Ossoff was managing director and CEO, 2013–2021."
+      }
+    },
+    "psi": {
+      "create": {
+        "name": "Senate Permanent Subcommittee on Investigations",
+        "type": "organization",
+        "description": "Investigative subcommittee of the Senate Homeland Security and Governmental Affairs Committee.",
+        "websiteUrl": "https://www.hsgac.senate.gov/subcommittees/investigations/"
+      }
+    }
+  },
+  "sources": [
+    {
+      "key": "ossoff-senate-bio",
+      "title": "About Jon",
+      "publisher": "Office of Senator Jon Ossoff",
+      "type": "primary",
+      "url": "https://www.ossoff.senate.gov/about/"
+    },
+    {
+      "key": "wikipedia",
+      "title": "Jon Ossoff",
+      "publisher": "Wikipedia",
+      "type": "secondary",
+      "url": "https://en.wikipedia.org/wiki/Jon_Ossoff",
+      "notes": "Reference work; cited for birth, education, early career, 2017 and 2020–21 election results, committee assignments, votes and family."
+    },
+    {
+      "key": "toi-oath-2021",
+      "title": "Jon Ossoff sworn into US Senate seat holding historic book of Hebrew scripture",
+      "publisher": "The Times of Israel",
+      "author": "Gabe Friedman",
+      "type": "article",
+      "publishedAt": "2021-01-21",
+      "url": "https://www.timesofisrael.com/jon-ossoff-sworn-into-senate-seat-holding-historic-book-of-hebrew-scripture/"
+    },
+    {
+      "key": "eji-deaths-2022",
+      "title": "Prison and Jail Officials Failed to Report Thousands of Deaths in Custody",
+      "publisher": "Equal Justice Initiative",
+      "type": "article",
+      "publishedAt": "2022-09-26",
+      "url": "https://eji.org/news/prison-and-jail-officials-failed-to-report-thousands-of-deaths-in-custody/",
+      "notes": "Summarizes the Permanent Subcommittee on Investigations staff report \"Uncounted Deaths in America's Prisons and Jails\" (September 20, 2022)."
+    },
+    {
+      "key": "psi-deaths-2022",
+      "title": "Uncounted Deaths in America's Prisons and Jails: How the Department of Justice Failed to Implement the Death in Custody Reporting Act",
+      "publisher": "Senate Permanent Subcommittee on Investigations",
+      "type": "filing",
+      "publishedAt": "2022-09-20",
+      "url": "https://www.hsgac.senate.gov/wp-content/uploads/imo/media/doc/2022-09-20%20PSI%20Staff%20Report%20-%20Uncounted%20Deaths%20in%20America%27s%20Prisons%20and%20Jails.pdf",
+      "notes": "Staff report; the PDF could not be opened during review and its findings are taken from coverage of it."
+    },
+    {
+      "key": "ap-runoff-2026",
+      "title": "Georgia Republicans choose Collins for Senate and Jackson for governor, a mixed result for Trump",
+      "publisher": "The Associated Press (via News4JAX)",
+      "author": "Bill Barrow",
+      "type": "article",
+      "publishedAt": "2026-06-16",
+      "url": "https://www.news4jax.com/news/politics/2026/06/16/georgia-republicans-are-under-trumps-shadow-as-they-choose-senate-and-governor-nominees/"
+    },
+    {
+      "key": "recorder-q3-2026",
+      "title": "Ossoff reports raising another $33 million for homestretch of U.S. Senate reelection bid",
+      "publisher": "Georgia Recorder (via News From The States)",
+      "author": "Ross Williams",
+      "type": "article",
+      "publishedAt": "2026-10-15",
+      "url": "https://www.newsfromthestates.com/article/ossoff-reports-raising-another-33-million-homestretch-us-senate-reelection-bid"
+    },
+    {
+      "key": "fox5-poll-2026",
+      "title": "AJC poll gives Ossoff 8-point lead over Collins",
+      "publisher": "FOX 5 Atlanta",
+      "type": "article",
+      "publishedAt": "2026-10-21",
+      "url": "https://www.fox5atlanta.com/news/ajc-poll-gives-ossoff-8-point-lead-over-collins",
+      "notes": "Reports the University of Georgia SPIA poll for The Atlanta Journal-Constitution."
+    },
+    {
+      "key": "jta-antiaipac-2026",
+      "title": "J Street goes on the offensive against AIPAC-backed candidates",
+      "publisher": "JTA",
+      "author": "Joseph Strauss",
+      "type": "article",
+      "publishedAt": "2026-09-11",
+      "url": "https://www.jta.org/2026/09/11/politics/j-street-goes-on-the-offensive-against-aipac-backed-candidates"
+    }
+  ],
+  "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "February 16, 1987",
+      "detail": "Atlanta, Georgia; raised in Northlake",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "sex",
+      "label": "Sex",
+      "value": "Male",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "religion",
+      "label": "Religion",
+      "value": "Jewish",
+      "detail": "Georgia's first Jewish senator; sworn in on a Hebrew Bible that belonged to Rabbi Jacob Rothschild of The Temple, Atlanta.",
+      "sources": ["toi-oath-2021", "wikipedia"]
+    },
+    {
+      "key": "spouse",
+      "label": "Spouse",
+      "value": "Alisha Kramer",
+      "detail": "Obstetrician-gynecologist; married 2017.",
+      "sources": ["wikipedia", "ossoff-senate-bio"]
+    },
+    {
+      "key": "children",
+      "label": "Children",
+      "value": "Two daughters (born 2021 and 2025)",
+      "sources": ["wikipedia", "ossoff-senate-bio"]
+    },
+    {
+      "key": "residence",
+      "label": "Residence",
+      "value": "Atlanta, Georgia",
+      "sources": ["ossoff-senate-bio"]
+    },
+    {
+      "key": "party",
+      "label": "Party",
+      "value": "Democratic",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "education",
+      "label": "Education",
+      "value": "BS, Georgetown School of Foreign Service (2009); MSc, London School of Economics (2013)",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "current-roles",
+      "label": "Current roles",
+      "value": "U.S. senator from Georgia; member, Appropriations, Rules and Administration, and Intelligence committees",
+      "featured": true,
+      "asOf": "2026-10-25",
+      "sources": ["wikipedia", "ossoff-senate-bio"]
+    },
+    {
+      "key": "fundraising-q3-2026",
+      "label": "2026 fundraising (Q3)",
+      "value": "$33 million raised; $26 million on hand",
+      "detail": "July–September 2026, after $42 million on hand at the end of June. Collins raised $2.7 million in the quarter and had about $1.1 million on hand.",
+      "asOf": "2026-09-30",
+      "featured": true,
+      "sources": ["recorder-q3-2026"]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "ossoff-lewis",
+      "source": "ossoff",
+      "target": "lewis",
+      "relType": "mentee-of",
+      "role": "High-school intern in Lewis's office; describes Lewis as his mentor",
+      "until": "2020",
+      "prominence": 2,
+      "sources": ["wikipedia", "ossoff-senate-bio"]
+    },
+    {
+      "key": "ossoff-hank-johnson",
+      "source": "ossoff",
+      "target": "hank-johnson",
+      "relType": "staffer-for",
+      "role": "National-security staffer and legislative assistant",
+      "from": "2007",
+      "until": "2012",
+      "prominence": 1,
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "ossoff-insight",
+      "source": "ossoff",
+      "target": "insight",
+      "relType": "former-role",
+      "role": "Managing director and CEO",
+      "from": "2013",
+      "until": "2021",
+      "prominence": 2,
+      "sources": ["wikipedia", "ossoff-senate-bio"]
+    },
+    {
+      "key": "ossoff-handel",
+      "source": "ossoff",
+      "target": "handel",
+      "relType": "opposed",
+      "role": "Lost the June 2017 special-election runoff in Georgia's 6th district to Handel, 48.2% to 51.8%",
+      "from": "2017",
+      "until": "2017-06-20",
+      "prominence": 2,
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "ossoff-perdue",
+      "source": "ossoff",
+      "target": "perdue",
+      "relType": "opposed",
+      "role": "Unseated Perdue in the January 5, 2021 runoff, 50.6% to 49.4%",
+      "from": "2020",
+      "until": "2021-01-05",
+      "prominence": 3,
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "ossoff-warnock",
+      "source": "ossoff",
+      "target": "warnock",
+      "relType": "allied-with",
+      "role": "Ran jointly in the January 2021 runoffs; their wins produced a 50–50 Senate under Democratic control",
+      "from": "2020",
+      "prominence": 2,
+      "sources": ["wikipedia", "toi-oath-2021"]
+    },
+    {
+      "key": "ossoff-psi",
+      "source": "ossoff",
+      "target": "psi",
+      "relType": "chairs",
+      "role": "Chairman; led bipartisan investigations of deaths in custody, federal prison corruption and abuse",
+      "from": "2021",
+      "until": "2023-01",
+      "prominence": 2,
+      "sources": ["wikipedia", "eji-deaths-2022", "ossoff-senate-bio"]
+    },
+    {
+      "key": "ossoff-collins",
+      "source": "ossoff",
+      "target": "collins",
+      "relType": "opposed",
+      "role": "2026 general-election opponent",
+      "from": "2026-06-16",
+      "prominence": 3,
+      "sources": ["ap-runoff-2026", "fox5-poll-2026"]
+    },
+    {
+      "key": "ossoff-trump",
+      "source": "ossoff",
+      "target": "trump",
+      "relType": "opposed",
+      "role": "Has called Trump a \"national embarrassment\"",
+      "prominence": 1,
+      "sources": ["ap-runoff-2026"]
+    }
+  ],
+  "events": [
+    {
+      "key": "born",
+      "date": "1987-02-16",
+      "title": "Born in Atlanta",
+      "summary": "Attends the Paideia School and, as a teenager, interns for Rep. John Lewis.",
+      "category": "personal",
+      "significance": 1,
+      "chapter": "early",
+      "participants": [["lewis", "mentor"]],
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "hank-johnson",
+      "date": "2007",
+      "date_end": "2012",
+      "title": "Works for Rep. Hank Johnson on national security",
+      "category": "career",
+      "significance": 1,
+      "chapter": "early",
+      "participants": [["hank-johnson", "employer"]],
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "insight",
+      "date": "2013",
+      "title": "Becomes CEO of Insight: The World Investigates",
+      "summary": "A London-based producer of investigative documentaries on war crimes, corruption and trafficking; after an LSE master's.",
+      "category": "career",
+      "significance": 2,
+      "chapter": "early",
+      "participants": [["insight", "company"]],
+      "sources": ["wikipedia", "ossoff-senate-bio"]
+    },
+    {
+      "key": "ga6-primary",
+      "date": "2017-04-18",
+      "title": "Leads the Georgia 6th special-election primary with 48%",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "ga6",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "ga6-runoff",
+      "date": "2017-06-20",
+      "title": "Loses the 6th district runoff to Karen Handel",
+      "summary": "51.8% to 48.2% in what was then the most expensive House race in U.S. history.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "ga6",
+      "participants": [["handel", "opponent"]],
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "senate-primary",
+      "date": "2020-06-10",
+      "title": "Wins the Democratic Senate primary outright",
+      "summary": "With about 53% against Teresa Tomlinson and others.",
+      "category": "politics",
+      "significance": 1,
+      "chapter": "senate",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "general-2020",
+      "date": "2020-11-03",
+      "title": "Forces Sen. David Perdue into a runoff",
+      "summary": "Perdue 49.7%, Ossoff 48.0%, short of the majority Georgia requires.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "senate",
+      "participants": [["perdue", "incumbent"]],
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "runoff-2021",
+      "date": "2021-01-05",
+      "title": "Wins the runoff over Perdue, giving Democrats Senate control",
+      "summary": "50.6% to 49.4%; with Raphael Warnock's win the same day, the Senate splits 50–50 under Vice President Harris's tie-breaking vote.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "senate",
+      "participants": [["perdue", "opponent"], ["warnock", "running partner"]],
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "sworn-in",
+      "date": "2021-01-20",
+      "title": "Sworn in as Georgia's first Jewish senator and the youngest senator",
+      "summary": "On a Hebrew Bible that belonged to Rabbi Jacob Rothschild, whose Atlanta synagogue was bombed in 1958 for his civil-rights stand.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "senate",
+      "sources": ["toi-oath-2021", "wikipedia"]
+    },
+    {
+      "key": "stock-ban",
+      "date": "2022-01",
+      "title": "Introduces a bill to ban members of Congress and their spouses from trading stocks",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "investigations",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "deaths-report",
+      "date": "2022-09-20",
+      "title": "His subcommittee finds the Justice Department missed nearly 1,000 deaths in custody",
+      "summary": "In fiscal 2021 alone, in a bipartisan report with ranking member Ron Johnson; Ossoff calls it \"a moral disgrace.\"",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "investigations",
+      "participants": [["psi", "subcommittee"], ["ron-johnson", "ranking member"]],
+      "sources": ["eji-deaths-2022", "psi-deaths-2022"]
+    },
+    {
+      "key": "sanders-resolutions",
+      "date": "2024-11-20",
+      "title": "Votes for Sanders resolutions to block some arms sales to Israel",
+      "summary": "He votes against a second set in April 2025 and in July 2025 votes to block a sale of 20,000 automatic rifles.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "investigations",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "iran-war-powers",
+      "date": "2026-03",
+      "title": "Votes for a War Powers Resolution limiting military action against Iran",
+      "category": "politics",
+      "significance": 1,
+      "chapter": "reelection",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "collins-nominated",
+      "date": "2026-06-16",
+      "title": "Rep. Mike Collins wins the Republican runoff to face him",
+      "summary": "After Trump endorsed Collins over Derek Dooley two days earlier.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "reelection",
+      "participants": [["collins", "opponent"], ["trump", "endorser"]],
+      "sources": ["ap-runoff-2026"]
+    },
+    {
+      "key": "jstreet-collins",
+      "date": "2026-09-11",
+      "title": "J Street targets Collins in its $3 million anti-AIPAC campaign",
+      "category": "politics",
+      "significance": 1,
+      "chapter": "reelection",
+      "participants": [["collins", "target"]],
+      "sources": ["jta-antiaipac-2026"]
+    },
+    {
+      "key": "q3-2026",
+      "date": "2026-10-15",
+      "title": "Reports raising $33 million in the third quarter",
+      "summary": "From about 760,000 donations, with $26 million on hand; Collins reports $2.7 million raised.",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "reelection",
+      "participants": [["collins", "opponent"]],
+      "sources": ["recorder-q3-2026"]
+    },
+    {
+      "key": "ajc-poll",
+      "date": "2026-10-21",
+      "title": "AJC poll shows him leading Collins 48% to 40%",
+      "summary": "1,000 likely voters, October 7–15; margin of error 3.1 points.",
+      "category": "politics",
+      "significance": 1,
+      "chapter": "reelection",
+      "participants": [["collins", "opponent"]],
+      "sources": ["fox5-poll-2026"]
+    }
+  ],
+  "statements": [
+    {
+      "key": "moral-disgrace-2022",
+      "issue": "Criminal justice",
+      "date": "2022-09-20",
+      "venue": "Permanent Subcommittee on Investigations hearing on deaths in custody",
+      "quote": "what the United States is allowing to happen on our watch... is a moral disgrace.",
+      "source": "eji-deaths-2022"
+    },
+    {
+      "key": "national-embarrassment",
+      "issue": "Donald Trump",
+      "date": "2026-06-16",
+      "venue": "As quoted by the Associated Press",
+      "quote": "national embarrassment",
+      "summary": "His description of Trump, as cited by the AP; the original occasion was not identified.",
+      "source": "ap-runoff-2026"
+    }
+  ],
+  "ideas": {
+    "traditions": [],
+    "influences": [
+      {
+        "name": "John Lewis",
+        "note": "The civil-rights leader and Atlanta congressman he interned for as a teenager and calls his mentor.",
+        "sources": ["ossoff-senate-bio", "wikipedia"]
+      }
+    ],
+    "works": [],
+    "featuredQuotes": ["moral-disgrace-2022"]
+  },
+  "chapters": [
+    {
+      "key": "early",
+      "title": "Atlanta, John Lewis and investigative film",
+      "dek": "A congressional intern at 16 and a documentary-company CEO at 26.",
+      "body": "Ossoff was born in Atlanta on February 16, 1987, and grew up in Northlake. At the Paideia School he interned for Rep. John Lewis, whom he calls his mentor [[wikipedia, ossoff-senate-bio]]. After graduating from Georgetown's School of Foreign Service in 2009 he worked from 2007 to 2012 as a national-security staffer and legislative assistant to Rep. Hank Johnson [[wikipedia]].\n\nHe then earned a master's at the London School of Economics and in 2013 became managing director and CEO of Insight: The World Investigates, a London-based company producing investigative films on war crimes, corruption and trafficking, a post he held until entering the Senate [[wikipedia, ossoff-senate-bio]]."
+    },
+    {
+      "key": "ga6",
+      "title": "The 2017 special election",
+      "dek": "A national test of the early Trump era, and a narrow loss.",
+      "body": "In January 2017 Ossoff entered the special election for Georgia's 6th congressional district. He led the April 18 all-party primary with about 48 percent, short of a majority, and lost the June 20 runoff to Republican Karen Handel, 51.8 to 48.2 percent. It was then the most expensive House race in U.S. history [[wikipedia]]. He chose not to run for the seat again in 2018 [[wikipedia]]."
+    },
+    {
+      "key": "senate",
+      "title": "The runoffs that flipped the Senate",
+      "dek": "Defeating David Perdue in January 2021.",
+      "body": "Ossoff won the June 2020 Democratic Senate primary outright with about 53 percent [[wikipedia]]. In November he trailed Sen. David Perdue 49.7 to 48.0 percent, short of the majority Georgia requires, forcing a runoff. On January 5, 2021, he won 50.6 to 49.4 percent; with Raphael Warnock's victory in the state's other race, Democrats took control of a 50–50 Senate [[wikipedia]].\n\nHe was sworn in on January 20, 2021, at 33 the youngest senator and Georgia's first Jewish senator, on a volume of Hebrew scripture that had belonged to Rabbi Jacob Rothschild, whose Atlanta synagogue was bombed in 1958 because of his civil-rights advocacy [[toi-oath-2021, wikipedia]]."
+    },
+    {
+      "key": "investigations",
+      "title": "Investigations and votes",
+      "dek": "Prison deaths, a stock-trading ban and votes on arms for Israel.",
+      "body": "As chairman of the Permanent Subcommittee on Investigations, Ossoff led bipartisan inquiries into federal prisons, abuse of women in custody and conditions in privatized military housing [[ossoff-senate-bio, wikipedia]]. A September 2022 staff report produced with ranking member Ron Johnson found that the Justice Department had failed to count nearly a thousand deaths in custody in fiscal 2021 alone; Ossoff called it \"a moral disgrace\" [[eji-deaths-2022, psi-deaths-2022]]. In January 2022 he introduced legislation to bar members of Congress and their spouses from trading individual stocks [[wikipedia]].\n\nOn Israel, he voted in November 2024 for Bernie Sanders's resolutions to block some arms sales, against a second set in April 2025, and in July 2025 to block a sale of 20,000 automatic rifles [[wikipedia]]. In March 2026 he voted for a War Powers Resolution limiting military action against Iran [[wikipedia]]."
+    },
+    {
+      "key": "reelection",
+      "title": "The 2026 reelection race",
+      "dek": "Against a Trump-endorsed congressman, with a large fundraising lead.",
+      "body": "Republicans chose Rep. Mike Collins as Ossoff's opponent in a June 16, 2026, runoff, two days after Trump endorsed Collins over Derek Dooley [[ap-runoff-2026]]. Ossoff, who has called Trump a \"national embarrassment,\" said in April he had no interest in running for president in 2028 [[ap-runoff-2026, wikipedia]]. J Street included Collins among five AIPAC-backed Republicans in its $3 million September ad campaign [[jta-antiaipac-2026]].\n\nThe money gap is wide. Ossoff reported raising $33 million from July through September 2026 from about 760,000 donations, with $26 million on hand, after holding $42 million at the end of June; Collins raised $2.7 million in the quarter and had about $1.1 million on hand [[recorder-q3-2026]]. An AJC poll of likely voters taken October 7–15 showed Ossoff ahead 48 to 40 percent [[fox5-poll-2026]]. The election is November 3, with a runoff if no candidate wins a majority."
+    }
+  ]
+}

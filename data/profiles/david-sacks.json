@@ -1,0 +1,1018 @@
+{
+  "subject": "sacks",
+  "reviewedAt": "2026-10-22",
+  "sourcesVerifiedAt": "2026-10-22",
+  "image": "https://commons.wikimedia.org/wiki/Special:FilePath/David%20Sacks%20in%20March%202025.jpg?width=400",
+  "brief": {
+    "inclusion": "Technology investor, political fundraiser and former White House AI and cryptocurrency adviser who translated a Silicon Valley political network into federal technology policy.",
+    "identifiers": {
+      "wikidata": "Q5238415",
+      "fec_contributor": "SACKS, DAVID"
+    },
+    "namesakes": "Do not confuse David Oliver Sacks, the Craft Ventures partner born in Cape Town in 1972, with television writer David Sacks or psychologist David Neil Sacks.",
+    "coverage": {
+      "from": "1972",
+      "through": "2026-10-22",
+      "lags": "FEC coverage depends on the latest filed Schedule A data; private venture holdings and private-company valuations are not fully public."
+    },
+    "openQuestions": [
+      "Reconcile the final closing status of every investment listed in the 2025 ethics waivers with any later disclosure.",
+      "Refresh federal contribution totals after the complete 2026 cycle is filed."
+    ],
+    "review": []
+  },
+  "summary": "David Sacks built his wealth as PayPal's operating chief, founder of Yammer and co-founder of Craft Ventures, then became a political fundraiser and media voice through the All-In podcast. After helping move a group of technology investors toward Donald Trump in 2024, he served as the White House AI and cryptocurrency adviser in 2025–2026, co-authored the administration's AI Action Plan and moved to an outside advisory role as co-chair of the President's Council of Advisors on Science and Technology.",
+  "roles": [
+    {
+      "label": "Technology investor",
+      "detail": "Co-founder and partner, Craft Ventures, since 2017",
+      "sources": ["craft-bio", "atlantic-sacks-2026"]
+    },
+    {
+      "label": "Presidential science adviser",
+      "detail": "Co-chair, President's Council of Advisors on Science and Technology, since March 2026",
+      "sources": ["white-house-pcast-2026", "reuters-sacks-stepdown-2026"]
+    },
+    {
+      "label": "Former White House adviser",
+      "detail": "Special adviser for artificial intelligence and cryptocurrency, January 2025–March 2026",
+      "sources": ["trump-sacks-appointment-2024", "white-house-staff-2025", "reuters-sacks-stepdown-2026"]
+    },
+    {
+      "label": "Podcast host",
+      "detail": "Co-host of the All-In podcast since 2020",
+      "sources": ["all-in-about", "washpost-sacks-2025"]
+    },
+    {
+      "label": "Technology executive",
+      "detail": "Former PayPal chief operating officer; Yammer founder and chief executive",
+      "sources": ["craft-bio", "microsoft-yammer-2012"]
+    }
+  ],
+  "finance": {
+    "fec": {
+      "contributorName": "SACKS, DAVID",
+      "namePattern": "^SACKS, DAVID( O\\.?)?$",
+      "employerPattern": "CRAFT VENTURES|YAMMER|ZENEFITS|SELF[- ]EMPLOYED|INVESTOR",
+      "cities": ["SAN FRANCISCO", "LOS ANGELES", "MIAMI BEACH", "ATHERTON"],
+      "source": "fec-sacks"
+    },
+    "coverage": "Itemized federal contributions reported to the FEC on Schedule A, subject to the dossier's name, employer and city identity rule. State and local giving, nonprofit funding, event-hosting value, bundled contributions, private political spending and gifts below federal reporting thresholds are outside this total."
+  },
+  "entities": {
+    "sacks": { "match": { "name": "David Sacks", "type": "donor" } },
+    "thiel": { "match": { "name": "Peter Thiel", "type": "donor" } },
+    "trump": { "match": { "name": "Donald Trump", "type": "politician" } },
+    "musk": { "match": { "name": "Elon Musk", "type": "donor" } },
+    "vance": { "match": { "name": "JD Vance", "type": "politician" } },
+    "paypal": { "match": { "name": "PayPal", "type": "company" } },
+    "craft": {
+      "create": {
+        "name": "Craft Ventures",
+        "type": "company",
+        "description": "Venture-capital firm co-founded by David Sacks in 2017.",
+        "websiteUrl": "https://www.craftventures.com/"
+      }
+    },
+    "yammer": {
+      "create": {
+        "name": "Yammer",
+        "type": "company",
+        "description": "Enterprise social-networking company founded by David Sacks and acquired by Microsoft in 2012."
+      }
+    },
+    "all-in": {
+      "create": {
+        "name": "All-In Podcast",
+        "type": "organization",
+        "description": "Technology, business and politics podcast co-hosted by David Sacks, Chamath Palihapitiya, Jason Calacanis and David Friedberg.",
+        "websiteUrl": "https://www.allinpodcast.co/"
+      }
+    },
+    "pcast": {
+      "create": {
+        "name": "President's Council of Advisors on Science and Technology",
+        "type": "organization",
+        "description": "Federal advisory council providing the president with science, technology and innovation advice.",
+        "websiteUrl": "https://www.whitehouse.gov/pcast/"
+      }
+    },
+    "republican-party": { "match": { "name": "Republican Party", "type": "organization" } },
+    "desantis": {
+      "create": {
+        "name": "Ron DeSantis",
+        "type": "politician",
+        "description": "Governor of Florida and candidate for the 2024 Republican presidential nomination."
+      }
+    },
+    "kratsios": {
+      "create": {
+        "name": "Michael Kratsios",
+        "type": "politician",
+        "description": "White House science and technology policy director and co-chair of PCAST."
+      }
+    }
+  },
+  "sources": [
+    {
+      "key": "craft-bio",
+      "title": "David Sacks",
+      "publisher": "Craft Ventures",
+      "type": "primary",
+      "url": "https://www.craftventures.com/team/david-sacks",
+      "accessedAt": "2026-10-22",
+      "notes": "Employer biography; used for roles and company chronology, not independent evaluation."
+    },
+    {
+      "key": "forward-sacks-2023",
+      "title": "Meet the Jewish tech mogul launching DeSantis",
+      "publisher": "The Forward",
+      "publishedAt": "2023-05-24",
+      "type": "article",
+      "url": "https://forward.com/fast-forward/548199/desantis-presidential-launch-jewish-david-sacks-elon-musk-twitter-moderate/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "atlantic-sacks-2026",
+      "title": "The Venture-Capital Populist",
+      "publisher": "The Atlantic",
+      "author": "George Packer",
+      "publishedAt": "2026-05-04",
+      "type": "article",
+      "url": "https://www.theatlantic.com/magazine/2026/06/david-sacks-crypto-ai-venture-capital/686941/",
+      "accessedAt": "2026-10-22",
+      "notes": "Critical profile; evaluative claims are attributed in prose."
+    },
+    {
+      "key": "washpost-sacks-2025",
+      "title": "How Trump's AI and crypto czar David Sacks is driving U.S. tech policy",
+      "publisher": "The Washington Post",
+      "publishedAt": "2025-04-13",
+      "type": "article",
+      "url": "https://www.washingtonpost.com/technology/2025/04/13/david-sacks-ai-crypto-trump/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "time-sacks-2024",
+      "title": "What Trump's New AI and Crypto Czar David Sacks Means for the Tech Industry",
+      "publisher": "TIME",
+      "author": "Andrew R. Chow",
+      "publishedAt": "2024-12-07",
+      "type": "article",
+      "url": "https://time.com/7200518/david-sacks-new-white-house-ai-crypto-czar-trump-administration/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "microsoft-yammer-2012",
+      "title": "Microsoft to acquire Yammer",
+      "publisher": "Microsoft",
+      "publishedAt": "2012-06-25",
+      "type": "official_statement",
+      "url": "https://news.microsoft.com/2012/06/25/microsoft-to-acquire-yammer/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "ebay-paypal-2002",
+      "title": "eBay to Acquire PayPal",
+      "publisher": "U.S. Securities and Exchange Commission",
+      "publishedAt": "2002-07-08",
+      "type": "filing",
+      "url": "https://www.sec.gov/Archives/edgar/data/1065088/000091205702026650/a2083741zex-99_1.htm",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "all-in-about",
+      "title": "All-In Podcast",
+      "publisher": "All-In Podcast",
+      "type": "primary",
+      "url": "https://www.allinpodcast.co/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "independent-diversity-myth",
+      "title": "The Diversity Myth: Multiculturalism and Political Intolerance on Campus",
+      "publisher": "Independent Institute",
+      "author": "David O. Sacks and Peter Thiel",
+      "publishedAt": "1995",
+      "type": "primary",
+      "url": "https://www.independent.org/store/book.asp?id=38",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "forward-desantis-launch-2023",
+      "title": "Meet the Jewish tech mogul launching DeSantis",
+      "publisher": "The Forward",
+      "publishedAt": "2023-05-24",
+      "type": "article",
+      "url": "https://forward.com/fast-forward/548199/desantis-presidential-launch-jewish-david-sacks-elon-musk-twitter-moderate/",
+      "accessedAt": "2026-10-22",
+      "repeats": "forward-sacks-2023"
+    },
+    {
+      "key": "fox-sacks-fundraiser-2024",
+      "title": "Silicon Valley investor predicts 'cascade' of Trump support",
+      "publisher": "Fox News",
+      "publishedAt": "2024-06-08",
+      "type": "article",
+      "url": "https://www.foxnews.com/media/top-silicon-valley-investor-predicts-cascade-trump-support-cites-bidens-hostile-stance-crypto-ai",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "trump-sacks-appointment-2024",
+      "title": "Statement by President-elect Donald J. Trump Announcing the Appointment of David O. Sacks",
+      "publisher": "The American Presidency Project",
+      "author": "Donald J. Trump",
+      "publishedAt": "2024-12-05",
+      "type": "official_statement",
+      "url": "https://www.presidency.ucsb.edu/documents/statement-president-elect-donald-j-trump-announcing-the-appointment-david-o-sacks-white-house",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "white-house-staff-2025",
+      "title": "Annual Report to Congress on White House Office Personnel",
+      "publisher": "The White House",
+      "publishedAt": "2025-07-01",
+      "type": "primary",
+      "url": "https://www.whitehouse.gov/wp-content/uploads/2025/07/2025-Annual-Report-to-Congress-on-White-House-Staff.pdf",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "white-house-crypto-waiver-2025",
+      "title": "Memorandum concerning David Sacks's digital-asset interests",
+      "publisher": "The White House",
+      "publishedAt": "2025-03-05",
+      "type": "primary",
+      "url": "https://www.whitehouse.gov/wp-content/uploads/2025/03/Memo-David-Sacks-3.5.2025-1.pdf",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "white-house-ai-waiver-2025",
+      "title": "Memorandum concerning David Sacks's artificial-intelligence interests",
+      "publisher": "The White House",
+      "publishedAt": "2025-06",
+      "type": "primary",
+      "url": "https://www.whitehouse.gov/wp-content/uploads/2025/06/David-Sacks.pdf",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "white-house-ai-plan-2025",
+      "title": "America's AI Action Plan",
+      "publisher": "The White House",
+      "publishedAt": "2025-07-23",
+      "type": "primary",
+      "url": "https://www.whitehouse.gov/wp-content/uploads/2025/07/Americas-AI-Action-Plan.pdf",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "white-house-ai-plan-release-2025",
+      "title": "White House Unveils America's AI Action Plan",
+      "publisher": "The White House",
+      "publishedAt": "2025-07-23",
+      "type": "official_statement",
+      "url": "https://www.whitehouse.gov/releases/2025/07/white-house-unveils-americas-ai-action-plan/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "white-house-digital-assets-2025",
+      "title": "Strengthening American Leadership in Digital Financial Technology",
+      "publisher": "President's Working Group on Digital Asset Markets",
+      "publishedAt": "2025-07",
+      "type": "primary",
+      "url": "https://www.whitehouse.gov/wp-content/uploads/2025/07/Digital-Assets-Report-EO14178.pdf",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "warren-sacks-letter-2025",
+      "title": "Letter to David Sacks on status as a special government employee",
+      "publisher": "Office of Senator Elizabeth Warren",
+      "author": "Elizabeth Warren",
+      "publishedAt": "2025-09-16",
+      "type": "primary",
+      "url": "https://www.warren.senate.gov/imo/media/doc/david_sacks_sge_letter_91625.pdf",
+      "accessedAt": "2026-10-22",
+      "notes": "Oversight letter stating allegations and questions; it is not an adjudication."
+    },
+    {
+      "key": "white-house-pcast-2026",
+      "title": "President Trump Announces Appointments to President's Council of Advisors on Science and Technology",
+      "publisher": "The White House",
+      "publishedAt": "2026-03-25",
+      "type": "official_statement",
+      "url": "https://www.whitehouse.gov/releases/2026/03/president-trump-announces-appointments-to-presidents-council-of-advisors-on-science-and-technology/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "reuters-sacks-stepdown-2026",
+      "title": "White House AI czar Sacks to step down, moves to advisory role",
+      "publisher": "Reuters",
+      "publishedAt": "2026-03-26",
+      "type": "article",
+      "url": "https://www.investing.com/news/stock-market-news/white-house-ai-czar-sacks-to-step-down-moves-to-advisory-role-4584060",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "ap-crypto-policy-2025",
+      "title": "Emboldened crypto industry seeks to cement political influence and mainstream acceptance",
+      "publisher": "Associated Press",
+      "publishedAt": "2025-02-05",
+      "type": "article",
+      "url": "https://apnews.com/article/2da6c4d45e5df04c2e50b2b5ff8d90c7",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "fec-sacks",
+      "title": "Individual contributions: Sacks, David",
+      "publisher": "Federal Election Commission",
+      "type": "primary",
+      "url": "https://www.fec.gov/data/receipts/individual-contributions/?contributor_name=SACKS%2C%20DAVID",
+      "accessedAt": "2026-10-22"
+    }
+  ],
+  "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "May 25, 1972",
+      "detail": "Cape Town, South Africa; moved with his family to Tennessee at age five",
+      "featured": true,
+      "sources": ["forward-sacks-2023", "atlantic-sacks-2026"]
+    },
+    {
+      "key": "sex",
+      "label": "Sex",
+      "value": "Male",
+      "sources": ["craft-bio"]
+    },
+    {
+      "key": "citizenship",
+      "label": "Citizenship",
+      "value": "United States",
+      "detail": "South Africa-born American",
+      "sources": ["forward-sacks-2023"]
+    },
+    {
+      "key": "religion",
+      "label": "Religion",
+      "value": "Jewish",
+      "detail": "Born into a Jewish family; public reporting identifies him as a Jewish technology entrepreneur",
+      "sources": ["forward-sacks-2023"]
+    },
+    {
+      "key": "education",
+      "label": "Education",
+      "value": "B.A., Stanford; J.D., University of Chicago",
+      "detail": "Economics degree in 1994 and law degree in 1998",
+      "sources": ["craft-bio", "atlantic-sacks-2026"]
+    },
+    {
+      "key": "current-roles",
+      "label": "Current roles",
+      "value": "Craft Ventures partner; PCAST co-chair; All-In co-host",
+      "asOf": "2026-10-22",
+      "featured": true,
+      "sources": ["craft-bio", "white-house-pcast-2026", "all-in-about"]
+    },
+    {
+      "key": "paypal-exit",
+      "label": "PayPal acquisition",
+      "value": "$1.5 billion",
+      "detail": "eBay's announced purchase price in 2002; Sacks was PayPal's chief operating officer",
+      "sources": ["ebay-paypal-2002", "craft-bio"]
+    },
+    {
+      "key": "yammer-exit",
+      "label": "Yammer acquisition",
+      "value": "$1.2 billion",
+      "detail": "Microsoft's announced cash purchase price in 2012",
+      "sources": ["microsoft-yammer-2012"]
+    },
+    {
+      "key": "white-house-compensation",
+      "label": "White House compensation",
+      "value": "$0",
+      "detail": "Reported for his special-government-employee service in the July 2025 White House staff report",
+      "asOf": "2025-07-01",
+      "sources": ["white-house-staff-2025"]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "sacks-thiel",
+      "source": "sacks",
+      "target": "thiel",
+      "relType": "collaborated-with",
+      "role": "Stanford Review colleagues, co-authors of The Diversity Myth and PayPal colleagues",
+      "from": "1992",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["independent-diversity-myth", "atlantic-sacks-2026"]
+    },
+    {
+      "key": "sacks-paypal",
+      "source": "sacks",
+      "target": "paypal",
+      "relType": "former-role",
+      "role": "Product leader and chief operating officer",
+      "from": "1999",
+      "until": "2002",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["craft-bio", "ebay-paypal-2002"]
+    },
+    {
+      "key": "sacks-yammer",
+      "source": "sacks",
+      "target": "yammer",
+      "relType": "founded",
+      "role": "Founder and chief executive",
+      "from": "2008",
+      "until": "2012",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["craft-bio", "microsoft-yammer-2012"]
+    },
+    {
+      "key": "sacks-craft",
+      "source": "sacks",
+      "target": "craft",
+      "relType": "co-founded",
+      "role": "Co-founder and partner",
+      "from": "2017",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["craft-bio"]
+    },
+    {
+      "key": "sacks-all-in",
+      "source": "sacks",
+      "target": "all-in",
+      "relType": "co-hosts",
+      "role": "Co-host",
+      "from": "2020",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["all-in-about", "washpost-sacks-2025"]
+    },
+    {
+      "key": "sacks-desantis",
+      "source": "sacks",
+      "target": "desantis",
+      "relType": "endorsed",
+      "role": "Supported the 2024 primary campaign and moderated its Twitter Spaces launch",
+      "from": "2023",
+      "until": "2024",
+      "status": "verified",
+      "prominence": 2,
+      "sources": ["forward-desantis-launch-2023", "time-sacks-2024"]
+    },
+    {
+      "key": "sacks-trump",
+      "source": "sacks",
+      "target": "trump",
+      "relType": "adviser-to",
+      "role": "2024 fundraiser and campaign supporter; White House AI and crypto adviser, then outside science adviser",
+      "from": "2024",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["fox-sacks-fundraiser-2024", "trump-sacks-appointment-2024", "reuters-sacks-stepdown-2026"]
+    },
+    {
+      "key": "sacks-vance",
+      "source": "sacks",
+      "target": "vance",
+      "relType": "campaigned-for",
+      "role": "Helped introduce Vance to technology donors and raised money for the 2024 Trump–Vance ticket",
+      "from": "2024",
+      "status": "verified",
+      "prominence": 2,
+      "sources": ["washpost-sacks-2025"]
+    },
+    {
+      "key": "sacks-musk",
+      "source": "sacks",
+      "target": "musk",
+      "relType": "collaborated-with",
+      "role": "PayPal-era colleague; collaborated in technology and political networks",
+      "from": "2000",
+      "status": "verified",
+      "prominence": 2,
+      "sources": ["time-sacks-2024", "washpost-sacks-2025"]
+    },
+    {
+      "key": "sacks-pcast",
+      "source": "sacks",
+      "target": "pcast",
+      "relType": "chairs",
+      "role": "Co-chair with Michael Kratsios",
+      "from": "2026-03-25",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["white-house-pcast-2026"]
+    },
+    {
+      "key": "sacks-kratsios",
+      "source": "sacks",
+      "target": "kratsios",
+      "relType": "collaborated-with",
+      "role": "Co-authored the AI Action Plan and co-chairs PCAST",
+      "from": "2025",
+      "status": "verified",
+      "prominence": 2,
+      "sources": ["white-house-ai-plan-2025", "white-house-pcast-2026"]
+    },
+    {
+      "key": "sacks-republican",
+      "source": "sacks",
+      "target": "republican-party",
+      "relType": "affiliated-with",
+      "role": "Republican fundraiser, convention speaker and administration adviser",
+      "from": "2023",
+      "status": "verified",
+      "prominence": 2,
+      "sources": ["time-sacks-2024", "fec-sacks"]
+    }
+  ],
+  "events": [
+    {
+      "key": "born-1972",
+      "date": "1972-05-25",
+      "title": "Born in Cape Town",
+      "summary": "David Oliver Sacks was born in Cape Town and moved to Tennessee with his family at age five.",
+      "category": "personal",
+      "significance": 2,
+      "status": "verified",
+      "participants": [["sacks", "subject"]],
+      "sources": ["forward-sacks-2023", "atlantic-sacks-2026"],
+      "chapter": "formation"
+    },
+    {
+      "key": "stanford-1994",
+      "date": "1994",
+      "title": "Graduates from Stanford",
+      "summary": "Sacks completed an economics degree after writing for the Stanford Review and working with Peter Thiel.",
+      "category": "ideas",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        ["sacks", "graduate"],
+        ["thiel", "collaborator"]
+      ],
+      "sources": ["atlantic-sacks-2026"],
+      "chapter": "formation"
+    },
+    {
+      "key": "diversity-myth-1995",
+      "date": "1995",
+      "title": "Co-authors The Diversity Myth",
+      "summary": "Sacks and Thiel published a critique of multiculturalism and political correctness at Stanford.",
+      "category": "ideas",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["sacks", "co-author"],
+        ["thiel", "co-author"]
+      ],
+      "sources": ["independent-diversity-myth", "atlantic-sacks-2026"],
+      "chapter": "formation"
+    },
+    {
+      "key": "law-1998",
+      "date": "1998",
+      "title": "Completes law degree",
+      "summary": "Sacks received a J.D. from the University of Chicago.",
+      "category": "career",
+      "significance": 1,
+      "status": "verified",
+      "participants": [["sacks", "graduate"]],
+      "sources": ["craft-bio"],
+      "chapter": "formation"
+    },
+    {
+      "key": "paypal-1999",
+      "date": "1999",
+      "title": "Joins Confinity",
+      "summary": "Sacks left consulting to lead product work at the company that became PayPal and later served as chief operating officer.",
+      "category": "career",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["sacks", "executive"],
+        ["paypal", "company"],
+        ["thiel", "co-founder"]
+      ],
+      "sources": ["craft-bio", "atlantic-sacks-2026"],
+      "chapter": "paypal"
+    },
+    {
+      "key": "paypal-sale-2002",
+      "date": "2002-07-08",
+      "title": "eBay agrees to acquire PayPal",
+      "summary": "The announced $1.5 billion transaction turned PayPal's early team into a durable Silicon Valley capital and political network.",
+      "category": "finance",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["sacks", "chief operating officer"],
+        ["paypal", "acquired company"]
+      ],
+      "sources": ["ebay-paypal-2002", "craft-bio"],
+      "chapter": "paypal"
+    },
+    {
+      "key": "yammer-2008",
+      "date": "2008",
+      "title": "Founds Yammer",
+      "summary": "Sacks launched the enterprise social-networking service and served as chief executive.",
+      "category": "career",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["sacks", "founder"],
+        ["yammer", "company"]
+      ],
+      "sources": ["craft-bio", "microsoft-yammer-2012"],
+      "chapter": "founder"
+    },
+    {
+      "key": "yammer-sale-2012",
+      "date": "2012-06-25",
+      "title": "Microsoft agrees to acquire Yammer",
+      "summary": "Microsoft announced a $1.2 billion cash purchase, establishing the financial base for Sacks's later investing.",
+      "category": "finance",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["sacks", "founder and CEO"],
+        ["yammer", "acquired company"]
+      ],
+      "sources": ["microsoft-yammer-2012"],
+      "chapter": "founder"
+    },
+    {
+      "key": "craft-2017",
+      "date": "2017",
+      "title": "Co-founds Craft Ventures",
+      "summary": "Sacks moved from operating companies and angel investing into an institutional venture-capital platform.",
+      "category": "career",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["sacks", "co-founder"],
+        ["craft", "firm"]
+      ],
+      "sources": ["craft-bio"],
+      "chapter": "investor"
+    },
+    {
+      "key": "all-in-2020",
+      "date": "2020",
+      "title": "Begins co-hosting All-In",
+      "summary": "The podcast gave Sacks a recurring platform on technology, business, elections and foreign policy.",
+      "category": "ideas",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["sacks", "co-host"],
+        ["all-in", "program"]
+      ],
+      "sources": ["all-in-about", "washpost-sacks-2025"],
+      "chapter": "podcast-politics"
+    },
+    {
+      "key": "jan6-break-2021",
+      "date": "2021-01",
+      "title": "Says Trump disqualified himself",
+      "summary": "After January 6, Sacks said Trump had disqualified himself from another national candidacy; he reversed course by 2024.",
+      "category": "politics",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        ["sacks", "speaker"],
+        ["trump", "subject"]
+      ],
+      "sources": ["time-sacks-2024"],
+      "chapter": "podcast-politics"
+    },
+    {
+      "key": "desantis-launch-2023",
+      "date": "2023-05-24",
+      "title": "Moderates DeSantis campaign launch",
+      "summary": "Sacks joined Elon Musk for Ron DeSantis's Twitter Spaces presidential launch, marking his entry into national campaign organization.",
+      "category": "politics",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        ["sacks", "moderator"],
+        ["desantis", "candidate"],
+        ["musk", "platform owner"]
+      ],
+      "sources": ["forward-desantis-launch-2023"],
+      "chapter": "podcast-politics"
+    },
+    {
+      "key": "trump-fundraiser-2024",
+      "date": "2024-06-06",
+      "title": "Hosts Trump fundraiser",
+      "summary": "Sacks and Chamath Palihapitiya hosted a San Francisco fundraiser reported to have raised roughly $12 million, accelerating visible technology-sector support for Trump.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["sacks", "host"],
+        ["trump", "candidate"]
+      ],
+      "sources": ["fox-sacks-fundraiser-2024", "washpost-sacks-2025"],
+      "chapter": "trump-coalition"
+    },
+    {
+      "key": "rnc-2024",
+      "date": "2024-07",
+      "title": "Speaks at Republican convention",
+      "summary": "Sacks used a national party platform to argue for Trump on foreign policy, technology and government power.",
+      "category": "politics",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        ["sacks", "speaker"],
+        ["republican-party", "convention"]
+      ],
+      "sources": ["time-sacks-2024"],
+      "chapter": "trump-coalition"
+    },
+    {
+      "key": "appointment-2024",
+      "date": "2024-12-05",
+      "title": "Named AI and crypto adviser",
+      "summary": "Trump announced that Sacks would guide administration policy on artificial intelligence and cryptocurrency without Senate confirmation.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["sacks", "appointee"],
+        ["trump", "appointing president"]
+      ],
+      "sources": ["trump-sacks-appointment-2024", "time-sacks-2024"],
+      "chapter": "inside-government"
+    },
+    {
+      "key": "crypto-divestment-2025",
+      "date": "2025-03-05",
+      "title": "White House documents crypto divestments and waiver",
+      "summary": "A White House memorandum described extensive sales of cryptocurrency and related investments while granting permission for Sacks to work on broad digital-asset policy.",
+      "category": "legal",
+      "significance": 2,
+      "status": "verified",
+      "participants": [["sacks", "special government employee"]],
+      "sources": ["white-house-crypto-waiver-2025"],
+      "chapter": "ethics"
+    },
+    {
+      "key": "ai-divestment-2025",
+      "date": "2025-06",
+      "title": "White House issues AI ethics memorandum",
+      "summary": "A second memorandum covered AI-related holdings and divestments while permitting participation in policy matters of general applicability.",
+      "category": "legal",
+      "significance": 2,
+      "status": "verified",
+      "participants": [["sacks", "special government employee"]],
+      "sources": ["white-house-ai-waiver-2025"],
+      "chapter": "ethics"
+    },
+    {
+      "key": "ai-plan-2025",
+      "date": "2025-07-23",
+      "title": "Publishes America's AI Action Plan",
+      "summary": "Sacks, Michael Kratsios and Marco Rubio signed a plan organized around innovation, infrastructure and international leadership.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["sacks", "co-author"],
+        ["kratsios", "co-author"]
+      ],
+      "sources": ["white-house-ai-plan-2025", "white-house-ai-plan-release-2025"],
+      "chapter": "policy"
+    },
+    {
+      "key": "digital-assets-report-2025",
+      "date": "2025-07",
+      "title": "Working group issues digital-assets report",
+      "summary": "The administration's report proposed federal market-structure, banking and regulatory changes for digital assets.",
+      "category": "politics",
+      "significance": 2,
+      "status": "verified",
+      "participants": [["sacks", "policy adviser"]],
+      "sources": ["white-house-digital-assets-2025", "ap-crypto-policy-2025"],
+      "chapter": "policy"
+    },
+    {
+      "key": "warren-inquiry-2025",
+      "date": "2025-09-16",
+      "title": "Senator seeks ethics and service records",
+      "summary": "Senator Elizabeth Warren asked Sacks and the White House for records about his special-government-employee day limit, waivers and retained interests; the letter stated questions, not adjudicated findings.",
+      "category": "legal",
+      "significance": 2,
+      "status": "verified",
+      "participants": [["sacks", "letter recipient"]],
+      "sources": ["warren-sacks-letter-2025"],
+      "chapter": "ethics"
+    },
+    {
+      "key": "pcast-2026",
+      "date": "2026-03-25",
+      "title": "Named PCAST co-chair",
+      "summary": "Trump appointed Sacks and Michael Kratsios to co-chair the presidential science advisory council.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["sacks", "co-chair"],
+        ["kratsios", "co-chair"],
+        ["pcast", "council"]
+      ],
+      "sources": ["white-house-pcast-2026"],
+      "chapter": "outside-inside"
+    },
+    {
+      "key": "czar-exit-2026",
+      "date": "2026-03-26",
+      "title": "Leaves special-government-employee role",
+      "summary": "Sacks said he had reached the statutory service limit and would continue advising on AI policy from outside the White House.",
+      "category": "career",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["sacks", "departing adviser"],
+        ["trump", "president"]
+      ],
+      "sources": ["reuters-sacks-stepdown-2026"],
+      "chapter": "outside-inside"
+    }
+  ],
+  "statements": [
+    {
+      "key": "trump-disqualified-2021",
+      "date": "2021-01",
+      "datePrecision": "month",
+      "venue": "Public commentary after January 6",
+      "issue": "Donald Trump",
+      "quote": "Trump has disqualified himself from being a candidate at the national level again.",
+      "summary": "Sacks later reversed this position and supported Trump's 2024 campaign.",
+      "stance": "explicit",
+      "source": "time-sacks-2024"
+    },
+    {
+      "key": "crypto-war-over-2025",
+      "date": "2025-01",
+      "datePrecision": "month",
+      "venue": "Crypto Ball, Washington",
+      "issue": "Cryptocurrency",
+      "quote": "The war on crypto is over.",
+      "summary": "Sacks presented the new administration as ending the prior regulatory posture toward the industry.",
+      "stance": "explicit",
+      "source": "ap-crypto-policy-2025"
+    },
+    {
+      "key": "ai-race-2025",
+      "date": "2025-07-23",
+      "datePrecision": "day",
+      "venue": "White House AI Action Plan release",
+      "issue": "Artificial intelligence",
+      "quote": "To remain the leading economic and military power, the United States must win the AI race.",
+      "summary": "Sacks tied AI industrial policy to economic and national-security competition.",
+      "stance": "explicit",
+      "source": "white-house-ai-plan-release-2025"
+    },
+    {
+      "key": "ai-workers-2025",
+      "date": "2025-07-23",
+      "datePrecision": "day",
+      "venue": "America's AI Action Plan",
+      "issue": "Artificial intelligence",
+      "quote": "AI will improve the lives of Americans by complementing their work—not replacing it.",
+      "summary": "The plan framed productivity gains as complementary to labor.",
+      "stance": "explicit",
+      "source": "white-house-ai-plan-2025"
+    },
+    {
+      "key": "ai-bias-2025",
+      "date": "2025-07-23",
+      "datePrecision": "day",
+      "venue": "America's AI Action Plan",
+      "issue": "Artificial intelligence",
+      "quote": "Our AI systems must be free from ideological bias and be designed to pursue objective truth.",
+      "summary": "The plan made opposition to perceived ideological bias a federal AI-policy objective.",
+      "stance": "explicit",
+      "source": "white-house-ai-plan-2025"
+    },
+    {
+      "key": "outside-adviser-2026",
+      "date": "2026-03-26",
+      "datePrecision": "day",
+      "venue": "Bloomberg Television interview",
+      "issue": "Government service",
+      "quote": "I've used up my 130 days.",
+      "summary": "Sacks explained the end of his special-government-employee role while retaining an advisory position.",
+      "stance": "explicit",
+      "source": "reuters-sacks-stepdown-2026"
+    }
+  ],
+  "ideas": {
+    "traditions": [
+      {
+        "label": "Technology libertarianism",
+        "atlasId": "libertarian",
+        "basis": "Advocacy for limited technology regulation, private innovation and opposition to government-defined ideological controls.",
+        "context": "Sacks's White House work also used federal industrial, export and infrastructure policy rather than a purely anti-state approach.",
+        "sources": ["white-house-ai-plan-2025", "atlantic-sacks-2026"]
+      }
+    ],
+    "influences": [
+      {
+        "name": "Peter Thiel",
+        "note": "Stanford collaborator, co-author and PayPal colleague whose intellectual and business network shaped Sacks's early career.",
+        "sources": ["independent-diversity-myth", "atlantic-sacks-2026"]
+      }
+    ],
+    "works": [
+      {
+        "title": "The Diversity Myth",
+        "year": 1995,
+        "kind": "Book",
+        "detail": "Co-authored with Peter Thiel; a critique of multiculturalism and political correctness at Stanford.",
+        "source": "independent-diversity-myth"
+      },
+      {
+        "title": "All-In",
+        "year": 2020,
+        "kind": "Podcast",
+        "detail": "Weekly program about technology, business, politics and public policy.",
+        "source": "all-in-about"
+      },
+      {
+        "title": "America's AI Action Plan",
+        "year": 2025,
+        "kind": "Policy plan",
+        "detail": "Co-authored White House framework for AI innovation, infrastructure and international policy.",
+        "source": "white-house-ai-plan-2025"
+      }
+    ],
+    "featuredQuotes": ["ai-race-2025", "trump-disqualified-2021"]
+  },
+  "chapters": [
+    {
+      "key": "formation",
+      "title": "From Cape Town to Stanford",
+      "dek": "Migration, elite education and a campus conservative network supplied the first institutions of Sacks's career.",
+      "body": "David Oliver Sacks was born in Cape Town on May 25, 1972, into a Jewish family and moved to Tennessee when he was five. He attended Memphis University School, then studied economics at Stanford, graduating in 1994. At Stanford he joined the conservative Stanford Review and formed a working relationship with Peter Thiel, who had founded the paper. [[forward-sacks-2023, atlantic-sacks-2026]]\n\nSacks and Thiel published The Diversity Myth in 1995, arguing that multicultural policy and political correctness had narrowed debate on campus. Some of Sacks's student writing has drawn later criticism, and he has expressed regret for parts of it. The episode matters because it established a recurring method: treating cultural conflict as a struggle over institutional power and speech rather than only personal opinion. [[independent-diversity-myth, atlantic-sacks-2026]]\n\nAfter earning a law degree at the University of Chicago in 1998, Sacks briefly worked in consulting. He did not build a legal career. Instead, he returned to the Stanford network just as its members were moving from campus argument into internet companies. [[craft-bio, atlantic-sacks-2026]]"
+    },
+    {
+      "key": "paypal",
+      "title": "The PayPal operating network",
+      "dek": "At PayPal, Sacks acquired both operating credibility and a network that later crossed business, media and politics.",
+      "body": "In 1999 Sacks joined Confinity, the payments company led by Thiel and Max Levchin that became PayPal. He led product work and later served as chief operating officer, overseeing functions that included product, sales, marketing and operations. The job made him an operator inside one of the defining firms of the dot-com period rather than simply an early investor. [[craft-bio, atlantic-sacks-2026]]\n\nEBay announced its agreement to buy PayPal for about $1.5 billion in July 2002. The transaction dispersed a group of employees and founders into new companies and funds, while preserving relationships among Thiel, Sacks, Elon Musk and other alumni. That network supplied Sacks with capital, reputation and access for the companies and investments that followed. [[ebay-paypal-2002, craft-bio, time-sacks-2024]]"
+    },
+    {
+      "key": "founder",
+      "title": "Yammer created independent wealth",
+      "dek": "A successful enterprise-software company gave Sacks an exit separate from the collective PayPal story.",
+      "body": "Sacks founded Yammer in 2008 as an internal communications service for businesses. The product applied social-network mechanics to workplace collaboration, and Sacks served as chief executive as it expanded across corporate customers. [[craft-bio, microsoft-yammer-2012]]\n\nMicrosoft agreed in June 2012 to acquire Yammer for $1.2 billion in cash. The sale was Sacks's defining independent business outcome: it supplied wealth and a founder's record that later supported his authority as an investor and commentator on how technology firms should be built. [[microsoft-yammer-2012]]\n\nAfter Yammer, Sacks invested in startups and briefly ran Zenefits during a regulatory crisis. In 2017 he co-founded Craft Ventures, converting his personal investing into a firm. Craft's portfolio and Sacks's continued management role later became central to conflict-of-interest questions when he entered government. [[craft-bio, atlantic-sacks-2026]]"
+    },
+    {
+      "key": "podcast-politics",
+      "title": "A microphone became a political institution",
+      "dek": "All-In turned investor conversations into a durable platform for campaigns and policy arguments.",
+      "body": "Sacks began co-hosting All-In in 2020 with Chamath Palihapitiya, Jason Calacanis and David Friedberg. What began as a technology and markets discussion became a high-reach forum for elections, war, censorship, cryptocurrency and artificial intelligence. The show joined Sacks's capital network to a media audience without the institutional filters of a newspaper or television network. [[all-in-about, washpost-sacks-2025]]\n\nHis politics did not move in a straight line toward Trump. After January 6, 2021, Sacks said Trump had disqualified himself from another national candidacy. In the 2024 Republican primary he initially backed Ron DeSantis and joined Elon Musk to host DeSantis's troubled Twitter Spaces launch in May 2023. [[time-sacks-2024, forward-desantis-launch-2023]]\n\nAcross the same period, Sacks argued that technology platforms and government pressure were restricting speech, criticized the Biden administration's approach to cryptocurrency and questioned U.S. strategy in Ukraine. Those positions brought his podcast audience, investment relationships and political activity into the same public identity. [[washpost-sacks-2025, atlantic-sacks-2026]]"
+    },
+    {
+      "key": "trump-coalition",
+      "title": "The turn to Trump",
+      "dek": "Fundraising converted a media and investor network into campaign infrastructure.",
+      "body": "By June 2024 Sacks had moved from his post-January 6 rejection of Trump to active support. He and Palihapitiya hosted Trump at Sacks's San Francisco home for a fundraiser reported to have raised roughly $12 million. The event did not represent all of Silicon Valley, but it provided visible evidence that a group of major technology investors was willing to organize money and elite validation for the Republican nominee. [[fox-sacks-fundraiser-2024, washpost-sacks-2025]]\n\nSacks spoke at the Republican National Convention and helped connect JD Vance with technology donors. Trump also appeared on All-In, bringing the candidate into the program's business-and-technology frame. Sacks argued that a Trump administration would be more favorable to innovation, crypto and political speech. [[time-sacks-2024, washpost-sacks-2025]]\n\nFederal contributions capture only part of this political role. Hosting, introductions, media advocacy and the ability to assemble other donors are not equivalent to personal checks and do not appear as a single FEC total, so the dossier keeps those forms of influence separate. [[fec-sacks, washpost-sacks-2025]]"
+    },
+    {
+      "key": "inside-government",
+      "title": "A new kind of White House appointment",
+      "dek": "The special-government-employee structure put an active venture capitalist inside technology policy without Senate confirmation.",
+      "body": "On December 5, 2024, Trump announced Sacks as White House AI and crypto adviser. The role did not require Senate confirmation. Sacks entered as a special government employee, a status generally limited to 130 service days in a year, and the July 2025 staff report listed him at no salary. [[trump-sacks-appointment-2024, white-house-staff-2025]]\n\nThe appointment joined two policy fields in which private investment and public rules can rapidly change company values. Sacks retained his role at Craft while working on broad federal policy. Supporters argued that government needed an experienced technology operator; critics argued that the arrangement gave an investor unusual access to decisions affecting his industry. [[time-sacks-2024, washpost-sacks-2025, warren-sacks-letter-2025]]"
+    },
+    {
+      "key": "ethics",
+      "title": "Divestments did not end the ethics debate",
+      "dek": "White House waivers documented large sales while permitting work on policies affecting broad sectors.",
+      "body": "A March 2025 White House memorandum said Sacks and Craft had sold liquid cryptocurrency and numerous direct and fund interests connected to digital assets. A later memorandum addressed artificial-intelligence holdings. The documents described extensive divestments and allowed Sacks to participate in matters of general applicability even when broad policy could affect firms in which he or Craft retained interests. [[white-house-crypto-waiver-2025, white-house-ai-waiver-2025]]\n\nThe waivers narrowed direct conflicts but did not settle the larger question of an investor shaping rules for industries in which his professional network remained active. Senator Elizabeth Warren sought records about his holdings, waivers and number of government-service days. Her letter raised allegations and questions; it was not a legal finding that Sacks had violated ethics law. [[warren-sacks-letter-2025]]\n\nSacks and his defenders said the service imposed substantial personal costs and that divestments insulated his work. Critical reporting argued that sector-wide policy could still benefit Craft's ecosystem and allied investors. The public record therefore supports two distinct facts: significant divestment occurred, and disagreement about the adequacy of the remaining safeguards continued. [[white-house-crypto-waiver-2025, white-house-ai-waiver-2025, atlantic-sacks-2026]]"
+    },
+    {
+      "key": "policy",
+      "title": "AI acceleration and crypto normalization",
+      "dek": "Sacks's policy record centered on reducing barriers, building infrastructure and treating technology competition as national strategy.",
+      "body": "The July 2025 AI Action Plan, signed by Sacks, Michael Kratsios and Marco Rubio, organized more than ninety proposed federal actions under innovation, infrastructure and international leadership. It called for faster data-center and energy development, wider export of American AI systems and removal of federal rules the administration considered ideological or unnecessarily restrictive. [[white-house-ai-plan-2025, white-house-ai-plan-release-2025]]\n\nThe plan framed competition with China as an economic and military race while rejecting both unrestricted use and the strongest catastrophe-focused regulatory proposals. It said AI should complement workers, avoid ideological bias and be protected from theft and misuse. Critics argued that the acceleration agenda discounted safety, labor and concentration risks; those criticisms were part of the policy dispute, not proof that a specific harm had occurred. [[white-house-ai-plan-2025, atlantic-sacks-2026]]\n\nOn cryptocurrency, Sacks coordinated with a presidential working group that proposed market-structure, banking and regulatory changes. Industry participants welcomed the reversal from enforcement-led policy, while ethics critics pointed to the administration's and advisers' private financial ties. [[white-house-digital-assets-2025, ap-crypto-policy-2025, warren-sacks-letter-2025]]"
+    },
+    {
+      "key": "outside-inside",
+      "title": "Outside the payroll, still inside the policy network",
+      "dek": "The end of Sacks's temporary appointment changed his legal status more than his access.",
+      "body": "Trump appointed Sacks and Kratsios to co-chair the President's Council of Advisors on Science and Technology on March 25, 2026. The next day Sacks said he had used the permitted days of his special-government-employee role and was leaving the formal AI-and-crypto post. Reuters reported that he would continue helping advance the administration's AI framework. [[white-house-pcast-2026, reuters-sacks-stepdown-2026]]\n\nThe transition captured the structure of Sacks's political power. He did not need a permanent agency or Senate-confirmed office to remain useful to the president. His leverage came from combining access to investors and founders, a media platform, fundraising credibility and a policy program that the administration had already adopted. [[reuters-sacks-stepdown-2026, atlantic-sacks-2026]]\n\nAs of October 2026, Sacks remained a Craft partner, All-In co-host and PCAST co-chair rather than the salaried head of a regulatory agency. That distinction matters: he advises and organizes, while cabinet departments and independent agencies retain legal authority to implement or contest the policies associated with him. [[craft-bio, all-in-about, white-house-pcast-2026]]"
+    }
+  ]
+}

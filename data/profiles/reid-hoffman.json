@@ -1,0 +1,794 @@
+{
+  "subject": "hoffman",
+  "reviewedAt": "2026-10-25",
+  "sourcesVerifiedAt": "2026-10-25",
+  "image": "https://commons.wikimedia.org/wiki/Special:FilePath/2022%20Reid%20Hoffman%20(cropped).jpg?width=400",
+  "brief": {
+    "inclusion": "LinkedIn co-founder, venture investor and Democratic megadonor whose political influence connects Silicon Valley capital, candidate networks and AI policy.",
+    "identifiers": { "fec_contributor": "HOFFMAN, REID" },
+    "namesakes": "Matched through Reid Garrett Hoffman, Greylock/LinkedIn affiliations and Bay Area addresses.",
+    "coverage": {
+      "from": "1967-08-05",
+      "through": "2026-10-25",
+      "lags": "State-party giving, nonprofit grants and litigation support are not all represented in federal Schedule A data."
+    },
+    "openQuestions": [
+      "Some political projects are funded through organizations or advisers rather than personal FEC contributions.",
+      "Hoffman's investments and AI-policy advocacy overlap, but investment does not by itself establish control over a company's public position."
+    ],
+    "review": [
+      { "kind": "evidence", "by": "OA", "at": "2026-10-25" },
+      { "kind": "chronology", "by": "OA", "at": "2026-10-25" },
+      { "kind": "neutrality", "by": "OA", "at": "2026-10-25" },
+      { "kind": "current", "by": "OA", "at": "2026-10-25" }
+    ]
+  },
+  "summary": "Reid Hoffman co-founded LinkedIn, served as a senior PayPal executive and became a partner at Greylock, building wealth and relationships across Silicon Valley. Since 2016 he has also become one of the Democratic Party's largest technology-sector donors, financing candidates, party committees and experimental political organizations while advocating an optimistic, deployment-oriented approach to artificial intelligence.",
+  "roles": [
+    {
+      "label": "Partner, Greylock",
+      "detail": "Joined in 2009 and invests in network businesses and artificial intelligence.",
+      "sources": ["greylock-bio"]
+    },
+    {
+      "label": "Co-founder, LinkedIn",
+      "detail": "Founded the professional network in 2002 and led it through early growth.",
+      "sources": ["greylock-bio", "linkedin-history"]
+    },
+    {
+      "label": "Democratic donor and organizer",
+      "detail": "Finances federal candidates, state parties and outside groups and convenes technology donors.",
+      "sources": ["fec-hoffman", "opensecrets-2024", "wapo-donors"]
+    },
+    {
+      "label": "Author and AI advocate",
+      "detail": "Hosts Possible and Masters of Scale and co-authored Superagency.",
+      "sources": ["greylock-bio", "superagency"]
+    }
+  ],
+  "entities": {
+    "hoffman": { "match": { "name": "Reid Hoffman", "type": "donor" } },
+    "linkedin": {
+      "create": {
+        "name": "LinkedIn",
+        "type": "company",
+        "description": "Professional social network co-founded by Reid Hoffman and acquired by Microsoft."
+      }
+    },
+    "greylock": {
+      "create": {
+        "name": "Greylock Partners",
+        "type": "company",
+        "description": "Venture-capital firm where Reid Hoffman is a partner.",
+        "websiteUrl": "https://greylock.com/"
+      }
+    },
+    "paypal": { "match": { "name": "PayPal", "type": "company" } },
+    "microsoft": {
+      "create": {
+        "name": "Microsoft",
+        "type": "company",
+        "description": "Technology company that acquired LinkedIn in 2016."
+      }
+    },
+    "inflection": {
+      "create": {
+        "name": "Inflection AI",
+        "type": "company",
+        "description": "Artificial-intelligence company co-founded by Reid Hoffman and Mustafa Suleyman."
+      }
+    },
+    "democratic-party": { "match": { "name": "Democratic Party", "type": "organization" } },
+    "biden": { "match": { "name": "Joe Biden", "type": "politician" } },
+    "harris": { "match": { "name": "Kamala Harris", "type": "politician" } },
+    "haley": {
+      "create": {
+        "name": "Nikki Haley",
+        "type": "politician",
+        "description": "Former South Carolina governor and 2024 Republican presidential candidate."
+      }
+    },
+    "alloy": {
+      "create": {
+        "name": "Alloy",
+        "type": "organization",
+        "description": "Democratic data-exchange organization backed by Reid Hoffman."
+      }
+    },
+    "win-future": {
+      "create": {
+        "name": "Win the Future",
+        "type": "organization",
+        "description": "Political organization co-founded with support from Reid Hoffman in 2017."
+      }
+    },
+    "e-jean-carroll": {
+      "create": {
+        "name": "E. Jean Carroll",
+        "type": "pundit",
+        "description": "Writer whose civil litigation against Donald Trump received support from a nonprofit backed by Reid Hoffman."
+      }
+    },
+    "trump": { "match": { "name": "Donald Trump", "type": "politician" } }
+  },
+  "sources": [
+    {
+      "key": "greylock-bio",
+      "title": "Reid Hoffman",
+      "publisher": "Greylock",
+      "type": "primary",
+      "url": "https://greylock.com/team/reid-hoffman/",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "linkedin-history",
+      "title": "LinkedIn: About",
+      "publisher": "LinkedIn",
+      "type": "primary",
+      "url": "https://about.linkedin.com/",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "britannica-hoffman",
+      "title": "Reid Hoffman",
+      "publisher": "Encyclopaedia Britannica",
+      "type": "secondary",
+      "url": "https://www.britannica.com/biography/Reid-Hoffman",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "forbes-hoffman",
+      "title": "Reid Hoffman",
+      "publisher": "Forbes",
+      "type": "secondary",
+      "url": "https://www.forbes.com/profile/reid-hoffman/",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "fec-hoffman",
+      "title": "Individual contributions by Hoffman, Reid",
+      "publisher": "Federal Election Commission",
+      "type": "filing",
+      "url": "https://www.fec.gov/data/receipts/individual-contributions/?contributor_name=HOFFMAN%2C+REID",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "opensecrets-2024",
+      "title": "Who were the biggest donors in the 2024 election?",
+      "publisher": "OpenSecrets",
+      "type": "article",
+      "url": "https://www.opensecrets.org/elections-overview/biggest-donors",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "wapo-donors",
+      "title": "The biggest political donors of the 2024 election",
+      "publisher": "The Washington Post",
+      "type": "article",
+      "url": "https://www.washingtonpost.com/elections/interactive/2024/biggest-campaign-donors-election-2024/",
+      "publishedAt": "2024",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "nyt-alabama",
+      "title": "Secret experiment in Alabama imitated Russian tactics",
+      "publisher": "The New York Times",
+      "type": "article",
+      "url": "https://www.nytimes.com/2018/12/19/us/alabama-senate-roy-jones-russia.html",
+      "publishedAt": "2018-12-19",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "hoffman-apology",
+      "title": "Statement on Alabama misinformation project",
+      "publisher": "Reid Hoffman",
+      "type": "official_statement",
+      "url": "https://www.reidhoffman.org/statement-on-alabama/",
+      "publishedAt": "2018-12",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "nyt-haley",
+      "title": "A Democratic donor is supporting Nikki Haley's primary effort",
+      "publisher": "The New York Times",
+      "type": "article",
+      "url": "https://www.nytimes.com/2023/12/05/us/politics/reid-hoffman-nikki-haley.html",
+      "publishedAt": "2023-12-05",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "ap-ai-campaign",
+      "title": "Democrats wanted an agreement on using artificial intelligence",
+      "publisher": "Associated Press",
+      "type": "article",
+      "url": "https://apnews.com/article/7c6b78b6a8ded9ad253be9ef491e0284",
+      "publishedAt": "2024",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "inflection-launch",
+      "title": "Introducing Inflection AI",
+      "publisher": "Inflection AI",
+      "type": "official_statement",
+      "url": "https://inflection.ai/press",
+      "publishedAt": "2022",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "microsoft-linkedin",
+      "title": "Microsoft to acquire LinkedIn",
+      "publisher": "Microsoft",
+      "type": "official_statement",
+      "url": "https://news.microsoft.com/2016/06/13/microsoft-to-acquire-linkedin/",
+      "publishedAt": "2016-06-13",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "superagency",
+      "title": "Superagency",
+      "publisher": "Reid Hoffman",
+      "type": "primary",
+      "url": "https://www.superagency.ai/",
+      "publishedAt": "2025",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "possible-ai",
+      "title": "Possible",
+      "publisher": "Possible Podcast",
+      "type": "primary",
+      "url": "https://www.possible.fm/",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "nyt-carroll",
+      "title": "Trump seeks details about Reid Hoffman's support for Carroll",
+      "publisher": "The New York Times",
+      "type": "article",
+      "url": "https://www.nytimes.com/2023/04/13/nyregion/trump-carroll-reid-hoffman.html",
+      "publishedAt": "2023-04-13",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "wired-blitzscaling",
+      "title": "Reid Hoffman explains blitzscaling",
+      "publisher": "Wired",
+      "type": "article",
+      "url": "https://www.wired.com/story/reid-hoffman-blitzscaling/",
+      "publishedAt": "2018",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "stanford-hoffman",
+      "title": "Reid Hoffman",
+      "publisher": "Stanford University",
+      "type": "secondary",
+      "url": "https://hai.stanford.edu/people/reid-hoffman",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "cnn-khan",
+      "title": "Hoffman calls for new FTC leadership",
+      "publisher": "CNN",
+      "type": "video",
+      "url": "https://www.cnn.com/2024/07/25/business/video/reid-hoffman-kamala-harris-ftc-lina-khan",
+      "publishedAt": "2024-07-25",
+      "accessedAt": "2026-10-25"
+    }
+  ],
+  "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "August 5, 1967",
+      "detail": "Palo Alto, California.",
+      "featured": true,
+      "sources": ["britannica-hoffman", "greylock-bio"]
+    },
+    { "key": "sex", "label": "Sex", "value": "Male", "sources": ["greylock-bio"] },
+    { "key": "race", "label": "Race", "value": "White", "sources": ["britannica-hoffman"] },
+    { "key": "citizenship", "label": "Citizenship", "value": "United States", "sources": ["britannica-hoffman"] },
+    { "key": "spouse", "label": "Spouse", "value": "Michelle Yee", "sources": ["forbes-hoffman"] },
+    {
+      "key": "education",
+      "label": "Education",
+      "value": "Stanford University; University of Oxford",
+      "detail": "B.S. in symbolic systems; M.St. in philosophy as a Marshall Scholar.",
+      "sources": ["greylock-bio", "stanford-hoffman"]
+    },
+    {
+      "key": "party",
+      "label": "Political affiliation",
+      "value": "Democratic",
+      "sources": ["fec-hoffman", "opensecrets-2024"]
+    },
+    {
+      "key": "current-roles",
+      "label": "Current roles",
+      "value": "Partner, Greylock; author and podcast host",
+      "featured": true,
+      "asOf": "2026-10-25",
+      "sources": ["greylock-bio", "possible-ai"]
+    },
+    {
+      "key": "net-worth",
+      "label": "Estimated net worth",
+      "value": "$2.6 billion",
+      "detail": "Forbes estimate.",
+      "featured": true,
+      "asOf": "2026-10-25",
+      "sources": ["forbes-hoffman"]
+    },
+    {
+      "key": "residence",
+      "label": "Residence",
+      "value": "California",
+      "asOf": "2026-10-25",
+      "sources": ["forbes-hoffman", "fec-hoffman"]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "linkedin",
+      "source": "hoffman",
+      "target": "linkedin",
+      "relType": "co-founded",
+      "role": "Co-founder and founding CEO",
+      "from": "2002",
+      "prominence": 3,
+      "sources": ["greylock-bio", "linkedin-history"]
+    },
+    {
+      "key": "greylock",
+      "source": "hoffman",
+      "target": "greylock",
+      "relType": "works-for",
+      "role": "Partner",
+      "from": "2009",
+      "prominence": 3,
+      "sources": ["greylock-bio"]
+    },
+    {
+      "key": "paypal",
+      "source": "hoffman",
+      "target": "paypal",
+      "relType": "former-role",
+      "role": "Founding board member and executive vice president",
+      "from": "2000",
+      "until": "2002",
+      "prominence": 2,
+      "sources": ["greylock-bio", "britannica-hoffman"]
+    },
+    {
+      "key": "microsoft",
+      "source": "hoffman",
+      "target": "microsoft",
+      "relType": "board-member-of",
+      "role": "Board member after Microsoft acquired LinkedIn",
+      "from": "2017",
+      "until": "2023",
+      "prominence": 2,
+      "sources": ["microsoft-linkedin", "greylock-bio"]
+    },
+    {
+      "key": "inflection",
+      "source": "hoffman",
+      "target": "inflection",
+      "relType": "co-founded",
+      "role": "Co-founder and early financier",
+      "from": "2022",
+      "prominence": 2,
+      "sources": ["inflection-launch", "greylock-bio"]
+    },
+    {
+      "key": "democrats",
+      "source": "hoffman",
+      "target": "democratic-party",
+      "relType": "donated-to",
+      "role": "Major donor to candidates, party committees and outside groups",
+      "from": "2016",
+      "prominence": 3,
+      "sources": ["fec-hoffman", "opensecrets-2024"]
+    },
+    {
+      "key": "biden",
+      "source": "hoffman",
+      "target": "biden",
+      "relType": "donated-to",
+      "role": "Major supporter in 2020 and 2024 before the nominee changed",
+      "from": "2019",
+      "until": "2024",
+      "prominence": 2,
+      "sources": ["fec-hoffman", "wapo-donors"]
+    },
+    {
+      "key": "harris",
+      "source": "hoffman",
+      "target": "harris",
+      "relType": "endorsed",
+      "role": "Major 2024 supporter and donor",
+      "from": "2024",
+      "until": "2024",
+      "prominence": 2,
+      "sources": ["fec-hoffman", "cnn-khan"]
+    },
+    {
+      "key": "haley",
+      "source": "hoffman",
+      "target": "haley",
+      "relType": "donated-to",
+      "role": "Funded an anti-Trump Republican primary alternative",
+      "from": "2023",
+      "until": "2024",
+      "prominence": 2,
+      "sources": ["nyt-haley"]
+    },
+    {
+      "key": "alloy",
+      "source": "hoffman",
+      "target": "alloy",
+      "relType": "founded",
+      "role": "Principal early backer of Democratic data exchange",
+      "from": "2019",
+      "prominence": 1,
+      "sources": ["wapo-donors"]
+    },
+    {
+      "key": "win",
+      "source": "hoffman",
+      "target": "win-future",
+      "relType": "co-founded",
+      "role": "Financial backer and co-creator",
+      "from": "2017",
+      "prominence": 1,
+      "sources": ["wapo-donors"]
+    },
+    {
+      "key": "carroll",
+      "source": "hoffman",
+      "target": "e-jean-carroll",
+      "relType": "donated-to",
+      "role": "Backed a nonprofit that helped fund civil litigation against Donald Trump",
+      "prominence": 2,
+      "sources": ["nyt-carroll"]
+    },
+    {
+      "key": "trump",
+      "source": "hoffman",
+      "target": "trump",
+      "relType": "opposed",
+      "role": "Financed Democratic and cross-party efforts to prevent Trump's election",
+      "from": "2016",
+      "prominence": 3,
+      "sources": ["nyt-haley", "fec-hoffman", "nyt-carroll"]
+    }
+  ],
+  "events": [
+    {
+      "key": "birth",
+      "date": "1967-08-05",
+      "title": "Born in Palo Alto",
+      "summary": "Reid Garrett Hoffman grew up in the San Francisco Bay Area.",
+      "category": "personal",
+      "significance": 1,
+      "chapter": "formation",
+      "sources": ["britannica-hoffman"]
+    },
+    {
+      "key": "stanford",
+      "date": "1990",
+      "title": "Graduates from Stanford",
+      "summary": "Hoffman studied symbolic systems before pursuing philosophy at Oxford.",
+      "category": "personal",
+      "significance": 1,
+      "chapter": "formation",
+      "sources": ["greylock-bio", "stanford-hoffman"]
+    },
+    {
+      "key": "socialnet",
+      "date": "1997",
+      "title": "Founds SocialNet",
+      "summary": "The early social-networking company preceded his work at PayPal and LinkedIn.",
+      "category": "career",
+      "significance": 2,
+      "chapter": "networks",
+      "sources": ["britannica-hoffman"]
+    },
+    {
+      "key": "paypal",
+      "date": "2000",
+      "title": "Joins PayPal leadership",
+      "summary": "Hoffman managed external relationships and served on the founding board through the eBay sale.",
+      "category": "career",
+      "significance": 2,
+      "chapter": "networks",
+      "sources": ["greylock-bio"]
+    },
+    {
+      "key": "linkedin",
+      "date": "2002-12",
+      "title": "Co-founds LinkedIn",
+      "summary": "The professional network applied identity and connection data to recruiting and business communication.",
+      "category": "career",
+      "significance": 3,
+      "chapter": "linkedin",
+      "sources": ["greylock-bio", "linkedin-history"]
+    },
+    {
+      "key": "greylock",
+      "date": "2009",
+      "title": "Joins Greylock",
+      "summary": "Hoffman became a venture partner investing in network businesses and later artificial intelligence.",
+      "category": "career",
+      "significance": 3,
+      "chapter": "investor",
+      "sources": ["greylock-bio"]
+    },
+    {
+      "key": "linkedin-ipo",
+      "date": "2011-05-19",
+      "title": "LinkedIn goes public",
+      "summary": "The listing made Hoffman's stake liquid and expanded his capital for investing and political work.",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "linkedin",
+      "sources": ["linkedin-history", "britannica-hoffman"]
+    },
+    {
+      "key": "microsoft-sale",
+      "date": "2016-06-13",
+      "title": "Microsoft agrees to acquire LinkedIn",
+      "summary": "The $26.2 billion transaction incorporated LinkedIn into Microsoft and later brought Hoffman onto its board.",
+      "category": "finance",
+      "significance": 3,
+      "chapter": "investor",
+      "sources": ["microsoft-linkedin"]
+    },
+    {
+      "key": "political-scale",
+      "date": "2016",
+      "title": "Expands Democratic political spending",
+      "summary": "Trump's election prompted Hoffman to fund candidates, party infrastructure and outside experiments at much larger scale.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "politics",
+      "sources": ["fec-hoffman", "wapo-donors"]
+    },
+    {
+      "key": "win-future",
+      "date": "2017",
+      "title": "Helps launch Win the Future",
+      "summary": "The project sought technology-style experimentation in Democratic organizing and policy engagement.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "politics",
+      "sources": ["wapo-donors"]
+    },
+    {
+      "key": "alabama",
+      "date": "2018-12-19",
+      "title": "Alabama misinformation project disclosed",
+      "summary": "Reporting revealed a project funded indirectly by Hoffman that used deceptive tactics in the 2017 Senate race; he apologized and said he had not known the methods.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "experiments",
+      "sources": ["nyt-alabama", "hoffman-apology"]
+    },
+    {
+      "key": "alloy",
+      "date": "2019",
+      "title": "Backs Democratic data exchange",
+      "summary": "Alloy attempted to improve access to voter and campaign data across progressive organizations.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "infrastructure",
+      "sources": ["wapo-donors"]
+    },
+    {
+      "key": "inflection",
+      "date": "2022",
+      "title": "Co-founds Inflection AI",
+      "summary": "The company pursued conversational personal AI and placed Hoffman at the center of generative-AI investment debates.",
+      "category": "career",
+      "significance": 2,
+      "chapter": "ai",
+      "sources": ["inflection-launch", "greylock-bio"]
+    },
+    {
+      "key": "carroll",
+      "date": "2023-04-13",
+      "title": "Litigation support becomes public",
+      "summary": "Court proceedings disclosed that a nonprofit backed by Hoffman helped finance E. Jean Carroll's case against Trump.",
+      "category": "legal",
+      "significance": 2,
+      "chapter": "politics",
+      "sources": ["nyt-carroll"]
+    },
+    {
+      "key": "haley",
+      "date": "2023-12-05",
+      "title": "Supports Nikki Haley primary effort",
+      "summary": "Hoffman funded a Republican alternative as part of a broader strategy to block Trump.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "politics",
+      "sources": ["nyt-haley"]
+    },
+    {
+      "key": "harris",
+      "date": "2024-07",
+      "title": "Backs Kamala Harris and seeks FTC change",
+      "summary": "Hoffman supported Harris while publicly arguing that a new administration should replace FTC chair Lina Khan.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "power",
+      "participants": [["harris", "candidate"]],
+      "sources": ["cnn-khan", "fec-hoffman"]
+    },
+    {
+      "key": "superagency",
+      "date": "2025",
+      "title": "Publishes Superagency",
+      "summary": "The book argued that broadly deployed AI can expand human agency if institutions manage its risks.",
+      "category": "ideas",
+      "significance": 2,
+      "chapter": "ai",
+      "sources": ["superagency"]
+    }
+  ],
+  "statements": [
+    {
+      "key": "networks",
+      "date": "2026",
+      "datePrecision": "year",
+      "venue": "Greylock partner biography",
+      "issue": "Technology",
+      "quote": "Networks and marketplaces are central to all of my investing and thinking.",
+      "summary": "Hoffman identifies network effects as the through-line of his investing.",
+      "verbatim": true,
+      "source": "greylock-bio"
+    },
+    {
+      "key": "alabama",
+      "date": "2018-12",
+      "datePrecision": "month",
+      "venue": "Public apology",
+      "issue": "Campaign ethics",
+      "summary": "Hoffman apologized for funding the organization behind the Alabama misinformation experiment and said he did not know it would use deceptive tactics.",
+      "verbatim": false,
+      "source": "hoffman-apology"
+    },
+    {
+      "key": "ai",
+      "date": "2025",
+      "datePrecision": "year",
+      "venue": "Superagency",
+      "issue": "Artificial intelligence",
+      "summary": "Hoffman argues that rapid, widespread AI adoption can give individuals more capability and improve collective problem-solving.",
+      "verbatim": false,
+      "source": "superagency"
+    },
+    {
+      "key": "khan",
+      "date": "2024-07-25",
+      "datePrecision": "day",
+      "venue": "CNN interview",
+      "issue": "Competition policy",
+      "summary": "Hoffman said a Harris administration should replace FTC chair Lina Khan, criticizing her approach as hostile to business and innovation.",
+      "verbatim": false,
+      "source": "cnn-khan"
+    },
+    {
+      "key": "trump",
+      "date": "2023-12-05",
+      "datePrecision": "day",
+      "venue": "Statement on Republican primary giving",
+      "issue": "Elections",
+      "summary": "Hoffman treated support for Nikki Haley as a tactical attempt to reduce Donald Trump's chance of returning to office, not as an endorsement of the Republican platform.",
+      "verbatim": false,
+      "source": "nyt-haley"
+    }
+  ],
+  "finance": {
+    "fec": {
+      "contributorName": "HOFFMAN, REID",
+      "namePattern": "^HOFFMAN, REID( GARRETT| G\\.?)?$",
+      "employerPattern": "GREYLOCK|LINKEDIN|SELF|INVESTOR",
+      "cities": ["PALO ALTO", "MENLO PARK", "SAN FRANCISCO"],
+      "source": "fec-hoffman"
+    },
+    "coverage": "Federal itemized receipts matched to Reid Hoffman through full name, Greylock or LinkedIn affiliation and Bay Area addresses. State-party giving, nonprofit political projects and litigation support require separate records."
+  },
+  "ideas": {
+    "traditions": [
+      {
+        "label": "Technological progressivism",
+        "atlasId": "technocracy",
+        "basis": "stated and practiced",
+        "context": "Networked entrepreneurship and rapid AI deployment paired with institutional experimentation and Democratic coalition politics.",
+        "sources": ["greylock-bio", "superagency", "wired-blitzscaling"]
+      }
+    ],
+    "influences": [
+      {
+        "name": "Silicon Valley network theory",
+        "note": "Hoffman treats networks as both a business model and a way to organize political and social action.",
+        "sources": ["greylock-bio", "wired-blitzscaling"]
+      }
+    ],
+    "works": [
+      {
+        "title": "The Start-up of You",
+        "year": "2012",
+        "kind": "Book",
+        "detail": "Applies entrepreneurial network thinking to careers.",
+        "source": "greylock-bio"
+      },
+      {
+        "title": "Blitzscaling",
+        "year": "2018",
+        "kind": "Book",
+        "detail": "Case for prioritizing speed in winner-take-most markets.",
+        "source": "wired-blitzscaling"
+      },
+      {
+        "title": "Superagency",
+        "year": "2025",
+        "kind": "Book",
+        "detail": "Optimistic argument for broad AI adoption.",
+        "source": "superagency"
+      }
+    ],
+    "featuredQuotes": ["networks"]
+  },
+  "chapters": [
+    {
+      "key": "formation",
+      "title": "Philosophy before platforms",
+      "dek": "Hoffman's technical and philosophical education shaped a career focused on how people coordinate through systems.",
+      "body": "Raised in the Bay Area, Hoffman studied symbolic systems at Stanford and philosophy at Oxford. He considered academic work but chose technology as a field where ideas about identity, cooperation and institutions could reach large populations. [[greylock-bio, stanford-hoffman, britannica-hoffman]]"
+    },
+    {
+      "key": "networks",
+      "title": "SocialNet and PayPal",
+      "dek": "Two early companies taught Hoffman that network value depends as much on trust and distribution as on software.",
+      "body": "SocialNet was an early attempt to organize real-world relationships online. At PayPal, Hoffman managed external relationships and regulatory problems as the payments company scaled. The experience placed him in a durable network of founders and investors before he built LinkedIn. [[britannica-hoffman, greylock-bio]]"
+    },
+    {
+      "key": "linkedin",
+      "title": "Professional identity as infrastructure",
+      "dek": "LinkedIn turned resumes and business relationships into a global platform with strong network effects.",
+      "body": "Hoffman co-founded LinkedIn in 2002. Its value grew as workers, recruiters and companies joined the same identity graph; the 2011 public offering and 2016 Microsoft acquisition converted that model into substantial wealth and influence. [[linkedin-history, greylock-bio, microsoft-linkedin]]"
+    },
+    {
+      "key": "investor",
+      "title": "From founder to network investor",
+      "dek": "At Greylock, Hoffman backed companies whose products become more useful as participation expands.",
+      "body": "Joining Greylock in 2009 gave Hoffman a platform across consumer technology, autonomous systems and AI. Board roles and early investments widened a network already built at PayPal and LinkedIn, while books and podcasts made his theory of scaling part of Silicon Valley's public vocabulary. [[greylock-bio, wired-blitzscaling, possible-ai]]"
+    },
+    {
+      "key": "politics",
+      "title": "Scaling anti-Trump political giving",
+      "dek": "The 2016 election moved Hoffman from conventional donations toward infrastructure, experimentation and opposition strategy.",
+      "body": "Hoffman became a major Democratic donor after Trump's election, funding candidates, party committees and organizations intended to improve data and recruitment. His support for Nikki Haley in the 2024 Republican primary illustrated a tactical approach: finance whichever viable route appeared most likely to prevent Trump's return. [[fec-hoffman, wapo-donors, nyt-haley]]"
+    },
+    {
+      "key": "experiments",
+      "title": "The limits of political experimentation",
+      "dek": "A deceptive Alabama project exposed the risks of importing growth-hacking norms into elections.",
+      "body": "A 2017 Alabama Senate project used false online personas and tactics designed to resemble Russian interference. Hoffman funded the organization behind it but said he had not known the methods and apologized. The episode remains important because his political model delegated resources to experimental operators whose tactics could undermine the democratic norms they claimed to defend. [[nyt-alabama, hoffman-apology]]"
+    },
+    {
+      "key": "ai",
+      "title": "AI investment and technological optimism",
+      "dek": "Hoffman argues for rapid deployment while investing directly in companies positioned to benefit from it.",
+      "body": "Inflection AI, Greylock investments, podcasts and Superagency place Hoffman on both the commercial and intellectual sides of the AI debate. He emphasizes human agency and learning through use, generally resisting precautionary approaches that would slow deployment. That stance creates a direct policy interest in competition, platform access and regulation. [[inflection-launch, superagency, greylock-bio]]"
+    },
+    {
+      "key": "power",
+      "title": "Capital, access and policy preference",
+      "dek": "Hoffman's influence is strongest where venture economics, Democratic fundraising and technology policy meet.",
+      "body": "Large donations provide access and organizational leverage; investments create expertise and financial exposure; public commentary shapes elite debate. His 2024 criticism of Lina Khan made those layers visible: a major Democratic supporter asked his preferred administration to change the regulator overseeing technology deals. The request does not prove control, but it shows why his political spending and business interests must be read together. [[cnn-khan, fec-hoffman, opensecrets-2024]]"
+    }
+  ]
+}

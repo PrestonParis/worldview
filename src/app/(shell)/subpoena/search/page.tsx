@@ -28,13 +28,13 @@ export default async function SubpoenaSearchPage({ searchParams }: { searchParam
   }
   const query = typeof params.q === "string" ? params.q.trim() : "";
   if (!query) redirect("/subpoena");
-  const featured = await getFeaturedSubpoenaEntities(query);
+  const directory = await getFeaturedSubpoenaEntities(query);
 
   return (
     <>
       <ToolBreadcrumb items={[{ label: "Subpoena", href: "/subpoena" }, { label: `Search: ${query}` }]} />
       <h1 className="sr-only">Subpoena search</h1>
-      <SubpoenaWorkspace key={query} featuredEntities={featured} initialQuery={query} />
+      <SubpoenaWorkspace key={query} directory={directory} initialQuery={query} />
     </>
   );
 }

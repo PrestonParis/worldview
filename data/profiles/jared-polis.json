@@ -1,0 +1,589 @@
+{
+  "subject": "polis",
+  "reviewedAt": "2026-10-25",
+  "sourcesVerifiedAt": "2026-10-25",
+  "brief": {
+    "inclusion": "Internet entrepreneur turned Democratic governor of Colorado (2019–January 2027) who used his own fortune to remake Colorado politics, first as one of the 2004 \"Gang of Four\" donors and then as a record self-funding candidate, and who breaks with his party on libertarian grounds.",
+    "identifiers": {
+      "wikidata": "Q935734",
+      "bioguide": "P000598",
+      "fec_candidate": "H8CO02137",
+      "fec_contributor": "POLIS, JARED"
+    },
+    "namesakes": "Born Jared Schutz; FEC rows also appear as \"Polis, Jared Schultz\", \"Schutz, Jared Polis\" and \"Schutz Polis, Jared\". Exclude \"Jared Polis Victory Fund\" unitemized rows, which are a committee, not the person.",
+    "coverage": {
+      "from": "1975",
+      "through": "2026-10-25",
+      "lags": "Colorado state campaign-finance records (his self-funding of state races and his 2004 independent-expenditure giving) are outside the federal record; final 2018 self-funding totals need the Colorado TRACER filings."
+    },
+    "openQuestions": [
+      "Final 2018 self-funding total: more than $18 million through September 2018 per Colorado Politics; the post-election total needs TRACER.",
+      "Net worth: no current named estimate found.",
+      "Exact date of the Tina Peters commutation (a Friday in May 2026)."
+    ],
+    "review": []
+  },
+  "summary": "Co-founder of bluemountain.com and ProFlowers who became one of Colorado's biggest political funders, helping finance the 2004 \"Gang of Four\" network that flipped the legislature, then spending a state-record $18 million or more of his own money to win the governorship in 2018. Colorado's first Jewish governor and the first openly gay man elected governor of any state, he chaired the National Governors Association in 2024–25 and leaves office in January 2027 after his own party censured him in May 2026 for commuting the sentence of election denier Tina Peters.",
+  "roles": [
+    {
+      "label": "Governor",
+      "detail": "Governor of Colorado since January 8, 2019; term ends January 2027",
+      "sources": ["wikipedia", "ap-censure-2026"]
+    },
+    {
+      "label": "Former House member",
+      "detail": "Colorado's 2nd district, 2009–2019",
+      "sources": ["wikipedia", "jta-2018"]
+    },
+    {
+      "label": "Entrepreneur",
+      "detail": "Co-founded bluemountain.com (1996), ProFlowers (1998) and Techstars (2006)",
+      "sources": ["wikipedia"]
+    },
+    {
+      "label": "Political funder",
+      "detail": "One of the \"Gang of Four\" donors behind Colorado Democrats' 2004 legislative takeover; record self-funder of his own campaigns",
+      "sources": ["copo-2018"]
+    },
+    {
+      "label": "Former NGA chair",
+      "detail": "Chair of the National Governors Association, July 2024–July 2025",
+      "sources": ["wikipedia"]
+    }
+  ],
+  "finance": {
+    "fec": {
+      "contributorName": "POLIS, JARED",
+      "namePattern": "^(POLIS, JARED( S\\.?| SCHUTZ| SCHULTZ)?|SCHUTZ,? POLIS, JARED|SCHUTZ, JARED POLIS)( MR\\.?| HON\\.?)?$",
+      "employerPattern": "POLIS|SELF|CONGRESS|HOUSE OF REP|STATE OF COLORADO|GOVERNOR|ENTREPRENEUR|INVEST|PROFLOWERS|BLUE MOUNTAIN|US GOVERNMENT",
+      "cities": ["BOULDER", "DENVER"],
+      "source": "fec-polis"
+    },
+    "coverage": "Polis's own itemized federal contributions reported to the FEC since 2002, matched on his name variants plus a known employer or Boulder/Denver. His larger political spending, on Colorado state races, ballot measures and his own state campaigns, is in Colorado's TRACER system and is not in this federal total."
+  },
+  "entities": {
+    "polis": {
+      "match": { "identifier": ["bioguide", "P000598"] }
+    },
+    "trump": {
+      "match": { "name": "Donald Trump", "type": "politician" }
+    },
+    "rfk": {
+      "match": { "name": "Robert F. Kennedy Jr.", "type": "politician" }
+    },
+    "blue-mountain": {
+      "create": {
+        "name": "Blue Mountain Arts",
+        "type": "company",
+        "description": "Boulder greeting-card and publishing company founded by Stephen Schutz and Susan Polis Schutz; its bluemountain.com e-card site was sold to Excite@Home in 1999."
+      }
+    },
+    "proflowers": {
+      "create": {
+        "name": "ProFlowers",
+        "type": "company",
+        "description": "Online florist founded by Jared Polis in 1998; as Provide Commerce, sold to Liberty Media in 2005."
+      }
+    },
+    "techstars": {
+      "create": {
+        "name": "Techstars",
+        "type": "company",
+        "description": "Startup accelerator co-founded in Boulder in 2006.",
+        "websiteUrl": "https://www.techstars.com/"
+      }
+    },
+    "peters": {
+      "create": {
+        "name": "Tina Peters",
+        "type": "politician",
+        "description": "Former Mesa County, Colorado, clerk convicted in 2024 over a breach of election equipment; promoted false claims about the 2020 election."
+      }
+    },
+    "stapleton": {
+      "create": {
+        "name": "Walker Stapleton",
+        "type": "politician",
+        "description": "Colorado state treasurer (2011–2019) and 2018 Republican nominee for governor."
+      }
+    }
+  },
+  "sources": [
+    {
+      "key": "wikipedia",
+      "title": "Jared Polis",
+      "publisher": "Wikipedia",
+      "type": "secondary",
+      "url": "https://en.wikipedia.org/wiki/Jared_Polis",
+      "notes": "Reference work; cited for birth, business history, election results, legislation signed and NGA service."
+    },
+    {
+      "key": "jta-2018",
+      "title": "Jared Polis elected first Jewish governor of Colorado",
+      "publisher": "JTA",
+      "type": "article",
+      "publishedAt": "2018-11-06",
+      "url": "https://www.jta.org/2018/11/06/politics/jared-polis-elected-first-jewish-governor-colorado"
+    },
+    {
+      "key": "copo-2018",
+      "title": "Best of CoPo 2018: Profile of Jared Polis",
+      "publisher": "Colorado Politics",
+      "type": "article",
+      "publishedAt": "2018-09-21",
+      "url": "https://www.coloradopolitics.com/2018/12/26/best-of-copo-2018-profile-jared-polis/",
+      "notes": "Originally published September 21, 2018; republished December 26, 2018."
+    },
+    {
+      "key": "cbs-rfk-2024",
+      "title": "Why Democratic Colorado Gov. Jared Polis says he's \"excited\" about Robert F. Kennedy Jr. for HHS secretary",
+      "publisher": "CBS Colorado",
+      "author": "Jeff Gurney and Shaun Boyd",
+      "type": "article",
+      "publishedAt": "2024-11-14",
+      "url": "https://www.cbsnews.com/colorado/news/jared-polis-excited-robert-kennedy-jr-trump-cabinet-pick-colorado-governor-democrat"
+    },
+    {
+      "key": "ap-censure-2026",
+      "title": "Colorado Democrats censure governor for conspiracy theorist sentence commutation",
+      "publisher": "The Associated Press (via WTOP)",
+      "type": "article",
+      "publishedAt": "2026-05-21",
+      "url": "https://wtop.com/national/2026/05/colorado-democrats-censure-governor-for-conspiracy-theorist-sentence-commutation/"
+    },
+    {
+      "key": "tnd-censure-2026",
+      "title": "Party votes 90% to censure Polis for cutting ex-clerk Tina Peters' sentence to 4.5 years",
+      "publisher": "The National Desk (via WJLA)",
+      "type": "article",
+      "publishedAt": "2026-05-21",
+      "url": "https://wjla.com/news/nation-world/colorado-democratic-party-censures-gov-jared-polis-over-tina-peters-commutation-trump-dnc-pardon-2020-election"
+    },
+    {
+      "key": "colorado-sun-flood-2026",
+      "title": "Major flooding in southern Colorado forces evacuations",
+      "publisher": "The Colorado Sun",
+      "type": "article",
+      "publishedAt": "2026-10-23",
+      "url": "https://coloradosun.com/2026/10/23/southern-colorado-flooding-south-fork-area"
+    },
+    {
+      "key": "fec-polis",
+      "title": "Individual contributions: Polis, Jared (Schedule A)",
+      "publisher": "Federal Election Commission",
+      "type": "filing",
+      "url": "https://www.fec.gov/data/receipts/individual-contributions/?contributor_name=POLIS%2C+JARED",
+      "documentId": "OpenFEC /schedules/schedule_a"
+    }
+  ],
+  "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "May 12, 1975",
+      "detail": "Boulder, Colorado, as Jared Schutz; took his mother's maiden name, Polis, in 2000",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "sex",
+      "label": "Sex",
+      "value": "Male",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "religion",
+      "label": "Religion",
+      "value": "Jewish",
+      "detail": "Says he derives \"a lot of the values that I try to bring into the public sphere from my private faith\"; Colorado's first Jewish governor. Great-grandparents emigrated from Poland and Ukraine.",
+      "sources": ["jta-2018"]
+    },
+    {
+      "key": "sexual-orientation",
+      "label": "Sexual orientation",
+      "value": "Gay",
+      "detail": "First openly gay man elected governor of a U.S. state (2018).",
+      "sources": ["jta-2018", "wikipedia"]
+    },
+    {
+      "key": "spouse",
+      "label": "Spouse",
+      "value": "Marlon Reis",
+      "detail": "Married September 2021.",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "children",
+      "label": "Children",
+      "value": "Two (son born 2011, daughter born 2014)",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "party",
+      "label": "Party",
+      "value": "Democratic",
+      "sources": ["jta-2018"]
+    },
+    {
+      "key": "education",
+      "label": "Education",
+      "value": "BA, politics, Princeton University (1996)",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "current-roles",
+      "label": "Current roles",
+      "value": "Governor of Colorado (term ends January 2027)",
+      "featured": true,
+      "asOf": "2026-10-25",
+      "sources": ["colorado-sun-flood-2026", "ap-censure-2026"]
+    },
+    {
+      "key": "self-funding-2018",
+      "label": "Self-funding (2018 governor's race)",
+      "value": "More than $18 million",
+      "detail": "Through September 2018, a Colorado record; he had set the previous record, $6 million, in his 2008 House primary.",
+      "asOf": "2018-09-21",
+      "featured": true,
+      "sources": ["copo-2018"]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "polis-blue-mountain",
+      "source": "polis",
+      "target": "blue-mountain",
+      "relType": "co-founded",
+      "role": "Co-founded bluemountain.com with his parents' company; sold to Excite@Home in 1999 for $430 million in stock and $350 million in cash",
+      "from": "1996",
+      "until": "1999",
+      "prominence": 3,
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "polis-proflowers",
+      "source": "polis",
+      "target": "proflowers",
+      "relType": "founded",
+      "role": "Founder; renamed Provide Commerce, IPO 2003, sold to Liberty Media for $477 million in 2005",
+      "from": "1998",
+      "until": "2005",
+      "prominence": 2,
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "polis-techstars",
+      "source": "polis",
+      "target": "techstars",
+      "relType": "co-founded",
+      "role": "Co-founder",
+      "from": "2006",
+      "prominence": 1,
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "polis-stapleton",
+      "source": "polis",
+      "target": "stapleton",
+      "relType": "opposed",
+      "role": "Defeated him for governor, 2018 (53.4%)",
+      "from": "2018",
+      "until": "2018-11-06",
+      "prominence": 1,
+      "sources": ["jta-2018", "wikipedia"]
+    },
+    {
+      "key": "polis-rfk",
+      "source": "polis",
+      "target": "rfk",
+      "relType": "endorsed",
+      "role": "Welcomed his nomination as health secretary (November 2024), citing their joint opposition to vaccine mandates; his office later said he opposed Kennedy's vaccine and fluoride positions",
+      "from": "2024-11-14",
+      "until": "2024-11",
+      "prominence": 2,
+      "status": "disputed",
+      "notes": "The welcome was followed within days by a clarification that his overall view of Kennedy had not changed.",
+      "sources": ["cbs-rfk-2024"]
+    },
+    {
+      "key": "polis-peters",
+      "source": "polis",
+      "target": "peters",
+      "relType": "affiliated-with",
+      "role": "Commuted her nine-year state sentence to 4.5 years (May 2026), after Trump's campaign for her release",
+      "from": "2026-05",
+      "until": "2026-05",
+      "prominence": 2,
+      "sources": ["ap-censure-2026", "tnd-censure-2026"]
+    },
+    {
+      "key": "polis-trump",
+      "source": "polis",
+      "target": "trump",
+      "relType": "opposed",
+      "role": "Democratic governor; Trump attacked him for refusing to free Tina Peters and issued her a symbolic federal pardon before Polis's commutation",
+      "from": "2019",
+      "prominence": 1,
+      "sources": ["tnd-censure-2026"]
+    }
+  ],
+  "events": [
+    {
+      "key": "born",
+      "date": "1975-05-12",
+      "title": "Born Jared Schutz in Boulder, Colorado",
+      "summary": "Son of Stephen Schutz and Susan Polis Schutz, founders of Blue Mountain Arts.",
+      "category": "personal",
+      "significance": 1,
+      "chapter": "fortune",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "bluemountain",
+      "date": "1996",
+      "title": "Graduates from Princeton and co-founds bluemountain.com",
+      "category": "career",
+      "significance": 2,
+      "chapter": "fortune",
+      "participants": [["blue-mountain", "company"]],
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "proflowers",
+      "date": "1998",
+      "title": "Founds ProFlowers",
+      "category": "career",
+      "significance": 2,
+      "chapter": "fortune",
+      "participants": [["proflowers", "company"]],
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "excite-sale",
+      "date": "1999",
+      "title": "Blue Mountain's e-card site is sold to Excite@Home",
+      "summary": "For $430 million in stock and $350 million in cash.",
+      "category": "finance",
+      "significance": 3,
+      "chapter": "fortune",
+      "participants": [["blue-mountain", "company"]],
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "board-of-ed",
+      "date": "2000-11",
+      "title": "Wins a Colorado State Board of Education seat by 90 votes",
+      "summary": "Serves 2001–2007.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "money-power",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "gang-of-four",
+      "date": "2004",
+      "title": "Helps fund the \"Gang of Four\" network that flips Colorado's legislature",
+      "summary": "One of four wealthy Democrats whose outside groups helped Democrats win both chambers.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "money-power",
+      "sources": ["copo-2018"]
+    },
+    {
+      "key": "provide-sale",
+      "date": "2005",
+      "title": "Liberty Media buys Provide Commerce (ProFlowers) for $477 million",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "fortune",
+      "participants": [["proflowers", "company"]],
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "house-2008",
+      "date": "2008-11-04",
+      "title": "Elected to the U.S. House with 63%",
+      "summary": "After a then-record $6 million in self-funding in the primary; the first openly gay man elected to Congress as a non-incumbent.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "money-power",
+      "sources": ["wikipedia", "copo-2018"]
+    },
+    {
+      "key": "fracking-deal",
+      "date": "2014",
+      "title": "Withdraws his anti-fracking ballot measures in a deal with Gov. Hickenlooper",
+      "category": "politics",
+      "significance": 1,
+      "chapter": "money-power",
+      "sources": ["wikipedia", "copo-2018"]
+    },
+    {
+      "key": "governor-2018",
+      "date": "2018-11-06",
+      "title": "Elected governor with 53.4%",
+      "summary": "Defeats Walker Stapleton after spending more than $18 million of his own money; Colorado's first Jewish governor and the first openly gay man elected governor in the U.S.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "governor",
+      "participants": [["stapleton", "opponent"]],
+      "sources": ["jta-2018", "copo-2018", "wikipedia"]
+    },
+    {
+      "key": "marijuana-pardons",
+      "date": "2021",
+      "title": "Pardons 1,351 people convicted of marijuana possession",
+      "category": "legal",
+      "significance": 1,
+      "chapter": "governor",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "reelected",
+      "date": "2022-11-08",
+      "title": "Reelected with 58.5%",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "governor",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "gun-laws-2023",
+      "date": "2023-04",
+      "title": "Signs gun laws raising the purchase age to 21 and adding a waiting period",
+      "summary": "Also signs bills protecting abortion and gender-affirming care.",
+      "category": "politics",
+      "significance": 1,
+      "chapter": "governor",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "nga-chair",
+      "date": "2024-07-12",
+      "date_end": "2025-07-26",
+      "title": "Chairs the National Governors Association",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "governor",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "rfk",
+      "date": "2024-11-14",
+      "title": "Says he is \"excited\" by Trump's choice of RFK Jr. for health secretary",
+      "summary": "Months after warning that Kennedy could bring back measles and polio; his office later says his concerns about Kennedy's vaccine views stand.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "libertarian",
+      "participants": [["rfk", "nominee"], ["trump", "president-elect"]],
+      "sources": ["cbs-rfk-2024"]
+    },
+    {
+      "key": "peters",
+      "date": "2026-05",
+      "title": "Commutes Tina Peters's sentence to 4.5 years",
+      "summary": "Calls her nine-year sentence \"extremely unusual and lengthy\" for a first-time nonviolent offender; she is paroled June 1.",
+      "category": "legal",
+      "significance": 3,
+      "chapter": "libertarian",
+      "participants": [["peters", "defendant"], ["trump", "advocate"]],
+      "sources": ["ap-censure-2026", "tnd-censure-2026"]
+    },
+    {
+      "key": "censure",
+      "date": "2026-05-20",
+      "title": "Colorado Democratic Party censures him",
+      "summary": "About 90% of the roughly 700-member State Central Committee votes to bar him from appearing as an honored guest or speaker at party events.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "libertarian",
+      "sources": ["ap-censure-2026", "tnd-censure-2026"]
+    },
+    {
+      "key": "flood-emergency",
+      "date": "2026-10-22",
+      "title": "Declares a flood disaster emergency in southwestern Colorado",
+      "summary": "Later expanded to 12 counties.",
+      "category": "politics",
+      "significance": 1,
+      "chapter": "libertarian",
+      "sources": ["colorado-sun-flood-2026"]
+    }
+  ],
+  "statements": [
+    {
+      "key": "private-faith-2018",
+      "issue": "Religion and public life",
+      "date": "2018-11-06",
+      "venue": "Interview with JTA on his election",
+      "quote": "I derive a lot of the values that I try to bring into the public sphere from my private faith",
+      "summary": "He called education \"an important Jewish value\" in explaining his push for free preschool and kindergarten.",
+      "source": "jta-2018"
+    },
+    {
+      "key": "rfk-excited-2024",
+      "issue": "Public health",
+      "date": "2024-11-14",
+      "venue": "Post on X",
+      "quote": "I'm excited by the news that the President-Elect will appoint @RobertKennedyJr to @HHSGov.",
+      "source": "cbs-rfk-2024"
+    },
+    {
+      "key": "vaccine-choice-2024",
+      "issue": "Public health",
+      "date": "2024-11-14",
+      "venue": "Post on X",
+      "quote": "leans into personal choice on vaccines rather than bans (which I think are terrible, just like mandates)",
+      "summary": "His hope for Kennedy's tenure.",
+      "source": "cbs-rfk-2024"
+    },
+    {
+      "key": "science-2024",
+      "issue": "Public health",
+      "date": "2024-11-14",
+      "venue": "Follow-up post on X",
+      "quote": "Science must remain THE cornerstone of our nation's health policy",
+      "source": "cbs-rfk-2024"
+    },
+    {
+      "key": "unusual-sentence-2026",
+      "issue": "Elections and justice",
+      "date": "2026-05",
+      "venue": "Commutation letter to Tina Peters",
+      "quote": "extremely unusual and lengthy",
+      "summary": "His description of her nine-year sentence for a first-time, nonviolent offender, while saying she deserved prison time.",
+      "source": "ap-censure-2026"
+    }
+  ],
+  "ideas": {
+    "traditions": [],
+    "influences": [],
+    "works": [],
+    "featuredQuotes": ["private-faith-2018", "vaccine-choice-2024"]
+  },
+  "chapters": [
+    {
+      "key": "fortune",
+      "title": "An internet fortune",
+      "dek": "E-cards, flowers and two sales worth over a billion dollars.",
+      "body": "Polis was born Jared Schutz in Boulder on May 12, 1975, the son of Stephen Schutz and Susan Polis Schutz, founders of the greeting-card publisher Blue Mountain Arts [[wikipedia]]. He graduated from Princeton in 1996 and that year co-founded bluemountain.com, a free electronic-card site. In 1999 it was sold to Excite@Home for $430 million in stock and $350 million in cash [[wikipedia]].\n\nHe founded the online florist ProFlowers in 1998; renamed Provide Commerce, it went public in 2003 and was bought by Liberty Media in 2005 for $477 million. In 2006 he co-founded the Boulder accelerator Techstars [[wikipedia]]. In 2000 he legally took his mother's maiden name, Polis [[wikipedia]]."
+    },
+    {
+      "key": "money-power",
+      "title": "Turning money into political power",
+      "dek": "The Gang of Four, a 90-vote school-board race and a seat in Congress.",
+      "body": "Polis entered politics in 2000, winning an at-large seat on the Colorado State Board of Education by 90 votes [[wikipedia]]. In 2004 he was one of four wealthy Colorado Democrats, later called the \"Gang of Four,\" who funded a network of outside groups that helped Democrats take both chambers of the legislature [[copo-2018]].\n\nIn 2008 he won the open 2nd congressional district with 63 percent after spending a then-record $6 million of his own money in the primary, becoming the first openly gay man elected to Congress as a non-incumbent [[wikipedia, copo-2018]]. In 2014 he financed ballot measures to restrict oil and gas drilling, then withdrew them in a deal with Gov. John Hickenlooper [[wikipedia, copo-2018]]."
+    },
+    {
+      "key": "governor",
+      "title": "Governor",
+      "dek": "A record self-funded campaign and two terms.",
+      "body": "Polis ran for governor in 2018 on universal preschool and kindergarten, 100 percent renewable electricity by 2040 and reducing inequality, and spent more than $18 million of his own money, a state record [[jta-2018, copo-2018]]. He beat Republican Walker Stapleton with 53.4 percent, becoming Colorado's first Jewish governor and the first openly gay man elected governor in the U.S. [[jta-2018, wikipedia]]. \"I derive a lot of the values that I try to bring into the public sphere from my private faith,\" he said [[jta-2018]].\n\nIn office he signed a red-flag gun law and a ban on conversion therapy for minors in 2019, pardoned 1,351 people for marijuana possession in 2021, and in 2023 signed laws raising the gun-purchase age to 21 and protecting abortion and gender-affirming care [[wikipedia]]. He was reelected in 2022 with 58.5 percent and chaired the National Governors Association from July 2024 to July 2025 [[wikipedia]]."
+    },
+    {
+      "key": "libertarian",
+      "title": "A libertarian Democrat at odds with his party",
+      "dek": "RFK Jr., vetoes and the Tina Peters commutation.",
+      "body": "Polis often breaks with his party on libertarian grounds. In November 2024 he wrote that he was \"excited\" by Trump's choice of Robert F. Kennedy Jr. to run the Health and Human Services Department, praising Kennedy's help against vaccine mandates in Colorado in 2019 and hoping he would favor \"personal choice on vaccines rather than bans.\" After an outcry, he added that \"science must remain THE cornerstone\" of health policy, and his office said he still opposed Kennedy's positions on vaccines and fluoride [[cbs-rfk-2024]]. In 2025 he vetoed several Democratic bills, and the legislature overrode him on a social-media bill [[wikipedia]].\n\nThe sharpest break came over Tina Peters, the former Mesa County clerk serving nine years for a breach of election equipment tied to false claims about the 2020 election. Trump had attacked Polis for not freeing her and issued a symbolic federal pardon. In May 2026 Polis commuted her sentence to 4.5 years, calling it \"extremely unusual and lengthy\" for a first-time nonviolent offender, and she was paroled June 1 [[ap-censure-2026, tnd-censure-2026]]. On May 20 about 90 percent of the Colorado Democratic Party's roughly 700-member central committee voted to censure him, barring him from appearing as a featured guest at party events [[ap-censure-2026, tnd-censure-2026]]. Term-limited, he leaves office in January 2027 [[tnd-censure-2026]]. That October he was managing flood emergencies across 12 southwestern counties [[colorado-sun-flood-2026]]."
+    }
+  ]
+}

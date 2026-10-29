@@ -85,12 +85,16 @@ function SectorRow({
             const e = entityById.get(d.donorEntityId);
             return (
               <li key={d.donorEntityId} className="flex items-center justify-between gap-3 text-xs">
-                <Link
-                  href={e ? publicEntityPath(e) : "#"}
-                  className="min-w-0 truncate text-slate-600 hover:underline dark:text-slate-400"
-                >
-                  {e?.name ?? "Unknown"}
-                </Link>
+                {e ? (
+                  <Link
+                    href={publicEntityPath(e)}
+                    className="min-w-0 truncate text-slate-600 hover:underline dark:text-slate-400"
+                  >
+                    {e.name}
+                  </Link>
+                ) : (
+                  <span className="min-w-0 truncate text-slate-600 dark:text-slate-400">Unknown</span>
+                )}
                 <span className="shrink-0 tabular-nums text-slate-500">
                   {formatAmount(d.total, currency)}
                   <span className="ml-2 text-slate-400">

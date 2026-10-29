@@ -1,0 +1,1184 @@
+{
+  "subject": "kushner",
+  "reviewedAt": "2026-10-22",
+  "sourcesVerifiedAt": "2026-10-22",
+  "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Jared%20Kushner%202025.jpg?width=400",
+  "brief": {
+    "inclusion": "Presidential family adviser, diplomat and private-equity owner whose government relationships and foreign sovereign investment connect business capital to U.S. foreign policy.",
+    "identifiers": { "wikidata": "Q2892565", "sec_adviser": "A FIN MANAGEMENT LLC" },
+    "namesakes": "Jared Corey Kushner, born January 10, 1981, is the former White House senior adviser and Affinity Partners founder; match him through the existing Worldview entity rather than surname alone.",
+    "coverage": {
+      "from": "1981",
+      "through": "2026-10-22",
+      "lags": "Affinity's private fund valuations, fee realization and investor commitments are disclosed intermittently. Current diplomatic work is active and some negotiations remain confidential or unresolved."
+    },
+    "openQuestions": [
+      "Refresh Affinity's Form ADV and confirmed assets under management immediately before publication.",
+      "Recheck the status of congressional inquiries into simultaneous diplomatic and fundraising activity.",
+      "Separate announced real-estate and acquisition transactions from completed closings as later filings become available."
+    ],
+    "review": []
+  },
+  "summary": "Jared Kushner moved from his family's real-estate business and the New York Observer into Donald Trump's 2016 campaign and a broad White House portfolio. As senior adviser he worked on criminal-justice legislation, U.S.–Mexico relations and the Abraham Accords; after leaving office he founded Affinity Partners with billions from Middle Eastern sovereign funds, then returned as an unpaid diplomatic adviser during Trump's second presidency while retaining ownership of the investment firm.",
+  "roles": [
+    {
+      "label": "Investor",
+      "detail": "Founder and owner of Affinity Partners since 2021; management delegated during renewed diplomatic service",
+      "sources": ["kushner-site", "oversight-affinity-2024", "bloomberg-kushner-2026"]
+    },
+    {
+      "label": "Presidential adviser",
+      "detail": "Volunteer diplomatic adviser in the second Trump presidency; Board of Peace executive-board member since 2026",
+      "sources": ["white-house-geneva-2025", "white-house-board-peace-2026", "bloomberg-kushner-2026"]
+    },
+    {
+      "label": "Former White House senior adviser",
+      "detail": "Assistant to the president and senior adviser, 2017–2021",
+      "sources": ["propublica-trump-town", "time-kushner-2020"]
+    },
+    {
+      "label": "Real-estate executive",
+      "detail": "Former chief executive of Kushner Companies; led major New York acquisitions before entering government",
+      "sources": ["reuters-666-sale-2017", "time-kushner-2017"]
+    },
+    {
+      "label": "Author",
+      "detail": "Author of Breaking History: A White House Memoir (2022)",
+      "sources": ["kushner-site"]
+    }
+  ],
+  "finance": {
+    "fec": {
+      "contributorName": "KUSHNER, JARED",
+      "namePattern": "^KUSHNER, JARED( C\\.?)?$",
+      "employerPattern": "KUSHNER COMPANIES|KUSHNER PROPERTIES|AFFINITY PARTNERS|A FIN MANAGEMENT|OBSERVER MEDIA",
+      "cities": ["NEW YORK", "WASHINGTON", "MIAMI", "MIAMI BEACH"],
+      "source": "fec-kushner"
+    },
+    "coverage": "Itemized federal contributions reported to the FEC under the dossier identity rule. Affinity management fees and assets are business finances, not campaign contributions. State giving, nonprofit activity, foreign sovereign commitments, private fund returns and unitemized federal gifts are outside the FEC total and are described separately when supported by filings or oversight records."
+  },
+  "entities": {
+    "kushner": { "match": { "name": "Jared Kushner", "type": "politician" } },
+    "trump": { "match": { "name": "Donald Trump", "type": "politician" } },
+    "ivanka": { "match": { "name": "Ivanka Trump", "type": "politician" } },
+    "charles": {
+      "create": {
+        "name": "Charles Kushner",
+        "type": "donor",
+        "description": "Founder of Kushner Companies, father of Jared Kushner and U.S. ambassador to France."
+      }
+    },
+    "kushner-companies": {
+      "create": {
+        "name": "Kushner Companies",
+        "type": "company",
+        "description": "Family-owned real-estate company founded by Charles Kushner.",
+        "websiteUrl": "https://kushner.com/"
+      }
+    },
+    "observer": {
+      "create": {
+        "name": "New York Observer",
+        "type": "organization",
+        "description": "New York newspaper acquired by Jared Kushner in 2006."
+      }
+    },
+    "affinity": {
+      "create": {
+        "name": "Affinity Partners",
+        "type": "company",
+        "description": "Private investment firm founded and owned by Jared Kushner in 2021.",
+        "websiteUrl": "https://www.affinitypartners.com/"
+      }
+    },
+    "pif": {
+      "create": {
+        "name": "Saudi Public Investment Fund",
+        "type": "organization",
+        "description": "Sovereign wealth fund of Saudi Arabia and anchor investor in Affinity Partners.",
+        "websiteUrl": "https://www.pif.gov.sa/"
+      }
+    },
+    "mbs": {
+      "create": {
+        "name": "Mohammed bin Salman",
+        "type": "politician",
+        "description": "Crown prince and prime minister of Saudi Arabia; chair of the Public Investment Fund."
+      }
+    },
+    "witkoff": {
+      "create": {
+        "name": "Steve Witkoff",
+        "type": "politician",
+        "description": "U.S. special envoy and real-estate investor who works with Jared Kushner on second-term diplomacy."
+      }
+    },
+    "board-peace": {
+      "create": {
+        "name": "Board of Peace",
+        "type": "organization",
+        "description": "Trump-chaired body announced to oversee implementation, reconstruction and investment under the Gaza peace framework."
+      }
+    },
+    "mexico": {
+      "create": {
+        "name": "Government of Mexico",
+        "type": "organization",
+        "description": "Federal government of Mexico."
+      }
+    },
+    "first-step": {
+      "create": {
+        "name": "First Step Act coalition",
+        "type": "organization",
+        "description": "Bipartisan network of legislators, advocates and administration officials that supported the First Step Act."
+      }
+    }
+  },
+  "sources": [
+    {
+      "key": "kushner-site",
+      "title": "Jared Kushner",
+      "publisher": "Jared Kushner",
+      "type": "primary",
+      "url": "https://jaredkushner.com/",
+      "accessedAt": "2026-10-22",
+      "notes": "Subject's biography and account of his work; claims of accomplishment are independently checked where consequential."
+    },
+    {
+      "key": "biography-kushner-2024",
+      "title": "Jared Kushner",
+      "publisher": "Biography.com",
+      "publishedAt": "2024-11-06",
+      "type": "secondary",
+      "url": "https://www.biography.com/history-culture/jared-kushner",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "time-kushner-2017",
+      "title": "Family First: The Trials of Jared Kushner",
+      "publisher": "TIME",
+      "author": "Molly Ball",
+      "publishedAt": "2017-06-01",
+      "type": "article",
+      "url": "https://time.com/4800796/the-trials-of-jared-kushner/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "time-kushner-2020",
+      "title": "Inside Jared Kushner's Unusual White House Role",
+      "publisher": "TIME",
+      "author": "Brian Bennett",
+      "publishedAt": "2020-01-16",
+      "type": "article",
+      "url": "https://time.com/5766186/jared-kushner-interview/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "time-trump-family-2016",
+      "title": "A Reader's Guide to Donald Trump's Family",
+      "publisher": "TIME",
+      "publishedAt": "2016-05-05",
+      "type": "article",
+      "url": "https://time.com/4317678/donald-trump-family-ivanka-melania/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "time-apprentices-2016",
+      "title": "The Apprentices",
+      "publisher": "TIME",
+      "author": "Karl Vick",
+      "publishedAt": "2016-07-14",
+      "type": "article",
+      "url": "https://time.com/4405825/the-apprentices/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "propublica-trump-town",
+      "title": "Jared C. Kushner",
+      "publisher": "ProPublica",
+      "type": "secondary",
+      "url": "https://projects.propublica.org/trump-town/staffers/jared-c-kushner",
+      "accessedAt": "2026-10-22",
+      "notes": "Historical snapshot last updated in 2019."
+    },
+    {
+      "key": "reuters-666-sale-2017",
+      "title": "Kushner divests equity in major NYC property",
+      "publisher": "Reuters",
+      "publishedAt": "2017-01-31",
+      "type": "article",
+      "url": "https://www.investing.com/news/politics-news/kushner-divests-equity-in-major-nyc-property-456932",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "reuters-brookfield-2018",
+      "title": "Brookfield gains lease on Kushner's landmark New York tower",
+      "publisher": "Reuters",
+      "publishedAt": "2018-08-03",
+      "type": "article",
+      "url": "https://finance.yahoo.com/news/brookfield-gains-lease-kushners-indebted-221925754.html",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "doj-nepotism-2017",
+      "title": "Application of the Anti-Nepotism Statute to a Presidential Appointment in the White House Office",
+      "publisher": "U.S. Department of Justice, Office of Legal Counsel",
+      "publishedAt": "2017-01-20",
+      "type": "primary",
+      "url": "https://www.justice.gov/olc/opinion/file/930116/dl",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "pbs-appointment-2017",
+      "title": "Jared Kushner named senior White House adviser to Donald Trump",
+      "publisher": "PBS NewsHour",
+      "publishedAt": "2017-01-09",
+      "type": "article",
+      "url": "https://www.pbs.org/newshour/politics/jared-kushner-named-top-white-house-adviser-donald-trump",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "oversight-clearance-2019",
+      "title": "Cummings Issues Statement on News about Jared Kushner's Security Clearance",
+      "publisher": "U.S. House Committee on Oversight and Reform Democrats",
+      "publishedAt": "2019-01-25",
+      "type": "official_statement",
+      "url": "https://oversightdemocrats.house.gov/news/press-releases/cummings-issues-statement-on-news-about-jared-kushner-s-security-clearance",
+      "accessedAt": "2026-10-22",
+      "notes": "Partisan oversight statement; used with attribution."
+    },
+    {
+      "key": "kushner-congress-statement-2017",
+      "title": "Statement of Jared C. Kushner to congressional intelligence committees",
+      "publisher": "U.S. Senate Select Committee on Intelligence",
+      "author": "Jared Kushner",
+      "publishedAt": "2017-07-24",
+      "type": "primary",
+      "url": "https://www.intelligence.senate.gov/sites/default/files/documents/os-jkushner-072417.pdf",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "doj-first-step-history",
+      "title": "A Short History of the First Step Act's Passage",
+      "publisher": "U.S. Department of Justice",
+      "publishedAt": "2019-09",
+      "type": "primary",
+      "url": "https://www.justice.gov/usao/file/1172156-0/dl?inline=",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "ustr-usmca",
+      "title": "United States-Mexico-Canada Agreement",
+      "publisher": "Office of the United States Trade Representative",
+      "type": "primary",
+      "url": "https://ustr.gov/trade-agreements/free-trade-agreements/united-states-mexico-canada-agreement",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "kushner-bahrain-remarks-2019",
+      "title": "Remarks by White House Senior Advisor Jared Kushner at the Peace to Prosperity Workshop",
+      "publisher": "Trump White House Archives",
+      "author": "Jared Kushner",
+      "publishedAt": "2019-06-25",
+      "type": "transcript",
+      "url": "https://trumpwhitehouse.archives.gov/briefings-statements/remarks-white-house-senior-advisor-jared-kushner-peace-prosperity-workshop/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "state-abraham-accords",
+      "title": "The Abraham Accords Declaration",
+      "publisher": "U.S. Department of State",
+      "publishedAt": "2020-09-15",
+      "type": "primary",
+      "url": "https://2021-2025.state.gov/wp-content/uploads/2020/10/Abraham-Accords-signed-FINAL-15-Sept-2020-508-1.pdf",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "gao-covid-supplies-2020",
+      "title": "COVID-19: Federal Efforts Could Be Strengthened by Timely and Concerted Actions",
+      "publisher": "U.S. Government Accountability Office",
+      "publishedAt": "2020-09-21",
+      "type": "primary",
+      "url": "https://www.gao.gov/products/gao-20-701",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "oversight-affinity-2022",
+      "title": "Chairwoman Maloney Launches Probe of Saudi Government's $2 Billion Investment in Jared Kushner's Investment Firm",
+      "publisher": "U.S. House Committee on Oversight and Reform Democrats",
+      "publishedAt": "2022-06-02",
+      "type": "official_statement",
+      "url": "https://oversightdemocrats.house.gov/news/press-releases/chairwoman-maloney-launches-probe-of-saudi-government-s-2-billion-investment-in",
+      "accessedAt": "2026-10-22",
+      "notes": "Oversight allegations are attributed and not presented as adjudicated findings."
+    },
+    {
+      "key": "oversight-affinity-2024",
+      "title": "Raskin and Wyden call for review of Jared Kushner's foreign-government business",
+      "publisher": "U.S. House Committee on Oversight and Accountability Democrats",
+      "publishedAt": "2024-10-24",
+      "type": "official_statement",
+      "url": "https://oversightdemocrats.house.gov/news/press-releases/raskin-wyden-call-department-justice-appoint-special-counsel-investigate-jared",
+      "accessedAt": "2026-10-22",
+      "notes": "Partisan oversight request; dollar figures are attributed to the committees' investigation and were not a criminal judgment."
+    },
+    {
+      "key": "oversight-affinity-letter-2024",
+      "title": "The Saudi Government Has Paid Kushner At Least $87 Million Since June 2021",
+      "publisher": "U.S. House Committee on Oversight and Accountability Democrats and Senate Finance Committee",
+      "publishedAt": "2024-10-24",
+      "type": "primary",
+      "url": "https://oversightdemocrats.house.gov/imo/media/doc/Letter%20to%20DOJ%20on%20Kushner%20-%20FARA%20%28Wyden%20-%20Raskin%29%20final.pdf",
+      "accessedAt": "2026-10-22",
+      "notes": "Congressional letter stating investigative findings and legal concerns; no public prosecution followed in the cited record."
+    },
+    {
+      "key": "axios-qatar-2023",
+      "title": "Kushner, Jewish business leaders huddle with Qatari prime minister",
+      "publisher": "Axios",
+      "author": "Barak Ravid",
+      "publishedAt": "2023-12-04",
+      "type": "article",
+      "url": "https://www.axios.com/2023/12/04/jared-kushner-jewish-business-leaders-qatar",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "white-house-gaza-2025",
+      "title": "The Trump Declaration for Enduring Peace and Prosperity",
+      "publisher": "The White House",
+      "publishedAt": "2025-10-13",
+      "type": "primary",
+      "url": "https://www.whitehouse.gov/presidential-actions/2025/10/the-trump-declaration-for-enduring-peace-and-prosperity/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "white-house-geneva-2025",
+      "title": "Readout of Peace Talks in Geneva",
+      "publisher": "The White House",
+      "publishedAt": "2025-11-23",
+      "type": "official_statement",
+      "url": "https://www.whitehouse.gov/briefings-statements/2025/11/readout-of-peace-talks-in-geneva/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "white-house-board-peace-2026",
+      "title": "Statement on President Trump's Comprehensive Plan to End the Gaza Conflict",
+      "publisher": "The White House",
+      "publishedAt": "2026-01-16",
+      "type": "official_statement",
+      "url": "https://www.whitehouse.gov/briefings-statements/2026/01/statement-on-president-trumps-comprehensive-plan-to-end-the-gaza-conflict/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "white-house-russia-2026",
+      "title": "U.S. Envoys Visit Russia and Ukraine",
+      "publisher": "The White House",
+      "publishedAt": "2026-09-05",
+      "type": "official_statement",
+      "url": "https://www.whitehouse.gov/gallery/u-s-envoys-visit-russia-and-ukraine/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "bloomberg-kushner-2026",
+      "title": "Jared Kushner's Dual Role: Trump Peace Envoy and $6 Billion Fund Manager",
+      "publisher": "Bloomberg",
+      "publishedAt": "2026-05-14",
+      "type": "article",
+      "url": "https://www.bloomberg.com/news/features/2026-05-14/jared-kushner-s-dual-role-trump-peace-envoy-and-6-billion-fund-manager",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "axios-affinity-2026",
+      "title": "Jared Kushner's new private equity fund raises old questions",
+      "publisher": "Axios",
+      "author": "Dan Primack",
+      "publishedAt": "2026-03-16",
+      "type": "article",
+      "url": "https://www.axios.com/2026/03/16/jared-kushner-affinity-partners",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "kushner-response-2026",
+      "title": "The Facts: My Response to The New Yorker",
+      "publisher": "Jared Kushner",
+      "author": "Jared Kushner",
+      "publishedAt": "2026-10-08",
+      "type": "primary",
+      "url": "https://jaredkushner.com/posts/new-yorker-response/",
+      "accessedAt": "2026-10-22",
+      "notes": "Subject's response to conflict-of-interest reporting; used to present his denial and explanation."
+    },
+    {
+      "key": "oversight-kushner-2026",
+      "title": "Letter to Affinity Partners regarding Kushner fundraising",
+      "publisher": "U.S. House Committee on Oversight and Government Reform Democrats and Senate Finance Committee",
+      "publishedAt": "2026-03-19",
+      "type": "primary",
+      "url": "https://oversightdemocrats.house.gov/imo/media/doc/2026-03-19garciawydenlettertoaffinitypartnersrekushnerfundraising.pdf",
+      "accessedAt": "2026-10-22",
+      "notes": "Oversight letter raising conflict concerns; allegations are attributed."
+    },
+    {
+      "key": "fec-kushner",
+      "title": "Individual contributions: Kushner, Jared",
+      "publisher": "Federal Election Commission",
+      "type": "primary",
+      "url": "https://www.fec.gov/data/receipts/individual-contributions/?contributor_name=KUSHNER%2C%20JARED",
+      "accessedAt": "2026-10-22"
+    }
+  ],
+  "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "January 10, 1981",
+      "detail": "Livingston, New Jersey",
+      "featured": true,
+      "sources": ["biography-kushner-2024", "time-kushner-2017"]
+    },
+    { "key": "sex", "label": "Sex", "value": "Male", "sources": ["kushner-site"] },
+    { "key": "citizenship", "label": "Citizenship", "value": "United States", "sources": ["kushner-site"] },
+    {
+      "key": "religion",
+      "label": "Religion",
+      "value": "Modern Orthodox Judaism",
+      "detail": "Raised in an Orthodox Jewish family and publicly described as observant",
+      "sources": ["time-trump-family-2016", "time-kushner-2020"]
+    },
+    {
+      "key": "education",
+      "label": "Education",
+      "value": "B.A., Harvard; J.D. and M.B.A., New York University",
+      "sources": ["kushner-site", "biography-kushner-2024"]
+    },
+    {
+      "key": "spouse",
+      "label": "Spouse",
+      "value": "Ivanka Trump",
+      "detail": "Married in 2009",
+      "sources": ["time-trump-family-2016"]
+    },
+    { "key": "children", "label": "Children", "value": "Three", "sources": ["time-trump-family-2016"] },
+    {
+      "key": "current-roles",
+      "label": "Current roles",
+      "value": "Affinity Partners founder; volunteer diplomatic adviser; Board of Peace executive-board member",
+      "asOf": "2026-10-22",
+      "featured": true,
+      "sources": ["kushner-site", "white-house-board-peace-2026", "bloomberg-kushner-2026"]
+    },
+    {
+      "key": "affinity-aum",
+      "label": "Affinity assets under management",
+      "value": "More than $6 billion",
+      "detail": "Company figure and 2026 reporting; private-fund valuation is not equivalent to Kushner's personal net worth",
+      "asOf": "2026-10-22",
+      "sources": ["kushner-site", "bloomberg-kushner-2026"]
+    },
+    {
+      "key": "saudi-commitment",
+      "label": "Saudi PIF commitment",
+      "value": "$2 billion",
+      "detail": "Anchor investment committed to Affinity in 2021",
+      "asOf": "2021-12-31",
+      "sources": ["oversight-affinity-2022", "oversight-affinity-letter-2024"]
+    },
+    {
+      "key": "affinity-fees",
+      "label": "Foreign-investor management fees",
+      "value": "Approximately $157.5 million",
+      "detail": "Congressional investigators' estimate through 2024, including about $87.5 million from Saudi PIF; not a court finding",
+      "asOf": "2024-12-31",
+      "sources": ["oversight-affinity-letter-2024"]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "kushner-ivanka",
+      "source": "kushner",
+      "target": "ivanka",
+      "relType": "married-to",
+      "role": "Married in 2009; business and political partners during Trump's first presidency",
+      "from": "2009",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["time-trump-family-2016", "time-kushner-2020"]
+    },
+    {
+      "key": "kushner-charles",
+      "source": "kushner",
+      "target": "charles",
+      "relType": "family-of",
+      "role": "Son; succeeded his father in day-to-day leadership of the family real-estate business",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["time-kushner-2017"]
+    },
+    {
+      "key": "kushner-trump-family",
+      "source": "kushner",
+      "target": "trump",
+      "relType": "family-of",
+      "role": "Son-in-law",
+      "from": "2009",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["time-trump-family-2016"]
+    },
+    {
+      "key": "kushner-trump-adviser",
+      "source": "kushner",
+      "target": "trump",
+      "relType": "adviser-to",
+      "role": "2016 campaign adviser; White House senior adviser, 2017–2021; volunteer diplomatic adviser from 2025",
+      "from": "2016",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["time-apprentices-2016", "propublica-trump-town", "white-house-geneva-2025"]
+    },
+    {
+      "key": "kushner-companies-role",
+      "source": "kushner",
+      "target": "kushner-companies",
+      "relType": "former-role",
+      "role": "Chief executive before entering government; divested selected holdings but retained family-business interests",
+      "from": "2005",
+      "until": "2017",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["time-kushner-2017", "reuters-666-sale-2017"]
+    },
+    {
+      "key": "kushner-observer",
+      "source": "kushner",
+      "target": "observer",
+      "relType": "former-role",
+      "role": "Owner and publisher",
+      "from": "2006",
+      "until": "2017",
+      "status": "verified",
+      "prominence": 2,
+      "sources": ["biography-kushner-2024", "time-kushner-2017"]
+    },
+    {
+      "key": "kushner-affinity",
+      "source": "kushner",
+      "target": "affinity",
+      "relType": "founded",
+      "role": "Founder and sole owner; delegated day-to-day management during renewed diplomatic service",
+      "from": "2021",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["kushner-site", "oversight-affinity-letter-2024", "bloomberg-kushner-2026"]
+    },
+    {
+      "key": "affinity-pif",
+      "source": "affinity",
+      "target": "pif",
+      "relType": "client-of",
+      "role": "Saudi PIF committed $2 billion as Affinity's anchor investor",
+      "from": "2021",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["oversight-affinity-2022", "oversight-affinity-letter-2024"]
+    },
+    {
+      "key": "kushner-mbs",
+      "source": "kushner",
+      "target": "mbs",
+      "relType": "collaborated-with",
+      "role": "Worked with the crown prince on U.S.–Saudi and regional diplomacy; PIF later became Affinity's anchor investor",
+      "from": "2017",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["oversight-affinity-2022", "oversight-affinity-letter-2024"]
+    },
+    {
+      "key": "kushner-witkoff",
+      "source": "kushner",
+      "target": "witkoff",
+      "relType": "collaborated-with",
+      "role": "Volunteer diplomacy on Gaza, Ukraine, Russia and regional negotiations in the second Trump presidency",
+      "from": "2025",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["white-house-geneva-2025", "white-house-board-peace-2026", "white-house-russia-2026"]
+    },
+    {
+      "key": "kushner-board-peace",
+      "source": "kushner",
+      "target": "board-peace",
+      "relType": "serves-in",
+      "role": "Founding executive-board member",
+      "from": "2026-01-16",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["white-house-board-peace-2026"]
+    },
+    {
+      "key": "kushner-mexico",
+      "source": "kushner",
+      "target": "mexico",
+      "relType": "collaborated-with",
+      "role": "Managed the U.S.–Mexico relationship and participated in USMCA negotiations",
+      "from": "2017",
+      "until": "2021",
+      "status": "verified",
+      "prominence": 2,
+      "sources": ["kushner-site", "ustr-usmca"]
+    },
+    {
+      "key": "kushner-first-step",
+      "source": "kushner",
+      "target": "first-step",
+      "relType": "collaborated-with",
+      "role": "White House organizer and advocate for the bipartisan criminal-justice bill",
+      "from": "2017",
+      "until": "2018",
+      "status": "verified",
+      "prominence": 2,
+      "sources": ["doj-first-step-history", "time-kushner-2020"]
+    }
+  ],
+  "events": [
+    {
+      "key": "born-1981",
+      "date": "1981-01-10",
+      "title": "Born in Livingston, New Jersey",
+      "summary": "Jared Corey Kushner was born into a real-estate family and raised in Modern Orthodox Judaism.",
+      "category": "personal",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        ["kushner", "subject"],
+        ["charles", "father"]
+      ],
+      "sources": ["biography-kushner-2024", "time-kushner-2020"],
+      "chapter": "family-formation"
+    },
+    {
+      "key": "harvard-2003",
+      "date": "2003",
+      "title": "Graduates from Harvard",
+      "summary": "Kushner completed his undergraduate degree before earning law and business degrees at NYU.",
+      "category": "career",
+      "significance": 1,
+      "status": "verified",
+      "participants": [["kushner", "graduate"]],
+      "sources": ["kushner-site", "biography-kushner-2024"],
+      "chapter": "family-formation"
+    },
+    {
+      "key": "charles-conviction-2005",
+      "date": "2005",
+      "title": "Takes greater responsibility in family business",
+      "summary": "Charles Kushner's criminal case and imprisonment pushed Jared Kushner into day-to-day leadership of the family company in his twenties.",
+      "category": "career",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["kushner", "executive"],
+        ["charles", "founder"],
+        ["kushner-companies", "company"]
+      ],
+      "sources": ["time-kushner-2017"],
+      "chapter": "family-formation"
+    },
+    {
+      "key": "observer-2006",
+      "date": "2006",
+      "title": "Acquires the New York Observer",
+      "summary": "Kushner bought the newspaper, adding media ownership and political access to his real-estate role.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        ["kushner", "owner"],
+        ["observer", "publication"]
+      ],
+      "sources": ["biography-kushner-2024", "time-kushner-2017"],
+      "chapter": "new-york-builder"
+    },
+    {
+      "key": "fifth-avenue-2007",
+      "date": "2007",
+      "title": "Buys 666 Fifth Avenue",
+      "summary": "Kushner Companies paid $1.8 billion, then a record for a U.S. office building, using substantial debt.",
+      "category": "finance",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["kushner", "chief executive"],
+        ["kushner-companies", "buyer"]
+      ],
+      "sources": ["reuters-666-sale-2017", "reuters-brookfield-2018"],
+      "chapter": "new-york-builder"
+    },
+    {
+      "key": "marriage-2009",
+      "date": "2009",
+      "title": "Marries Ivanka Trump",
+      "summary": "The marriage joined two real-estate families and later placed Kushner inside Donald Trump's campaign and presidency.",
+      "category": "personal",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["kushner", "spouse"],
+        ["ivanka", "spouse"],
+        ["trump", "father-in-law"]
+      ],
+      "sources": ["time-trump-family-2016"],
+      "chapter": "new-york-builder"
+    },
+    {
+      "key": "campaign-2016",
+      "date": "2016",
+      "title": "Becomes a central Trump campaign adviser",
+      "summary": "Kushner worked on speeches, senior meetings, digital strategy and personnel during the successful presidential campaign.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["kushner", "campaign adviser"],
+        ["trump", "candidate"]
+      ],
+      "sources": ["time-apprentices-2016", "kushner-congress-statement-2017"],
+      "chapter": "campaign"
+    },
+    {
+      "key": "appointment-2017",
+      "date": "2017-01",
+      "title": "Appointed White House senior adviser",
+      "summary": "Trump placed his son-in-law in a broad West Wing role after the Justice Department concluded the White House appointment was not barred by the federal anti-nepotism statute.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["kushner", "appointee"],
+        ["trump", "president"]
+      ],
+      "sources": ["pbs-appointment-2017", "doj-nepotism-2017"],
+      "chapter": "west-wing"
+    },
+    {
+      "key": "russia-statement-2017",
+      "date": "2017-07-24",
+      "title": "Gives statement on foreign contacts",
+      "summary": "Kushner told congressional intelligence committees that he had not colluded with a foreign government and described previously undisclosed campaign and transition meetings.",
+      "category": "legal",
+      "significance": 2,
+      "status": "verified",
+      "participants": [["kushner", "witness"]],
+      "sources": ["kushner-congress-statement-2017"],
+      "chapter": "west-wing"
+    },
+    {
+      "key": "clearance-2018",
+      "date": "2018",
+      "title": "Security-clearance process draws scrutiny",
+      "summary": "Kushner's interim clearance was downgraded and later restored; congressional investigators said career officials had recommended against approval before a supervisor overruled them.",
+      "category": "legal",
+      "significance": 2,
+      "status": "verified",
+      "participants": [["kushner", "clearance applicant"]],
+      "sources": ["oversight-clearance-2019", "time-kushner-2020"],
+      "chapter": "west-wing"
+    },
+    {
+      "key": "first-step-2018",
+      "date": "2018-12",
+      "title": "Helps assemble First Step Act coalition",
+      "summary": "Kushner worked with legislators, advocates and administration officials on the bipartisan criminal-justice law.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["kushner", "White House advocate"],
+        ["first-step", "coalition"]
+      ],
+      "sources": ["doj-first-step-history", "time-kushner-2020"],
+      "chapter": "domestic-diplomacy"
+    },
+    {
+      "key": "brookfield-2018",
+      "date": "2018-08-03",
+      "title": "Brookfield takes 99-year lease on Fifth Avenue tower",
+      "summary": "The transaction supplied proceeds to address more than $1.1 billion of debt and remove the family's partner from the troubled property.",
+      "category": "finance",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        ["kushner-companies", "property owner"],
+        ["kushner", "former chief executive"]
+      ],
+      "sources": ["reuters-brookfield-2018"],
+      "chapter": "west-wing"
+    },
+    {
+      "key": "bahrain-workshop-2019",
+      "date": "2019-06-25",
+      "title": "Presents economic component of Middle East plan",
+      "summary": "Kushner promoted a development and investment program at the Peace to Prosperity workshop in Bahrain.",
+      "category": "politics",
+      "significance": 2,
+      "status": "verified",
+      "participants": [["kushner", "White House envoy"]],
+      "sources": ["kushner-bahrain-remarks-2019"],
+      "chapter": "middle-east"
+    },
+    {
+      "key": "usmca-2020",
+      "date": "2020-07-01",
+      "title": "USMCA enters into force",
+      "summary": "Kushner's management of the Mexico relationship formed part of the administration's negotiation and implementation network for the trade agreement.",
+      "category": "politics",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        ["kushner", "presidential adviser"],
+        ["mexico", "counterpart government"]
+      ],
+      "sources": ["kushner-site", "ustr-usmca"],
+      "chapter": "domestic-diplomacy"
+    },
+    {
+      "key": "covid-2020",
+      "date": "2020-03",
+      "title": "Joins federal medical-supply response",
+      "summary": "Kushner organized a private-sector-facing team during the early COVID-19 supply crisis; later reviews documented fragmented federal coordination and data problems.",
+      "category": "politics",
+      "significance": 2,
+      "status": "verified",
+      "participants": [["kushner", "White House coordinator"]],
+      "sources": ["time-kushner-2020", "gao-covid-supplies-2020"],
+      "chapter": "domestic-diplomacy"
+    },
+    {
+      "key": "abraham-accords-2020",
+      "date": "2020-09-15",
+      "title": "Abraham Accords signed",
+      "summary": "Israel, the United Arab Emirates and Bahrain signed normalization agreements after negotiations led on the U.S. side by Kushner and other administration officials.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [["kushner", "U.S. negotiator"]],
+      "sources": ["state-abraham-accords", "kushner-site"],
+      "chapter": "middle-east"
+    },
+    {
+      "key": "affinity-founded-2021",
+      "date": "2021-01-21",
+      "title": "Forms Affinity Partners",
+      "summary": "Kushner created the investment firm immediately after leaving government and became its sole owner.",
+      "category": "career",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["kushner", "founder"],
+        ["affinity", "firm"]
+      ],
+      "sources": ["oversight-affinity-2022", "oversight-affinity-letter-2024"],
+      "chapter": "affinity"
+    },
+    {
+      "key": "pif-investment-2021",
+      "date": "2021",
+      "title": "Saudi PIF commits $2 billion to Affinity",
+      "summary": "The sovereign fund approved an anchor investment despite reported objections from its investment staff, creating a large recurring management-fee stream.",
+      "category": "finance",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["affinity", "fund manager"],
+        ["pif", "investor"],
+        ["mbs", "PIF chair"],
+        ["kushner", "owner"]
+      ],
+      "sources": ["oversight-affinity-2022", "oversight-affinity-letter-2024"],
+      "chapter": "affinity"
+    },
+    {
+      "key": "memoir-2022",
+      "date": "2022",
+      "title": "Publishes Breaking History",
+      "summary": "Kushner's memoir presented his account of the campaign, White House conflicts and diplomatic negotiations.",
+      "category": "ideas",
+      "significance": 2,
+      "status": "verified",
+      "participants": [["kushner", "author"]],
+      "sources": ["kushner-site"],
+      "chapter": "affinity"
+    },
+    {
+      "key": "qatar-meeting-2023",
+      "date": "2023-11",
+      "title": "Organizes meeting with Qatar's prime minister",
+      "summary": "Kushner and Ivanka Trump convened business and communal figures with a government official central to Israel–Hamas hostage mediation; Qatar was also connected to Affinity capital.",
+      "category": "politics",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        ["kushner", "organizer"],
+        ["ivanka", "organizer"]
+      ],
+      "sources": ["axios-qatar-2023", "oversight-affinity-letter-2024"],
+      "chapter": "private-diplomacy"
+    },
+    {
+      "key": "congress-fees-2024",
+      "date": "2024-10-24",
+      "title": "Congressional investigators publish fee estimates",
+      "summary": "Democratic committee leaders said Affinity had collected about $157.5 million in management fees from foreign investors through 2024 and sought a federal review; the request did not establish a criminal violation.",
+      "category": "legal",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        ["kushner", "firm owner"],
+        ["affinity", "fund manager"]
+      ],
+      "sources": ["oversight-affinity-2024", "oversight-affinity-letter-2024"],
+      "chapter": "private-diplomacy"
+    },
+    {
+      "key": "gaza-agreement-2025",
+      "date": "2025-10-13",
+      "title": "Returns to Gaza diplomacy",
+      "summary": "At Trump's direction, Kushner worked with Steve Witkoff on the agreement and implementation framework announced by the White House.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["kushner", "volunteer adviser"],
+        ["witkoff", "special envoy"],
+        ["trump", "president"]
+      ],
+      "sources": ["white-house-gaza-2025", "kushner-site"],
+      "chapter": "return-to-diplomacy"
+    },
+    {
+      "key": "ukraine-geneva-2025",
+      "date": "2025-11-23",
+      "title": "Joins Ukraine peace talks in Geneva",
+      "summary": "Kushner participated with senior U.S. officials and a Ukrainian delegation despite holding no Senate-confirmed diplomatic office.",
+      "category": "politics",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        ["kushner", "U.S. participant"],
+        ["witkoff", "special envoy"]
+      ],
+      "sources": ["white-house-geneva-2025"],
+      "chapter": "return-to-diplomacy"
+    },
+    {
+      "key": "board-peace-2026",
+      "date": "2026-01-16",
+      "title": "Named to Board of Peace executive board",
+      "summary": "The White House assigned Kushner a role in strategic oversight, reconstruction, investment and regional coordination for Gaza.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["kushner", "executive-board member"],
+        ["board-peace", "organization"],
+        ["witkoff", "executive-board member"]
+      ],
+      "sources": ["white-house-board-peace-2026"],
+      "chapter": "return-to-diplomacy"
+    },
+    {
+      "key": "fundraising-inquiry-2026",
+      "date": "2026-03-19",
+      "title": "Lawmakers question simultaneous diplomacy and fundraising",
+      "summary": "Democratic lawmakers sought records after reports that Affinity was soliciting additional Middle Eastern sovereign capital while Kushner worked on regional diplomacy; Kushner denied any improper linkage.",
+      "category": "legal",
+      "significance": 2,
+      "status": "unresolved",
+      "statusNote": "The cited record documents an inquiry and denial, not a concluded enforcement finding.",
+      "participants": [
+        ["kushner", "adviser and owner"],
+        ["affinity", "fund manager"]
+      ],
+      "sources": ["oversight-kushner-2026", "kushner-response-2026"],
+      "chapter": "dual-role"
+    },
+    {
+      "key": "russia-2026",
+      "date": "2026-09-05",
+      "title": "Joins U.S. envoys in Russia and Ukraine",
+      "summary": "The White House documented Kushner traveling with Steve Witkoff as part of dialogue over the Russia–Ukraine war.",
+      "category": "politics",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        ["kushner", "presidential adviser"],
+        ["witkoff", "special envoy"]
+      ],
+      "sources": ["white-house-russia-2026"],
+      "chapter": "dual-role"
+    }
+  ],
+  "statements": [
+    {
+      "key": "no-collusion-2017",
+      "date": "2017-07-24",
+      "datePrecision": "day",
+      "venue": "Statement to congressional intelligence committees",
+      "issue": "2016 campaign",
+      "quote": "I did not collude, nor know of anyone else in the campaign who colluded, with any foreign government.",
+      "summary": "Kushner denied coordinating with foreign governments during the campaign.",
+      "stance": "explicit",
+      "source": "kushner-congress-statement-2017"
+    },
+    {
+      "key": "peace-investment-2019",
+      "date": "2019-06-25",
+      "datePrecision": "day",
+      "venue": "Peace to Prosperity workshop, Bahrain",
+      "issue": "Middle East",
+      "quote": "Agreeing on an economic pathway forward is a necessary precondition to resolving the previously unsolvable political issues.",
+      "summary": "Kushner argued that investment and economic planning could prepare the ground for political agreement.",
+      "stance": "explicit",
+      "source": "kushner-bahrain-remarks-2019"
+    },
+    {
+      "key": "investor-now-2024",
+      "date": "2024",
+      "datePrecision": "year",
+      "venue": "Interview about returning to government",
+      "issue": "Public service",
+      "quote": "I'm an investor now.",
+      "summary": "Kushner said he did not plan to return to formal government service, before later accepting a volunteer diplomatic role.",
+      "stance": "explicit",
+      "source": "axios-affinity-2026"
+    },
+    {
+      "key": "connections-side-2024",
+      "date": "2024",
+      "datePrecision": "year",
+      "venue": "Interview about Affinity Partners",
+      "issue": "Investment",
+      "quote": "We're able to do things on the geopolitical side, on the connections side, on the problem-solving side.",
+      "summary": "Kushner described relationships as part of Affinity's value; congressional critics cited the remark in conflict-of-interest arguments.",
+      "stance": "explicit",
+      "source": "oversight-affinity-letter-2024"
+    },
+    {
+      "key": "board-peace-2026-quote",
+      "date": "2026-01-16",
+      "datePrecision": "day",
+      "venue": "White House statement on Gaza framework",
+      "issue": "Middle East",
+      "quote": "The Board of Peace will play an essential role in fulfilling all 20 points of the President's plan.",
+      "summary": "Kushner described the board's intended oversight role.",
+      "stance": "explicit",
+      "source": "white-house-board-peace-2026"
+    },
+    {
+      "key": "no-linkage-2026",
+      "date": "2026-10-08",
+      "datePrecision": "day",
+      "venue": "Response to conflict-of-interest reporting",
+      "issue": "Ethics",
+      "quote": "There was no understanding, promise, expectation, or arrangement linking PIF's investment in Affinity to anything I did in government.",
+      "summary": "Kushner denied that Saudi investment was a reward for his first-term government work.",
+      "stance": "explicit",
+      "source": "kushner-response-2026"
+    }
+  ],
+  "ideas": {
+    "traditions": [],
+    "influences": [
+      {
+        "name": "Charles Kushner",
+        "note": "The family real-estate company and his father's legal crisis accelerated Kushner's assumption of executive responsibility.",
+        "sources": ["time-kushner-2017"]
+      },
+      {
+        "name": "Donald Trump",
+        "note": "Marriage brought Kushner into Trump's family; the 2016 campaign and presidency converted that relationship into public authority.",
+        "sources": ["time-trump-family-2016", "time-apprentices-2016"]
+      }
+    ],
+    "works": [
+      {
+        "title": "Peace to Prosperity",
+        "year": 2019,
+        "kind": "Policy proposal",
+        "detail": "Economic component of the first Trump administration's Israeli–Palestinian peace initiative.",
+        "source": "kushner-bahrain-remarks-2019"
+      },
+      {
+        "title": "Breaking History",
+        "year": 2022,
+        "kind": "Memoir",
+        "detail": "Kushner's account of the 2016 campaign, White House service and diplomatic negotiations.",
+        "source": "kushner-site"
+      }
+    ],
+    "featuredQuotes": ["peace-investment-2019", "no-linkage-2026"]
+  },
+  "chapters": [
+    {
+      "key": "family-formation",
+      "title": "A family business and an early succession",
+      "dek": "Kushner's route to executive authority began with family capital and accelerated when his father went to prison.",
+      "body": "Jared Corey Kushner was born in Livingston, New Jersey, on January 10, 1981, into an Orthodox Jewish family whose wealth came from New Jersey real estate. He attended Harvard and then completed both law and business degrees at New York University. The education prepared him for the family enterprise rather than a conventional legal career. [[biography-kushner-2024, time-kushner-2017, time-kushner-2020]]\n\nHis father, Charles Kushner, founded Kushner Companies and was a major Democratic donor before pleading guilty to tax, campaign-finance and witness-retaliation offenses. Charles's imprisonment in 2005 pushed Jared, still in his twenties, into greater responsibility. The succession tied business leadership to family loyalty, a pattern that later shaped Kushner's place in the Trump campaign and White House. [[time-kushner-2017]]"
+    },
+    {
+      "key": "new-york-builder",
+      "title": "Real estate, media and the Trump family",
+      "dek": "High-profile acquisitions increased Kushner's reach but loaded the family company with a defining financial problem.",
+      "body": "Kushner bought the New York Observer in 2006, adding a small but politically connected newspaper to his real-estate role. A year later Kushner Companies paid $1.8 billion for 666 Fifth Avenue, then a record price for a U.S. office building. The debt-heavy acquisition became the central financial problem of the family's New York expansion. [[biography-kushner-2024, time-kushner-2017, reuters-666-sale-2017]]\n\nIn 2009 Kushner married Ivanka Trump after she converted to Judaism. The marriage joined two property families and placed Kushner in Donald Trump's immediate circle years before the presidential campaign. Jared and Ivanka kept a public Orthodox Jewish household and eventually had three children. [[time-trump-family-2016, time-kushner-2020]]\n\nThe Fifth Avenue tower's debt later intersected with public-service ethics. Kushner divested his own stake before entering government, but the family remained exposed. Brookfield's 2018 agreement for a 99-year lease produced funds to retire more than $1.1 billion of debt; Brookfield had Qatari capital elsewhere in its structure, prompting congressional questions even though the cited record did not establish that Kushner arranged the transaction from government. [[reuters-666-sale-2017, reuters-brookfield-2018]]"
+    },
+    {
+      "key": "campaign",
+      "title": "The campaign made family authority public",
+      "dek": "Kushner's private access to Trump became control over speeches, meetings, personnel and digital strategy.",
+      "body": "Kushner became a central adviser during Donald Trump's 2016 campaign. He helped with speeches, senior meetings, personnel and the digital operation while serving as a bridge between the candidate and Republican officials, donors and technology contacts. Unlike a conventional campaign professional, his authority depended on family trust and direct access rather than a fixed title. [[time-apprentices-2016, time-kushner-2017]]\n\nThe campaign's foreign contacts later drew congressional and criminal investigation. In a July 2017 statement, Kushner disclosed meetings involving Russian representatives while denying collusion or improper coordination. The statement is evidence of his account; it does not by itself resolve every broader finding about Russian interference or other campaign officials. [[kushner-congress-statement-2017]]\n\nTrump's victory converted this informal role into state authority. Kushner joined transition work and prepared to enter the White House, requiring him to separate selected business interests while remaining part of a family whose assets and debts continued to attract foreign counterparties. [[pbs-appointment-2017, propublica-trump-town]]"
+    },
+    {
+      "key": "west-wing",
+      "title": "A portfolio broader than the title",
+      "dek": "The senior-adviser appointment gave Kushner access across diplomacy, trade, criminal justice and government operations.",
+      "body": "Trump appointed Kushner assistant to the president and senior adviser in January 2017. The Justice Department's Office of Legal Counsel concluded that the anti-nepotism statute did not bar a presidential appointment to the White House Office. That legal interpretation allowed a son-in-law with no prior government service to take a role touching domestic policy and national security. [[pbs-appointment-2017, doj-nepotism-2017]]\n\nKushner's responsibilities expanded across Middle East diplomacy, the U.S.–Mexico relationship, innovation projects, criminal justice and political troubleshooting. The breadth made him useful to Trump but blurred lines of accountability: he was not Senate-confirmed, and policy successes or failures often involved agencies and officials whose formal powers exceeded his. [[propublica-trump-town, time-kushner-2020]]\n\nHis security clearance intensified the concern. Kushner initially worked with an interim clearance, was downgraded in 2018 and later received a permanent top-secret clearance. House Oversight Democrats said career specialists had recommended against approval before a supervisor overruled them. The episode documented an irregular process and congressional alarm, not a criminal judgment against Kushner. [[oversight-clearance-2019, time-kushner-2020]]"
+    },
+    {
+      "key": "domestic-diplomacy",
+      "title": "Domestic deals rewarded coalition-building",
+      "dek": "Criminal justice and Mexico policy showed how Kushner worked through relationships across institutions.",
+      "body": "Kushner's clearest domestic-policy result was the First Step Act. He assembled advocates from different ideological camps, worked with legislators and pressed the administration to support a bill that changed federal sentencing and prison policy. The Justice Department's own history called him a champion of the law while recognizing the broader coalition that enacted it. [[doj-first-step-history, time-kushner-2020]]\n\nHe also managed much of the relationship with Mexico, including work around the United States-Mexico-Canada Agreement. Kushner's personal channel complemented formal trade negotiators and cabinet officials; the resulting agreement entered into force in July 2020. [[kushner-site, ustr-usmca]]\n\nDuring the early COVID-19 emergency he organized a team that worked with companies on medical supplies. The intervention matched his preference for informal problem-solving, but government reviews later described fragmented federal coordination and weaknesses in supply data. The evidence supports both his participation and the system's operational shortcomings without making him solely responsible for either. [[time-kushner-2020, gao-covid-supplies-2020]]"
+    },
+    {
+      "key": "middle-east",
+      "title": "Economic diplomacy and the Abraham Accords",
+      "dek": "Kushner treated investment and direct leader-to-leader channels as instruments of foreign policy.",
+      "body": "Kushner's first Middle East initiative paired an economic development proposal with an eventual political plan for Israelis and Palestinians. At the 2019 Bahrain workshop he argued that an economic pathway was necessary before the hardest political questions could be resolved. Palestinian leaders rejected the process, and the plan did not produce an Israeli–Palestinian agreement. [[kushner-bahrain-remarks-2019]]\n\nThe regional track produced a different result. In 2020 the administration brokered normalization agreements between Israel and the United Arab Emirates and Bahrain, followed by arrangements involving Morocco and Sudan. Kushner was a leading U.S. negotiator, but the agreements belonged to the participating governments and a larger diplomatic team rather than to one adviser alone. [[state-abraham-accords, kushner-site]]\n\nThe relationships built through this work included Saudi Crown Prince Mohammed bin Salman and officials in Qatar and the Emirates. Those contacts became relevant after Kushner left office because sovereign funds controlled by the same governments supplied most of the capital for his new investment firm. [[oversight-affinity-2022, oversight-affinity-letter-2024]]"
+    },
+    {
+      "key": "affinity",
+      "title": "Public relationships became private capital",
+      "dek": "Affinity Partners transformed Kushner's diplomatic network into the central asset of a new investment business.",
+      "body": "Kushner formed Affinity Partners on January 21, 2021, the day after the first Trump presidency ended. He was the firm's sole owner and had no long record running a private-equity fund. Within months, Saudi Arabia's Public Investment Fund committed $2 billion despite reported concerns from its investment staff; funds connected to Qatar and the United Arab Emirates also invested. [[oversight-affinity-2022, oversight-affinity-letter-2024]]\n\nCongressional investigators calculated that Affinity had collected about $157.5 million in management fees from foreign investors through 2024, including roughly $87.5 million from Saudi PIF. Those are committee investigative figures, not a court judgment, and management fees are business revenue rather than Kushner's personal take-home income. [[oversight-affinity-2024, oversight-affinity-letter-2024]]\n\nCritics argued that the capital rewarded relationships or policy developed in office. Kushner denied any promise or arrangement and said Affinity could create returns and regional economic links, including investment connecting Gulf capital with Israel. The public record establishes the timing, investors and fees; motive and quid pro quo remain disputed rather than proven. [[oversight-affinity-2022, kushner-response-2026]]\n\nKushner published Breaking History in 2022, offering his own account of White House negotiations. The memoir and Affinity together let him retain public-policy access while presenting himself as a private investor rather than a candidate or permanent government official. [[kushner-site]]"
+    },
+    {
+      "key": "private-diplomacy",
+      "title": "Private status did not end political access",
+      "dek": "Kushner continued convening officials, business leaders and political actors while Affinity's foreign-government clients paid management fees.",
+      "body": "After October 2023, Kushner and Ivanka Trump organized a New York meeting between Qatar's prime minister and a group of business and communal figures while Qatar was central to hostage negotiations between Israel and Hamas. Qatar was also connected to capital managed by Affinity. The overlap did not itself prove that Kushner represented Qatar, but it illustrated how his investor and diplomatic networks operated through the same relationships. [[axios-qatar-2023, oversight-affinity-letter-2024]]\n\nKushner also remained an informal adviser to Trump's political circle while saying publicly that he was now an investor and did not plan to return to government. Congressional Democrats asked the Justice Department to examine whether his activity for foreign clients required registration; the cited record contains their legal theory and investigative findings, not a prosecution or verdict. [[oversight-affinity-2024, axios-affinity-2026]]\n\nBy 2026 Affinity reported more than $6 billion under management. Assets under management belong to the funds, not personally to Kushner, but the scale and fee structure made the firm the central source of his independent economic power. [[kushner-site, bloomberg-kushner-2026]]"
+    },
+    {
+      "key": "return-to-diplomacy",
+      "title": "A volunteer return to presidential diplomacy",
+      "dek": "Kushner returned without a conventional appointment, working beside Steve Witkoff on Gaza and Ukraine.",
+      "body": "Kushner did not take a formal White House staff role when Trump returned in 2025. He nevertheless resumed high-level diplomacy as an unpaid adviser, working with special envoy Steve Witkoff. The White House credited him with helping negotiate the October 2025 Gaza agreement and later included him in talks with Ukrainian officials in Geneva. [[white-house-gaza-2025, white-house-geneva-2025, kushner-site]]\n\nIn January 2026 the White House named Kushner to executive boards overseeing the Gaza peace framework, reconstruction and investment. The role aligned with both his first-term diplomacy and his private-equity vocabulary: governance, capital mobilization and regional economic integration were treated as parts of the same peace strategy. [[white-house-board-peace-2026]]\n\nThe volunteer arrangement gave Kushner access without the confirmation, salary and conventional disclosure structure of a permanent office. It also made precise accountability harder to locate, because official statements described his work while his private firm and personal site supplied other parts of the record. [[white-house-geneva-2025, white-house-board-peace-2026, bloomberg-kushner-2026]]"
+    },
+    {
+      "key": "dual-role",
+      "title": "The unresolved dual role",
+      "dek": "By 2026, the same regional relationships supported both Affinity's capital base and Kushner's renewed diplomatic authority.",
+      "body": "Reporting in 2026 described Kushner participating in Middle East diplomacy while Affinity explored raising additional capital from regional sovereign investors. Democratic congressional investigators sought documents and argued that the simultaneous roles created a serious conflict. Their inquiry was active; the cited record did not establish a completed enforcement action. [[oversight-kushner-2026, bloomberg-kushner-2026]]\n\nKushner said there had never been an understanding linking Saudi investment to his government work and said Affinity did not intend to accept additional capital while he volunteered for the government. His response disputes the implication of corrupt exchange but does not erase the structural overlap between client governments and diplomatic counterparties. [[kushner-response-2026]]\n\nThe portfolio widened beyond the Middle East. The White House documented Kushner joining Witkoff in dialogue over Ukraine and traveling to Russia in September 2026. He therefore held no conventional cabinet title while participating in negotiations across several of the administration's most consequential conflicts. [[white-house-geneva-2025, white-house-russia-2026]]\n\nAs of October 22, 2026, Kushner's relevance rests on this combination: family access to the president, relationships with foreign leaders, first-term negotiating experience and ownership of a fund financed largely by foreign sovereign wealth. A complete account must keep those facts connected while distinguishing documented transactions and appointments from unresolved claims about motive or improper influence. [[kushner-site, oversight-affinity-letter-2024, white-house-board-peace-2026, kushner-response-2026]]"
+    }
+  ]
+}

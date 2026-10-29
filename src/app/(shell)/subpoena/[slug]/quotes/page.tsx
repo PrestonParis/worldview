@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { BookMarked } from "lucide-react";
 import { NotVerbatim, SectionHeading } from "@/components/people/profile/module-card";
-import { philosophyById } from "@/lib/atlas/philosophies";
+import { atlasTraditionHref } from "@/lib/atlas/tradition-link";
 import { getEntityByPublicSlug } from "@/lib/db/entities";
 import { quoteDate, type StatementRecord } from "@/lib/people/profile-model";
 import { loadProfileRoute } from "@/lib/people/profile-route";
@@ -34,10 +34,10 @@ export default async function QuotesPage({ params }: Props) {
           <p className="-mt-2 flex flex-wrap items-center gap-2 text-sm text-slate-500">
             <span>Traditions:</span>
             {ideas.traditions.map((t) => {
-              const atlas = t.atlasId ? philosophyById.get(t.atlasId) : undefined;
+              const href = atlasTraditionHref(t.atlasId);
               const chip = "rounded-full bg-indigo-50 px-3 py-1 font-medium text-indigo-800 dark:bg-indigo-950/60 dark:text-indigo-200";
-              return atlas ? (
-                <Link key={t.label} href={`/atlas/philosophies/${t.atlasId}`} title={t.context} className={`${chip} hover:bg-indigo-100 dark:hover:bg-indigo-900`}>
+              return href ? (
+                <Link key={t.label} href={href} title={t.context} className={`${chip} hover:bg-indigo-100 dark:hover:bg-indigo-900`}>
                   {t.label} <span className="font-normal text-indigo-600/80 dark:text-indigo-300/70">· {t.basis}</span>
                 </Link>
               ) : (

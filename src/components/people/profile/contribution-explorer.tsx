@@ -8,7 +8,7 @@ import { formatPartialDate, type ContributionRecord } from "@/lib/people/profile
 
 export interface ExplorerRow extends ContributionRecord {
   recipientName: string;
-  recipientHref: string;
+  recipientHref: string | null;
 }
 
 type Sort = "amount" | "date";
@@ -110,9 +110,13 @@ export function ContributionExplorer({ rows }: { rows: ExplorerRow[] }) {
               <tr key={r.id} className={r.memo ? "text-slate-400" : "text-slate-800 dark:text-slate-200"}>
                 <td className="px-4 py-2.5 whitespace-nowrap tabular-nums">{formatPartialDate(r.date)}</td>
                 <td className="px-4 py-2.5">
-                  <Link href={r.recipientHref} className="font-medium hover:text-indigo-700 dark:hover:text-indigo-300">
-                    {r.recipientName}
-                  </Link>
+                  {r.recipientHref ? (
+                    <Link href={r.recipientHref} className="font-medium hover:text-indigo-700 dark:hover:text-indigo-300">
+                      {r.recipientName}
+                    </Link>
+                  ) : (
+                    <span className="font-medium">{r.recipientName}</span>
+                  )}
                   {r.memo ? <span className="ml-2 text-xs">memo, not counted</span> : null}
                   {r.matchBasis === "city" ? (
                     <span className="ml-2 text-xs text-slate-400" title="The filing lists no matching employer; it was tied to this person by name and home city.">

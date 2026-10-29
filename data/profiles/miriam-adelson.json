@@ -1,0 +1,906 @@
+{
+  "subject": "adelson",
+  "reviewedAt": "2026-10-22",
+  "sourcesVerifiedAt": "2026-10-22",
+  "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Miriam%20Adelson%202023.jpg?width=400",
+  "brief": {
+    "inclusion": "Israeli-American physician, controlling Las Vegas Sands shareholder, newspaper publisher, sports-franchise owner, philanthropist and one of the largest disclosed Republican donors in the United States.",
+    "identifiers": { "wikidata": "Q1863905", "sec_cik": "0001309416", "fec_contributor": "ADELSON, MIRIAM" },
+    "namesakes": "Miriam Ochshorn Adelson, born Miriam Farbstein in 1945, is the physician and political donor associated with Las Vegas Sands; use her SEC CIK and Las Vegas employer records to distinguish her.",
+    "coverage": {
+      "from": "1945",
+      "through": "2026-10-22",
+      "lags": "FEC Schedule A updates follow committee filings. Family trusts and jointly controlled entities make personal beneficial ownership different from direct title, and private philanthropy is disclosed incompletely."
+    },
+    "openQuestions": [
+      "Refresh 2026-cycle FEC totals after post-election filings and amendments.",
+      "Update Las Vegas Sands beneficial ownership from the next Schedule 13D amendment and proxy statement.",
+      "Separate Adelson's personal editorial positions from unsigned Israel Hayom coverage in future updates."
+    ],
+    "review": []
+  },
+  "summary": "Miriam Adelson trained as an Israeli physician and built addiction-treatment clinics before joining her husband Sheldon Adelson in philanthropy, media ownership and Republican politics. After his death in 2021, she became the central public figure in a family network that controls most voting power at Las Vegas Sands, publishes Israel Hayom and owns a majority interest in the Dallas Mavericks. Her political influence rests on exceptionally large disclosed federal contributions, a durable alliance with Donald Trump and sustained advocacy for Israel, while her medical and charitable institutions remain distinct from her campaign spending.",
+  "roles": [
+    {
+      "label": "Physician and addiction specialist",
+      "detail": "Founder and supporter of addiction-treatment and research clinics in Tel Aviv and Las Vegas",
+      "sources": ["adelson-foundation-bio", "rockefeller-bio", "adelson-clinic"]
+    },
+    {
+      "label": "Controlling shareholder",
+      "detail": "Member of the Adelson family group controlling a majority of Las Vegas Sands voting power",
+      "sources": ["lvs-proxy-2025", "lvs-13d-2025"]
+    },
+    {
+      "label": "Political donor",
+      "detail": "Major Republican and pro-Trump donor through super PACs and party-aligned committees",
+      "sources": ["axios-donors-2024", "bloomberg-midterms-2026", "fec-adelson"]
+    },
+    {
+      "label": "Publisher",
+      "detail": "Publisher of the Israeli newspaper Israel Hayom",
+      "sources": ["israel-hayom-about", "israel-hayom-israel-real"]
+    },
+    {
+      "label": "Sports-franchise owner",
+      "detail": "Part of the Adelson-Dumont family ownership group holding the Dallas Mavericks' controlling interest since 2023",
+      "sources": ["nba-mavericks-sale", "nba-sale-analysis"]
+    }
+  ],
+  "finance": {
+    "fec": {
+      "contributorName": "ADELSON, MIRIAM",
+      "namePattern": "^ADELSON, MIRIAM( O\\.?| DR\\.?)?$",
+      "employerPattern": "ADELSON CLINIC|LAS VEGAS SANDS|SELF[- ]EMPLOYED|PHYSICIAN|RETIRED",
+      "cities": ["LAS VEGAS", "HENDERSON"],
+      "source": "fec-adelson"
+    },
+    "coverage": "Itemized federal contributions reported to the FEC under the dossier's exact-name and employer-or-city identity rule. Corporate ownership, foundation grants, Israeli political activity, nonprofit spending and gifts by separate family members or trusts are not added to the personal federal total."
+  },
+  "entities": {
+    "adelson": { "match": { "name": "Miriam Adelson", "type": "donor" } },
+    "sheldon": {
+      "create": {
+        "name": "Sheldon Adelson",
+        "type": "donor",
+        "description": "Founder of Las Vegas Sands and major Republican donor; husband of Miriam Adelson until his death in 2021."
+      }
+    },
+    "trump": { "match": { "name": "Donald Trump", "type": "politician" } },
+    "lvs": {
+      "create": {
+        "name": "Las Vegas Sands",
+        "type": "company",
+        "description": "Publicly traded casino-resort company controlled through the Adelson family shareholder group.",
+        "websiteUrl": "https://www.sands.com/"
+      }
+    },
+    "foundation": {
+      "create": {
+        "name": "Adelson Family Foundation",
+        "type": "organization",
+        "description": "Family philanthropy supporting Jewish, Israel-related, medical and educational causes.",
+        "websiteUrl": "https://www.adelsonfamilyfoundation.org/"
+      }
+    },
+    "israel-hayom": {
+      "create": {
+        "name": "Israel Hayom",
+        "type": "organization",
+        "description": "Israeli newspaper published by Miriam Adelson.",
+        "websiteUrl": "https://www.israelhayom.com/"
+      }
+    },
+    "mavericks": {
+      "create": {
+        "name": "Dallas Mavericks",
+        "type": "organization",
+        "description": "National Basketball Association franchise controlled by the Adelson-Dumont ownership group.",
+        "websiteUrl": "https://www.mavs.com/"
+      }
+    },
+    "dumont": {
+      "create": {
+        "name": "Patrick Dumont",
+        "type": "donor",
+        "description": "Las Vegas Sands president and chief operating officer, Dallas Mavericks governor and Miriam Adelson's son-in-law."
+      }
+    },
+    "republican-party": { "match": { "name": "Republican Party", "type": "organization" } },
+    "rjc": {
+      "create": {
+        "name": "Republican Jewish Coalition",
+        "type": "organization",
+        "description": "Political organization advocating Republican policies in the American Jewish community.",
+        "websiteUrl": "https://www.rjchq.org/"
+      }
+    }
+  },
+  "sources": [
+    {
+      "key": "adelson-foundation-bio",
+      "title": "Dr. Miriam Adelson: Leadership",
+      "publisher": "Adelson Family Foundation",
+      "type": "primary",
+      "url": "https://www.adelsonfoundation.org/AFF/leadership.html",
+      "accessedAt": "2026-10-22",
+      "notes": "Family foundation biography; used for education, medicine and institutional chronology."
+    },
+    {
+      "key": "rockefeller-bio",
+      "title": "Miriam O. Adelson elected to the Board",
+      "publisher": "The Rockefeller University",
+      "publishedAt": "2016-06-09",
+      "type": "official_statement",
+      "url": "https://www.rockefeller.edu/news/4638-miriam-o-adelson-a-physician-and-expert-in-drug-addiction-research-is-elected-to-the-board/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "adelson-clinic",
+      "title": "Adelson Clinic",
+      "publisher": "Dr. Miriam and Sheldon G. Adelson Clinic for Drug Abuse Treatment and Research",
+      "type": "primary",
+      "url": "https://adelsoncliniclasvegas.com/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "adelson-foundation-vision",
+      "title": "Dr. Miriam Adelson: Vision and Legacy",
+      "publisher": "Adelson Family Foundation",
+      "type": "primary",
+      "url": "https://www.adelsonfamilyfoundation.org/dr-miriam-adelson.html",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "white-house-medal-2018",
+      "title": "President Donald J. Trump Names Recipients of the Presidential Medal of Freedom",
+      "publisher": "Trump White House Archives",
+      "publishedAt": "2018-11-10",
+      "type": "official_statement",
+      "url": "https://trumpwhitehouse.archives.gov/briefings-statements/president-donald-j-trump-names-recipients-presidential-medal-freedom/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "medal-ceremony-2018",
+      "title": "Remarks at a Presidential Medal of Freedom Ceremony",
+      "publisher": "Government Publishing Office",
+      "author": "Donald J. Trump",
+      "publishedAt": "2018-11-16",
+      "type": "transcript",
+      "url": "https://www.govinfo.gov/content/pkg/DCPD-201800792/pdf/DCPD-201800792.pdf",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "israel-hayom-about",
+      "title": "About Israel Hayom",
+      "publisher": "Israel Hayom",
+      "type": "primary",
+      "url": "https://www.israelhayom.com/about",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "israel-hayom-jerusalem-2018",
+      "title": "A great day for Israel—and for America",
+      "publisher": "Israel Hayom",
+      "author": "Miriam Adelson",
+      "publishedAt": "2018-05-14",
+      "type": "primary",
+      "url": "https://www.israelhayom.com/2018/05/14/a-great-day-for-israel-and-for-america/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "israel-hayom-thanks-2021",
+      "title": "Thank you, Mr. President. Thank you, dear friend!",
+      "publisher": "Israel Hayom",
+      "author": "Miriam Adelson",
+      "publishedAt": "2021-01-20",
+      "type": "primary",
+      "url": "https://www.israelhayom.com/opinions/thank-you-mr-president-thank-you-dear-friend/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "time-sheldon-2021",
+      "title": "Sheldon Adelson Has Died. The GOP Kingmaker Was Key to Many Political Careers",
+      "publisher": "TIME",
+      "publishedAt": "2021-01-12",
+      "type": "article",
+      "url": "https://time.com/5543562/sheldon-adelson-dies/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "lvs-proxy-2025",
+      "title": "Las Vegas Sands 2025 Proxy Statement",
+      "publisher": "U.S. Securities and Exchange Commission",
+      "publishedAt": "2025-04-02",
+      "type": "filing",
+      "url": "https://www.sec.gov/Archives/edgar/data/1300514/000130051425000082/lvs-20250402.htm",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "lvs-13d-2025",
+      "title": "Las Vegas Sands Schedule 13D Amendment 13",
+      "publisher": "U.S. Securities and Exchange Commission",
+      "publishedAt": "2025-05-30",
+      "type": "filing",
+      "url": "https://www.sec.gov/Archives/edgar/data/1300514/000095017025079159/xslSCHEDULE_13D_X01/primary_doc.xml",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "nba-mavericks-sale",
+      "title": "NBA Board of Governors approves sale of Mavericks",
+      "publisher": "Dallas Mavericks",
+      "publishedAt": "2023-12-28",
+      "type": "official_statement",
+      "url": "https://www.nba.com/mavs/saleofmavsapproved",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "nba-sale-analysis",
+      "title": "Mark Cuban says changing NBA landscape led to Mavericks sale",
+      "publisher": "Associated Press via NBA.com",
+      "publishedAt": "2023-12-28",
+      "type": "article",
+      "url": "https://www.nba.com/news/mark-cuban-changing-nba-landscape-sale-mavs-casino-families",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "factcheck-preserve-2024",
+      "title": "Preserve America PAC",
+      "publisher": "FactCheck.org",
+      "publishedAt": "2024-08-27",
+      "type": "article",
+      "url": "https://www.factcheck.org/2024/08/preserve-america-pac-2/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "reuters-adelson-trump-2024",
+      "title": "Republican mega-donor Adelson to back major pro-Trump spending group",
+      "publisher": "Reuters via Investing.com",
+      "publishedAt": "2024-05-30",
+      "type": "article",
+      "url": "https://www.investing.com/news/world-news/republican-mega-donor-adelson-to-back-major-protrump-spending-group-3464039",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "axios-donors-2024",
+      "title": "Meet the billionaires funneling millions into the 2024 race",
+      "publisher": "Axios",
+      "publishedAt": "2024-10-16",
+      "type": "article",
+      "url": "https://www.axios.com/2024/10/16/trump-harris-megadonors-2024",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "ap-kemp-2024",
+      "title": "Miriam Adelson's $1 million donation to Gov. Kemp's PAC could help Trump in Georgia",
+      "publisher": "Associated Press",
+      "publishedAt": "2024-10-14",
+      "type": "article",
+      "url": "https://apnews.com/article/311046f549ae9915fee313e8df04da82",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "israel-hayom-trump-2024",
+      "title": "The right man for the job",
+      "publisher": "Israel Hayom",
+      "author": "Miriam Adelson",
+      "publishedAt": "2024-11-04",
+      "type": "primary",
+      "url": "https://www.israelhayom.com/2024/11/04/the-right-man-for-the-job/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "israel-hayom-israel-real",
+      "title": "Israel is real",
+      "publisher": "Israel Hayom",
+      "author": "Miriam Adelson",
+      "publishedAt": "2025-05-01",
+      "type": "primary",
+      "url": "https://www.israelhayom.com/2025/05/01/israel-is-real/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "reuters-israel-influence-2025",
+      "title": "Trump salutes mega-donor Miriam Adelson for help shaping U.S. decisions on Israel",
+      "publisher": "Reuters via Investing.com",
+      "publishedAt": "2025-10-13",
+      "type": "article",
+      "url": "https://www.investing.com/news/stock-market-news/trump-salutes-mega-donor-miriam-adelson-for-help-shaping-us-decisions-on-israel-4284208",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "bloomberg-midterms-2026",
+      "title": "Republican Midterms War Chest Gets $40 Million Boost From Adelson",
+      "publisher": "Bloomberg",
+      "publishedAt": "2026-04-15",
+      "type": "article",
+      "url": "https://www.bloomberg.com/news/articles/2026-04-15/republican-midterms-war-chest-gets-40-million-boost-from-adelson",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "fec-adelson",
+      "title": "Individual contributions: Adelson, Miriam",
+      "publisher": "Federal Election Commission",
+      "type": "filing",
+      "url": "https://www.fec.gov/data/receipts/individual-contributions/?contributor_name=ADELSON%2C%20MIRIAM",
+      "accessedAt": "2026-10-22"
+    }
+  ],
+  "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "October 10, 1945",
+      "detail": "Tel Aviv, then Mandatory Palestine; raised in Haifa",
+      "featured": true,
+      "sources": ["adelson-foundation-bio", "rockefeller-bio"]
+    },
+    { "key": "sex", "label": "Sex", "value": "Female", "sources": ["rockefeller-bio"] },
+    {
+      "key": "citizenship",
+      "label": "Citizenship",
+      "value": "United States and Israel",
+      "detail": "Israeli-born American citizen",
+      "sources": ["adelson-foundation-bio", "lvs-13d-2025"]
+    },
+    {
+      "key": "religion",
+      "label": "Religion",
+      "value": "Jewish",
+      "detail": "Publicly identifies Jewish identity and support for Jewish life and Israel as central to her philanthropy",
+      "sources": ["white-house-medal-2018", "adelson-foundation-vision", "israel-hayom-israel-real"]
+    },
+    {
+      "key": "education",
+      "label": "Education",
+      "value": "B.Sc., Hebrew University of Jerusalem; M.D., Tel Aviv University",
+      "detail": "Microbiology and genetics degree followed by medical training, graduating magna cum laude",
+      "sources": ["adelson-foundation-bio", "rockefeller-bio"]
+    },
+    {
+      "key": "profession",
+      "label": "Medical specialty",
+      "value": "Internal medicine, emergency medicine and addiction treatment",
+      "sources": ["adelson-foundation-bio", "rockefeller-bio", "adelson-clinic"]
+    },
+    {
+      "key": "current-roles",
+      "label": "Current roles",
+      "value": "Las Vegas Sands special adviser and controlling shareholder-group member; Israel Hayom publisher; Mavericks co-owner",
+      "asOf": "2026-10-22",
+      "featured": true,
+      "sources": ["lvs-proxy-2025", "israel-hayom-about", "nba-mavericks-sale"]
+    },
+    {
+      "key": "lvs-control",
+      "label": "Las Vegas Sands voting control",
+      "value": "54.7% held by Adelson reporting group",
+      "detail": "SEC proxy figure as of March 17, 2025; group ownership is not the same as Adelson's direct personal ownership",
+      "asOf": "2025-03-17",
+      "sources": ["lvs-proxy-2025"]
+    },
+    {
+      "key": "medal",
+      "label": "Presidential honor",
+      "value": "Presidential Medal of Freedom",
+      "detail": "Awarded by Donald Trump in 2018 for medical, philanthropic and humanitarian work",
+      "asOf": "2018-11-16",
+      "sources": ["white-house-medal-2018", "medal-ceremony-2018"]
+    },
+    {
+      "key": "mavericks",
+      "label": "Dallas Mavericks stake",
+      "value": "Controlling ownership interest held by Adelson-Dumont families",
+      "detail": "NBA-approved transaction valued around $3.5 billion; family ownership is not Adelson's personal net worth",
+      "asOf": "2023-12-27",
+      "sources": ["nba-mavericks-sale", "nba-sale-analysis"]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "adelson-sheldon",
+      "source": "adelson",
+      "target": "sheldon",
+      "relType": "married-to",
+      "role": "Spouses, philanthropic partners and political donors",
+      "from": "1991",
+      "to": "2021-01-11",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["adelson-foundation-bio", "time-sheldon-2021"]
+    },
+    {
+      "key": "adelson-lvs",
+      "source": "adelson",
+      "target": "lvs",
+      "relType": "works-for",
+      "role": "Co-founder and special adviser; member of controlling shareholder group",
+      "from": "1990",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["lvs-proxy-2025", "lvs-13d-2025"]
+    },
+    {
+      "key": "adelson-foundation",
+      "source": "adelson",
+      "target": "foundation",
+      "relType": "chairs",
+      "role": "Family foundation leader and principal philanthropist",
+      "from": "2007",
+      "status": "verified",
+      "prominence": 2,
+      "sources": ["adelson-foundation-bio", "adelson-foundation-vision"]
+    },
+    {
+      "key": "adelson-trump",
+      "source": "adelson",
+      "target": "trump",
+      "relType": "allied-with",
+      "role": "Major donor, political supporter and advocate on U.S.–Israel policy",
+      "from": "2016",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["israel-hayom-thanks-2021", "reuters-adelson-trump-2024", "reuters-israel-influence-2025"]
+    },
+    {
+      "key": "adelson-trump-donations",
+      "source": "adelson",
+      "target": "trump",
+      "relType": "donated-to",
+      "role": "Financed super PACs and joint fundraising supporting Trump's campaigns and political operation",
+      "from": "2016",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["factcheck-preserve-2024", "axios-donors-2024", "fec-adelson"]
+    },
+    {
+      "key": "adelson-israel-hayom",
+      "source": "adelson",
+      "target": "israel-hayom",
+      "relType": "works-for",
+      "role": "Publisher and opinion writer",
+      "from": "2018",
+      "status": "verified",
+      "prominence": 2,
+      "sources": ["israel-hayom-about", "israel-hayom-jerusalem-2018", "israel-hayom-israel-real"]
+    },
+    {
+      "key": "adelson-mavericks",
+      "source": "adelson",
+      "target": "mavericks",
+      "relType": "invested-in",
+      "role": "Member of family group holding controlling ownership interest",
+      "from": "2023-12-27",
+      "status": "verified",
+      "prominence": 2,
+      "sources": ["nba-mavericks-sale", "nba-sale-analysis"]
+    },
+    {
+      "key": "adelson-dumont",
+      "source": "adelson",
+      "target": "dumont",
+      "relType": "family-of",
+      "role": "Mother-in-law; business and Mavericks ownership partner",
+      "from": "2009",
+      "status": "verified",
+      "prominence": 2,
+      "sources": ["lvs-proxy-2025", "nba-mavericks-sale"]
+    },
+    {
+      "key": "adelson-republican",
+      "source": "adelson",
+      "target": "republican-party",
+      "relType": "donated-to",
+      "role": "Major donor to Republican candidates, party committees and allied super PACs",
+      "from": "2008",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["time-sheldon-2021", "axios-donors-2024", "bloomberg-midterms-2026"]
+    },
+    {
+      "key": "adelson-rjc",
+      "source": "adelson",
+      "target": "rjc",
+      "relType": "affiliated-with",
+      "role": "Longtime benefactor and organizer in Republican Jewish politics",
+      "from": "2000",
+      "status": "verified",
+      "prominence": 2,
+      "sources": ["white-house-medal-2018", "time-sheldon-2021"]
+    }
+  ],
+  "events": [
+    {
+      "key": "born-1945",
+      "date": "1945-10-10",
+      "title": "Born in Tel Aviv",
+      "summary": "Miriam Farbstein was born in Tel Aviv before Israeli independence and grew up in Haifa.",
+      "category": "personal",
+      "significance": 2,
+      "status": "verified",
+      "participants": [["adelson", "subject"]],
+      "sources": ["adelson-foundation-bio", "rockefeller-bio"],
+      "chapter": "formation"
+    },
+    {
+      "key": "medical-training-1970s",
+      "date": "1970",
+      "title": "Completes medical training",
+      "summary": "Adelson studied microbiology and genetics at Hebrew University and earned her medical degree from Tel Aviv University.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "participants": [["adelson", "physician"]],
+      "sources": ["adelson-foundation-bio", "rockefeller-bio"],
+      "chapter": "formation"
+    },
+    {
+      "key": "addiction-research-1986",
+      "date": "1986",
+      "title": "Turns to addiction medicine",
+      "summary": "Adelson began sustained research and treatment work focused on drug dependence and its biological effects.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "participants": [["adelson", "researcher"]],
+      "sources": ["adelson-foundation-bio", "adelson-foundation-vision"],
+      "chapter": "medicine"
+    },
+    {
+      "key": "marries-1991",
+      "date": "1991",
+      "title": "Marries Sheldon Adelson",
+      "summary": "The marriage joined her medical and Israel-focused work with the business resources of the Las Vegas Sands founder.",
+      "category": "personal",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        ["adelson", "spouse"],
+        ["sheldon", "spouse"]
+      ],
+      "sources": ["adelson-foundation-bio", "time-sheldon-2021"],
+      "chapter": "medicine"
+    },
+    {
+      "key": "tel-aviv-clinic-1993",
+      "date": "1993",
+      "title": "Establishes Tel Aviv addiction clinic",
+      "summary": "Adelson created a hospital-affiliated treatment and research program intended to treat addiction as a medical disease.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "participants": [["adelson", "founder"]],
+      "sources": ["adelson-foundation-bio", "adelson-clinic"],
+      "chapter": "medicine"
+    },
+    {
+      "key": "las-vegas-clinic-2000",
+      "date": "2000-02",
+      "title": "Opens Las Vegas addiction clinic",
+      "summary": "The family funded a Las Vegas outpatient opioid-treatment and research clinic serving adults and adolescents.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "participants": [["adelson", "founder"]],
+      "sources": ["adelson-clinic", "adelson-foundation-bio"],
+      "chapter": "medicine"
+    },
+    {
+      "key": "foundation-2007",
+      "date": "2007",
+      "title": "Builds family foundation structure",
+      "summary": "The Adelsons organized large-scale giving around Jewish life, Israel, medicine and education.",
+      "category": "finance",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        ["adelson", "philanthropist"],
+        ["sheldon", "philanthropist"],
+        ["foundation", "organization"]
+      ],
+      "sources": ["adelson-foundation-bio", "adelson-foundation-vision"],
+      "chapter": "philanthropy"
+    },
+    {
+      "key": "backs-trump-2016",
+      "date": "2016",
+      "title": "Becomes a major Trump backer",
+      "summary": "Miriam and Sheldon Adelson supported Trump's presidential campaign and became frequent political allies during his first term.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["adelson", "donor"],
+        ["sheldon", "donor"],
+        ["trump", "candidate"]
+      ],
+      "sources": ["time-sheldon-2021", "israel-hayom-thanks-2021"],
+      "chapter": "trump-alliance"
+    },
+    {
+      "key": "jerusalem-2018",
+      "date": "2018-05-14",
+      "title": "U.S. embassy opens in Jerusalem",
+      "summary": "Adelson publicly celebrated Trump's recognition of Jerusalem as Israel's capital, a policy she and her husband had long supported.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["adelson", "advocate"],
+        ["trump", "president"]
+      ],
+      "sources": ["israel-hayom-jerusalem-2018", "israel-hayom-thanks-2021"],
+      "chapter": "trump-alliance"
+    },
+    {
+      "key": "medal-2018",
+      "date": "2018-11-16",
+      "title": "Receives Presidential Medal of Freedom",
+      "summary": "Trump awarded Adelson the highest U.S. civilian honor, citing her addiction medicine, philanthropy and support for Jewish organizations.",
+      "category": "career",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["adelson", "recipient"],
+        ["trump", "president"]
+      ],
+      "sources": ["white-house-medal-2018", "medal-ceremony-2018"],
+      "chapter": "trump-alliance"
+    },
+    {
+      "key": "preserve-2020",
+      "date": "2020",
+      "title": "Finances Preserve America",
+      "summary": "The Adelsons gave $90 million to the pro-Trump super PAC during the 2020 election cycle.",
+      "category": "finance",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["adelson", "donor"],
+        ["sheldon", "donor"],
+        ["trump", "beneficiary"]
+      ],
+      "sources": ["factcheck-preserve-2024", "reuters-adelson-trump-2024"],
+      "chapter": "political-money"
+    },
+    {
+      "key": "sheldon-dies-2021",
+      "date": "2021-01-11",
+      "title": "Sheldon Adelson dies",
+      "summary": "His death left Miriam Adelson as the central public steward of the family's business ownership, philanthropy, media and political giving.",
+      "category": "personal",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["adelson", "widow"],
+        ["sheldon", "deceased"]
+      ],
+      "sources": ["time-sheldon-2021", "lvs-proxy-2025"],
+      "chapter": "succession"
+    },
+    {
+      "key": "mavericks-2023",
+      "date": "2023-12-27",
+      "title": "Family acquires controlling Mavericks interest",
+      "summary": "The NBA approved the Adelson-Dumont families' purchase of the Dallas Mavericks at a valuation around $3.5 billion.",
+      "category": "finance",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        ["adelson", "owner"],
+        ["dumont", "team governor"],
+        ["mavericks", "franchise"]
+      ],
+      "sources": ["nba-mavericks-sale", "nba-sale-analysis"],
+      "chapter": "business"
+    },
+    {
+      "key": "preserve-2024",
+      "date": "2024-10",
+      "title": "Gives $95 million to Preserve America in third quarter",
+      "summary": "FEC reporting showed Adelson as the principal financier of the pro-Trump super PAC during the closing months of the 2024 election.",
+      "category": "finance",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["adelson", "donor"],
+        ["trump", "beneficiary"]
+      ],
+      "sources": ["axios-donors-2024", "fec-adelson"],
+      "chapter": "political-money"
+    },
+    {
+      "key": "kemp-2024",
+      "date": "2024-10-14",
+      "title": "Funds Kemp-aligned Georgia operation",
+      "summary": "A $1 million contribution to Brian Kemp's federal super PAC supported turnout activity benefiting Trump and other Republicans in Georgia.",
+      "category": "finance",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        ["adelson", "donor"],
+        ["trump", "beneficiary"]
+      ],
+      "sources": ["ap-kemp-2024", "fec-adelson"],
+      "chapter": "political-money"
+    },
+    {
+      "key": "control-2025",
+      "date": "2025-03-17",
+      "title": "SEC reports majority family voting control",
+      "summary": "Las Vegas Sands reported that Adelson and associated trusts and entities collectively controlled 54.7% of outstanding shares.",
+      "category": "finance",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["adelson", "reporting person"],
+        ["lvs", "issuer"]
+      ],
+      "sources": ["lvs-proxy-2025", "lvs-13d-2025"],
+      "chapter": "business"
+    },
+    {
+      "key": "midterms-2026",
+      "date": "2026-04-15",
+      "title": "Adds $40 million to Republican midterm groups",
+      "summary": "Adelson gave $30 million to the Senate leadership-aligned super PAC and $10 million to its House counterpart for the 2026 midterms.",
+      "category": "finance",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["adelson", "donor"],
+        ["republican-party", "beneficiary network"]
+      ],
+      "sources": ["bloomberg-midterms-2026", "fec-adelson"],
+      "chapter": "independent-power"
+    }
+  ],
+  "statements": [
+    {
+      "key": "jerusalem-2018-quote",
+      "date": "2018-05-14",
+      "datePrecision": "day",
+      "venue": "Israel Hayom column",
+      "issue": "Jerusalem",
+      "quote": "A great day for Israel—and for America.",
+      "summary": "Adelson welcomed the opening of the U.S. embassy in Jerusalem.",
+      "stance": "explicit",
+      "source": "israel-hayom-jerusalem-2018"
+    },
+    {
+      "key": "trump-thanks-2021",
+      "date": "2021-01-20",
+      "datePrecision": "day",
+      "venue": "Israel Hayom essay adapted from an Israeli-American Council speech",
+      "issue": "Donald Trump and Israel",
+      "quote": "Thank you, Mr. President. Thank you, dear friend!",
+      "summary": "Adelson praised Trump's first-term policy toward Israel.",
+      "stance": "explicit",
+      "source": "israel-hayom-thanks-2021"
+    },
+    {
+      "key": "mavericks-2023-quote",
+      "date": "2023-12-28",
+      "datePrecision": "day",
+      "venue": "Dallas Mavericks ownership statement",
+      "issue": "Dallas Mavericks",
+      "quote": "We are honored to be the new majority owners of the Dallas Mavericks and part of the NBA family.",
+      "summary": "Adelson announced the family's controlling acquisition after NBA approval.",
+      "stance": "explicit",
+      "source": "nba-mavericks-sale"
+    },
+    {
+      "key": "right-man-2024",
+      "date": "2024-11-04",
+      "datePrecision": "day",
+      "venue": "Israel Hayom endorsement column",
+      "issue": "2024 presidential election",
+      "quote": "The right man for the job.",
+      "summary": "Adelson endorsed Trump on the eve of the election, emphasizing his record toward Israel.",
+      "stance": "explicit",
+      "source": "israel-hayom-trump-2024"
+    },
+    {
+      "key": "israel-real-2025",
+      "date": "2025-05-01",
+      "datePrecision": "day",
+      "venue": "Israel Hayom Independence Day column",
+      "issue": "Israel and Jewish sovereignty",
+      "quote": "Israel is real.",
+      "summary": "Adelson urged gratitude for the existence and achievements of the Israeli state while acknowledging vulnerability and unresolved problems.",
+      "stance": "explicit",
+      "source": "israel-hayom-israel-real"
+    }
+  ],
+  "ideas": {
+    "traditions": [
+      {
+        "label": "Conservative pro-Israel politics",
+        "atlasId": "conservatism",
+        "basis": "Sustained Republican giving combined with advocacy for U.S. recognition, security and diplomatic support of Israel.",
+        "context": "Her positions are documented individually; Jewish identity does not itself imply them.",
+        "sources": ["israel-hayom-jerusalem-2018", "israel-hayom-thanks-2021", "axios-donors-2024"]
+      }
+    ],
+    "influences": [
+      {
+        "name": "Sheldon Adelson",
+        "note": "Her husband and partner in Las Vegas Sands, philanthropy, newspaper ownership and Republican giving until his death in 2021.",
+        "sources": ["adelson-foundation-bio", "time-sheldon-2021"]
+      }
+    ],
+    "works": [
+      {
+        "title": "Adelson addiction-treatment clinics",
+        "year": 1993,
+        "kind": "Medical institutions",
+        "detail": "Hospital-affiliated treatment and research programs in Tel Aviv and Las Vegas using medication-assisted treatment.",
+        "source": "adelson-clinic"
+      },
+      {
+        "title": "Israel Hayom columns",
+        "year": 2018,
+        "kind": "Political commentary",
+        "detail": "First-person arguments about Israel, U.S.–Israel relations and American presidential politics.",
+        "source": "israel-hayom-jerusalem-2018"
+      }
+    ],
+    "featuredQuotes": ["israel-real-2025", "right-man-2024"]
+  },
+  "chapters": [
+    {
+      "key": "formation",
+      "title": "An Israeli medical formation came first",
+      "dek": "Adelson's public life began in medicine decades before casino ownership made her a political financier.",
+      "body": "Miriam Farbstein was born in Tel Aviv on October 10, 1945, before the establishment of the State of Israel, and grew up in Haifa. Her parents had left Poland before the Holocaust. That family history and Israel's early statehood became lasting elements of her public identity, but they do not by themselves explain the political choices she later made. [[adelson-foundation-bio, rockefeller-bio]]\n\nShe studied microbiology and genetics at Hebrew University of Jerusalem and earned a medical degree, magna cum laude, at Tel Aviv University. She trained in internal and emergency medicine and became a head physician at Rokach Hospital in Tel Aviv. [[adelson-foundation-bio, rockefeller-bio]]\n\nThe record matters because “casino billionaire” describes the wealth she later controlled, not the professional identity she first built. Her medical credentials and addiction research were substantive careers rather than honorary affiliations acquired after wealth. [[rockefeller-bio, adelson-clinic]]"
+    },
+    {
+      "key": "medicine",
+      "title": "Addiction treatment became her independent institution",
+      "dek": "Clinics in Tel Aviv and Las Vegas linked research, medication and long-term care.",
+      "body": "Beginning in 1986, Adelson concentrated on drug dependence and the biological effects of addiction. She helped establish a Tel Aviv clinic in 1993 that was affiliated with a hospital, reinforcing the argument that addiction should be treated as disease rather than only crime or moral failure. [[adelson-foundation-bio, adelson-clinic]]\n\nShe married casino entrepreneur Sheldon Adelson in 1991. After dividing time between Israel and the United States, the family opened a Las Vegas clinic in 2000. The program used medication-assisted treatment and served adults and adolescents, with family philanthropy supporting operations and research. [[adelson-foundation-bio, adelson-clinic]]\n\nThe clinics also provided the foundation for later public honors. They were philanthropic institutions, but their medical purpose and professional management should be assessed separately from the couple's campaign contributions or casino interests. [[adelson-clinic, white-house-medal-2018]]"
+    },
+    {
+      "key": "philanthropy",
+      "title": "Wealth scaled a transnational philanthropic network",
+      "dek": "The Adelsons joined medical giving to Jewish education, Holocaust memory and support for Israel.",
+      "body": "As Las Vegas Sands expanded in the United States and Asia, Miriam and Sheldon Adelson built a family foundation able to make large grants. Its priorities included medical research, Jewish schools, Holocaust memorial organizations, Birthright Israel and groups connecting American Jewish life with Israel. [[adelson-foundation-bio, adelson-foundation-vision, white-house-medal-2018]]\n\nAdelson's giving combined universal medical claims with an explicit national and religious commitment. She described Jewish continuity and defense of Israel as obligations rather than neutral charitable categories. Those first-person positions provide better evidence of her worldview than attempts to infer politics from identity alone. [[adelson-foundation-vision, israel-hayom-israel-real]]\n\nThe foundation's grants and her personal political contributions operate under different legal regimes. A full account connects them where they share institutions or stated goals, while refusing to add charitable spending to campaign-finance totals. [[adelson-foundation-bio, fec-adelson]]"
+    },
+    {
+      "key": "political-money",
+      "title": "The family became a political institution of its own",
+      "dek": "Very large checks gave the Adelsons repeated leverage in Republican primaries, general elections and policy debates.",
+      "body": "The Adelsons became leading Republican financiers during the Obama era, supporting candidates, party committees and outside groups. Their giving favored hawkish U.S. policy toward Iran, strong support for Israel and conservative domestic politics. The scale allowed candidates to seek their support as a strategic event, but a contribution is evidence of access and preference—not proof that a later policy was purchased. [[time-sheldon-2021, fec-adelson]]\n\nThey initially supported other Republicans in 2016 before backing Donald Trump. In 2020 they supplied $90 million to Preserve America, a super PAC supporting his reelection. Super PAC gifts can be unlimited because the committee must remain legally independent of the campaign, even when donor and candidate goals align. [[factcheck-preserve-2024, reuters-adelson-trump-2024]]\n\nAfter Sheldon's death, Miriam demonstrated that the operation was not solely her husband's. In 2024 she became Preserve America's principal funder, including $95 million reported during the third quarter, and also gave to a Kemp-aligned group organizing turnout in Georgia. [[axios-donors-2024, ap-kemp-2024, fec-adelson]]"
+    },
+    {
+      "key": "trump-alliance",
+      "title": "Trump turned donor access into visible policy alliance",
+      "dek": "Jerusalem, the Golan Heights and the Medal of Freedom made the relationship unusually public.",
+      "body": "The Adelsons sought policies that recognized Jerusalem as Israel's capital, confronted Iran and strengthened the U.S.–Israel alliance. Trump moved the U.S. embassy to Jerusalem in 2018, and Miriam Adelson celebrated the decision in her own newspaper as beneficial to both countries. [[israel-hayom-jerusalem-2018, israel-hayom-thanks-2021]]\n\nIn November 2018 Trump awarded her the Presidential Medal of Freedom, citing addiction medicine, philanthropy and support for Jewish organizations. The honor recognized real medical and charitable work, while its award by a president whose party the Adelsons had heavily financed inevitably raised patronage questions. The record supports both facts without requiring one to cancel the other. [[white-house-medal-2018, medal-ceremony-2018, time-sheldon-2021]]\n\nTrump later spoke openly about the couple's frequent White House visits and their advocacy on Israel policy. His account is evidence of access and influence, not a complete causal record for decisions also supported by evangelical voters, Republican officials and Israeli governments. [[reuters-israel-influence-2025, israel-hayom-thanks-2021]]"
+    },
+    {
+      "key": "succession",
+      "title": "Sheldon Adelson's death did not dissolve the network",
+      "dek": "Miriam became the central public steward of family capital, philanthropy, media and political giving.",
+      "body": "Sheldon Adelson died on January 11, 2021. Obituaries emphasized his role as Las Vegas Sands founder and Republican kingmaker, but the couple had long acted together in philanthropy and politics. Miriam's own medicine, writing and advocacy supplied an independent public identity. [[time-sheldon-2021, adelson-foundation-bio]]\n\nControl passed through shares, trusts and family entities rather than a simple inheritance of one job title. Las Vegas Sands employed Adelson as co-founder and special adviser while professional executives operated the company. SEC filings identify a reporting group in which she and family trusts collectively held majority voting power. [[lvs-proxy-2025, lvs-13d-2025]]\n\nShe also remained publisher of Israel Hayom and continued first-person political commentary. Ownership can shape an outlet's institutional direction, but individual articles still have authors and editors; the profile attributes Adelson's own columns to her and does not treat every news story as her statement. [[israel-hayom-about, israel-hayom-israel-real]]"
+    },
+    {
+      "key": "business",
+      "title": "Corporate control expanded into American sports",
+      "dek": "The Mavericks purchase made the family a Texas civic and business power as well as a casino shareholder.",
+      "body": "Las Vegas Sands's 2025 proxy reported that Adelson, trusts and associated family entities collectively controlled 54.7% of the company's outstanding stock. Adelson herself was listed with 48.6% beneficial ownership, but SEC footnotes distinguish direct interests, options, trusts and group attribution. Those categories should not be collapsed into a personal cash figure. [[lvs-proxy-2025, lvs-13d-2025]]\n\nIn December 2023 the NBA approved the Adelson-Dumont families' acquisition of the Dallas Mavericks' controlling interest from Mark Cuban at a valuation around $3.5 billion. Son-in-law Patrick Dumont became the team's governor, while Cuban retained a minority stake. [[nba-mavericks-sale, nba-sale-analysis]]\n\nThe transaction connected a global resort operator with a major Texas institution. It increased the family's civic reach and commercial stake in the state, but team ownership is a business relationship distinct from Adelson's personal federal donations and from any future Texas debate about casinos. [[nba-mavericks-sale, nba-sale-analysis, fec-adelson]]"
+    },
+    {
+      "key": "media-and-israel",
+      "title": "A newspaper gives her influence beyond checks",
+      "dek": "Israel Hayom joins capital, editorial voice and transnational political advocacy in a single institution.",
+      "body": "Israel Hayom identifies Miriam Adelson as its publisher. The free newspaper has been a major presence in Israeli media, and the Adelson family's ownership made it part of debates over press power and political alignment. Ownership is influence over an institution, but it is not proof that the publisher dictates each report. [[israel-hayom-about]]\n\nAdelson also writes under her own name. Her columns praised Trump's Jerusalem decision, endorsed him in 2024 and described Jewish sovereignty as a historical achievement requiring gratitude and defense. These texts make her substantive positions explicit rather than inferred from donations alone. [[israel-hayom-jerusalem-2018, israel-hayom-trump-2024, israel-hayom-israel-real]]\n\nThe combination is unusual: a U.S. megadonor also publishes a leading newspaper in another democracy. That gives her parallel channels—campaign finance in the United States and agenda-setting speech in Israel—while the legal and editorial systems remain separate. [[israel-hayom-about, fec-adelson]]"
+    },
+    {
+      "key": "independent-power",
+      "title": "By 2026, her donor power was independent and durable",
+      "dek": "Midterm giving showed that Adelson financed the party as well as one presidential candidate.",
+      "body": "Adelson's 2024 support helped give Trump an outside spending operation capable of sustained advertising in the final months. She publicly endorsed him in Israel Hayom, aligning her money with a clear policy and leadership argument rather than presenting the contributions as ideologically neutral. [[axios-donors-2024, israel-hayom-trump-2024]]\n\nIn April 2026 she gave $40 million to super PACs aligned with Republican Senate and House leaders, including $30 million to the Senate group. The contributions broadened her role beyond presidential politics and placed her among the central financiers of the party's attempt to retain Congress. [[bloomberg-midterms-2026, fec-adelson]]\n\nAs of October 22, 2026, Adelson's influence rests on several assets that should be measured separately: disclosed campaign money, majority-family corporate control, ownership of media and sports institutions, philanthropy, and direct relationships with political leaders. The FEC tab can count the first category; the rest require filings, institutional records and attributed reporting rather than a single dollar total. [[lvs-proxy-2025, nba-mavericks-sale, israel-hayom-about, bloomberg-midterms-2026]]"
+    }
+  ]
+}

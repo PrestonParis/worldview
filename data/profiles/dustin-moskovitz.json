@@ -1,0 +1,758 @@
+{
+  "subject": "moskovitz",
+  "reviewedAt": "2026-10-25",
+  "sourcesVerifiedAt": "2026-10-25",
+  "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Dustin%20Moskovitz%20Headshot.jpg?width=400",
+  "brief": {
+    "inclusion": "Facebook and Asana co-founder whose Democratic giving and Good Ventures-funded philanthropy link technology wealth to elections, global health, science and catastrophic-risk policy.",
+    "identifiers": { "fec_contributor": "MOSKOVITZ, DUSTIN A" },
+    "namesakes": "Matched through Dustin A. Moskovitz, Asana/Good Ventures affiliations and San Francisco addresses.",
+    "coverage": {
+      "from": "1984-05-22",
+      "through": "2026-10-25",
+      "lags": "Good Ventures grants and Coefficient Giving recommendations are distinct from personal FEC contributions."
+    },
+    "openQuestions": [
+      "The division of grantmaking authority among Moskovitz, Cari Tuna, Good Ventures and Coefficient Giving varies by program.",
+      "Meta-share sales and donations change estimates of personal net worth quickly."
+    ],
+    "review": [
+      { "kind": "evidence", "by": "OA", "at": "2026-10-25" },
+      { "kind": "chronology", "by": "OA", "at": "2026-10-25" },
+      { "kind": "neutrality", "by": "OA", "at": "2026-10-25" },
+      { "kind": "current", "by": "OA", "at": "2026-10-25" }
+    ]
+  },
+  "summary": "Dustin Moskovitz co-founded Facebook and Asana, then committed with his wife Cari Tuna to give away most of their wealth through Good Ventures and the organization now called Coefficient Giving. Their philanthropy applies effective-altruist methods to global health, science, farm-animal welfare and catastrophic risks, while Moskovitz separately became one of the largest Democratic donors in the 2016, 2020 and 2024 elections.",
+  "roles": [
+    {
+      "label": "Board member and adviser, Asana",
+      "detail": "Co-founded Asana, served as CEO until 2025 and chair until 2026.",
+      "sources": ["asana-bio", "asana-succession"]
+    },
+    {
+      "label": "Co-founder, Good Ventures",
+      "detail": "Created the foundation with Cari Tuna in 2011 and committed most of their wealth to philanthropy.",
+      "sources": ["good-ventures-home", "good-ventures-story"]
+    },
+    {
+      "label": "Co-founder and chair, Coefficient Giving",
+      "detail": "The organization formerly known as Open Philanthropy advises Good Ventures on high-impact grants.",
+      "sources": ["coefficient-about", "asana-succession"]
+    },
+    {
+      "label": "Democratic donor",
+      "detail": "Gave approximately $51 million in the 2024 federal cycle, mostly to the principal pro-Harris super PAC.",
+      "sources": ["fec-moskovitz", "opensecrets-2024"]
+    }
+  ],
+  "entities": {
+    "moskovitz": { "match": { "name": "Dustin Moskovitz", "type": "donor" } },
+    "facebook": {
+      "create": {
+        "name": "Facebook",
+        "type": "company",
+        "description": "Social-network company co-founded by Dustin Moskovitz, later renamed Meta Platforms."
+      }
+    },
+    "asana": {
+      "create": {
+        "name": "Asana",
+        "type": "company",
+        "description": "Work-management software company co-founded by Dustin Moskovitz and Justin Rosenstein.",
+        "websiteUrl": "https://asana.com/"
+      }
+    },
+    "cari": {
+      "create": {
+        "name": "Cari Tuna",
+        "type": "donor",
+        "description": "Good Ventures president and co-founder, and spouse of Dustin Moskovitz."
+      }
+    },
+    "good-ventures": {
+      "create": {
+        "name": "Good Ventures",
+        "type": "organization",
+        "description": "Philanthropic foundation created by Cari Tuna and Dustin Moskovitz.",
+        "websiteUrl": "https://goodventures.org/"
+      }
+    },
+    "coefficient": {
+      "create": {
+        "name": "Coefficient Giving",
+        "type": "organization",
+        "description": "Philanthropic research and grantmaking organization formerly known as Open Philanthropy.",
+        "websiteUrl": "https://www.openphilanthropy.org/"
+      }
+    },
+    "givewell": {
+      "create": {
+        "name": "GiveWell",
+        "type": "organization",
+        "description": "Charity research organization that incubated the Open Philanthropy Project with Good Ventures."
+      }
+    },
+    "democratic-party": { "match": { "name": "Democratic Party", "type": "organization" } },
+    "ff-pac": {
+      "create": {
+        "name": "FF PAC",
+        "type": "organization",
+        "description": "Federal super PAC supporting the 2024 Democratic presidential ticket."
+      }
+    },
+    "biden": { "match": { "name": "Joe Biden", "type": "politician" } },
+    "harris": { "match": { "name": "Kamala Harris", "type": "politician" } },
+    "meta": {
+      "create": {
+        "name": "Meta Platforms",
+        "type": "company",
+        "description": "Technology company formerly named Facebook."
+      }
+    },
+    "justin": {
+      "create": {
+        "name": "Justin Rosenstein",
+        "type": "donor",
+        "description": "Software entrepreneur who co-founded Asana with Dustin Moskovitz."
+      }
+    }
+  },
+  "sources": [
+    {
+      "key": "asana-bio",
+      "title": "Dustin Moskovitz",
+      "publisher": "Asana",
+      "type": "primary",
+      "url": "https://asana.com/leadership/dustin-moskovitz",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "asana-succession",
+      "title": "Asana Announces CEO Succession Plan",
+      "publisher": "Asana",
+      "type": "official_statement",
+      "url": "https://investors.asana.com/news-releases/news-release-details/asana-announces-ceo-succession-plan",
+      "publishedAt": "2025",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "asana-10k",
+      "title": "Asana annual report",
+      "publisher": "U.S. Securities and Exchange Commission",
+      "type": "filing",
+      "url": "https://www.sec.gov/edgar/browse/?CIK=1477720&owner=exclude",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "good-ventures-home",
+      "title": "Good Ventures",
+      "publisher": "Good Ventures",
+      "type": "primary",
+      "url": "https://goodventures.org/",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "good-ventures-story",
+      "title": "Our Story",
+      "publisher": "Good Ventures",
+      "type": "primary",
+      "url": "https://goodventures.org/our-story/",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "coefficient-about",
+      "title": "About Us",
+      "publisher": "Coefficient Giving",
+      "type": "primary",
+      "url": "https://www.openphilanthropy.org/about-us/",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "coefficient-causes",
+      "title": "Focus Areas",
+      "publisher": "Coefficient Giving",
+      "type": "primary",
+      "url": "https://www.openphilanthropy.org/focus/",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "givewell-partnership",
+      "title": "The history of the Open Philanthropy Project",
+      "publisher": "GiveWell",
+      "type": "primary",
+      "url": "https://www.givewell.org/about/open-philanthropy-project",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "forbes-moskovitz",
+      "title": "Dustin Moskovitz",
+      "publisher": "Forbes",
+      "type": "secondary",
+      "url": "https://www.forbes.com/profile/dustin-moskovitz/",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "britannica-facebook",
+      "title": "Dustin Moskovitz",
+      "publisher": "Encyclopaedia Britannica",
+      "type": "secondary",
+      "url": "https://www.britannica.com/biography/Dustin-Moskovitz",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "fec-moskovitz",
+      "title": "Individual contributions by Moskovitz, Dustin A.",
+      "publisher": "Federal Election Commission",
+      "type": "filing",
+      "url": "https://www.fec.gov/data/receipts/individual-contributions/?contributor_name=MOSKOVITZ%2C+DUSTIN",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "opensecrets-2024",
+      "title": "Elon Musk tops list of 2024 political donors",
+      "publisher": "OpenSecrets",
+      "type": "article",
+      "url": "https://www.opensecrets.org/news/2025/03/elon-musk-tops-list-of-2024-political-donors-but-six-others-gave-more-than-100-million/",
+      "publishedAt": "2025-03",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "ap-ai-campaign",
+      "title": "Democrats wanted an agreement on using artificial intelligence",
+      "publisher": "Associated Press",
+      "type": "article",
+      "url": "https://apnews.com/article/7c6b78b6a8ded9ad253be9ef491e0284",
+      "publishedAt": "2024",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "wapo-philanthropy",
+      "title": "Cari Tuna and Dustin Moskovitz pioneer a new approach to philanthropy",
+      "publisher": "The Washington Post",
+      "type": "article",
+      "url": "https://www.washingtonpost.com/lifestyle/style/cari-tuna-and-dustin-moskovitz-young-silicon-valley-billionaires-pioneer-new-approach-to-philanthropy/2014/12/26/34923d58-6e64-11e4-ad12-3734c461eab6_story.html",
+      "publishedAt": "2014-12-26",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "axios-ballots",
+      "title": "Zuckerberg and his co-founder pour millions into midterm initiatives",
+      "publisher": "Axios",
+      "type": "article",
+      "url": "https://www.axios.com/2018/08/21/zuckerberg-facebook-dustin-moskovitz-philanthropy-1534266689",
+      "publishedAt": "2018-08-21",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "facebook-history",
+      "title": "Meta company history",
+      "publisher": "Meta",
+      "type": "primary",
+      "url": "https://about.meta.com/company-info/",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "asana-founders",
+      "title": "About Asana",
+      "publisher": "Asana",
+      "type": "primary",
+      "url": "https://asana.com/company",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "moskovitz-2016",
+      "title": "Compelled to Act",
+      "publisher": "Dustin Moskovitz",
+      "type": "primary",
+      "url": "https://medium.com/@moskov/compelled-to-act-2da39455b2f5",
+      "publishedAt": "2016-09-08",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "pledge",
+      "title": "Dustin Moskovitz and Cari Tuna",
+      "publisher": "The Giving Pledge",
+      "type": "primary",
+      "url": "https://www.givingpledge.org/pledger?pledgerId=240",
+      "accessedAt": "2026-10-25"
+    }
+  ],
+  "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "May 22, 1984",
+      "detail": "Gainesville, Florida.",
+      "featured": true,
+      "sources": ["britannica-facebook", "forbes-moskovitz"]
+    },
+    { "key": "sex", "label": "Sex", "value": "Male", "sources": ["asana-bio"] },
+    { "key": "race", "label": "Race", "value": "White", "sources": ["britannica-facebook"] },
+    { "key": "citizenship", "label": "Citizenship", "value": "United States", "sources": ["britannica-facebook"] },
+    { "key": "spouse", "label": "Spouse", "value": "Cari Tuna", "sources": ["good-ventures-story", "pledge"] },
+    {
+      "key": "education",
+      "label": "Education",
+      "value": "Harvard University",
+      "detail": "Studied economics; left before graduating to work on Facebook.",
+      "sources": ["asana-bio", "britannica-facebook"]
+    },
+    {
+      "key": "party",
+      "label": "Political affiliation",
+      "value": "Democratic",
+      "sources": ["fec-moskovitz", "opensecrets-2024"]
+    },
+    {
+      "key": "current-roles",
+      "label": "Current roles",
+      "value": "Asana board member and adviser; Good Ventures co-founder; Coefficient Giving chair",
+      "featured": true,
+      "asOf": "2026-10-25",
+      "sources": ["asana-bio", "asana-succession", "good-ventures-home"]
+    },
+    {
+      "key": "net-worth",
+      "label": "Estimated net worth",
+      "value": "$10.2 billion",
+      "detail": "Forbes estimate; value moves with Meta and Asana holdings.",
+      "featured": true,
+      "asOf": "2026-04-01",
+      "sources": ["forbes-moskovitz"]
+    },
+    {
+      "key": "residence",
+      "label": "Residence",
+      "value": "San Francisco, California",
+      "asOf": "2026-10-25",
+      "sources": ["fec-moskovitz", "forbes-moskovitz"]
+    },
+    {
+      "key": "giving-commitment",
+      "label": "Giving commitment",
+      "value": "Vast majority of family wealth",
+      "sources": ["good-ventures-story", "pledge"]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "facebook",
+      "source": "moskovitz",
+      "target": "facebook",
+      "relType": "co-founded",
+      "role": "Co-founder, first CTO and vice president of engineering",
+      "from": "2004",
+      "until": "2008",
+      "prominence": 3,
+      "sources": ["asana-bio", "facebook-history"]
+    },
+    {
+      "key": "meta",
+      "source": "moskovitz",
+      "target": "meta",
+      "relType": "invested-in",
+      "role": "Major shareholder through retained Facebook equity",
+      "from": "2004",
+      "prominence": 2,
+      "sources": ["forbes-moskovitz"]
+    },
+    {
+      "key": "asana",
+      "source": "moskovitz",
+      "target": "asana",
+      "relType": "co-founded",
+      "role": "Co-founder; CEO 2010–2025; chair 2019–2026; board member and adviser",
+      "from": "2008",
+      "prominence": 3,
+      "sources": ["asana-bio", "asana-succession"]
+    },
+    {
+      "key": "justin",
+      "source": "moskovitz",
+      "target": "justin",
+      "relType": "collaborated-with",
+      "role": "Asana co-founders",
+      "from": "2008",
+      "prominence": 2,
+      "sources": ["asana-founders"]
+    },
+    {
+      "key": "cari",
+      "source": "moskovitz",
+      "target": "cari",
+      "relType": "married-to",
+      "role": "Spouses and philanthropic partners",
+      "prominence": 3,
+      "sources": ["good-ventures-story", "pledge"]
+    },
+    {
+      "key": "good-ventures",
+      "source": "moskovitz",
+      "target": "good-ventures",
+      "relType": "co-founded",
+      "role": "Co-founder and principal source of capital",
+      "from": "2011",
+      "prominence": 3,
+      "sources": ["good-ventures-home", "good-ventures-story"]
+    },
+    {
+      "key": "coefficient",
+      "source": "moskovitz",
+      "target": "coefficient",
+      "relType": "co-founded",
+      "role": "Co-founder and chair; principal funder through Good Ventures",
+      "from": "2014",
+      "prominence": 3,
+      "sources": ["coefficient-about", "asana-succession"]
+    },
+    {
+      "key": "givewell",
+      "source": "moskovitz",
+      "target": "givewell",
+      "relType": "collaborated-with",
+      "role": "Good Ventures partnership incubated Open Philanthropy Project",
+      "from": "2012",
+      "prominence": 2,
+      "sources": ["givewell-partnership", "good-ventures-story"]
+    },
+    {
+      "key": "democrats",
+      "source": "moskovitz",
+      "target": "democratic-party",
+      "relType": "donated-to",
+      "role": "Major donor to presidential campaigns and aligned outside groups",
+      "from": "2016",
+      "prominence": 3,
+      "sources": ["fec-moskovitz", "opensecrets-2024"]
+    },
+    {
+      "key": "ff-pac",
+      "source": "moskovitz",
+      "target": "ff-pac",
+      "relType": "donated-to",
+      "role": "$50 million in the 2024 cycle",
+      "from": "2024",
+      "until": "2024",
+      "prominence": 3,
+      "sources": ["fec-moskovitz", "opensecrets-2024"]
+    },
+    {
+      "key": "biden",
+      "source": "moskovitz",
+      "target": "biden",
+      "relType": "donated-to",
+      "role": "Supported joint fundraising committee in 2024",
+      "from": "2024",
+      "until": "2024",
+      "prominence": 1,
+      "sources": ["ap-ai-campaign", "fec-moskovitz"]
+    },
+    {
+      "key": "harris",
+      "source": "moskovitz",
+      "target": "harris",
+      "relType": "donated-to",
+      "role": "Major outside-group supporter in 2024",
+      "from": "2024",
+      "until": "2024",
+      "prominence": 2,
+      "sources": ["opensecrets-2024", "fec-moskovitz"]
+    }
+  ],
+  "events": [
+    {
+      "key": "birth",
+      "date": "1984-05-22",
+      "title": "Born in Gainesville",
+      "summary": "Dustin Aaron Moskovitz grew up in Ocala, Florida.",
+      "category": "personal",
+      "significance": 1,
+      "chapter": "formation",
+      "sources": ["britannica-facebook", "forbes-moskovitz"]
+    },
+    {
+      "key": "facebook",
+      "date": "2004-02",
+      "title": "Co-founds Facebook",
+      "summary": "Moskovitz joined Mark Zuckerberg and other Harvard classmates in building the social network and led technical operations.",
+      "category": "career",
+      "significance": 3,
+      "chapter": "facebook",
+      "sources": ["asana-bio", "facebook-history"]
+    },
+    {
+      "key": "california",
+      "date": "2004-06",
+      "title": "Moves with Facebook to California",
+      "summary": "He left Harvard as the company shifted from a college project to a venture-backed platform.",
+      "category": "career",
+      "significance": 2,
+      "chapter": "facebook",
+      "sources": ["britannica-facebook"]
+    },
+    {
+      "key": "leaves-facebook",
+      "date": "2008",
+      "title": "Leaves Facebook to start Asana",
+      "summary": "Moskovitz and Justin Rosenstein began developing collaborative work-management software.",
+      "category": "career",
+      "significance": 3,
+      "chapter": "asana",
+      "participants": [["justin", "co-founder"]],
+      "sources": ["asana-bio", "asana-founders"]
+    },
+    {
+      "key": "good-ventures",
+      "date": "2011",
+      "title": "Creates Good Ventures with Cari Tuna",
+      "summary": "The couple formed a foundation and began researching how to give away most of their wealth effectively.",
+      "category": "career",
+      "significance": 3,
+      "chapter": "philanthropy",
+      "participants": [["cari", "co-founder"]],
+      "sources": ["good-ventures-story", "good-ventures-home"]
+    },
+    {
+      "key": "givewell",
+      "date": "2012",
+      "title": "Begins GiveWell partnership",
+      "summary": "Good Ventures worked with GiveWell to investigate giving opportunities beyond its existing charity recommendations.",
+      "category": "ideas",
+      "significance": 2,
+      "chapter": "method",
+      "sources": ["givewell-partnership", "good-ventures-story"]
+    },
+    {
+      "key": "open-phil",
+      "date": "2014",
+      "title": "Open Philanthropy Project takes shape",
+      "summary": "The research partnership developed into a separate grantmaking organization funded principally by Good Ventures.",
+      "category": "career",
+      "significance": 3,
+      "chapter": "method",
+      "sources": ["coefficient-about", "givewell-partnership"]
+    },
+    {
+      "key": "politics-2016",
+      "date": "2016-09-08",
+      "title": "Commits $20 million to oppose Trump",
+      "summary": "Moskovitz publicly explained a major turn into partisan giving during the 2016 election.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "politics",
+      "sources": ["moskovitz-2016", "fec-moskovitz"]
+    },
+    {
+      "key": "ballots",
+      "date": "2018",
+      "title": "Funds state ballot initiatives",
+      "summary": "Open Philanthropy backed criminal-justice and housing measures, illustrating the policy reach of the philanthropic network.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "policy",
+      "sources": ["axios-ballots"]
+    },
+    {
+      "key": "asana-public",
+      "date": "2020-09-30",
+      "title": "Asana becomes publicly traded",
+      "summary": "The direct listing created a second public-company stake alongside Moskovitz's Meta holdings.",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "asana",
+      "sources": ["asana-10k", "asana-founders"]
+    },
+    {
+      "key": "election-2020",
+      "date": "2020",
+      "title": "Expands Democratic election spending",
+      "summary": "Moskovitz became one of the largest donors supporting Joe Biden and Democratic-aligned groups.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "politics",
+      "sources": ["fec-moskovitz", "opensecrets-2024"]
+    },
+    {
+      "key": "giving-pledge",
+      "date": "2022",
+      "title": "Formalizes Giving Pledge commitment",
+      "summary": "Moskovitz and Tuna restated their intention to devote the vast majority of their wealth to helping others.",
+      "category": "ideas",
+      "significance": 2,
+      "chapter": "philanthropy",
+      "sources": ["pledge", "good-ventures-story"]
+    },
+    {
+      "key": "ff-pac",
+      "date": "2024-10",
+      "title": "Gives $50 million to FF PAC",
+      "summary": "A series of contributions made Moskovitz the second-largest disclosed Democratic individual donor of the federal cycle.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "politics",
+      "sources": ["fec-moskovitz", "opensecrets-2024"]
+    },
+    {
+      "key": "ceo-transition",
+      "date": "2025-07",
+      "title": "Steps down as Asana CEO",
+      "summary": "Moskovitz moved toward a board and advisory role while retaining substantial ownership.",
+      "category": "career",
+      "significance": 3,
+      "chapter": "transition",
+      "sources": ["asana-succession", "asana-bio"]
+    },
+    {
+      "key": "chair-transition",
+      "date": "2026-09",
+      "title": "Leaves Asana chair role",
+      "summary": "Asana's biography records the end of his chairmanship and continuation as board member and adviser.",
+      "category": "career",
+      "significance": 2,
+      "chapter": "transition",
+      "sources": ["asana-bio"]
+    }
+  ],
+  "statements": [
+    {
+      "key": "mission",
+      "date": "2026",
+      "datePrecision": "year",
+      "venue": "Good Ventures",
+      "issue": "Philanthropy",
+      "quote": "Our mission is to help humanity thrive.",
+      "summary": "Good Ventures states the broad purpose guiding the couple's giving.",
+      "verbatim": true,
+      "source": "good-ventures-home"
+    },
+    {
+      "key": "wealth",
+      "date": "2011",
+      "datePrecision": "year",
+      "venue": "Good Ventures founders' letter",
+      "issue": "Philanthropy",
+      "quote": "We knew we wanted to give away the vast majority of our wealth.",
+      "summary": "Moskovitz and Tuna describe the commitment behind Good Ventures.",
+      "verbatim": true,
+      "source": "good-ventures-story"
+    },
+    {
+      "key": "criteria",
+      "date": "2026",
+      "datePrecision": "year",
+      "venue": "Good Ventures",
+      "issue": "Philanthropy",
+      "summary": "Good Ventures selects causes using importance, neglectedness and tractability rather than personal familiarity alone.",
+      "verbatim": false,
+      "source": "good-ventures-home"
+    },
+    {
+      "key": "trump",
+      "date": "2016-09-08",
+      "datePrecision": "day",
+      "venue": "Compelled to Act",
+      "issue": "Elections",
+      "summary": "Moskovitz argued that Donald Trump's campaign posed an exceptional threat to democratic norms and justified unprecedented partisan giving.",
+      "verbatim": false,
+      "source": "moskovitz-2016"
+    },
+    {
+      "key": "empathy",
+      "date": "2011",
+      "datePrecision": "year",
+      "venue": "Good Ventures founders' letter",
+      "issue": "Philanthropy",
+      "summary": "The founders describe radical empathy and equal moral worth as motives for an evidence-driven, globally oriented giving strategy.",
+      "verbatim": false,
+      "source": "good-ventures-story"
+    }
+  ],
+  "finance": {
+    "fec": {
+      "contributorName": "MOSKOVITZ, DUSTIN",
+      "namePattern": "^MOSKOVITZ, DUSTIN( A\\.?)?$",
+      "employerPattern": "ASANA|GOOD VENTURES|OPEN PHIL|COEFFICIENT|SELF",
+      "cities": ["SAN FRANCISCO"],
+      "source": "fec-moskovitz"
+    },
+    "coverage": "Federal itemized receipts matched to Dustin A. Moskovitz by Asana or philanthropic affiliation and San Francisco address. Good Ventures grants, state ballot spending and Meta-share gifts are outside this ledger."
+  },
+  "ideas": {
+    "traditions": [
+      {
+        "label": "Effective altruism",
+        "basis": "institutional and stated",
+        "context": "Cause selection using scale, neglectedness, tractability and expected impact, applied across global health, science and catastrophic risks.",
+        "sources": ["good-ventures-home", "good-ventures-story", "coefficient-causes"]
+      }
+    ],
+    "influences": [
+      {
+        "name": "GiveWell",
+        "note": "Its charity-evaluation methods became the starting point for the Good Ventures partnership that grew into Coefficient Giving.",
+        "sources": ["givewell-partnership", "good-ventures-story"]
+      }
+    ],
+    "works": [
+      {
+        "title": "Compelled to Act",
+        "year": "2016",
+        "kind": "Essay",
+        "detail": "Public explanation of exceptional political giving against Donald Trump.",
+        "source": "moskovitz-2016"
+      }
+    ],
+    "featuredQuotes": ["wealth", "mission"]
+  },
+  "chapters": [
+    {
+      "key": "formation",
+      "title": "From Florida to Harvard",
+      "dek": "Moskovitz entered technology through a college social network rather than a conventional engineering career.",
+      "body": "Born in Florida in 1984, Moskovitz studied economics at Harvard and shared a dormitory with Mark Zuckerberg. He left before graduating as Facebook moved to California, becoming one of the youngest people to acquire a large public-company fortune. [[britannica-facebook, asana-bio, forbes-moskovitz]]"
+    },
+    {
+      "key": "facebook",
+      "title": "Engineering Facebook's early scale",
+      "dek": "Operational responsibility for a fast-growing network created both Moskovitz's wealth and his first experience with large systems.",
+      "body": "As co-founder, first chief technology officer and vice president of engineering, Moskovitz helped move Facebook from campuses to a broad social platform. He left in 2008 but retained equity that remained the principal source of his wealth as Facebook became Meta. [[asana-bio, facebook-history, forbes-moskovitz]]"
+    },
+    {
+      "key": "asana",
+      "title": "Building tools for coordinated work",
+      "dek": "Asana translated lessons about organizational friction into a second software company.",
+      "body": "Moskovitz and Justin Rosenstein founded Asana in 2008 to make responsibilities and workflows visible without relying on email. Moskovitz served as CEO through 2025 and chair through 2026, financing the company heavily and retaining a substantial stake through its public listing. [[asana-founders, asana-bio, asana-10k]]"
+    },
+    {
+      "key": "philanthropy",
+      "title": "A commitment to give away most wealth",
+      "dek": "Good Ventures separated household wealth from a deliberate, long-horizon grantmaking program.",
+      "body": "Moskovitz and Cari Tuna created Good Ventures in 2011 after deciding to give away the vast majority of their wealth. Tuna led much of the research and grantmaking design; their account emphasizes moral concern for people and animals regardless of geography or personal connection. [[good-ventures-story, good-ventures-home, pledge]]"
+    },
+    {
+      "key": "method",
+      "title": "From charity evaluation to cause selection",
+      "dek": "The partnership with GiveWell expanded from ranking charities to comparing entire fields of action.",
+      "body": "Good Ventures partnered with GiveWell in 2012. The resulting Open Philanthropy Project, now Coefficient Giving, evaluates importance, neglectedness and tractability across global health, science, biosecurity, AI risk, criminal justice and animal welfare. The method aims to direct marginal dollars where research predicts the greatest effect. [[givewell-partnership, coefficient-about, coefficient-causes]]"
+    },
+    {
+      "key": "policy",
+      "title": "Philanthropy that reaches policy",
+      "dek": "Research grants and ballot-measure funding blur no legal categories, but they do share a theory of leverage.",
+      "body": "The network funds scientific research and service delivery, but it also supports advocacy and state policy campaigns where legal change may have large effects. Criminal-justice and housing ballot initiatives demonstrated how evidence-driven philanthropy can become a form of political power outside candidate elections. [[axios-ballots, coefficient-causes]]"
+    },
+    {
+      "key": "politics",
+      "title": "Exceptional giving against Trump",
+      "dek": "Moskovitz describes partisan spending as a response to extraordinary democratic risk rather than his philanthropic default.",
+      "body": "In 2016 Moskovitz publicly committed millions to oppose Donald Trump. He expanded that spending in 2020 and gave $50 million to FF PAC in 2024, making him one of the cycle's largest Democratic donors. These are personal political contributions distinct from Good Ventures grants, even when both reflect concern about institutions and long-term risk. [[moskovitz-2016, fec-moskovitz, opensecrets-2024]]"
+    },
+    {
+      "key": "transition",
+      "title": "From operating executive to allocator",
+      "dek": "Leaving Asana management concentrates attention on board work, ownership, philanthropy and political capital.",
+      "body": "Moskovitz stepped down as Asana CEO in 2025 and as chair in 2026 while remaining a board member and adviser. The transition makes the architecture of his influence clearer: public-company stakes supply capital, Good Ventures supplies philanthropic capacity, Coefficient Giving supplies research and recommendations, and personal contributions operate in elections. [[asana-succession, asana-bio, good-ventures-home, fec-moskovitz]]"
+    }
+  ]
+}

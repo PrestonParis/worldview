@@ -1,0 +1,1765 @@
+{
+  "subject": "elliot-brandt",
+  "reviewedAt": "2026-10-28",
+  "sourcesVerifiedAt": "2026-10-28",
+  "brief": {
+    "inclusion": "U.S. institution leader converting advocacy, donors, legislative agenda, independent expenditures and political relationships into national electoral influence.",
+    "coverage": {
+      "from": "1990",
+      "through": "2026-10-28",
+      "lags": "Converted from an external research handoff; unresolved items remain listed below."
+    },
+    "openQuestions": [
+      "Verify precise birth date, early residence and full education from primary records if appropriate.",
+      "Obtain complete original 2023 Brandt interview and original signed Oct 21 2026 member letter for quotation checks.",
+      "Reconcile AIPAC PAC conduit and direct PAC transfers at Schedule B level; distinguish earmarks and repayments.",
+      "Inspect itemized 2026 UDP Schedule A donor identity matches and Schedule E 24/48-hour notices before updating candidate totals.",
+      "Verify each of four 2025 LDA filings and 2026 Q1–Q3 individually.",
+      "Confirm exactly when Oct 2026 PAC endorsement, earmark and direct-gift changes legally or operationally take effect.",
+      "Review AIEF Schedule R and congressional travel forms before adding traveler relationships.",
+      "Determine Brandt personal federal donations only after sufficient FEC identity validation.",
+      "Confirm native Worldview schema and canonical entity IDs before conversion/import."
+    ],
+    "review": [
+      {
+        "kind": "evidence",
+        "by": "Codex conversion review",
+        "at": "2026-10-28",
+        "note": "Primary official testimony, bio, FEC summaries and IRS-based data rechecked; original internal member letter and itemized donor filings remain missing."
+      },
+      {
+        "kind": "quantitative",
+        "by": "Codex conversion review",
+        "at": "2026-10-28",
+        "note": "Manual FEC category separation performed; full item-level independent reconciliation not performed."
+      },
+      {
+        "kind": "editorial",
+        "by": "Codex conversion review",
+        "at": "2026-10-28",
+        "note": "Allegations attributed; policy statements distinguished from external factual truth; no claim of criminal misconduct."
+      },
+      {
+        "kind": "product",
+        "by": "Codex conversion review",
+        "at": "2026-10-28",
+        "note": "Portable JSON syntax validation only; no Worldview schema, app rendering or local import tests."
+      }
+    ]
+  },
+  "summary": "Elliot Brandt is the chief executive officer of the American Israel Public Affairs Committee, succeeding Howard Kohr at the end of 2024 after decades of regional advocacy, donor mobilization and senior leadership. Under an electoral strategy introduced in 2021, AIPAC operates a federal PAC and the United Democracy Project super PAC, while Brandt has personally advocated continued, largely unconditional U.S. military assistance to Israel. In October 2026 he co-signed a strategic shift away from formal endorsements and direct PAC contributions, while retaining the super PAC and pursuing organized individual giving.",
+  "roles": [
+    {
+      "label": "Chief Executive Officer, AIPAC",
+      "detail": "2025-01",
+      "sources": [
+        "EB02",
+        "EB08",
+        "EB19"
+      ]
+    },
+    {
+      "label": "Vice Chief Executive Officer, AIPAC",
+      "detail": "2024-01–2024-12",
+      "sources": [
+        "EB06",
+        "EB01"
+      ]
+    },
+    {
+      "label": "Managing Director, National Affairs, AIPAC",
+      "detail": "2015–2023",
+      "sources": [
+        "EB02",
+        "EB06",
+        "EB27"
+      ]
+    },
+    {
+      "label": "Western States Director, AIPAC",
+      "detail": "2002–2014",
+      "sources": [
+        "EB01",
+        "EB05"
+      ]
+    },
+    {
+      "label": "Regional Director / Pacific Northwest, AIPAC",
+      "detail": "1994–2002",
+      "sources": [
+        "EB01"
+      ]
+    },
+    {
+      "label": "Political-media and donor mobilization executive",
+      "detail": "2022",
+      "sources": [
+        "EB02",
+        "EB18",
+        "EB19"
+      ]
+    }
+  ],
+  "entities": {
+    "elliot-brandt": {
+      "create": {
+        "name": "Elliot Brandt",
+        "type": "lobbyist",
+        "description": "American pro-Israel lobbying executive and chief executive officer of AIPAC since the 2024–25 succession."
+      }
+    },
+    "american-israel-public-affairs-committee-aipac": {
+      "create": {
+        "name": "American Israel Public Affairs Committee (AIPAC)",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "howard-kohr": {
+      "create": {
+        "name": "Howard Kohr",
+        "type": "politician",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "michael-tuchin": {
+      "create": {
+        "name": "Michael Tuchin",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "aipac": {
+      "create": {
+        "name": "AIPAC",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "bernie-kaminetsky": {
+      "create": {
+        "name": "Bernie Kaminetsky",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "rob-bassin": {
+      "create": {
+        "name": "Rob Bassin",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "naomi-lauter": {
+      "create": {
+        "name": "Naomi Lauter",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "richard-fishman": {
+      "create": {
+        "name": "Richard Fishman",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "larry-weinberg": {
+      "create": {
+        "name": "Larry Weinberg",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "united-democracy-project": {
+      "match": {
+        "identifier": [
+          "fec_committee",
+          "C00799031"
+        ]
+      }
+    },
+    "aipac-pac": {
+      "create": {
+        "name": "AIPAC PAC",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "jamaal-bowman": {
+      "create": {
+        "name": "Jamaal Bowman",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "george-latimer": {
+      "create": {
+        "name": "George Latimer",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "thomas-massie": {
+      "create": {
+        "name": "Thomas Massie",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "haley-stevens": {
+      "create": {
+        "name": "Haley Stevens",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "abdul-el-sayed": {
+      "create": {
+        "name": "Abdul El-Sayed",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "paul-singer": {
+      "create": {
+        "name": "Paul Singer",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "haim-saban": {
+      "create": {
+        "name": "Haim Saban",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "marc-rowan": {
+      "create": {
+        "name": "Marc Rowan",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "american-israel-education-foundation": {
+      "create": {
+        "name": "American Israel Education Foundation",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "yehuda-neuberger": {
+      "create": {
+        "name": "Yehuda Neuberger",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "american-israel-public-affairs-committee": {
+      "create": {
+        "name": "American Israel Public Affairs Committee",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "aipac_pac": {
+      "match": {
+        "identifier": [
+          "fec_committee",
+          "C00797670"
+        ]
+      }
+    }
+  },
+  "sources": [
+    {
+      "key": "EB01",
+      "title": "Joining AIPAC in 1994; Pacific Northwest; 2002 Western States; education and pre-AIPAC work",
+      "publisher": "House Appropriations; AIPAC witness biography",
+      "type": "official_statement",
+      "url": "https://www.congress.gov/119/meeting/house/118075/witnesses/HHRG-119-AP04-Bio-BrandtE-20250402.pdf",
+      "publishedAt": "2025-04-02",
+      "notes": "AIPAC-authored biography, filed with committee; self-description."
+    },
+    {
+      "key": "EB02",
+      "title": "Appointment, succession, claimed fundraising performance, colleagues and mentors",
+      "publisher": "AIPAC leadership announcement",
+      "type": "official_statement",
+      "url": "https://aipac.org/press-release/ceo-elliot-brandt",
+      "publishedAt": "2024-06-04",
+      "notes": "Board praise and doubled fundraising are AIPAC claims, not an independently audited causal finding."
+    },
+    {
+      "key": "EB03",
+      "title": "Stanford graduation 1990 and succession context",
+      "publisher": "Jewish Telegraphic Agency — Ben Sales",
+      "type": "article",
+      "url": "https://www.jta.org/2024/06/04/politics/aipac-taps-its-no-2-elliot-brandt-to-be-its-next-ceo",
+      "publishedAt": "2024-06-04",
+      "notes": "Reprinted by multiple publications; do not count syndications as independent."
+    },
+    {
+      "key": "EB04",
+      "title": "Cross-check appointment coverage",
+      "publisher": "The Times of Israel — JTA syndication",
+      "type": "secondary",
+      "url": "https://www.timesofisrael.com/aipac-names-elliot-brandt-as-next-ceo-amid-uncertain-future-for-us-israel-relations/",
+      "publishedAt": "2024-06-05",
+      "notes": "Syndication of JTA report; not separate confirming origin."
+    },
+    {
+      "key": "EB05",
+      "title": "Brandt Western States office, Los Angeles community, 2003 career snapshot",
+      "publisher": "Jewish Journal — Rachel Brand",
+      "type": "transcript",
+      "url": "https://jewishjournal.com/community/7327/",
+      "publishedAt": "2003-01-23",
+      "notes": "Search-rendered content; full article timed out in current session; do not quote beyond verified excerpt."
+    },
+    {
+      "key": "EB06",
+      "title": "2015 Washington managing-director role; vice CEO in January 2024",
+      "publisher": "Jewish Insider — Marc Rod",
+      "type": "article",
+      "url": "https://jewishinsider.com/2024/06/elliot-brandt-aipac-ceo-howard-kohr-pro-israel-lobbying-and-advocacy-group/",
+      "publishedAt": "2024-06-05",
+      "notes": "Alternative version indexed at stage.jewishinsider.com."
+    },
+    {
+      "key": "EB07",
+      "title": "AIPAC request for $3.3 billion FY2026 Israeli security assistance; opposition to conditions; Iran policy",
+      "publisher": "House Appropriations; Brandt written testimony",
+      "type": "official_statement",
+      "url": "https://www.congress.gov/119/meeting/house/118075/witnesses/HHRG-119-AP04-Wstate-BrandtE-20250402.pdf",
+      "publishedAt": "2025-04-02",
+      "notes": "4-page PDF reviewed including screenshots of pages 1 and 3. Statements are advocacy claims, not independent geopolitical findings."
+    },
+    {
+      "key": "EB08",
+      "title": "CEO leads professional staff; board sets policy and political directives; chair and president",
+      "publisher": "AIPAC official board page",
+      "type": "official_statement",
+      "url": "https://aipac.org/board",
+      "publishedAt": "2026-10-28",
+      "notes": "6.5 million membership statement is organization self-report, not audited."
+    },
+    {
+      "key": "EB09",
+      "title": "Launch of PAC and super PAC in late 2021",
+      "publisher": "Jewish Telegraphic Agency — Ron Kampeas",
+      "type": "article",
+      "url": "https://www.jta.org/2021/12/16/politics/for-70-years-the-pac-in-aipac-hasnt-involved-fundraising-now-the-group-will-fundraise-for-politicians",
+      "publishedAt": "2021-12-16",
+      "notes": "Distinguish the 1950s organization name from the PAC created in 2021."
+    },
+    {
+      "key": "EB10",
+      "title": "PAC committee registration and 2025–26 summary through Oct 14",
+      "publisher": "FEC — AIPAC PAC C00797670",
+      "type": "filing",
+      "url": "https://www.fec.gov/data/committee/C00797670/",
+      "publishedAt": "2026-10-28",
+      "notes": "Membership PAC. Contributions to other committees include routing/earmarks; do not assume all spent as direct PAC gifts."
+    },
+    {
+      "key": "EB11",
+      "title": "Super PAC registration and 2025–26 receipts, expenditures and cash through Oct 14",
+      "publisher": "FEC — United Democracy Project C00799031",
+      "type": "filing",
+      "url": "https://www.fec.gov/data/committee/C00799031/",
+      "publishedAt": "2026-10-28",
+      "notes": "Summary independent expenditures can differ from later 24/48-hour filing trackers; no personal attribution to Brandt."
+    },
+    {
+      "key": "EB12",
+      "title": "Candidate-selection history; 2026 primary examples; donor names and contribution rules",
+      "publisher": "FactCheck.org — United Democracy Project profile",
+      "type": "article",
+      "url": "https://www.factcheck.org/2026/08/united-democracy-project-3/",
+      "publishedAt": "2026-08-07",
+      "notes": "2024 spending totals have a different definition from FEC summary line items."
+    },
+    {
+      "key": "EB13",
+      "title": "UDP in Michigan Senate primary: $30,638,639 IE and directional split",
+      "publisher": "VoteLog — Michigan Senate primary money",
+      "type": "article",
+      "url": "https://votelog.org/investigations/michigan-senate-primary-money",
+      "publishedAt": "2026-10-19",
+      "notes": "As-of October 19 transaction-deduplicated data; measures primary spending, not entire cycle."
+    },
+    {
+      "key": "EB14",
+      "title": "AIPAC affiliates record intervention in Stevens–El-Sayed race",
+      "publisher": "Associated Press — Michigan Senate contest",
+      "type": "article",
+      "url": "https://apnews.com/article/588bb869eb557643950bf68d6a0d7a10",
+      "publishedAt": "2026-07-19",
+      "notes": "July figures preliminary; later FEC reconciled numbers in EB13."
+    },
+    {
+      "key": "EB15",
+      "title": "2024 NY-16 primary and lobbying controversy",
+      "publisher": "Reuters — Bowman/Latimer primary",
+      "type": "article",
+      "url": "https://www.reuters.com/world/us/new-york-race-us-house-becomes-latest-israel-lobby-battleground-2024-05-17/",
+      "publishedAt": "2024-05-17",
+      "notes": "Published during campaign; spending amounts subsequent to May 17 not captured."
+    },
+    {
+      "key": "EB16",
+      "title": "2024 Bowman/Latimer and 2022–26 AIPAC-to-UDP transfers",
+      "publisher": "PurchasingPolicy.org — UDP 2024 analysis",
+      "type": "article",
+      "url": "https://www.purchasingpolicy.org/investigations/aipac-primary-challengers",
+      "publishedAt": "2026-10-28",
+      "notes": "Tracked transactions and totals may differ from other filters; reconcile with original FEC schedules."
+    },
+    {
+      "key": "EB17",
+      "title": "UDP private donor tiers and AIPAC organization transfers",
+      "publisher": "VoteLog — AIPAC top donors",
+      "type": "article",
+      "url": "https://votelog.org/investigations/aipac-top-donors",
+      "publishedAt": "2026-08-06",
+      "notes": "As-of Aug 6, updated Oct 16; name disambiguation by name/state not identity proof."
+    },
+    {
+      "key": "EB18",
+      "title": "2023 Brandt interview quotation; Brandt/Bassin governance; donor cultivation; criticism from supporters",
+      "publisher": "New York Times investigation, syndicated by GV Wire",
+      "type": "article",
+      "url": "https://gvwire.com/2026/10/02/aipac-is-spending-millions-to-elect-friends-its-also-making-enemies/",
+      "publishedAt": "2026-10-02",
+      "notes": "2023 quote is reproduced by NYT, not interview recording independently inspected. Syndicated, do not count other reprints as separate sources."
+    },
+    {
+      "key": "EB19",
+      "title": "Strategic reversal, co-signers, new donor strategy, timing",
+      "publisher": "Jewish Insider — Marc Rod and AIPAC leadership member letter",
+      "type": "article",
+      "url": "https://jewishinsider.com/2026/10/aipac-end-candidate-endorsements-pac-contributions/",
+      "publishedAt": "2026-10-21",
+      "notes": "Original full signed letter not accessed; quotations from letter are verified against publication, not original letter."
+    },
+    {
+      "key": "EB20",
+      "title": "Confirmation of Oct 2026 strategy and AIPAC spokesperson statement",
+      "publisher": "NPR reporting via OPB",
+      "type": "article",
+      "url": "https://www.opb.org/article/2026/10/21/aipac-won-t-give-candidates-direct-contributions-anymore/",
+      "publishedAt": "2026-10-21",
+      "notes": "NPR syndication; independent of JI reporting but both draw from same leadership letter."
+    },
+    {
+      "key": "EB21",
+      "title": "October 2026 announced withdrawal from direct PAC gifts and endorsements",
+      "publisher": "Times of Israel — Jacob Magid",
+      "type": "article",
+      "url": "https://www.timesofisrael.com/aipac-ends-direct-donations-to-US-congressional-candidates-will-maintain-super-pac/",
+      "publishedAt": "2026-10-22",
+      "notes": "Same original AIPAC member letter as EB19; not a second independent primary document."
+    },
+    {
+      "key": "EB22",
+      "title": "AIPAC publicly supports U.S.-Israel military action against Iran",
+      "publisher": "AIPAC organizational statement on U.S. Iran strikes",
+      "type": "official_statement",
+      "url": "https://www.aipac.org/press-release/american-strikes-on-iran",
+      "publishedAt": "2026-02-28",
+      "notes": "Organizational statement; do not put words in Brandt’s mouth."
+    },
+    {
+      "key": "EB23",
+      "title": "AIPAC congratulates military operation, calls for verifiable restrictions",
+      "publisher": "AIPAC organizational statement on Iran ceasefire",
+      "type": "official_statement",
+      "url": "https://www.aipac.org/press-release/iran-ceasefire-announcement",
+      "publishedAt": "2026-04-08",
+      "notes": "Organization’s position, not necessarily an individual oral statement."
+    },
+    {
+      "key": "EB24",
+      "title": "Calls for Congress to oversee talks and removal of enriched uranium",
+      "publisher": "AIPAC statement on U.S.–Iran memorandum of understanding",
+      "type": "official_statement",
+      "url": "https://www.aipac.org/press-release/iran-mou",
+      "publishedAt": "2026-06-15",
+      "notes": "Organization’s position, do not treat prediction of policy results as established."
+    },
+    {
+      "key": "EB25",
+      "title": "Proposed US–Israel defense tech cooperation on counter-drone, cyber and missile defense",
+      "publisher": "AIPAC policy memo: FY2027 NDAA defense technology",
+      "type": "official_statement",
+      "url": "https://www.aipac.org/memos/america-israel-defense-ndaa",
+      "publishedAt": "2026-06-04",
+      "notes": "Memo describes a provision and aims, not proof of enactment."
+    },
+    {
+      "key": "EB26",
+      "title": "Fiscal year ended Sep 2025 finances and organizational status",
+      "publisher": "FY2025 AIPAC Form 990 via PlainCharity",
+      "type": "filing",
+      "url": "https://plaincharity.com/org/530217164",
+      "publishedAt": "2026-08-20",
+      "notes": "FY label follows fiscal year ending Sep 2025; do not combine with calendar-year FEC numbers."
+    },
+    {
+      "key": "EB27",
+      "title": "Brandt officer compensation; 2024/2025 financial trends and other officers",
+      "publisher": "ProPublica Nonprofit Explorer — AIPAC IRS 990",
+      "type": "filing",
+      "url": "https://projects.propublica.org/nonprofits/organizations/530217164",
+      "publishedAt": "2026-10-28",
+      "notes": "Reportable pay not personal net worth; other compensation reported separately; filing period differs from FEC cycle."
+    },
+    {
+      "key": "EB28",
+      "title": "Inspect LD-2 lobbying filings to verify issue and expense coverage",
+      "publisher": "Lobbying Disclosure Act public register",
+      "type": "filing",
+      "url": "https://lda.gov/filings/public/filing/search/",
+      "publishedAt": "2026-10-28",
+      "notes": "Portal not a ready-made AIPAC-specific report; no unverified filing dollar attributed to Brandt."
+    },
+    {
+      "key": "EB29",
+      "title": "AIPAC 2025 lobbying filings sum $3,757,105; 2026 Q1–Q3 sum $2,367,400",
+      "publisher": "Primary Democrats lobbying report ledger",
+      "type": "secondary",
+      "url": "https://primarydemocrats.com/scorecard.html",
+      "publishedAt": "2026-10-28",
+      "notes": "Underlying quarterly LD-2 filings not individually opened; provisional aggregates."
+    },
+    {
+      "key": "EB30",
+      "title": "Separate educational affiliate and financial statements",
+      "publisher": "American Israel Education Foundation 990 via philanthropy.org",
+      "type": "filing",
+      "url": "https://philanthropy.org/990/report/521623781/american-israel-education-foundation-inc",
+      "publishedAt": "2026-10-28",
+      "notes": "AIEF nonprofit figures not to be added to PAC spending; relationship should be checked via Schedule R."
+    },
+    {
+      "key": "EB31",
+      "title": "Claims concerning executive accountability and AIPAC political spending",
+      "publisher": "DAWN criticism/accountability profile of Brandt",
+      "type": "secondary",
+      "url": "https://dawnmena.org/elliot-brandt/",
+      "publishedAt": "2025-12-10",
+      "notes": "Site says published Dec 10 2025 (not 2026); this entry date normalized below; advocacy allegations require independent corroboration."
+    },
+    {
+      "key": "EB32",
+      "title": "Outside spending through Oct 26 vs summary filing through Oct 14",
+      "publisher": "PaidForPolitics independent FEC tracker for UDP",
+      "type": "secondary",
+      "url": "https://paidforpolitics.com/c/C00799031",
+      "publishedAt": "2026-10-28",
+      "notes": "Latest independent expenditure figures may include 24/48-hour notices not included in FEC summary; not additive."
+    },
+    {
+      "key": "EB33",
+      "title": "Mission and current advocacy priorities",
+      "publisher": "AIPAC source policy organization site",
+      "type": "official_statement",
+      "url": "https://www.aipac.org/",
+      "publishedAt": "2026-10-28",
+      "notes": "Self-described mission, not independent impact measure."
+    },
+    {
+      "key": "EB34",
+      "title": "LDA and LD-203 categories, differing from FEC and Form 990",
+      "publisher": "U.S. Senate Lobbying Disclosure information",
+      "type": "official_statement",
+      "url": "https://www.senate.gov/legislative/lobbyingdisc.htm",
+      "publishedAt": "2026-10-28",
+      "notes": "Background on how to investigate lobby activity."
+    },
+    {
+      "key": "EB35",
+      "title": "Disaggregated earmarks, super PAC IE and donations to partner PACs",
+      "publisher": "ChamberLight AIPAC/UDP accounting",
+      "type": "secondary",
+      "url": "https://chamberlight.com/money/aipac",
+      "publishedAt": "2026-10-28",
+      "notes": "Methodology matters and reports through Oct 14 for committee summary."
+    }
+  ],
+  "facts": [
+    {
+      "key": "career-1",
+      "label": "Career",
+      "value": "Elliot Brandt is the chief executive officer of AIPAC as of Oct 28, 2026.",
+      "featured": true,
+      "sources": [
+        "EB08",
+        "EB19"
+      ]
+    },
+    {
+      "key": "career-2",
+      "label": "Career",
+      "value": "Official witness biography states he joined AIPAC in 1994 in the Pacific Northwest.",
+      "featured": true,
+      "sources": [
+        "EB01"
+      ]
+    },
+    {
+      "key": "identity-3",
+      "label": "Identity",
+      "value": "JTA reports he graduated from Stanford University in 1990.",
+      "featured": true,
+      "sources": [
+        "EB03"
+      ]
+    },
+    {
+      "key": "career-4",
+      "label": "Career",
+      "value": "AIPAC credits him with managing Western States beginning in 2002, covering 13 states and political activity in more than 100 congressional districts.",
+      "featured": true,
+      "sources": [
+        "EB01"
+      ]
+    },
+    {
+      "key": "career-5",
+      "label": "Career",
+      "value": "Brandt began a managing director role in Washington in 2015, according to contemporaneous leadership coverage.",
+      "featured": false,
+      "sources": [
+        "EB06"
+      ]
+    },
+    {
+      "key": "career-6",
+      "label": "Career",
+      "value": "AIPAC named Brandt vice CEO early in 2024 and successor to Howard Kohr in June 2024.",
+      "featured": false,
+      "sources": [
+        "EB02",
+        "EB06"
+      ]
+    },
+    {
+      "key": "governance-7",
+      "label": "Governance",
+      "value": "AIPAC board says it sets institutional policies; Brandt leads professional staff.",
+      "featured": false,
+      "sources": [
+        "EB08"
+      ]
+    },
+    {
+      "key": "finance-8",
+      "label": "Finance",
+      "value": "AIPAC says its fundraising doubled during periods of Brandt management; independent accounting of the causal role is absent.",
+      "featured": false,
+      "sources": [
+        "EB02"
+      ]
+    },
+    {
+      "key": "finance-9",
+      "label": "Finance",
+      "value": "AIPAC PAC was registered Dec 15 2021 as FEC committee C00797670.",
+      "featured": false,
+      "sources": [
+        "EB10"
+      ]
+    },
+    {
+      "key": "finance-10",
+      "label": "Finance",
+      "value": "UDP was registered Jan 3 2022 as FEC C00799031 and is an independent-expenditure-only committee.",
+      "featured": false,
+      "sources": [
+        "EB11"
+      ]
+    },
+    {
+      "key": "law-11",
+      "label": "Law",
+      "value": "UDP can spend independently for/against federal candidates but may not legally coordinate those expenditures with campaigns.",
+      "featured": false,
+      "sources": [
+        "EB12"
+      ]
+    },
+    {
+      "key": "finance-12",
+      "label": "Finance",
+      "value": "The FEC PAC reporting stream includes conduit/earmarked gifts distinct from direct PAC funds; totals must not be recast as corporate donations.",
+      "featured": false,
+      "sources": [
+        "EB10",
+        "EB20"
+      ]
+    },
+    {
+      "key": "policy-13",
+      "label": "Policy",
+      "value": "AIPAC submitted a request for $3.3 billion FY2026 Israeli security aid in Brandt’s written testimony.",
+      "featured": false,
+      "sources": [
+        "EB07"
+      ]
+    },
+    {
+      "key": "policy-14",
+      "label": "Policy",
+      "value": "Brandt testimony explicitly opposes additional conditions on Israel aid and military sales.",
+      "featured": false,
+      "sources": [
+        "EB07"
+      ]
+    },
+    {
+      "key": "ideas-15",
+      "label": "Ideas",
+      "value": "The testimony argues U.S. military support for Israel serves American defense interests and defense industry.",
+      "featured": false,
+      "sources": [
+        "EB07"
+      ]
+    },
+    {
+      "key": "policy-16",
+      "label": "Policy",
+      "value": "AIPAC released positive statements regarding 2026 U.S.–Israeli military strikes on Iran; these are organizational, not personal recorded quotes by Brandt.",
+      "featured": false,
+      "sources": [
+        "EB22",
+        "EB23"
+      ]
+    },
+    {
+      "key": "policy-17",
+      "label": "Policy",
+      "value": "AIPAC supports new U.S.–Israel defense technology cooperation provisions in the proposed FY2027 NDAA.",
+      "featured": false,
+      "sources": [
+        "EB25"
+      ]
+    },
+    {
+      "key": "elections-18",
+      "label": "Elections",
+      "value": "UDP was heavily involved in 2024 primaries against Jamaal Bowman and Cori Bush.",
+      "featured": false,
+      "sources": [
+        "EB12",
+        "EB16"
+      ]
+    },
+    {
+      "key": "elections-19",
+      "label": "Elections",
+      "value": "UDP spent $30,638,639 in the Michigan Democratic Senate primary as reconstructed from FEC spending records, supporting Stevens and opposing El-Sayed.",
+      "featured": false,
+      "sources": [
+        "EB13"
+      ]
+    },
+    {
+      "key": "elections-20",
+      "label": "Elections",
+      "value": "Abdul El-Sayed won Michigan’s Aug 4 2026 Democratic Senate primary despite UDP expenditure in support of Stevens.",
+      "featured": false,
+      "sources": [
+        "EB13"
+      ]
+    },
+    {
+      "key": "governance-21",
+      "label": "Governance",
+      "value": "The October 21 2026 AIPAC leadership letter was co-signed by Elliot Brandt with Bernie Kaminetsky, Michael Tuchin and Yehuda Neuberger.",
+      "featured": false,
+      "sources": [
+        "EB19"
+      ]
+    },
+    {
+      "key": "policy-22",
+      "label": "Policy",
+      "value": "The AIPAC strategy announced Oct 21 discontinues endorsements, direct PAC gifts and earmarking, while organized individual giving and UDP continue.",
+      "featured": false,
+      "sources": [
+        "EB19",
+        "EB20"
+      ]
+    },
+    {
+      "key": "policy-23",
+      "label": "Policy",
+      "value": "Exact implementation date for winding down endorsements and direct gifts is not conclusively specified in excerpted letter; avoid claiming all activity ceased immediately.",
+      "featured": false,
+      "sources": [
+        "EB19",
+        "EB20"
+      ]
+    },
+    {
+      "key": "finance-24",
+      "label": "Finance",
+      "value": "As of FEC reports through Oct 14 2026, AIPAC PAC reported $57,771,930.54 in 2025–26 total receipts.",
+      "featured": false,
+      "sources": [
+        "EB10"
+      ]
+    },
+    {
+      "key": "finance-25",
+      "label": "Finance",
+      "value": "As of FEC reports through Oct 14 2026, UDP reported $112,820,861.12 receipts and $85,057,423.26 disbursements.",
+      "featured": false,
+      "sources": [
+        "EB11"
+      ]
+    },
+    {
+      "key": "finance-26",
+      "label": "Finance",
+      "value": "As of FEC reports through Oct 14 2026, UDP reported $53,603,927.44 independent expenditures in its regular-report summary.",
+      "featured": false,
+      "sources": [
+        "EB11"
+      ]
+    },
+    {
+      "key": "finance-27",
+      "label": "Finance",
+      "value": "The 2025 AIPAC fiscal Form 990 return reports $122,539,124 revenue and $118,294,301 expenses for the fiscal period ending Sep 2025.",
+      "featured": false,
+      "sources": [
+        "EB26"
+      ]
+    },
+    {
+      "key": "finance-28",
+      "label": "Finance",
+      "value": "The same Form 990 data reports $862,888 organization-paid reportable compensation for Brandt and $46,447 other compensation; not net worth.",
+      "featured": false,
+      "sources": [
+        "EB27"
+      ]
+    },
+    {
+      "key": "network-29",
+      "label": "Network",
+      "value": "Financial gifts from Paul Singer, Haim Saban, and other individuals to UDP have separate FEC trails; they are not evidence of personal relationships with Brandt.",
+      "featured": false,
+      "sources": [
+        "EB12",
+        "EB17"
+      ]
+    },
+    {
+      "key": "network-30",
+      "label": "Network",
+      "value": "New York Times investigation describes Brandt and Rob Bassin as central decision makers in AIPAC electoral strategy; details attributed to its reporting.",
+      "featured": false,
+      "sources": [
+        "EB18"
+      ]
+    },
+    {
+      "key": "lobbying-31",
+      "label": "Lobbying",
+      "value": "AIPAC’s 2025 LDA expense aggregation is $3,757,105 according to a secondary compilation, pending individual LD-2 audit.",
+      "featured": false,
+      "sources": [
+        "EB29"
+      ]
+    },
+    {
+      "key": "organization-32",
+      "label": "Organization",
+      "value": "AIPAC asserts more than 6.5 million members; independently verified membership denominator and definition are unavailable.",
+      "featured": false,
+      "sources": [
+        "EB08"
+      ]
+    },
+    {
+      "key": "organization-33",
+      "label": "Organization",
+      "value": "AIPAC has a distinct related American Israel Education Foundation with its own EIN/990; not to be added directly to PAC finance.",
+      "featured": false,
+      "sources": [
+        "EB30"
+      ]
+    },
+    {
+      "key": "identity-34",
+      "label": "Identity",
+      "value": "Brandt’s precise birth date, citizenship documentation, political-party registration and direct FEC personal-donation identity match are not established here.",
+      "featured": false,
+      "sources": [
+        "EB01",
+        "EB03"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "elliot-brandt-american-israel-public-affairs-committee-aipac-leads",
+      "source": "elliot-brandt",
+      "target": "american-israel-public-affairs-committee-aipac",
+      "relType": "works-for",
+      "role": "leads",
+      "from": "2025-01",
+      "status": "verified",
+      "prominence": 3,
+      "notes": "CEO leads staff while board establishes policy directives.",
+      "sources": [
+        "EB08",
+        "EB19"
+      ]
+    },
+    {
+      "key": "elliot-brandt-howard-kohr-succeeded",
+      "source": "elliot-brandt",
+      "target": "howard-kohr",
+      "relType": "succeeded",
+      "role": "succeeded",
+      "from": "2025-01",
+      "status": "verified",
+      "prominence": 3,
+      "notes": "Board announced end-2024 succession; Kohr retired as CEO.",
+      "sources": [
+        "EB02",
+        "EB03"
+      ]
+    },
+    {
+      "key": "michael-tuchin-aipac-governs-as-board-chair",
+      "source": "michael-tuchin",
+      "target": "aipac",
+      "relType": "affiliated-with",
+      "role": "governs_as_board_chair",
+      "status": "verified",
+      "prominence": 3,
+      "notes": "Board Chair; co-signatory Oct 2026 letter with Brandt.",
+      "sources": [
+        "EB08",
+        "EB19"
+      ]
+    },
+    {
+      "key": "bernie-kaminetsky-aipac-governs-as-president",
+      "source": "bernie-kaminetsky",
+      "target": "aipac",
+      "relType": "affiliated-with",
+      "role": "governs_as_president",
+      "status": "verified",
+      "prominence": 3,
+      "notes": "AIPAC president and co-signatory Oct 2026 member letter.",
+      "sources": [
+        "EB08",
+        "EB19"
+      ]
+    },
+    {
+      "key": "elliot-brandt-rob-bassin-works-with",
+      "source": "elliot-brandt",
+      "target": "rob-bassin",
+      "relType": "works-for",
+      "role": "works_with",
+      "from": "2022",
+      "status": "verified",
+      "prominence": 3,
+      "notes": "Bassin leads UDP; NYT describes shared strategic circle, without proving a personal instruction for every expenditure.",
+      "sources": [
+        "EB18",
+        "EB27"
+      ]
+    },
+    {
+      "key": "elliot-brandt-howard-kohr-served-under",
+      "source": "elliot-brandt",
+      "target": "howard-kohr",
+      "relType": "affiliated-with",
+      "role": "served_under",
+      "from": "2015",
+      "until": "2024",
+      "status": "verified",
+      "prominence": 3,
+      "notes": "Longtime CEO and public mentor named in AIPAC leadership statement.",
+      "sources": [
+        "EB02"
+      ]
+    },
+    {
+      "key": "elliot-brandt-naomi-lauter-mentor-lead",
+      "source": "elliot-brandt",
+      "target": "naomi-lauter",
+      "relType": "works-for",
+      "role": "mentor_lead",
+      "status": "verified",
+      "prominence": 2,
+      "notes": "AIPAC acknowledges Lauter as one of his mentors, without precise dates.",
+      "sources": [
+        "EB02"
+      ]
+    },
+    {
+      "key": "elliot-brandt-richard-fishman-mentor-lead",
+      "source": "elliot-brandt",
+      "target": "richard-fishman",
+      "relType": "works-for",
+      "role": "mentor_lead",
+      "status": "verified",
+      "prominence": 2,
+      "notes": "Named by AIPAC as mentor and prior senior AIPAC executive.",
+      "sources": [
+        "EB02"
+      ]
+    },
+    {
+      "key": "elliot-brandt-larry-weinberg-mentor-lead",
+      "source": "elliot-brandt",
+      "target": "larry-weinberg",
+      "relType": "works-for",
+      "role": "mentor_lead",
+      "status": "verified",
+      "prominence": 2,
+      "notes": "Named as a mentor in 2024 AIPAC board release.",
+      "sources": [
+        "EB02"
+      ]
+    },
+    {
+      "key": "aipac-united-democracy-project-created-and-funded",
+      "source": "aipac",
+      "target": "united-democracy-project",
+      "relType": "donated-to",
+      "role": "created_and_funded",
+      "status": "verified",
+      "prominence": 2,
+      "notes": "2022 super PAC; separate legal committee with FEC C00799031.",
+      "sources": [
+        "EB09",
+        "EB11"
+      ]
+    },
+    {
+      "key": "aipac-aipac-pac-operated",
+      "source": "aipac",
+      "target": "aipac-pac",
+      "relType": "affiliated-with",
+      "role": "operated",
+      "status": "verified",
+      "prominence": 2,
+      "notes": "2021 membership/lobbyist PAC FEC C00797670; 2026 post-election strategy announces direct gifts and earmarks winding down.",
+      "sources": [
+        "EB09",
+        "EB10",
+        "EB19"
+      ]
+    },
+    {
+      "key": "united-democracy-project-jamaal-bowman-spent-opposing",
+      "source": "united-democracy-project",
+      "target": "jamaal-bowman",
+      "relType": "opposed",
+      "role": "spent_opposing",
+      "status": "verified",
+      "prominence": 2,
+      "notes": "2024 NY-16 independent expenditures; candidate lost, not proof spending was sole cause.",
+      "sources": [
+        "EB15",
+        "EB16"
+      ]
+    },
+    {
+      "key": "united-democracy-project-george-latimer-spent-supporting",
+      "source": "united-democracy-project",
+      "target": "george-latimer",
+      "relType": "allied-with",
+      "role": "spent_supporting",
+      "status": "verified",
+      "prominence": 1,
+      "notes": "2024 NY-16 primary; candidate won.",
+      "sources": [
+        "EB15",
+        "EB16"
+      ]
+    },
+    {
+      "key": "united-democracy-project-thomas-massie-spent-opposing",
+      "source": "united-democracy-project",
+      "target": "thomas-massie",
+      "relType": "opposed",
+      "role": "spent_opposing",
+      "status": "verified",
+      "prominence": 1,
+      "notes": "2026 Kentucky Republican primary; UDP spent above $3M opposing, per FactCheck.",
+      "sources": [
+        "EB12"
+      ]
+    },
+    {
+      "key": "united-democracy-project-haley-stevens-spent-supporting",
+      "source": "united-democracy-project",
+      "target": "haley-stevens",
+      "relType": "allied-with",
+      "role": "spent_supporting",
+      "status": "verified",
+      "prominence": 1,
+      "notes": "$10,498,735 supporting in Michigan 2026 Democratic Senate primary, VoteLog FEC methodology.",
+      "sources": [
+        "EB13"
+      ]
+    },
+    {
+      "key": "united-democracy-project-abdul-el-sayed-spent-opposing",
+      "source": "united-democracy-project",
+      "target": "abdul-el-sayed",
+      "relType": "opposed",
+      "role": "spent_opposing",
+      "status": "verified",
+      "prominence": 1,
+      "notes": "$20,139,904 opposing in Michigan Senate primary; candidate nevertheless won.",
+      "sources": [
+        "EB13"
+      ]
+    },
+    {
+      "key": "paul-singer-united-democracy-project-contributed-to",
+      "source": "paul-singer",
+      "target": "united-democracy-project",
+      "relType": "donated-to",
+      "role": "contributed_to",
+      "status": "verified",
+      "prominence": 1,
+      "notes": "Named among major individual contributors; exact donation series requires FEC name disambiguation.",
+      "sources": [
+        "EB12",
+        "EB17"
+      ]
+    },
+    {
+      "key": "haim-saban-united-democracy-project-contributed-to",
+      "source": "haim-saban",
+      "target": "united-democracy-project",
+      "relType": "donated-to",
+      "role": "contributed_to",
+      "status": "verified",
+      "prominence": 1,
+      "notes": "Named among major donors; no proof of personal connection to Brandt from transaction alone.",
+      "sources": [
+        "EB12",
+        "EB17"
+      ]
+    },
+    {
+      "key": "marc-rowan-united-democracy-project-contributed-to",
+      "source": "marc-rowan",
+      "target": "united-democracy-project",
+      "relType": "donated-to",
+      "role": "contributed_to",
+      "status": "verified",
+      "prominence": 1,
+      "notes": "Named among major donors; no proof of personal connection to Brandt from transaction alone.",
+      "sources": [
+        "EB12",
+        "EB17"
+      ]
+    },
+    {
+      "key": "aipac-american-israel-education-foundation-related-nonprofit",
+      "source": "aipac",
+      "target": "american-israel-education-foundation",
+      "relType": "affiliated-with",
+      "role": "related_nonprofit",
+      "status": "verified",
+      "prominence": 1,
+      "notes": "Separate corporate/filing identity for educational travel/other programming.",
+      "sources": [
+        "EB30"
+      ]
+    },
+    {
+      "key": "elliot-brandt-yehuda-neuberger-joined-statement",
+      "source": "elliot-brandt",
+      "target": "yehuda-neuberger",
+      "relType": "affiliated-with",
+      "role": "joined_statement",
+      "status": "verified",
+      "prominence": 1,
+      "notes": "Both co-signed Oct 21 leadership letter; no assumed personal association beyond this.",
+      "sources": [
+        "EB19"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "key": "1990-stanford-graduation",
+      "date": "1990",
+      "title": "Stanford graduation",
+      "summary": "JTA reports Brandt graduated Stanford in 1990; AIPAC congressional biography confirms his degree but not graduation year.",
+      "category": "personal",
+      "significance": 3,
+      "status": "verified",
+      "chapter": "origins-and-recruitment-into-aipac",
+      "sources": [
+        "EB01",
+        "EB03"
+      ]
+    },
+    {
+      "key": "1991-approx-otzma-fellowship-and-pre-aipac-work",
+      "date": "1991",
+      "title": "Otzma fellowship and pre-AIPAC work",
+      "summary": "AIPAC biography describes an Otzma fellowship year in Israel, and logistics for medical supply airlifts to the former USSR; exact dates remain to be confirmed.",
+      "category": "career",
+      "significance": 3,
+      "status": "verified",
+      "chapter": "origins-and-recruitment-into-aipac",
+      "sources": [
+        "EB01"
+      ]
+    },
+    {
+      "key": "1994-joins-aipac-in-pacific-northwest",
+      "date": "1994",
+      "title": "Joins AIPAC in Pacific Northwest",
+      "summary": "Official biography says he joined the Pacific Northwest office in 1994.",
+      "category": "career",
+      "significance": 3,
+      "status": "verified",
+      "chapter": "origins-and-recruitment-into-aipac",
+      "sources": [
+        "EB01"
+      ]
+    },
+    {
+      "key": "2002-western-states-director",
+      "date": "2002",
+      "title": "Western States director",
+      "summary": "Moved to Los Angeles to manage a 13-state portfolio and coalition/political activity in over 100 congressional districts.",
+      "category": "career",
+      "significance": 3,
+      "status": "verified",
+      "chapter": "regional-politics-13-states-and-more-than-100-districts",
+      "sources": [
+        "EB01",
+        "EB05"
+      ]
+    },
+    {
+      "key": "2003-01-23-jewish-journal-career-interview",
+      "date": "2003-01-23",
+      "title": "Jewish Journal career interview",
+      "summary": "Contemporary profile reports Brandt as 34, recently relocated to Los Angeles and discussing the Jewish community there.",
+      "category": "career",
+      "significance": 3,
+      "status": "verified",
+      "chapter": "regional-politics-13-states-and-more-than-100-districts",
+      "sources": [
+        "EB05"
+      ]
+    },
+    {
+      "key": "2015-moves-to-washington",
+      "date": "2015",
+      "title": "Moves to Washington",
+      "summary": "Jewish Insider puts transition to AIPAC managing director in Washington, D.C. in 2015.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "regional-politics-13-states-and-more-than-100-districts",
+      "sources": [
+        "EB06"
+      ]
+    },
+    {
+      "key": "2021-12-15-aipac-pac-registered-with-fec",
+      "date": "2021-12-15",
+      "title": "AIPAC PAC registered with FEC",
+      "summary": "Traditional PAC established as a membership/lobbyist PAC, committee C00797670; was not an individual Brandt personal PAC.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "from-lobbying-to-electoral-machinery",
+      "sources": [
+        "EB09",
+        "EB10"
+      ]
+    },
+    {
+      "key": "2021-12-16-aipac-announces-direct-electoral-strategy",
+      "date": "2021-12-16",
+      "title": "AIPAC announces direct electoral strategy",
+      "summary": "AIPAC said it would launch a PAC and super PAC amid congressional churn, partisanship and campaign costs.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "from-lobbying-to-electoral-machinery",
+      "sources": [
+        "EB09"
+      ]
+    },
+    {
+      "key": "2022-01-03-united-democracy-project-registered",
+      "date": "2022-01-03",
+      "title": "United Democracy Project registered",
+      "summary": "Independent-expenditure-only committee C00799031 was registered with FEC.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "from-lobbying-to-electoral-machinery",
+      "sources": [
+        "EB11"
+      ]
+    },
+    {
+      "key": "2022-pacs-intervene-in-congressional-races",
+      "date": "2022",
+      "title": "PACs intervene in congressional races",
+      "summary": "AIPAC-linked electoral tools began direct-candidate support and independent expenditures; precise individual decisions by Brandt undocumented.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "2024-ceo-succession-and-institutional-governance",
+      "sources": [
+        "EB09",
+        "EB12"
+      ]
+    },
+    {
+      "key": "2023-discusses-new-electoral-business-model",
+      "date": "2023",
+      "title": "Discusses new electoral business model",
+      "summary": "New York Times published a quotation from a 2023 Brandt interview on congressional turnover and increasing partisanship.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "2024-ceo-succession-and-institutional-governance",
+      "sources": [
+        "EB18"
+      ]
+    },
+    {
+      "key": "2023-10-07-hamas-attacks-and-gaza-war-reshape-lobbying-context",
+      "date": "2023-10-07",
+      "title": "Hamas attacks and Gaza war reshape lobbying context",
+      "summary": "AIPAC intensified its security-assistance advocacy following the Oct 7 Hamas attack; separate external consequences and AIPAC characterizations.",
+      "category": "ideas",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "2024-ceo-succession-and-institutional-governance",
+      "sources": [
+        "EB03",
+        "EB07"
+      ]
+    },
+    {
+      "key": "2024-01-named-vice-ceo",
+      "date": "2024-01",
+      "title": "Named vice CEO",
+      "summary": "Jewish Insider says Brandt assumed the vice CEO role in January 2024.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "the-congressional-funding-agenda",
+      "sources": [
+        "EB06"
+      ]
+    },
+    {
+      "key": "2024-05-to-2024-06-ny-16-independent-spending",
+      "date": "2024-05",
+      "title": "NY-16 independent spending",
+      "summary": "UDP spent to oppose Jamaal Bowman and support George Latimer; distinguish FEC campaign windows and amounts from later news snapshots.",
+      "category": "politics",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "the-congressional-funding-agenda",
+      "sources": [
+        "EB15",
+        "EB16"
+      ]
+    },
+    {
+      "key": "2024-06-04-aipac-selects-brandt-as-next-ceo",
+      "date": "2024-06-04",
+      "title": "AIPAC selects Brandt as next CEO",
+      "summary": "Leadership publicly announced succession plan to replace Howard Kohr at end of calendar 2024.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "the-congressional-funding-agenda",
+      "sources": [
+        "EB02",
+        "EB03"
+      ]
+    },
+    {
+      "key": "2024-08-mo-1-democratic-primary-intervention",
+      "date": "2024-08",
+      "title": "MO-1 Democratic primary intervention",
+      "summary": "UDP opposed Cori Bush and supported Wesley Bell; dollar total needs specific FEC disaggregation before publication.",
+      "category": "politics",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "electoral-leverage-victories-reversals-and-attribution",
+      "sources": [
+        "EB12",
+        "EB16"
+      ]
+    },
+    {
+      "key": "2024-12-31-howard-kohr-retirement",
+      "date": "2024-12-31",
+      "title": "Howard Kohr retirement",
+      "summary": "Announced timetable for CEO handoff at year end; exact formal transition date not stated in public announcement.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "electoral-leverage-victories-reversals-and-attribution",
+      "sources": [
+        "EB02"
+      ]
+    },
+    {
+      "key": "2025-01-brandt-serving-as-aipac-ceo",
+      "date": "2025-01",
+      "title": "Brandt serving as AIPAC CEO",
+      "summary": "2025 congressional witness records name him CEO; organizational appointment planned end of 2024.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "electoral-leverage-victories-reversals-and-attribution",
+      "sources": [
+        "EB01",
+        "EB07"
+      ]
+    },
+    {
+      "key": "2025-04-02-submits-house-appropriations-written-testimony",
+      "date": "2025-04-02",
+      "title": "Submits House Appropriations written testimony",
+      "summary": "Requested $3.3 billion FY2026 Israel security assistance and opposed tying new conditions to it.",
+      "category": "ideas",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "donors-affiliates-and-careful-financial-accounting",
+      "sources": [
+        "EB07"
+      ]
+    },
+    {
+      "key": "2025-09-25-aipac-treasury-funds-udp",
+      "date": "2025-09-25",
+      "title": "AIPAC treasury funds UDP",
+      "summary": "FEC-derived source shows a $25 million contribution from AIPAC organization to UDP; organizational transaction, not Brandt personal gift.",
+      "category": "finance",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "donors-affiliates-and-careful-financial-accounting",
+      "sources": [
+        "EB17",
+        "EB32"
+      ]
+    },
+    {
+      "key": "2025-12-23-another-aipac-treasury-transfer",
+      "date": "2025-12-23",
+      "title": "Another AIPAC treasury transfer",
+      "summary": "FEC-derived tracker reports a $5 million contribution from AIPAC organization to UDP.",
+      "category": "finance",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "donors-affiliates-and-careful-financial-accounting",
+      "sources": [
+        "EB32"
+      ]
+    },
+    {
+      "key": "2026-02-28-aipac-backs-u-s-strikes-against-iran",
+      "date": "2026-02-28",
+      "title": "AIPAC backs U.S. strikes against Iran",
+      "summary": "Organizational press release praises American military action; do not attribute exact language personally to Brandt.",
+      "category": "ideas",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "israel-iran-and-the-limits-of-organizational-attribution",
+      "sources": [
+        "EB22"
+      ]
+    },
+    {
+      "key": "2026-04-08-aipac-responds-to-ceasefire",
+      "date": "2026-04-08",
+      "title": "AIPAC responds to ceasefire",
+      "summary": "Organizational release praises military operation and calls for restrictions in any nuclear agreement.",
+      "category": "ideas",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "israel-iran-and-the-limits-of-organizational-attribution",
+      "sources": [
+        "EB23"
+      ]
+    },
+    {
+      "key": "2026-05-19-udp-opposes-thomas-massie-in-gop-primary",
+      "date": "2026-05-19",
+      "title": "UDP opposes Thomas Massie in GOP primary",
+      "summary": "FactCheck reports more than $3 million spent opposing Massie, who lost Republican primary.",
+      "category": "politics",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "israel-iran-and-the-limits-of-organizational-attribution",
+      "sources": [
+        "EB12"
+      ]
+    },
+    {
+      "key": "2026-06-04-aipac-seeks-defense-technology-initiative",
+      "date": "2026-06-04",
+      "title": "AIPAC seeks defense technology initiative",
+      "summary": "AIPAC memo supports sections of proposed FY2027 NDAA for cooperation in missile/counter-drone/cyber technology.",
+      "category": "ideas",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "backlash-the-costs-of-public-electioneering",
+      "sources": [
+        "EB25"
+      ]
+    },
+    {
+      "key": "2026-06-15-aipac-weighs-u-s-iran-mou",
+      "date": "2026-06-15",
+      "title": "AIPAC weighs U.S.–Iran MOU",
+      "summary": "Organizational statement calls for congressional review and more complete Iran restrictions.",
+      "category": "ideas",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "backlash-the-costs-of-public-electioneering",
+      "sources": [
+        "EB24"
+      ]
+    },
+    {
+      "key": "2026-08-04-michigan-democratic-senate-primary",
+      "date": "2026-08-04",
+      "title": "Michigan Democratic Senate primary",
+      "summary": "UDP spent $30.64M on the race, supporting Stevens and opposing El-Sayed; El-Sayed won; supported side lost.",
+      "category": "politics",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "backlash-the-costs-of-public-electioneering",
+      "sources": [
+        "EB13",
+        "EB14"
+      ]
+    },
+    {
+      "key": "2026-10-02-nyt-publishes-extensive-aipac-investigation",
+      "date": "2026-10-02",
+      "title": "NYT publishes extensive AIPAC investigation",
+      "summary": "Investigation reports Brandt-Bassin network, donor stewardship, and strong criticisms from some pro-Israel allies.",
+      "category": "career",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "october-2026-strategic-reversal",
+      "sources": [
+        "EB18"
+      ]
+    },
+    {
+      "key": "2026-10-14-latest-summarized-fec-filing-coverage",
+      "date": "2026-10-14",
+      "title": "Latest summarized FEC filing coverage",
+      "summary": "PAC C00797670 and UDP C00799031 each publish committee summary totals through October 14.",
+      "category": "finance",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "october-2026-strategic-reversal",
+      "sources": [
+        "EB10",
+        "EB11"
+      ]
+    },
+    {
+      "key": "2026-10-21-aipac-announces-post-pac-strategy-reversal",
+      "date": "2026-10-21",
+      "title": "AIPAC announces post-PAC strategy reversal",
+      "summary": "Member letter co-signed by Brandt says group will discontinue endorsements, PAC direct gifts and earmarking and prioritize individual giving while UDP continues. Implementation timing unclear.",
+      "category": "ideas",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "october-2026-strategic-reversal",
+      "sources": [
+        "EB19",
+        "EB20",
+        "EB21"
+      ]
+    }
+  ],
+  "statements": [
+    {
+      "key": "2025-04-02-fy2026-budget-request-in-testimony-to-house-appropriations",
+      "date": "2025-04-02",
+      "issue": "FY2026 budget request in testimony to House Appropriations.",
+      "venue": "FY2026 budget request in testimony to House Appropriations.",
+      "quote": "$3.3 billion in security assistance",
+      "source": "EB07"
+    },
+    {
+      "key": "2025-04-02-strategic-rationale-for-u-s-military-aid-a-stated-view-not-established-fact",
+      "date": "2025-04-02",
+      "issue": "Strategic rationale for U.S. military aid; a stated view, not established fact.",
+      "venue": "Strategic rationale for U.S. military aid; a stated view, not established fact.",
+      "quote": "Israel’s enemies are also America’s enemies.",
+      "source": "EB07"
+    },
+    {
+      "key": "2025-04-02-opposition-to-new-aid-conditions",
+      "date": "2025-04-02",
+      "issue": "Opposition to new aid conditions.",
+      "venue": "Opposition to new aid conditions.",
+      "quote": "a clean appropriation to Israel",
+      "source": "EB07"
+    },
+    {
+      "key": "2023-quoted-in-2026-2023-interview-discusses-breakdown-of-longstanding-congressional-relationship-model",
+      "date": "2023",
+      "issue": "2023 interview: discusses breakdown of longstanding congressional relationship model.",
+      "venue": "2023 interview: discusses breakdown of longstanding congressional relationship model.",
+      "quote": "the old business model",
+      "source": "EB18"
+    },
+    {
+      "key": "2023-quoted-in-2026-new-york-times-reproduces-interview-excerpt",
+      "date": "2023",
+      "issue": "New York Times reproduces interview excerpt.",
+      "venue": "New York Times reproduces interview excerpt.",
+      "quote": "hyper-partisanship and the rise of real detractors",
+      "source": "EB18"
+    },
+    {
+      "key": "2026-10-21-group-s-new-electoral-strategy",
+      "date": "2026-10-21",
+      "issue": "Group’s new electoral strategy.",
+      "venue": "Group’s new electoral strategy.",
+      "quote": "Endorsements, direct PAC contributions, and earmarking will no longer be part of our approach",
+      "source": "EB19"
+    },
+    {
+      "key": "2026-02-28-organization-reacts-to-u-s-strikes-on-iran",
+      "date": "2026-02-28",
+      "issue": "Organization reacts to U.S. strikes on Iran.",
+      "venue": "Organization reacts to U.S. strikes on Iran.",
+      "quote": "We stand with the American servicemembers",
+      "source": "EB22"
+    },
+    {
+      "key": "2026-04-08-organization-reacts-to-ceasefire-following-iran-campaign",
+      "date": "2026-04-08",
+      "issue": "Organization reacts to ceasefire following Iran campaign.",
+      "venue": "Organization reacts to ceasefire following Iran campaign.",
+      "quote": "powerful demonstration of the strategic alliance",
+      "source": "EB23"
+    },
+    {
+      "key": "2026-06-15-organization-position-on-u-s-iran-mou-and-oversight",
+      "date": "2026-06-15",
+      "issue": "Organization position on U.S.–Iran MOU and oversight.",
+      "venue": "Organization position on U.S.–Iran MOU and oversight.",
+      "quote": "Congress will play a critical role",
+      "source": "EB24"
+    },
+    {
+      "key": "2003-01-23-praising-los-angeles-jewish-community-on-relocation",
+      "date": "2003-01-23",
+      "issue": "Praising Los Angeles Jewish community on relocation.",
+      "venue": "Praising Los Angeles Jewish community on relocation.",
+      "quote": "the dynamism and the passion of this community",
+      "source": "EB05"
+    }
+  ],
+  "finance": {
+    "coverage": "No personal political-money total is asserted unless transaction-level identity matching has been completed."
+  },
+  "ideas": {
+    "traditions": [],
+    "influences": [],
+    "works": [],
+    "featuredQuotes": [
+      "2025-04-02-fy2026-budget-request-in-testimony-to-house-appropriations",
+      "2025-04-02-strategic-rationale-for-u-s-military-aid-a-stated-view-not-established-fact",
+      "2025-04-02-opposition-to-new-aid-conditions"
+    ]
+  },
+  "chapters": [
+    {
+      "key": "origins-and-recruitment-into-aipac",
+      "title": "Origins and recruitment into AIPAC",
+      "dek": "Elliot Brandt is the chief executive officer of the American Israel Public Affairs Committee, succeeding Howard Kohr at the end of 2024 after decades of regional advocacy, donor mobilization and senior leadership. Under an electoral strategy introduced in 2021, AIPAC operates a federal PAC and the United Democracy Project super PAC, while Brandt has personally advocated continued, largely unconditional U.S. military assistance to Israel. In October 2026 he co-signed a strategic shift away from formal endorsements and direct PAC contributions, while retaining the super PAC and pursuing organized individual giving.",
+      "body": "Brandt emerged from political and Jewish communal work rather than an electoral office. An official biography submitted to a House committee says that he worked on medical-supply logistics serving the former Soviet Union and completed an Otzma fellowship year in Israel before joining AIPAC in its Pacific Northwest office in 1994. An independent 2024 profile gives his Stanford graduation year as 1990. His birth date and exact early professional chronology remain unverified. [[EB01, EB03]]\n\nThe official biography is a useful primary source for institutional resume data, but it is not an independent assessment of success or influence. Keep unverified personal details out of the production record. [[EB01, EB03]]"
+    },
+    {
+      "key": "regional-politics-13-states-and-more-than-100-districts",
+      "title": "Regional politics: 13 states and more than 100 districts",
+      "dek": "",
+      "body": "In 2002 Brandt became Western States director in Los Angeles, with responsibility for political and coalition work across 13 states and more than 100 congressional districts, according to his congressional biography. A 2003 Jewish Journal interview supplies contemporaneous context for his move from Northern to Southern California. [[EB01, EB05, EB06]]\n\nThis decade mattered as a training ground for donor relationships and district-level mobilization, although the precise funding network and role in individual candidate decisions cannot be established from a job title. Jewish Insider reported that Brandt moved to Washington as managing director in 2015. [[EB01, EB05, EB06]]"
+    },
+    {
+      "key": "from-lobbying-to-electoral-machinery",
+      "title": "From lobbying to electoral machinery",
+      "dek": "",
+      "body": "AIPAC long concentrated on constituent advocacy and lawmaker relationships, while its name used PAC to mean Public Affairs Committee rather than an FEC political action committee. In December 2021 it launched an actual PAC (FEC C00797670) and announced a super PAC, which registered as United Democracy Project in January 2022 (FEC C00799031). [[EB09, EB10, EB11, EB02, EB12]]\n\nThese are legally and financially distinct channels. Traditional PAC donations and individual earmarks entering campaigns differ from UDP independent expenditures, which may be unlimited but legally cannot coordinate with candidates. AIPAC itself credited Brandt with a key role in the expansion, but no public record in this research proves he personally ordered a particular ad buy. [[EB09, EB10, EB11, EB02, EB12]]"
+    },
+    {
+      "key": "2024-ceo-succession-and-institutional-governance",
+      "title": "2024 CEO succession and institutional governance",
+      "dek": "",
+      "body": "The AIPAC board announced in June 2024 that Brandt would succeed Howard Kohr at the end of the year. He had become vice CEO in January and previously managed national affairs. AIPAC credited him with expanding donor engagement and said organizational and political fundraising doubled under his leadership; these are organizational assessments, not a proven estimate of the money personally raised by Brandt. [[EB02, EB06, EB08, EB19]]\n\nCurrent organizational material says the board sets strategic political and policy directives while the CEO leads staff. The October 2026 signed letter places Brandt among an identifiable leadership group, including President Bernie Kaminetsky, Chair Michael Tuchin and President-elect Yehuda Neuberger. [[EB02, EB06, EB08, EB19]]"
+    },
+    {
+      "key": "the-congressional-funding-agenda",
+      "title": "The congressional funding agenda",
+      "dek": "",
+      "body": "Brandt submitted written testimony to a House Appropriations subcommittee on April 2, 2025, calling for $3.3 billion in FY2026 Israeli security assistance. He argued for an American strategic and industrial benefit from the alliance and opposed attaching further political conditions to Israeli security assistance and arms sales. [[EB07]]\n\nThe testimony is firsthand evidence of what Brandt advocated, not objective proof that every security claim is correct. It also supported U.S. aid for Egypt and Jordan, a Middle East peace partnership program and Israeli-Palestinian security coordination subject to conditions. [[EB07]]"
+    },
+    {
+      "key": "electoral-leverage-victories-reversals-and-attribution",
+      "title": "Electoral leverage: victories, reversals and attribution",
+      "dek": "",
+      "body": "In 2024 UDP spent heavily against Jamaal Bowman and for George Latimer in New York, and opposed Cori Bush in Missouri. Documented spending and results belong in linked committee/candidate records, not written as direct payments from Brandt. A 2026 FactCheck review also documents UDP spending in several primaries, including opposition to Republican Thomas Massie. [[EB12, EB13, EB14, EB15, EB16, EB18]]\n\nThe Michigan Senate Democratic primary is a counterexample to claims of automatic dominance: a transaction-deduplicated analysis found UDP spent $30.64 million supporting Haley Stevens or opposing Abdul El-Sayed, yet El-Sayed won. Critics say overt primary interventions alienate Democratic allies, while AIPAC argues it must defend pro-Israel lawmakers; neither narrative alone establishes causal election effects. [[EB12, EB13, EB14, EB15, EB16, EB18]]"
+    },
+    {
+      "key": "donors-affiliates-and-careful-financial-accounting",
+      "title": "Donors, affiliates and careful financial accounting",
+      "dek": "",
+      "body": "AIPAC PAC and UDP have distinct federal filings. For reports covering Jan 2025 through Oct 14, 2026, the FEC lists $57.77 million in AIPAC PAC receipts and $112.82 million in UDP receipts. UDP reported $85.06 million in total disbursements and $53.60 million in independent expenditures in regular summary records. Those figures must not be summed as though they represent distinct final spending or as donations received by candidates. [[EB10, EB11, EB12, EB17, EB26, EB27]]\n\nAIPAC’s nonprofit Form 990 reports $122.54 million in FY2025 revenue and $118.29 million in expenses, a separate fiscal year and reporting universe. Its executive disclosure gives Brandt $862,888 reportable compensation from the organization and $46,447 other compensation. Large UDP donors named in independent FEC work include Paul Singer and Haim Saban; a transaction is not proof of a personal relationship or improper coordination. [[EB10, EB11, EB12, EB17, EB26, EB27]]"
+    },
+    {
+      "key": "israel-iran-and-the-limits-of-organizational-attribution",
+      "title": "Israel, Iran and the limits of organizational attribution",
+      "dek": "",
+      "body": "In his 2025 testimony, Brandt publicly argued that unconditional security aid and technological cooperation with Israel served U.S. interests. In 2026 AIPAC issued organizational statements supporting American-Israeli military operations against Iran and demanding robust restrictions in any diplomatic arrangement. An AIPAC memo also promoted U.S.–Israel defense technology provisions in the proposed FY2027 authorization bill. [[EB07, EB22, EB23, EB24, EB25]]\n\nThe policy apparatus he leads supported these positions, but the public releases are corporate statements rather than verified personal quotations by Brandt. Present AIPAC’s substantive arguments and relevant criticism of aid conditionality without presenting either as established fact. [[EB07, EB22, EB23, EB24, EB25]]"
+    },
+    {
+      "key": "backlash-the-costs-of-public-electioneering",
+      "title": "Backlash: the costs of public electioneering",
+      "dek": "",
+      "body": "Independent reporting in October 2026 described prominent donor cultivation and closely coordinated strategic leadership between Brandt and UDP head Rob Bassin, while some longstanding supporters criticized AIPAC for endorsing election-denying Republicans, polarizing primaries and weakening its bipartisan image. AIPAC defended the strategy as essential to supporting politicians aligned with the U.S.–Israel alliance. [[EB18, EB12, EB27]]\n\nCriticism of political spending is not itself proof of illegal lobbying, prohibited coordination, or foreign direction. Conversely, AIPAC’s assurances are organizational advocacy and should not be taken as independent audits of influence or compliance. [[EB18, EB12, EB27]]"
+    },
+    {
+      "key": "october-2026-strategic-reversal",
+      "title": "October 2026 strategic reversal",
+      "dek": "",
+      "body": "On October 21, AIPAC informed members that it would end candidate endorsements, direct PAC contributions and earmarking, while sustaining the UDP super PAC and increasing organized individual candidate donations. The membership letter was signed by Brandt and fellow leadership officials. The precise effective date for each promised withdrawal is not established in the excerpts reviewed. [[EB19, EB20, EB21]]\n\nThe announcement is a major strategic change, but not a withdrawal from election activity. It is especially consequential for longitudinal political-money dashboards: pre-change AIPAC PAC conduit/earmark records must not be projected mechanically into 2028, and post-change outside spending or member-directed donations must be tracked on their separate legal records. [[EB19, EB20, EB21]]"
+    }
+  ]
+}

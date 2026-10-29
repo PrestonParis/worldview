@@ -1,0 +1,842 @@
+{
+  "subject": "ellison",
+  "reviewedAt": "2026-10-25",
+  "sourcesVerifiedAt": "2026-10-25",
+  "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Larry%20Ellison%202016.png?width=400",
+  "brief": {
+    "inclusion": "Oracle co-founder whose wealth, government-cloud business, Republican relationships and family-backed media investments connect technology ownership to electoral and regulatory power.",
+    "identifiers": { "fec_contributor": "ELLISON, LAWRENCE" },
+    "namesakes": "Matched through Oracle employment and California, Hawaii or Austin-area addresses; Larry and Lawrence forms are included.",
+    "coverage": {
+      "from": "1944-08-17",
+      "through": "2026-10-25",
+      "lags": "The 2026 cycle remains open; reported nonprofit gifts are not visible in FEC data."
+    },
+    "openQuestions": [
+      "Some 2024 political funding was reported through unnamed sources and a nonprofit that does not disclose donors.",
+      "Family trusts and guarantees complicate attribution between Larry Ellison and his son David's media companies."
+    ],
+    "review": [
+      { "kind": "evidence", "by": "OA", "at": "2026-10-25" },
+      { "kind": "chronology", "by": "OA", "at": "2026-10-25" },
+      { "kind": "neutrality", "by": "OA", "at": "2026-10-25" },
+      { "kind": "current", "by": "OA", "at": "2026-10-25" }
+    ]
+  },
+  "summary": "Larry Ellison co-founded Oracle in 1977 and remains its executive chairman and chief technology officer. His political influence now extends beyond disclosed Republican contributions: Oracle is a major government technology provider, he cultivated a relationship with Donald Trump, and his capital backs family-controlled investments in Paramount, TikTok's U.S. operations and other media assets.",
+  "roles": [
+    {
+      "label": "Executive chairman and CTO, Oracle",
+      "detail": "Co-founded Oracle in 1977; served as CEO until 2014.",
+      "sources": ["oracle-bio", "oracle-proxy-2026"]
+    },
+    {
+      "label": "Republican donor and fundraiser",
+      "detail": "Hosts fundraisers and supports candidate-specific and leadership-aligned groups.",
+      "sources": ["fec-ellison", "time-fundraiser-2020", "bloomberg-graham-2025"]
+    },
+    {
+      "label": "Media and technology financier",
+      "detail": "Backs David Ellison's Skydance/Paramount ventures and the Oracle-led TikTok U.S. structure.",
+      "sources": ["axios-media-2026", "ap-warner-2025", "vanityfair-ellison-2026"]
+    }
+  ],
+  "entities": {
+    "ellison": { "match": { "name": "Larry Ellison", "type": "donor" } },
+    "oracle": {
+      "create": {
+        "name": "Oracle",
+        "type": "company",
+        "description": "Enterprise software and cloud-computing company co-founded by Larry Ellison in 1977.",
+        "websiteUrl": "https://www.oracle.com/"
+      }
+    },
+    "trump": { "match": { "name": "Donald Trump", "type": "politician" } },
+    "graham": {
+      "create": {
+        "name": "Lindsey Graham",
+        "type": "politician",
+        "description": "Republican U.S. senator from South Carolina."
+      }
+    },
+    "opportunity": {
+      "create": {
+        "name": "Opportunity Matters Fund",
+        "type": "organization",
+        "description": "Federal super PAC funded principally by Larry Ellison in the 2022 cycle."
+      }
+    },
+    "tesla": { "match": { "name": "Tesla", "type": "company" } },
+    "musk": { "match": { "name": "Elon Musk", "type": "donor" } },
+    "david": {
+      "create": {
+        "name": "David Ellison",
+        "type": "donor",
+        "description": "Film and media executive, Skydance founder and son of Larry Ellison."
+      }
+    },
+    "skydance": {
+      "create": {
+        "name": "Skydance Media",
+        "type": "company",
+        "description": "Media company founded by David Ellison and financed in part by the Ellison family."
+      }
+    },
+    "paramount": {
+      "create": {
+        "name": "Paramount Skydance",
+        "type": "company",
+        "description": "Media company formed through Skydance's acquisition of Paramount Global."
+      }
+    },
+    "tiktok-us": {
+      "create": {
+        "name": "TikTok US",
+        "type": "company",
+        "description": "U.S. TikTok operations controlled by an American investor consortium including Oracle."
+      }
+    },
+    "stargate": {
+      "create": {
+        "name": "Stargate AI Infrastructure",
+        "type": "company",
+        "description": "AI infrastructure venture announced by Oracle, OpenAI and SoftBank in 2025."
+      }
+    },
+    "security-strength": {
+      "create": {
+        "name": "Security Is Strength PAC",
+        "type": "organization",
+        "description": "Super PAC supporting Lindsey Graham."
+      }
+    }
+  },
+  "sources": [
+    {
+      "key": "oracle-bio",
+      "title": "Larry Ellison — Executive Biography",
+      "publisher": "Oracle",
+      "type": "primary",
+      "url": "https://www.oracle.com/corporate/executives/larry-ellison/",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "oracle-proxy-2026",
+      "title": "Oracle Corporation 2026 Proxy Statement",
+      "publisher": "U.S. Securities and Exchange Commission",
+      "type": "filing",
+      "url": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526402816/orcl-20260925.htm",
+      "publishedAt": "2026-09-25",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "britannica-ellison",
+      "title": "Larry Ellison",
+      "publisher": "Encyclopaedia Britannica",
+      "type": "secondary",
+      "url": "https://www.britannica.com/biography/Larry-Ellison",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "forbes-ellison-2026",
+      "title": "Larry Ellison",
+      "publisher": "Forbes",
+      "type": "secondary",
+      "url": "https://www.forbes.com/profile/larry-ellison/",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "time-ellison-2024",
+      "title": "Larry Ellison",
+      "publisher": "Time",
+      "type": "article",
+      "url": "https://time.com/6964931/larry-ellison/",
+      "publishedAt": "2024-04-17",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "time-fundraiser-2020",
+      "title": "Oracle Employees Petition Larry Ellison to Cancel Trump Fundraiser",
+      "publisher": "Time",
+      "type": "article",
+      "url": "https://time.com/5784848/oracle-petition-larry-ellison-trump/",
+      "publishedAt": "2020-02-15",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "wapo-election-call-2022",
+      "title": "Oracle's Larry Ellison joined Nov. 2020 call about contesting Trump's loss",
+      "publisher": "The Washington Post",
+      "type": "article",
+      "url": "https://www.washingtonpost.com/politics/2022/05/20/larry-ellison-oracle-trump-election-challenges/",
+      "publishedAt": "2022-05-20",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "forbes-tiktok-2020",
+      "title": "Trump Backs Oracle's TikTok Bid",
+      "publisher": "Forbes",
+      "type": "article",
+      "url": "https://www.forbes.com/sites/siladityaray/2020/08/19/trump-lends-support-to-billionaire-donor-larry-ellison-as-he-backs-oracles-bid-for-tiktok/",
+      "publishedAt": "2020-08-19",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "fec-ellison",
+      "title": "Individual contributions by Ellison, Lawrence",
+      "publisher": "Federal Election Commission",
+      "type": "filing",
+      "url": "https://www.fec.gov/data/receipts/individual-contributions/?contributor_name=ELLISON%2C+LAWRENCE",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "bloomberg-graham-2025",
+      "title": "Larry Ellison Gave $1 Million to Pro-Lindsey Graham PAC",
+      "publisher": "Bloomberg Law",
+      "type": "article",
+      "url": "https://news.bloomberglaw.com/litigation/larry-ellison-gave-1-million-to-pro-lindsey-graham-pac",
+      "publishedAt": "2025-07-31",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "fortune-darkmoney-2026",
+      "title": "Larry Ellison quietly gave $45M to a pro-Trump group",
+      "publisher": "Fortune",
+      "type": "article",
+      "url": "https://fortune.com/2026/06/25/larry-ellison-donald-trump-45-million-donation-stargate-tiktok-paramount/",
+      "publishedAt": "2026-06-25",
+      "accessedAt": "2026-10-25",
+      "notes": "Relies on unnamed people familiar with a nondisclosing nonprofit donation; treated as reported, not independently confirmed."
+    },
+    {
+      "key": "vanityfair-ellison-2026",
+      "title": "Inside Larry Ellison's Wide Web of Power, Money and Politics",
+      "publisher": "Vanity Fair",
+      "type": "article",
+      "url": "https://www.vanityfair.com/story/larry-ellison-profile",
+      "publishedAt": "2026-10",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "axios-media-2026",
+      "title": "The challenges facing the Ellisons' media empire",
+      "publisher": "Axios",
+      "type": "article",
+      "url": "https://www.axios.com/2026/01/24/ellison-media-paramount-cbs",
+      "publishedAt": "2026-01-24",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "ap-warner-2025",
+      "title": "Larry Ellison guarantees $40.4 billion in Paramount's hostile bid for Warner Bros. Discovery",
+      "publisher": "Associated Press",
+      "type": "article",
+      "url": "https://apnews.com/article/96bfd981b4595fbd50bf39979b6dbe53",
+      "publishedAt": "2025-12-22",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "tesla-proxy-2019",
+      "title": "Tesla 2019 Proxy Statement",
+      "publisher": "U.S. Securities and Exchange Commission",
+      "type": "filing",
+      "url": "https://ir.tesla.com/_flysystem/s3/sec/000156459019014268/tsla-def14a_20190611-gen_0.pdf",
+      "publishedAt": "2019",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "oracle-cloudworld-2024",
+      "title": "Larry Ellison Keynote on Oracle's Vision and Strategy",
+      "publisher": "Oracle",
+      "type": "video",
+      "url": "https://www.youtube.com/watch?v=1Nn8ADoWbKk",
+      "publishedAt": "2024-09-10",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "whitehouse-stargate-2025",
+      "title": "Announcing The Stargate Project",
+      "publisher": "The White House",
+      "type": "official_statement",
+      "url": "https://www.whitehouse.gov/remarks/2025/01/remarks-by-president-trump-announcing-the-stargate-project/",
+      "publishedAt": "2025-01-21",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "oracle-tiktok-2025",
+      "title": "Oracle participates in U.S. TikTok consortium",
+      "publisher": "Oracle",
+      "type": "official_statement",
+      "url": "https://www.oracle.com/news/announcement/oracle-tiktok-us-2025-09-25/",
+      "publishedAt": "2025-09-25",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "atlantic-paramount-2026",
+      "title": "Stephen Miller's New Recusals",
+      "publisher": "The Atlantic",
+      "type": "article",
+      "url": "https://www.theatlantic.com/politics/2026/05/katie-miller-paramount-cbs-ellison/687172/",
+      "publishedAt": "2026-05-15",
+      "accessedAt": "2026-10-25"
+    }
+  ],
+  "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "August 17, 1944",
+      "detail": "New York City; raised in Chicago by adoptive relatives.",
+      "featured": true,
+      "sources": ["britannica-ellison", "forbes-ellison-2026"]
+    },
+    { "key": "sex", "label": "Sex", "value": "Male", "sources": ["oracle-bio"] },
+    { "key": "citizenship", "label": "Citizenship", "value": "United States", "sources": ["forbes-ellison-2026"] },
+    {
+      "key": "children",
+      "label": "Children",
+      "value": "2",
+      "detail": "David and Megan Ellison, both film and media executives.",
+      "sources": ["vanityfair-ellison-2026", "forbes-ellison-2026"]
+    },
+    {
+      "key": "residence",
+      "label": "Residence",
+      "value": "Lanai, Hawaii",
+      "asOf": "2026-10-25",
+      "sources": ["forbes-ellison-2026", "vanityfair-ellison-2026"]
+    },
+    {
+      "key": "education",
+      "label": "Education",
+      "value": "University of Illinois; University of Chicago",
+      "detail": "Attended both institutions without completing a degree.",
+      "sources": ["britannica-ellison", "time-ellison-2024"]
+    },
+    {
+      "key": "party",
+      "label": "Political affiliation",
+      "value": "Independent/Republican-aligned donor",
+      "detail": "Has described himself as centrist while giving primarily to Republican candidates and groups.",
+      "sources": ["fec-ellison", "vanityfair-ellison-2026"]
+    },
+    {
+      "key": "current-roles",
+      "label": "Current roles",
+      "value": "Executive chairman and chief technology officer, Oracle",
+      "featured": true,
+      "asOf": "2026-10-25",
+      "sources": ["oracle-bio", "oracle-proxy-2026"]
+    },
+    {
+      "key": "net-worth",
+      "label": "Estimated net worth",
+      "value": "$252 billion",
+      "detail": "Forbes estimate; primarily tied to Oracle shares.",
+      "featured": true,
+      "asOf": "2026-10-25",
+      "sources": ["forbes-ellison-2026", "vanityfair-ellison-2026"]
+    },
+    {
+      "key": "oracle-ownership",
+      "label": "Oracle beneficial ownership",
+      "value": "Approximately 40%",
+      "detail": "Beneficial ownership reported in Oracle's 2026 proxy; percentage rounded.",
+      "asOf": "2026-09-21",
+      "sources": ["oracle-proxy-2026"]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "oracle",
+      "source": "ellison",
+      "target": "oracle",
+      "relType": "co-founded",
+      "role": "Co-founder (1977), CEO through 2014, executive chairman and CTO",
+      "from": "1977",
+      "prominence": 3,
+      "sources": ["oracle-bio", "oracle-proxy-2026"]
+    },
+    {
+      "key": "trump",
+      "source": "ellison",
+      "target": "trump",
+      "relType": "allied-with",
+      "role": "Hosted 2020 fundraiser, joined election-strategy call and supported second-term initiatives",
+      "from": "2020",
+      "prominence": 3,
+      "sources": ["time-fundraiser-2020", "wapo-election-call-2022", "fortune-darkmoney-2026"]
+    },
+    {
+      "key": "graham",
+      "source": "ellison",
+      "target": "graham",
+      "relType": "donated-to",
+      "role": "Recurring political ally and super-PAC recipient",
+      "from": "2020",
+      "prominence": 2,
+      "sources": ["bloomberg-graham-2025", "wapo-election-call-2022"]
+    },
+    {
+      "key": "opportunity",
+      "source": "ellison",
+      "target": "opportunity",
+      "relType": "donated-to",
+      "role": "Principal funder, contributing about $30 million",
+      "from": "2021",
+      "until": "2022",
+      "prominence": 2,
+      "sources": ["fec-ellison"]
+    },
+    {
+      "key": "tesla",
+      "source": "ellison",
+      "target": "tesla",
+      "relType": "board-member-of",
+      "role": "Independent director",
+      "from": "2018",
+      "until": "2022",
+      "prominence": 1,
+      "sources": ["tesla-proxy-2019"]
+    },
+    {
+      "key": "musk",
+      "source": "ellison",
+      "target": "musk",
+      "relType": "friend-of",
+      "role": "Friend, Tesla director and $1 billion investor in Musk's Twitter acquisition",
+      "from": "2018",
+      "prominence": 2,
+      "sources": ["tesla-proxy-2019", "vanityfair-ellison-2026"]
+    },
+    {
+      "key": "david",
+      "source": "ellison",
+      "target": "david",
+      "relType": "family-of",
+      "role": "Father and principal family financial backer",
+      "prominence": 3,
+      "sources": ["ap-warner-2025", "axios-media-2026"]
+    },
+    {
+      "key": "skydance",
+      "source": "ellison",
+      "target": "skydance",
+      "relType": "invested-in",
+      "role": "Family-trust and personal financing for David Ellison's company",
+      "prominence": 2,
+      "sources": ["ap-warner-2025", "oracle-proxy-2026"]
+    },
+    {
+      "key": "paramount",
+      "source": "ellison",
+      "target": "paramount",
+      "relType": "invested-in",
+      "role": "Backed Skydance acquisition and guaranteed later expansion bid",
+      "from": "2025",
+      "prominence": 3,
+      "sources": ["axios-media-2026", "ap-warner-2025"]
+    },
+    {
+      "key": "tiktok",
+      "source": "ellison",
+      "target": "tiktok-us",
+      "relType": "invested-in",
+      "role": "Oracle-led consortium investor and infrastructure provider",
+      "from": "2025",
+      "prominence": 3,
+      "sources": ["oracle-tiktok-2025", "vanityfair-ellison-2026"]
+    },
+    {
+      "key": "stargate",
+      "source": "ellison",
+      "target": "stargate",
+      "relType": "co-founded",
+      "role": "Oracle participant and White House launch representative",
+      "from": "2025",
+      "prominence": 2,
+      "sources": ["whitehouse-stargate-2025"]
+    },
+    {
+      "key": "security",
+      "source": "ellison",
+      "target": "security-strength",
+      "relType": "donated-to",
+      "role": "$1 million contribution supporting Lindsey Graham's 2026 reelection",
+      "from": "2025",
+      "prominence": 1,
+      "sources": ["bloomberg-graham-2025"]
+    }
+  ],
+  "events": [
+    {
+      "key": "birth",
+      "date": "1944-08-17",
+      "title": "Born in New York",
+      "summary": "Lawrence Joseph Ellison was born to a young mother and raised in Chicago by his aunt and uncle.",
+      "category": "personal",
+      "significance": 1,
+      "chapter": "formation",
+      "sources": ["britannica-ellison", "time-ellison-2024"]
+    },
+    {
+      "key": "college",
+      "date": "1966",
+      "title": "Leaves college and moves west",
+      "summary": "After attending Illinois and Chicago without a degree, Ellison moved to California and worked as a programmer.",
+      "category": "career",
+      "significance": 1,
+      "chapter": "formation",
+      "sources": ["britannica-ellison"]
+    },
+    {
+      "key": "oracle",
+      "date": "1977",
+      "title": "Co-founds Oracle predecessor",
+      "summary": "Ellison, Bob Miner and Ed Oates founded Software Development Laboratories, later renamed Oracle.",
+      "category": "career",
+      "significance": 3,
+      "chapter": "oracle",
+      "participants": [["oracle", "company"]],
+      "sources": ["oracle-bio", "britannica-ellison"]
+    },
+    {
+      "key": "ipo",
+      "date": "1986",
+      "title": "Oracle goes public",
+      "summary": "The offering converted Ellison's founder stake into a publicly priced fortune and financed expansion.",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "oracle",
+      "sources": ["britannica-ellison", "time-ellison-2024"]
+    },
+    {
+      "key": "ceo-end",
+      "date": "2014-09",
+      "title": "Steps down as Oracle CEO",
+      "summary": "Ellison became executive chairman and CTO after thirty-seven years as chief executive.",
+      "category": "career",
+      "significance": 2,
+      "chapter": "oracle",
+      "participants": [["oracle", "company"]],
+      "sources": ["oracle-bio", "oracle-proxy-2026"]
+    },
+    {
+      "key": "tesla-board",
+      "date": "2018-12",
+      "title": "Joins Tesla board",
+      "summary": "Ellison joined as an independent director amid governance changes required by an SEC settlement.",
+      "category": "career",
+      "significance": 1,
+      "chapter": "network",
+      "participants": [
+        ["tesla", "company"],
+        ["musk", "chief executive"]
+      ],
+      "sources": ["tesla-proxy-2019"]
+    },
+    {
+      "key": "fundraiser",
+      "date": "2020-02",
+      "title": "Hosts Trump fundraiser at California estate",
+      "summary": "The event raised millions and prompted an employee petition; Ellison said he did not attend personally.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "politics",
+      "participants": [["trump", "candidate"]],
+      "sources": ["time-fundraiser-2020"]
+    },
+    {
+      "key": "tiktok-bid",
+      "date": "2020-08",
+      "title": "Oracle emerges as preferred TikTok buyer",
+      "summary": "Trump praised Oracle and Ellison during an attempted forced divestiture that did not close.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "tiktok",
+      "participants": [
+        ["oracle", "bidder"],
+        ["trump", "president"]
+      ],
+      "sources": ["forbes-tiktok-2020"]
+    },
+    {
+      "key": "election-call",
+      "date": "2020-11-14",
+      "title": "Joins call about contesting Trump's loss",
+      "summary": "The Washington Post reported that Ellison joined lawyers and activists discussing election challenges; participation did not establish authorship of their claims.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "politics",
+      "status": "verified",
+      "participants": [["trump", "candidate"]],
+      "sources": ["wapo-election-call-2022"]
+    },
+    {
+      "key": "opportunity",
+      "date": "2021",
+      "date_end": "2022",
+      "title": "Funds Opportunity Matters with about $30 million",
+      "summary": "The super PAC supported Republican Senate candidates, becoming Ellison's largest disclosed federal political vehicle.",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "politics",
+      "participants": [["opportunity", "recipient"]],
+      "sources": ["fec-ellison"]
+    },
+    {
+      "key": "twitter",
+      "date": "2022",
+      "title": "Commits $1 billion to Musk's Twitter acquisition",
+      "summary": "The investment linked Ellison financially to Musk's takeover of a major communications platform.",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "network",
+      "participants": [["musk", "deal sponsor"]],
+      "sources": ["vanityfair-ellison-2026"]
+    },
+    {
+      "key": "dark-money",
+      "date": "2024",
+      "title": "Reportedly gives about $45 million to pro-Trump nonprofit",
+      "summary": "Fortune, citing people familiar with the nondisclosing group, reported a major gift not visible in FEC records.",
+      "category": "finance",
+      "significance": 3,
+      "chapter": "politics",
+      "status": "unresolved",
+      "statusNote": "Reported through unnamed sources; recipient disclosure is unavailable.",
+      "participants": [["trump", "supported candidate"]],
+      "sources": ["fortune-darkmoney-2026"]
+    },
+    {
+      "key": "stargate",
+      "date": "2025-01-21",
+      "title": "Joins White House Stargate announcement",
+      "summary": "Oracle, OpenAI and SoftBank announced a large AI-infrastructure venture with Ellison appearing beside Trump.",
+      "category": "career",
+      "significance": 2,
+      "chapter": "government-tech",
+      "participants": [
+        ["stargate", "venture"],
+        ["trump", "president"]
+      ],
+      "sources": ["whitehouse-stargate-2025"]
+    },
+    {
+      "key": "graham",
+      "date": "2025-03-14",
+      "title": "Gives $1 million to pro-Graham PAC",
+      "summary": "The contribution was Ellison's largest disclosed political gift since 2022.",
+      "category": "finance",
+      "significance": 1,
+      "chapter": "present",
+      "participants": [
+        ["security-strength", "recipient"],
+        ["graham", "candidate"]
+      ],
+      "sources": ["bloomberg-graham-2025"]
+    },
+    {
+      "key": "paramount",
+      "date": "2025-08",
+      "title": "Family financing closes Paramount-Skydance merger",
+      "summary": "Ellison capital backed the transaction led by his son David, expanding the family's influence into film and television news.",
+      "category": "finance",
+      "significance": 3,
+      "chapter": "media",
+      "participants": [
+        ["david", "executive"],
+        ["paramount", "company"],
+        ["skydance", "acquirer"]
+      ],
+      "sources": ["axios-media-2026", "oracle-proxy-2026"]
+    },
+    {
+      "key": "tiktok-us",
+      "date": "2025-09",
+      "title": "Oracle consortium takes role in TikTok U.S.",
+      "summary": "A government-brokered structure gave an Oracle-led American consortium control and infrastructure responsibilities.",
+      "category": "career",
+      "significance": 3,
+      "chapter": "tiktok",
+      "participants": [
+        ["oracle", "consortium member"],
+        ["tiktok-us", "company"]
+      ],
+      "sources": ["oracle-tiktok-2025", "vanityfair-ellison-2026"]
+    },
+    {
+      "key": "warner",
+      "date": "2025-12-22",
+      "title": "Guarantees $40.4 billion for Paramount bid",
+      "summary": "Ellison personally backed the equity financing and potential damages in Paramount's bid for Warner Bros. Discovery.",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "media",
+      "participants": [
+        ["paramount", "bidder"],
+        ["david", "executive"]
+      ],
+      "sources": ["ap-warner-2025"]
+    },
+    {
+      "key": "media-scrutiny",
+      "date": "2026-05",
+      "title": "Political scrutiny follows media expansion",
+      "summary": "Reporting examined meetings, a Trump lawsuit settlement and expectations around CBS editorial direction as regulators approved the family-backed merger.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "media",
+      "status": "unresolved",
+      "statusNote": "Reporting documents timing and perceptions; it does not establish a regulatory quid pro quo by Larry Ellison.",
+      "sources": ["atlantic-paramount-2026", "axios-media-2026"]
+    }
+  ],
+  "statements": [
+    {
+      "key": "database",
+      "date": "2024-09-10",
+      "datePrecision": "day",
+      "venue": "Oracle CloudWorld keynote",
+      "issue": "Cloud computing",
+      "verbatim": false,
+      "summary": "Ellison argued that customers should be able to use Oracle databases across multiple competing cloud platforms rather than be locked into one provider.",
+      "source": "oracle-cloudworld-2024"
+    },
+    {
+      "key": "security",
+      "date": "2024-09-10",
+      "datePrecision": "day",
+      "venue": "Oracle CloudWorld keynote",
+      "issue": "Cybersecurity",
+      "verbatim": false,
+      "summary": "He presented unified data, identity and network controls as necessary to make cloud systems secure.",
+      "source": "oracle-cloudworld-2024"
+    },
+    {
+      "key": "fundraiser",
+      "date": "2020-02",
+      "datePrecision": "month",
+      "venue": "Statement on Trump event",
+      "issue": "Political fundraising",
+      "verbatim": false,
+      "summary": "Ellison said hosting the fundraiser did not mean Oracle as a company endorsed Trump and noted that he did not personally attend.",
+      "source": "time-fundraiser-2020"
+    },
+    {
+      "key": "tiktok",
+      "date": "2020-08",
+      "datePrecision": "month",
+      "venue": "Comments on Oracle bid",
+      "issue": "TikTok",
+      "verbatim": false,
+      "summary": "Ellison and Oracle presented the company as a trusted technology partner capable of securing TikTok's U.S. data.",
+      "source": "forbes-tiktok-2020"
+    },
+    {
+      "key": "ai-cancer",
+      "date": "2025-01-21",
+      "datePrecision": "day",
+      "venue": "White House Stargate announcement",
+      "issue": "Artificial intelligence",
+      "verbatim": false,
+      "summary": "Ellison argued that large-scale AI infrastructure could accelerate personalized cancer detection and vaccine development.",
+      "source": "whitehouse-stargate-2025"
+    }
+  ],
+  "finance": {
+    "fec": {
+      "contributorName": "ELLISON, LAWRENCE",
+      "namePattern": "^ELLISON, (LAWRENCE|LARRY)( J\\.?| JOSEPH)?$",
+      "employerPattern": "ORACLE|SELF[- ]EMPLOYED",
+      "cities": ["WOODSIDE", "RANCHO MIRAGE", "LANAI CITY", "AUSTIN", "PALM DESERT"],
+      "source": "fec-ellison"
+    },
+    "coverage": "Itemized federal contributions matched by exact Larry/Lawrence name plus Oracle employment or known locations. It excludes reported nonprofit gifts, family trusts, Oracle PAC activity, event hosting, company contracts and downstream committee spending. The 2026 cycle remains open."
+  },
+  "ideas": {
+    "traditions": [
+      {
+        "label": "Technological solutionism",
+        "atlasId": "technocracy",
+        "basis": "Public arguments that databases, cloud infrastructure and AI can solve health, security and administrative problems.",
+        "context": "This is an analytic description, not a self-applied ideology.",
+        "sources": ["oracle-cloudworld-2024", "whitehouse-stargate-2025"]
+      },
+      {
+        "label": "Business-government partnership",
+        "atlasId": "developmental-state",
+        "basis": "Oracle's role in Stargate and government-brokered TikTok arrangements.",
+        "context": "Ellison combines market competition with willingness to enter strategic public-private projects.",
+        "sources": ["whitehouse-stargate-2025", "oracle-tiktok-2025"]
+      }
+    ],
+    "influences": [
+      {
+        "name": "Relational database research",
+        "note": "IBM research on relational databases supplied the technical opportunity behind Oracle's founding.",
+        "sources": ["britannica-ellison"]
+      }
+    ],
+    "works": [
+      {
+        "title": "Oracle CloudWorld keynotes",
+        "year": "2024",
+        "kind": "Keynote",
+        "detail": "Statements of Oracle's multicloud, AI and security strategy.",
+        "source": "oracle-cloudworld-2024"
+      }
+    ],
+    "featuredQuotes": ["database", "ai-cancer", "fundraiser"]
+  },
+  "chapters": [
+    {
+      "key": "formation",
+      "title": "An adopted child becomes a programmer",
+      "dek": "Chicago, college departures and California",
+      "body": "Larry Ellison was born in New York in 1944 and raised in Chicago by his aunt and uncle. He attended two universities without graduating, then moved to California and worked in programming [[britannica-ellison, time-ellison-2024]].\n\nHis early career coincided with the emergence of relational databases, a technical opening he turned into a commercial project [[britannica-ellison]]."
+    },
+    {
+      "key": "oracle",
+      "title": "Building Oracle",
+      "dek": "Database software creates one of technology's largest fortunes",
+      "body": "Ellison and two partners founded Oracle's predecessor in 1977. Government and corporate database contracts drove growth, and the company went public in 1986 [[oracle-bio, britannica-ellison]].\n\nHe served as CEO until 2014 and remains executive chairman and CTO. Oracle's 2026 proxy shows a founder stake near forty percent, tying most of his wealth directly to the company [[oracle-proxy-2026, forbes-ellison-2026]]."
+    },
+    {
+      "key": "politics",
+      "title": "From centrist identity to Republican access",
+      "dek": "Fundraisers, super PACs and a contested-election call",
+      "body": "Ellison has described himself as centrist, but recent disclosed giving favors Republicans. He hosted a 2020 Trump fundraiser and later joined a call discussing legal challenges to Trump's defeat [[time-fundraiser-2020, wapo-election-call-2022]].\n\nAbout $30 million to Opportunity Matters Fund made a super PAC his largest disclosed vehicle. A separately reported $45 million nonprofit gift in 2024 remains unconfirmed by public filings and is labeled accordingly [[fec-ellison, fortune-darkmoney-2026]]."
+    },
+    {
+      "key": "network",
+      "title": "Technology peers and family capital",
+      "dek": "Musk, Tesla and the next Ellison generation",
+      "body": "Ellison served on Tesla's board and invested $1 billion in Elon Musk's Twitter acquisition. Those ties connect him to another technology owner active in Republican politics [[tesla-proxy-2019, vanityfair-ellison-2026]].\n\nHis children David and Megan built film businesses. Larry's capital has been especially important to David's Skydance, making family finance a bridge from enterprise software into entertainment and news [[ap-warner-2025, axios-media-2026]]."
+    },
+    {
+      "key": "government-tech",
+      "title": "Government technology as power",
+      "dek": "Cloud contracts and public-private projects",
+      "body": "Oracle sells database and cloud services to government agencies, making Ellison's policy access relevant even when no campaign contribution is involved [[oracle-proxy-2026, vanityfair-ellison-2026]].\n\nAt the 2025 White House launch of Stargate, Ellison joined Trump and other executives to promise large AI-infrastructure investment. The project joined commercial ambition to national industrial policy [[whitehouse-stargate-2025]]."
+    },
+    {
+      "key": "tiktok",
+      "title": "Two attempts at TikTok",
+      "dek": "National-security policy and commercial opportunity",
+      "body": "Oracle first emerged as Trump's preferred TikTok partner in 2020, but that transaction did not close. The overlap between Ellison's political relationship and Oracle's bid drew scrutiny without proving improper intervention [[forbes-tiktok-2020]].\n\nIn 2025 an Oracle-led U.S. consortium gained a role in TikTok's American operations. Oracle's infrastructure responsibilities gave Ellison influence over a platform central to speech, commerce and national-security debates [[oracle-tiktok-2025, vanityfair-ellison-2026]]."
+    },
+    {
+      "key": "media",
+      "title": "A family-backed media empire",
+      "dek": "Paramount, CBS and regulatory scrutiny",
+      "body": "Ellison financing enabled Skydance's Paramount acquisition and a later bid for Warner Bros. Discovery. A personal $40.4 billion guarantee showed that the expansion depended on Larry's balance sheet as well as David's management [[ap-warner-2025, axios-media-2026]].\n\nThe deals brought political scrutiny after Paramount settled Trump's lawsuit and regulators approved the merger. Reporting documents meetings and contested perceptions but does not establish a quid pro quo by Larry Ellison [[atlantic-paramount-2026, axios-media-2026]]."
+    },
+    {
+      "key": "present",
+      "title": "Present influence",
+      "dek": "Oracle ownership meets media and political power",
+      "body": "At eighty-two, Ellison remains Oracle's executive chairman and CTO and one of its dominant shareholders. His fortune gives him capacity to finance transactions larger than his disclosed political ledger [[oracle-bio, oracle-proxy-2026, forbes-ellison-2026]].\n\nBy late 2026 his influence spanned Oracle, Stargate, TikTok U.S. and family-backed Paramount. The same breadth requires careful attribution: Oracle actions, David Ellison's editorial decisions and Larry Ellison's personal donations are related but not interchangeable [[vanityfair-ellison-2026, axios-media-2026]]."
+    }
+  ]
+}

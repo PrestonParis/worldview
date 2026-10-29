@@ -1,0 +1,539 @@
+{
+  "subject": "greenblatt",
+  "reviewedAt": "2026-10-25",
+  "sourcesVerifiedAt": "2026-10-25",
+  "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Jonathan%20Greenblatt.jpg?width=400",
+  "brief": {
+    "inclusion": "Chief executive and national director of the Anti-Defamation League since 2015, running a $135 million organization whose definitions of antisemitism, extremism research, law-enforcement partnerships and statements on campus protest, platforms and Israel shape policy debate in Washington and the states.",
+    "identifiers": {
+      "wikidata": "Q6273264",
+      "fec_contributor": "GREENBLATT, JONATHAN",
+      "propublica_ein": "13-1818723 (Anti-Defamation League)"
+    },
+    "namesakes": "FEC records include several other Jonathan Greenblatts: a Washington lawyer (Shearman & Sterling, Legal Innovators, J Greenblatt International Disputes), a New Hampshire health-system employee, and a New York contributor filing as \"not employed\" (61 rows, including 2020–2024 gifts to Biden and Harris committees). Only rows naming Ethos Water, GOOD Worldwide, Starbucks, the White House or the ADL are counted.",
+    "coverage": {
+      "from": "1970",
+      "through": "2026-10-25",
+      "lags": "The latest ADL Form 990 on ProPublica covers the fiscal year ending June 2025."
+    },
+    "openQuestions": [
+      "The 61 New York \"not employed\" FEC rows may include Greenblatt; they are excluded until an address or employer confirms identity.",
+      "The March 2024 Morning Joe keffiyeh remark is quoted only in fragments; check the full MSNBC transcript."
+    ],
+    "review": []
+  },
+  "summary": "Former Clinton and Obama White House official and social entrepreneur (co-founder of Ethos Water) who has led the Anti-Defamation League since July 2015. He has made the ADL a combatant on several fronts: declaring in 2022 that anti-Zionism is antisemitism, clashing with and then defending Elon Musk, calling campus pro-Palestinian groups Iran's \"campus proxies\" in 2024, and in 2026 describing \"the most concentrated, most dangerous surge of antisemitism in living memory.\" The ADL reported revenue of $135.3 million and paid him $1.13 million in fiscal 2025.",
+  "roles": [
+    {
+      "label": "Organization executive",
+      "detail": "CEO and national director, Anti-Defamation League, since July 2015",
+      "sources": ["wikipedia", "propublica-adl"]
+    },
+    {
+      "label": "Former White House official",
+      "detail": "Director of the Office of Social Innovation and Civic Participation under Obama, 2011–2014; Clinton administration and Commerce Department in the 1990s",
+      "sources": ["wikipedia"]
+    },
+    {
+      "label": "Entrepreneur",
+      "detail": "Co-founder of Ethos Water (2002), sold to Starbucks in 2005; later CEO of GOOD Worldwide",
+      "sources": ["wikipedia", "fec-greenblatt"]
+    },
+    {
+      "label": "Public commentator",
+      "detail": "Frequent television voice on antisemitism, extremism and Israel",
+      "sources": ["algemeiner-keffiyeh-2024", "adl-state-of-hate-2026"]
+    }
+  ],
+  "finance": {
+    "fec": {
+      "contributorName": "GREENBLATT, JONATHAN",
+      "namePattern": "^GREENBLATT, JONATHAN( A\\.?| ADAM)?( MR\\.?)?$",
+      "employerPattern": "ANTI[- ]DEFAMATION|^ADL|GOOD WORLDWIDE|STARBUCKS|ETHOS|WHITE HOUSE|EXECUTIVE OFFICE OF THE PRESIDENT|ALL FOR GOOD",
+      "cities": [],
+      "source": "fec-greenblatt"
+    },
+    "coverage": "Greenblatt's own itemized federal contributions, matched on exact name plus a known employer only, because several namesakes file from the same cities. Rows from a New York contributor listed as \"not employed\" are excluded pending identity confirmation. ADL spending and his ADL compensation are not political contributions."
+  },
+  "entities": {
+    "greenblatt": {
+      "create": {
+        "name": "Jonathan Greenblatt",
+        "type": "pundit",
+        "description": "CEO and national director of the Anti-Defamation League since 2015; former Obama White House official and co-founder of Ethos Water."
+      }
+    },
+    "adl": {
+      "create": {
+        "name": "Anti-Defamation League",
+        "type": "organization",
+        "description": "Jewish civil-rights organization founded in 1913 that tracks antisemitism and extremism.",
+        "websiteUrl": "https://www.adl.org/"
+      }
+    },
+    "ethos": {
+      "create": {
+        "name": "Ethos Water",
+        "type": "company",
+        "description": "Bottled-water brand co-founded in 2002 by Peter Thum and Jonathan Greenblatt to fund clean-water projects; acquired by Starbucks in 2005."
+      }
+    },
+    "starbucks": {
+      "create": {
+        "name": "Starbucks",
+        "type": "company",
+        "description": "Coffee company.",
+        "websiteUrl": "https://www.starbucks.com/"
+      }
+    },
+    "musk": {
+      "match": { "name": "Elon Musk", "type": "donor" }
+    },
+    "cair": {
+      "create": {
+        "name": "Council on American-Islamic Relations",
+        "type": "organization",
+        "description": "Muslim civil-rights and advocacy organization.",
+        "websiteUrl": "https://www.cair.com/"
+      }
+    }
+  },
+  "sources": [
+    {
+      "key": "wikipedia",
+      "title": "Jonathan Greenblatt",
+      "publisher": "Wikipedia",
+      "type": "secondary",
+      "url": "https://en.wikipedia.org/wiki/Jonathan_Greenblatt",
+      "notes": "Reference work; cited for birth, education, early career, family and the chronology of public controversies."
+    },
+    {
+      "key": "propublica-adl",
+      "title": "Anti-Defamation League (EIN 13-1818723): Form 990 filings",
+      "publisher": "ProPublica Nonprofit Explorer",
+      "type": "filing",
+      "url": "https://projects.propublica.org/nonprofits/organizations/131818723",
+      "notes": "Fiscal year ending June 2025: revenue $135,300,377; Greenblatt's compensation reported on Part VII."
+    },
+    {
+      "key": "jta-antizionism-2022",
+      "title": "ADL says anti-Zionism runs the same risk of violent attacks as antisemitism",
+      "publisher": "JTA",
+      "author": "Ron Kampeas",
+      "type": "article",
+      "publishedAt": "2022-05-02",
+      "url": "https://www.jta.org/?p=1809467"
+    },
+    {
+      "key": "algemeiner-keffiyeh-2024",
+      "title": "CAIR Accuses ADL of Spreading Hate, Despite Controversial Oct. 7 Comments",
+      "publisher": "The Algemeiner",
+      "author": "Jack Elbaum",
+      "type": "article",
+      "publishedAt": "2024-04-17",
+      "url": "https://www.algemeiner.com/2024/04/17/cair-accuses-adl-spreading-hate-despite-controversial-oct-7-comments/"
+    },
+    {
+      "key": "beast-proxies-2024",
+      "title": "CAIR calls on MSNBC to ban ADL boss over 'Iranian proxies' remark",
+      "publisher": "The Daily Beast",
+      "author": "Justin Baragona",
+      "type": "article",
+      "publishedAt": "2024-04-25",
+      "url": "https://www.thedailybeast.com/cair-calls-on-msnbc-to-ban-adl-boss-over-iranian-proxies-remark"
+    },
+    {
+      "key": "cair-proxies-2024",
+      "title": "CAIR condemns ADL for slandering Jewish and Palestinian students as 'Iranian proxies,' calls on MSNBC to ban him",
+      "publisher": "Council on American-Islamic Relations",
+      "type": "official_statement",
+      "publishedAt": "2024-04-25",
+      "url": "https://www.cair.com/press_releases/cair-condemns-adl-for-slandering-jewish-and-palestinian-students-as-iranian-proxies-calls-on-msnbc-to-ban-him/",
+      "notes": "Advocacy source; cited only for the wording it attributes to Greenblatt and for CAIR's own position."
+    },
+    {
+      "key": "aljazeera-musk-2025",
+      "title": "ADL faces backlash for defending Elon Musk's raised-arm gesture",
+      "publisher": "Al Jazeera",
+      "type": "article",
+      "publishedAt": "2025-01-22",
+      "url": "https://www.aljazeera.com/news/2025/1/22/adl-faces-backlash-for-defending-elon-musks-raised-arm-gesture"
+    },
+    {
+      "key": "adl-state-of-hate-2026",
+      "title": "ADL CEO Jonathan Greenblatt Delivers 2026 State of Hate at Never Is Now",
+      "publisher": "Anti-Defamation League",
+      "type": "official_statement",
+      "publishedAt": "2026-03-16",
+      "url": "https://www.adl.org/resources/press-release/adl-ceo-jonathan-greenblatt-delivers-2026-state-hate-never-now"
+    },
+    {
+      "key": "fec-greenblatt",
+      "title": "Individual contributions: Greenblatt, Jonathan (Schedule A)",
+      "publisher": "Federal Election Commission",
+      "type": "filing",
+      "url": "https://www.fec.gov/data/receipts/individual-contributions/?contributor_name=GREENBLATT%2C+JONATHAN",
+      "documentId": "OpenFEC /schedules/schedule_a"
+    }
+  ],
+  "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "November 21, 1970",
+      "detail": "Trumbull, Connecticut",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "sex",
+      "label": "Sex",
+      "value": "Male",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "religion",
+      "label": "Religion",
+      "value": "Jewish",
+      "detail": "Born to a Jewish family; grandson of a Holocaust survivor.",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "spouse",
+      "label": "Spouse",
+      "value": "Marjan Keypour Greenblatt",
+      "detail": "An Iranian Jewish refugee and founder of the Alliance for Rights of All Minorities.",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "children",
+      "label": "Children",
+      "value": "Three",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "education",
+      "label": "Education",
+      "value": "BA, Tufts University (1992); MBA, Kellogg School of Management, Northwestern University",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "current-roles",
+      "label": "Current roles",
+      "value": "CEO and national director, Anti-Defamation League",
+      "featured": true,
+      "asOf": "2026-10-25",
+      "sources": ["adl-state-of-hate-2026", "propublica-adl"]
+    },
+    {
+      "key": "compensation",
+      "label": "Compensation (FY2025)",
+      "value": "$1,127,131 from the ADL, plus $198,905 from related organizations",
+      "detail": "Reportable compensation for the fiscal year ending June 2025, with a further $109,259 in other compensation.",
+      "asOf": "2025-06-30",
+      "featured": true,
+      "sources": ["propublica-adl"]
+    },
+    {
+      "key": "adl-revenue",
+      "label": "ADL revenue (FY2025)",
+      "value": "$135.3 million",
+      "detail": "Expenses of $128.2 million.",
+      "asOf": "2025-06-30",
+      "sources": ["propublica-adl"]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "greenblatt-adl",
+      "source": "greenblatt",
+      "target": "adl",
+      "relType": "works-for",
+      "role": "CEO and national director, succeeding Abraham Foxman",
+      "from": "2015-07-20",
+      "prominence": 3,
+      "sources": ["wikipedia", "propublica-adl"]
+    },
+    {
+      "key": "greenblatt-ethos",
+      "source": "greenblatt",
+      "target": "ethos",
+      "relType": "co-founded",
+      "role": "Co-founder with Peter Thum",
+      "from": "2002",
+      "until": "2005",
+      "prominence": 2,
+      "sources": ["wikipedia", "fec-greenblatt"]
+    },
+    {
+      "key": "starbucks-ethos",
+      "source": "greenblatt",
+      "target": "starbucks",
+      "relType": "former-role",
+      "role": "Vice president after Starbucks bought Ethos Water for $8 million (2005)",
+      "from": "2005",
+      "prominence": 1,
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "greenblatt-musk",
+      "source": "greenblatt",
+      "target": "musk",
+      "relType": "opposed",
+      "role": "Alternately praised and confronted him: Musk threatened to sue the ADL over X's ad losses (2023); the ADL called his 2025 inauguration gesture \"awkward,\" then condemned his Nazi puns",
+      "from": "2022",
+      "prominence": 2,
+      "status": "disputed",
+      "notes": "The relationship has swung between praise and conflict; neither alliance nor opposition fully describes it.",
+      "sources": ["aljazeera-musk-2025", "wikipedia"]
+    },
+    {
+      "key": "cair-greenblatt",
+      "source": "cair",
+      "target": "greenblatt",
+      "relType": "opposed",
+      "role": "Led a 60-group call for his firing and urged MSNBC to stop booking him (2024)",
+      "from": "2024-04",
+      "prominence": 1,
+      "sources": ["cair-proxies-2024", "algemeiner-keffiyeh-2024"]
+    }
+  ],
+  "events": [
+    {
+      "key": "born",
+      "date": "1970-11-21",
+      "title": "Born in Trumbull, Connecticut",
+      "category": "personal",
+      "significance": 1,
+      "chapter": "before-adl",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "clinton-campaign",
+      "date": "1992",
+      "title": "Graduates from Tufts and works on Bill Clinton's campaign",
+      "summary": "Then serves in the Clinton White House and the Commerce Department on international economic policy.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "before-adl",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "ethos",
+      "date": "2002",
+      "title": "Co-founds Ethos Water",
+      "summary": "Starbucks buys it for $8 million in 2005, and he becomes a Starbucks vice president.",
+      "category": "career",
+      "significance": 2,
+      "chapter": "before-adl",
+      "participants": [["ethos", "company"], ["starbucks", "buyer"]],
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "obama-wh",
+      "date": "2011",
+      "date_end": "2014",
+      "title": "Directs the White House Office of Social Innovation and Civic Participation",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "before-adl",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "adl-ceo",
+      "date": "2015-07-20",
+      "title": "Becomes ADL chief executive, succeeding Abraham Foxman",
+      "summary": "The sixth national director in the organization's history.",
+      "category": "career",
+      "significance": 3,
+      "chapter": "adl",
+      "participants": [["adl", "organization"]],
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "anti-zionism",
+      "date": "2022-05-01",
+      "title": "Tells the ADL summit that anti-Zionism is antisemitism",
+      "summary": "Calls anti-Zionism an ideology \"rooted in rage\"; the speech draws criticism from the left and from some ADL staff.",
+      "category": "ideas",
+      "significance": 3,
+      "chapter": "israel-campus",
+      "participants": [["adl", "host"]],
+      "sources": ["jta-antizionism-2022", "wikipedia"]
+    },
+    {
+      "key": "musk-2023",
+      "date": "2023-09",
+      "title": "Elon Musk threatens to sue the ADL",
+      "summary": "Musk blames the ADL for advertisers leaving X; the ADL calls his attacks \"dangerous and deeply irresponsible.\" Weeks later Greenblatt praises Musk as an \"amazing entrepreneur.\"",
+      "category": "legal",
+      "significance": 2,
+      "chapter": "platforms",
+      "participants": [["musk", "X owner"]],
+      "sources": ["aljazeera-musk-2025"]
+    },
+    {
+      "key": "keffiyeh",
+      "date": "2024-03",
+      "title": "Compares hate speech under a keffiyeh to hate speech under a swastika on Morning Joe",
+      "summary": "Some 60 Muslim, Arab and allied groups call for his firing; he says CAIR took the remarks out of context and that he was \"not comparing the garb.\"",
+      "category": "ideas",
+      "significance": 2,
+      "chapter": "israel-campus",
+      "participants": [["cair", "critic"]],
+      "sources": ["algemeiner-keffiyeh-2024", "cair-proxies-2024"]
+    },
+    {
+      "key": "campus-proxies",
+      "date": "2024-04-19",
+      "title": "Calls SJP and Jewish Voice for Peace Iran's \"campus proxies\"",
+      "summary": "On Morning Joe, during the Columbia encampment protests; CAIR asks MSNBC to stop booking him.",
+      "category": "ideas",
+      "significance": 2,
+      "chapter": "israel-campus",
+      "participants": [["cair", "critic"]],
+      "sources": ["beast-proxies-2024", "cair-proxies-2024"]
+    },
+    {
+      "key": "musk-gesture",
+      "date": "2025-01-20",
+      "title": "ADL calls Musk's inauguration-day arm gesture \"awkward,\" not a Nazi salute",
+      "summary": "Drawing criticism from Rep. Alexandria Ocasio-Cortez and Jewish groups; three days later Greenblatt condemns Musk's Nazi puns.",
+      "category": "ideas",
+      "significance": 2,
+      "chapter": "platforms",
+      "participants": [["musk", "subject"], ["adl", "organization"]],
+      "sources": ["aljazeera-musk-2025", "wikipedia"]
+    },
+    {
+      "key": "time-100",
+      "date": "2025-04",
+      "title": "Named to Time's 100 most influential people",
+      "category": "career",
+      "significance": 1,
+      "chapter": "adl",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "state-of-hate-2026",
+      "date": "2026-03-16",
+      "title": "Delivers the 2026 State of Hate address",
+      "summary": "Cites 20 Jews murdered in the past year, including the Bondi Beach attack, and ADL work on more than 60 state bills and more than half a billion dollars in security funding.",
+      "category": "ideas",
+      "significance": 3,
+      "chapter": "adl",
+      "participants": [["adl", "host"]],
+      "sources": ["adl-state-of-hate-2026"]
+    }
+  ],
+  "statements": [
+    {
+      "key": "rooted-in-rage-2022",
+      "issue": "Anti-Zionism",
+      "date": "2022-05-01",
+      "venue": "ADL national leadership summit",
+      "quote": "rooted in rage",
+      "summary": "His description of anti-Zionism, in the speech in which he called it antisemitism.",
+      "source": "jta-antizionism-2022"
+    },
+    {
+      "key": "negation-2022",
+      "issue": "Anti-Zionism",
+      "date": "2022-05-01",
+      "venue": "ADL national leadership summit",
+      "quote": "predicated on one concept: the negation of another people",
+      "source": "jta-antizionism-2022"
+    },
+    {
+      "key": "shocking-acts-2022",
+      "issue": "Anti-Zionism",
+      "date": "2022-05-01",
+      "venue": "ADL national leadership summit",
+      "quote": "When an idea is born out of such shocking intolerance, it leads to, well, shocking acts.",
+      "source": "jta-antizionism-2022"
+    },
+    {
+      "key": "keffiyeh-2024",
+      "issue": "Campus protest",
+      "date": "2024-03",
+      "venue": "MSNBC, Morning Joe",
+      "quote": "wearing a swastika on their arm, I'm sorry, you should not tolerate it if you're wearing a keffiyeh on their head",
+      "summary": "On people calling for \"death to the Zionists.\" Quoted as a fragment by The Algemeiner.",
+      "source": "algemeiner-keffiyeh-2024"
+    },
+    {
+      "key": "not-garb-2024",
+      "issue": "Campus protest",
+      "date": "2024-04-17",
+      "venue": "Statement to The Algemeiner",
+      "quote": "I'm not comparing the garb",
+      "summary": "He added: \"I'm comparing the hate speech and how it shouldn't be tolerated from anyone, period.\"",
+      "source": "algemeiner-keffiyeh-2024"
+    },
+    {
+      "key": "campus-proxies-2024",
+      "issue": "Campus protest",
+      "date": "2024-04-19",
+      "venue": "MSNBC, Morning Joe",
+      "quote": "Iran has their military proxies like Hezbollah, and Iran has their campus proxies like these groups like SJP and JVP.",
+      "verbatim": false,
+      "summary": "Wording as quoted by CAIR, which demanded MSNBC stop booking him; not checked against the broadcast.",
+      "source": "cair-proxies-2024"
+    },
+    {
+      "key": "surge-2026",
+      "issue": "Antisemitism",
+      "date": "2026-03-16",
+      "venue": "2026 State of Hate address, Never Is Now",
+      "quote": "We are facing the most concentrated, most dangerous surge of antisemitism in living memory.",
+      "source": "adl-state-of-hate-2026"
+    },
+    {
+      "key": "mundane-2026",
+      "issue": "Antisemitism",
+      "date": "2026-03-16",
+      "venue": "2026 State of Hate address, Never Is Now",
+      "quote": "antisemitism has not just become murderous; it has become mundane.",
+      "source": "adl-state-of-hate-2026"
+    },
+    {
+      "key": "trembling-knees-2026",
+      "issue": "Antisemitism",
+      "date": "2026-03-16",
+      "venue": "2026 State of Hate address, Never Is Now",
+      "quote": "We are not the Jews of trembling knees.",
+      "source": "adl-state-of-hate-2026"
+    }
+  ],
+  "ideas": {
+    "traditions": [],
+    "influences": [],
+    "works": [],
+    "featuredQuotes": ["surge-2026", "shocking-acts-2022"]
+  },
+  "chapters": [
+    {
+      "key": "before-adl",
+      "title": "Democratic staffer and social entrepreneur",
+      "dek": "Two White Houses, a bottled-water company and a career in \"social innovation.\"",
+      "body": "Greenblatt was born on November 21, 1970, in Trumbull, Connecticut, to a Jewish family; his grandfather survived the Holocaust [[wikipedia]]. After graduating from Tufts in 1992 he worked on Bill Clinton's campaign, then in the Clinton White House and the Commerce Department on international economic policy. He later earned an MBA at Northwestern's Kellogg School [[wikipedia]].\n\nIn 2002 he co-founded Ethos Water with Peter Thum, a brand that funded clean-water projects; Starbucks bought it in 2005 for $8 million and made him a vice president [[wikipedia, fec-greenblatt]]. He went on to found the volunteer platform All for Good and to run GOOD Worldwide [[wikipedia]]. From 2011 to 2014 he was special assistant to President Obama and director of the White House Office of Social Innovation and Civic Participation [[wikipedia]]."
+    },
+    {
+      "key": "adl",
+      "title": "Running the ADL",
+      "dek": "A $135 million organization built on monitoring, education and law-enforcement partnerships.",
+      "body": "Greenblatt became chief executive and national director of the Anti-Defamation League on July 20, 2015, succeeding Abraham Foxman [[wikipedia]]. The organization has grown under him: in the fiscal year ending June 2025 it reported revenue of $135.3 million and paid him $1,127,131, plus $198,905 from related organizations [[propublica-adl]].\n\nHis annual State of Hate address sets out the ADL's agenda. In March 2026 he said Jews faced \"the most concentrated, most dangerous surge of antisemitism in living memory,\" citing 20 Jews murdered in the past year, and described ADL work on more than 60 bills in over 30 states, more than 1,000 alerts to law enforcement, and advocacy that helped secure more than half a billion dollars in security funding for at-risk institutions [[adl-state-of-hate-2026]]. In 2025 Time named him one of its 100 most influential people [[wikipedia]]."
+    },
+    {
+      "key": "israel-campus",
+      "title": "Anti-Zionism, campuses and the war in Gaza",
+      "dek": "A definitional line in 2022 and a fight with campus activists after October 7.",
+      "body": "At the ADL's leadership summit on May 1, 2022, Greenblatt said anti-Zionism is antisemitism, calling it an ideology \"rooted in rage\" and \"predicated on one concept: the negation of another people\" [[jta-antizionism-2022]]. The position drew criticism from the left and from some ADL staff [[wikipedia]].\n\nAfter October 7, 2023, and the campus protests over the war in Gaza, his television appearances became flashpoints. In late March 2024 on MSNBC's Morning Joe he said that if people would not tolerate someone calling for death to Zionists while wearing a swastika, \"you should not tolerate it if you're wearing a keffiyeh on their head.\" CAIR and about 60 allied groups called for his firing; he said his words had been taken out of context and \"I'm not comparing the garb\" [[algemeiner-keffiyeh-2024, cair-proxies-2024]]. In April, during the Columbia encampment protests, CAIR quoted him on the same program calling Students for Justice in Palestine and Jewish Voice for Peace Iran's \"campus proxies,\" and asked MSNBC to stop booking him [[beast-proxies-2024, cair-proxies-2024]]. That year Wikipedia's editors downgraded the ADL's reliability on the Israeli–Palestinian conflict, citing his statements [[wikipedia]]."
+    },
+    {
+      "key": "platforms",
+      "title": "Musk and the platforms",
+      "dek": "From adversary to defender and back.",
+      "body": "Platform policy is a core ADL issue, and Elon Musk's ownership of X made it personal. Greenblatt praised Musk in 2022 and later apologized for calling him \"the Henry Ford of our time\" [[wikipedia]]. In September 2023 Musk threatened to sue the ADL, blaming it for advertisers leaving X; the ADL called his attacks \"dangerous and deeply irresponsible,\" and weeks later Greenblatt was again praising him as an \"amazing entrepreneur and extraordinary innovator\" [[aljazeera-musk-2025]].\n\nOn January 20, 2025, the ADL said Musk's raised-arm gesture at Trump's inauguration rally was \"an awkward gesture in a moment of enthusiasm,\" not a Nazi salute. Rep. Alexandria Ocasio-Cortez and several Jewish groups rejected that reading. Three days later Greenblatt condemned Musk's Nazi-themed puns about the episode [[aljazeera-musk-2025, wikipedia]]."
+    }
+  ]
+}

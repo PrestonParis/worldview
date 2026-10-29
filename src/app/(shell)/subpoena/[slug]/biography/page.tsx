@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ExternalLink } from "lucide-react";
+import { ChapterToc } from "@/components/people/profile/chapter-toc";
 import { SectionHeading } from "@/components/people/profile/module-card";
 import { SourceLine } from "@/components/people/profile/source-line";
 import { getEntityByPublicSlug } from "@/lib/db/entities";
@@ -36,23 +37,7 @@ export default async function BiographyPage({ params }: Props) {
   const all = [...bundle.sources.values()].sort((a, b) => a.title.localeCompare(b.title));
 
   return (
-    <div className="grid grid-cols-1 gap-10 lg:grid-cols-[13rem_minmax(0,1fr)]">
-      <nav aria-label="Chapters" className="hidden lg:block">
-        <ol className="sticky top-32 space-y-1 border-l border-slate-200 text-sm dark:border-slate-800">
-          {chapters.map((c, i) => (
-            <li key={c.key}>
-              <a
-                href={`#${c.key}`}
-                className="-ml-px block border-l-2 border-transparent py-1 pl-3 leading-5 text-slate-500 hover:border-slate-400 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
-              >
-                <span className="mr-1.5 text-slate-400 tabular-nums">{i + 1}</span>
-                {c.title}
-              </a>
-            </li>
-          ))}
-        </ol>
-      </nav>
-
+    <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_15rem] xl:gap-14">
       <div className="min-w-0">
         <SectionHeading tab="biography" title="Biography" />
         <div className="max-w-[68ch] space-y-14">
@@ -110,6 +95,7 @@ export default async function BiographyPage({ params }: Props) {
           ) : null}
         </details>
       </div>
+      <ChapterToc chapters={chapters.map((c) => ({ key: c.key, title: c.title }))} />
     </div>
   );
 }

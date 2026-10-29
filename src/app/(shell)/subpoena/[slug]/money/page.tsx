@@ -72,7 +72,7 @@ export default async function MoneyPage({ params }: Props) {
   const explorerRows: ExplorerRow[] = bundle.given.map((g) => ({
     ...g,
     recipientName: nameOf(bundle, g.recipientEntityId),
-    recipientHref: bundle.entities.get(g.recipientEntityId)?.href ?? "#",
+    recipientHref: bundle.entities.get(g.recipientEntityId)?.href ?? null,
   }));
   const interests = directTies(bundle).filter(
     (t) =>
@@ -196,12 +196,16 @@ export default async function MoneyPage({ params }: Props) {
                   return (
                     <li key={r.entityId} className="flex items-center justify-between gap-4 py-2.5">
                       <div className="min-w-0">
-                        <Link
-                          href={other?.href ?? "#"}
-                          className="font-medium text-slate-900 hover:text-indigo-700 dark:text-slate-100 dark:hover:text-indigo-300"
-                        >
-                          {other?.name ?? "Unknown committee"}
-                        </Link>
+                        {other ? (
+                          <Link
+                            href={other.href}
+                            className="font-medium text-slate-900 hover:text-indigo-700 dark:text-slate-100 dark:hover:text-indigo-300"
+                          >
+                            {other.name}
+                          </Link>
+                        ) : (
+                          <span className="font-medium text-slate-900 dark:text-slate-100">Unknown committee</span>
+                        )}
                         <p className="text-sm text-slate-500">
                           {recipientKindLabels[r.kind].replace(/s$/, "")} · {r.count} gift{r.count === 1 ? "" : "s"} ·{" "}
                           {r.first.slice(0, 4) === r.last.slice(0, 4)
@@ -297,12 +301,13 @@ export default async function MoneyPage({ params }: Props) {
               const other = bundle.entities.get(d.entityId);
               return (
                 <li key={`${d.entityId}:${d.currency}`} className="flex justify-between gap-4 py-2 text-sm">
-                  <Link
-                    href={other?.href ?? "#"}
-                    className="font-medium hover:text-indigo-700 dark:hover:text-indigo-300"
-                  >
-                    {other?.name ?? "Unknown donor"}
-                  </Link>
+                  {other ? (
+                    <Link href={other.href} className="font-medium hover:text-indigo-700 dark:hover:text-indigo-300">
+                      {other.name}
+                    </Link>
+                  ) : (
+                    <span className="font-medium">Unknown donor</span>
+                  )}
                   <span className="tabular-nums">{formatUsd(d.total, { compact: false })}</span>
                 </li>
               );
@@ -375,12 +380,13 @@ export default async function MoneyPage({ params }: Props) {
                               return (
                                 <span key={d.entityId}>
                                   {i ? ", " : ""}
-                                  <Link
-                                    href={donor?.href ?? "#"}
-                                    className="hover:text-indigo-700 dark:hover:text-indigo-300"
-                                  >
-                                    {donor?.name ?? "Unknown"}
-                                  </Link>{" "}
+                                  {donor ? (
+                                    <Link href={donor.href} className="hover:text-indigo-700 dark:hover:text-indigo-300">
+                                      {donor.name}
+                                    </Link>
+                                  ) : (
+                                    <span>Unknown</span>
+                                  )}{" "}
                                   ({formatUsdShort(d.total)})
                                 </span>
                               );
@@ -411,12 +417,16 @@ export default async function MoneyPage({ params }: Props) {
                   const other = bundle.entities.get(t.otherId);
                   return (
                     <li key={t.edge.id} className="rounded-2xl border border-slate-200 p-4 dark:border-slate-800">
-                      <Link
-                        href={other?.href ?? "#"}
-                        className="font-semibold text-slate-900 hover:text-indigo-700 dark:text-slate-100 dark:hover:text-indigo-300"
-                      >
-                        {other?.name}
-                      </Link>
+                      {other ? (
+                        <Link
+                          href={other.href}
+                          className="font-semibold text-slate-900 hover:text-indigo-700 dark:text-slate-100 dark:hover:text-indigo-300"
+                        >
+                          {other.name}
+                        </Link>
+                      ) : (
+                        <span className="font-semibold text-slate-900 dark:text-slate-100">Unknown organization</span>
+                      )}
                       <p className="mt-0.5 text-sm text-slate-600 dark:text-slate-400">
                         {t.edge.role || t.verb}
                         {spanLabel(t.edge.validFrom, t.edge.validTo)
@@ -500,12 +510,16 @@ function Flows({
                   {first.cycle} cycle · {bundle.entity.name} gave
                 </p>
                 <p className="text-xl font-semibold tabular-nums">{formatUsd(gift)}</p>
-                <Link
-                  href={committee?.href ?? "#"}
-                  className="font-medium text-slate-900 hover:text-indigo-700 dark:text-slate-100 dark:hover:text-indigo-300"
-                >
-                  to {committee?.name ?? first.committeeId}
-                </Link>
+                {committee ? (
+                  <Link
+                    href={committee.href}
+                    className="font-medium text-slate-900 hover:text-indigo-700 dark:text-slate-100 dark:hover:text-indigo-300"
+                  >
+                    to {committee.name}
+                  </Link>
+                ) : (
+                  <span className="font-medium text-slate-900 dark:text-slate-100">to {first.committeeId}</span>
+                )}
                 <div
                   className="mt-2 h-2 rounded-full bg-(--viz-series-1)"
                   style={{ width: `${Math.max(2, (gift / max) * 100)}%` }}

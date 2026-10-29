@@ -1,0 +1,845 @@
+{
+  "subject": "lauder",
+  "reviewedAt": "2026-10-24",
+  "sourcesVerifiedAt": "2026-10-24",
+  "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Ronald%20S%20Lauder%20-%20Rally%20against%20anti-Semitism%20-%20Berlin%2014%20September%202014%20-%201%20-%20c%20MichaelThaidigsmann%20(cropped).jpg?width=400",
+  "brief": {
+    "inclusion": "Estée Lauder heir, former Reagan appointee and president of the World Jewish Congress since 2007, who has given about $21.6 million in itemized federal contributions, mostly to Republican super PACs, spent millions more in New York state politics, served as a private channel between Israeli and Arab leaders and Donald Trump, and in 2026 stopped his political giving and broke publicly with Benjamin Netanyahu.",
+    "identifiers": {
+      "wikidata": "Q699565",
+      "fec_contributor": "LAUDER, RONALD"
+    },
+    "namesakes": "FEC rows for Ronald Lauderbach (San Diego), Ronald A. Lauderdale (Greenwich) and \"Lauder, Ronald Mrs.\" (his wife, Jo Carole Lauder) are excluded. The subject files from New York or Washington with Estée Lauder, Clinique, RSL Management, U.S. government or investor employers.",
+    "coverage": {
+      "from": "1944",
+      "through": "2026-10-24",
+      "lags": "FEC Schedule A shows no gift after December 2025 in the matched rows; a January 2026 $5,000 gift reported by the New York Times may file under a variant name. New York State Board of Elections giving (Safe Together NY, Save Our State NY, term-limits campaigns) is outside the federal record."
+    },
+    "openQuestions": [
+      "1989 mayoral spending: reported as about $13–14 million in later accounts; the Christian Science Monitor gave $8.5 million a month before the primary. Confirm the final figure from Campaign Finance Board records.",
+      "Pentagon appointment year: Forbes says 1983–1986; Wikipedia's body says 1984.",
+      "2022 New York governor race: New York Focus counts $9.05 million to two pro-Zeldin PACs; the New York Times reported more than $11 million. Reconcile from state filings.",
+      "Syria track (1998): Lauder says Netanyahu agreed to a Golan withdrawal; Netanyahu has denied it. Lauder says he holds the two copies of the draft.",
+      "Son-in-law Kevin Warsh's current Federal Reserve role needs a primary source before it is recorded."
+    ],
+    "review": []
+  },
+  "summary": "Son of Estée Lauder and heir to the cosmetics company, he served Ronald Reagan as a Pentagon official and ambassador to Austria, ran for mayor of New York in 1989, and has been president of the World Jewish Congress since 2007. He has given about $21.6 million in itemized federal contributions, mostly to Republican super PACs, including $5 million to the pro-Trump MAGA Inc. in March 2025, and was the leading funder of Lee Zeldin's 2022 run for governor. In 2026 he stopped political giving and, days before Israel's election, called his former friend Benjamin Netanyahu \"a dictator.\"",
+  "roles": [
+    {
+      "label": "Jewish organizational leader",
+      "detail": "President of the World Jewish Congress since June 2007",
+      "sources": ["wikipedia", "forbes-profile"]
+    },
+    {
+      "label": "Business heir",
+      "detail": "Chairman of Clinique Laboratories since 1994; Estée Lauder Companies director until 2025",
+      "sources": ["forbes-profile"]
+    },
+    {
+      "label": "Political donor",
+      "detail": "Federal contributions recorded by the FEC since 1978, mostly Republican; giving halted in 2026",
+      "sources": ["fec-lauder", "fortune-2026"]
+    },
+    {
+      "label": "Former diplomat",
+      "detail": "U.S. ambassador to Austria, 1986–1987; deputy assistant secretary of defense for European and NATO policy before that",
+      "sources": ["state-austria", "forbes-profile"]
+    },
+    {
+      "label": "Art collector and museum founder",
+      "detail": "Founder of the Neue Galerie, New York (2001)",
+      "sources": ["wikipedia"]
+    }
+  ],
+  "finance": {
+    "fec": {
+      "contributorName": "LAUDER, RONALD",
+      "namePattern": "^LAUDER, RONALD( S\\.?)?,?( (MR|AMB|AMBASSADOR|HON|HONORABLE|THE HONORABLE|THE HONORA)\\.?)?$",
+      "employerPattern": "LAUDER|RSL|CLINIQUE|ESTEE|SELF|INVEST|NEUE|GOVERNMENT|DEFENSE|COSMETIC|ENTREPRENEUR",
+      "cities": ["NEW YORK", "NEW YORK CITY", "NY", "N Y", "WASHINGTON", "WASH", "WAINSCOTT", "PALM BEACH"],
+      "source": "fec-lauder"
+    },
+    "coverage": "Itemized federal contributions reported to the FEC on Schedule A since 1978, matched on exact name (excluding \"Mrs.\" rows filed for his wife) plus an employer or New York, Washington or Palm Beach filing city. New York state and city giving, including roughly $9 million to two pro-Zeldin PACs in 2022 and his term-limits referendum campaigns, plus World Jewish Congress and foundation spending, are outside this record."
+  },
+  "entities": {
+    "lauder": {
+      "create": {
+        "name": "Ronald Lauder",
+        "type": "donor",
+        "description": "Estée Lauder heir, president of the World Jewish Congress and former U.S. ambassador to Austria; longtime Republican donor."
+      }
+    },
+    "estee-lauder": {
+      "create": {
+        "name": "The Estée Lauder Companies",
+        "type": "company",
+        "description": "Cosmetics company founded by Estée and Joseph Lauder in 1946; controlled by the Lauder family.",
+        "websiteUrl": "https://www.elcompanies.com/"
+      }
+    },
+    "wjc": {
+      "create": {
+        "name": "World Jewish Congress",
+        "type": "organization",
+        "description": "International federation of Jewish communities and organizations, founded in 1936.",
+        "websiteUrl": "https://www.worldjewishcongress.org/"
+      }
+    },
+    "neue-galerie": {
+      "create": {
+        "name": "Neue Galerie New York",
+        "type": "organization",
+        "description": "Museum of early-20th-century German and Austrian art founded by Ronald Lauder and Serge Sabarsky; opened 2001.",
+        "websiteUrl": "https://www.neuegalerie.org/"
+      }
+    },
+    "giuliani": {
+      "create": {
+        "name": "Rudy Giuliani",
+        "type": "politician",
+        "description": "Mayor of New York City (1994–2001) and former U.S. attorney; later a lawyer for Donald Trump."
+      }
+    },
+    "netanyahu": {
+      "create": {
+        "name": "Benjamin Netanyahu",
+        "type": "politician",
+        "description": "Prime minister of Israel (1996–1999, 2009–2021 and since 2022)."
+      }
+    },
+    "trump": {
+      "match": { "name": "Donald Trump", "type": "politician" }
+    },
+    "zeldin": {
+      "match": { "identifier": ["fec_candidate", "H8NY01148"] }
+    },
+    "maga-inc": {
+      "match": { "identifier": ["fec_committee", "C00892471"] }
+    },
+    "slf": {
+      "match": { "identifier": ["fec_committee", "C00571703"] }
+    },
+    "national-horizon": {
+      "match": { "identifier": ["fec_committee", "C00519363"] }
+    },
+    "clf": {
+      "match": { "identifier": ["fec_committee", "C00504530"] }
+    },
+    "penn": {
+      "match": { "name": "University of Pennsylvania", "type": "organization" }
+    },
+    "leon-black": {
+      "create": {
+        "name": "Leon Black",
+        "type": "donor",
+        "description": "Co-founder of Apollo Global Management and art collector."
+      }
+    },
+    "epstein": {
+      "create": {
+        "name": "Jeffrey Epstein",
+        "type": "donor",
+        "description": "Financier and convicted sex offender; died in federal custody in 2019."
+      }
+    },
+    "channel-10": {
+      "create": {
+        "name": "Channel 10 (Israel)",
+        "type": "company",
+        "description": "Israeli commercial television channel (2002–2019), later merged into Reshet 13."
+      }
+    }
+  },
+  "sources": [
+    {
+      "key": "fec-lauder",
+      "title": "Individual contributions: Lauder, Ronald (Schedule A)",
+      "publisher": "Federal Election Commission",
+      "type": "filing",
+      "url": "https://www.fec.gov/data/receipts/individual-contributions/?contributor_name=LAUDER%2C+RONALD",
+      "documentId": "OpenFEC /schedules/schedule_a"
+    },
+    {
+      "key": "wikipedia",
+      "title": "Ronald Lauder",
+      "publisher": "Wikipedia",
+      "type": "secondary",
+      "url": "https://en.wikipedia.org/wiki/Ronald_Lauder",
+      "notes": "Reference work; cited for undisputed dates, family, education, World Jewish Congress election and philanthropy."
+    },
+    {
+      "key": "forbes-profile",
+      "title": "Ronald Lauder: real-time net worth",
+      "publisher": "Forbes",
+      "type": "secondary",
+      "url": "https://www.forbes.com/profile/ronald-lauder/"
+    },
+    {
+      "key": "state-austria",
+      "title": "Ronald Stephen Lauder (1944–)",
+      "publisher": "U.S. Department of State, Office of the Historian",
+      "type": "primary",
+      "url": "https://history.state.gov/departmenthistory/people/lauder-ronald-stephen"
+    },
+    {
+      "key": "csm-1989",
+      "title": "Ronald Lauder Spends Millions to Be Mayor",
+      "publisher": "The Christian Science Monitor",
+      "author": "Russell W. Baker",
+      "type": "article",
+      "publishedAt": "1989-08-10",
+      "url": "https://www.csmonitor.com/1989/0810/alaud.html"
+    },
+    {
+      "key": "nyfocus-2022",
+      "title": "Meet the Moguls Fueling Lee Zeldin's Super PAC Boost",
+      "publisher": "New York Focus",
+      "author": "Colin Kinniburgh",
+      "type": "article",
+      "publishedAt": "2022-11-04",
+      "url": "https://nysfocus.com/2022/11/04/lee-zeldin-kathy-hochul-super-pac-donors",
+      "notes": "Built from New York State Board of Elections filings."
+    },
+    {
+      "key": "baker-greenland-2022",
+      "title": "Book: Trump considered swapping Puerto Rico for Greenland",
+      "publisher": "WJLA (Sinclair)",
+      "type": "article",
+      "publishedAt": "2022-09-16",
+      "url": "https://wjla.com/news/nation-world/book-trump-considered-swapping-puerto-rico-for-greenland",
+      "notes": "Reports Peter Baker and Susan Glasser's book The Divider (2022)."
+    },
+    {
+      "key": "cnn-penn-2023",
+      "title": "Billionaire Ronald Lauder threatens to pull funding if UPenn doesn't do more to fight antisemitism",
+      "publisher": "CNN (via ABC 17 News)",
+      "author": "Matt Egan",
+      "type": "article",
+      "publishedAt": "2023-10-17",
+      "url": "https://abc17news.com/money/cnn-business-consumer/2023/10/17/billionaire-ronald-lauder-threatens-to-pull-funding-if-upenn-doesnt-do-more-to-fight-antisemitism/"
+    },
+    {
+      "key": "dp-epstein-2026",
+      "title": "Files show years of communication between former Penn donor Ronald Lauder and Jeffrey Epstein",
+      "publisher": "The Daily Pennsylvanian",
+      "author": "Luke Petersen",
+      "type": "article",
+      "publishedAt": "2026-02-11",
+      "url": "https://www.thedp.com/article/2026/02/penn-ronald-lauder-jeffrey-epstein-relationship-wharton",
+      "notes": "Based on Justice Department releases of Epstein records."
+    },
+    {
+      "key": "nyt-wallet-2026",
+      "title": "Ronald Lauder, a Billionaire G.O.P. Backer, Closes His Wallet",
+      "publisher": "The New York Times",
+      "type": "article",
+      "publishedAt": "2026-08-04",
+      "documentId": "The New York Times, August 4, 2026",
+      "notes": "Original report; read through Fortune's account of it."
+    },
+    {
+      "key": "fortune-2026",
+      "title": "Billionaires are flooding midterms with cash, but one GOP megadonor just went silent",
+      "publisher": "Fortune",
+      "author": "Sydney Lake",
+      "type": "article",
+      "publishedAt": "2026-08-05",
+      "url": "https://fortune.com/2026/08/05/billionaire-donations-midterms-ronald-lauder-republican-party-new-york/",
+      "repeats": "nyt-wallet-2026"
+    },
+    {
+      "key": "haaretz-2026",
+      "title": "Haaretz interview with Ronald Lauder",
+      "publisher": "Haaretz",
+      "type": "transcript",
+      "publishedAt": "2026-10-22",
+      "documentId": "Haaretz, October 22, 2026",
+      "notes": "Original interview; read through The Times of Israel's account of it."
+    },
+    {
+      "key": "toi-2026",
+      "title": "Ex-Netanyahu confidant Lauder breaks years of silence, warns against PM's reelection",
+      "publisher": "The Times of Israel",
+      "type": "article",
+      "publishedAt": "2026-10-23",
+      "url": "https://www.timesofisrael.com/former-netanyahu-confidant-lauder-breaks-silence-warns-against-pms-reelection/",
+      "repeats": "haaretz-2026"
+    }
+  ],
+  "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "February 26, 1944",
+      "detail": "New York City",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "sex",
+      "label": "Sex",
+      "value": "Male",
+      "sources": ["wikipedia", "forbes-profile"]
+    },
+    {
+      "key": "religion",
+      "label": "Religion",
+      "value": "Jewish",
+      "detail": "Born to a Jewish family; describes himself as \"still a Zionist.\"",
+      "sources": ["wikipedia", "toi-2026"]
+    },
+    {
+      "key": "citizenship",
+      "label": "Citizenship",
+      "value": "United States",
+      "sources": ["forbes-profile"]
+    },
+    {
+      "key": "spouse",
+      "label": "Spouse",
+      "value": "Jo Carole Lauder",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "children",
+      "label": "Children",
+      "value": "Aerin Lauder and Jane Lauder",
+      "sources": ["wikipedia", "forbes-profile"]
+    },
+    {
+      "key": "residence",
+      "label": "Residence",
+      "value": "New York, New York",
+      "sources": ["forbes-profile"]
+    },
+    {
+      "key": "party",
+      "label": "Party",
+      "value": "Republican",
+      "detail": "Republican candidate for mayor of New York, 1989.",
+      "sources": ["csm-1989", "wikipedia"]
+    },
+    {
+      "key": "education",
+      "label": "Education",
+      "value": "BS, international business, Wharton School, University of Pennsylvania (1965)",
+      "detail": "Also studied at the University of Paris and the University of Brussels.",
+      "sources": ["wikipedia", "dp-epstein-2026"]
+    },
+    {
+      "key": "current-roles",
+      "label": "Current roles",
+      "value": "President, World Jewish Congress; chairman, Clinique Laboratories",
+      "featured": true,
+      "asOf": "2026-10-24",
+      "sources": ["forbes-profile"]
+    },
+    {
+      "key": "net-worth",
+      "label": "Net worth (estimate)",
+      "value": "$5.4 billion",
+      "detail": "Forbes real-time estimate",
+      "asOf": "2026-10-24",
+      "featured": true,
+      "sources": ["forbes-profile"]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "lauder-estee",
+      "source": "lauder",
+      "target": "estee-lauder",
+      "relType": "board-member-of",
+      "role": "Joined 1964; director for nearly 50 years (off the board 2009–2016); chairman of Clinique since 1994; retired from the board 2025",
+      "from": "1964",
+      "until": "2025",
+      "prominence": 3,
+      "sources": ["forbes-profile", "wikipedia"]
+    },
+    {
+      "key": "lauder-wjc",
+      "source": "lauder",
+      "target": "wjc",
+      "relType": "chairs",
+      "role": "President since June 10, 2007, succeeding Edgar Bronfman Sr.",
+      "from": "2007-06-10",
+      "prominence": 3,
+      "sources": ["wikipedia", "forbes-profile"]
+    },
+    {
+      "key": "lauder-neue",
+      "source": "lauder",
+      "target": "neue-galerie",
+      "relType": "co-founded",
+      "role": "Co-founder and president; bought Klimt's Portrait of Adele Bloch-Bauer I for it for $135 million (2006)",
+      "from": "2001",
+      "prominence": 1,
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "lauder-giuliani",
+      "source": "lauder",
+      "target": "giuliani",
+      "relType": "opposed",
+      "role": "Lost the 1989 Republican mayoral primary to Giuliani, 33% to 67%, after a self-funded negative campaign",
+      "from": "1989",
+      "until": "1989-09",
+      "prominence": 2,
+      "sources": ["wikipedia", "csm-1989"]
+    },
+    {
+      "key": "lauder-netanyahu",
+      "source": "lauder",
+      "target": "netanyahu",
+      "relType": "friend-of",
+      "role": "Confidant from the 1980s; introduced him to Arthur Finkelstein; his envoy to Syria in 1998. Relationship broke over Channel 10; in 2026 called him \"a dictator\"",
+      "from": "1980s",
+      "until": "2026-10",
+      "prominence": 3,
+      "status": "disputed",
+      "notes": "Lauder and Netanyahu give conflicting accounts of the 1998 Syria talks.",
+      "sources": ["wikipedia", "toi-2026"]
+    },
+    {
+      "key": "lauder-channel-10",
+      "source": "lauder",
+      "target": "channel-10",
+      "relType": "invested-in",
+      "role": "Controlling shareholder",
+      "prominence": 1,
+      "sources": ["toi-2026", "wikipedia"]
+    },
+    {
+      "key": "lauder-trump",
+      "source": "lauder",
+      "target": "trump",
+      "relType": "adviser-to",
+      "role": "Acquaintance since college; informal White House adviser on Israel; first proposed buying Greenland; donor to his 2020 campaign and MAGA Inc.",
+      "from": "2017",
+      "prominence": 3,
+      "sources": ["forbes-profile", "baker-greenland-2022", "fec-lauder"]
+    },
+    {
+      "key": "lauder-maga",
+      "source": "lauder",
+      "target": "maga-inc",
+      "relType": "donated-to",
+      "role": "$5 million, March 24, 2025",
+      "from": "2025-03-24",
+      "until": "2025-03-24",
+      "prominence": 2,
+      "sources": ["fec-lauder", "fortune-2026"]
+    },
+    {
+      "key": "lauder-slf",
+      "source": "lauder",
+      "target": "slf",
+      "relType": "donated-to",
+      "role": "His largest federal recipient: $5.5 million to the Senate Republicans' super PAC",
+      "from": "2018",
+      "until": "2024",
+      "prominence": 2,
+      "sources": ["fec-lauder"]
+    },
+    {
+      "key": "lauder-national-horizon",
+      "source": "lauder",
+      "target": "national-horizon",
+      "relType": "donated-to",
+      "role": "$4.65 million to the New York-focused Republican super PAC",
+      "prominence": 2,
+      "sources": ["fec-lauder"]
+    },
+    {
+      "key": "lauder-zeldin",
+      "source": "lauder",
+      "target": "zeldin",
+      "relType": "donated-to",
+      "role": "$61,000 directly and $9.05 million to two pro-Zeldin PACs in the 2022 New York governor race",
+      "from": "2022",
+      "until": "2022-11",
+      "prominence": 2,
+      "sources": ["nyfocus-2022"]
+    },
+    {
+      "key": "lauder-penn",
+      "source": "lauder",
+      "target": "penn",
+      "relType": "donated-to",
+      "role": "Wharton graduate (1965) and major donor; threatened to end support over antisemitism in October 2023",
+      "until": "2023-10",
+      "prominence": 1,
+      "sources": ["cnn-penn-2023", "dp-epstein-2026"]
+    },
+    {
+      "key": "lauder-black",
+      "source": "lauder",
+      "target": "leon-black",
+      "relType": "collaborated-with",
+      "role": "Bought Kurt Schwitters's Ja-Was? - Bild together for $25 million (2014) through Friends Ventures LLC",
+      "from": "2013",
+      "prominence": 1,
+      "sources": ["dp-epstein-2026"]
+    },
+    {
+      "key": "lauder-epstein",
+      "source": "epstein",
+      "target": "lauder",
+      "relType": "adviser-to",
+      "role": "Supervised the formation of Friends Ventures LLC for Lauder and Black; in contact with Lauder through 2017",
+      "from": "2014",
+      "until": "2017",
+      "prominence": 1,
+      "notes": "Lauder has not been accused of wrongdoing in connection with Epstein's crimes.",
+      "sources": ["dp-epstein-2026"]
+    }
+  ],
+  "events": [
+    {
+      "key": "born",
+      "date": "1944-02-26",
+      "title": "Born in New York City to Estée and Joseph Lauder",
+      "category": "personal",
+      "significance": 2,
+      "chapter": "heir",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "joins-company",
+      "date": "1964",
+      "title": "Joins the Estée Lauder company",
+      "summary": "Graduates from Wharton the next year and later runs its international business.",
+      "category": "career",
+      "significance": 2,
+      "chapter": "heir",
+      "participants": [["estee-lauder", "company"]],
+      "sources": ["wikipedia", "dp-epstein-2026"]
+    },
+    {
+      "key": "pentagon",
+      "date": "1983",
+      "date_end": "1986",
+      "title": "Serves as deputy assistant secretary of defense for European and NATO policy",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "reagan",
+      "status": "unresolved",
+      "statusNote": "Forbes dates the post from 1983; Wikipedia's narrative says 1984.",
+      "sources": ["forbes-profile", "wikipedia"]
+    },
+    {
+      "key": "austria",
+      "date": "1986-04-16",
+      "date_end": "1987-10-27",
+      "title": "Ambassador to Austria",
+      "summary": "Appointed by Reagan; presents credentials May 7, 1986, and leaves post in October 1987.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "reagan",
+      "sources": ["state-austria"]
+    },
+    {
+      "key": "foundation",
+      "date": "1987",
+      "title": "Founds the Ronald S. Lauder Foundation for Jewish life in Central and Eastern Europe",
+      "category": "ideas",
+      "significance": 2,
+      "chapter": "wjc",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "mayoral-primary",
+      "date": "1989-09-12",
+      "title": "Loses the Republican mayoral primary to Rudy Giuliani",
+      "summary": "Spends heavily from his own fortune outside the city's public-financing system and takes 33 percent of the vote.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "new-york",
+      "participants": [["giuliani", "opponent"]],
+      "sources": ["wikipedia", "csm-1989"]
+    },
+    {
+      "key": "term-limits",
+      "date": "1993-11",
+      "title": "Wins a citywide referendum imposing term limits in New York",
+      "summary": "He financed the campaign, and a 1996 vote rejecting an extension; about $4 million across both.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "new-york",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "syria-track",
+      "date": "1998",
+      "title": "Conducts secret talks with Hafez al-Assad's government for Netanyahu",
+      "summary": "Over 10 to 15 months he helps draft a 10-point framework. He says Netanyahu accepted a Golan withdrawal and then backed out; Netanyahu has denied agreeing.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "israel",
+      "participants": [["netanyahu", "prime minister"]],
+      "status": "disputed",
+      "statusNote": "Lauder's account (2026) conflicts with Netanyahu's denials since 1998.",
+      "sources": ["toi-2026", "wikipedia"]
+    },
+    {
+      "key": "neue-galerie",
+      "date": "2001-11-16",
+      "title": "Opens the Neue Galerie in New York",
+      "category": "career",
+      "significance": 1,
+      "chapter": "heir",
+      "participants": [["neue-galerie", "museum"]],
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "wjc-president",
+      "date": "2007-06-10",
+      "title": "Elected president of the World Jewish Congress",
+      "summary": "Succeeds Edgar Bronfman Sr.",
+      "category": "career",
+      "significance": 3,
+      "chapter": "wjc",
+      "participants": [["wjc", "organization"]],
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "channel-10-apology",
+      "date": "2011-09",
+      "title": "Accused of pressing Channel 10 to apologize to Sheldon Adelson",
+      "summary": "Staff resign over the on-air apology; the broadcast regulator finds no shareholder interference. Lauder later says the channel \"destroyed\" his relationship with Netanyahu.",
+      "category": "legal",
+      "significance": 1,
+      "chapter": "israel",
+      "participants": [["channel-10", "broadcaster"]],
+      "sources": ["wikipedia", "toi-2026"]
+    },
+    {
+      "key": "greenland",
+      "date": "2017",
+      "title": "Pitches Trump on buying Greenland",
+      "summary": "The idea, which becomes public in 2019, is traced to Lauder in Peter Baker and Susan Glasser's account of the Trump presidency; Denmark rejects it.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "trump",
+      "participants": [["trump", "president"]],
+      "sources": ["baker-greenland-2022"]
+    },
+    {
+      "key": "zeldin-2022",
+      "date": "2022-11",
+      "title": "Funds the outside campaign for Lee Zeldin's run for governor",
+      "summary": "$9.05 million to two pro-Zeldin PACs, including some of the largest individual gifts in New York state records since 1999; Zeldin loses to Kathy Hochul.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "trump",
+      "participants": [["zeldin", "candidate"]],
+      "sources": ["nyfocus-2022"]
+    },
+    {
+      "key": "penn",
+      "date": "2023-10-16",
+      "title": "Threatens to stop funding the University of Pennsylvania",
+      "summary": "Writes to President Liz Magill that the Palestine Writes festival \"put a deep stain on Penn's reputation.\"",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "wjc",
+      "participants": [["penn", "university"]],
+      "sources": ["cnn-penn-2023"]
+    },
+    {
+      "key": "maga-inc",
+      "date": "2025-03-24",
+      "title": "Gives $5 million to MAGA Inc.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "trump",
+      "participants": [["maga-inc", "super PAC"], ["trump", "president"]],
+      "sources": ["fec-lauder", "fortune-2026"]
+    },
+    {
+      "key": "epstein-files",
+      "date": "2026-02-11",
+      "title": "Justice Department files show years of contact with Jeffrey Epstein",
+      "summary": "Including Epstein's role in a 2014 art co-ownership deal with Leon Black and contacts through 2017. Lauder is not accused of wrongdoing.",
+      "category": "legal",
+      "significance": 2,
+      "chapter": "retreat",
+      "participants": [["epstein", "financier"], ["leon-black", "co-owner"]],
+      "sources": ["dp-epstein-2026"]
+    },
+    {
+      "key": "closes-wallet",
+      "date": "2026-08-04",
+      "title": "The New York Times reports he has stopped political giving",
+      "summary": "His last federal gift is $5,000 in January 2026; his super PAC goes inactive and he dismisses longtime advisers. Associates cite his children's pressure to cut spending; a family associate denies financial strain.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "retreat",
+      "sources": ["nyt-wallet-2026", "fortune-2026"]
+    },
+    {
+      "key": "netanyahu-break",
+      "date": "2026-10-22",
+      "title": "Calls Netanyahu \"a dictator\" in a Haaretz interview before Israel's election",
+      "summary": "Says he would back Gadi Eisenkot if forced to choose, that he has sold or given away his Israeli properties, and that he will not return to Israel.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "retreat",
+      "participants": [["netanyahu", "prime minister"]],
+      "sources": ["haaretz-2026", "toi-2026"]
+    }
+  ],
+  "statements": [
+    {
+      "key": "businessman-1989",
+      "issue": "New York",
+      "date": "1989-08-10",
+      "venue": "Mayoral campaign interview, The Christian Science Monitor",
+      "quote": "New York City is a $26.6 billion business, and should be run that way.",
+      "source": "csm-1989"
+    },
+    {
+      "key": "taxpayers-1989",
+      "issue": "Money in politics",
+      "date": "1989-08-10",
+      "venue": "Mayoral campaign interview, The Christian Science Monitor",
+      "quote": "I don't want to use taxpayers' money.",
+      "summary": "On refusing the city's public-financing system while self-funding his campaign.",
+      "source": "csm-1989"
+    },
+    {
+      "key": "owe-nobody-1989",
+      "issue": "Money in politics",
+      "date": "1989-08-10",
+      "venue": "Mayoral campaign interview, The Christian Science Monitor",
+      "quote": "I owe nobody, I made no deals.",
+      "source": "csm-1989"
+    },
+    {
+      "key": "penn-stain-2023",
+      "issue": "Antisemitism",
+      "date": "2023-10-16",
+      "venue": "Letter to University of Pennsylvania President Liz Magill",
+      "quote": "The conference has put a deep stain on Penn's reputation that will take a long time to repair.",
+      "source": "cnn-penn-2023"
+    },
+    {
+      "key": "parents-pay-2026",
+      "issue": "Philanthropy",
+      "date": "2026-07",
+      "venue": "Interview with eJewishPhilanthropy",
+      "quote": "Look, when I first started, no one had money, so I paid the money",
+      "summary": "On asking the Jewish schools he funds in Europe to raise money from parents, as reported by Fortune.",
+      "source": "fortune-2026"
+    },
+    {
+      "key": "silent-2026",
+      "issue": "Israel",
+      "date": "2026-10-22",
+      "venue": "Interview with Haaretz",
+      "quote": "I've been silent for 20 years, 30 years",
+      "source": "toi-2026"
+    },
+    {
+      "key": "dictator-2026",
+      "issue": "Israel",
+      "date": "2026-10-22",
+      "venue": "Interview with Haaretz",
+      "quote": "a dictator — a one-person show",
+      "summary": "His description of Netanyahu.",
+      "source": "toi-2026"
+    },
+    {
+      "key": "lose-badly-2026",
+      "issue": "Israel",
+      "date": "2026-10-22",
+      "venue": "Interview with Haaretz",
+      "quote": "If Bibi is elected, Israel stands to lose badly",
+      "source": "toi-2026"
+    },
+    {
+      "key": "losing-gop-2026",
+      "issue": "Israel",
+      "date": "2026-10-22",
+      "venue": "Interview with Haaretz",
+      "quote": "You've lost the Democratic Party, and you're losing the Republican Party",
+      "summary": "On Israel's standing in the United States.",
+      "source": "toi-2026"
+    },
+    {
+      "key": "politics-over-peace-2026",
+      "issue": "Israel",
+      "date": "2026-10-22",
+      "venue": "Interview with Haaretz",
+      "quote": "He chose politics over peace.",
+      "summary": "On Netanyahu and the 1998 Syria framework.",
+      "source": "toi-2026"
+    },
+    {
+      "key": "zionist-2026",
+      "issue": "Israel",
+      "date": "2026-10-22",
+      "venue": "Interview with Haaretz",
+      "quote": "I am still a Zionist today, I still love Israel",
+      "source": "toi-2026"
+    }
+  ],
+  "ideas": {
+    "traditions": [],
+    "influences": [],
+    "works": [
+      {
+        "title": "Fighting Violent Crime in America",
+        "year": "1985",
+        "kind": "Book",
+        "detail": "Written while a Pentagon official",
+        "source": "wikipedia"
+      }
+    ],
+    "featuredQuotes": ["lose-badly-2026", "losing-gop-2026"]
+  },
+  "chapters": [
+    {
+      "key": "heir",
+      "title": "The younger son of Estée Lauder",
+      "dek": "A cosmetics fortune, a Wharton degree and a lifetime at the family company.",
+      "body": "Lauder was born in New York City on February 26, 1944, the younger son of Estée and Joseph Lauder, founders of the cosmetics company [[wikipedia]]. He went to the Bronx High School of Science and graduated from the Wharton School of the University of Pennsylvania in 1965, after joining the family company in 1964 [[wikipedia, dp-epstein-2026]].\n\nThe company is the source of his wealth. He sat on its board for nearly fifty years, apart from 2009 to 2016, has chaired Clinique Laboratories since 1994 and retired from the board in 2025 [[forbes-profile]]. Forbes puts his net worth at $5.4 billion; Estée Lauder's shares fell by roughly three-quarters from their 2021 peak, and by mid-2025 he had pledged nearly all his Class B shares as loan collateral [[forbes-profile, fortune-2026]].\n\nHe is also one of the world's major collectors of Austrian and German modernist art. He opened the Neue Galerie in New York in 2001 and in 2006 paid $135 million, then a record, for Gustav Klimt's Portrait of Adele Bloch-Bauer I [[wikipedia]]."
+    },
+    {
+      "key": "reagan",
+      "title": "The Pentagon and Vienna",
+      "dek": "A Republican donor's appointments under Reagan.",
+      "body": "Lauder gave to Republican candidates from the late 1970s, and Ronald Reagan brought him into government [[fec-lauder]]. He served as deputy assistant secretary of defense for European and NATO policy in the mid-1980s and, in 1985, published Fighting Violent Crime in America [[forbes-profile, wikipedia]].\n\nReagan then named him ambassador to Austria. He was appointed on April 16, 1986, presented his credentials that May and left the post in October 1987 [[state-austria]]. The experience turned his philanthropy toward Jewish Europe: in 1987 he established the Ronald S. Lauder Foundation to rebuild Jewish life in Central and Eastern Europe [[wikipedia]]."
+    },
+    {
+      "key": "new-york",
+      "title": "Running for mayor, and against City Hall",
+      "dek": "A self-funded primary campaign against Rudy Giuliani and two term-limits referendums.",
+      "body": "In 1989 Lauder ran for mayor of New York as a Republican, financing the campaign himself and declining the city's new public-financing system. \"I don't want to use taxpayers' money,\" he said; by August he had spent $8.5 million [[csm-1989]]. He pitched himself as a manager, saying the city was \"a $26.6 billion business, and should be run that way\" [[csm-1989]]. He lost the September primary to Rudy Giuliani with 33 percent of the vote; later accounts put his total spending at about $13 million or more [[wikipedia]].\n\nHe stayed in city politics through the ballot. He led and funded the 1993 referendum that imposed term limits on New York's elected officials, and the 1996 campaign that defeated the City Council's attempt to extend them, spending about $4 million across the two [[wikipedia]]."
+    },
+    {
+      "key": "israel",
+      "title": "Netanyahu's envoy",
+      "dek": "A secret Syria track, a television station and a friendship that broke.",
+      "body": "Lauder was close to Benjamin Netanyahu from the 1980s and introduced him to the American political consultant Arthur Finkelstein, who had worked on Lauder's own campaign [[wikipedia]]. During Netanyahu's first term he became the prime minister's secret envoy to Hafez al-Assad. By Lauder's account in 2026, he spent ten to fifteen months in 1998 traveling between Israel, Syria and Lebanon and helped draft a ten-point framework that Netanyahu accepted, including withdrawal from the Golan Heights, before backing out; he says he holds the only two copies of the final draft [[toi-2026]]. Netanyahu has denied agreeing to give up the Golan [[toi-2026, wikipedia]].\n\nThe friendship broke over Israeli television. Lauder became the controlling shareholder of Channel 10, which Netanyahu had urged him to buy and which then reported critically on him. In 2011 the channel was accused of airing an apology to Sheldon Adelson under shareholder pressure; Israel's broadcast regulator found no interference [[wikipedia]]. The channel, Lauder said in 2026, \"destroyed\" the relationship [[toi-2026]]."
+    },
+    {
+      "key": "wjc",
+      "title": "President of the World Jewish Congress",
+      "dek": "Two decades as the international face of organized Jewish communities.",
+      "body": "In June 2007 Lauder was elected president of the World Jewish Congress, succeeding Edgar Bronfman Sr. [[wikipedia]]. He has used the post to press European governments and companies on Iran, Holocaust memory and antisemitism, from Swiss gas deals with Tehran to Polish Holocaust legislation, and in 2025 said the 1998 Swiss banks settlement should be reopened [[wikipedia]].\n\nAfter the October 7, 2023, attacks he turned that pressure on his own university. He wrote to Penn's president, Liz Magill, that a campus Palestinian literature festival had \"put a deep stain on Penn's reputation\" and that he was reexamining his support[[cnn-penn-2023]]."
+    },
+    {
+      "key": "trump",
+      "title": "A Republican megadonor in the Trump era",
+      "dek": "Greenland, Zeldin and $5 million to MAGA Inc.",
+      "body": "Lauder has known Donald Trump since college, and by Peter Baker and Susan Glasser's account he was the \"really, really experienced businessman\" who first pitched Trump on buying Greenland, early in his first term; Denmark rejected the idea when it became public in 2019 [[baker-greenland-2022]]. Forbes describes him as an informal White House adviser on Israel [[forbes-profile]].\n\nHis federal giving rose sharply after 2016. FEC records show about $21.6 million in itemized contributions since 1978, more than three-quarters of it after 2017, led by $5.5 million to the Senate Leadership Fund, $5 million to MAGA Inc. and $4.65 million to National Horizon, a New York-focused Republican super PAC [[fec-lauder]]. The MAGA Inc. check, on March 24, 2025, came two months after Trump's second inauguration [[fec-lauder, fortune-2026]].\n\nHis largest single campaign was in New York state politics, outside the federal record. In 2022 he gave $9.05 million to two PACs supporting Lee Zeldin's challenge to Governor Kathy Hochul, among the largest individual gifts in state records, and $61,000 to Zeldin directly [[nyfocus-2022]]."
+    },
+    {
+      "key": "retreat",
+      "title": "Closing the wallet and breaking with Netanyahu",
+      "dek": "Epstein files, a sudden stop to political giving and a public break before Israel's election.",
+      "body": "In February 2026 Justice Department releases of Jeffrey Epstein's records showed Lauder in contact with Epstein years after his 2008 conviction. Epstein had supervised the creation of Friends Ventures LLC, through which Lauder and Leon Black co-owned a $25 million Kurt Schwitters painting from 2014, and contacts continued into 2017. Lauder has not been accused of wrongdoing [[dp-epstein-2026]].\n\nThat August the New York Times reported that one of the Republican Party's most reliable donors had stopped giving. His last federal gift was $5,000 in January 2026, he had made no donations to New York Republicans that year, his super PAC had gone inactive and he had let go of advisers who had worked for him for decades. Associates said his children had pressed him to cut spending; a person close to the family said there was no financial difficulty [[nyt-wallet-2026, fortune-2026]].\n\nOn October 22, five days before Israel's Knesset election, he broke a long public silence about Netanyahu. In an interview with Haaretz he called the prime minister \"a dictator — a one-person show,\" said that \"if Bibi is elected, Israel stands to lose badly,\" and warned that Israel had lost the Democratic Party and was \"losing the Republican Party.\" He said he would back Gadi Eisenkot if forced to choose, had sold or given away his Israeli properties and would not return, while remaining \"still a Zionist\" [[haaretz-2026, toi-2026]]."
+    }
+  ]
+}

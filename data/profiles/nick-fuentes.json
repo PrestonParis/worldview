@@ -1,0 +1,1583 @@
+{
+  "subject": "nick-fuentes",
+  "reviewedAt": "2026-10-28",
+  "sourcesVerifiedAt": "2026-10-28",
+  "brief": {
+    "inclusion": "Existing Worldview political quiz/Atlas figure; influential U.S. right-wing commentator and movement organizer with direct Fishback, Carlson, Trump and AFPAC relevance.",
+    "coverage": {
+      "from": "2017",
+      "through": "2026-10-28",
+      "lags": "Converted from an external research handoff; unresolved items remain listed below."
+    },
+    "openQuestions": [
+      "Confirm existing canonical Nick Fuentes entity in live local database; historical UUID is not authoritative.",
+      "Read repository AGENTS.md, dossier model, profile guide, relationship vocabulary, importer and reference dossiers before converting bundle to production JSON.",
+      "Reconcile political-quiz groyper ideology, Atlas timeline, people graph and Matt Brooks references without copying unsupported prose.",
+      "Find independently verifiable birthdate, citizenship and education details, where consequential; avoid over-specific personal data.",
+      "Obtain full original America First recordings and verify each selected quotation with timestamps.",
+      "Verify precise original June/July 2026 Fuentes statement endorsing Fishback; preserve Fishback denial of direct contact as attributed.",
+      "Check whether any FEC activity/committee contributions are attributable to Fuentes as an identified person; separate federal, Florida and nonprofit money.",
+      "Review organization original 990 and Schedule G details before presenting net revenue as cash flow, and check 2025/FY2026 availability.",
+      "Investigate relationship between the America First Foundation, America First show, Cozy.tv and reported streaming income without implying common legal ownership.",
+      "Check private contacts/coordination and whether any personal legal proceedings arose from Jan 6; avoid inference from subpoena.",
+      "Recheck exact audience metrics and time windows before publication.",
+      "Which post-December 2025 statements qualify, contradict or reassert Holocaust denial?",
+      "Do sources support legal or directional relationship labels in src/lib/relationships.ts?",
+      "Check every source for paywalls, changed URLs, and original vs syndicated repeats.",
+      "Check local mobile, desktop, dark-mode views and product import after adapting to schema."
+    ],
+    "review": [
+      {
+        "kind": "evidence",
+        "by": "Codex conversion review",
+        "at": "2026-10-28",
+        "note": "Primary official committee HTML, original Carlson/Morgan recordings, tax filings and broadcaster pages located; full audio and full evidence pass not complete."
+      },
+      {
+        "kind": "quantitative",
+        "by": "Codex conversion review",
+        "at": "2026-10-28",
+        "note": "2020 BTC, 990 accounts, streaming payments and dynamic reach separated; a second independent reconciliation is still required."
+      },
+      {
+        "kind": "editorial",
+        "by": "Codex conversion review",
+        "at": "2026-10-28",
+        "note": "Distinguished rhetoric/critic labels, self-descriptions, accusations, and legal statuses; no independent editorial signoff."
+      },
+      {
+        "kind": "product",
+        "by": "Codex conversion review",
+        "at": "2026-10-28",
+        "note": "No repo schema, live database, importer dry-run, local rendered profile or source clickthrough test."
+      }
+    ]
+  },
+  "summary": "Nick Fuentes is an American political livestreamer and organizer associated with the Groyper movement and America First Political Action Conference. His politics combine immigration restriction, white-nationalist and antisemitic rhetoric, social authoritarianism and opposition to parts of the Republican establishment; his influence is documented through media-platform disputes, political event appearances and conflicts inside Republican institutions. He endorsed 2026 Florida gubernatorial contender James Fishback, although Fishback said he had never spoken directly with Fuentes.",
+  "roles": [
+    {
+      "label": "Host of America First political livestream",
+      "detail": "2010s-2026",
+      "sources": [
+        "NF04",
+        "NF30"
+      ]
+    },
+    {
+      "label": "Organizer / central figure of Groyper movement",
+      "detail": "2019-2026",
+      "sources": [
+        "NF03",
+        "NF13"
+      ]
+    },
+    {
+      "label": "Founder of America First Political Action Conference",
+      "detail": "2020-2022 documented",
+      "sources": [
+        "NF04",
+        "NF08"
+      ]
+    },
+    {
+      "label": "President/CEO, America First Foundation (501(c)(4))",
+      "detail": "2020-2025 filings",
+      "sources": [
+        "NF29"
+      ]
+    },
+    {
+      "label": "Stop the Steal speaker and public demonstrator",
+      "detail": "2020-2021",
+      "sources": [
+        "NF05"
+      ]
+    },
+    {
+      "label": "Independent political commentator across Rumble and interview circuit",
+      "detail": "2024-2026",
+      "sources": [
+        "NF16",
+        "NF20",
+        "NF30"
+      ]
+    }
+  ],
+  "entities": {
+    "nick-fuentes": {
+      "match": {
+        "name": "Nick Fuentes",
+        "type": "pundit"
+      }
+    },
+    "groyper-movement": {
+      "create": {
+        "name": "Groyper movement",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "america-first-political-action-conference": {
+      "create": {
+        "name": "America First Political Action Conference",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "america-first-foundation": {
+      "create": {
+        "name": "America First Foundation",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "turning-point-usa-charlie-kirk": {
+      "create": {
+        "name": "Turning Point USA / Charlie Kirk",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "donald-trump": {
+      "create": {
+        "name": "Donald Trump",
+        "type": "politician",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "ye-kanye-west": {
+      "create": {
+        "name": "Ye (Kanye West)",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "tucker-carlson": {
+      "create": {
+        "name": "Tucker Carlson",
+        "type": "politician",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "kevin-roberts-heritage-foundation": {
+      "create": {
+        "name": "Kevin Roberts / Heritage Foundation",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "marjorie-taylor-greene": {
+      "create": {
+        "name": "Marjorie Taylor Greene",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "paul-gosar": {
+      "create": {
+        "name": "Paul Gosar",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "james-fishback": {
+      "create": {
+        "name": "James Fishback",
+        "type": "politician",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "jd-vance": {
+      "create": {
+        "name": "JD Vance",
+        "type": "politician",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "alex-jones": {
+      "create": {
+        "name": "Alex Jones",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "matt-brooks-republican-jewish-coalition": {
+      "create": {
+        "name": "Matt Brooks / Republican Jewish Coalition",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "piers-morgan": {
+      "create": {
+        "name": "Piers Morgan",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "elon-musk-x": {
+      "create": {
+        "name": "Elon Musk / X",
+        "type": "politician",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    }
+  },
+  "sources": [
+    {
+      "key": "NF02",
+      "title": "Charlottesville attendance; Boston University withdrawal and Fuentes interview",
+      "publisher": "Associated Press via Boston.com",
+      "type": "transcript",
+      "url": "https://www.boston.com/news/local-news/2017/08/18/colleges-brace-for-more-violence-amid-rash-of-hate-on-campus/",
+      "publishedAt": "2017-08-18",
+      "notes": "AP report; no college transcript or birth certificate inspected."
+    },
+    {
+      "key": "NF03",
+      "title": "2019 Groyper War and clashes with Turning Point USA, Charlie Kirk and Ben Shapiro",
+      "publisher": "Washington Post",
+      "type": "article",
+      "url": "https://www.washingtonpost.com/local/education/far-right-agitators-roil-the-conservative-movement-on-college-campuses-in-battle-to-define-trumpism/2019/11/16/a757d88a-0723-11ea-b17d-8b867891d39d_story.html",
+      "publishedAt": "2019-11-16",
+      "notes": "Paywall possible; original reporter observations and interviews."
+    },
+    {
+      "key": "NF04",
+      "title": "America First history, AFPAC foundation, public statements and rhetoric",
+      "publisher": "Southern Poverty Law Center",
+      "type": "article",
+      "url": "https://www.splcenter.org/resources/extremist-files/nick-fuentes/",
+      "publishedAt": "2022",
+      "notes": "Advocacy organization with explicit perspective; verify every quotation separately where possible."
+    },
+    {
+      "key": "NF05",
+      "title": "Atlanta 2020 rallies, Jan 6 presence, post-event public statements, Fifth Amendment",
+      "publisher": "U.S. House Jan. 6 Select Committee via GovInfo",
+      "type": "official_statement",
+      "url": "https://www.govinfo.gov/content/pkg/GPO-J6-REPORT/html-submitted/ch6.html",
+      "publishedAt": "2022-12-22",
+      "notes": "Committee findings, not judicial findings or convictions."
+    },
+    {
+      "key": "NF06",
+      "title": "Source location for February 16 2022 Fuentes sworn deposition",
+      "publisher": "GovInfo, January 6 Select Committee collection",
+      "type": "official_statement",
+      "url": "https://www.govinfo.gov/collection/january-6th-committee-final-report",
+      "publishedAt": "2022-12-22",
+      "notes": "The original deposition PDF is ~12MB and was not reviewed page-by-page; use committee HTML for referenced facts."
+    },
+    {
+      "key": "NF07",
+      "title": "January 19, 2022 subpoena; outside-Capitol distinction and statements",
+      "publisher": "SPLC Hatewatch",
+      "type": "article",
+      "url": "https://www.splcenter.org/resources/hatewatch/nick-fuentes-faces-scrutiny-following-jan-6-subpoena/",
+      "publishedAt": "2022-01-20",
+      "notes": "Distinguish no verified entry into building from blanket acquittal or findings of lawfulness."
+    },
+    {
+      "key": "NF08",
+      "title": "2022 AFPAC and Marjorie Taylor Greene participation, Gosar recording",
+      "publisher": "CBS News",
+      "type": "article",
+      "url": "https://www.cbsnews.com/amp/news/marjorie-taylor-greene-cpac-nick-fuentes-afpac-white-nationalist/",
+      "publishedAt": "2022-02-28",
+      "notes": "Greene stated she had not known identity of organizers; do not imply endorsed every Fuentes view."
+    },
+    {
+      "key": "NF09",
+      "title": "December 8, 2020 bitcoin transfer 13.5 BTC worth about $250,000 at date of transfer",
+      "publisher": "Chainalysis",
+      "type": "article",
+      "url": "https://www.chainalysis.com/blog/capitol-riot-bitcoin-donation-alt-right-domestic-extremism/",
+      "publishedAt": "2021-01-14",
+      "notes": "Wallet attribution and contemporaneous USD price reflect Chainalysis; does not establish spending or illegality."
+    },
+    {
+      "key": "NF10",
+      "title": "November 22, 2022 dinner and attendee accounts",
+      "publisher": "Axios",
+      "type": "article",
+      "url": "https://www.axios.com/2022/11/25/trump-nick-fuentes-ye-kanye",
+      "publishedAt": "2022-11-25",
+      "notes": "Accounts of private conversation are attributed to unnamed sources, not verified transcript."
+    },
+    {
+      "key": "NF11",
+      "title": "Trump acknowledged Fuentes at Mar-a-Lago and claimed not to know of his arrival",
+      "publisher": "CBS News",
+      "type": "official_statement",
+      "url": "https://www.cbsnews.com/amp/news/donald-trump-dined-with-kanye-west-and-white-nationalist-nick-fuentes-adviser-says/",
+      "publishedAt": "2022-11-26",
+      "notes": "Trump interpretation is his statement, not independently established fact."
+    },
+    {
+      "key": "NF12",
+      "title": "Distinguishes Trump claim not to know Fuentes from explicit denunciation",
+      "publisher": "FactCheck.org",
+      "type": "secondary",
+      "url": "https://www.factcheck.org/2022/11/mccarthy-mischaracterizes-trumps-response-to-fuentes-meeting/",
+      "publishedAt": "2022-11-30",
+      "notes": "References primary Truth Social statements; original posts not separately inspected."
+    },
+    {
+      "key": "NF13",
+      "title": "Second Groyper War targeting Trump campaign; platform pressure tactics",
+      "publisher": "Institute for Strategic Dialogue",
+      "type": "secondary",
+      "url": "https://www.isdglobal.org/digital-dispatch/a-groyper-war-struggles-to-exert-influence-but-paves-the-way-for-other-bad-actors/",
+      "publishedAt": "2024-09-23",
+      "notes": "Research group interpretation, not proof campaign policy changed due to pressure."
+    },
+    {
+      "key": "NF14",
+      "title": "Fuentes self-description, legal versus illegal immigration argument, 2024 pressure campaign",
+      "publisher": "America First recording transcript archive",
+      "type": "video",
+      "url": "https://fight.fudgie.org/search/show/nf/episode/20240814_Wed_v58j11p",
+      "publishedAt": "2024-08-14",
+      "notes": "Transcript is a lead to original broadcast; final quotation requires comparison with original audio."
+    },
+    {
+      "key": "NF15",
+      "title": "Fuentes November 2024 “Your body, my choice” post and reported reach",
+      "publisher": "Institute for Strategic Dialogue",
+      "type": "secondary",
+      "url": "https://www.isdglobal.org/media-mentions/isd-report-details-rise-in-your-body-my-choice-and-other-misogynistic-content-following-the-us-elections/",
+      "publishedAt": "2024-11-13",
+      "notes": "Reported 35 million post views as of Nov 8 2024: impressions, not unique people."
+    },
+    {
+      "key": "NF16",
+      "title": "Original Carlson–Fuentes 2h-plus interview with chapter timestamps",
+      "publisher": "Tucker Carlson official channel",
+      "type": "video",
+      "url": "https://www.youtube.com/watch?v=efBB0D4tf1Y",
+      "publishedAt": "2025-10-27",
+      "notes": "Original audiovisual source; specific quote extracts still require spot listening."
+    },
+    {
+      "key": "NF17",
+      "title": "Host-provided episode summary, chapters and publication",
+      "publisher": "Tucker Carlson Network",
+      "type": "transcript",
+      "url": "https://tuckercarlson.com/tucker-show-nick-fuentes",
+      "publishedAt": "2025-10-27",
+      "notes": "Promotional descriptions are not independently verified claims."
+    },
+    {
+      "key": "NF18",
+      "title": "Consequences of Carlson-Fuentes interview, Heritage/Ted Cruz reactions",
+      "publisher": "Associated Press",
+      "type": "article",
+      "url": "https://apnews.com/article/e7347c9f414dfea41de7d63a0977d3b9",
+      "publishedAt": "2025-10-31",
+      "notes": "Report is about controversy and institutional responses."
+    },
+    {
+      "key": "NF19",
+      "title": "Heritage president apology and staff dispute",
+      "publisher": "Jewish Telegraphic Agency",
+      "type": "article",
+      "url": "https://www.jta.org/2025/11/05/united-states/heritage-foundation-staff-confront-president-over-antisemitism-defense-of-tucker-carlson",
+      "publishedAt": "2025-11-05",
+      "notes": "Separate Roberts backing Carlson from endorsing Fuentes."
+    },
+    {
+      "key": "NF20",
+      "title": "Piers challenges Fuentes on Jews, Holocaust, Hitler, women, race and politics",
+      "publisher": "Piers Morgan Uncensored",
+      "type": "video",
+      "url": "https://www.youtube.com/watch?v=X_KXvjOJ7YA",
+      "publishedAt": "2025-12-08",
+      "notes": "Two slur uses omitted from YouTube postlive edit according to publisher; quotation checking requires playback."
+    },
+    {
+      "key": "NF21",
+      "title": "Fuentes interview positions and contradictions about Holocaust death toll/Hitler",
+      "publisher": "Jewish Telegraphic Agency",
+      "type": "article",
+      "url": "https://www.jta.org/2025/12/09/politics/piers-morgan-grills-nick-fuentes-on-jews-the-holocaust-and-hitler-did-it-pay-off",
+      "publishedAt": "2025-12-09",
+      "notes": "Report discusses specific responses; direct video NF20 is underlying source."
+    },
+    {
+      "key": "NF22",
+      "title": "Fuentes hypothetical presidency: police/National Guard, electorate and voting rights",
+      "publisher": "Media Matters for America",
+      "type": "video",
+      "url": "https://www.mediamatters.org/nick-fuentes/asked-what-hed-do-president-nick-fuentes-says-i-would-just-take-away-right-vote-tons",
+      "publishedAt": "2025-11-26",
+      "notes": "Recorded clip from Nov 24 2025 Jack Neel Podcast; hypothetical proposal not enacted program."
+    },
+    {
+      "key": "NF23",
+      "title": "March 28 2025 racist, misogynist and antisemitic comments",
+      "publisher": "Media Matters for America",
+      "type": "video",
+      "url": "https://www.mediamatters.org/diversity-discrimination/nick-fuentes-jews-are-running-society-women-need-shut-fuck-blacks-need-be",
+      "publishedAt": "2025-03-31",
+      "notes": "Video excerpt; context and exact words to be independently checked from Rumble stream."
+    },
+    {
+      "key": "NF24",
+      "title": "June 7, 2024 Fuentes urged followers to enter conservative personnel pipelines",
+      "publisher": "Media Matters for America",
+      "type": "video",
+      "url": "https://www.mediamatters.org/heritage-foundation/holocaust-denier-nick-fuentes-tells-his-followers-join-project-2025?page=2",
+      "publishedAt": "2024-06-11",
+      "notes": "An exhortation does not prove anyone entered federal office."
+    },
+    {
+      "key": "NF25",
+      "title": "Feb 16 2026 call not to vote Republican in midterms",
+      "publisher": "Media Matters for America",
+      "type": "video",
+      "url": "https://www.mediamatters.org/nick-fuentes/nick-fuentes-tells-his-audience-do-not-vote-midterms-republicans-have-lose",
+      "publishedAt": "2026-02-18",
+      "notes": "May be one show or phase; not a permanent electoral position."
+    },
+    {
+      "key": "NF26",
+      "title": "Fishback response to Fuentes endorsement, claimed lack of personal contact, past praise of groypers",
+      "publisher": "WLRN",
+      "type": "transcript",
+      "url": "https://www.wlrn.org/government-politics/2026-07-17/candidate-james-fishback-support-young-voters-far-right",
+      "publishedAt": "2026-07-17",
+      "notes": "Candidate direct quote verifies his claimed lack of contact, not independently the total absence of communications."
+    },
+    {
+      "key": "NF27",
+      "title": "Crosscheck Fishback/Fuentes coverage",
+      "publisher": "WUSF",
+      "type": "article",
+      "url": "https://www.wusf.org/politics-issues/2026-07-17/how-james-fishback-is-winning-over-both-young-and-far-right-voters-in-quest-to-win-governors-race",
+      "publishedAt": "2026-07-17",
+      "notes": "Repeat, not an independent corroborating report."
+    },
+    {
+      "key": "NF28",
+      "title": "Rumble Superchat donor counts and gross flows January 2025-March 2026",
+      "publisher": "Washington Post",
+      "type": "article",
+      "url": "https://www.washingtonpost.com/technology/2026/04/20/nick-fuentes-stream-donors-funding/",
+      "publishedAt": "2026-04-20",
+      "notes": "11,000 accounts and nearly $900,000 are publication estimates for selected monitored broadcasts; net ~760k estimated, not full personal revenue."
+    },
+    {
+      "key": "NF29",
+      "title": "America First Foundation EIN 85-1088352 FY2025 and prior financial results",
+      "publisher": "IRS Form 990 via ProPublica Nonprofit Explorer",
+      "type": "filing",
+      "url": "https://projects.propublica.org/nonprofits/organizations/851088352",
+      "publishedAt": "2026-03-13",
+      "notes": "FY2025 ended June 30 2025; 990 filed March 2026. Negative total revenue results from fundraising treatment; do not conflate contributions with net revenue."
+    },
+    {
+      "key": "NF30",
+      "title": "Current channel display: about 713K followers, ~153M total views, 2045 videos",
+      "publisher": "Rumble official channel about page",
+      "type": "secondary",
+      "url": "https://rumble.com/c/nickjfuentes/about",
+      "publishedAt": "2026-10-28",
+      "notes": "Dynamic counters, rounded and date-dependent; not audited unique reach or subscriber revenue."
+    },
+    {
+      "key": "NF31",
+      "title": "Oct 26 2026 show sampled peak 6,910 and average 3,534 concurrent viewers",
+      "publisher": "LiveSearch.app",
+      "type": "secondary",
+      "url": "https://www.livesearch.app/stream.php?bid=7f9knu&id=19190886",
+      "publishedAt": "2026-10-27",
+      "notes": "Third-party tracker method not audited; one broadcast, not channel average or unique reach."
+    },
+    {
+      "key": "NF32",
+      "title": "Groyper 2024 goals and policy demands, ideology background",
+      "publisher": "Anti-Defamation League",
+      "type": "secondary",
+      "url": "https://go.adl.org/resources/article/nicholas-j-fuentes-five-things-know",
+      "publishedAt": "2024-08",
+      "notes": "ADL has explicit anti-extremism editorial position; use alongside first-person statements."
+    },
+    {
+      "key": "NF33",
+      "title": "Platform reinstatement, TPUSA feud and online movement context",
+      "publisher": "Axios",
+      "type": "article",
+      "url": "https://www.axios.com/2025/09/15/groyper-charlie-kirk-nick-fuentes-tyler-robinson",
+      "publishedAt": "2025-09-15",
+      "notes": "Context to historical platform events; social platform status can change."
+    },
+    {
+      "key": "NF34",
+      "title": "Media replatforming and X reinstatement May 2024",
+      "publisher": "Washington Post",
+      "type": "article",
+      "url": "https://www.washingtonpost.com/technology/2025/11/08/nick-fuentes-tucker-carlson-hate-speech/",
+      "publishedAt": "2025-11-08",
+      "notes": "Separates account reinstatement from advertiser or media endorsement."
+    },
+    {
+      "key": "NF35",
+      "title": "Additional comment on women, political rights and 2026 rhetoric",
+      "publisher": "Media Matters for America",
+      "type": "video",
+      "url": "https://www.mediamatters.org/nick-fuentes/history-america-first-streamer-nick-fuentes-extreme-misogyny",
+      "publishedAt": "2026-02-11",
+      "notes": "Compilation requires checking specific dated clips before quoting verbatim."
+    },
+    {
+      "key": "NF36",
+      "title": "Fuentes discussed Iran conflict, Trump and 2024 nonvote in interview involving Hunter Biden",
+      "publisher": "Channel 5 / Andrew Callaghan",
+      "type": "transcript",
+      "url": "https://scribehawk.com/transcript/nick-fuentes-interview-ft-hunter-biden",
+      "publishedAt": "2026-07-24",
+      "notes": "Machine transcription may contain errors; original episode and date not independently checked for quoted statements."
+    },
+    {
+      "key": "NF37",
+      "title": "Fuentes opposed war in Iran as departure from America First",
+      "publisher": "Media Matters for America",
+      "type": "transcript",
+      "url": "https://www.mediamatters.org/fox-news/right-wing-media-are-bitterly-divided-over-potential-war-iran?page=0",
+      "publishedAt": "2026-02-18",
+      "notes": "Clip timing precedes conflict; avoid interpreting statements as contemporary war outcome."
+    },
+    {
+      "key": "NF38",
+      "title": "2025 expansion of right-leaning podcast guest circuit and reported Rumble growth",
+      "publisher": "Media Matters for America",
+      "type": "article",
+      "url": "https://www.mediamatters.org/nick-fuentes/right-wing-media-are-split-white-nationalist-nick-fuentes",
+      "publishedAt": "2026-04",
+      "notes": "A reported follower growth estimate not unique listeners or persuasion impact."
+    }
+  ],
+  "facts": [
+    {
+      "key": "identity-2",
+      "label": "Identity",
+      "value": "Nicholas J. Fuentes is known as Nick Fuentes and is a United States political livestreamer.",
+      "featured": true,
+      "sources": [
+        "NF02",
+        "NF16",
+        "NF30"
+      ]
+    },
+    {
+      "key": "identity-3",
+      "label": "Identity",
+      "value": "Published sources place his birth year in 1998.",
+      "detail": "Do not fill precise birth date absent independent authoritative verification.",
+      "featured": true,
+      "sources": [
+        "NF02",
+        "NF04"
+      ]
+    },
+    {
+      "key": "education-4",
+      "label": "Education",
+      "value": "Associated Press documented his decision to leave Boston University in August 2017 after attending Charlottesville.",
+      "featured": true,
+      "sources": [
+        "NF02"
+      ]
+    },
+    {
+      "key": "career-5",
+      "label": "Career",
+      "value": "America First is an ongoing livestream and media brand associated with his official Rumble channel.",
+      "featured": false,
+      "sources": [
+        "NF30"
+      ]
+    },
+    {
+      "key": "movement-6",
+      "label": "Movement",
+      "value": "The Groyper subculture emerged as a public counter-establishment organized force in the 2019 TPUSA disputes.",
+      "featured": false,
+      "sources": [
+        "NF03",
+        "NF04"
+      ]
+    },
+    {
+      "key": "organizations-7",
+      "label": "Organizations",
+      "value": "Fuentes founded AFPAC; at least the 2020, 2021 and 2022 editions are documented.",
+      "featured": false,
+      "sources": [
+        "NF04",
+        "NF08"
+      ]
+    },
+    {
+      "key": "organizations-8",
+      "label": "Organizations",
+      "value": "America First Foundation is a tax-exempt 501(c)(4) with EIN 85-1088352 and lists Fuentes as president/CEO.",
+      "featured": false,
+      "sources": [
+        "NF29"
+      ]
+    },
+    {
+      "key": "policy-immigration-9",
+      "label": "Policy Immigration",
+      "value": "Fuentes opposes legal as well as unauthorized immigration as part of racial-demographic and cultural-national identity politics, distinct from enforcement-only restrictionism.",
+      "detail": "Dated 2024 speech provides unusually explicit differentiation.",
+      "featured": false,
+      "sources": [
+        "NF14",
+        "NF32"
+      ]
+    },
+    {
+      "key": "policy-israel-10",
+      "label": "Policy Israel",
+      "value": "Fuentes opposes U.S. alignment with Israel but frequently combines foreign-policy criticism with antisemitic claims about Jews collectively.",
+      "detail": "Distinguish policy criticism of Israeli government from conspiracy or group blame.",
+      "featured": false,
+      "sources": [
+        "NF16",
+        "NF18",
+        "NF21"
+      ]
+    },
+    {
+      "key": "policy-election-11",
+      "label": "Policy Election",
+      "value": "Fuentes has urged restrictions on voting rights, including women and young nonproperty owners, in a hypothetical presidency.",
+      "detail": "Not proposed statute or enacted measure.",
+      "featured": false,
+      "sources": [
+        "NF22"
+      ]
+    },
+    {
+      "key": "policy-women-12",
+      "label": "Policy Women",
+      "value": "Fuentes has used explicitly misogynistic political rhetoric and advocated removing political rights from women.",
+      "featured": false,
+      "sources": [
+        "NF22",
+        "NF23",
+        "NF35"
+      ]
+    },
+    {
+      "key": "policy-race-13",
+      "label": "Policy Race",
+      "value": "His public comments advocate white political dominance and use derogatory racial generalizations; this supports reporting classifications as white nationalist or white supremacist.",
+      "featured": false,
+      "sources": [
+        "NF23",
+        "NF20",
+        "NF04"
+      ]
+    },
+    {
+      "key": "religion-14",
+      "label": "Religion",
+      "value": "Fuentes publicly identifies as Catholic and appeals to Christianity and traditionalism in his political project.",
+      "detail": "His political use of Catholic identity is not an official Church endorsement.",
+      "featured": false,
+      "sources": [
+        "NF20",
+        "NF29",
+        "NF04"
+      ]
+    },
+    {
+      "key": "legal-15",
+      "label": "Legal",
+      "value": "A congressional subpoena and invocation of the Fifth Amendment are not criminal conviction or proof of personal participation inside the Capitol.",
+      "featured": false,
+      "sources": [
+        "NF05",
+        "NF06",
+        "NF07"
+      ]
+    },
+    {
+      "key": "funding-16",
+      "label": "Funding",
+      "value": "Chainalysis attributes a December 8 2020 receipt of 13.5 BTC, approximately $250K at transfer time, to Fuentes.",
+      "detail": "Not campaign finance; do not extrapolate use, ownership today, unlawful purpose.",
+      "featured": false,
+      "sources": [
+        "NF09"
+      ]
+    },
+    {
+      "key": "funding-17",
+      "label": "Funding",
+      "value": "America First Foundation FY2025 financial statement reports -$31,479 total revenue, $72,240 expenses, $24,855 contributions and -$60,226 net assets.",
+      "detail": "FY ends June 2025, filed 2026; negative net revenue is driven by negative fundraising line and is NOT minus $31K donations.",
+      "featured": false,
+      "sources": [
+        "NF29"
+      ]
+    },
+    {
+      "key": "funding-18",
+      "label": "Funding",
+      "value": "The same foundation FY2024 990 reports $561,822 contributions but -$43,688 total revenue due to negative fundraising presentation.",
+      "detail": "Do not imply the foundation brought in only -$43K cash receipts or that $562K went to Fuentes personally.",
+      "featured": false,
+      "sources": [
+        "NF29"
+      ]
+    },
+    {
+      "key": "funding-19",
+      "label": "Funding",
+      "value": "Washington Post independently estimated nearly $900K in gross streamer superchats from approximately 11K accounts Jan 2025-March 2026 and roughly $760K after platform fees.",
+      "detail": "Different flow from foundation accounts; overlapping payers or transfer channels cannot be excluded without accounting.",
+      "featured": false,
+      "sources": [
+        "NF28"
+      ]
+    },
+    {
+      "key": "media-20",
+      "label": "Media",
+      "value": "Rumble public about page displays approximately 713K followers and 153 million total views as of October 28, 2026.",
+      "detail": "Not equivalent to persons, watched-hours or persuasion.",
+      "featured": false,
+      "sources": [
+        "NF30"
+      ]
+    },
+    {
+      "key": "media-21",
+      "label": "Media",
+      "value": "A third-party tracker sampled Oct 26 2026 broadcast at 3,534 mean and 6,910 peak concurrent viewers.",
+      "detail": "One stream only.",
+      "featured": false,
+      "sources": [
+        "NF31"
+      ]
+    },
+    {
+      "key": "networks-22",
+      "label": "Networks",
+      "value": "2022 Mar-a-Lago dinner is documented; continuing advisory, formal campaign or Trump administration role is not.",
+      "featured": false,
+      "sources": [
+        "NF10",
+        "NF11",
+        "NF12"
+      ]
+    },
+    {
+      "key": "networks-23",
+      "label": "Networks",
+      "value": "Carlson hosted Fuentes in October 2025; this documents access and audience distribution, not a formal alliance.",
+      "featured": false,
+      "sources": [
+        "NF16",
+        "NF18"
+      ]
+    },
+    {
+      "key": "networks-24",
+      "label": "Networks",
+      "value": "Fishback acknowledged Fuentes endorsement but said he had never spoken to him; campaign coordination not established by checked sources.",
+      "featured": false,
+      "sources": [
+        "NF26"
+      ]
+    },
+    {
+      "key": "networks-25",
+      "label": "Networks",
+      "value": "Marjorie Taylor Greene spoke at AFPAC in 2022; she said she had not known the organizer identity.",
+      "featured": false,
+      "sources": [
+        "NF08"
+      ]
+    },
+    {
+      "key": "political-change-26",
+      "label": "Political Change",
+      "value": "Fuentes supported Trump earlier, publicly pressured the 2024 campaign and called for Republican midterm defeats in 2026.",
+      "detail": "Do not infer permanent rupture from single quote.",
+      "featured": false,
+      "sources": [
+        "NF14",
+        "NF25",
+        "NF32"
+      ]
+    },
+    {
+      "key": "platform-27",
+      "label": "Platform",
+      "value": "He was subjected to multiple platform removals and subsequently reinstated on X in 2024; his own claims about the motivation and effects of platform decisions require corroboration.",
+      "featured": false,
+      "sources": [
+        "NF33",
+        "NF34"
+      ]
+    },
+    {
+      "key": "holocaust-28",
+      "label": "Holocaust",
+      "value": "Fuentes has previously promoted Holocaust denial or minimization, but said in the December 2025 Piers interview he was open to the established figure of six million Jewish victims, without renouncing Hitler praise.",
+      "detail": "Historians estimate approximately six million Jews murdered in the Holocaust; a media interview is not proof of sustained change.",
+      "featured": false,
+      "sources": [
+        "NF20",
+        "NF21"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "nick-fuentes-groyper-movement-central-figure-mobilizer",
+      "source": "nick-fuentes",
+      "target": "groyper-movement",
+      "relType": "affiliated-with",
+      "role": "central figure / mobilizer",
+      "status": "verified",
+      "prominence": 3,
+      "notes": "",
+      "sources": [
+        "NF03",
+        "NF13"
+      ]
+    },
+    {
+      "key": "nick-fuentes-america-first-political-action-conference-founder-organizer",
+      "source": "nick-fuentes",
+      "target": "america-first-political-action-conference",
+      "relType": "founded",
+      "role": "founder / organizer",
+      "status": "verified",
+      "prominence": 3,
+      "notes": "",
+      "sources": [
+        "NF04",
+        "NF08"
+      ]
+    },
+    {
+      "key": "nick-fuentes-america-first-foundation-president-and-ceo",
+      "source": "nick-fuentes",
+      "target": "america-first-foundation",
+      "relType": "works-for",
+      "role": "president and CEO",
+      "status": "verified",
+      "prominence": 3,
+      "notes": "",
+      "sources": [
+        "NF29"
+      ]
+    },
+    {
+      "key": "nick-fuentes-turning-point-usa-charlie-kirk-ideological-opponent-targeted-speaker",
+      "source": "nick-fuentes",
+      "target": "turning-point-usa-charlie-kirk",
+      "relType": "affiliated-with",
+      "role": "ideological opponent / targeted speaker",
+      "status": "verified",
+      "prominence": 3,
+      "notes": "Do not label as collaborator.",
+      "sources": [
+        "NF03"
+      ]
+    },
+    {
+      "key": "nick-fuentes-donald-trump-met-at-dinner-later-electoral-critic",
+      "source": "nick-fuentes",
+      "target": "donald-trump",
+      "relType": "opposed",
+      "role": "met at dinner / later electoral critic",
+      "status": "verified",
+      "prominence": 3,
+      "notes": "No formal political appointment or durable support inferred.",
+      "sources": [
+        "NF10",
+        "NF12",
+        "NF13",
+        "NF25"
+      ]
+    },
+    {
+      "key": "nick-fuentes-ye-kanye-west-appeared-with-at-trump-dinner",
+      "source": "nick-fuentes",
+      "target": "ye-kanye-west",
+      "relType": "guest-on",
+      "role": "appeared with at Trump dinner",
+      "status": "verified",
+      "prominence": 3,
+      "notes": "No claim of role in campaign finance.",
+      "sources": [
+        "NF10",
+        "NF11"
+      ]
+    },
+    {
+      "key": "nick-fuentes-tucker-carlson-interview-guest",
+      "source": "nick-fuentes",
+      "target": "tucker-carlson",
+      "relType": "hosts",
+      "role": "interview guest",
+      "status": "verified",
+      "prominence": 2,
+      "notes": "Suggested relationship type hosted if allowed by local relationship model.",
+      "sources": [
+        "NF16",
+        "NF18"
+      ]
+    },
+    {
+      "key": "nick-fuentes-kevin-roberts-heritage-foundation-indirect-institutional-controversy",
+      "source": "nick-fuentes",
+      "target": "kevin-roberts-heritage-foundation",
+      "relType": "affiliated-with",
+      "role": "indirect institutional controversy",
+      "status": "verified",
+      "prominence": 2,
+      "notes": "Do not infer Roberts personally endorsed Fuentes.",
+      "sources": [
+        "NF18",
+        "NF19"
+      ]
+    },
+    {
+      "key": "nick-fuentes-marjorie-taylor-greene-afpac-event-participant",
+      "source": "nick-fuentes",
+      "target": "marjorie-taylor-greene",
+      "relType": "affiliated-with",
+      "role": "AFPAC event participant",
+      "status": "verified",
+      "prominence": 2,
+      "notes": "",
+      "sources": [
+        "NF08"
+      ]
+    },
+    {
+      "key": "nick-fuentes-paul-gosar-afpac-participant",
+      "source": "nick-fuentes",
+      "target": "paul-gosar",
+      "relType": "affiliated-with",
+      "role": "AFPAC participant",
+      "status": "verified",
+      "prominence": 2,
+      "notes": "",
+      "sources": [
+        "NF08"
+      ]
+    },
+    {
+      "key": "nick-fuentes-james-fishback-unilateral-endorsement-favorable-online-commentary",
+      "source": "nick-fuentes",
+      "target": "james-fishback",
+      "relType": "endorsed",
+      "role": "unilateral endorsement / favorable online commentary",
+      "status": "verified",
+      "prominence": 2,
+      "notes": "No proof of direct communications, coordination or financing; do not encode reciprocal endorsement.",
+      "sources": [
+        "NF26"
+      ]
+    },
+    {
+      "key": "nick-fuentes-jd-vance-public-critic",
+      "source": "nick-fuentes",
+      "target": "jd-vance",
+      "relType": "opposed",
+      "role": "public critic",
+      "status": "verified",
+      "prominence": 2,
+      "notes": "",
+      "sources": [
+        "NF32",
+        "NF25"
+      ]
+    },
+    {
+      "key": "nick-fuentes-alex-jones-2020-stop-the-steal-public-event-proximity",
+      "source": "nick-fuentes",
+      "target": "alex-jones",
+      "relType": "affiliated-with",
+      "role": "2020 Stop the Steal public event proximity",
+      "status": "verified",
+      "prominence": 1,
+      "notes": "Public event co-presence is not proof private planning.",
+      "sources": [
+        "NF05"
+      ]
+    },
+    {
+      "key": "nick-fuentes-matt-brooks-republican-jewish-coalition-public-opponent",
+      "source": "nick-fuentes",
+      "target": "matt-brooks-republican-jewish-coalition",
+      "relType": "affiliated-with",
+      "role": "public opponent",
+      "status": "verified",
+      "prominence": 1,
+      "notes": "",
+      "sources": [
+        "NF12",
+        "NF18"
+      ]
+    },
+    {
+      "key": "nick-fuentes-piers-morgan-interview-guest-hostile-questioning",
+      "source": "nick-fuentes",
+      "target": "piers-morgan",
+      "relType": "hosts",
+      "role": "interview guest / hostile questioning",
+      "status": "verified",
+      "prominence": 1,
+      "notes": "",
+      "sources": [
+        "NF20",
+        "NF21"
+      ]
+    },
+    {
+      "key": "nick-fuentes-elon-musk-x-platform-restoration-decision",
+      "source": "nick-fuentes",
+      "target": "elon-musk-x",
+      "relType": "affiliated-with",
+      "role": "platform restoration decision",
+      "status": "verified",
+      "prominence": 1,
+      "notes": "",
+      "sources": [
+        "NF33",
+        "NF34"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "key": "1998-birth-year-generally-reported",
+      "date": "1998",
+      "title": "Birth year generally reported",
+      "summary": "Published biographical reporting identifies Fuentes as born in 1998; precise date/place should be confirmed from an authoritative identity record.",
+      "category": "personal",
+      "significance": 3,
+      "status": "verified",
+      "chapter": "origins-a-digital-nationalist-political-career",
+      "sources": [
+        "NF04",
+        "NF02"
+      ]
+    },
+    {
+      "key": "2017-08-charlottesville-and-college-withdrawal",
+      "date": "2017-08",
+      "title": "Charlottesville and college withdrawal",
+      "summary": "AP reported his attendance at the August 2017 Unite the Right rally and subsequent decision to leave Boston University, citing threats.",
+      "category": "career",
+      "significance": 3,
+      "status": "verified",
+      "chapter": "origins-a-digital-nationalist-political-career",
+      "sources": [
+        "NF02"
+      ]
+    },
+    {
+      "key": "2017-2020-america-first-broadcasting-develops",
+      "date": "2017",
+      "title": "America First broadcasting develops",
+      "summary": "Fuentes grew a livestreaming identity through America First and online conservative commentary; founding date and early distribution remain to be resolved.",
+      "category": "career",
+      "significance": 3,
+      "status": "verified",
+      "chapter": "origins-a-digital-nationalist-political-career",
+      "sources": [
+        "NF04",
+        "NF16"
+      ]
+    },
+    {
+      "key": "2019-10-11-first-groyper-war",
+      "date": "2019-10",
+      "title": "First Groyper War",
+      "summary": "Followers challenged Turning Point USA speakers, including Charlie Kirk, with questions attacking mainstream conservative immigration and social positions.",
+      "category": "career",
+      "significance": 3,
+      "status": "verified",
+      "chapter": "the-first-groyper-war-and-the-institutional-split",
+      "sources": [
+        "NF03",
+        "NF04"
+      ]
+    },
+    {
+      "key": "2020-02-28-first-afpac-conference",
+      "date": "2020-02-28",
+      "title": "First AFPAC conference",
+      "summary": "Fuentes organized the America First Political Action Conference as an alternative to CPAC.",
+      "category": "career",
+      "significance": 3,
+      "status": "verified",
+      "chapter": "the-first-groyper-war-and-the-institutional-split",
+      "sources": [
+        "NF04",
+        "NF08"
+      ]
+    },
+    {
+      "key": "2020-02-youtube-channel-removed",
+      "date": "2020-02",
+      "title": "YouTube channel removed",
+      "summary": "America First lost access to YouTube under platform hate-speech enforcement.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "the-first-groyper-war-and-the-institutional-split",
+      "sources": [
+        "NF34"
+      ]
+    },
+    {
+      "key": "2020-11-georgia-stop-the-steal-rallies",
+      "date": "2020-11",
+      "title": "Georgia Stop the Steal rallies",
+      "summary": "The January 6 committee describes Fuentes among Atlanta protest organizers and participants as Georgia certified its presidential vote.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "afpac-nonprofit-structure-and-the-limits-of-institutional-access",
+      "sources": [
+        "NF05"
+      ]
+    },
+    {
+      "key": "2020-12-08-large-bitcoin-transfer",
+      "date": "2020-12-08",
+      "title": "Large bitcoin transfer",
+      "summary": "Chainalysis attributes 13.5 BTC worth about $250,000 at the time to Fuentes from a larger 28.15 BTC transaction.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "afpac-nonprofit-structure-and-the-limits-of-institutional-access",
+      "sources": [
+        "NF09"
+      ]
+    },
+    {
+      "key": "2021-01-06-at-the-capitol-grounds-not-documented-inside",
+      "date": "2021-01-06",
+      "title": "At the Capitol grounds, not documented inside",
+      "summary": "Fuentes was present outside the U.S. Capitol, according to committee and contemporaneous reporting; do not claim entry into the building.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "afpac-nonprofit-structure-and-the-limits-of-institutional-access",
+      "sources": [
+        "NF05",
+        "NF07"
+      ]
+    },
+    {
+      "key": "2021-01-07-pro-siege-comment",
+      "date": "2021-01-07",
+      "title": "Pro-siege comment",
+      "summary": "The Jan 6 committee quoted a post praising the Capitol attack; original social post should be archived independently if exact text will be used.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "2020-election-denial-january-6-and-the-investigative-record",
+      "sources": [
+        "NF05"
+      ]
+    },
+    {
+      "key": "2021-america-first-foundation-formal-operation",
+      "date": "2021",
+      "title": "America First Foundation formal operation",
+      "summary": "America First Foundation is a 501(c)(4) organization founded in 2020, with public tax-return records subsequently filed.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "2020-election-denial-january-6-and-the-investigative-record",
+      "sources": [
+        "NF04",
+        "NF29"
+      ]
+    },
+    {
+      "key": "2021-02-second-afpac-and-congressional-contact",
+      "date": "2021-02",
+      "title": "Second AFPAC and congressional contact",
+      "summary": "Rep. Paul Gosar participated at AFPAC II according to reporting.",
+      "category": "politics",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "2020-election-denial-january-6-and-the-investigative-record",
+      "sources": [
+        "NF08",
+        "NF04"
+      ]
+    },
+    {
+      "key": "2022-01-19-house-select-committee-subpoena",
+      "date": "2022-01-19",
+      "title": "House Select Committee subpoena",
+      "summary": "The January 6 committee subpoenaed Fuentes for testimony/documents, not a criminal indictment.",
+      "category": "politics",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "trump-access-alienation-and-the-2024-groyper-war",
+      "sources": [
+        "NF07",
+        "NF06"
+      ]
+    },
+    {
+      "key": "2022-02-16-congressional-deposition",
+      "date": "2022-02-16",
+      "title": "Congressional deposition",
+      "summary": "Official deposition recorded; House committee reported he invoked Fifth Amendment privilege regarding organizing activities.",
+      "category": "politics",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "trump-access-alienation-and-the-2024-groyper-war",
+      "sources": [
+        "NF05",
+        "NF06"
+      ]
+    },
+    {
+      "key": "2022-02-third-afpac-greene-appearance",
+      "date": "2022-02",
+      "title": "Third AFPAC; Greene appearance",
+      "summary": "Rep. Marjorie Taylor Greene spoke at an event organized by Fuentes, later claiming she had not known its organizers.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "trump-access-alienation-and-the-2024-groyper-war",
+      "sources": [
+        "NF08"
+      ]
+    },
+    {
+      "key": "2022-11-22-trump-ye-fuentes-mar-a-lago-dinner",
+      "date": "2022-11-22",
+      "title": "Trump–Ye–Fuentes Mar-a-Lago dinner",
+      "summary": "Trump met Fuentes when Ye arrived with him; Trump later said he had not expected or known Fuentes.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "ideas-nation-state-religion-and-exclusion",
+      "sources": [
+        "NF10",
+        "NF11",
+        "NF12"
+      ]
+    },
+    {
+      "key": "2024-05-x-reinstatement",
+      "date": "2024-05",
+      "title": "X reinstatement",
+      "summary": "Elon Musk publicly permitted Fuentes account to return to X; later statuses must be assessed separately.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "ideas-nation-state-religion-and-exclusion",
+      "sources": [
+        "NF33",
+        "NF34"
+      ]
+    },
+    {
+      "key": "2024-06-07-infiltration-rhetoric-about-staffing",
+      "date": "2024-06-07",
+      "title": "Infiltration rhetoric about staffing",
+      "summary": "Fuentes urged followers to enter Project 2025 and other Republican personnel channels; no resulting placements established here.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "ideas-nation-state-religion-and-exclusion",
+      "sources": [
+        "NF24"
+      ]
+    },
+    {
+      "key": "2024-08-second-groyper-war-against-trump-campaign",
+      "date": "2024-08",
+      "title": "Second Groyper War against Trump campaign",
+      "summary": "Fuentes and followers pressured the campaign over immigration, Israel and staff choices, despite his earlier Trump alignment.",
+      "category": "politics",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "israel-antisemitism-historical-denial-and-conflicting-explanations",
+      "sources": [
+        "NF13",
+        "NF14",
+        "NF32"
+      ]
+    },
+    {
+      "key": "2024-11-misogynistic-post-goes-viral",
+      "date": "2024-11",
+      "title": "Misogynistic post goes viral",
+      "summary": "ISD tracked his “Your body, my choice” post and spread of comparable rhetoric after the election.",
+      "category": "career",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "israel-antisemitism-historical-denial-and-conflicting-explanations",
+      "sources": [
+        "NF15"
+      ]
+    },
+    {
+      "key": "2025-03-28-racial-and-gender-hierarchy-statement",
+      "date": "2025-03-28",
+      "title": "Racial and gender hierarchy statement",
+      "summary": "A recorded Rumble segment included explicit remarks about Jewish, Black and female populations.",
+      "category": "career",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "israel-antisemitism-historical-denial-and-conflicting-explanations",
+      "sources": [
+        "NF23"
+      ]
+    },
+    {
+      "key": "2025-10-27-tucker-carlson-interviews-fuentes",
+      "date": "2025-10-27",
+      "title": "Tucker Carlson interviews Fuentes",
+      "summary": "Carlson published extended interview, giving Fuentes direct access to his audience and prompting substantial backlash.",
+      "category": "career",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "replatforming-and-the-carlson-heritage-fight",
+      "sources": [
+        "NF16",
+        "NF17",
+        "NF18"
+      ]
+    },
+    {
+      "key": "2025-10-11-heritage-institutional-conflict",
+      "date": "2025-10",
+      "title": "Heritage institutional conflict",
+      "summary": "Kevin Roberts initially defended Carlson, then denounced Fuentes while staff challenged his handling.",
+      "category": "career",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "replatforming-and-the-carlson-heritage-fight",
+      "sources": [
+        "NF18",
+        "NF19"
+      ]
+    },
+    {
+      "key": "2025-11-24-hypothetical-presidency-interview",
+      "date": "2025-11-24",
+      "title": "Hypothetical presidency interview",
+      "summary": "Fuentes described martial law, voter restrictions and taking the vote from women if he were president.",
+      "category": "career",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "replatforming-and-the-carlson-heritage-fight",
+      "sources": [
+        "NF22"
+      ]
+    },
+    {
+      "key": "2025-12-08-piers-morgan-interview",
+      "date": "2025-12-08",
+      "title": "Piers Morgan interview",
+      "summary": "Fuentes discussed the Holocaust death toll and did not withdraw praise of Hitler, complicating claims about any ideological moderation.",
+      "category": "career",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "2026-fishback-connection-counter-establishment-politics-and-measurable-reach",
+      "sources": [
+        "NF20",
+        "NF21"
+      ]
+    },
+    {
+      "key": "2026-02-16-boycott-the-midterms-call",
+      "date": "2026-02-16",
+      "title": "Boycott-the-midterms call",
+      "summary": "He told his audience not to vote in 2026 midterms, arguing Republicans should lose.",
+      "category": "career",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "2026-fishback-connection-counter-establishment-politics-and-measurable-reach",
+      "sources": [
+        "NF25"
+      ]
+    },
+    {
+      "key": "2026-04-20-streaming-donation-investigation-published",
+      "date": "2026-04-20",
+      "title": "Streaming-donation investigation published",
+      "summary": "Washington Post reports nearly $900K gross superchat transfers from around 11,000 donor accounts across sampled Jan 2025–Mar 2026 streams.",
+      "category": "legal",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "2026-fishback-connection-counter-establishment-politics-and-measurable-reach",
+      "sources": [
+        "NF28"
+      ]
+    },
+    {
+      "key": "2026-07-17-fishback-relationship-examined",
+      "date": "2026-07-17",
+      "title": "Fishback relationship examined",
+      "summary": "WLRN documented Fuentes endorsement and quoted Fishback denying direct conversation, despite publicly positive statements about groypers.",
+      "category": "career",
+      "significance": 1,
+      "status": "disputed",
+      "chapter": "money-cryptocurrency-nonprofit-filings-and-streamer-payments",
+      "sources": [
+        "NF26"
+      ]
+    },
+    {
+      "key": "2026-10-26-rumble-stream-sample",
+      "date": "2026-10-26",
+      "title": "Rumble stream sample",
+      "summary": "Third party reported a live stream average of 3,534 and peak 6,910 simultaneous viewers.",
+      "category": "career",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "money-cryptocurrency-nonprofit-filings-and-streamer-payments",
+      "sources": [
+        "NF31"
+      ]
+    },
+    {
+      "key": "2026-10-28-rumble-profile-snapshot",
+      "date": "2026-10-28",
+      "title": "Rumble profile snapshot",
+      "summary": "Rumble displayed around 713K followers and 153M cumulative video views.",
+      "category": "career",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "money-cryptocurrency-nonprofit-filings-and-streamer-payments",
+      "sources": [
+        "NF30"
+      ]
+    }
+  ],
+  "statements": [
+    {
+      "key": "2021-01-07-january-6",
+      "date": "2021-01-07",
+      "issue": "January 6",
+      "venue": "House committee reproduces removed/archived social post; check original archive if used as primary quotation.",
+      "quote": "The Capitol Siege was fucking awesome",
+      "source": "NF05"
+    },
+    {
+      "key": "2025-12-08-self-description",
+      "date": "2025-12-08",
+      "issue": "self-description",
+      "venue": "Compare with other generalized remarks about Jewish people in same episode.",
+      "quote": "I don’t hate any Jews",
+      "source": "NF20"
+    },
+    {
+      "key": "2025-12-08-holocaust-death-toll",
+      "date": "2025-12-08",
+      "issue": "Holocaust death toll",
+      "venue": "Do not present as retraction of prior denial or endorsement of history research.",
+      "quote": "I’m open to believing the official narrative",
+      "source": "NF20"
+    },
+    {
+      "key": "2025-12-08-hitler-praise",
+      "date": "2025-12-08",
+      "issue": "Hitler praise",
+      "venue": "Answer to Morgan question about Hitler; context indicates praise, not a slip of tongue.",
+      "quote": "Yes, and I’m tired of pretending he’s not",
+      "source": "NF20"
+    }
+  ],
+  "finance": {
+    "coverage": "NON-CAMPAIGN MONEY AND INFLUENCE (unless independently identified as campaign expenditure)"
+  },
+  "ideas": {
+    "traditions": [],
+    "influences": [],
+    "works": [],
+    "featuredQuotes": [
+      "2021-01-07-january-6",
+      "2025-12-08-self-description",
+      "2025-12-08-holocaust-death-toll"
+    ]
+  },
+  "chapters": [
+    {
+      "key": "origins-a-digital-nationalist-political-career",
+      "title": "Origins: a digital nationalist political career",
+      "dek": "Nick Fuentes is an American political livestreamer and organizer associated with the Groyper movement and America First Political Action Conference. His politics combine immigration restriction, white-nationalist and antisemitic rhetoric, social authoritarianism and opposition to parts of the Republican establishment; his influence is documented through media-platform disputes, political event appearances and conflicts inside Republican institutions. He endorsed 2026 Florida gubernatorial contender James Fishback, although Fishback said he had never spoken directly with Fuentes.",
+      "body": "Nicholas J. Fuentes became a controversial online political commentator as a young adult. An August 2017 Associated Press interview documented his participation in the Charlottesville Unite the Right rally and his decision to withdraw from Boston University after threats. Rather than using a later self-description as the entire origin story, this contemporary reporting anchors the first public period of his career. [[NF02]]\n\nFuentes built America First as a recurring political livestream, combining nationalist policy arguments with attacks on establishment conservative organizations. Its later distribution has spanned independent channels and Rumble; this transition is central to understanding his growth outside traditional cable television. The exact original first broadcast and business continuity across platforms remain open questions. [[NF04,NF30,NF34]]"
+    },
+    {
+      "key": "the-first-groyper-war-and-the-institutional-split",
+      "title": "The first Groyper War and the institutional split",
+      "dek": "",
+      "body": "In 2019, self-identified Groypers challenged Turning Point USA speakers and Charlie Kirk by posing questions about legal immigration, foreign-policy loyalties, social issues, and identity. The tactic generated attention from mainstream conservatives and reporters while creating a distinctive supporter identity around Fuentes. An online subculture is not the same thing as a formal political membership organization. [[NF03,NF04]]\n\nThe conflict was not merely about personal insults; it exposed a substantive divide between nationalism grounded partly in ethnicity and conservative leaders with a more civic or coalition-oriented model. Public characterization as white nationalist is supported not simply by critics’ labels but by his later explicit positions on demographic immigration and racial hierarchy. That difference matters for comparing his views with ordinary restrictionist positions. [[NF03,NF14,NF23]]"
+    },
+    {
+      "key": "afpac-nonprofit-structure-and-the-limits-of-institutional-access",
+      "title": "AFPAC, nonprofit structure and the limits of institutional access",
+      "dek": "",
+      "body": "Fuentes created AFPAC in February 2020 as an alternative to CPAC. Public reporting documents repeat gatherings and appearances involving U.S. officeholders, including Paul Gosar and Marjorie Taylor Greene. Greene later said she had not known who organized the conference; the record establishes attendance, not her wholesale agreement with everything said there. [[NF04,NF08]]\n\nThe America First Foundation is a separately identifiable 501(c)(4), EIN 85-1088352, with Fuentes listed as president and CEO in public Form 990 filings. A dossier should distinguish the conference event brand, nonprofit entity, streaming business, and informal Groyper supporters; one does not automatically own the finances or personnel of another. [[NF29,NF30]]"
+    },
+    {
+      "key": "2020-election-denial-january-6-and-the-investigative-record",
+      "title": "2020 election denial, January 6 and the investigative record",
+      "dek": "",
+      "body": "The House Select Committee described Fuentes’s participation in the Stop the Steal movement, including November 2020 gatherings in Atlanta and his activities outside the U.S. Capitol on January 6, 2021. The committee quoted inflammatory statements about the siege and said he took the Fifth Amendment when questioned about organizing activities. Those are official committee findings and investigative actions, not a criminal conviction. [[NF05,NF07]]\n\nThe committee subpoenaed Fuentes in January 2022, and its records include a February 2022 deposition. The sources examined here do not document Fuentes personally entering the Capitol building; the presence of supporters or his movement’s flag inside does not prove that he entered. Nor does invoking the Fifth Amendment itself establish criminal guilt. [[NF05,NF06,NF07]]"
+    },
+    {
+      "key": "trump-access-alienation-and-the-2024-groyper-war",
+      "title": "Trump: access, alienation and the 2024 Groyper War",
+      "dek": "",
+      "body": "On November 22, 2022, Fuentes attended a dinner with Donald Trump and Ye at Mar-a-Lago. The meeting is corroborated by contemporaneous reporting. Trump said he had expected to meet Ye and did not know Fuentes would attend. Reports about specific private remarks by Trump differ in evidentiary strength and should be attributed, not narrated as transcript-proven facts. [[NF10,NF11,NF12]]\n\nBy August 2024, Fuentes was directing another Groyper War against Trump’s campaign, opposing positions associated with legal immigration and Israel and criticizing campaign personnel. He described his concern as a demographic as well as legal-immigration dispute. In February 2026 he told supporters not to vote in the midterms because Republicans should lose, illustrating a public move from Trump-loyal mobilization toward anti-establishment opposition. Whether that language changed measurable voter behavior is unproven. [[NF13,NF14,NF25,NF32]]"
+    },
+    {
+      "key": "ideas-nation-state-religion-and-exclusion",
+      "title": "Ideas: nation, state, religion and exclusion",
+      "dek": "",
+      "body": "Fuentes’s political project combines intense immigration restriction, white identity, anti-liberal cultural politics, Catholic traditionalist language, and support for a powerful state. In a 2024 livestream he distinguished his central opposition to demographic change through legal immigration from enforcement of unauthorized entry alone. His own recorded gender and race rhetoric, rather than the Worldview quiz’s internal category labels, provides substantive grounds for describing the ideology. [[NF14,NF22,NF23,NF29]]\n\nIn a 2025 interview about a hypothetical presidency, he described exceptional National Guard deployment, pervasive law enforcement, and reducing voting eligibility—including restricting women’s suffrage and raising the voting age. Those are documented proposals or hypothetical statements, not actual powers he holds. His identity as a Catholic does not make his political statements Catholic Church teaching. [[NF20,NF22]]"
+    },
+    {
+      "key": "israel-antisemitism-historical-denial-and-conflicting-explanations",
+      "title": "Israel, antisemitism, historical denial and conflicting explanations",
+      "dek": "",
+      "body": "Opposition to U.S. support for Israel is a political position that can be held without bigotry. Fuentes has gone further by making negative generalizations and conspiracy claims about Jews as a people, which independent reporting and recorded statements identify as antisemitic. His remarks about Hitler and the Holocaust are relevant because they distinguish his movement from ordinary foreign-policy noninterventionism. [[NF16,NF18,NF20,NF21,NF23]]\n\nDuring the December 2025 Piers Morgan interview, Fuentes expressed openness to the established figure of approximately six million Jewish Holocaust victims while continuing to praise Hitler. The juxtaposition should be presented as a documented rhetorical contradiction, not treated automatically as a sustained recantation. Exact words require reference to the full interview video, not isolated clips. [[NF20,NF21]]"
+    },
+    {
+      "key": "replatforming-and-the-carlson-heritage-fight",
+      "title": "Replatforming and the Carlson–Heritage fight",
+      "dek": "",
+      "body": "Platform bans in 2020–2021 reduced Fuentes’s direct mainstream distribution; Musk’s 2024 decision to reinstate him on X changed access to that channel. The October 27, 2025 Tucker Carlson interview was a particularly important mainstream-audience crossover, and Carlson’s role should be recorded as host and distributor rather than assumed campaign ally. [[NF16,NF17,NF33,NF34]]\n\nThe Carlson interview provoked a dispute across conservative institutions. Heritage president Kevin Roberts defended Carlson, then criticized Fuentes and apologized amid staff objections; several conservative political figures condemned the appearance. This is a demonstrable mechanism of influence: one invitation created institutional reputational and personnel conflict, although the effect on broader voter opinion is unquantified. [[NF18,NF19]]"
+    },
+    {
+      "key": "2026-fishback-connection-counter-establishment-politics-and-measurable-reach",
+      "title": "2026: Fishback connection, counter-establishment politics and measurable reach",
+      "dek": "",
+      "body": "WLRN’s July 2026 reporting says Fuentes endorsed Florida gubernatorial candidate James Fishback. Asked about it, Fishback said he had never spoken to Fuentes, while other public statements praised Groypers as a knowledgeable political audience. Worldview should encode Fuentes-to-Fishback public support as one-way unless direct contacts, mutual support, financial transfers or coordination are proved from separate evidence. [[NF26]]\n\nAs of an October 28, 2026 snapshot, Rumble publicly displayed about 713,000 channel followers and about 153 million accumulated views. A third-party tracker observed one October 26 episode’s average and peak concurrent viewers at approximately 3,534 and 6,910. Views, followers and concurrent viewership measure different denominators and cannot be combined into a total audience. [[NF30,NF31]]"
+    },
+    {
+      "key": "money-cryptocurrency-nonprofit-filings-and-streamer-payments",
+      "title": "Money: cryptocurrency, nonprofit filings and streamer payments",
+      "dek": "",
+      "body": "Chainalysis attributed a one-time 13.5 BTC transaction to Fuentes in December 2020, valued at approximately $250,000 at the time. That is neither an FEC donation record nor proof of any illegal purpose or of the funds’ later use. It should not be silently added to contemporary fundraising totals. [[NF09]]\n\nThe America First Foundation Form 990 for fiscal year ending June 2025 reports $24,855 in contributions, -$31,479 total revenue, $72,240 in expenses and -$60,226 net assets; the negative revenue reflects its fundraising accounting lines. The prior return reported $561,822 in contributions but negative total revenue. Separately, a Washington Post analysis found almost $900,000 of gross livestream superchat payments over sampled January 2025–March 2026 broadcasts, about $760,000 after platform fees by its estimate. The foundation, digital payments and Fuentes personally are not interchangeable financial entities or accounts. [[NF28,NF29]]"
+    }
+  ]
+}

@@ -1,0 +1,713 @@
+{
+  "subject": "soros",
+  "reviewedAt": "2026-10-25",
+  "sourcesVerifiedAt": "2026-10-25",
+  "image": "https://commons.wikimedia.org/wiki/Special:FilePath/George%20Soros%2C%20Founder%20and%20Chairman%20of%20the%20Open%20Society%20Foundations%2C%20visits%20the%20EC%20(3x4%20cropped).jpg?width=400",
+  "brief": {
+    "inclusion": "Investor who converted a financial fortune into the Open Society Foundations and one of the largest long-running Democratic political-giving networks.",
+    "identifiers": { "fec_contributor": "SOROS, GEORGE" },
+    "namesakes": "Matched through Soros Fund Management, Open Society-related employers and New York-area addresses.",
+    "coverage": {
+      "from": "1930-08-12",
+      "through": "2026-10-25",
+      "lags": "Foundation grants and nonprofit transfers are not campaign contributions; the 2026 federal cycle remains open."
+    },
+    "openQuestions": [
+      "Some political funding moves through nonprofits before reaching federal committees.",
+      "Leadership passed to Alex Soros, while George Soros remains founder and a source of institutional capital."
+    ],
+    "review": [
+      { "kind": "evidence", "by": "OA", "at": "2026-10-25" },
+      { "kind": "chronology", "by": "OA", "at": "2026-10-25" },
+      { "kind": "neutrality", "by": "OA", "at": "2026-10-25" },
+      { "kind": "current", "by": "OA", "at": "2026-10-25" }
+    ]
+  },
+  "summary": "George Soros built a fortune in global investment markets and used it to create the Open Society Foundations, a transnational grantmaking network centered on rights, democratic governance and open institutions. In American politics he became a major Democratic donor through direct contributions, super PACs and policy organizations; leadership of the family network has increasingly passed to his son Alex.",
+  "roles": [
+    {
+      "label": "Founder, Open Society Foundations",
+      "detail": "Began formal philanthropy in 1979 and built a global foundation network.",
+      "sources": ["osf-george", "osf-history"]
+    },
+    {
+      "label": "Founder, Soros Fund Management",
+      "detail": "Established the investment business that produced his fortune.",
+      "sources": ["britannica-soros", "soros-fund-about"]
+    },
+    {
+      "label": "Democratic political donor",
+      "detail": "Created and financed Democracy PAC and Democracy PAC II and has supported candidates, parties and advocacy groups.",
+      "sources": ["fec-soros", "factcheck-democracy-pac", "opensecrets-2024"]
+    }
+  ],
+  "entities": {
+    "soros": { "match": { "name": "George Soros", "type": "donor" } },
+    "alex": { "match": { "name": "Alex Soros", "type": "donor" } },
+    "osf": {
+      "create": {
+        "name": "Open Society Foundations",
+        "type": "organization",
+        "description": "International grantmaking network founded by George Soros.",
+        "websiteUrl": "https://www.opensocietyfoundations.org/"
+      }
+    },
+    "sfm": {
+      "create": {
+        "name": "Soros Fund Management",
+        "type": "company",
+        "description": "Investment firm founded by George Soros.",
+        "websiteUrl": "https://www.sorosfund.com/"
+      }
+    },
+    "democracy-pac": {
+      "match": { "identifier": ["fec_committee", "C00693382"] }
+    },
+    "democracy-pac-ii": {
+      "match": { "identifier": ["fec_committee", "C00786624"] }
+    },
+    "ceu": {
+      "create": {
+        "name": "Central European University",
+        "type": "organization",
+        "description": "Private university founded by George Soros after the fall of communism in Central Europe.",
+        "websiteUrl": "https://www.ceu.edu/"
+      }
+    },
+    "democratic-party": { "match": { "name": "Democratic Party", "type": "organization" } },
+    "open-society-policy": {
+      "create": {
+        "name": "Open Society Policy Center",
+        "type": "organization",
+        "description": "U.S. advocacy organization affiliated with the Open Society network."
+      }
+    },
+    "drug-policy-alliance": {
+      "create": {
+        "name": "Drug Policy Alliance",
+        "type": "organization",
+        "description": "U.S. organization advocating drug-policy reform."
+      }
+    }
+  },
+  "sources": [
+    {
+      "key": "osf-george",
+      "title": "George Soros",
+      "publisher": "Open Society Foundations",
+      "type": "primary",
+      "url": "https://www.opensocietyfoundations.org/george-soros",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "osf-history",
+      "title": "Our History",
+      "publisher": "Open Society Foundations",
+      "type": "primary",
+      "url": "https://www.opensocietyfoundations.org/who-we-are/our-history",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "osf-who",
+      "title": "Who We Are",
+      "publisher": "Open Society Foundations",
+      "type": "primary",
+      "url": "https://www.opensocietyfoundations.org/who-we-are",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "britannica-soros",
+      "title": "George Soros",
+      "publisher": "Encyclopaedia Britannica",
+      "type": "secondary",
+      "url": "https://www.britannica.com/biography/George-Soros",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "forbes-soros",
+      "title": "George Soros",
+      "publisher": "Forbes",
+      "type": "secondary",
+      "url": "https://www.forbes.com/profile/george-soros/",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "soros-fund-about",
+      "title": "About",
+      "publisher": "Soros Fund Management",
+      "type": "primary",
+      "url": "https://www.sorosfund.com/",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "fec-soros",
+      "title": "Individual contributions by Soros, George",
+      "publisher": "Federal Election Commission",
+      "type": "filing",
+      "url": "https://www.fec.gov/data/receipts/individual-contributions/?contributor_name=SOROS%2C+GEORGE",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "factcheck-democracy-pac",
+      "title": "Democracy PAC and Democracy PAC II",
+      "publisher": "FactCheck.org",
+      "type": "article",
+      "url": "https://www.factcheck.org/2024/09/democracy-pac-democracy-pac-ii-2/",
+      "publishedAt": "2024-09-16",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "opensecrets-2024",
+      "title": "Elon Musk tops list of 2024 political donors",
+      "publisher": "OpenSecrets",
+      "type": "article",
+      "url": "https://www.opensecrets.org/news/2025/03/elon-musk-tops-list-of-2024-political-donors-but-six-others-gave-more-than-100-million/",
+      "publishedAt": "2025-03",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "reuters-succession",
+      "title": "George Soros hands control of empire to son Alex",
+      "publisher": "Reuters",
+      "type": "article",
+      "url": "https://www.reuters.com/world/us/george-soros-hands-control-empire-son-alex-wsj-2023-06-11/",
+      "publishedAt": "2023-06-11",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "ceu-history",
+      "title": "History of CEU",
+      "publisher": "Central European University",
+      "type": "primary",
+      "url": "https://www.ceu.edu/about/history",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "osun-2020",
+      "title": "George Soros Announces $1 Billion Commitment to Educate Against Authoritarianism",
+      "publisher": "Open Society Foundations",
+      "type": "official_statement",
+      "url": "https://www.opensocietyfoundations.org/newsroom/george-soros-announces-1-billion-commitment-to-educate-against-authoritarianism",
+      "publishedAt": "2020-01-23",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "osf-transfer-2017",
+      "title": "Open Society Foundations Confirm Transfer of $18 Billion",
+      "publisher": "Open Society Foundations",
+      "type": "official_statement",
+      "url": "https://www.opensocietyfoundations.org/newsroom/open-society-foundations-confirm-transfer-18-billion",
+      "publishedAt": "2017-10-17",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "fortune-pound",
+      "title": "The Man Who Broke the Bank of England",
+      "publisher": "Britannica Money",
+      "type": "secondary",
+      "url": "https://www.britannica.com/money/George-Soros",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "ap-conspiracies",
+      "title": "George Soros conspiracy theories surge as billionaire transfers control",
+      "publisher": "Associated Press",
+      "type": "article",
+      "url": "https://apnews.com/article/george-soros-conspiracy-theories-alex-soros-01b38ccf36fb5d76170a7e233463fc15",
+      "publishedAt": "2023-06-16",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "osf-drug-policy",
+      "title": "George Soros on Drug Policy",
+      "publisher": "Open Society Foundations",
+      "type": "primary",
+      "url": "https://www.opensocietyfoundations.org/voices/why-i-support-drug-policy-reform",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "osf-open-society-transcript",
+      "title": "George Soros — Open Society transcript",
+      "publisher": "Open Society Foundations",
+      "type": "transcript",
+      "url": "https://www.opensocietyfoundations.org/uploads/ff00a4b4-e422-4935-b50d-4e6f72879f71/george-soros-open-society-transcript.pdf",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "lse-soros",
+      "title": "George Soros and the LSE",
+      "publisher": "London School of Economics",
+      "type": "secondary",
+      "url": "https://www.lse.ac.uk/about-lse/lse-people/george-soros",
+      "accessedAt": "2026-10-25"
+    }
+  ],
+  "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "August 12, 1930",
+      "detail": "Budapest, Hungary.",
+      "featured": true,
+      "sources": ["osf-george", "britannica-soros"]
+    },
+    { "key": "sex", "label": "Sex", "value": "Male", "sources": ["osf-george"] },
+    {
+      "key": "ethnicity",
+      "label": "Ethnicity",
+      "value": "Hungarian Jewish",
+      "detail": "Born to a Hungarian Jewish family that survived the Nazi occupation using false identity papers.",
+      "sources": ["osf-george"]
+    },
+    {
+      "key": "race",
+      "label": "Race",
+      "value": "White",
+      "detail": "Based on documented Hungarian Jewish ancestry.",
+      "sources": ["osf-george"]
+    },
+    {
+      "key": "citizenship",
+      "label": "Citizenship",
+      "value": "Hungary; United States",
+      "sources": ["britannica-soros"]
+    },
+    { "key": "spouse", "label": "Spouse", "value": "Tamiko Bolton Soros", "sources": ["forbes-soros"] },
+    { "key": "children", "label": "Children", "value": "5", "sources": ["forbes-soros"] },
+    {
+      "key": "education",
+      "label": "Education",
+      "value": "London School of Economics",
+      "detail": "Studied philosophy under Karl Popper's intellectual influence.",
+      "sources": ["osf-george", "lse-soros"]
+    },
+    {
+      "key": "current-roles",
+      "label": "Current role",
+      "value": "Founder, Open Society Foundations",
+      "featured": true,
+      "asOf": "2026-10-25",
+      "sources": ["osf-who"]
+    },
+    {
+      "key": "net-worth",
+      "label": "Estimated net worth",
+      "value": "$7.2 billion",
+      "detail": "Forbes estimate after transferring most of his wealth to Open Society Foundations.",
+      "featured": true,
+      "asOf": "2026-10-25",
+      "sources": ["forbes-soros", "osf-transfer-2017"]
+    },
+    {
+      "key": "philanthropy",
+      "label": "Lifetime Open Society giving",
+      "value": "More than $32 billion",
+      "asOf": "2026-10-25",
+      "sources": ["osf-who"]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "osf",
+      "source": "soros",
+      "target": "osf",
+      "relType": "founded",
+      "role": "Founder and principal benefactor",
+      "from": "1979",
+      "prominence": 3,
+      "sources": ["osf-george", "osf-history"]
+    },
+    {
+      "key": "sfm",
+      "source": "soros",
+      "target": "sfm",
+      "relType": "founded",
+      "role": "Founder and former chairman",
+      "from": "1970",
+      "prominence": 3,
+      "sources": ["britannica-soros", "soros-fund-about"]
+    },
+    {
+      "key": "alex-family",
+      "source": "soros",
+      "target": "alex",
+      "relType": "family-of",
+      "role": "Father and son; selected Alex to lead the family network",
+      "prominence": 3,
+      "sources": ["reuters-succession", "osf-who"]
+    },
+    {
+      "key": "democracy-pac",
+      "source": "soros",
+      "target": "democracy-pac",
+      "relType": "founded",
+      "role": "Creator and principal funder",
+      "from": "2019",
+      "prominence": 3,
+      "sources": ["factcheck-democracy-pac", "fec-soros"]
+    },
+    {
+      "key": "democracy-pac-ii",
+      "source": "soros",
+      "target": "democracy-pac-ii",
+      "relType": "donated-to",
+      "role": "Principal funder, including $175 million in the 2022 cycle",
+      "from": "2021",
+      "prominence": 3,
+      "sources": ["factcheck-democracy-pac", "fec-soros"]
+    },
+    {
+      "key": "democrats",
+      "source": "soros",
+      "target": "democratic-party",
+      "relType": "donated-to",
+      "role": "Major donor to Democratic candidates, committees and aligned groups",
+      "from": "2003",
+      "prominence": 2,
+      "sources": ["fec-soros", "opensecrets-2024"]
+    },
+    {
+      "key": "ceu",
+      "source": "soros",
+      "target": "ceu",
+      "relType": "founded",
+      "role": "Founder and benefactor",
+      "from": "1991",
+      "prominence": 2,
+      "sources": ["ceu-history", "osf-history"]
+    },
+    {
+      "key": "policy-center",
+      "source": "soros",
+      "target": "open-society-policy",
+      "relType": "founded",
+      "role": "Open Society U.S. advocacy arm",
+      "from": "1997",
+      "prominence": 2,
+      "sources": ["osf-history"]
+    },
+    {
+      "key": "drug-policy",
+      "source": "soros",
+      "target": "drug-policy-alliance",
+      "relType": "donated-to",
+      "role": "Longtime funder of drug-policy reform",
+      "prominence": 1,
+      "sources": ["osf-george", "osf-drug-policy"]
+    }
+  ],
+  "events": [
+    {
+      "key": "birth",
+      "date": "1930-08-12",
+      "title": "Born in Budapest",
+      "summary": "György Schwartz was born into a Hungarian Jewish family.",
+      "category": "personal",
+      "significance": 1,
+      "chapter": "survival",
+      "sources": ["osf-george", "britannica-soros"]
+    },
+    {
+      "key": "occupation",
+      "date": "1944",
+      "title": "Survives Nazi occupation",
+      "summary": "His family used false identities to survive the German occupation of Hungary and helped others conceal their backgrounds.",
+      "category": "personal",
+      "significance": 3,
+      "chapter": "survival",
+      "sources": ["osf-george"]
+    },
+    {
+      "key": "leaves-hungary",
+      "date": "1947",
+      "title": "Leaves Hungary for London",
+      "summary": "Soros left as communists consolidated power and supported himself while studying at the LSE.",
+      "category": "personal",
+      "significance": 2,
+      "chapter": "survival",
+      "sources": ["osf-george", "lse-soros"]
+    },
+    {
+      "key": "us",
+      "date": "1956",
+      "title": "Moves to the United States",
+      "summary": "He entered finance in New York after emigrating from Britain.",
+      "category": "career",
+      "significance": 2,
+      "chapter": "markets",
+      "sources": ["osf-george"]
+    },
+    {
+      "key": "fund",
+      "date": "1970",
+      "title": "Launches his hedge fund",
+      "summary": "The investment operation became the basis of Soros Fund Management and his fortune.",
+      "category": "career",
+      "significance": 3,
+      "chapter": "markets",
+      "sources": ["osf-george", "britannica-soros"]
+    },
+    {
+      "key": "philanthropy",
+      "date": "1979",
+      "title": "Begins formal philanthropy",
+      "summary": "Soros funded scholarships for Black South African students under apartheid.",
+      "category": "ideas",
+      "significance": 3,
+      "chapter": "open-society",
+      "sources": ["osf-history"]
+    },
+    {
+      "key": "hungary-foundation",
+      "date": "1984",
+      "title": "Establishes foundation in Hungary",
+      "summary": "The program funded independent culture and access to information under communist rule.",
+      "category": "ideas",
+      "significance": 2,
+      "chapter": "open-society",
+      "sources": ["osf-history"]
+    },
+    {
+      "key": "ceu",
+      "date": "1991",
+      "title": "Founds Central European University",
+      "summary": "CEU was created to foster critical inquiry after the fall of communist governments in Central Europe.",
+      "category": "ideas",
+      "significance": 2,
+      "chapter": "open-society",
+      "sources": ["ceu-history", "osf-history"]
+    },
+    {
+      "key": "sterling",
+      "date": "1992-09-16",
+      "title": "Profits from sterling crisis",
+      "summary": "A large position against the British pound made Soros globally famous and reinforced the scale of his investment capital.",
+      "category": "finance",
+      "significance": 3,
+      "chapter": "markets",
+      "sources": ["britannica-soros", "fortune-pound"]
+    },
+    {
+      "key": "us-program",
+      "date": "1996",
+      "title": "Open Society expands U.S. program",
+      "summary": "The network focused on criminal justice, reproductive rights, immigration and civil liberties.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "american-politics",
+      "sources": ["osf-history"]
+    },
+    {
+      "key": "bush-opposition",
+      "date": "2004",
+      "title": "Becomes major donor opposing George W. Bush",
+      "summary": "Soros made defeating Bush a public political priority and financed Democratic-aligned outside groups.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "american-politics",
+      "sources": ["fec-soros", "osf-open-society-transcript"]
+    },
+    {
+      "key": "transfer",
+      "date": "2017-10-17",
+      "title": "Transfers $18 billion to Open Society",
+      "summary": "The transfer made the foundation network one of the world's largest philanthropies.",
+      "category": "finance",
+      "significance": 3,
+      "chapter": "institution",
+      "sources": ["osf-transfer-2017"]
+    },
+    {
+      "key": "democracy-pac",
+      "date": "2019-01",
+      "title": "Creates Democracy PAC",
+      "summary": "The super PAC became a central distributor of Soros political funds to Democratic-aligned groups.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "political-network",
+      "sources": ["factcheck-democracy-pac"]
+    },
+    {
+      "key": "osun",
+      "date": "2020-01-23",
+      "title": "Commits $1 billion to Open Society University Network",
+      "summary": "The initiative linked universities working under political pressure and on global public problems.",
+      "category": "ideas",
+      "significance": 2,
+      "chapter": "institution",
+      "sources": ["osun-2020"]
+    },
+    {
+      "key": "democracy-pac-ii",
+      "date": "2022",
+      "title": "Funds Democracy PAC II with $175 million",
+      "summary": "Two contributions made the committee a large reserve for Democratic-aligned electoral work.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "political-network",
+      "sources": ["factcheck-democracy-pac", "fec-soros"]
+    },
+    {
+      "key": "succession",
+      "date": "2023-06-11",
+      "title": "Confirms Alex Soros as successor",
+      "summary": "George Soros transferred leadership of the family philanthropic and political network to his son Alex.",
+      "category": "career",
+      "significance": 3,
+      "chapter": "succession",
+      "participants": [["alex", "successor"]],
+      "sources": ["reuters-succession", "osf-who"]
+    }
+  ],
+  "statements": [
+    {
+      "key": "occupation",
+      "date": "1944",
+      "datePrecision": "year",
+      "venue": "Open Society Foundations personal history",
+      "issue": "Biography",
+      "quote": "1944, the year of the German occupation, was my formative experience.",
+      "summary": "Soros identifies survival under Nazi occupation as formative.",
+      "verbatim": true,
+      "source": "osf-george"
+    },
+    {
+      "key": "open-society",
+      "date": "2006",
+      "datePrecision": "year",
+      "venue": "Open Society transcript",
+      "issue": "Democracy",
+      "quote": "I decided to set up a foundation devoted to the promotion of open society.",
+      "summary": "Soros described the purpose he chose for his wealth.",
+      "verbatim": true,
+      "source": "osf-open-society-transcript"
+    },
+    {
+      "key": "mission",
+      "date": "2006",
+      "datePrecision": "year",
+      "venue": "Open Society transcript",
+      "issue": "Democracy",
+      "quote": "I defined its mission as opening up closed societies, correcting the deficiencies of open societies and promoting a critical mode of thinking.",
+      "summary": "His account of the foundation's operating theory.",
+      "verbatim": true,
+      "source": "osf-open-society-transcript"
+    },
+    {
+      "key": "south-africa",
+      "date": "1979",
+      "datePrecision": "year",
+      "venue": "Open Society history",
+      "issue": "Philanthropy",
+      "quote": "Where could I find a better opportunity for opening up a closed society?",
+      "summary": "Soros explained why apartheid South Africa became his first formal philanthropic focus.",
+      "verbatim": true,
+      "source": "osf-history"
+    },
+    {
+      "key": "drug-policy",
+      "date": "2010",
+      "datePrecision": "year",
+      "venue": "Open Society essay",
+      "issue": "Drug policy",
+      "summary": "Soros argued that punitive drug-control policies cause harms that justify experimentation with regulation and treatment-centered alternatives.",
+      "verbatim": false,
+      "source": "osf-drug-policy"
+    }
+  ],
+  "finance": {
+    "fec": {
+      "contributorName": "SOROS, GEORGE",
+      "namePattern": "^SOROS, GEORGE( [A-Z]\\.?)?$",
+      "employerPattern": "SOROS|OPEN SOCIETY|SELF",
+      "cities": ["NEW YORK", "BEDFORD", "KATONAH"],
+      "source": "fec-soros"
+    },
+    "coverage": "Federal itemized receipts matched by name plus employer or known New York-area address. Foundation grants, state giving and transfers through nondisclosing nonprofits are outside this ledger."
+  },
+  "ideas": {
+    "traditions": [
+      {
+        "label": "Open society",
+        "atlasId": "liberal-constitutionalism",
+        "basis": "self-described",
+        "context": "Pluralism, critical inquiry, accountable government and institutions that can correct error.",
+        "sources": ["osf-george", "osf-open-society-transcript"]
+      }
+    ],
+    "influences": [
+      {
+        "name": "Karl Popper",
+        "note": "Popper's account of open society shaped Soros's institutional vocabulary and philanthropic mission.",
+        "sources": ["osf-george", "lse-soros"]
+      }
+    ],
+    "works": [
+      {
+        "title": "The Alchemy of Finance",
+        "year": "1987",
+        "kind": "Book",
+        "detail": "Developed Soros's theory of reflexivity in markets.",
+        "source": "britannica-soros"
+      },
+      {
+        "title": "Open Society: Reforming Global Capitalism",
+        "year": "2000",
+        "kind": "Book",
+        "detail": "Connected reflexivity, markets and democratic institutions.",
+        "source": "osf-open-society-transcript"
+      }
+    ],
+    "featuredQuotes": ["open-society", "occupation"]
+  },
+  "chapters": [
+    {
+      "key": "survival",
+      "title": "Occupation, escape and formation",
+      "dek": "The political violence of twentieth-century Hungary supplied the experience Soros later used to explain open society.",
+      "body": "George Soros was born in Budapest in 1930. His Jewish family survived the Nazi occupation by obtaining false papers, separating and helping other people conceal their identities. He left communist Hungary for London in 1947, worked while attending the London School of Economics and encountered Karl Popper's argument that no political system has a monopoly on truth. [[osf-george, lse-soros]]"
+    },
+    {
+      "key": "markets",
+      "title": "Building capital through markets",
+      "dek": "A career in New York finance turned a refugee student's philosophical interests into unusually mobile private power.",
+      "body": "Soros moved to the United States in 1956 and worked in securities before establishing his own fund in 1970. His approach emphasized reflexivity: market participants' beliefs can change the conditions they are trying to understand. The 1992 sterling trade made him famous, but the longer consequence was the pool of capital available for politics and philanthropy. [[britannica-soros, soros-fund-about, fortune-pound]]"
+    },
+    {
+      "key": "open-society",
+      "title": "Turning a concept into institutions",
+      "dek": "Scholarships and dissident support grew into a foundation network spanning countries and policy fields.",
+      "body": "Soros began formal philanthropy in 1979 with scholarships for Black South Africans. In communist Hungary his foundation supported independent groups and access to information; after 1989 the network expanded across Central and Eastern Europe. Central European University joined grantmaking to a permanent educational institution. [[osf-history, ceu-history]]"
+    },
+    {
+      "key": "american-politics",
+      "title": "Entering American partisan politics",
+      "dek": "The U.S. program joined civil-society funding to increasingly explicit opposition to Republican administrations.",
+      "body": "Open Society established a U.S. program in the 1990s focused on criminal justice, rights, immigration and public health. Soros became a nationally visible partisan donor in 2004, when he made defeating President George W. Bush a declared objective. That move made his giving politically legible but also turned him into a recurring subject of false and antisemitic conspiracy narratives. [[osf-history, osf-open-society-transcript, ap-conspiracies]]"
+    },
+    {
+      "key": "institution",
+      "title": "Endowing a durable foundation",
+      "dek": "The transfer of most of Soros's fortune separated his personal balance sheet from the scale of the institution he created.",
+      "body": "In 2017 Open Society confirmed that Soros had transferred $18 billion to the foundations. His lifetime giving later exceeded $32 billion. The 2020 Open Society University Network commitment showed how the network combined grants with long-lived institutions intended to resist authoritarian pressure. [[osf-transfer-2017, osf-who, osun-2020]]"
+    },
+    {
+      "key": "political-network",
+      "title": "Democracy PAC and the electoral network",
+      "dek": "Super PACs made the electoral side of Soros's influence more centralized and measurable.",
+      "body": "Democracy PAC, formed in 2019, and Democracy PAC II distribute money to Democratic-aligned committees rather than operating only as candidate vehicles. The second committee received $175 million from Soros in the 2022 cycle. FEC data captures these disclosed transfers but not every upstream nonprofit grant or state-level intervention. [[factcheck-democracy-pac, fec-soros, opensecrets-2024]]"
+    },
+    {
+      "key": "ideas",
+      "title": "Fallibility, reflexivity and reform",
+      "dek": "Soros's public arguments connect an investor's uncertainty to a political preference for correctable institutions.",
+      "body": "His theory of reflexivity rejects the premise that observers stand outside the systems they interpret. Politically, that becomes a defense of pluralism, independent information and arrangements that allow mistakes to be recognized and revised. His drug-policy and justice giving applies the same preference for experimentation over punitive certainty. [[osf-open-society-transcript, osf-drug-policy, osf-george]]"
+    },
+    {
+      "key": "succession",
+      "title": "Succession without disappearance",
+      "dek": "Alex Soros now chairs Open Society, but the network still rests on institutions and capital built by his father.",
+      "body": "George Soros selected Alex as successor and publicly confirmed the handoff in 2023. The transition moved board leadership, political relationships and day-to-day strategy to a younger generation without ending George Soros's status as founder or the relevance of his earlier commitments. Reading the network now requires distinguishing personal gifts, family-controlled committees and foundation decisions. [[reuters-succession, osf-who, factcheck-democracy-pac]]"
+    }
+  ]
+}

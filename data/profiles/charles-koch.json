@@ -1,0 +1,802 @@
+{
+  "subject": "koch",
+  "reviewedAt": "2026-10-25",
+  "sourcesVerifiedAt": "2026-10-25",
+  "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Charles%20Koch%20portrait%20(cropped).jpg?width=400",
+  "brief": {
+    "inclusion": "Koch chairman and Stand Together founder who spent decades building a durable network linking private business wealth to scholarship, advocacy, litigation and elections.",
+    "identifiers": { "fec_contributor": "KOCH, CHARLES" },
+    "namesakes": "Matched through Koch Industries/Koch, Inc. employment and Wichita addresses.",
+    "coverage": {
+      "from": "1935-11-01",
+      "through": "2026-10-25",
+      "lags": "Much of the network's activity runs through nonprofits and is not visible in personal FEC records."
+    },
+    "openQuestions": [
+      "Network-wide totals vary with definitions of organizations controlled, funded or merely aligned."
+    ],
+    "review": [
+      { "kind": "evidence", "by": "OA", "at": "2026-10-25" },
+      { "kind": "chronology", "by": "OA", "at": "2026-10-25" },
+      { "kind": "neutrality", "by": "OA", "at": "2026-10-25" },
+      { "kind": "current", "by": "OA", "at": "2026-10-25" }
+    ]
+  },
+  "summary": "Charles Koch has led the family company now called Koch, Inc. since 1967 and remains its chairman and co-chief executive. With his late brother David and a succession of institutional partners, he built a libertarian-influenced network spanning universities, think tanks, litigation, community programs and electoral groups—now organized chiefly through Stand Together and Americans for Prosperity.",
+  "roles": [
+    {
+      "label": "Chairman and co-CEO, Koch, Inc.",
+      "detail": "Led the family company from 1967; became co-CEO in 2023.",
+      "sources": ["koch-bio", "koch-leadership"]
+    },
+    {
+      "label": "Founder, Stand Together",
+      "detail": "Founder of the philanthropic and policy network led operationally by Brian Hooks.",
+      "sources": ["stand-together-about", "koch-bio"]
+    },
+    {
+      "label": "Institution builder",
+      "detail": "Helped establish Cato, Mercatus, Americans for Prosperity and related organizations.",
+      "sources": ["koch-bio", "cato-history", "jane-mayer-2016"]
+    }
+  ],
+  "entities": {
+    "koch": { "match": { "name": "Charles Koch", "type": "donor" } },
+    "koch-inc": {
+      "create": {
+        "name": "Koch, Inc.",
+        "type": "company",
+        "description": "Privately held industrial and investment company formerly known as Koch Industries.",
+        "websiteUrl": "https://www.kochinc.com/"
+      }
+    },
+    "stand-together": {
+      "create": {
+        "name": "Stand Together",
+        "type": "organization",
+        "description": "Philanthropic and policy network founded by Charles Koch.",
+        "websiteUrl": "https://standtogether.org/"
+      }
+    },
+    "afp": {
+      "create": {
+        "name": "Americans for Prosperity",
+        "type": "organization",
+        "description": "Conservative and libertarian policy-advocacy organization founded in 2004."
+      }
+    },
+    "afp-action": {
+      "create": {
+        "name": "Americans for Prosperity Action",
+        "type": "organization",
+        "description": "Federal super PAC associated with Americans for Prosperity."
+      }
+    },
+    "cato": {
+      "create": {
+        "name": "Cato Institute",
+        "type": "organization",
+        "description": "Libertarian public-policy research institute."
+      }
+    },
+    "mercatus": {
+      "create": {
+        "name": "Mercatus Center",
+        "type": "organization",
+        "description": "Market-oriented research center at George Mason University."
+      }
+    },
+    "ihs": {
+      "create": {
+        "name": "Institute for Humane Studies",
+        "type": "organization",
+        "description": "Organization supporting scholars and students interested in classical liberal ideas."
+      }
+    },
+    "david": {
+      "create": {
+        "name": "David Koch",
+        "type": "donor",
+        "description": "Businessman, philanthropist and political donor; Charles Koch's brother, who died in 2019."
+      }
+    },
+    "haley": { "match": { "name": "Nikki Haley", "type": "politician" } },
+    "trump": { "match": { "name": "Donald Trump", "type": "politician" } },
+    "republican-party": { "match": { "name": "Republican Party", "type": "organization" } }
+  },
+  "sources": [
+    {
+      "key": "koch-bio",
+      "title": "Charles Koch — Chairman and Co-CEO",
+      "publisher": "Koch, Inc.",
+      "type": "primary",
+      "url": "https://www.kochinc.com/leadership/charles-koch",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "koch-leadership",
+      "title": "Leadership Team",
+      "publisher": "Koch, Inc.",
+      "type": "primary",
+      "url": "https://www.kochinc.com/leadership",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "stand-together-about",
+      "title": "About Us",
+      "publisher": "Stand Together",
+      "type": "primary",
+      "url": "https://standtogether.org/about-us",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "britannica-koch",
+      "title": "Charles Koch",
+      "publisher": "Encyclopaedia Britannica",
+      "type": "secondary",
+      "url": "https://www.britannica.com/biography/Charles-Koch",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "forbes-koch-2026",
+      "title": "Charles Koch",
+      "publisher": "Forbes",
+      "type": "secondary",
+      "url": "https://www.forbes.com/profile/charles-koch/",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "cato-history",
+      "title": "Cato Institute History",
+      "publisher": "Cato Institute",
+      "type": "primary",
+      "url": "https://www.cato.org/about/history",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "afp-about",
+      "title": "About Americans for Prosperity",
+      "publisher": "Americans for Prosperity",
+      "type": "primary",
+      "url": "https://americansforprosperity.org/about/",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "jane-mayer-2016",
+      "title": "Dark Money",
+      "publisher": "Doubleday",
+      "author": "Jane Mayer",
+      "type": "secondary",
+      "documentId": "ISBN 9780385535595",
+      "publishedAt": "2016",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "newyorker-koch-2010",
+      "title": "Covert Operations",
+      "publisher": "The New Yorker",
+      "author": "Jane Mayer",
+      "type": "article",
+      "url": "https://www.newyorker.com/magazine/2010/08/30/covert-operations",
+      "publishedAt": "2010-08-23",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "politico-rebrand-2019",
+      "title": "Koch network rebrands as Stand Together",
+      "publisher": "Politico",
+      "type": "article",
+      "url": "https://www.politico.com/story/2019/05/20/koch-network-stand-together-1335192",
+      "publishedAt": "2019-05-20",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "koch-book-2020",
+      "title": "Believe in People",
+      "publisher": "St. Martin's Press",
+      "author": "Charles Koch and Brian Hooks",
+      "type": "primary",
+      "documentId": "ISBN 9781250200969",
+      "publishedAt": "2020",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "koch-book-2015",
+      "title": "Good Profit",
+      "publisher": "Crown Business",
+      "author": "Charles Koch",
+      "type": "primary",
+      "documentId": "ISBN 9781101904138",
+      "publishedAt": "2015",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "time-afp-2024",
+      "title": "Where the Koch Network Is Putting Their Money—Anywhere But Trump",
+      "publisher": "Time",
+      "type": "article",
+      "url": "https://time.com/7018266/trump-republicans-koch-network-2024/",
+      "publishedAt": "2024",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "ap-stand-together-2026",
+      "title": "The new 'Be The People' campaign wants to unite hundreds of millions of Americans",
+      "publisher": "Associated Press",
+      "type": "article",
+      "url": "https://apnews.com/article/27b16603cfe7fd0caa5d22f539cea3da",
+      "publishedAt": "2026-01-20",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "fec-koch",
+      "title": "Individual contributions by Koch, Charles",
+      "publisher": "Federal Election Commission",
+      "type": "filing",
+      "url": "https://www.fec.gov/data/receipts/individual-contributions/?contributor_name=KOCH%2C+CHARLES",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "nyt-koch-trump-2020",
+      "title": "Charles Koch Says His Partisanship Was a Mistake",
+      "publisher": "The New York Times",
+      "type": "article",
+      "url": "https://www.nytimes.com/2020/11/13/us/politics/charles-koch-trump.html",
+      "publishedAt": "2020-11-13",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "wp-koch-network-2018",
+      "title": "The Koch network and criminal justice reform",
+      "publisher": "The Washington Post",
+      "type": "article",
+      "url": "https://www.washingtonpost.com/politics/koch-network-criminal-justice-reform/2018/11/24/",
+      "publishedAt": "2018-11",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "cssn-koch-2024",
+      "title": "The Koch Network and Climate Obstruction",
+      "publisher": "Climate Social Science Network",
+      "type": "secondary",
+      "url": "https://cssn.org/wp-content/uploads/2024/11/GibsonBrulle_KochandClimateObstruction_2024.pdf",
+      "publishedAt": "2024-11",
+      "accessedAt": "2026-10-25"
+    }
+  ],
+  "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "November 1, 1935",
+      "detail": "Wichita, Kansas.",
+      "featured": true,
+      "sources": ["koch-bio", "britannica-koch"]
+    },
+    { "key": "sex", "label": "Sex", "value": "Male", "sources": ["koch-bio"] },
+    { "key": "citizenship", "label": "Citizenship", "value": "United States", "sources": ["britannica-koch"] },
+    { "key": "spouse", "label": "Spouse", "value": "Liz Koch", "sources": ["koch-bio"] },
+    {
+      "key": "children",
+      "label": "Children",
+      "value": "2",
+      "detail": "Elizabeth and Chase Koch.",
+      "sources": ["koch-bio"]
+    },
+    {
+      "key": "residence",
+      "label": "Residence",
+      "value": "Wichita, Kansas",
+      "asOf": "2026-10-25",
+      "sources": ["koch-bio"]
+    },
+    {
+      "key": "education",
+      "label": "Education",
+      "value": "Massachusetts Institute of Technology",
+      "detail": "B.S. general engineering (1957); M.S. nuclear engineering (1958); M.S. chemical engineering (1959).",
+      "sources": ["koch-bio"]
+    },
+    {
+      "key": "party",
+      "label": "Political affiliation",
+      "value": "Libertarian-influenced Republican donor network",
+      "sources": ["time-afp-2024", "nyt-koch-trump-2020"]
+    },
+    {
+      "key": "current-roles",
+      "label": "Current roles",
+      "value": "Chairman and co-CEO, Koch, Inc.; founder, Stand Together",
+      "featured": true,
+      "asOf": "2026-10-25",
+      "sources": ["koch-bio", "stand-together-about"]
+    },
+    {
+      "key": "net-worth",
+      "label": "Estimated net worth",
+      "value": "$67.5 billion",
+      "detail": "Forbes estimate based primarily on the family's private Koch ownership.",
+      "featured": true,
+      "asOf": "2026-10-25",
+      "sources": ["forbes-koch-2026"]
+    },
+    {
+      "key": "philanthropy",
+      "label": "Lifetime nonprofit giving",
+      "value": "Nearly $8 billion",
+      "detail": "Stand Together's stated total.",
+      "asOf": "2026-10-25",
+      "sources": ["stand-together-about"]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "koch-inc",
+      "source": "koch",
+      "target": "koch-inc",
+      "relType": "works-for",
+      "role": "Chairman and CEO from 1967; co-CEO since 2023",
+      "from": "1967",
+      "prominence": 3,
+      "sources": ["koch-bio"]
+    },
+    {
+      "key": "david",
+      "source": "koch",
+      "target": "david",
+      "relType": "family-of",
+      "role": "Brothers and business/political partners until David's death",
+      "until": "2019",
+      "prominence": 3,
+      "sources": ["britannica-koch", "jane-mayer-2016"]
+    },
+    {
+      "key": "stand",
+      "source": "koch",
+      "target": "stand-together",
+      "relType": "founded",
+      "role": "Founder and principal philanthropic patron",
+      "from": "2003",
+      "prominence": 3,
+      "sources": ["stand-together-about", "politico-rebrand-2019"]
+    },
+    {
+      "key": "afp",
+      "source": "koch",
+      "target": "afp",
+      "relType": "co-founded",
+      "role": "Network founder and funder",
+      "from": "2004",
+      "prominence": 3,
+      "sources": ["afp-about", "jane-mayer-2016"]
+    },
+    {
+      "key": "afp-action",
+      "source": "koch",
+      "target": "afp-action",
+      "relType": "donated-to",
+      "role": "Electoral arm of network he founded",
+      "from": "2018",
+      "prominence": 2,
+      "sources": ["time-afp-2024"]
+    },
+    {
+      "key": "cato",
+      "source": "koch",
+      "target": "cato",
+      "relType": "co-founded",
+      "role": "Early co-founder and funder",
+      "from": "1977",
+      "prominence": 2,
+      "sources": ["cato-history", "koch-bio"]
+    },
+    {
+      "key": "mercatus",
+      "source": "koch",
+      "target": "mercatus",
+      "relType": "co-founded",
+      "role": "Helped build and finance market-oriented academic research",
+      "from": "1980",
+      "prominence": 2,
+      "sources": ["koch-bio", "cssn-koch-2024"]
+    },
+    {
+      "key": "ihs",
+      "source": "koch",
+      "target": "ihs",
+      "relType": "board-member-of",
+      "role": "Longtime leader and chairman through 2019",
+      "from": "1973",
+      "until": "2019",
+      "prominence": 2,
+      "sources": ["cssn-koch-2024"]
+    },
+    {
+      "key": "party",
+      "source": "koch",
+      "target": "republican-party",
+      "relType": "donated-to",
+      "role": "Network funds Republican candidates selectively rather than the party's presidential nominee automatically",
+      "prominence": 2,
+      "sources": ["time-afp-2024", "fec-koch"]
+    },
+    {
+      "key": "haley",
+      "source": "koch",
+      "target": "haley",
+      "relType": "endorsed",
+      "role": "AFP Action backed her in the 2024 Republican primary before ending presidential spending",
+      "from": "2023",
+      "until": "2024",
+      "prominence": 2,
+      "sources": ["time-afp-2024"]
+    },
+    {
+      "key": "trump",
+      "source": "koch",
+      "target": "trump",
+      "relType": "opposed",
+      "role": "Network declined to support his 2016 and 2020 presidential campaigns and sought an alternative in 2024",
+      "from": "2016",
+      "until": "2024",
+      "prominence": 2,
+      "sources": ["time-afp-2024", "nyt-koch-trump-2020"]
+    }
+  ],
+  "events": [
+    {
+      "key": "birth",
+      "date": "1935-11-01",
+      "title": "Born in Wichita",
+      "summary": "Charles de Ganahl Koch was born into the family of industrialist Fred Koch.",
+      "category": "personal",
+      "significance": 1,
+      "chapter": "formation",
+      "sources": ["koch-bio", "britannica-koch"]
+    },
+    {
+      "key": "mit",
+      "date": "1959",
+      "title": "Completes three MIT engineering degrees",
+      "summary": "Koch earned bachelor's and master's degrees in engineering disciplines.",
+      "category": "career",
+      "significance": 1,
+      "chapter": "formation",
+      "sources": ["koch-bio"]
+    },
+    {
+      "key": "leadership",
+      "date": "1967",
+      "title": "Takes leadership of family company",
+      "summary": "He became chairman and CEO of the business later called Koch Industries and Koch, Inc.",
+      "category": "career",
+      "significance": 3,
+      "chapter": "company",
+      "participants": [["koch-inc", "company"]],
+      "sources": ["koch-bio"]
+    },
+    {
+      "key": "ihs",
+      "date": "1973",
+      "title": "Begins long Institute for Humane Studies leadership",
+      "summary": "Koch used the institute to cultivate scholars and students in classical liberal traditions.",
+      "category": "ideas",
+      "significance": 2,
+      "chapter": "ideas",
+      "participants": [["ihs", "institution"]],
+      "sources": ["cssn-koch-2024"]
+    },
+    {
+      "key": "cato",
+      "date": "1977",
+      "title": "Helps found the Cato Institute",
+      "summary": "Cato became a major libertarian policy institution in Washington.",
+      "category": "ideas",
+      "significance": 3,
+      "chapter": "institutions",
+      "participants": [["cato", "institution"]],
+      "sources": ["cato-history", "koch-bio"]
+    },
+    {
+      "key": "mercatus",
+      "date": "1980",
+      "title": "Helps build Mercatus Center",
+      "summary": "Funding connected market-oriented scholarship at George Mason University to a wider intellectual network.",
+      "category": "ideas",
+      "significance": 2,
+      "chapter": "institutions",
+      "participants": [["mercatus", "institution"]],
+      "sources": ["koch-bio", "cssn-koch-2024"]
+    },
+    {
+      "key": "seminars",
+      "date": "2003",
+      "title": "Begins formal donor seminars",
+      "summary": "Recurring meetings joined business donors to nonprofit and policy organizations, forming the network later branded Stand Together.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "network",
+      "sources": ["stand-together-about", "jane-mayer-2016"]
+    },
+    {
+      "key": "afp",
+      "date": "2004",
+      "title": "Helps establish Americans for Prosperity",
+      "summary": "AFP became the network's principal grassroots policy and electoral organization.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "network",
+      "participants": [["afp", "organization"]],
+      "sources": ["afp-about", "jane-mayer-2016"]
+    },
+    {
+      "key": "obama-era",
+      "date": "2009",
+      "date_end": "2016",
+      "title": "Network expands during Obama presidency",
+      "summary": "AFP and allied groups mobilized against taxes, health-care legislation and environmental regulation while supporting Republican candidates.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "elections",
+      "sources": ["newyorker-koch-2010", "jane-mayer-2016"]
+    },
+    {
+      "key": "good-profit",
+      "date": "2015",
+      "title": "Publishes Good Profit",
+      "summary": "Koch presented Market-Based Management as a system linking company success to value creation.",
+      "category": "ideas",
+      "significance": 2,
+      "chapter": "ideas",
+      "sources": ["koch-book-2015"]
+    },
+    {
+      "key": "trump-neutral",
+      "date": "2016",
+      "title": "Network withholds presidential support from Trump",
+      "summary": "Koch-aligned organizations continued congressional work but did not back Trump's presidential campaign.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "elections",
+      "participants": [["trump", "candidate"]],
+      "sources": ["time-afp-2024"]
+    },
+    {
+      "key": "criminal-justice",
+      "date": "2018",
+      "title": "Works across party lines on criminal justice",
+      "summary": "Stand Together organizations supported sentencing reform culminating in the First Step Act.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "coalitions",
+      "sources": ["wp-koch-network-2018", "koch-book-2020"]
+    },
+    {
+      "key": "rebrand",
+      "date": "2019-05-20",
+      "title": "Network adopts Stand Together name",
+      "summary": "The rebrand emphasized social entrepreneurship and coalition work beyond elections.",
+      "category": "career",
+      "significance": 2,
+      "chapter": "network",
+      "participants": [["stand-together", "network"]],
+      "sources": ["politico-rebrand-2019"]
+    },
+    {
+      "key": "david-death",
+      "date": "2019-08-23",
+      "title": "David Koch dies",
+      "summary": "Charles continued as the principal family leader of the company and political-philanthropic network.",
+      "category": "personal",
+      "significance": 2,
+      "chapter": "network",
+      "participants": [["david", "brother"]],
+      "sources": ["britannica-koch"]
+    },
+    {
+      "key": "believe",
+      "date": "2020",
+      "title": "Publishes Believe in People",
+      "summary": "Koch and Brian Hooks argued for bottom-up social change and acknowledged harms from excessive partisanship.",
+      "category": "ideas",
+      "significance": 2,
+      "chapter": "coalitions",
+      "sources": ["koch-book-2020", "nyt-koch-trump-2020"]
+    },
+    {
+      "key": "co-ceo",
+      "date": "2023",
+      "title": "Moves to co-CEO structure",
+      "summary": "Koch remained chairman while sharing chief-executive responsibility.",
+      "category": "career",
+      "significance": 1,
+      "chapter": "company",
+      "participants": [["koch-inc", "company"]],
+      "sources": ["koch-bio", "koch-leadership"]
+    },
+    {
+      "key": "haley",
+      "date": "2023-11",
+      "title": "AFP Action endorses Nikki Haley",
+      "summary": "The network sought a Republican presidential alternative to Trump, then ended primary spending after Haley's losses.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "elections",
+      "participants": [
+        ["haley", "candidate"],
+        ["afp-action", "endorser"]
+      ],
+      "sources": ["time-afp-2024"]
+    },
+    {
+      "key": "be-people",
+      "date": "2026-01-20",
+      "title": "Stand Together launches Be The People",
+      "summary": "The civic campaign framed the U.S. semiquincentennial as an organizing opportunity across ideological lines.",
+      "category": "politics",
+      "significance": 1,
+      "chapter": "present",
+      "participants": [["stand-together", "organizer"]],
+      "sources": ["ap-stand-together-2026"]
+    }
+  ],
+  "statements": [
+    {
+      "key": "mistake",
+      "date": "2020-11",
+      "datePrecision": "month",
+      "venue": "New York Times interview",
+      "issue": "Partisanship",
+      "verbatim": false,
+      "summary": "Koch said he regretted the degree to which his network's work had become identified with partisan division.",
+      "source": "nyt-koch-trump-2020"
+    },
+    {
+      "key": "people",
+      "date": "2020",
+      "datePrecision": "year",
+      "venue": "Believe in People",
+      "issue": "Social change",
+      "verbatim": false,
+      "summary": "Koch argued that durable change comes from enabling people closest to problems rather than imposing top-down solutions.",
+      "source": "koch-book-2020"
+    },
+    {
+      "key": "good-profit",
+      "date": "2015",
+      "datePrecision": "year",
+      "venue": "Good Profit",
+      "issue": "Business",
+      "verbatim": false,
+      "summary": "He defined good profit as the result of creating value for customers and society rather than seeking privilege.",
+      "source": "koch-book-2015"
+    },
+    {
+      "key": "pbm",
+      "date": "2026",
+      "datePrecision": "year",
+      "venue": "Koch institutional biography",
+      "issue": "Management",
+      "verbatim": false,
+      "summary": "Koch describes Principle Based Management as a framework for long-term value creation and meaningful contribution.",
+      "source": "koch-bio"
+    },
+    {
+      "key": "potential",
+      "date": "2026",
+      "datePrecision": "year",
+      "venue": "Stand Together",
+      "issue": "Human potential",
+      "verbatim": false,
+      "summary": "His network states that every person should have the opportunity to realize their potential.",
+      "source": "stand-together-about"
+    }
+  ],
+  "finance": {
+    "fec": {
+      "contributorName": "KOCH, CHARLES",
+      "namePattern": "^KOCH, CHARLES( G\\.?| DE GANAHL| MR\\.?)?$",
+      "employerPattern": "KOCH|KOCH INDUSTRIES|SELF[- ]EMPLOYED",
+      "cities": ["WICHITA"],
+      "source": "fec-koch"
+    },
+    "coverage": "Personal itemized federal contributions matched by exact name plus Koch employment or Wichita. This substantially understates Koch's influence because it excludes corporate PAC activity, nonprofit grants, donor-network funds, state giving and spending by Americans for Prosperity Action."
+  },
+  "ideas": {
+    "traditions": [
+      {
+        "label": "Libertarianism",
+        "atlasId": "libertarianism",
+        "basis": "Books, institution building and policy advocacy centered on limited government and free exchange.",
+        "context": "Later coalition work includes criminal justice, immigration and community programs beyond conventional Republican politics.",
+        "sources": ["koch-book-2015", "koch-book-2020"]
+      },
+      {
+        "label": "Classical liberalism",
+        "atlasId": "classical-liberalism",
+        "basis": "Long support for Cato, IHS and Mercatus.",
+        "context": "Koch's management philosophy applies these principles inside a large private company.",
+        "sources": ["cato-history", "koch-bio"]
+      }
+    ],
+    "influences": [
+      {
+        "name": "F. A. Hayek",
+        "note": "Koch's emphasis on dispersed knowledge and spontaneous order follows Hayekian classical liberalism.",
+        "sources": ["koch-book-2015"]
+      },
+      {
+        "name": "Ludwig von Mises",
+        "note": "Austrian economics influenced Koch's market and entrepreneurship framework.",
+        "sources": ["koch-book-2015"]
+      }
+    ],
+    "works": [
+      {
+        "title": "Good Profit",
+        "year": "2015",
+        "kind": "Book",
+        "detail": "Statement of Market-Based Management.",
+        "source": "koch-book-2015"
+      },
+      {
+        "title": "Believe in People",
+        "year": "2020",
+        "kind": "Book",
+        "detail": "Co-authored case for bottom-up empowerment and coalition building.",
+        "source": "koch-book-2020"
+      }
+    ],
+    "featuredQuotes": ["mistake", "people", "good-profit"]
+  },
+  "chapters": [
+    {
+      "key": "formation",
+      "title": "Engineer and heir",
+      "dek": "Technical training before corporate control",
+      "body": "Charles Koch was born in Wichita in 1935, one of Fred Koch's sons. He earned three engineering degrees from MIT before returning to the family enterprise [[koch-bio, britannica-koch]].\n\nThe inheritance gave him a company; it did not predetermine its later scale. His public philosophy fused engineering, Austrian economics and organizational incentives [[koch-book-2015]]."
+    },
+    {
+      "key": "company",
+      "title": "Transforming Koch",
+      "dek": "A regional business becomes a private conglomerate",
+      "body": "Koch became chairman and CEO in 1967. The company expanded from oil gathering into refining, chemicals, manufacturing, consumer products, technology and investment [[koch-bio]].\n\nIn 2023 he became co-CEO while remaining chairman. Because Koch is private, Forbes's wealth estimate depends largely on modeled family ownership rather than a public market price [[koch-leadership, forbes-koch-2026]]."
+    },
+    {
+      "key": "ideas",
+      "title": "A management philosophy",
+      "dek": "Markets applied inside the firm",
+      "body": "Koch developed Market-Based Management, now called Principle Based Management, to translate property rights, incentives and dispersed knowledge into company practice [[koch-book-2015, koch-bio]].\n\nHis books present profit as legitimate when earned by creating value, while critics argue that Koch companies also benefited from regulatory and political power. The profile distinguishes his stated theory from outcomes attributed by critics [[koch-book-2015, jane-mayer-2016]]."
+    },
+    {
+      "key": "institutions",
+      "title": "Building an intellectual infrastructure",
+      "dek": "Ideas before elections",
+      "body": "Koch helped build IHS, Cato and Mercatus, financing scholarship, fellowships and policy research over decades [[cato-history, koch-bio, cssn-koch-2024]].\n\nSupport does not make every scholar a Koch agent. The institutional strategy matters because it creates personnel and arguments that persist beyond any candidate or election [[jane-mayer-2016]]."
+    },
+    {
+      "key": "network",
+      "title": "From seminars to Stand Together",
+      "dek": "A coordinated donor community",
+      "body": "Beginning in 2003, Koch convened donors around shared investments in policy and civil society. Americans for Prosperity became the best-known grassroots arm [[afp-about, jane-mayer-2016]].\n\nThe network adopted the Stand Together name in 2019 and broadened its public emphasis to education, poverty, criminal justice and community problem-solving. Brian Hooks runs the network; Charles Koch remains its founder and central patron [[politico-rebrand-2019, stand-together-about]]."
+    },
+    {
+      "key": "elections",
+      "title": "Selective Republican power",
+      "dek": "A network larger than a personal contribution ledger",
+      "body": "Koch-aligned groups helped elect Republicans and oppose Obama-era policy, but the network withheld presidential support from Trump in 2016 and 2020 [[newyorker-koch-2010, time-afp-2024]].\n\nAFP Action endorsed Nikki Haley in 2023, then stopped presidential spending as Trump consolidated the nomination. The episode shows both the network's scale and the limits of donor influence over voters [[time-afp-2024]]."
+    },
+    {
+      "key": "coalitions",
+      "title": "Beyond partisan alignment",
+      "dek": "Criminal justice and a public course correction",
+      "body": "Koch organizations worked with left-leaning partners on criminal-justice reform, including the First Step Act. These coalitions reflected libertarian limits on state coercion as well as a strategic broadening [[wp-koch-network-2018, koch-book-2020]].\n\nIn 2020 Koch said excessive partisanship had been a mistake. The shift changed rhetoric and some partnerships, but Stand Together remained a major force in Republican electoral politics [[nyt-koch-trump-2020, time-afp-2024]]."
+    },
+    {
+      "key": "present",
+      "title": "Present influence",
+      "dek": "A mature network with multiple channels",
+      "body": "At ninety, Koch remains chairman and co-CEO of the company and founder of a network that claims nearly $8 billion in lifetime nonprofit giving [[koch-bio, stand-together-about]].\n\nHis personal FEC total is a poor proxy for influence. Grants, advocacy, litigation, scholarship and AFP Action spending operate through organizations, while the network's 2026 civic campaign shows continued investment outside elections [[fec-koch, ap-stand-together-2026]]."
+    }
+  ]
+}

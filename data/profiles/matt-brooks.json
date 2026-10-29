@@ -1,0 +1,1891 @@
+{
+  "subject": "brooks",
+  "reviewedAt": "2026-10-24",
+  "sourcesVerifiedAt": "2026-10-24",
+  "brief": {
+    "inclusion": "Chief executive of the Republican Jewish Coalition since 1990, who directs its candidate forums, endorsements, PAC and super PAC money and Jewish-voter turnout campaigns, and in 2026 used that money to help defeat a sitting Republican congressman.",
+    "identifiers": {
+      "fec_contributor": "BROOKS, MATT / BROOKS, MATTHEW",
+      "rjc_bio": "https://www.rjchq.org/matthew_brooks"
+    },
+    "namesakes": "FEC records contain several Matthew Brooks contributors, including an Eli Lilly employee in Wisconsin and Indiana and others in Chicago and California. The subject files as an RJC or National Jewish Coalition employee from Washington, Falls Church or McLean, Virginia. His Brownstein Hyatt Farber Schreck advisory role (from April 2026) is the same person, not a namesake.",
+    "coverage": {
+      "from": "1980",
+      "through": "2026-10-24",
+      "lags": "2026 general-election spending by RJC committees is still being reported; the RJC Victory Fund's post-general filings will change the cycle totals."
+    },
+    "openQuestions": [
+      "Birth date and place are not in any source located; the 1987 Brandeis class year is the only dated formation fact.",
+      "When the title changed from executive director to chief executive officer: 2022 sources still say executive director, July 2024 sources say CEO.",
+      "Race and ethnicity are not documented by a source; left blank rather than inferred.",
+      "The Dispatch's July 2025 history of the RJC (David Drucker) was read only through a summary; confirm the Huckabee-recommendation and summit-size details against the full text.",
+      "Whether Sheldon Adelson personally funded the 2012 'buyer's remorse' campaign was reported differently in July and September 2012."
+    ],
+    "review": []
+  },
+  "summary": "Matt Brooks has run the Republican Jewish Coalition since 1990, turning a small Washington coalition into one of the Republican Party's most active donor and turnout organizations. Through its candidate forums, its PAC and the RJC Victory Fund super PAC he has directed money toward Republicans he considers reliably pro-Israel and against those he does not, including the $5 million effort that helped defeat Rep. Thomas Massie in Kentucky's May 2026 primary. A defender of Donald Trump's record on Israel since 2016, he has also publicly broken with Republicans and conservative institutions over antisemitism, most sharply with the Heritage Foundation in 2025.",
+  "roles": [
+    {
+      "label": "Republican Jewish Coalition chief executive",
+      "detail": "Executive director from 1990, later chief executive officer; principal spokesman",
+      "sources": [
+        "rjc-brooks-bio",
+        "rjc-about"
+      ]
+    },
+    {
+      "label": "Jewish Policy Center chief executive",
+      "detail": "Chief executive of the RJC's sister think tank",
+      "sources": [
+        "rjc-brooks-bio",
+        "rjc-about"
+      ]
+    },
+    {
+      "label": "Super PAC and PAC strategist",
+      "detail": "Directs RJC PAC endorsements and RJC Victory Fund spending, including $5 million in the 2026 Kentucky 4th District primary",
+      "sources": [
+        "rjc-gallrein-2026",
+        "ji-massie-gala-2026",
+        "fec-rjc-victory-fund"
+      ]
+    },
+    {
+      "label": "Former campaign operative",
+      "detail": "Jack Kemp's 1988 Massachusetts campaign manager; national field director of Bush-Quayle's Victory '88 Jewish Campaign Committee",
+      "sources": [
+        "rjc-brooks-bio",
+        "toi-brooks-2019"
+      ]
+    }
+  ],
+  "finance": {
+    "fec": {
+      "contributorName": "BROOKS, MATT",
+      "namePattern": "^BROOKS, MATT(HEW)?( MR\\.?)?\\s*$",
+      "employerPattern": "\\bRJC\\b|REPUBLICAN JEWISH|NATIONAL JEWISH COALITION|JEWISH POLICY CENTER",
+      "cities": [],
+      "source": "fec-brooks"
+    },
+    "coverage": "Brooks's own itemized federal contributions, FEC Schedule A, 1993 to the latest 2026 filings. A row counts only when the name matches and the employer is the RJC (or its earlier name) or the Jewish Policy Center; the name is too common for city-only matching. The RJC PAC's and RJC Victory Fund's spending is organizational money he directs, not his personal giving, and is not in this total. Memo lines are excluded."
+  },
+  "entities": {
+    "brooks": {
+      "create": {
+        "name": "Matt Brooks",
+        "type": "politician",
+        "description": "Chief executive of the Republican Jewish Coalition and the Jewish Policy Center; has led the RJC since 1990.",
+        "websiteUrl": "https://www.rjchq.org/matthew_brooks"
+      }
+    },
+    "rjc": {
+      "match": {
+        "name": "Republican Jewish Coalition",
+        "type": "organization"
+      }
+    },
+    "rjc-pac": {
+      "match": {
+        "identifier": [
+          "fec_committee",
+          "C00345132"
+        ]
+      }
+    },
+    "rjc-victory-fund": {
+      "match": {
+        "identifier": [
+          "fec_committee",
+          "C00528554"
+        ]
+      }
+    },
+    "jpc": {
+      "create": {
+        "name": "Jewish Policy Center",
+        "type": "organization",
+        "description": "Think tank and sister organization of the Republican Jewish Coalition that examines public policy from a Jewish perspective.",
+        "websiteUrl": "https://www.jewishpolicycenter.org/"
+      }
+    },
+    "kemp": {
+      "match": {
+        "name": "Jack Kemp",
+        "type": "politician"
+      }
+    },
+    "trump": {
+      "match": {
+        "name": "Donald Trump",
+        "type": "politician"
+      }
+    },
+    "sheldon-adelson": {
+      "match": {
+        "name": "Sheldon Adelson",
+        "type": "donor"
+      }
+    },
+    "miriam-adelson": {
+      "match": {
+        "name": "Miriam Adelson",
+        "type": "donor"
+      }
+    },
+    "coleman": {
+      "match": {
+        "identifier": [
+          "bioguide",
+          "C001057"
+        ]
+      }
+    },
+    "massie": {
+      "match": {
+        "identifier": [
+          "bioguide",
+          "M001184"
+        ]
+      }
+    },
+    "gallrein": {
+      "match": {
+        "identifier": [
+          "fec_candidate",
+          "H6KY04171"
+        ]
+      }
+    },
+    "fitzpatrick": {
+      "match": {
+        "identifier": [
+          "bioguide",
+          "F000466"
+        ]
+      }
+    },
+    "ron-paul": {
+      "match": {
+        "identifier": [
+          "bioguide",
+          "P000583"
+        ]
+      }
+    },
+    "greene": {
+      "match": {
+        "identifier": [
+          "bioguide",
+          "G000596"
+        ]
+      }
+    },
+    "heritage": {
+      "match": {
+        "name": "The Heritage Foundation",
+        "type": "organization"
+      }
+    },
+    "carlson": {
+      "match": {
+        "name": "Tucker Carlson",
+        "type": "pundit"
+      }
+    },
+    "fuentes": {
+      "match": {
+        "name": "Nick Fuentes",
+        "type": "pundit"
+      }
+    },
+    "ben-ami": {
+      "create": {
+        "name": "Jeremy Ben-Ami",
+        "type": "politician",
+        "description": "Founder and president of J Street, the liberal pro-Israel advocacy organization."
+      }
+    },
+    "brandeis": {
+      "create": {
+        "name": "Brandeis University",
+        "type": "organization",
+        "description": "Private research university in Waltham, Massachusetts.",
+        "websiteUrl": "https://www.brandeis.edu/"
+      }
+    },
+    "republican-party": {
+      "match": {
+        "name": "Republican Party",
+        "type": "organization"
+      }
+    },
+    "brownstein": {
+      "create": {
+        "name": "Brownstein Hyatt Farber Schreck",
+        "type": "company",
+        "description": "Law and lobbying firm headquartered in Denver with a large Washington government-relations practice.",
+        "websiteUrl": "https://www.bhfs.com/"
+      }
+    }
+  },
+  "sources": [
+    {
+      "key": "rjc-brooks-bio",
+      "title": "Matthew Brooks",
+      "publisher": "Republican Jewish Coalition",
+      "type": "primary",
+      "url": "https://www.rjchq.org/matthew_brooks",
+      "notes": "Institutional biography; used for roles, dates and degrees, not for characterizations."
+    },
+    {
+      "key": "rjc-about",
+      "title": "About the RJC",
+      "publisher": "Republican Jewish Coalition",
+      "type": "primary",
+      "url": "https://www.rjchq.org/about",
+      "notes": "Lists founding year, leadership, the Jewish Policy Center and the RJC PAC."
+    },
+    {
+      "key": "brandeis-brooks-2022",
+      "title": "Leading the Charge for Republican Jews",
+      "publisher": "Brandeis University, The Jewish Experience",
+      "author": "Joseph Dorman",
+      "publishedAt": "2022-10-26",
+      "type": "article",
+      "url": "https://www.brandeis.edu/jewish-experience/alumni-friends/2022/october/jews-republicans-brooks.html",
+      "notes": "Alumni-publication interview; source of the Philadelphia upbringing, class year and several direct quotations."
+    },
+    {
+      "key": "toi-brooks-2019",
+      "title": "Meet Matt Brooks, the man pitching Trump to American Jews",
+      "publisher": "The Times of Israel",
+      "author": "Eric Cortellessa",
+      "publishedAt": "2019-07-12",
+      "type": "article",
+      "url": "https://www.rjchq.org/times_of_israel_meet_matt_brooks_the_man_pitching_trump_to_american_jews",
+      "notes": "Read through the RJC's repost of the Times of Israel article; the repost is partial."
+    },
+    {
+      "key": "jvl-rjc",
+      "title": "Republican Jewish Coalition",
+      "publisher": "Jewish Virtual Library",
+      "type": "secondary",
+      "url": "https://www.jewishvirtuallibrary.org/republican-jewish-coalition",
+      "notes": "Reference entry; used for the former National Jewish Coalition name and the 2005 anniversary honorees."
+    },
+    {
+      "key": "reason-ron-paul-2011",
+      "title": "Republican Jewish Coalition Bars Ron Paul From Candidates Forum",
+      "publisher": "Reason",
+      "author": "Matt Welch",
+      "publishedAt": "2011-12-01",
+      "type": "article",
+      "url": "https://reason.com/2011/12/01/republican-jewish-coalition-bars-ron-pau/"
+    },
+    {
+      "key": "jta-ad-campaign-2012",
+      "title": "Republican Jewish Coalition begins $5 million ad campaign",
+      "publisher": "J. The Jewish News of Northern California (JTA)",
+      "publishedAt": "2012-09-21",
+      "type": "article",
+      "url": "https://jweekly.com/2012/09/21/republican-jewish-coalition-begins-5-million-ad-campaign/",
+      "notes": "JTA wire story republished by J."
+    },
+    {
+      "key": "jta-adelson-2015",
+      "title": "At Jewish Republican confab, Sheldon Adelson looms large",
+      "publisher": "JTA",
+      "author": "Ron Kampeas",
+      "publishedAt": "2015-04-28",
+      "type": "article",
+      "url": "https://www.jta.org/2015/04/28/politics/at-jewish-republican-confab-sheldon-adelson-looms-large"
+    },
+    {
+      "key": "jta-trump-forum-2015",
+      "title": "Trump to GOP Jews: You're not going to support me because I don't want your money",
+      "publisher": "St. Louis Jewish Light (JTA)",
+      "author": "Ben Harris",
+      "publishedAt": "2015-12-03",
+      "type": "article",
+      "url": "https://stljewishlight.org/world-news/trump-to-gop-jews-youre-not-going-to-support-me-because-i-dont-want-your-money",
+      "notes": "JTA wire story republished by the St. Louis Jewish Light."
+    },
+    {
+      "key": "ji-rjc-trump-2016",
+      "title": "The RJC Congratulates Trump, Slams Clinton's Israel Record",
+      "publisher": "Jewish Insider",
+      "publishedAt": "2016-05-04",
+      "type": "article",
+      "url": "https://jewishinsider.com/2016/05/the-rjc-congratulates-trump-slams-clintons-israel-record/"
+    },
+    {
+      "key": "jta-disloyalty-2019",
+      "title": "For this prominent Jewish Republican, Trump's 'disloyalty' jab is a bridge too far",
+      "publisher": "JTA",
+      "author": "Ron Kampeas",
+      "publishedAt": "2019-08-23",
+      "type": "article",
+      "url": "https://www.jta.org/2019/08/23/politics/for-this-prominent-jewish-republican-trumps-disloyalty-jab-is-a-bridge-too-far"
+    },
+    {
+      "key": "jta-swing-2020",
+      "title": "How and where the Democrats and Republicans are trying to woo Jewish swing voters",
+      "publisher": "JTA",
+      "author": "Ron Kampeas",
+      "publishedAt": "2020-07-02",
+      "type": "article",
+      "url": "https://www.jta.org/2020/07/02/politics/how-and-where-the-democrats-and-republicans-are-trying-to-woo-jewish-swing-voters"
+    },
+    {
+      "key": "rjc-adelson-2021",
+      "title": "RJC Statement on the Passing of Sheldon Adelson",
+      "publisher": "Republican Jewish Coalition",
+      "publishedAt": "2021-01-12",
+      "type": "official_statement",
+      "url": "https://www.rjchq.org/rjc_statement_on_the_passing_of_sheldon_adelson",
+      "notes": "Signed by Norm Coleman and Matt Brooks; identifies Adelson as a board member."
+    },
+    {
+      "key": "algemeiner-fuentes-2022",
+      "title": "Republican Jewish Coalition Condemns Trump Meeting with 'Virulent' Antisemites Kanye West and Nick Fuentes",
+      "publisher": "The Algemeiner",
+      "author": "Andrew Bernard",
+      "publishedAt": "2022-11-25",
+      "type": "article",
+      "url": "https://www.algemeiner.com/2022/11/25/republican-jewish-coalition-condemns-trump-meeting-with-virulent-antisemites-kanye-west-and-nick-fuentes/",
+      "notes": "Attributes the condemnation to the organization; Brooks's own statement is reported elsewhere."
+    },
+    {
+      "key": "cbs-fuentes-2022",
+      "title": "Trump dined with Kanye West and white nationalist Nick Fuentes, adviser says",
+      "publisher": "CBS News",
+      "publishedAt": "2022-11-25",
+      "type": "article",
+      "url": "https://www.cbsnews.com/news/donald-trump-dined-with-kanye-west-and-white-nationalist-nick-fuentes-adviser-says"
+    },
+    {
+      "key": "ji-summit-2023",
+      "title": "Trump receives enthusiastic reception at RJC's annual summit",
+      "publisher": "Jewish Insider",
+      "publishedAt": "2023-10-28",
+      "type": "article",
+      "url": "https://jewishinsider.com/2023/10/donald-trump-republican-jewish-coalition-las-vegas-2024-primary/"
+    },
+    {
+      "key": "toi-rnc-2024",
+      "title": "Republican Jewish Coalition CEO gives first-ever GOP convention speech",
+      "publisher": "The Times of Israel (JTA)",
+      "author": "Ron Kampeas",
+      "publishedAt": "2024-07-17",
+      "type": "article",
+      "url": "https://www.timesofisrael.com/republican-jewish-coalition-ceo-gives-first-ever-gop-convention-speech/"
+    },
+    {
+      "key": "jns-rnc-2024",
+      "title": "RJC head: Trump giving Israel 'blank check' to finish Hamas",
+      "publisher": "JNS",
+      "author": "Mike Wagenheim",
+      "publishedAt": "2024-07-17",
+      "type": "article",
+      "url": "https://www.jns.org/u.s.-news/rjc-head-trump-giving-israel-blank-check-to-finish-hamas"
+    },
+    {
+      "key": "ji-ad-buy-2024",
+      "title": "RJC launches $10 million ad buy targeting swing-state Jews",
+      "publisher": "Jewish Insider",
+      "author": "Marc Rod",
+      "publishedAt": "2024-09-10",
+      "type": "article",
+      "url": "https://jewishinsider.com/2024/09/republican-jewish-coalition-ad-buy-swing-state-jewish-harris-trump/"
+    },
+    {
+      "key": "forward-billionaires-2024",
+      "title": "As spending by Jewish PACs soars, two billionaires give GOP group major fundraising advantage",
+      "publisher": "The Forward",
+      "author": "Arno Rosenfeld",
+      "publishedAt": "2024-10-31",
+      "type": "article",
+      "url": "https://www.rjchq.org/forward_as_spending_by_jewish_pacs_soar_two_billionaires_give_gop_group_major_fundraising_advantage",
+      "notes": "Read through the RJC's repost of the Forward article."
+    },
+    {
+      "key": "dispatch-rjc-2025",
+      "title": "The Republican Jewish Coalition: David Becomes Goliath",
+      "publisher": "The Dispatch",
+      "author": "David M. Drucker",
+      "publishedAt": "2025-07-23",
+      "type": "article",
+      "url": "https://thedispatch.com/article/republican-jewish-coalition-history-success/",
+      "notes": "Paywalled; details used here were read through the Religion Watch summary."
+    },
+    {
+      "key": "religionwatch-rjc-2025",
+      "title": "The \"secret sauce\" for the Republican Jewish vote and fundraising",
+      "publisher": "Religion Watch, Baylor University",
+      "publishedAt": "2025-08-13",
+      "type": "secondary",
+      "url": "https://religionwatch.web.baylor.edu/news/story/2025/secret-sauce-republican-jewish-vote-and-fundraising",
+      "repeats": "dispatch-rjc-2025",
+      "notes": "Summary of the Dispatch article; not independent confirmation."
+    },
+    {
+      "key": "ji-heritage-2025",
+      "title": "RJC, conservatives condemn Heritage's defense of Carlson, Fuentes",
+      "publisher": "Jewish Insider",
+      "author": "Marc Rod",
+      "publishedAt": "2025-10-30",
+      "type": "article",
+      "url": "https://jewishinsider.com/2025/10/heritage-foundation-tucker-carlson-nick-fuentes-jewish-conservatives-condemn/"
+    },
+    {
+      "key": "algemeiner-brooks-2026",
+      "title": "As Political Lines Blur, Republican Jewish Coalition's Matt Brooks Warns of a Deeper Shift Facing American Jews",
+      "publisher": "The Algemeiner",
+      "author": "David Taragin",
+      "publishedAt": "2026-04-29",
+      "type": "article",
+      "url": "https://www.algemeiner.com/2026/04/29/political-lines-blur-republican-jewish-coalitions-matt-brooks-warns-deeper-shift-facing-american-jews/"
+    },
+    {
+      "key": "rjc-gallrein-2026",
+      "title": "RJC Congratulates Captain Ed Gallrein on Primary Victory over Thomas Massie",
+      "publisher": "Republican Jewish Coalition",
+      "publishedAt": "2026-05-19",
+      "type": "official_statement",
+      "url": "https://www.rjchq.org/rjc_congratulates_captain_ed_gallrein_on_primary_victory_over_thomas_massie",
+      "notes": "The $5 million figure is the RJC's own account of its spending."
+    },
+    {
+      "key": "ji-massie-gala-2026",
+      "title": "RJC celebrates Massie defeat at gala commemorating America's 250th anniversary",
+      "publisher": "Jewish Insider",
+      "author": "Haley Cohen",
+      "publishedAt": "2026-06-01",
+      "type": "article",
+      "url": "https://jewishinsider.com/2026/06/republican-jewish-coalition-gala-matt-brooks-thomas-massie/"
+    },
+    {
+      "key": "ji-fitzpatrick-2026",
+      "title": "RJC drops $400,000 to boost Brian Fitzpatrick in Pennsylvania swing district",
+      "publisher": "Jewish Insider",
+      "author": "Marc Rod",
+      "publishedAt": "2026-10-17",
+      "type": "article",
+      "url": "https://jewishinsider.com/2026/10/rjc-drops-400000-to-boost-brian-fitzpatrick-in-pennsylvania-swing-district/"
+    },
+    {
+      "key": "fec-rjc-victory-fund",
+      "title": "RJC Victory Fund (C00528554), committee overview",
+      "publisher": "Federal Election Commission",
+      "type": "filing",
+      "url": "https://www.fec.gov/data/committee/C00528554/?cycle=2026",
+      "notes": "Super PAC; about $7.06 million raised and $5.17 million spent in the 2026 cycle as of the latest report read."
+    },
+    {
+      "key": "fec-rjc-pac",
+      "title": "Republican Jewish Coalition Political Action Committee (C00345132), committee overview",
+      "publisher": "Federal Election Commission",
+      "type": "filing",
+      "url": "https://www.fec.gov/data/committee/C00345132/"
+    },
+    {
+      "key": "fec-brooks",
+      "title": "Individual contributions: Brooks, Matt / Matthew (employer RJC)",
+      "publisher": "Federal Election Commission",
+      "type": "filing",
+      "url": "https://www.fec.gov/data/receipts/individual-contributions/?contributor_name=BROOKS%2C+MATT&contributor_employer=REPUBLICAN+JEWISH"
+    },
+    {
+      "key": "bhfs-2026",
+      "title": "Brownstein Welcomes Matthew Brooks as Senior Strategic Advisor",
+      "publisher": "Brownstein Hyatt Farber Schreck",
+      "type": "official_statement",
+      "publishedAt": "2026-04-14",
+      "url": "https://www.bhfs.com/news-event/brownstein-welcomes-matthew-brooks-as-senior-strategic-advisor/"
+    },
+    {
+      "key": "propublica-rjc",
+      "title": "Republican Jewish Coalition (EIN 52-1386172): Form 990 filings",
+      "publisher": "ProPublica Nonprofit Explorer",
+      "type": "filing",
+      "url": "https://projects.propublica.org/nonprofits/organizations/521386172",
+      "notes": "Extracted from IRS Form 990; the 2024 return reports revenue of $13,373,014 and Brooks’s compensation."
+    }
+  ],
+  "facts": [
+    {
+      "key": "sex",
+      "label": "Sex",
+      "value": "Male",
+      "sources": [
+        "brandeis-brooks-2022",
+        "rjc-brooks-bio"
+      ]
+    },
+    {
+      "key": "religion",
+      "label": "Religion",
+      "value": "Jewish",
+      "detail": "Describes Jewish life as one of the two things \"incredibly important to me\" and frames Republican policy through tikkun olam.",
+      "sources": [
+        "brandeis-brooks-2022"
+      ]
+    },
+    {
+      "key": "citizenship",
+      "label": "Citizenship",
+      "value": "United States",
+      "sources": [
+        "brandeis-brooks-2022"
+      ]
+    },
+    {
+      "key": "party",
+      "label": "Party",
+      "value": "Republican",
+      "detail": "Raised among Democrats; turned Republican, with his parents, in the 1980 Reagan–Carter election.",
+      "featured": true,
+      "sources": [
+        "brandeis-brooks-2022"
+      ]
+    },
+    {
+      "key": "education",
+      "label": "Education",
+      "value": "B.A., political science, Brandeis University (1987); MBA, Georgetown University (1996)",
+      "featured": true,
+      "sources": [
+        "rjc-brooks-bio",
+        "brandeis-brooks-2022"
+      ]
+    },
+    {
+      "key": "current-roles",
+      "label": "Current roles",
+      "value": "CEO, Republican Jewish Coalition; CEO, Jewish Policy Center; senior strategic advisor, Brownstein Hyatt Farber Schreck",
+      "featured": true,
+      "sources": [
+        "rjc-brooks-bio",
+        "rjc-about",
+        "bhfs-2026"
+      ],
+      "asOf": "2026-10-24"
+    },
+    {
+      "key": "residence",
+      "label": "Residence",
+      "value": "McLean, Virginia",
+      "detail": "Filing address on his 2022–2026 federal contributions; Falls Church, Virginia, in 2003–2015 filings.",
+      "asOf": "2026-05-18",
+      "sources": [
+        "fec-brooks"
+      ]
+    },
+    {
+      "key": "tenure",
+      "label": "Leading the RJC since",
+      "value": "1990",
+      "detail": "Political director from 1988; executive director from 1990; later chief executive officer.",
+      "featured": true,
+      "sources": [
+        "rjc-brooks-bio",
+        "brandeis-brooks-2022"
+      ]
+    },
+    {
+      "key": "self-description",
+      "label": "Political self-description",
+      "value": "Libertarian",
+      "detail": "Defined as a strong defense of Israel, a muscular U.S. foreign policy and fiscal conservatism.",
+      "asOf": "2022-10-26",
+      "sources": [
+        "brandeis-brooks-2022"
+      ]
+    },
+    {
+      "key": "compensation",
+      "label": "Compensation (2024)",
+      "value": "$820,421 from the RJC, plus $268,500 from related organizations",
+      "detail": "Reportable compensation on the RJC’s 2024 Form 990, with a further $44,558 in other compensation. Listed as executive director.",
+      "asOf": "2024-12-31",
+      "sources": [
+        "propublica-rjc"
+      ]
+    },
+    {
+      "key": "rjc-revenue",
+      "label": "RJC revenue (2024)",
+      "value": "$13.4 million",
+      "detail": "Form 990 total revenue of $13,373,014, of which $10,461,864 contributions; $6.4 million in 2023.",
+      "asOf": "2024-12-31",
+      "sources": [
+        "propublica-rjc"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "brooks-rjc",
+      "source": "brooks",
+      "target": "rjc",
+      "relType": "works-for",
+      "role": "Political director (1988); executive director (1990); chief executive officer and principal spokesman",
+      "from": "1988",
+      "status": "verified",
+      "prominence": 3,
+      "sources": [
+        "rjc-brooks-bio",
+        "toi-brooks-2019"
+      ]
+    },
+    {
+      "key": "brooks-jpc",
+      "source": "brooks",
+      "target": "jpc",
+      "relType": "works-for",
+      "role": "Chief executive officer of the RJC's sister think tank",
+      "status": "verified",
+      "prominence": 2,
+      "sources": [
+        "rjc-brooks-bio",
+        "rjc-about"
+      ]
+    },
+    {
+      "key": "brooks-victory-fund",
+      "source": "brooks",
+      "target": "rjc-victory-fund",
+      "relType": "affiliated-with",
+      "role": "Public face and strategist of the RJC's super PAC; announced its 2026 Massie and Fitzpatrick spending",
+      "status": "verified",
+      "prominence": 3,
+      "sources": [
+        "rjc-gallrein-2026",
+        "ji-fitzpatrick-2026",
+        "fec-rjc-victory-fund"
+      ]
+    },
+    {
+      "key": "brooks-rjc-pac",
+      "source": "brooks",
+      "target": "rjc-pac",
+      "relType": "donated-to",
+      "role": "Personal contributions to the RJC PAC, 2014–2026",
+      "from": "2014",
+      "status": "verified",
+      "prominence": 1,
+      "sources": [
+        "fec-brooks"
+      ]
+    },
+    {
+      "key": "brooks-kemp",
+      "source": "brooks",
+      "target": "kemp",
+      "relType": "mentee-of",
+      "role": "Summer intern in Kemp's House office; managed his 1988 presidential campaign in Massachusetts; calls Kemp his mentor",
+      "from": "1986",
+      "until": "2009",
+      "status": "verified",
+      "prominence": 3,
+      "notes": "Kemp died in 2009.",
+      "sources": [
+        "toi-brooks-2019",
+        "brandeis-brooks-2022",
+        "rjc-brooks-bio"
+      ]
+    },
+    {
+      "key": "brooks-trump",
+      "source": "brooks",
+      "target": "trump",
+      "relType": "allied-with",
+      "role": "Leading Jewish Republican defender of Trump's record on Israel; ran RJC turnout campaigns for Trump in 2020 and 2024 and spoke at the 2024 convention",
+      "from": "2016",
+      "status": "verified",
+      "prominence": 3,
+      "notes": "Brooks has also condemned antisemites Trump hosted (2022) without naming Trump.",
+      "sources": [
+        "toi-brooks-2019",
+        "jta-disloyalty-2019",
+        "toi-rnc-2024",
+        "ji-ad-buy-2024"
+      ]
+    },
+    {
+      "key": "brooks-sheldon-adelson",
+      "source": "brooks",
+      "target": "sheldon-adelson",
+      "relType": "collaborated-with",
+      "role": "RJC board member and principal funder; the RJC statement on his death called him Brooks's and Coleman's \"dear mentor and friend\"",
+      "until": "2021-01-11",
+      "status": "verified",
+      "prominence": 3,
+      "sources": [
+        "rjc-adelson-2021",
+        "jta-adelson-2015",
+        "jta-ad-campaign-2012"
+      ]
+    },
+    {
+      "key": "miriam-adelson-rjc",
+      "source": "miriam-adelson",
+      "target": "rjc",
+      "relType": "donated-to",
+      "role": "$5 million to RJC committees in the 2024 cycle",
+      "from": "2023",
+      "until": "2024",
+      "status": "verified",
+      "prominence": 2,
+      "sources": [
+        "forward-billionaires-2024"
+      ]
+    },
+    {
+      "key": "brooks-coleman",
+      "source": "brooks",
+      "target": "coleman",
+      "relType": "collaborated-with",
+      "role": "Coleman is RJC national chairman; the two co-sign the organization's statements",
+      "status": "verified",
+      "prominence": 2,
+      "sources": [
+        "rjc-about",
+        "rjc-adelson-2021"
+      ]
+    },
+    {
+      "key": "brooks-massie",
+      "source": "brooks",
+      "target": "massie",
+      "relType": "opposed",
+      "role": "Directed $5 million in RJC spending against Massie in the 2026 Kentucky 4th District primary",
+      "from": "2025",
+      "until": "2026-05-19",
+      "status": "verified",
+      "prominence": 3,
+      "sources": [
+        "rjc-gallrein-2026",
+        "ji-massie-gala-2026"
+      ]
+    },
+    {
+      "key": "rjc-gallrein",
+      "source": "rjc-victory-fund",
+      "target": "gallrein",
+      "relType": "endorsed",
+      "role": "Backed Gallrein's 2026 primary challenge to Massie",
+      "from": "2026",
+      "status": "verified",
+      "prominence": 2,
+      "sources": [
+        "rjc-gallrein-2026"
+      ]
+    },
+    {
+      "key": "rjc-fitzpatrick",
+      "source": "rjc-victory-fund",
+      "target": "fitzpatrick",
+      "relType": "campaigned-for",
+      "role": "$400,000 digital and streaming ad campaign for the 2026 general election",
+      "from": "2026-10",
+      "status": "verified",
+      "prominence": 1,
+      "sources": [
+        "ji-fitzpatrick-2026"
+      ]
+    },
+    {
+      "key": "brooks-ron-paul",
+      "source": "brooks",
+      "target": "ron-paul",
+      "relType": "opposed",
+      "role": "Excluded Paul from the RJC's December 2011 presidential candidates forum",
+      "from": "2011-12",
+      "until": "2011-12",
+      "status": "verified",
+      "prominence": 1,
+      "sources": [
+        "reason-ron-paul-2011"
+      ]
+    },
+    {
+      "key": "brooks-greene",
+      "source": "brooks",
+      "target": "greene",
+      "relType": "opposed",
+      "role": "The RJC worked to defeat Greene in 2022, citing antisemitism",
+      "from": "2022",
+      "status": "verified",
+      "prominence": 1,
+      "sources": [
+        "brandeis-brooks-2022"
+      ]
+    },
+    {
+      "key": "brooks-heritage",
+      "source": "brooks",
+      "target": "heritage",
+      "relType": "opposed",
+      "role": "Condemned Heritage's October 2025 defense of Tucker Carlson and announced a reassessment of the RJC's work with it",
+      "from": "2025-10-30",
+      "status": "verified",
+      "prominence": 2,
+      "notes": "The RJC had worked with Heritage's foreign-policy team.",
+      "sources": [
+        "ji-heritage-2025"
+      ]
+    },
+    {
+      "key": "brooks-carlson",
+      "source": "brooks",
+      "target": "carlson",
+      "relType": "opposed",
+      "role": "Called Carlson representative of \"the Barack Obama-Bernie Sanders wing\" of the party after his Fuentes interview",
+      "from": "2025-10",
+      "status": "verified",
+      "prominence": 1,
+      "sources": [
+        "ji-heritage-2025"
+      ]
+    },
+    {
+      "key": "brooks-ben-ami",
+      "source": "brooks",
+      "target": "ben-ami",
+      "relType": "friend-of",
+      "role": "Brooks names the J Street president among Democratic Jewish counterparts he counts as friends",
+      "status": "verified",
+      "prominence": 1,
+      "sources": [
+        "brandeis-brooks-2022"
+      ]
+    },
+    {
+      "key": "brooks-brandeis",
+      "source": "brooks",
+      "target": "brandeis",
+      "relType": "affiliated-with",
+      "role": "B.A., political science, 1987; organized the campus College Republicans and chaired the Massachusetts College Republicans",
+      "until": "1987",
+      "status": "verified",
+      "prominence": 1,
+      "sources": [
+        "brandeis-brooks-2022",
+        "rjc-brooks-bio"
+      ]
+    },
+    {
+      "key": "brooks-republican-party",
+      "source": "brooks",
+      "target": "republican-party",
+      "relType": "party-member",
+      "role": "Republican since the 1980 election",
+      "from": "1980",
+      "status": "verified",
+      "prominence": 1,
+      "sources": [
+        "brandeis-brooks-2022"
+      ]
+    },
+    {
+      "key": "brooks-brownstein",
+      "source": "brooks",
+      "target": "brownstein",
+      "relType": "works-for",
+      "role": "Senior strategic advisor, government relations; continues at the RJC",
+      "from": "2026-04",
+      "prominence": 2,
+      "sources": [
+        "bhfs-2026"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "key": "reagan-1980",
+      "date": "1980",
+      "title": "Turns Republican in the Reagan–Carter election",
+      "summary": "Raised in a family of politically active Philadelphia Democrats, Brooks moved right with his parents during the 1980 campaign, which he later described in terms of the hostage crisis, gas lines and the economy.",
+      "category": "personal",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        [
+          "brooks",
+          "subject"
+        ]
+      ],
+      "sources": [
+        "brandeis-brooks-2022"
+      ],
+      "chapter": "formation"
+    },
+    {
+      "key": "college-republicans-1984",
+      "date": "1984",
+      "title": "Organizes Brandeis College Republicans",
+      "summary": "Ahead of the 1984 election he started the university's chapter, which he says grew from three members to about 300, and later became state chairman of the Massachusetts College Republicans.",
+      "category": "politics",
+      "significance": 1,
+      "status": "verified",
+      "participants": [
+        [
+          "brooks",
+          "organizer"
+        ],
+        [
+          "brandeis",
+          "university"
+        ]
+      ],
+      "sources": [
+        "brandeis-brooks-2022",
+        "rjc-brooks-bio"
+      ],
+      "chapter": "formation"
+    },
+    {
+      "key": "kemp-internship",
+      "date": "1986",
+      "title": "Interns in Jack Kemp's House office",
+      "summary": "A Brandeis-funded summer internship before his senior year put him in Kemp's office; Kemp became the mentor who drew him into national campaigns.",
+      "category": "career",
+      "significance": 2,
+      "status": "unresolved",
+      "statusNote": "No source dates the internship; the year is derived from his 1987 graduation and the internship's timing before his senior year.",
+      "participants": [
+        [
+          "brooks",
+          "intern"
+        ],
+        [
+          "kemp",
+          "congressman"
+        ]
+      ],
+      "sources": [
+        "toi-brooks-2019",
+        "brandeis-brooks-2022"
+      ],
+      "chapter": "formation"
+    },
+    {
+      "key": "brandeis-1987",
+      "date": "1987",
+      "title": "Graduates from Brandeis and defers medical school",
+      "summary": "A political science major who had planned on medicine, he delayed medical school to work on Kemp's presidential campaign and never returned to it.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        [
+          "brooks",
+          "graduate"
+        ],
+        [
+          "brandeis",
+          "university"
+        ]
+      ],
+      "sources": [
+        "toi-brooks-2019",
+        "brandeis-brooks-2022"
+      ],
+      "chapter": "formation"
+    },
+    {
+      "key": "kemp-campaign-1988",
+      "date": "1988",
+      "title": "Manages Kemp's presidential campaign in Massachusetts",
+      "summary": "Brooks ran Kemp's Massachusetts operation and directed projects in New Hampshire and New England; Kemp lost the nomination to George H.W. Bush.",
+      "category": "politics",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        [
+          "brooks",
+          "state campaign manager"
+        ],
+        [
+          "kemp",
+          "candidate"
+        ]
+      ],
+      "sources": [
+        "rjc-brooks-bio",
+        "toi-brooks-2019"
+      ],
+      "chapter": "formation"
+    },
+    {
+      "key": "rjc-political-director-1988",
+      "date": "1988",
+      "title": "Joins the National Jewish Coalition as political director",
+      "summary": "He joined the organization, founded in 1985 and later renamed the Republican Jewish Coalition, and took leave to serve as national field director of the Bush-Quayle Victory '88 Jewish Campaign Committee.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        [
+          "brooks",
+          "political director"
+        ],
+        [
+          "rjc",
+          "employer"
+        ]
+      ],
+      "sources": [
+        "rjc-brooks-bio",
+        "toi-brooks-2019",
+        "jvl-rjc"
+      ],
+      "chapter": "coalition"
+    },
+    {
+      "key": "rjc-executive-director-1990",
+      "date": "1990",
+      "title": "Becomes executive director of the coalition",
+      "summary": "The appointment began a tenure of more than three decades in which Brooks became the RJC's chief strategist and principal spokesman.",
+      "category": "career",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        [
+          "brooks",
+          "executive director"
+        ],
+        [
+          "rjc",
+          "employer"
+        ]
+      ],
+      "sources": [
+        "rjc-brooks-bio",
+        "brandeis-brooks-2022"
+      ],
+      "chapter": "coalition"
+    },
+    {
+      "key": "georgetown-mba-1996",
+      "date": "1996-03",
+      "title": "Completes an MBA at Georgetown",
+      "summary": "Brooks earned the degree while running the coalition.",
+      "category": "career",
+      "significance": 1,
+      "status": "verified",
+      "participants": [
+        [
+          "brooks",
+          "graduate"
+        ]
+      ],
+      "sources": [
+        "rjc-brooks-bio"
+      ],
+      "chapter": "coalition"
+    },
+    {
+      "key": "rjc-anniversary-2005",
+      "date": "2005-09",
+      "title": "RJC honors Sheldon Adelson at its 20th anniversary",
+      "summary": "The anniversary luncheon honored Adelson with Home Depot co-founder Bernard Marcus and RNC chairman Ken Mehlman, marking the donor relationship that would finance the group's largest campaigns.",
+      "category": "finance",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        [
+          "rjc",
+          "host"
+        ],
+        [
+          "sheldon-adelson",
+          "honoree"
+        ]
+      ],
+      "sources": [
+        "jvl-rjc"
+      ],
+      "chapter": "adelson"
+    },
+    {
+      "key": "ron-paul-2011",
+      "date": "2011-12-01",
+      "title": "Bars Ron Paul from the RJC candidates forum",
+      "summary": "Brooks excluded Paul from the December 7 forum while inviting every other major Republican candidate, saying the group rejected his \"misguided and extreme views.\"",
+      "category": "politics",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        [
+          "brooks",
+          "organizer"
+        ],
+        [
+          "ron-paul",
+          "excluded candidate"
+        ],
+        [
+          "rjc",
+          "host"
+        ]
+      ],
+      "sources": [
+        "reason-ron-paul-2011"
+      ],
+      "chapter": "adelson"
+    },
+    {
+      "key": "buyers-remorse-2012",
+      "date": "2012-09",
+      "title": "Launches the $6.5 million 'buyer's remorse' campaign",
+      "summary": "The RJC ran $5 million in television ads featuring former Obama voters in Florida, Nevada, Ohio and Pennsylvania within a $6.5 million effort that JTA reported Adelson and other board members would fund.",
+      "category": "politics",
+      "significance": 2,
+      "status": "disputed",
+      "statusNote": "Earlier JTA reporting quoted no one confirming Adelson's funding; the September 2012 report said he and other board members would fund it.",
+      "participants": [
+        [
+          "brooks",
+          "executive director"
+        ],
+        [
+          "rjc",
+          "sponsor"
+        ],
+        [
+          "sheldon-adelson",
+          "reported funder"
+        ]
+      ],
+      "sources": [
+        "jta-ad-campaign-2012"
+      ],
+      "chapter": "adelson"
+    },
+    {
+      "key": "adelson-primary-2015",
+      "date": "2015-04",
+      "title": "Hosts the 'Sheldon primary' at the Venetian",
+      "summary": "Ted Cruz, Mike Pence and Rick Perry courted Adelson at the RJC's spring meeting in his Las Vegas hotel; asked about the label, Brooks answered \"Who?\"",
+      "category": "politics",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        [
+          "brooks",
+          "host"
+        ],
+        [
+          "sheldon-adelson",
+          "donor"
+        ],
+        [
+          "rjc",
+          "host"
+        ]
+      ],
+      "sources": [
+        "jta-adelson-2015"
+      ],
+      "chapter": "adelson"
+    },
+    {
+      "key": "trump-forum-2015",
+      "date": "2015-12-03",
+      "title": "Trump tells the RJC forum it won't support him because he doesn't want its money",
+      "summary": "At the coalition's Washington candidates forum, Trump told the audience \"You're not going to support me because I don't want your money\" and drew boos over Jerusalem.",
+      "category": "politics",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        [
+          "trump",
+          "speaker"
+        ],
+        [
+          "rjc",
+          "host"
+        ]
+      ],
+      "sources": [
+        "jta-trump-forum-2015"
+      ],
+      "chapter": "trump"
+    },
+    {
+      "key": "rjc-congratulates-trump-2016",
+      "date": "2016-05-04",
+      "title": "RJC congratulates Trump as presumptive nominee",
+      "summary": "The statement, issued by chairman David Flaum, focused on opposing Hillary Clinton rather than praising Trump and pledged to protect the House and Senate majorities.",
+      "category": "politics",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        [
+          "rjc",
+          "issuer"
+        ],
+        [
+          "trump",
+          "nominee"
+        ]
+      ],
+      "sources": [
+        "ji-rjc-trump-2016"
+      ],
+      "chapter": "trump"
+    },
+    {
+      "key": "disloyalty-2019",
+      "date": "2019-08-23",
+      "title": "Defends Trump's 'disloyalty' remark about Jewish Democrats",
+      "summary": "After Trump said Jews who vote for Democrats show disloyalty, the RJC tweeted that \"President Trump is right\" and Brooks said the president was \"not plowing any new fields,\" while the ADL called the remarks antisemitic.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        [
+          "brooks",
+          "defender"
+        ],
+        [
+          "trump",
+          "speaker"
+        ],
+        [
+          "rjc",
+          "issuer"
+        ]
+      ],
+      "sources": [
+        "jta-disloyalty-2019"
+      ],
+      "chapter": "trump"
+    },
+    {
+      "key": "rjc-2020-campaign",
+      "date": "2020-07",
+      "title": "Commits $10 million to re-elect Trump",
+      "summary": "Brooks described a $10 million program with field staff in Florida, 300,000 identification calls and targeting in Florida, Ohio, Arizona, Pennsylvania and Georgia.",
+      "category": "politics",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        [
+          "brooks",
+          "strategist"
+        ],
+        [
+          "rjc",
+          "sponsor"
+        ],
+        [
+          "trump",
+          "candidate"
+        ]
+      ],
+      "sources": [
+        "jta-swing-2020",
+        "religionwatch-rjc-2025"
+      ],
+      "chapter": "trump"
+    },
+    {
+      "key": "adelson-death-2021",
+      "date": "2021-01-12",
+      "title": "Mourns Sheldon Adelson, the RJC's leading patron",
+      "summary": "Brooks and Norm Coleman's statement identified Adelson as a board member whose financial support and guidance the organization had relied on.",
+      "category": "personal",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        [
+          "brooks",
+          "co-signer"
+        ],
+        [
+          "coleman",
+          "co-signer"
+        ],
+        [
+          "sheldon-adelson",
+          "deceased"
+        ]
+      ],
+      "sources": [
+        "rjc-adelson-2021"
+      ],
+      "chapter": "adelson"
+    },
+    {
+      "key": "midterms-2022",
+      "date": "2022-10",
+      "title": "Refuses to back Mastriano and works against Greene",
+      "summary": "During the 2022 midterms Brooks said the RJC had \"zero tolerance for antisemitism,\" declining to support Pennsylvania gubernatorial nominee Doug Mastriano and working to defeat Marjorie Taylor Greene.",
+      "category": "politics",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        [
+          "brooks",
+          "executive director"
+        ],
+        [
+          "greene",
+          "opposed"
+        ],
+        [
+          "rjc",
+          "organization"
+        ]
+      ],
+      "sources": [
+        "brandeis-brooks-2022"
+      ],
+      "chapter": "lines"
+    },
+    {
+      "key": "fuentes-dinner-2022",
+      "date": "2022-11-25",
+      "title": "RJC condemns Trump's dinner with Ye and Nick Fuentes",
+      "summary": "The RJC condemned the Mar-a-Lago dinner with two \"virulent\" antisemites and urged leaders to refuse such meetings, without naming Trump.",
+      "category": "politics",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        [
+          "rjc",
+          "issuer"
+        ],
+        [
+          "trump",
+          "host"
+        ],
+        [
+          "fuentes",
+          "guest"
+        ]
+      ],
+      "sources": [
+        "algemeiner-fuentes-2022",
+        "cbs-fuentes-2022"
+      ],
+      "chapter": "lines"
+    },
+    {
+      "key": "summit-2023",
+      "date": "2023-10-28",
+      "title": "Hosts Trump and his primary rivals in Las Vegas",
+      "summary": "Three weeks after the October 7 attack, Trump received a sustained ovation at the RJC's annual summit at the Venetian, which also hosted his 2024 rivals.",
+      "category": "politics",
+      "significance": 1,
+      "status": "verified",
+      "participants": [
+        [
+          "rjc",
+          "host"
+        ],
+        [
+          "trump",
+          "speaker"
+        ]
+      ],
+      "sources": [
+        "ji-summit-2023"
+      ],
+      "chapter": "2024"
+    },
+    {
+      "key": "rnc-2024",
+      "date": "2024-07-16",
+      "title": "Becomes the first RJC chief to address a Republican convention",
+      "summary": "In Milwaukee, Brooks told delegates Trump would \"bring back law and order\" and \"stop the mobs on college campuses,\" then told reporters Trump's call to finish the war against Hamas was a \"blank check\" for Israel.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        [
+          "brooks",
+          "speaker"
+        ],
+        [
+          "trump",
+          "nominee"
+        ],
+        [
+          "republican-party",
+          "convention host"
+        ]
+      ],
+      "sources": [
+        "toi-rnc-2024",
+        "jns-rnc-2024"
+      ],
+      "chapter": "2024"
+    },
+    {
+      "key": "ad-buy-2024",
+      "date": "2024-09-10",
+      "title": "Launches a $10 million swing-state ad buy for Trump",
+      "summary": "The buy in Pennsylvania, Georgia, Nevada, Michigan and Arizona was part of a $15 million program Brooks called the largest effort ever to turn out Jewish voters for Trump.",
+      "category": "politics",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        [
+          "brooks",
+          "strategist"
+        ],
+        [
+          "rjc",
+          "sponsor"
+        ],
+        [
+          "trump",
+          "candidate"
+        ]
+      ],
+      "sources": [
+        "ji-ad-buy-2024"
+      ],
+      "chapter": "2024"
+    },
+    {
+      "key": "fundraising-2024",
+      "date": "2024-10-31",
+      "title": "RJC committees pass $18 million raised for the cycle",
+      "summary": "FEC records showed more than $18 million raised since January 2023, led by $5 million from Miriam Adelson and $2.4 million from WhatsApp co-founder Jan Koum; the super PAC more than doubled its 2020 total.",
+      "category": "finance",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        [
+          "rjc",
+          "recipient"
+        ],
+        [
+          "miriam-adelson",
+          "donor"
+        ],
+        [
+          "rjc-victory-fund",
+          "recipient"
+        ]
+      ],
+      "sources": [
+        "forward-billionaires-2024"
+      ],
+      "chapter": "2024"
+    },
+    {
+      "key": "spending-doubled-2024",
+      "date": "2024-11",
+      "title": "Doubles the RJC's presidential-cycle spending",
+      "summary": "The RJC PAC and super PAC spent about $20 million on Trump and Republican Senate candidates in key states, against about $10 million in 2020.",
+      "category": "finance",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        [
+          "rjc",
+          "sponsor"
+        ],
+        [
+          "rjc-victory-fund",
+          "super PAC"
+        ]
+      ],
+      "sources": [
+        "religionwatch-rjc-2025"
+      ],
+      "chapter": "2024"
+    },
+    {
+      "key": "heritage-2025",
+      "date": "2025-10-30",
+      "title": "Breaks with the Heritage Foundation over Carlson and Fuentes",
+      "summary": "After Kevin Roberts defended Tucker Carlson's interview with Nick Fuentes, Brooks said he was \"appalled, offended and disgusted\" and announced a reassessment of the RJC's relationship with Heritage.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        [
+          "brooks",
+          "critic"
+        ],
+        [
+          "heritage",
+          "target"
+        ],
+        [
+          "carlson",
+          "subject of dispute"
+        ],
+        [
+          "fuentes",
+          "subject of dispute"
+        ]
+      ],
+      "sources": [
+        "ji-heritage-2025"
+      ],
+      "chapter": "lines"
+    },
+    {
+      "key": "massie-primary-2026",
+      "date": "2026-05-19",
+      "title": "RJC's $5 million helps unseat Thomas Massie",
+      "summary": "Ed Gallrein defeated the incumbent in Kentucky's 4th District primary after the RJC and RJC Victory Fund committed $5 million; Brooks said Massie had been \"trafficking in antisemitism.\"",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        [
+          "brooks",
+          "strategist"
+        ],
+        [
+          "massie",
+          "defeated incumbent"
+        ],
+        [
+          "gallrein",
+          "winner"
+        ],
+        [
+          "rjc-victory-fund",
+          "spender"
+        ]
+      ],
+      "sources": [
+        "rjc-gallrein-2026",
+        "ji-massie-gala-2026"
+      ],
+      "chapter": "consequences"
+    },
+    {
+      "key": "gala-2026",
+      "date": "2026-05-31",
+      "title": "Celebrates the Massie defeat as a warning to the party",
+      "summary": "At the RJC's America 250 gala in Manhattan, Brooks called the race \"a fight worth having\" and said anti-Israel Republicans must face consequences.",
+      "category": "politics",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        [
+          "brooks",
+          "speaker"
+        ],
+        [
+          "rjc",
+          "host"
+        ]
+      ],
+      "sources": [
+        "ji-massie-gala-2026"
+      ],
+      "chapter": "consequences"
+    },
+    {
+      "key": "fitzpatrick-2026",
+      "date": "2026-10-18",
+      "title": "Spends $400,000 to defend Brian Fitzpatrick",
+      "summary": "The RJC Victory Fund's digital and streaming campaign backed the Bucks County Republican in one of two Harris-won districts held by Republicans.",
+      "category": "politics",
+      "significance": 1,
+      "status": "verified",
+      "participants": [
+        [
+          "rjc-victory-fund",
+          "spender"
+        ],
+        [
+          "fitzpatrick",
+          "candidate"
+        ]
+      ],
+      "sources": [
+        "ji-fitzpatrick-2026"
+      ],
+      "chapter": "consequences"
+    },
+    {
+      "key": "brownstein-2026",
+      "date": "2026-04-14",
+      "title": "Joins Brownstein Hyatt Farber Schreck as senior strategic advisor",
+      "summary": "Keeps his RJC and Jewish Policy Center posts; the firm cites his ties to House and Senate Republican leadership and the White House, and Sen. Ted Cruz calls him “a warrior against antisemitism.”",
+      "category": "career",
+      "significance": 2,
+      "chapter": "consequences",
+      "participants": [
+        [
+          "brownstein",
+          "firm"
+        ]
+      ],
+      "sources": [
+        "bhfs-2026"
+      ]
+    }
+  ],
+  "statements": [
+    {
+      "key": "kemp-mentor-2019",
+      "date": "2019-07-12",
+      "datePrecision": "day",
+      "venue": "Interview with The Times of Israel",
+      "issue": "Formation",
+      "quote": "He became my mentor, he was my rabbi, he was my friend, and he was somebody who had an incalculable impact of my life.",
+      "summary": "Brooks on Jack Kemp, whose office and 1988 campaign drew him into national politics.",
+      "stance": "explicit",
+      "source": "toi-brooks-2019"
+    },
+    {
+      "key": "intersection-2022",
+      "date": "2022-10-26",
+      "datePrecision": "day",
+      "venue": "Interview with Brandeis University's The Jewish Experience",
+      "issue": "Jewish voters and the Republican Party",
+      "quote": "By definition and action, the RJC is at the intersection of Jewish life and the Republican Party, which are two things that are incredibly important to me.",
+      "stance": "explicit",
+      "source": "brandeis-brooks-2022"
+    },
+    {
+      "key": "strong-america-2022",
+      "date": "2022-10-26",
+      "datePrecision": "day",
+      "venue": "Interview with Brandeis University's The Jewish Experience",
+      "issue": "Jewish voters and the Republican Party",
+      "quote": "A strong America with a vibrant economy, energy independence, secure borders, and law and order is good not only for the country but also for the Jewish community.",
+      "stance": "explicit",
+      "source": "brandeis-brooks-2022"
+    },
+    {
+      "key": "tikkun-olam-2022",
+      "date": "2022-10-26",
+      "datePrecision": "day",
+      "venue": "Interview with Brandeis University's The Jewish Experience",
+      "issue": "Ideas",
+      "quote": "Getting people off welfare, getting people a job, educating the next generation of children, ending the scourge of crime and drug abuse to keep the streets safe are all tikkun olam.",
+      "summary": "Brooks describing Jack Kemp's compassionate conservatism as consistent with the Jewish idea of repairing the world.",
+      "stance": "explicit",
+      "source": "brandeis-brooks-2022"
+    },
+    {
+      "key": "long-term-2019",
+      "date": "2019-07-12",
+      "datePrecision": "day",
+      "venue": "Interview with The Times of Israel",
+      "issue": "Jewish voters and the Republican Party",
+      "quote": "We think of this as a very long-term project.",
+      "summary": "On moving Jewish voters toward the Republican Party incrementally rather than in a single election.",
+      "stance": "explicit",
+      "source": "toi-brooks-2019"
+    },
+    {
+      "key": "only-choice-2019",
+      "date": "2019-07-12",
+      "datePrecision": "day",
+      "venue": "Interview with The Times of Israel",
+      "issue": "Donald Trump",
+      "quote": "For those who care about Israel, who care about strong national security, there's only one choice. And that choice is Donald Trump.",
+      "stance": "explicit",
+      "source": "toi-brooks-2019"
+    },
+    {
+      "key": "new-fields-2019",
+      "date": "2019-08-23",
+      "datePrecision": "day",
+      "venue": "Interview with JTA",
+      "issue": "Donald Trump",
+      "quote": "The president is not plowing any new fields here.",
+      "summary": "Defending Trump's remark that Jewish Democratic voters showed disloyalty, which Brooks presented as a blunt version of what Jewish Democrats had said about Republicans.",
+      "stance": "explicit",
+      "source": "jta-disloyalty-2019"
+    },
+    {
+      "key": "insecurity-2024",
+      "date": "2024-07-16",
+      "datePrecision": "day",
+      "venue": "Remarks to reporters at the Republican National Convention, Milwaukee",
+      "issue": "Antisemitism",
+      "quote": "For the first time I can ever remember there is true insecurity in the Jewish community.",
+      "stance": "explicit",
+      "source": "toi-rnc-2024"
+    },
+    {
+      "key": "heritage-2025",
+      "date": "2025-10-30",
+      "datePrecision": "day",
+      "venue": "Interview with Jewish Insider",
+      "issue": "Antisemitism",
+      "quote": "I am appalled, offended and disgusted that he and Heritage would stand with Tucker Carlson and Nick Fuentes",
+      "summary": "On Heritage Foundation president Kevin Roberts's defense of Carlson's interview with Fuentes.",
+      "stance": "explicit",
+      "source": "ji-heritage-2025"
+    },
+    {
+      "key": "reagan-carlson-2025",
+      "date": "2025-10-30",
+      "datePrecision": "day",
+      "venue": "Interview with Jewish Insider",
+      "issue": "The Republican Party",
+      "quote": "They're becoming more like Tucker Carlson and less like Ronald Reagan.",
+      "stance": "explicit",
+      "source": "ji-heritage-2025"
+    },
+    {
+      "key": "one-pro-israel-party-2026",
+      "date": "2026-04-29",
+      "datePrecision": "day",
+      "venue": "Interview with The Algemeiner",
+      "issue": "Israel",
+      "quote": "There is only one pro-Israel party today. And that's the Republican Party.",
+      "stance": "explicit",
+      "source": "algemeiner-brooks-2026"
+    },
+    {
+      "key": "massie-2026",
+      "date": "2026-05-31",
+      "datePrecision": "day",
+      "venue": "RJC gala, Chelsea Piers, New York",
+      "issue": "The Republican Party",
+      "quote": "Being anti-Israel in today's Republican Party is not — unlike the Democratic Party — a path to success",
+      "summary": "Brooks presenting the defeat of Thomas Massie as a lesson for other Republicans.",
+      "stance": "explicit",
+      "source": "ji-massie-gala-2026"
+    },
+    {
+      "key": "money-or-votes-2025",
+      "date": "2025-07-23",
+      "datePrecision": "day",
+      "venue": "Interview with The Dispatch",
+      "issue": "Jewish voters and the Republican Party",
+      "quote": "You either deliver money or you deliver votes",
+      "verbatim": false,
+      "summary": "Brooks's account of how the RJC gained influence in the party; the wording comes from Religion Watch's summary of the paywalled Dispatch interview and is truncated there.",
+      "stance": "explicit",
+      "source": "religionwatch-rjc-2025"
+    }
+  ],
+  "ideas": {
+    "traditions": [
+      {
+        "label": "Libertarianism",
+        "atlasId": "libertarianism",
+        "basis": "Brooks describes himself as a libertarian, which he defines as a strong defense of Israel, a muscular foreign policy and fiscal conservatism.",
+        "context": "His self-description is narrower than the philosophical tradition; the foreign-policy part of it is his own addition.",
+        "sources": [
+          "brandeis-brooks-2022"
+        ]
+      },
+      {
+        "label": "Compassionate conservatism",
+        "atlasId": "compassionate-conservatism",
+        "basis": "He traces his politics to Jack Kemp's welfare-to-work, education and anti-crime conservatism and calls those aims tikkun olam.",
+        "context": "Placement rests on his account of Kemp's influence, not on the RJC's candidate choices.",
+        "sources": [
+          "brandeis-brooks-2022",
+          "toi-brooks-2019"
+        ]
+      }
+    ],
+    "influences": [
+      {
+        "name": "Jack Kemp",
+        "note": "Gave Brooks his first Washington job and his first campaign; Brooks calls him his mentor and credits his bipartisan manner.",
+        "sources": [
+          "toi-brooks-2019",
+          "brandeis-brooks-2022"
+        ]
+      },
+      {
+        "name": "Ronald Reagan",
+        "note": "The 1980 contest with Jimmy Carter was the election in which Brooks and his parents left the Democratic Party.",
+        "sources": [
+          "brandeis-brooks-2022"
+        ]
+      },
+      {
+        "name": "Sheldon Adelson",
+        "note": "RJC board member and patron whom the organization's statement on his death called a mentor and friend of its leaders.",
+        "sources": [
+          "rjc-adelson-2021"
+        ]
+      }
+    ],
+    "works": [
+      {
+        "title": "RJC presidential candidates forums",
+        "year": 1990,
+        "kind": "Political institution",
+        "detail": "Recurring forums and Las Vegas leadership summits where Republican candidates seek Jewish donors; Brooks controls the invitations.",
+        "source": "religionwatch-rjc-2025"
+      },
+      {
+        "title": "'My Buyer's Remorse' campaign",
+        "year": 2012,
+        "kind": "Campaign",
+        "detail": "Television testimonials from former Obama voters in four battleground states.",
+        "source": "jta-ad-campaign-2012"
+      },
+      {
+        "title": "2024 Jewish turnout campaign",
+        "year": 2024,
+        "kind": "Campaign",
+        "detail": "$15 million program, including a $10 million ad buy in five swing states.",
+        "source": "ji-ad-buy-2024"
+      }
+    ],
+    "featuredQuotes": [
+      "intersection-2022",
+      "massie-2026"
+    ]
+  },
+  "chapters": [
+    {
+      "key": "formation",
+      "title": "A Reagan convert at Brandeis",
+      "dek": "A Philadelphia Democrat's son who swapped medical school for Jack Kemp's campaign.",
+      "body": "Matt Brooks grew up in a family of politically active Democrats in Philadelphia. The family changed sides together in 1980: Brooks and his parents moved toward Ronald Reagan in a campaign he later summarized as the Iran hostages, long gas lines and \"a horrible economy\" under Jimmy Carter. [[brandeis-brooks-2022]]\n\nAt Brandeis University he was, in his own words, \"the campus radical.\" Ahead of the 1984 election he organized the university's College Republicans, a chapter he says grew from three members to about 300, and he became state chairman of the Massachusetts College Republicans. [[brandeis-brooks-2022, rjc-brooks-bio]]\n\nHe was a political science major planning on medical school when a Brandeis-funded summer internship placed him in the House office of Jack Kemp. Kemp became the decisive patron. Brooks graduated in 1987, deferred medical school to work on Kemp's presidential campaign, and managed it in Massachusetts while directing projects in New Hampshire and New England. Kemp lost the 1988 nomination to George H.W. Bush, and Brooks never went back to medicine. [[toi-brooks-2019, brandeis-brooks-2022, rjc-brooks-bio]]\n\n> He became my mentor, he was my rabbi, he was my friend, and he was somebody who had an incalculable impact of my life. [[toi-brooks-2019]]"
+    },
+    {
+      "key": "coalition",
+      "title": "From political director to the coalition's permanent operator",
+      "dek": "Two years after joining, he was running the organization he still leads.",
+      "body": "The National Jewish Coalition had been founded in 1985 by senior Jewish Republicans; it later took the name Republican Jewish Coalition. Brooks joined as political director in 1988 and immediately took leave to serve as national field director of the Victory '88 Jewish Campaign Committee for the Bush-Quayle ticket. [[jvl-rjc, rjc-brooks-bio, toi-brooks-2019]]\n\nIn 1990 he became executive director. He has held the top staff job ever since, through chairmen including Cheryl Halpern, David Flaum and former senator Norm Coleman, the current national chairman. He also runs the Jewish Policy Center, the RJC's think tank, and finished a Georgetown MBA in 1996 while doing both. By 2024 his title had become chief executive officer. [[rjc-about, rjc-brooks-bio, ji-rjc-trump-2016, toi-rnc-2024]]\n\nThe job combines three functions that later chapters show in use: access, because the RJC's forums and summits are where Republican candidates meet Jewish donors; money, through the RJC PAC and later the RJC Victory Fund super PAC; and turnout programs aimed at Jewish voters in swing states. Brooks is also the group's principal spokesman. [[rjc-brooks-bio, religionwatch-rjc-2025, fec-rjc-victory-fund]]"
+    },
+    {
+      "key": "adelson",
+      "title": "Adelson money and the battleground Jewish vote",
+      "dek": "A casino owner's patronage turned a coalition into a campaign operation.",
+      "body": "Sheldon Adelson's relationship with the RJC preceded his emergence as the largest Republican donor in the country. The coalition honored him at its 20th-anniversary luncheon in 2005, alongside Bernard Marcus and RNC chairman Ken Mehlman, and he sat on its board until his death. The organization's statement on that death, signed by Coleman and Brooks, called him a \"dear mentor and friend.\" [[jvl-rjc, rjc-adelson-2021]]\n\nThe money paid for campaigns rather than conferences. In September 2012 the RJC began a $5 million television campaign featuring former Obama voters expressing \"buyer's remorse,\" aimed at Florida, Nevada, Ohio and Pennsylvania, as part of a $6.5 million effort that JTA reported Adelson and other board members would fund. Earlier coverage had found no one willing to confirm Adelson's role, so the funding is recorded here as reported rather than settled. [[jta-ad-campaign-2012]]\n\nBrooks also used the forum invitation as a gatekeeping tool. In December 2011 he excluded Ron Paul from the RJC's presidential forum, saying the group \"rejects his misguided and extreme views.\" By April 2015 the RJC's spring meeting at Adelson's Venetian hotel was being called the \"Sheldon primary\" as Ted Cruz, Mike Pence and Rick Perry sought his support. Asked about the phrase, Brooks replied: \"Who?\" [[reason-ron-paul-2011, jta-adelson-2015]]"
+    },
+    {
+      "key": "trump",
+      "title": "From an awkward forum to Trump's defense",
+      "dek": "The coalition stayed quiet in the 2016 primary, then became one of Trump's most consistent Jewish defenders.",
+      "body": "Donald Trump's first appearance at an RJC forum, in December 2015, went badly. He told the audience, \"You're not going to support me because I don't want your money,\" and was booed when he declined to say Jerusalem should be Israel's undivided capital. When Trump became the presumptive nominee in May 2016, the RJC's congratulatory statement, issued by chairman David Flaum, focused on Hillary Clinton's record rather than Trump's. [[jta-trump-forum-2015, ji-rjc-trump-2016]]\n\nBy 2019 Brooks was making the affirmative case. He predicted Trump would win more Jewish votes in 2020 than in 2016 and said that for voters who cared about Israel and national security \"there's only one choice.\" When Trump said in August 2019 that Jewish Democratic voters showed disloyalty, the ADL called the remark antisemitic; the RJC tweeted \"President Trump is right,\" and Brooks said the president was \"not plowing any new fields.\" [[toi-brooks-2019, jta-disloyalty-2019]]\n\nThe 2020 campaign put money behind the argument: $10 million pledged to re-elect Trump and hold Congress, with paid field staff in Florida and targeting in Ohio, Arizona, Pennsylvania and Georgia. In 2022 Brooks still declined to criticize Trump for telling American Jews to \"get their act together,\" pointing instead to the Jerusalem embassy move and the Abraham Accords. [[jta-swing-2020, brandeis-brooks-2022]]"
+    },
+    {
+      "key": "lines",
+      "title": "Drawing lines inside the party",
+      "dek": "Zero tolerance for antisemites, without breaking with Trump.",
+      "body": "Brooks's defense of Trump has coexisted with public breaks from other Republicans. In the 2022 midterms the RJC refused to support Pennsylvania gubernatorial nominee Doug Mastriano and worked to defeat Marjorie Taylor Greene; Brooks described the policy as \"zero tolerance for antisemitism.\" [[brandeis-brooks-2022]]\n\nThe limit of that policy showed in November 2022, when Trump hosted Ye and the white nationalist Nick Fuentes at Mar-a-Lago. The coalition condemned the two guests as \"virulent\" antisemites and urged leaders to refuse such meetings, but did not name Trump. [[algemeiner-fuentes-2022, cbs-fuentes-2022]]\n\nHis sharpest break came in October 2025, after Heritage Foundation president Kevin Roberts defended Tucker Carlson's friendly interview with Fuentes. Brooks said he was \"appalled, offended and disgusted,\" called the defense \"a total abrogation\" of Heritage's mission, and said the RJC would reassess a relationship that had included work with Heritage's foreign-policy team. He cast the dispute as factional: Heritage was becoming \"more like Tucker Carlson and less like Ronald Reagan.\" [[ji-heritage-2025]]"
+    },
+    {
+      "key": "2024",
+      "title": "The largest Jewish turnout campaign",
+      "dek": "A convention speech, a $15 million program and a doubled budget.",
+      "body": "In July 2024 Brooks became the first RJC chief invited to address a Republican National Convention. He told delegates in Milwaukee that Trump would \"bring back law and order\" and \"stop the mobs on college campuses,\" and told reporters afterward that \"for the first time I can ever remember there is true insecurity in the Jewish community.\" He described Trump's call for Israel to finish the war against Hamas as a \"blank check,\" not pressure. [[toi-rnc-2024, jns-rnc-2024]]\n\nThat September the RJC began a $10 million ad buy in Pennsylvania, Georgia, Nevada, Michigan and Arizona within a $15 million program that Brooks called \"by far, the largest and most comprehensive effort ever to turn out the Jewish vote\" for Trump. By the end of October the RJC's committees had raised more than $18 million since January 2023, including $5 million from Miriam Adelson and $2.4 million from Jan Koum; the super PAC alone had more than doubled its 2020 haul. [[ji-ad-buy-2024, forward-billionaires-2024]]\n\nAcross the cycle, the RJC PAC and super PAC spent about $20 million on Trump and Senate candidates in key states, twice the 2020 figure. Brooks has described the RJC's leverage in plain terms: the group either delivers money or delivers votes. The coalition's annual summit drew about 1,500 attendees, up from about 250 in 2010. The Dispatch, whose account is summarized here, also reported that Brooks recommended Mike Huckabee as ambassador to Israel. [[religionwatch-rjc-2025, dispatch-rjc-2025]]"
+    },
+    {
+      "key": "consequences",
+      "title": "Consequences: the Massie primary and the midterms",
+      "dek": "For the first time, RJC money helped remove a sitting Republican.",
+      "body": "In the 2026 cycle Brooks turned the RJC's money against an incumbent Republican. Rep. Thomas Massie of Kentucky had voted against Israel aid and antisemitism resolutions and against several of Trump's priorities. The RJC and the RJC Victory Fund committed $5 million to Ed Gallrein, Trump's endorsed challenger, and Gallrein won the May 19 primary. Brooks said Massie had been \"trafficking in antisemitism and bottom-of-the-barrel nativism\" and that there was \"no place in the Republican Party for those who turn their back on the MAGA agenda.\" The $5 million figure is the RJC's own. [[rjc-gallrein-2026]]\n\nAt the RJC's America 250 gala in Manhattan two weeks later, Brooks called the race \"a fight worth having and a victory worth celebrating\" and said there \"has to be consequences\" for Republicans who undermine support for Israel. [[ji-massie-gala-2026]]\n\nHis public argument in 2026 is that the parties have sorted: \"There is only one pro-Israel party today. And that's the Republican Party,\" he told The Algemeiner, describing antisemitism on the far left and far right as similar in theme. By mid-October the RJC Victory Fund had raised about $7 million for the cycle and was spending in general-election races, including $400,000 for Rep. Brian Fitzpatrick in a Pennsylvania district Kamala Harris carried. [[algemeiner-brooks-2026, fec-rjc-victory-fund, ji-fitzpatrick-2026]]\n\nIn April 2026 he also joined the lobbying and law firm Brownstein Hyatt Farber Schreck as a senior strategic advisor, keeping his RJC and Jewish Policy Center posts; the firm cited his connections to House and Senate Republican leadership and the White House [[bhfs-2026]]. The RJC’s 2024 tax return, from the year of its largest campaign, reported revenue of $13.4 million and paid Brooks $820,421, with a further $268,500 from related organizations [[propublica-rjc]]."
+    }
+  ]
+}

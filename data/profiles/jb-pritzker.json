@@ -1,0 +1,675 @@
+{
+  "subject": "pritzker",
+  "reviewedAt": "2026-10-25",
+  "sourcesVerifiedAt": "2026-10-25",
+  "brief": {
+    "inclusion": "Hyatt heir and two-term Democratic governor of Illinois seeking a third term in November 2026, who has put more than $326 million of his own money into his campaigns, funds Democratic causes nationally, and fought the Trump administration's 2025 National Guard deployment to the Supreme Court.",
+    "identifiers": {
+      "wikidata": "Q6103950",
+      "fec_contributor": "PRITZKER, JAY ROBERT"
+    },
+    "namesakes": "FEC records contain many Pritzkers: Jay A. (his uncle, Hyatt founder), Thomas J., Nicholas J., John A. and Penny. The subject files as Jay Robert, Jay R. or JB Pritzker. Worldview has two entities for him: \"J. B. Pritzker\" (OpenStates, the governor record, used here) and a duplicate \"JB Pritzker\" (scaffold-cycle) that should be merged.",
+    "coverage": {
+      "from": "1965",
+      "through": "2026-10-25",
+      "lags": "Illinois State Board of Elections records hold his self-funding and state giving, which are outside the federal total. The November 3, 2026 result is pending."
+    },
+    "openQuestions": [
+      "FEC rows filed as \"Pritzker, JB\" (about $2.1 million, including $1.8 million to House Majority PAC) are not in the imported total, which uses the \"Pritzker, Jay Robert\" search; the importer takes one contributor search name.",
+      "Merge the duplicate \"JB Pritzker\" entity into \"J. B. Pritzker\".",
+      "His own description of his religious practice needs a primary source; the record establishes his family's prominence in Chicago's Jewish community and his Holocaust-museum leadership.",
+      "Update with the November 3, 2026 result."
+    ],
+    "review": []
+  },
+  "summary": "Heir to the Hyatt hotel fortune and private-equity investor who has been governor of Illinois since 2019, after spending $171.5 million of his own money to unseat Bruce Rauner; across three campaigns his self-funding exceeds $326 million. He has also given about $29 million in itemized federal contributions, including $9.75 million to the pro-Clinton super PAC in 2016 and $10 million in 2026 to back his lieutenant governor's Senate run. A leading Trump antagonist and possible 2028 presidential candidate, he is seeking a rare third term against Darren Bailey.",
+  "roles": [
+    {
+      "label": "Governor",
+      "detail": "Governor of Illinois since January 14, 2019; seeking a third term November 3, 2026",
+      "sources": ["wikipedia", "cni-third-term-2026"]
+    },
+    {
+      "label": "Investor",
+      "detail": "Co-founder of Pritzker Group with his brother Anthony; ran it until March 2017",
+      "sources": ["forbes-profile"]
+    },
+    {
+      "label": "Political donor",
+      "detail": "Record self-funder of Illinois campaigns; major federal donor to Democratic super PACs",
+      "sources": ["suntimes-65m-2026", "fec-pritzker"]
+    },
+    {
+      "label": "Philanthropist",
+      "detail": "Chaired the Illinois Holocaust Museum's creation; $100 million gift to Northwestern's law school (2015)",
+      "sources": ["wikipedia"]
+    }
+  ],
+  "finance": {
+    "fec": {
+      "contributorName": "PRITZKER, JAY ROBERT",
+      "namePattern": "^PRITZKER, (J\\.? ?B\\.?|JAY ROBERT|JAY R\\.?|JB)( MR\\.?| HON\\.?)?$",
+      "employerPattern": "PRITZKER|SELF|TRIBAL|INVEST|STATE OF ILLINOIS|GOVERNOR|ENTREPRENEUR|VENTURE|HYATT",
+      "cities": ["CHICAGO", "SPRINGFIELD", "EVANSTON", "DURHAM"],
+      "source": "fec-pritzker"
+    },
+    "coverage": "Itemized federal contributions filed under \"Pritzker, Jay Robert\", matched on name and a Pritzker or investment employer or his filing cities. Rows filed as \"Pritzker, JB\" (about $2.1 million) are not yet included. His more than $326 million in self-funding of Illinois governor campaigns, state party and committee giving, and Think Big America are in Illinois or nonprofit records, outside this total."
+  },
+  "entities": {
+    "pritzker": {
+      "match": { "name": "J. B. Pritzker", "type": "politician" }
+    },
+    "pritzker-group": {
+      "create": {
+        "name": "Pritzker Group",
+        "type": "company",
+        "description": "Chicago private investment firm founded by JB and Anthony Pritzker."
+      }
+    },
+    "rauner": {
+      "create": {
+        "name": "Bruce Rauner",
+        "type": "politician",
+        "description": "Republican governor of Illinois, 2015–2019."
+      }
+    },
+    "bailey": {
+      "match": { "identifier": ["fec_candidate", "H4IL12078"] }
+    },
+    "stratton": {
+      "match": { "identifier": ["fec_candidate", "S6IL00458"] }
+    },
+    "illinois-future": {
+      "match": { "identifier": ["fec_committee", "C00902320"] }
+    },
+    "priorities": {
+      "match": { "identifier": ["fec_committee", "C00495861"] }
+    },
+    "ff-pac": {
+      "match": { "identifier": ["fec_committee", "C00669259"] }
+    },
+    "clinton": {
+      "match": { "identifier": ["fec_candidate", "S0NY00188"] }
+    },
+    "trump": {
+      "match": { "name": "Donald Trump", "type": "politician" }
+    },
+    "holocaust-museum": {
+      "create": {
+        "name": "Illinois Holocaust Museum and Education Center",
+        "type": "organization",
+        "description": "Museum in Skokie, Illinois, opened in 2009.",
+        "websiteUrl": "https://www.ilholocaustmuseum.org/"
+      }
+    },
+    "think-big": {
+      "create": {
+        "name": "Think Big America",
+        "type": "organization",
+        "description": "Nonprofit launched and funded by JB Pritzker in October 2023 to support abortion-rights ballot measures."
+      }
+    }
+  },
+  "sources": [
+    {
+      "key": "wikipedia",
+      "title": "JB Pritzker",
+      "publisher": "Wikipedia",
+      "type": "secondary",
+      "url": "https://en.wikipedia.org/wiki/JB_Pritzker",
+      "notes": "Reference work; cited for biography, election results, legislation, the property-tax episode and the 2026 health disclosure."
+    },
+    {
+      "key": "forbes-profile",
+      "title": "J.B. Pritzker: real-time net worth",
+      "publisher": "Forbes",
+      "type": "secondary",
+      "url": "https://www.forbes.com/profile/jb-pritzker/"
+    },
+    {
+      "key": "fec-pritzker",
+      "title": "Individual contributions: Pritzker, Jay Robert (Schedule A)",
+      "publisher": "Federal Election Commission",
+      "type": "filing",
+      "url": "https://www.fec.gov/data/receipts/individual-contributions/?contributor_name=PRITZKER%2C+JAY+ROBERT",
+      "documentId": "OpenFEC /schedules/schedule_a"
+    },
+    {
+      "key": "ap-nh-2025",
+      "title": "JB Pritzker calls out 'do-nothing' Democrats for failing to push back against Trump",
+      "publisher": "The Associated Press (via Concord Monitor)",
+      "author": "Joey Cappelletti and Holly Ramer",
+      "type": "article",
+      "publishedAt": "2025-04-28",
+      "url": "https://www.concordmonitor.com/JB-Pritzker-calls-out-do-nothing-Democrats-for-failing-to-push-back-against-Trump-60879930"
+    },
+    {
+      "key": "tnd-guard-2025",
+      "title": "'Trump is not a king': Pritzker says as judge blocks National Guard deployment to Illinois",
+      "publisher": "The National News Desk (via WJLA)",
+      "author": "Jessica A. Botelho",
+      "type": "article",
+      "publishedAt": "2025-10-09",
+      "url": "https://wjla.com/news/nation-world/federal-judge-blocks-trump-from-deploying-national-guard-to-illinois-chicago-president-donald-trump-gov-jb-pritzker-violence-crime-crackdown-immigration-and-customs-enforcement-ice-federal-protective-services-fps"
+    },
+    {
+      "key": "cni-guard-2026",
+      "title": "Judge dismisses National Guard mobilization suit after Trump's loss at Supreme Court",
+      "publisher": "Capitol News Illinois (via News From The States)",
+      "author": "Hannah Meisel",
+      "type": "article",
+      "publishedAt": "2026-04-20",
+      "url": "https://www.newsfromthestates.com/article/judge-dismisses-national-guard-mobilization-suit-after-trumps-loss-supreme-court"
+    },
+    {
+      "key": "suntimes-65m-2026",
+      "title": "Gov. JB Pritzker pours $65M into his campaign fund ahead of November elections",
+      "publisher": "Chicago Sun-Times",
+      "author": "Tina Sfondeles",
+      "type": "article",
+      "publishedAt": "2026-08-17",
+      "url": "https://chicago.suntimes.com/2026/08/17/gov-jb-pritzker-pours-65m-into-his-campaign-fund-ahead-of-november-elections"
+    },
+    {
+      "key": "cni-third-term-2026",
+      "title": "Pritzker says 'so much more to do' in Illinois as he seeks rare 3rd term",
+      "publisher": "Capitol News Illinois (via KWQC)",
+      "author": "Ben Szalinski and Brenden Moore",
+      "type": "article",
+      "publishedAt": "2026-10-09",
+      "url": "https://www.kwqc.com/2026/10/10/pritzker-says-so-much-more-do-illinois-he-seeks-rare-3rd-term/"
+    }
+  ],
+  "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "January 19, 1965",
+      "detail": "Palo Alto, California; moved to Chicago at 12 after his father's death",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "sex",
+      "label": "Sex",
+      "value": "Male",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "religion",
+      "label": "Religion",
+      "value": "Jewish",
+      "detail": "From one of Chicago's most prominent Jewish families; led the creation of the Illinois Holocaust Museum.",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "spouse",
+      "label": "Spouse",
+      "value": "Mary Kathryn (M.K.) Pritzker",
+      "detail": "Married 1993.",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "children",
+      "label": "Children",
+      "value": "Two",
+      "sources": ["forbes-profile"]
+    },
+    {
+      "key": "residence",
+      "label": "Residence",
+      "value": "Springfield and Chicago, Illinois",
+      "sources": ["forbes-profile", "wikipedia"]
+    },
+    {
+      "key": "party",
+      "label": "Party",
+      "value": "Democratic",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "education",
+      "label": "Education",
+      "value": "BA, political science, Duke University (1987); JD, Northwestern University (1993)",
+      "sources": ["wikipedia", "forbes-profile"]
+    },
+    {
+      "key": "current-roles",
+      "label": "Current roles",
+      "value": "Governor of Illinois; Democratic nominee for a third term (2026)",
+      "featured": true,
+      "asOf": "2026-10-25",
+      "sources": ["cni-third-term-2026"]
+    },
+    {
+      "key": "net-worth",
+      "label": "Net worth (estimate)",
+      "value": "$4.2 billion",
+      "detail": "Forbes real-time estimate",
+      "asOf": "2026-10-25",
+      "featured": true,
+      "sources": ["forbes-profile"]
+    },
+    {
+      "key": "self-funding",
+      "label": "Self-funding (governor campaigns)",
+      "value": "More than $326 million",
+      "detail": "Across his 2018, 2022 and 2026 campaigns, including $171.5 million in 2018 and a $65 million contribution on August 10, 2026.",
+      "asOf": "2026-08-17",
+      "featured": true,
+      "sources": ["suntimes-65m-2026", "wikipedia"]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "pritzker-group",
+      "source": "pritzker",
+      "target": "pritzker-group",
+      "relType": "co-founded",
+      "role": "Co-founder and managing partner with his brother Anthony, until March 2017",
+      "until": "2017-03",
+      "prominence": 2,
+      "sources": ["forbes-profile"]
+    },
+    {
+      "key": "pritzker-clinton",
+      "source": "pritzker",
+      "target": "clinton",
+      "relType": "campaign-role",
+      "role": "National co-chair of her 2008 campaign; more than $17.5 million to her 2016 super PAC and campaign",
+      "from": "2008",
+      "until": "2016",
+      "prominence": 2,
+      "sources": ["wikipedia", "fec-pritzker"]
+    },
+    {
+      "key": "pritzker-priorities",
+      "source": "pritzker",
+      "target": "priorities",
+      "relType": "donated-to",
+      "role": "$9.75 million in itemized gifts, mostly in the 2016 cycle",
+      "from": "2015",
+      "until": "2016",
+      "prominence": 2,
+      "sources": ["fec-pritzker"]
+    },
+    {
+      "key": "pritzker-ff-pac",
+      "source": "pritzker",
+      "target": "ff-pac",
+      "relType": "donated-to",
+      "role": "$5 million",
+      "prominence": 1,
+      "sources": ["fec-pritzker"]
+    },
+    {
+      "key": "pritzker-illinois-future",
+      "source": "pritzker",
+      "target": "illinois-future",
+      "relType": "donated-to",
+      "role": "$10 million to support Juliana Stratton in the 2026 Democratic Senate primary",
+      "from": "2025",
+      "until": "2026",
+      "prominence": 2,
+      "sources": ["fec-pritzker", "suntimes-65m-2026"]
+    },
+    {
+      "key": "pritzker-stratton",
+      "source": "pritzker",
+      "target": "stratton",
+      "relType": "allied-with",
+      "role": "Chose her as running mate (2017); backed her 2026 Senate campaign",
+      "from": "2017-08-10",
+      "prominence": 2,
+      "sources": ["wikipedia", "suntimes-65m-2026"]
+    },
+    {
+      "key": "pritzker-rauner",
+      "source": "pritzker",
+      "target": "rauner",
+      "relType": "opposed",
+      "role": "Unseated him in 2018, 54.5% to 38.8%",
+      "from": "2017",
+      "until": "2018-11-06",
+      "prominence": 2,
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "pritzker-bailey",
+      "source": "pritzker",
+      "target": "bailey",
+      "relType": "opposed",
+      "role": "Defeated him in 2022 (54.9% to 42.4%); 2026 rematch",
+      "from": "2022",
+      "prominence": 2,
+      "sources": ["wikipedia", "cni-third-term-2026"]
+    },
+    {
+      "key": "pritzker-trump",
+      "source": "pritzker",
+      "target": "trump",
+      "relType": "opposed",
+      "role": "Sued with Chicago to block the federalized National Guard deployment of October 2025; prominent national critic",
+      "from": "2017",
+      "prominence": 3,
+      "sources": ["tnd-guard-2025", "cni-guard-2026", "ap-nh-2025"]
+    },
+    {
+      "key": "pritzker-holocaust-museum",
+      "source": "pritzker",
+      "target": "holocaust-museum",
+      "relType": "chairs",
+      "role": "Chaired the capital campaign and creation of the museum, opened 2009",
+      "until": "2009",
+      "prominence": 1,
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "pritzker-think-big",
+      "source": "pritzker",
+      "target": "think-big",
+      "relType": "founded",
+      "role": "Launched and funded the abortion-rights ballot nonprofit",
+      "from": "2023-10",
+      "prominence": 1,
+      "sources": ["wikipedia"]
+    }
+  ],
+  "events": [
+    {
+      "key": "born",
+      "date": "1965-01-19",
+      "title": "Born in Palo Alto, California, into the Hyatt-fortune Pritzker family",
+      "summary": "His father, Donald, dies in 1972; at 12 he moves to Chicago to live with his uncle Jay and aunt Cindy.",
+      "category": "personal",
+      "significance": 2,
+      "chapter": "heir",
+      "sources": ["wikipedia", "forbes-profile"]
+    },
+    {
+      "key": "congress-1998",
+      "date": "1998-03",
+      "title": "Finishes third in a Democratic House primary",
+      "summary": "20.5% in Illinois's 9th district after spending nearly $1 million of his own money.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "heir",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "clinton-2008",
+      "date": "2008",
+      "title": "National co-chair of Hillary Clinton's presidential campaign",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "heir",
+      "participants": [["clinton", "candidate"]],
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "holocaust-museum",
+      "date": "2009",
+      "title": "Illinois Holocaust Museum opens after a campaign he chaired",
+      "category": "ideas",
+      "significance": 1,
+      "chapter": "heir",
+      "participants": [["holocaust-museum", "museum"]],
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "northwestern-gift",
+      "date": "2015",
+      "title": "Gives $100 million to Northwestern's law school, renamed for him",
+      "category": "finance",
+      "significance": 1,
+      "chapter": "heir",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "priorities-2016",
+      "date": "2016",
+      "title": "Gives more than $17.5 million to back Clinton",
+      "summary": "Including $9.75 million in itemized gifts to Priorities USA Action.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "heir",
+      "participants": [["priorities", "super PAC"], ["clinton", "candidate"]],
+      "sources": ["wikipedia", "fec-pritzker"]
+    },
+    {
+      "key": "governor-2018",
+      "date": "2018-11-06",
+      "title": "Unseats Gov. Bruce Rauner after spending $171.5 million of his own money",
+      "summary": "54.5% to 38.8%.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "governor",
+      "participants": [["rauner", "incumbent"]],
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "first-year",
+      "date": "2019",
+      "title": "Signs a $15 minimum wage, cannabis legalization and the Reproductive Health Act",
+      "summary": "Followed by pardons for about 11,000 low-level cannabis convictions on December 31.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "governor",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "cash-bail",
+      "date": "2021-02-22",
+      "title": "Signs criminal-justice law ending cash bail",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "governor",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "reelected-2022",
+      "date": "2022-11-08",
+      "title": "Reelected over Darren Bailey, 54.9% to 42.4%",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "governor",
+      "participants": [["bailey", "opponent"]],
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "assault-weapons",
+      "date": "2023-01-11",
+      "title": "Signs a ban on assault weapons and high-capacity magazines",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "governor",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "think-big",
+      "date": "2023-10",
+      "title": "Launches Think Big America to fund abortion-rights ballot campaigns",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "national",
+      "participants": [["think-big", "organization"]],
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "nh-speech",
+      "date": "2025-04-27",
+      "title": "Calls for \"mass protests\" against Trump in a New Hampshire speech",
+      "summary": "And attacks \"do-nothing\" Democrats, fueling talk of a 2028 presidential run.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "national",
+      "participants": [["trump", "president"]],
+      "sources": ["ap-nh-2025"]
+    },
+    {
+      "key": "third-term-launch",
+      "date": "2025-06-26",
+      "title": "Announces a bid for a third term",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "national",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "guard-blocked",
+      "date": "2025-10-09",
+      "title": "Court blocks Trump's National Guard deployment to Illinois",
+      "summary": "In a suit by the state and Chicago after Trump federalized about 300 Illinois Guard members and sent 200 from Texas during Operation Midway Blitz.",
+      "category": "legal",
+      "significance": 3,
+      "chapter": "national",
+      "participants": [["trump", "president"]],
+      "sources": ["tnd-guard-2025", "cni-guard-2026"]
+    },
+    {
+      "key": "scotus-guard",
+      "date": "2025-12-23",
+      "title": "Supreme Court upholds the order, 6–3",
+      "summary": "Finding the administration \"failed to identify a source of authority\" for the military to execute the laws in Illinois; the case is dismissed as moot in April 2026.",
+      "category": "legal",
+      "significance": 3,
+      "chapter": "national",
+      "participants": [["trump", "president"]],
+      "sources": ["cni-guard-2026"]
+    },
+    {
+      "key": "illinois-future",
+      "date": "2026",
+      "title": "Gives $10 million to Illinois Future PAC for Juliana Stratton's Senate run",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "national",
+      "participants": [["illinois-future", "super PAC"], ["stratton", "candidate"]],
+      "sources": ["fec-pritzker", "suntimes-65m-2026"]
+    },
+    {
+      "key": "65m",
+      "date": "2026-08-10",
+      "title": "Puts $65 million into his campaign fund",
+      "summary": "Bringing his self-funding across three campaigns above $326 million.",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "national",
+      "sources": ["suntimes-65m-2026"]
+    },
+    {
+      "key": "diabetes",
+      "date": "2026-09-21",
+      "title": "Discloses type 2 diabetes and two years on a GLP-1 drug",
+      "category": "personal",
+      "significance": 1,
+      "chapter": "national",
+      "sources": ["wikipedia", "cni-third-term-2026"]
+    },
+    {
+      "key": "poll-2026",
+      "date": "2026-10-09",
+      "title": "Leads Bailey by 20 points in the race for a third term",
+      "summary": "Per a Public Policy Polling survey; he outspent Bailey more than 25 to 1 in the third quarter.",
+      "category": "politics",
+      "significance": 1,
+      "chapter": "national",
+      "participants": [["bailey", "opponent"]],
+      "sources": ["cni-third-term-2026"]
+    }
+  ],
+  "statements": [
+    {
+      "key": "mass-protests-2025",
+      "issue": "Donald Trump",
+      "date": "2025-04-27",
+      "venue": "McIntyre-Shaheen 100 Club Dinner, Manchester, New Hampshire",
+      "quote": "Never before in my life have I called for mass protests, for mobilization, for disruption, but I am now",
+      "source": "ap-nh-2025"
+    },
+    {
+      "key": "ancestors-2025",
+      "issue": "Donald Trump",
+      "date": "2025-04-27",
+      "venue": "McIntyre-Shaheen 100 Club Dinner, Manchester, New Hampshire",
+      "quote": "stop tearing down the Constitution in the name of my ancestors",
+      "source": "ap-nh-2025"
+    },
+    {
+      "key": "quislings-2025",
+      "issue": "Republican Party",
+      "date": "2025-04-27",
+      "venue": "McIntyre-Shaheen 100 Club Dinner, Manchester, New Hampshire",
+      "quote": "We will never join so many Republicans in a special place in hell reserved for quislings and cowards.",
+      "source": "ap-nh-2025"
+    },
+    {
+      "key": "soapbox-2025",
+      "issue": "Democratic Party",
+      "date": "2025-04-27",
+      "venue": "McIntyre-Shaheen 100 Club Dinner, Manchester, New Hampshire",
+      "quote": "must castigate them on the soapbox and then punish them at the ballot box.",
+      "summary": "On Republicans who enable Trump; he also criticized \"do-nothing\" Democrats.",
+      "source": "ap-nh-2025"
+    },
+    {
+      "key": "not-a-king-2025",
+      "issue": "Donald Trump",
+      "date": "2025-10-09",
+      "venue": "Statement after the court blocked the National Guard deployment",
+      "quote": "Donald Trump is not a king -- and his administration is not above the law,",
+      "source": "tnd-guard-2025"
+    },
+    {
+      "key": "no-rebellion-2025",
+      "issue": "Donald Trump",
+      "date": "2025-10-09",
+      "venue": "Statement after the court blocked the National Guard deployment",
+      "quote": "Today, the court confirmed what we all know: there is no credible evidence of a rebellion in the state of Illinois.",
+      "source": "tnd-guard-2025"
+    },
+    {
+      "key": "more-to-do-2026",
+      "issue": "Illinois",
+      "date": "2026-10-09",
+      "venue": "Interview with Capitol News Illinois",
+      "quote": "There's so many things that we need to do in the state of Illinois",
+      "summary": "On why he is seeking a third term.",
+      "source": "cni-third-term-2026"
+    },
+    {
+      "key": "bootlicker-2026",
+      "issue": "Republican Party",
+      "date": "2026-10-09",
+      "venue": "Interview with Capitol News Illinois",
+      "quote": "a sycophant, a bootlicker for Donald Trump",
+      "summary": "His description of his opponent, Darren Bailey.",
+      "source": "cni-third-term-2026"
+    }
+  ],
+  "ideas": {
+    "traditions": [],
+    "influences": [],
+    "works": [],
+    "featuredQuotes": ["not-a-king-2025", "mass-protests-2025"]
+  },
+  "chapters": [
+    {
+      "key": "heir",
+      "title": "A Hyatt heir in Democratic politics",
+      "dek": "A family fortune, a failed House race, and decades as a donor.",
+      "body": "Pritzker was born in Palo Alto on January 19, 1965, into the family that built the Hyatt hotel chain; his uncle Jay founded it and his father, Donald, developed it [[wikipedia, forbes-profile]]. After his father's death in 1972 he moved at 12 to Chicago to live with Jay and Cindy Pritzker. He graduated from Duke in 1987 and Northwestern law school in 1993, and co-founded the private-equity firm Pritzker Group with his brother Anthony [[wikipedia, forbes-profile]]. His sister Penny Pritzker was Obama's commerce secretary [[forbes-profile]].\n\nHis first campaign, for an open House seat in 1998, ended in a third-place finish with 20.5 percent despite nearly $1 million of his own money [[wikipedia]]. He became instead a major Democratic donor and organizer: national co-chair of Hillary Clinton's 2008 campaign and, in 2016, a donor of more than $17.5 million to her campaign and super PAC, including $9.75 million in itemized gifts to Priorities USA Action [[wikipedia, fec-pritzker]]. He chaired the creation of the Illinois Holocaust Museum, opened in 2009, and in 2015 gave $100 million to Northwestern's law school [[wikipedia]]."
+    },
+    {
+      "key": "governor",
+      "title": "Buying a governorship, and using it",
+      "dek": "A $171.5 million campaign and a progressive agenda in Springfield.",
+      "body": "Pritzker spent $171.5 million of his own money in 2018 to unseat Republican Gov. Bruce Rauner, winning 54.5 to 38.8 percent [[wikipedia]]. His first year produced a $15 minimum wage, legal recreational cannabis with pardons for about 11,000 low-level convictions, the Reproductive Health Act and a $45 billion capital plan; in 2021 he signed a law ending cash bail, and in 2023 a ban on assault weapons and high-capacity magazines [[wikipedia]].\n\nHe was reelected over Darren Bailey in 2022, 54.9 to 42.4 percent [[wikipedia]]. His wealth drew scrutiny: after he appealed the assessment on a vacant mansion next to his home, the Cook County inspector general accused him of a scheme to cut his property taxes; he called it a political attack and repaid about $330,000 [[wikipedia]]."
+    },
+    {
+      "key": "national",
+      "title": "Trump's antagonist, and a third campaign",
+      "dek": "Mass protests, the National Guard fight and $326 million of his own money.",
+      "body": "Pritzker built a national profile as a Trump opponent. In October 2023 he launched Think Big America to fund abortion-rights ballot campaigns in other states [[wikipedia]]. In an April 2025 speech in New Hampshire he said, \"Never before in my life have I called for mass protests, for mobilization, for disruption, but I am now,\" urged Trump to \"stop tearing down the Constitution in the name of my ancestors,\" and criticized \"do-nothing\" Democrats [[ap-nh-2025]].\n\nIn October 2025, during the immigration crackdown called Operation Midway Blitz, the administration federalized about 300 Illinois Guard members and sent 200 from Texas. Illinois and Chicago sued; Judge April Perry blocked the deployment on October 9, and Pritzker said \"Donald Trump is not a king\" [[tnd-guard-2025, cni-guard-2026]]. On December 23 the Supreme Court upheld her order 6–3, finding the administration \"failed to identify a source of authority\" for the military to execute the laws in Illinois; the troops left by mid-January [[cni-guard-2026]].\n\nHe announced a bid for a rare third term in June 2025 [[wikipedia]]. He gave $10 million to Illinois Future PAC to support his lieutenant governor, Juliana Stratton, in the Senate primary, and on August 10, 2026, put $65 million into his own campaign, bringing his self-funding across three races above $326 million [[fec-pritzker, suntimes-65m-2026]]. In September he disclosed that he has type 2 diabetes and has used a GLP-1 drug for two years [[wikipedia]]. In October he led Bailey by 20 points in one poll, called him \"a bootlicker for Donald Trump,\" and was widely discussed as a 2028 presidential contender [[cni-third-term-2026]]."
+    }
+  ]
+}

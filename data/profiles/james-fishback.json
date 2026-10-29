@@ -1,0 +1,736 @@
+{
+  "subject": "fishback",
+  "reviewedAt": "2026-10-28",
+  "sourcesVerifiedAt": "2026-10-28",
+  "image": "https://commons.wikimedia.org/wiki/Special:FilePath/James%20Fishback%20at%20a%20public%20speaking%20event%20at%20Ave%20Maria%20University-2%20(cropped).jpg?width=400",
+  "brief": {
+    "inclusion": "Investment manager, debate-organization founder and unsuccessful 2026 Republican candidate for governor of Florida who built a national following around restricting legal immigration, opposing U.S. support for Israel and challenging the Republican Party's donor establishment.",
+    "identifiers": {
+      "florida_candidate_account": "89600",
+      "campaign": "fishback2026.com",
+      "x": "j_fishback"
+    },
+    "namesakes": "James T. Fishback, the Florida investor and 2026 gubernatorial candidate; distinguish him from other people with the surname by Azoria Partners, Incubate Debate and Florida candidate account 89600.",
+    "coverage": {
+      "from": "2019",
+      "through": "2026-10-28",
+      "lags": "Florida campaign-finance records are not imported into Worldview's federal FEC tables. Post-primary activity is checked through the October 17 CNN report on his national tour."
+    },
+    "openQuestions": [
+      "Exact birth date is not established by a primary source; reporting described him as 30 in November 2025 and 31 during 2026.",
+      "Georgetown and conference biographies say he studied international economics but do not establish that he received a degree.",
+      "The date and terms of his departure from Azoria are not established by a company statement; the two Azoria ETFs were liquidated in December 2025.",
+      "Refresh Florida campaign receipts and expenditures when the Division of Elections posts final amended reports for the 2026 cycle.",
+      "The September 2026 federal lawsuit arising from his removal from the Miami-Dade commission meeting remains unresolved."
+    ],
+    "review": [
+      { "kind": "evidence", "by": "Codex", "at": "2026-10-28" },
+      { "kind": "quantitative", "by": "Codex", "at": "2026-10-28" },
+      { "kind": "editorial", "by": "Codex", "at": "2026-10-28" },
+      { "kind": "product", "by": "Codex", "at": "2026-10-28" }
+    ]
+  },
+  "summary": "James Fishback founded the high-school program Incubate Debate and the investment firm Azoria before running for governor of Florida as a Republican in 2026. He finished third in the primary with about 10.5% of the vote after campaigning against both unauthorized and legal immigration, Florida investment in Israel Bonds, AIPAC influence and establishment Republican donors. After the primary he continued those themes through public meetings and a national speaking tour, presenting his campaign as the start of a broader America First movement.",
+  "roles": [
+    {
+      "label": "Political candidate",
+      "detail": "Republican candidate for governor of Florida in 2026; defeated in the August 18 primary",
+      "sources": ["florida-candidates-2026", "ap-launch-2025", "cnn-tour-2026"]
+    },
+    {
+      "label": "Investment manager",
+      "detail": "Founder of Azoria Partners; formerly a research analyst at Greenlight Capital",
+      "sources": ["sec-azoria-2025", "greenlight-settlement-2025", "reuters-azoria-2024"]
+    },
+    {
+      "label": "Debate-program founder",
+      "detail": "Founder of Incubate Debate, established in 2019 to run high-school debate programs outside the national debate circuit",
+      "sources": ["nbc-incubate-2025", "campaign-press-2026"]
+    },
+    {
+      "label": "Political speaker",
+      "detail": "Post-primary national-tour speaker organizing around immigration, Israel and opposition to Republican donor institutions",
+      "sources": ["cnn-tour-2026", "campaign-home-2026"]
+    }
+  ],
+  "finance": {
+    "coverage": "Fishback's gubernatorial campaign and Florida First political committee filed with the Florida Division of Elections, not the FEC. Worldview does not yet import state campaign-finance transactions. Florida Phoenix reported approximately $705,000 raised by his campaign and more than $1.2 million by Florida First before the August 2026 primary; these outside totals are not included in Worldview's federal-money total."
+  },
+  "entities": {
+    "fishback": {
+      "create": {
+        "name": "James Fishback",
+        "type": "politician",
+        "description": "Florida investor, founder of Incubate Debate and unsuccessful 2026 Republican candidate for governor.",
+        "websiteUrl": "https://fishback2026.com/"
+      }
+    },
+    "azoria": {
+      "create": {
+        "name": "Azoria Partners",
+        "type": "company",
+        "description": "Investment firm founded by James Fishback; sub-adviser to two exchange-traded funds liquidated in December 2025.",
+        "websiteUrl": "https://investazoria.com/"
+      }
+    },
+    "greenlight": {
+      "create": {
+        "name": "Greenlight Capital",
+        "type": "company",
+        "description": "Investment-management firm founded by David Einhorn and a former employer of James Fishback.",
+        "websiteUrl": "https://www.greenlightcapital.com/"
+      }
+    },
+    "incubate": {
+      "create": {
+        "name": "Incubate Debate",
+        "type": "organization",
+        "description": "Florida-based nonprofit high-school debate program founded by James Fishback in 2019.",
+        "websiteUrl": "https://incubatedebate.org/"
+      }
+    },
+    "republican-party": {
+      "match": { "name": "Republican Party", "type": "organization" }
+    },
+    "donalds": {
+      "match": { "name": "Byron Donalds", "type": "politician" }
+    },
+    "aipac": {
+      "match": { "name": "AIPAC", "type": "organization" }
+    },
+    "carlson": {
+      "match": { "name": "Tucker Carlson", "type": "pundit" }
+    }
+  },
+  "sources": [
+    {
+      "key": "campaign-home-2026",
+      "title": "James Fishback",
+      "publisher": "Fishback for Governor",
+      "type": "primary",
+      "url": "https://fishback2026.com/",
+      "accessedAt": "2026-10-28",
+      "notes": "Post-primary campaign homepage stating that the race is over and linking to the campaign's next chapter."
+    },
+    {
+      "key": "campaign-platform-2026",
+      "title": "Our Platform",
+      "publisher": "Fishback for Governor",
+      "type": "primary",
+      "url": "https://fishback2026.com/platform/",
+      "accessedAt": "2026-10-28",
+      "notes": "Archived campaign platform; used for policy positions in Fishback's own words."
+    },
+    {
+      "key": "campaign-press-2026",
+      "title": "Press & Media",
+      "publisher": "Fishback for Governor",
+      "type": "primary",
+      "url": "https://james-fishback.com/press",
+      "accessedAt": "2026-10-28",
+      "notes": "Campaign biography and platform summary; the page was intermittently unavailable during verification."
+    },
+    {
+      "key": "florida-candidates-2026",
+      "title": "Candidate Listing for 2026 General Election: Governor",
+      "publisher": "Florida Division of Elections",
+      "type": "filing",
+      "url": "https://dos.elections.myflorida.com/candidates/CanList.asp?OfficeCode=GOV&elecid=20261103-GEN",
+      "documentId": "Florida candidate account 89600",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "key": "florida-primary-results-2026",
+      "title": "2026 Florida Governor Republican Primary",
+      "publisher": "Florida Election Watch",
+      "type": "filing",
+      "url": "https://floridaelectionwatch.gov/Downloads/EN/",
+      "documentId": "2026 Primary Election official results",
+      "accessedAt": "2026-10-28",
+      "notes": "Official results download portal. Candidate status is separately confirmed by the Division of Elections candidate listing."
+    },
+    {
+      "key": "ap-launch-2025",
+      "title": "GOP investor James Fishback is entering the Florida governor's race, challenging Trump's pick",
+      "publisher": "Associated Press",
+      "author": "Kate Payne",
+      "type": "article",
+      "publishedAt": "2025-11-24",
+      "url": "https://apnews.com/article/fishback-donalds-trump-desantis-florida-governor-ee2cd82514038074fb6e836352503ed7",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "key": "tac-interview-2026",
+      "title": "James Fishback: America Is Full",
+      "publisher": "The American Conservative",
+      "author": "Harrison Berger",
+      "type": "transcript",
+      "publishedAt": "2026-01-11",
+      "url": "https://www.theamericanconservative.com/james-fishback-america-is-full/",
+      "accessedAt": "2026-10-28",
+      "notes": "Edited interview transcript; used for first-person statements on immigration, Israel, free speech and changes in his views."
+    },
+    {
+      "key": "cnn-tour-2026",
+      "title": "CNN Newsroom transcript: young Republicans, Iran and James Fishback's national tour",
+      "publisher": "CNN",
+      "author": "Donie O'Sullivan",
+      "type": "transcript",
+      "publishedAt": "2026-10-17",
+      "url": "https://transcripts.cnn.com/show/ws/date/2026-10-17/segment/01",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "key": "greenwich-bio-2026",
+      "title": "James Fishback",
+      "publisher": "Greenwich Economic Forum",
+      "type": "primary",
+      "url": "https://www.thegeforum.com/speakers/james-fishback",
+      "accessedAt": "2026-10-28",
+      "notes": "Conference biography; used for Azoria role and field of study, not as independent evidence of investment performance."
+    },
+    {
+      "key": "reuters-azoria-2024",
+      "title": "Startup asset manager opposing DEI-linked investing plans Mar-a-Lago rollout",
+      "publisher": "Reuters",
+      "type": "article",
+      "publishedAt": "2024-12-03",
+      "url": "https://www.investing.com/news/stock-market-news/startup-asset-manager-opposing-deilinked-investing-plans-maralago-rollout-3756927",
+      "accessedAt": "2026-10-28",
+      "notes": "Syndicated Reuters report on Azoria's proposed meritocracy fund and Fishback's prior Greenlight role."
+    },
+    {
+      "key": "sec-azoria-2025",
+      "title": "Azoria 500 Meritocracy ETF prospectus",
+      "publisher": "U.S. Securities and Exchange Commission",
+      "type": "filing",
+      "publishedAt": "2025-06-16",
+      "url": "https://www.sec.gov/Archives/edgar/data/1722388/000199937125007812/azoria-485bpos_061625.htm",
+      "documentId": "CIK 1722388; accession 0001999371-25-007812",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "key": "sec-liquidation-2026",
+      "title": "Azoria funds semi-annual shareholder report",
+      "publisher": "U.S. Securities and Exchange Commission",
+      "type": "filing",
+      "publishedAt": "2026-02-27",
+      "url": "https://www.sec.gov/Archives/edgar/data/1722388/000199937126002699/azoria-ncsrs_113025.htm",
+      "documentId": "CIK 1722388; accession 0001999371-26-002699",
+      "accessedAt": "2026-10-28",
+      "notes": "Reports that both Azoria ETFs ceased trading December 8, 2025 and liquidated December 15."
+    },
+    {
+      "key": "greenlight-settlement-2025",
+      "title": "Fishback admits sharing portfolio data from Einhorn's Greenlight",
+      "publisher": "Bloomberg Law",
+      "author": "Chris Dolmetsch",
+      "type": "article",
+      "publishedAt": "2025-09-26",
+      "url": "https://news.bloomberglaw.com/health-law-and-business/fishback-admits-sharing-portfolio-data-from-einhorns-greenlight",
+      "accessedAt": "2026-10-28",
+      "notes": "Report on the filed settlement agreement; underlying federal case is Greenlight Capital Inc. v. Fishback, 1:24-cv-04832."
+    },
+    {
+      "key": "greenlight-order-2026",
+      "title": "Greenlight Capital, Inc. v. Fishback, Document 84",
+      "publisher": "U.S. District Court for the Southern District of New York via Justia",
+      "type": "filing",
+      "publishedAt": "2026-06-25",
+      "url": "https://law.justia.com/cases/federal/district-courts/new-york/nysdce/1%3A2024cv04832/623847/84/",
+      "documentId": "1:24-cv-04832, Dkt. 84",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "key": "nbc-incubate-2025",
+      "title": "Florida school district cut ties with GOP candidate in 2022 over sexual misconduct allegations",
+      "publisher": "NBC News via AOL",
+      "author": "Matt Dixon",
+      "type": "article",
+      "publishedAt": "2025-12-30",
+      "url": "https://www.aol.com/news/florida-school-district-cut-ties-151251340.html",
+      "accessedAt": "2026-10-28",
+      "notes": "Reports the allegations, school-district response, court disposition and Fishback's denial. The protective-order ruling concerned alleged post-breakup harassment, not the truth of the claimed underage relationship."
+    },
+    {
+      "key": "florida-phoenix-money-2026",
+      "title": "Will GOP's Byron Donalds' dominance in fundraising result in a victory?",
+      "publisher": "Florida Phoenix",
+      "type": "article",
+      "publishedAt": "2026-08-17",
+      "url": "https://floridaphoenix.com/2026/08/17/will-byron-donalds-dominance-in-fundraising-result-in-a-gop-victory/",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "key": "florida-politics-bonds-2026",
+      "title": "Mics cut, speakers ejected after Miami-Dade Commission raises Israeli bond cap",
+      "publisher": "Florida Politics",
+      "author": "Jesse Scheckner",
+      "type": "article",
+      "publishedAt": "2026-09-01",
+      "url": "https://floridapolitics.com/archives/817948-mics-cut-speakers-ejected-after-miami-dade-commission-raises-israeli-bond-cap",
+      "accessedAt": "2026-10-28"
+    },
+    {
+      "key": "jta-bonds-2026",
+      "title": "Miami-Dade county in Florida raises the limit on investments in Israel bonds",
+      "publisher": "Jewish Telegraphic Agency",
+      "author": "Sharon Udasin",
+      "type": "article",
+      "publishedAt": "2026-09-07",
+      "url": "https://www.jta.org/2026/09/07/united-states/miami-dade-county-in-florida-raises-the-limit-on-investments-in-israel-bonds",
+      "accessedAt": "2026-10-28"
+    }
+  ],
+  "facts": [
+    {
+      "key": "age",
+      "label": "Age",
+      "value": "31 in 2026",
+      "detail": "Exact birth date not confirmed in a primary source.",
+      "asOf": "2026-10-17",
+      "sources": ["ap-launch-2025", "cnn-tour-2026"]
+    },
+    {
+      "key": "education",
+      "label": "Education",
+      "value": "Studied international economics at Georgetown University's Walsh School of Foreign Service",
+      "detail": "The available institutional biography does not say whether he received a degree.",
+      "sources": ["greenwich-bio-2026"]
+    },
+    {
+      "key": "party",
+      "label": "Party",
+      "value": "Republican",
+      "featured": true,
+      "sources": ["florida-candidates-2026"]
+    },
+    {
+      "key": "campaign",
+      "label": "2026 campaign",
+      "value": "Candidate for governor of Florida",
+      "detail": "Defeated in the August 18 Republican primary.",
+      "asOf": "2026-08-18",
+      "featured": true,
+      "sources": ["florida-candidates-2026", "florida-primary-results-2026"]
+    },
+    {
+      "key": "primary-result",
+      "label": "2026 Republican primary",
+      "value": "Third place, about 10.5%",
+      "asOf": "2026-08-18",
+      "featured": true,
+      "sources": ["florida-primary-results-2026", "cnn-tour-2026"]
+    },
+    {
+      "key": "campaign-money",
+      "label": "State campaign money before the primary",
+      "value": "About $705,000 for the campaign and more than $1.2 million for Florida First",
+      "detail": "Reported totals from Florida filings; state transactions are not included in Worldview's federal FEC totals.",
+      "asOf": "2026-08-17",
+      "sources": ["florida-phoenix-money-2026"]
+    },
+    {
+      "key": "azoria-funds",
+      "label": "Azoria ETFs",
+      "value": "Two funds liquidated in December 2025",
+      "detail": "The Azoria 500 Meritocracy ETF and Azoria TSLA Convexity ETF ceased trading December 8 and liquidated December 15.",
+      "asOf": "2025-12-15",
+      "sources": ["sec-liquidation-2026"]
+    },
+    {
+      "key": "current-activity",
+      "label": "Current activity",
+      "value": "National political speaking tour",
+      "detail": "Continued organizing after the gubernatorial primary around immigration, Israel and Republican donor influence.",
+      "asOf": "2026-10-17",
+      "featured": true,
+      "sources": ["cnn-tour-2026", "campaign-home-2026"]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "fishback-incubate",
+      "source": "fishback",
+      "target": "incubate",
+      "relType": "founded",
+      "role": "Founder of the high-school debate program",
+      "from": "2019",
+      "prominence": 3,
+      "sources": ["nbc-incubate-2025", "campaign-press-2026"]
+    },
+    {
+      "key": "fishback-greenlight",
+      "source": "fishback",
+      "target": "greenlight",
+      "relType": "former-role",
+      "role": "Research analyst; later litigated over employment obligations and descriptions of his role",
+      "from": "2021",
+      "until": "2023-08",
+      "prominence": 2,
+      "sources": ["greenlight-settlement-2025", "greenlight-order-2026"]
+    },
+    {
+      "key": "fishback-azoria",
+      "source": "fishback",
+      "target": "azoria",
+      "relType": "founded",
+      "role": "Founder; chief executive and portfolio manager in 2025 SEC filings",
+      "from": "2023",
+      "status": "unresolved",
+      "notes": "SEC filings establish his 2025 role, but no company statement establishing the date or terms of his departure was found.",
+      "prominence": 3,
+      "sources": ["sec-azoria-2025", "reuters-azoria-2024"]
+    },
+    {
+      "key": "fishback-republican",
+      "source": "fishback",
+      "target": "republican-party",
+      "relType": "party-member",
+      "role": "Republican gubernatorial candidate and post-primary movement speaker",
+      "from": "2025",
+      "prominence": 3,
+      "sources": ["florida-candidates-2026", "cnn-tour-2026"]
+    },
+    {
+      "key": "fishback-donalds",
+      "source": "fishback",
+      "target": "donalds",
+      "relType": "opposed",
+      "role": "Challenged Donalds for the 2026 Republican gubernatorial nomination and attacked his donors and congressional record",
+      "from": "2025-11",
+      "until": "2026-08",
+      "prominence": 3,
+      "sources": ["ap-launch-2025", "florida-candidates-2026"]
+    },
+    {
+      "key": "fishback-aipac",
+      "source": "fishback",
+      "target": "aipac",
+      "relType": "opposed",
+      "role": "Refused AIPAC-affiliated support and made opposition to its influence a central campaign and post-primary theme",
+      "from": "2025",
+      "prominence": 3,
+      "sources": ["tac-interview-2026", "cnn-tour-2026"]
+    },
+    {
+      "key": "fishback-carlson",
+      "source": "fishback",
+      "target": "carlson",
+      "relType": "guest-on",
+      "role": "Interview guest discussing immigration, Israel and Florida speech law",
+      "from": "2026-01",
+      "prominence": 2,
+      "sources": ["tac-interview-2026"]
+    }
+  ],
+  "events": [
+    {
+      "key": "georgetown",
+      "date": "2010",
+      "title": "Studies international economics at Georgetown",
+      "summary": "A later conference biography identifies the Walsh School of Foreign Service as his field of study; the exact attendance dates and degree status remain unverified.",
+      "category": "career",
+      "significance": 1,
+      "status": "unresolved",
+      "statusNote": "Institutional biography confirms the field but not dates or graduation.",
+      "chapter": "formation",
+      "sources": ["greenwich-bio-2026"]
+    },
+    {
+      "key": "incubate-founded",
+      "date": "2019",
+      "title": "Founds Incubate Debate",
+      "summary": "The program partnered with Florida schools to operate debate events for middle- and high-school students outside the national circuit.",
+      "category": "career",
+      "significance": 3,
+      "chapter": "formation",
+      "participants": [["incubate", "organization founded"]],
+      "sources": ["nbc-incubate-2025", "campaign-press-2026"]
+    },
+    {
+      "key": "greenlight-hired",
+      "date": "2021",
+      "title": "Joins Greenlight Capital as a research analyst",
+      "category": "career",
+      "significance": 2,
+      "chapter": "finance",
+      "participants": [["greenlight", "employer"]],
+      "sources": ["greenlight-settlement-2025", "greenlight-order-2026"]
+    },
+    {
+      "key": "broward-ends-work",
+      "date": "2022-09",
+      "title": "Broward schools end his volunteer work after a parent's allegation",
+      "summary": "The district said it ended Fishback's volunteer work after receiving an allegation that he had an inappropriate relationship with a 17-year-old Incubate Debate employee. Fishback denied wrongdoing. A later judge rejected the former employee's petition alleging post-breakup harassment but did not decide whether the earlier relationship began while she was a minor.",
+      "category": "legal",
+      "significance": 2,
+      "status": "disputed",
+      "statusNote": "The district action is verified; the underlying misconduct allegation is disputed and produced no criminal charge or adjudication establishing it.",
+      "chapter": "incubate",
+      "participants": [["incubate", "program affected"]],
+      "sources": ["nbc-incubate-2025"]
+    },
+    {
+      "key": "leaves-greenlight",
+      "date": "2023-08",
+      "title": "Leaves Greenlight and prepares Azoria",
+      "summary": "Court records say he registered the Azoria domain and discussed the new firm while still employed, then told contacts on August 2 that he had resigned and would start the fund.",
+      "category": "career",
+      "significance": 3,
+      "chapter": "finance",
+      "participants": [["greenlight", "former employer"], ["azoria", "new firm"]],
+      "sources": ["greenlight-order-2026"]
+    },
+    {
+      "key": "azoria-maralago",
+      "date": "2024-12",
+      "title": "Introduces Azoria's anti-DEI investment strategy at Mar-a-Lago",
+      "summary": "He promoted a proposed fund excluding large companies with quantitative demographic hiring targets.",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "finance",
+      "participants": [["azoria", "investment firm"]],
+      "sources": ["reuters-azoria-2024"]
+    },
+    {
+      "key": "azoria-etf-launch",
+      "date": "2025-07-08",
+      "title": "Azoria 500 Meritocracy ETF begins trading",
+      "summary": "SEC filings list Fishback as Azoria's founder, chief executive and a portfolio manager for the fund.",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "finance",
+      "participants": [["azoria", "sub-adviser"]],
+      "sources": ["sec-azoria-2025"]
+    },
+    {
+      "key": "greenlight-settlement",
+      "date": "2025-09-24",
+      "title": "Settles Greenlight confidentiality litigation",
+      "summary": "In a filed agreement Fishback acknowledged sending Greenlight portfolio and strategy information to a personal account, maintaining an undisclosed trading account and sharing confidential information; he agreed to return or delete information and pay the firm's costs.",
+      "category": "legal",
+      "significance": 2,
+      "chapter": "finance",
+      "participants": [["greenlight", "plaintiff and former employer"]],
+      "sources": ["greenlight-settlement-2025", "greenlight-order-2026"]
+    },
+    {
+      "key": "campaign-launch",
+      "date": "2025-11-24",
+      "title": "Enters the Republican race for Florida governor",
+      "summary": "He challenged Trump-endorsed Byron Donalds with proposals including eliminating homestead property taxes and restricting employers' use of H-1B workers.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "campaign",
+      "participants": [["donalds", "primary opponent"], ["republican-party", "party"]],
+      "sources": ["ap-launch-2025", "campaign-platform-2026"]
+    },
+    {
+      "key": "azoria-liquidation",
+      "date": "2025-12-15",
+      "title": "Azoria's two ETFs liquidate",
+      "summary": "The funds stopped trading December 8 and distributed their remaining net assets on December 15 after the trust board voted to terminate them.",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "finance",
+      "participants": [["azoria", "sub-adviser"]],
+      "sources": ["sec-liquidation-2026"]
+    },
+    {
+      "key": "tac-interview",
+      "date": "2026-01-11",
+      "title": "Sets out immigration and Israel positions",
+      "summary": "In an extended interview he called for an immigration moratorium and economic deterrents against H-1B employment, pledged to reject AIPAC money, divest Florida from Israel Bonds and repeal state restrictions on Israel boycotts.",
+      "category": "ideas",
+      "significance": 3,
+      "chapter": "campaign",
+      "participants": [["aipac", "organization opposed"], ["carlson", "interview platform"]],
+      "sources": ["tac-interview-2026"]
+    },
+    {
+      "key": "primary-result",
+      "date": "2026-08-18",
+      "title": "Finishes third in the Republican primary",
+      "summary": "He received about 10.5% of the vote and was eliminated; Byron Donalds won the nomination.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "after",
+      "participants": [["donalds", "primary winner"], ["republican-party", "party"]],
+      "sources": ["florida-candidates-2026", "florida-primary-results-2026", "cnn-tour-2026"]
+    },
+    {
+      "key": "miami-dade-removal",
+      "date": "2026-09-01",
+      "title": "Removed from Miami-Dade meeting during Israel Bonds protest",
+      "summary": "Fishback tried to speak as commissioners raised the portfolio limit for Israel Bonds from 3% to 5%; officers removed him after the chair said he had not registered for the item and ruled his remarks out of order.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "after",
+      "sources": ["florida-politics-bonds-2026", "jta-bonds-2026"]
+    },
+    {
+      "key": "dallas-tour",
+      "date": "2026-10-17",
+      "title": "Takes post-primary campaign onto a national tour",
+      "summary": "CNN reported hundreds attending a Dallas event where Fishback framed opposition to U.S. support for Israel and the Iran war as the start of a continuing movement inside the Republican Party.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "after",
+      "participants": [["republican-party", "party being challenged"], ["aipac", "donor organization criticized"]],
+      "sources": ["cnn-tour-2026", "campaign-home-2026"]
+    }
+  ],
+  "statements": [
+    {
+      "key": "birthright-2025",
+      "issue": "Immigration",
+      "date": "2025-11-24",
+      "venue": "Gubernatorial campaign announcement",
+      "quote": "Florida is our home, America is our birthright, and we will never let them steal it from us.",
+      "source": "ap-launch-2025"
+    },
+    {
+      "key": "legal-immigration-2026",
+      "issue": "Immigration",
+      "date": "2026-01-11",
+      "venue": "The American Conservative interview",
+      "quote": "I think we have to recognize that an immigration system that allows people to come here, even on legal means, is still effectively unlawful because it violates the legal social contract between the government and her people.",
+      "source": "tac-interview-2026"
+    },
+    {
+      "key": "h1b-contracts-2026",
+      "issue": "Immigration",
+      "date": "2026-01-11",
+      "venue": "The American Conservative interview",
+      "quote": "If you want to go hire thousands of H-1Bs across our state, do whatever you want, but you're not going to get a penny of taxpayer funding.",
+      "source": "tac-interview-2026"
+    },
+    {
+      "key": "america-full-2026",
+      "issue": "Immigration",
+      "date": "2026-01-11",
+      "venue": "The American Conservative interview",
+      "quote": "The immigration moratorium that I support at the federal level and will push for at the state level by using powerful economic deterrence is that, at this point, we are full.",
+      "source": "tac-interview-2026"
+    },
+    {
+      "key": "israel-speech-2026",
+      "issue": "Israel and free speech",
+      "date": "2026-01-11",
+      "venue": "The American Conservative interview",
+      "quote": "Criticizing the Israeli government, or any government, is fully protected by the First Amendment.",
+      "source": "tac-interview-2026"
+    },
+    {
+      "key": "aipac-2026",
+      "issue": "Israel and AIPAC",
+      "date": "2026-01-11",
+      "venue": "The American Conservative interview",
+      "quote": "That's why I'm the only candidate in my race who has said I will refuse any dollar from AIPAC.",
+      "source": "tac-interview-2026"
+    },
+    {
+      "key": "israel-bonds-2026",
+      "issue": "Israel Bonds",
+      "date": "2026-01-11",
+      "venue": "The American Conservative interview",
+      "quote": "We should not be lending taxpayer pensioner money to any foreign government.",
+      "summary": "He said this principle required divesting Florida public money from Israel Bonds and redirecting the amount to a down-payment program.",
+      "source": "tac-interview-2026"
+    },
+    {
+      "key": "repeal-bds-2026",
+      "issue": "Israel and free speech",
+      "date": "2026-01-11",
+      "venue": "The American Conservative interview",
+      "quote": "I will revoke them completely unapologetically and proudly.",
+      "summary": "Response when asked whether he would revoke Florida laws restricting state contracts with businesses that boycott Israel.",
+      "source": "tac-interview-2026"
+    },
+    {
+      "key": "gaza-change-2026",
+      "issue": "Israel and Gaza",
+      "date": "2026-01-11",
+      "venue": "The American Conservative interview",
+      "quote": "I truly didn't wake up and pay attention to what clearly was famine, starvation, and humanitarian crimes against Palestinians until my own faith was attacked, and that was a real blind spot on my part.",
+      "source": "tac-interview-2026"
+    },
+    {
+      "key": "break-free-2026",
+      "issue": "Israel and foreign policy",
+      "date": "2026-10-17",
+      "venue": "Dallas national-tour event",
+      "quote": "Today, tonight, we must stand up and break free from Israel. The stupid, pointless, reckless war in Iran, it's Israel's war to fight, not ours.",
+      "source": "cnn-tour-2026"
+    },
+    {
+      "key": "campaign-continues-2026",
+      "issue": "Republican Party",
+      "date": "2026-10-17",
+      "venue": "CNN interview at Dallas national-tour event",
+      "quote": "The race might be over, but our fight is just getting started.",
+      "source": "cnn-tour-2026"
+    },
+    {
+      "key": "broken-politics-2026",
+      "issue": "Republican Party",
+      "date": "2026-10-17",
+      "venue": "CNN interview at Dallas national-tour event",
+      "quote": "People are coming to terms that our politics are broken, that both parties seem to be on the same team. And that team is not representing us.",
+      "source": "cnn-tour-2026"
+    }
+  ],
+  "ideas": {
+    "traditions": [],
+    "influences": [],
+    "works": [
+      {
+        "title": "2026 Florida gubernatorial platform",
+        "year": "2026",
+        "kind": "Campaign platform",
+        "detail": "Housing, property taxes, H-1B employment, education, abortion, surveillance, guns and state powers.",
+        "source": "campaign-platform-2026"
+      }
+    ],
+    "featuredQuotes": ["america-full-2026", "aipac-2026", "campaign-continues-2026"]
+  },
+  "chapters": [
+    {
+      "key": "formation",
+      "title": "Debate and political formation",
+      "dek": "A Florida debate organizer who made open argument his first public cause.",
+      "body": "Fishback studied international economics at Georgetown University's Walsh School of Foreign Service, according to a later institutional biography; the source does not establish his attendance dates or whether he received a degree [[greenwich-bio-2026]]. In 2019 he founded Incubate Debate, a Florida program that partnered with school districts to run middle- and high-school competitions outside the national debate circuit [[nbc-incubate-2025, campaign-press-2026]].\n\nHe later described the project as an answer to ideological restrictions in school debate, and his gubernatorial platform made free speech a recurring theme. That platform combined speech protections with a broader argument for state power against institutions he said disadvantaged Floridians [[campaign-platform-2026]]."
+    },
+    {
+      "key": "incubate",
+      "title": "Incubate Debate and disputed allegations",
+      "dek": "A school-district rupture became part of the record he carried into politics.",
+      "body": "In September 2022 a parent told several Florida school districts that Fishback had begun an inappropriate relationship with a 17-year-old Incubate Debate employee. Broward County said it ended his volunteer work after receiving the allegation. Fishback has denied wrongdoing; he said the allegations were false, that he had never been arrested, charged or convicted, and that a state child-welfare inquiry found no evidence of misconduct [[nbc-incubate-2025]].\n\nThe former employee later sought a protective order over alleged harassment after their breakup. The judge denied the petition, finding that Fishback had not harassed her; the ruling did not decide whether the relationship began while she was a minor. NBC also reported that an Incubate adviser resigned after saying Fishback had failed to disclose the allegations to the board. The allegation remains disputed and no criminal charge or adjudication established it [[nbc-incubate-2025]]."
+    },
+    {
+      "key": "finance",
+      "title": "Greenlight and Azoria",
+      "dek": "A hedge-fund job, a contested departure and two short-lived ETFs.",
+      "body": "Greenlight Capital hired Fishback as a research analyst in 2021. Court records say he began preparing Azoria while still employed, registered its domain in July 2023 and told outside contacts in August that he had resigned and would start the fund [[greenlight-order-2026]]. Greenlight later sued over his use of confidential information and his employment obligations. In a September 2025 settlement Fishback acknowledged sending portfolio and strategy material to a personal account, maintaining an undisclosed trading account and sharing confidential information; he agreed to return or delete the material and pay Greenlight's costs [[greenlight-settlement-2025, greenlight-order-2026]].\n\nAzoria promoted an investment strategy excluding large companies with quantitative demographic hiring targets and introduced it at Mar-a-Lago in December 2024 [[reuters-azoria-2024]]. The Azoria 500 Meritocracy ETF began trading in July 2025, with SEC filings naming Fishback as founder, chief executive and portfolio manager [[sec-azoria-2025]]. It and the Azoria TSLA Convexity ETF stopped trading December 8 and liquidated December 15 after the trust board voted to terminate them [[sec-liquidation-2026]]."
+    },
+    {
+      "key": "campaign",
+      "title": "The 2026 campaign",
+      "dek": "An insurgent candidacy built around immigration, affordability and opposition to Israel-linked power.",
+      "body": "Fishback entered the Republican gubernatorial primary on November 24, 2025, challenging Trump-endorsed Representative Byron Donalds. He paired proposals to eliminate homestead property taxes and subsidize first-home purchases with attacks on both unauthorized immigration and the H-1B program [[ap-launch-2025, campaign-platform-2026]]. Before the primary, Florida Phoenix reported about $705,000 raised by his campaign and more than $1.2 million by the associated Florida First committee; those state transactions are outside Worldview's federal FEC dataset [[florida-phoenix-money-2026]].\n\nIn a January interview he said even legal migration could violate the government's social contract, proposed denying state contracts to employers using H-1B workers and supported a broader immigration moratorium. He also promised to refuse AIPAC money, divest Florida public money from Israel Bonds, repeal restrictions on state contractors that boycott Israel and protect criticism of foreign governments as speech [[tac-interview-2026]]. His campaign platform extended the same preference for state intervention to housing, abortion, schools, surveillance and data centers [[campaign-platform-2026]]."
+    },
+    {
+      "key": "after",
+      "title": "Defeat and a national tour",
+      "dek": "A third-place finish became the premise for a continuing movement campaign.",
+      "body": "Fishback finished third in the August 18 Republican primary with about 10.5% of the vote; Byron Donalds won the nomination [[florida-candidates-2026, florida-primary-results-2026, cnn-tour-2026]]. The campaign homepage changed its message to: \"The race might be over, but our fight is just getting started\" [[campaign-home-2026]].\n\nOn September 1 he was removed from a Miami-Dade County Commission meeting while trying to oppose a change raising the permitted share of county investments in Israel Bonds from 3% to 5%. Reports said the chair ruled him out of order and that he had not registered to address the item; Fishback later sued the chair, claiming his speech rights were violated [[florida-politics-bonds-2026, jta-bonds-2026]].\n\nBy October CNN reported that he had taken the campaign on a national tour. Hundreds attended a Dallas event at which he attacked U.S. involvement in the Iran war and called for the country to \"break free from Israel.\" He told CNN that the primary loss had not changed his approach and framed the tour as a challenge to both major parties and the Republican donor establishment [[cnn-tour-2026]]."
+    },
+    {
+      "key": "ideas",
+      "title": "America First as economic and foreign-policy separation",
+      "dek": "A politics of national preference applied to labor, capital, speech and alliances.",
+      "body": "Fishback's immigration position goes beyond enforcement against unauthorized entry. He has argued for an immigration moratorium and for state economic penalties against employers using H-1B labor, describing legal migration as potentially contrary to a social contract with citizens [[tac-interview-2026, campaign-platform-2026]].\n\nHis foreign-policy argument uses a parallel rule: public money and legal privilege should not favor a foreign government. He linked that position to rejecting AIPAC support, divesting public holdings of Israel Bonds and repealing Florida's anti-boycott restrictions. He has also said his views changed as he followed the war in Gaza, describing his earlier failure to attend to Palestinian suffering as a blind spot [[tac-interview-2026]]. After the primary he intensified that argument, presenting opposition to U.S. support for Israel and the Iran war as a dividing line for a younger America First movement inside the Republican Party [[cnn-tour-2026]]."
+    }
+  ]
+}

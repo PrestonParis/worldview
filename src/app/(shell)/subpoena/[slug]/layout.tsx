@@ -28,7 +28,7 @@ export default async function ProfileLayout({ children, params }: { children: Re
   const { entity } = bundle;
 
   return (
-    <article className="max-w-6xl pb-16">
+    <article className="mx-auto max-w-6xl pb-16">
       <ToolBreadcrumb
         items={[
           { label: "Subpoena", href: "/subpoena" },
