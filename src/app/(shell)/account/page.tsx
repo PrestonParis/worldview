@@ -48,7 +48,7 @@ export default async function AccountPage({
 
       <section className="space-y-3">
         <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Email</h2>
-        <EmailSection currentEmail={user.email} />
+        <EmailSection currentEmail={user.email} turnstileSiteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || null} />
       </section>
 
       <section className="space-y-3">

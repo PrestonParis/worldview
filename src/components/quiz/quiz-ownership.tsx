@@ -48,6 +48,7 @@ export function QuizOwnership({
         </form>
         <div className="mt-4 flex flex-wrap gap-2 border-t border-slate-200 pt-4 dark:border-slate-800">
           <form action={startQuizAction}>
+            <input type="hidden" name="sourceQuiz" value={slug} />
             <button type="submit" className={buttonVariants.ghost}>
               Retake
             </button>
@@ -89,11 +90,9 @@ export function QuizOwnership({
     <aside className={panelClass}>
       <p className="font-semibold text-slate-900 dark:text-slate-100">Where do you stand?</p>
       <p className="mt-1 text-slate-500 dark:text-slate-400">Take the quiz to get your own profile.</p>
-      <form action={startQuizAction} className="mt-3">
-        <button type="submit" className={buttonVariants.primary}>
-          Start the quiz
-        </button>
-      </form>
+      <Link href="/atlas#atlas-start" className={`${buttonVariants.primary} mt-3`}>
+        Start the quiz
+      </Link>
     </aside>
   );
 }

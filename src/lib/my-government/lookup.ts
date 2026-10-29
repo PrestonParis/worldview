@@ -4,6 +4,9 @@ import { getLocalOfficials, HALL_COUNTY_GIS_SOURCE } from "./local";
 import { OPEN_STATES_SOURCE, getStateOfficials } from "./state";
 import { resolveSuggestion } from "./suggestions";
 import type { CensusGeography, GovernmentLevel, GovernmentLookupResult, GovernmentOfficial } from "./types";
+import { normalizePrivateCacheKey, TtlDedupe } from "@/lib/security/ttl-dedupe";
+
+const lookupCache = new TtlDedupe<GovernmentLookupResult>(5 * 60_000, 200);
 
 interface ProviderOfficial {
   id?: string;
@@ -79,19 +82,21 @@ async function getProviderOfficials(address: string): Promise<GovernmentOfficial
     const body = (await response.json()) as { officials?: ProviderOfficial[] };
     return (body.officials ?? []).flatMap((item, index) => {
       if (!item.name || !item.office || !item.level || !item.jurisdiction) return [];
-      return [{
-        id: item.id || `provider-${index}`,
-        office: item.office,
-        level: item.level,
-        jurisdiction: item.jurisdiction,
-        name: item.name,
-        party: item.party,
-        phone: item.phone,
-        website: item.website,
-        status: "verified" as const,
-        sourceLabel: item.sourceLabel || "Civic officials provider",
-        sourceUrl: item.sourceUrl || baseUrl,
-      }];
+      return [
+        {
+          id: item.id || `provider-${index}`,
+          office: item.office,
+          level: item.level,
+          jurisdiction: item.jurisdiction,
+          name: item.name,
+          party: item.party,
+          phone: item.phone,
+          website: item.website,
+          status: "verified" as const,
+          sourceLabel: item.sourceLabel || "Civic officials provider",
+          sourceUrl: item.sourceUrl || baseUrl,
+        },
+      ];
     });
   } catch {
     return [];
@@ -109,7 +114,8 @@ function officeFamily(office: string): string {
   if (name.includes("state representative")) return "state-representative";
   if (name.includes("state senator") || name.includes("state legislator")) return "state-senator";
   if (name === "governor") return "governor";
-  if (name.includes("local trial") || name.includes("district court") || name.includes("county court")) return "local-judges";
+  if (name.includes("local trial") || name.includes("district court") || name.includes("county court"))
+    return "local-judges";
   if (name.includes("supreme court") || name.includes("appellate")) return "state-judges";
   return name;
 }
@@ -145,6 +151,12 @@ export function houseCode(geography: Pick<CensusGeography, "stateCode" | "congre
 }
 
 export async function lookupGovernment(address: string, magicKey?: string): Promise<GovernmentLookupResult> {
+  return lookupCache.get(`${normalizePrivateCacheKey(address)}\0${magicKey ?? ""}`, () =>
+    lookupGovernmentUncached(address, magicKey),
+  );
+}
+
+async function lookupGovernmentUncached(address: string, magicKey?: string): Promise<GovernmentLookupResult> {
   let geography: CensusGeography;
   if (magicKey) {
     const point = await resolveSuggestion(address, magicKey);
@@ -171,10 +183,12 @@ export async function lookupGovernment(address: string, magicKey?: string): Prom
     getLocalOfficials(geography).catch(() => []),
     getProviderOfficials(address),
   ]);
-  const { officials, gaps } = mergeOfficialCoverage(
-    buildOfficeShells(geography),
-    [...provider, ...local, ...state, ...federal],
-  );
+  const { officials, gaps } = mergeOfficialCoverage(buildOfficeShells(geography), [
+    ...provider,
+    ...local,
+    ...state,
+    ...federal,
+  ]);
   const resolved = officials.length;
 
   return {

@@ -398,7 +398,9 @@ bank and engine (`src/lib/quiz/analytics.ts`). `quiz:audit`, `quiz:trace`, `quiz
 
 - 19 axes (race added in bank 5.0.0; technology split into environment + technology after review; democracy added in bank 3.0.0); issue list as drafted; the bank's v1 is up for review.
 - No matching to politicians or other real people yet; ideology labels only, with the full ranking shown.
-- Quiz result URLs are retained until an owner explicitly deletes the quiz or account.
+- Completed quiz result URLs are retained until an owner explicitly deletes
+  the quiz or account. Unclaimed, unfinished quizzes expire after 30 days of
+  inactivity; anonymous opener telemetry expires after 90 days.
 - "Quiz" sits at the top level next to Demographics.
 
 ## Later

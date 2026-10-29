@@ -249,3 +249,15 @@ export async function loadStateDetail(abbr: string, year: string | null, priorYe
   }));
   return { cities: cities.filter((c) => c.state === abbr), counties, countyYear: hom.period };
 }
+
+// Years accepted by the state-detail endpoint. Derive these from the same
+// national monthly series as the /crime page so arbitrary years never become
+// persistent cache keys. Partial 12-month years remain available because the
+// page labels their reporting coverage explicitly.
+export async function loadCrimeDetailYears(): Promise<string[]> {
+  const rows = await yearlySumsByGeo("fbi-cde", ["violent_crime_rate"], "nation");
+  return rows
+    .filter((row) => row.geoid === "US" && row.months === 12)
+    .map((row) => row.year)
+    .sort();
+}

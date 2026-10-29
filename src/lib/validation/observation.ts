@@ -42,7 +42,9 @@ export const observationSchema = z
     period: periodSchema,
     value: z.number().finite().nullable(),
     unit: z.string().max(32).optional(),
-    metadata: z.record(z.string(), z.unknown()).optional(),
+    metadata: z
+      .record(z.string().max(64), z.union([z.string().max(2000), z.number().finite(), z.boolean(), z.null()]))
+      .optional(),
   })
   .superRefine((o, ctx) => {
     const pattern = geoidPatterns[o.geoLevel];
@@ -56,7 +58,10 @@ export const observationSchema = z
   });
 
 export const observationBatchSchema = z.object({
-  metrics: z.record(z.string().regex(slugPart), metricDefinitionSchema).optional(),
+  metrics: z
+    .record(z.string().regex(slugPart), metricDefinitionSchema)
+    .refine((m) => Object.keys(m).length <= 200, "At most 200 metric definitions.")
+    .optional(),
   observations: z.array(observationSchema).min(1).max(MAX_OBSERVATIONS_PER_REQUEST),
 });
 

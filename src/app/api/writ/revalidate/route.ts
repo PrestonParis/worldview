@@ -1,6 +1,7 @@
 import { revalidateTag } from "next/cache";
 import { timingSafeEqual } from "node:crypto";
 import { CLOSE_RACES_TAG } from "@/lib/db/closeRaces";
+import { enforceRateLimits, rateLimitResponse } from "@/lib/security/rate-limit";
 
 // Called by scripts/sync-ga-results.mjs after each write so the close-races
 // report shows new numbers on the next request rather than after its 60 s
@@ -8,8 +9,13 @@ import { CLOSE_RACES_TAG } from "@/lib/db/closeRaces";
 export async function POST(req: Request) {
   const secret = process.env.REVALIDATE_SECRET;
   const given = (req.headers.get("authorization") ?? "").replace(/^Bearer\s+/i, "");
-  const ok = Boolean(secret) && given.length === secret!.length && timingSafeEqual(Buffer.from(given), Buffer.from(secret!));
+  const ok =
+    Boolean(secret) && given.length === secret!.length && timingSafeEqual(Buffer.from(given), Buffer.from(secret!));
   if (!ok) return new Response(null, { status: 401 });
+  const limited = await enforceRateLimits([{ scope: "writ-revalidate-minute", limit: 12, windowSeconds: 60 }], {
+    request: req,
+  });
+  if (limited) return rateLimitResponse(limited);
   revalidateTag(CLOSE_RACES_TAG, { expire: 0 });
   return Response.json({ ok: true, tag: CLOSE_RACES_TAG });
 }

@@ -1,6 +1,6 @@
 "use server";
 
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import * as quizDb from "../db/quizSessions";
@@ -43,6 +43,9 @@ import { modeRank, nextQuizMode, validQuizMode, type QuizModeId } from "../quiz/
 import type { IssueId } from "../quiz/types";
 import type { ActionResult } from "./result";
 import { currentUserIsOwner } from "../auth/guard";
+import { enforceRateLimits } from "../security/rate-limit";
+import { verifyTurnstileToken } from "../security/turnstile";
+import { maybeRunAbuseRetention } from "../security/retention";
 
 // Every action re-checks access server side — these are reachable by direct
 // POST, not just through the quiz UI.
@@ -55,9 +58,22 @@ async function loadEditable(slug: string) {
   return access.canEdit ? session : null;
 }
 
+async function protectQuizStart(captchaToken?: string, sourceSlug?: string): Promise<void> {
+  const limited = await enforceRateLimits([
+    { scope: "quiz-start-ten-minute", limit: 5, windowSeconds: 600 },
+    { scope: "quiz-start-day", limit: 20, windowSeconds: 86_400 },
+  ]);
+  if (limited) redirect(`/atlas?abuse=rate&retry=${limited.retryAfter}`);
+  if (await currentUserId()) return;
+  if (sourceSlug && (await loadEditable(sourceSlug))) return;
+  if (!(await verifyTurnstileToken(captchaToken, await headers()))) redirect("/atlas?abuse=challenge");
+}
+
 export async function startQuizAction(
   modeOrForm?: QuizModeId | FormData,
   entryTopic: IssueId | null = null,
+  captchaToken?: string,
+  sourceSlug?: string,
 ): Promise<void> {
   // Most entry points submit ordinary named fields, while the interactive
   // landing hero binds its selected mode before submitting. Accept both so a
@@ -65,6 +81,12 @@ export async function startQuizAction(
   const formData = modeOrForm instanceof FormData ? modeOrForm : undefined;
   const rawMode = formData?.get("mode");
   const rawTopic = entryTopic ?? formData?.get("topic");
+  const challengeToken =
+    captchaToken ??
+    (typeof formData?.get("captchaToken") === "string" ? String(formData.get("captchaToken")) : undefined);
+  const source =
+    sourceSlug ?? (typeof formData?.get("sourceQuiz") === "string" ? String(formData.get("sourceQuiz")) : undefined);
+  await protectQuizStart(challengeToken, source);
   const targetMode =
     typeof modeOrForm === "string"
       ? validQuizMode(modeOrForm)
@@ -83,6 +105,7 @@ export async function startQuizAction(
     entryTopic: topic,
     isTest: await currentUserIsOwner(),
   });
+  await maybeRunAbuseRetention();
   (await cookies()).set(editCookieName(slug), token, {
     httpOnly: true,
     sameSite: "lax",
@@ -100,7 +123,9 @@ export async function startQuizWithAnswersAction(
   mode: QuizModeId,
   entryTopic: IssueId | null,
   answers: QuizAnswer[],
+  captchaToken?: string,
 ): Promise<void> {
+  await protectQuizStart(captchaToken);
   const targetMode = validQuizMode(mode);
   const topic = entryTopic && issues.some((issue) => issue.id === entryTopic) ? entryTopic : null;
   const clean: QuizAnswer[] = [];
@@ -123,6 +148,7 @@ export async function startQuizWithAnswersAction(
     entryTopic: topic,
     isTest: await currentUserIsOwner(),
   });
+  await maybeRunAbuseRetention();
   if (clean.length > 0) {
     await quizDb.saveQuizProgress(session.id, {
       answers: clean,
