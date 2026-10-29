@@ -47,6 +47,7 @@ export async function loadAbortion() {
       "abortions_reported", "abortion_rate", "medication_share",
       "share_age_under15", "share_age_15_19", "share_age_20_24", "share_age_25_29", "share_age_30_34", "share_age_35_39", "share_age_40plus",
       "share_weeks_le6", "share_weeks_7_9", "share_weeks_10_13", "share_weeks_gt13",
+      "share_weeks_14_15", "share_weeks_16_17", "share_weeks_18_20", "share_weeks_ge21",
       "abortion_rate_black", "abortion_rate_white", "abortion_rate_hispanic", "abortion_rate_other",
     ]),
     listDatasets({ topic: "abortion" }),
@@ -115,6 +116,18 @@ export async function loadAbortion() {
     ["share_weeks_le6", "6 weeks or earlier"], ["share_weeks_7_9", "7–9 weeks"],
     ["share_weeks_10_13", "10–13 weeks"], ["share_weeks_gt13", "After 13 weeks"],
   ].flatMap(([m, label]) => (cdcAt(m) === null ? [] : [{ label, value: cdcAt(m)! }]));
+  const gestationBins = [
+    { metric: "share_weeks_le6", label: "6 weeks or earlier", startWeek: 0, endWeek: 6 },
+    { metric: "share_weeks_7_9", label: "7–9 weeks", startWeek: 7, endWeek: 9 },
+    { metric: "share_weeks_10_13", label: "10–13 weeks", startWeek: 10, endWeek: 13 },
+    { metric: "share_weeks_14_15", label: "14–15 weeks", startWeek: 14, endWeek: 15 },
+    { metric: "share_weeks_16_17", label: "16–17 weeks", startWeek: 16, endWeek: 17 },
+    { metric: "share_weeks_18_20", label: "18–20 weeks", startWeek: 18, endWeek: 20 },
+    { metric: "share_weeks_ge21", label: "21 weeks or later", startWeek: 21, endWeek: 40 },
+  ].flatMap((bin) => {
+    const value = cdcAt(bin.metric);
+    return value === null ? [] : [{ ...bin, value }];
+  });
   const raceRates: RankedItem[] = [
     ["abortion_rate_black", "Black (non-Hispanic)"], ["abortion_rate_hispanic", "Hispanic"],
     ["abortion_rate_other", "Other races (non-Hispanic)"], ["abortion_rate_white", "White (non-Hispanic)"],
@@ -218,6 +231,7 @@ export async function loadAbortion() {
     cdcYear,
     ages,
     weeks,
+    gestationBins,
     raceRates,
     states: { metrics: stateMetrics, rows: stateRows },
     limits,
