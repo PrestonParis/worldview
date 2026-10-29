@@ -2,8 +2,9 @@
 // cdc-violent-deaths, imported by import-cdc-violent-deaths.mjs):
 //
 //   cdc-injury-mortality  NCHS injury mortality, firearm deaths by intent and
-//                         by age, 1999–2016 (data.cdc.gov nt65-c7a7); age
-//                         groups are geo_level 'age_group'
+//                         by age and by race, 1999–2016 (data.cdc.gov
+//                         nt65-c7a7); age groups are geo_level 'age_group',
+//                         races geo_level 'race' (white_nh, black_nh, hispanic)
 //   gallup-guns           Gallup trend questions on gun ownership and laws
 //
 // Usage:
@@ -65,6 +66,24 @@ async function importCdc(pg) {
         });
       }
     }
+  }
+  // Race and Hispanic origin (all ages, both sexes): firearm deaths and
+  // crude rates by intent, geo_level 'race' (white_nh, black_nh, hispanic).
+  const RACES = { "Non-Hispanic white": "white_nh", "Non-Hispanic black": "black_nh", Hispanic: "hispanic" };
+  const byRace = await fetchJson(
+    `https://data.cdc.gov/resource/nt65-c7a7.json?$where=${encodeURIComponent("injury_mechanism = 'Firearm' and sex = 'Both sexes' and age_years = 'All Ages' and race != 'All races'")}&$limit=50000`,
+    { timeoutMs: 300_000 },
+    { label: "cdc injury mortality by race" },
+  );
+  for (const r of byRace) {
+    const prefix = INTENTS[r.injury_intent];
+    const race = RACES[r.race];
+    if (!prefix || !race || !RATED.has(r.injury_intent)) continue;
+    const base = { source: slug, period: r.year, period_start: `${r.year}-01-01`, metadata: null, geo_level: "race", geoid: race, geo_name: r.race };
+    const deaths = num(r.deaths);
+    const rate = num(r.age_specific_rate);
+    if (deaths !== null) rows.push({ ...base, metric: prefix === "firearm" ? "firearm_deaths" : `${prefix}_deaths`, value: deaths, unit: "deaths" });
+    if (rate !== null) rows.push({ ...base, metric: prefix === "firearm" ? "firearm_deaths_rate" : `${prefix}_rate`, value: Math.round(rate * 100) / 100, unit: "per_100k" });
   }
   if (!rows.some((r) => r.metric === "firearm_suicide_rate")) throw new Error("CDC injury mortality: no firearm suicide rows — columns renamed?");
   const inserted = await upsertRows(pg, "area_stats", COLUMNS, rows, KEY);

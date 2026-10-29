@@ -77,12 +77,34 @@ const METRICS = {
   owner_occupied: { vars: ["B25003_001E", "B25003_002E"], value: (r) => pct(num(r.B25003_002E), num(r.B25003_001E)), unit: "percent" },
   married_couple_households: { vars: ["B11001_001E", "B11001_003E"], value: (r) => pct(num(r.B11001_003E), num(r.B11001_001E)), unit: "percent" },
 };
+// B15003 starts with the 2012 release; earlier years have only the
+// by-sex table B15002 (men's bachelor's-or-more cells 015–018, women's 032–035).
+if (YEAR < 2012) {
+  const ba = ["B15002_015E", "B15002_016E", "B15002_017E", "B15002_018E", "B15002_032E", "B15002_033E", "B15002_034E", "B15002_035E"];
+  METRICS.bachelors_or_higher = { vars: ["B15002_001E", ...ba], value: (r) => pct(sum(r, ba), num(r.B15002_001E)), unit: "percent" };
+}
+
+// Drops metrics whose variables the year's release doesn't have (tables
+// added after 2009), so early years load what exists.
+async function availableMetrics(key) {
+  const res = await fetch(`https://api.census.gov/data/${YEAR}/acs/acs5/variables.json?key=${key}`);
+  if (!res.ok) throw new Error(`ACS ${YEAR} variables -> ${res.status}`);
+  const known = new Set(Object.keys((await res.json()).variables));
+  for (const [metric, m] of Object.entries(METRICS)) {
+    const missing = m.vars.filter((v) => !known.has(v));
+    if (missing.length) {
+      console.log(`  ${YEAR}: skipping ${metric} (no ${missing.join(", ")})`);
+      delete METRICS[metric];
+    }
+  }
+}
 
 await runImport("census-acs5", async (pg) => {
   const key = process.env.CENSUS_API_KEY;
   await checkCensusKey(key);
   await registerDataset(pg, "census-acs5");
-  const vars = [...new Set(Object.values(METRICS).flatMap((m) => m.vars))];
+  await availableMetrics(key);
+  const vars =[...new Set(Object.values(METRICS).flatMap((m) => m.vars))];
   let total = 0;
   for (const level of LEVELS) {
     const geo = GEOS[level];

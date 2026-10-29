@@ -7,10 +7,115 @@
 // Partner datasets are created with scripts/partner.mjs instead.
 
 import { DIMENSIONS, metricName } from "../../src/lib/elections/electorate.ts";
+import { GAPS_CATALOG } from "./catalog-gaps.mjs";
 
 const m = (label, unit, description) => ({ label, unit, ...(description ? { description } : {}) });
 
 const CPS_MEASURES = { citizens: "Eligible citizens", registered: "Registered", voted: "Voted" };
+
+// ACS ancestry (B04006) and Hispanic origin (B03001) labels, as the Census
+// API names them across years; scripts/import-acs-ancestry.mjs matches cells
+// by these.
+export const ANCESTRIES = [
+  "Afghan", "Albanian", "Alsatian", "American", "Arab", "Egyptian", "Iraqi", "Jordanian", "Lebanese", "Moroccan",
+  "Palestinian", "Syrian", "Other Arab", "Armenian", "Assyrian/Chaldean/Syriac", "Australian", "Austrian",
+  "Basque", "Belgian", "Brazilian", "British", "Bulgarian", "Cajun", "Canadian", "Carpatho Rusyn", "Celtic", "Croatian",
+  "Cypriot", "Czech", "Czechoslovakian", "Danish", "Dutch", "Eastern European", "English", "Estonian", "European",
+  "Finnish", "French (except Basque)", "French Canadian", "German", "German Russian", "Greek", "Guyanese", "Hungarian",
+  "Icelander", "Iranian", "Irish", "Israeli", "Italian", "Latvian", "Lithuanian", "Luxembourger", "Macedonian",
+  "Maltese", "New Zealander", "Northern European", "Norwegian", "Pennsylvania German", "Polish", "Portuguese",
+  "Romanian", "Russian", "Scandinavian", "Scotch-Irish", "Scottish", "Serbian", "Slavic", "Slovak", "Slovene",
+  "Soviet Union", "Subsaharan African", "Cape Verdean", "Ethiopian", "Ghanaian", "Kenyan", "Liberian", "Nigerian",
+  "Senegalese", "Sierra Leonean", "Somali", "South African", "Sudanese", "Ugandan", "Zimbabwean", "African",
+  "Other Subsaharan African", "Swedish", "Swiss", "Turkish", "Ukrainian", "Welsh", "West Indian (except Hispanic groups)",
+  "Bahamian", "Barbadian", "Belizean", "Bermudan", "British West Indian", "Dutch West Indian", "Haitian", "Jamaican",
+  "Trinidadian and Tobagonian", "U.S. Virgin Islander", "West Indian", "Other West Indian", "Yugoslavian", "Other groups",
+  "Unclassified or not reported",
+];
+export const HISPANIC_ORIGINS = [
+  "Mexican", "Puerto Rican", "Cuban", "Dominican (Dominican Republic)", "Central American", "Costa Rican", "Guatemalan",
+  "Honduran", "Nicaraguan", "Panamanian", "Salvadoran", "Other Central American", "South American", "Argentinean",
+  "Bolivian", "Chilean", "Colombian", "Ecuadorian", "Paraguayan", "Peruvian", "Uruguayan", "Venezuelan",
+  "Other South American", "Other Hispanic or Latino", "Spaniard", "Spanish", "Spanish American", "All other Hispanic or Latino",
+];
+// Older releases' spellings of the same groups; the West Indian subtotal
+// gets its own slug so it doesn't collide with the "West Indian" response.
+const ANCESTRY_ALIASES = { Somalian: "Somali", Luxemburger: "Luxembourger", "West Indian (except Hispanic groups)": "West Indian total" };
+// FBI arrest offenses and arrestee groups (scripts/import-fbi-arrest-demographics.mjs).
+const ARREST_OFFENSES = {
+  all: "All offenses", violent: "Violent crime (murder, rape, robbery, aggravated assault)", murder: "Murder and nonnegligent manslaughter",
+  rape: "Rape", robbery: "Robbery", aggravated_assault: "Aggravated assault", simple_assault: "Simple assault", burglary: "Burglary",
+  larceny: "Larceny-theft", motor_vehicle_theft: "Motor vehicle theft", arson: "Arson", human_trafficking: "Human trafficking",
+  weapons: "Weapons carrying or possession", drug_sale: "Drug sale or manufacturing", drug_possession: "Drug possession",
+  dui: "Driving under the influence", fraud: "Fraud", sex_offenses: "Sex offenses (except rape and prostitution)",
+};
+const ARREST_GROUPS = {
+  total: "total", white: "White", black: "Black", aian: "American Indian or Alaska Native", asian: "Asian",
+  nhpi: "Native Hawaiian or Pacific Islander", race_unknown: "race unknown", male: "male", female: "female",
+  under_18: "under 18", age_18_24: "ages 18–24", age_25_34: "ages 25–34", age_35_44: "ages 35–44", age_45_54: "ages 45–54",
+  age_55_64: "ages 55–64", age_65_plus: "65 and over",
+};
+const arrestMetrics = () =>
+  Object.fromEntries(
+    Object.entries(ARREST_OFFENSES).flatMap(([o, ol]) =>
+      Object.entries(ARREST_GROUPS).map(([g, gl]) => [`arrests_${o}_${g}`, m(`${ol} arrests, ${gl}`, "arrests")]),
+    ),
+  );
+
+// Victim/offender groups for the FBI homicide and NIBRS person tables
+// (scripts/import-fbi-homicide.mjs).
+const PERSON_GROUPS = {
+  total: "total", white: "White", black: "Black", aian: "American Indian or Alaska Native", asian: "Asian",
+  nhpi: "Native Hawaiian or Pacific Islander", race_unknown: "race unknown", hispanic: "Hispanic", not_hispanic: "not Hispanic",
+  ethnicity_unknown: "ethnicity unknown", male: "male", female: "female", sex_unknown: "sex unknown",
+  age_0_9: "ages 0–9", age_10_19: "ages 10–19", age_20_29: "ages 20–29", age_30_39: "ages 30–39", age_40_49: "ages 40–49",
+  age_50_59: "ages 50–59", age_60_69: "ages 60–69", age_70_79: "ages 70–79", age_80_89: "ages 80–89", age_90_plus: "90 and over",
+  age_unknown: "age unknown",
+};
+const personMetrics = (prefix, what) =>
+  Object.fromEntries(
+    ["victims", "offenders"].flatMap((role) =>
+      Object.entries(PERSON_GROUPS).map(([g, gl]) => [`${prefix}${role}_${g}`, m(`${what}${role === "victims" ? "Victims" : "Offenders"}, ${gl}`, role)]),
+    ),
+  );
+const NIBRS_PERSON_OFFENSES = { homicide: "Homicide", rape: "Rape", robbery: "Robbery", aggravated_assault: "Aggravated assault" };
+
+// Texas DPS criminal noncitizen figures (scripts/import-texas-dps.mjs).
+const DPS_OFFENSES = {
+  homicide: "homicide", assault: "assault", burglary: "burglary", drug: "drug", kidnapping: "kidnapping", theft: "theft",
+  obstructing_police: "obstructing police", robbery: "robbery", sexual_assault: "sexual assault", sexual_offense: "sexual offense", weapon: "weapon",
+};
+const DPS_SCOPES = {
+  jail_window: "identified at jail booking, arrests since June 2011",
+  prison_window: "identified in state prison, arrests since June 2011",
+  jail_career: "identified at jail booking, entire Texas criminal history",
+  prison_career: "identified in state prison, entire Texas criminal history",
+};
+const dpsMetrics = () => ({
+  booked_noncitizens: m("Noncitizens booked into Texas jails since June 2011", "people"),
+  booked_illegal: m("Of those, identified by DHS as illegally present", "people"),
+  ...Object.fromEntries(
+    Object.entries(DPS_SCOPES).flatMap(([scope, sl]) =>
+      ["charges", "convictions"].flatMap((kind) => [
+        [`${scope}_${kind}`, m(`${kind[0].toUpperCase()}${kind.slice(1)} (${sl})`, kind)],
+        ...Object.entries(DPS_OFFENSES).map(([o, ol]) => [`${scope}_${kind}_${o}`, m(`${ol[0].toUpperCase()}${ol.slice(1)} ${kind} (${sl})`, kind)]),
+      ]),
+    ),
+  ),
+});
+
+export const ancestrySlug = (label) =>
+  (ANCESTRY_ALIASES[label] ?? label).replace(/\s*\(.*\)$/, "").toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
+const ancestryMetrics = (prefix, labels, what) =>
+  Object.fromEntries(
+    labels.flatMap((l) => {
+      const s = ancestrySlug(l);
+      return [
+        [`${prefix}_${s}`, m(`${l} (${what}, share of population)`, "percent")],
+        [`${prefix}_${s}_count`, m(`${l} (${what})`, "people")],
+      ];
+    }),
+  );
 
 export const CATALOG = {
   cbp: {
@@ -125,6 +230,273 @@ export const CATALOG = {
       domestic_migration_rate: m("Net domestic migration rate", "per_1000"),
     },
   },
+  "census-pep-race": {
+    title: "Population by Race, Hispanic Origin, and Age",
+    topic: "demographics",
+    publisher: "U.S. Census Bureau",
+    sourceUrl: "https://www.census.gov/programs-surveys/popest/data/data-sets.html",
+    cadence: "Annual (each June)",
+    license: "Public domain (U.S. government work)",
+    description:
+      "July 1 population by race and Hispanic origin for the nation and states from 1990 and for every county from 2010, with median age (overall and by group) and the shares under 18 and 65 and over.",
+    methodology:
+      "Hispanic origin is asked separately from race, so Hispanics may be of any race; the non-Hispanic groups (white_nh, black_nh, …) plus Hispanic add up to the total from 2000 on. The 1990s estimates use the 1977 race standard — four races, no multiracial option, Asians and Pacific Islanders combined — so for 1990–1999 only non-Hispanic white, Hispanic, and the single-race groups of any origin (white, black, aian, asian_pi) are published. The 1990s figures are postcensal estimates based on the 1990 census that the Census Bureau never revised to the 2000 count, so 1999 to 2000 shows a step (the 2000 census found about 7 million more people than estimated). From 2000 those single-race groups mean 'alone' (one race only). 2000–2009 are intercensal estimates; 2010–2019 come from Vintage 2020 and 2020 on from the latest vintage. State and national counts from 2010 are sums of the county files. Median ages for the nation and states are computed from single-year-of-age estimates (85 and over is the top age); county medians are as published by the Census Bureau.",
+    metrics: {
+      pop_total: m("Population", "people"),
+      pop_hispanic: m("Hispanic or Latino", "people"),
+      pop_white_nh: m("White, non-Hispanic", "people"),
+      pop_black_nh: m("Black, non-Hispanic", "people"),
+      pop_asian_nh: m("Asian, non-Hispanic", "people"),
+      pop_aian_nh: m("American Indian and Alaska Native, non-Hispanic", "people"),
+      pop_nhpi_nh: m("Native Hawaiian and Pacific Islander, non-Hispanic", "people"),
+      pop_multiracial_nh: m("Two or more races, non-Hispanic", "people"),
+      pop_white: m("White (any origin)", "people"),
+      pop_black: m("Black (any origin)", "people"),
+      pop_aian: m("American Indian and Alaska Native (any origin)", "people"),
+      pop_asian_pi: m("Asian and Pacific Islander (any origin)", "people"),
+      share_hispanic: m("Hispanic or Latino share", "percent"),
+      share_white_nh: m("White, non-Hispanic share", "percent"),
+      share_black_nh: m("Black, non-Hispanic share", "percent"),
+      share_asian_nh: m("Asian, non-Hispanic share", "percent"),
+      share_aian_nh: m("American Indian and Alaska Native, non-Hispanic share", "percent"),
+      share_nhpi_nh: m("Native Hawaiian and Pacific Islander, non-Hispanic share", "percent"),
+      share_multiracial_nh: m("Two or more races, non-Hispanic share", "percent"),
+      share_white: m("White (any origin) share", "percent"),
+      share_black: m("Black (any origin) share", "percent"),
+      share_aian: m("American Indian and Alaska Native (any origin) share", "percent"),
+      share_asian_pi: m("Asian and Pacific Islander (any origin) share", "percent"),
+      median_age: m("Median age", "years"),
+      median_age_hispanic: m("Median age, Hispanic", "years"),
+      median_age_white_nh: m("Median age, white non-Hispanic", "years"),
+      median_age_black_nh: m("Median age, Black non-Hispanic", "years"),
+      median_age_asian_nh: m("Median age, Asian non-Hispanic", "years"),
+      share_under_18: m("Under 18", "percent"),
+      share_65_plus: m("65 and over", "percent"),
+    },
+  },
+  "census-acs1-ancestry": {
+    title: "Ancestry and Hispanic Origin (ACS 1-year)",
+    topic: "demographics",
+    publisher: "U.S. Census Bureau",
+    sourceUrl: "https://www.census.gov/topics/population/ancestry.html",
+    cadence: "Annual (each September)",
+    license: "Public domain (U.S. government work)",
+    description:
+      "People reporting each ancestry (German, Irish, Italian, Arab, Somali, Haitian, …) and each Hispanic origin group (Mexican, Puerto Rican, Salvadoran, Venezuelan, …) for the nation and states, 2010 onward.",
+    methodology:
+      "Ancestry is self-reported ethnic origin or descent and is asked of everyone regardless of race or birthplace; each person can give up to two ancestries, so ancestry counts add up to more than the population. Hispanic origin is a separate question, and each Hispanic person is counted once. Shares are of the total population. Group subtotals (Arab, Subsaharan African, West Indian, Central American, South American) include their listed subgroups. The ACS did not publish standard 1-year estimates for 2020.",
+    metrics: {
+      ...ancestryMetrics("ancestry", ANCESTRIES, "ancestry"),
+      ...ancestryMetrics("hispanic_origin", HISPANIC_ORIGINS, "Hispanic origin"),
+    },
+  },
+  "fbi-arrest-demographics": {
+    title: "Arrests by Race, Sex, and Age",
+    topic: "crime",
+    publisher: "FBI Uniform Crime Reporting Program (Crime Data Explorer)",
+    sourceUrl: "https://cde.ucr.cjis.gov/LATEST/webapp/#/pages/explorer/crime/arrest",
+    cadence: "Annual (each fall), with partial current-year data",
+    license: "Public domain (U.S. government work)",
+    description:
+      "Arrests by offense and by the arrestee's race, sex, and age group for the nation (17 offense categories) and every state (all offenses, murder, robbery, aggravated assault, weapons), 2015 onward.",
+    methodology:
+      "Counts are arrests, not people: one person arrested twice is counted twice, and an arrest is listed under its most serious charge. Only agencies that submitted data are included, so totals fall short of all U.S. arrests (coverage varies by year and state; it dropped in 2021 during the switch to NIBRS). Race is as recorded by the arresting agency; the FBI does not publish arrestee ethnicity in these tables, so Hispanic arrestees are counted within their race, mostly White. Compare race shares of arrests with Census race-alone population shares of any origin (census-pep-race pop_white, pop_black), not non-Hispanic shares. Rape uses the legacy definition. 'Violent' is the sum of murder, rape, robbery, and aggravated assault (nation only). The latest year is partial until the FBI's annual release (metadata.partial).",
+    metrics: arrestMetrics(),
+  },
+  "fbi-shr": {
+    title: "Homicide Victims and Offenders (Supplementary Homicide Reports)",
+    topic: "crime",
+    publisher: "FBI Uniform Crime Reporting Program (Crime Data Explorer)",
+    sourceUrl: "https://cde.ucr.cjis.gov/LATEST/webapp/#/pages/explorer/crime/shr",
+    cadence: "Annual (each fall), with partial current-year data",
+    license: "Public domain (U.S. government work)",
+    description:
+      "Murder and nonnegligent manslaughter victims and offenders by race, ethnicity, sex, and age, and victims by weapon, victim–offender relationship, and circumstance — nation from 1990, states from 2010.",
+    methodology:
+      "From the FBI's Supplementary Homicide Reports and the homicide records of NIBRS agencies, as the Crime Data Explorer combines them. Only agencies that submitted supplementary data are counted, so totals are below the FBI's estimated national murders. Offender counts include offenders whose race, sex, or age no one could describe (unknown), which is common when no one is arrested; the known shares are the ones to compare. Race and ethnicity are recorded separately, and ethnicity is often missing. Relationship is the victim's relationship to the offender; 'Unknown' is the largest category. The latest year is partial (metadata.partial).",
+    metrics: personMetrics("", ""),
+  },
+  "fbi-nibrs-people": {
+    title: "Victims and Offenders of Violent Crime (NIBRS)",
+    topic: "crime",
+    publisher: "FBI Uniform Crime Reporting Program (Crime Data Explorer)",
+    sourceUrl: "https://cde.ucr.cjis.gov/LATEST/webapp/#/pages/explorer/crime/crime-trend",
+    cadence: "Annual (each fall), with partial current-year data",
+    license: "Public domain (U.S. government work)",
+    description:
+      "Victims and offenders of homicide, rape, robbery, and aggravated assault by race, ethnicity, sex, and age, from agencies reporting to the National Incident-Based Reporting System, nation 2016 onward.",
+    methodology:
+      "NIBRS records each victim and each offender in an incident, with the offender described by the victim, witnesses, or police. Only NIBRS agencies are included: about a third of the population before 2021, most of it from 2021 on, so early years are not national and totals rise with coverage — compare shares, not counts, across years. Offenders who could not be described are counted as unknown. Rape is the current (2013) definition, rape only (code 11A).",
+    metrics: Object.fromEntries(Object.entries(NIBRS_PERSON_OFFENSES).flatMap(([o, l]) => Object.entries(personMetrics(`${o}_`, `${l}: `)))),
+  },
+  "ussc-sourcebook": {
+    title: "Federal Sentencing by Citizenship and Race",
+    topic: "crime",
+    publisher: "U.S. Sentencing Commission",
+    sourceUrl: "https://www.ussc.gov/research/sourcebook",
+    cadence: "Annual (each spring)",
+    license: "Public domain (U.S. government work)",
+    description:
+      "Individuals sentenced in federal court each fiscal year by U.S. citizenship and by race and ethnicity, overall and for each type of crime (drug trafficking, immigration, firearms, murder, sexual abuse, fraud, …), FY2016 onward.",
+    methodology:
+      "Covers felonies and Class A misdemeanors sentenced under the federal guidelines — federal cases only, not the state courts where most violent crime is prosecuted. Non-citizens include lawful permanent residents, people in the U.S. legally on other status, and people in the country illegally; the Sourcebook tables used here do not separate them. Hispanic is a separate category from White, Black, and Other in the race table. Cases missing citizenship or race are excluded, so the two tables' totals differ slightly. The Commission renamed its offense categories in FY2018; earlier names are mapped to the current ones where they cover the same offense. Fiscal years run October to September.",
+    metrics: {
+      sentenced_total: m("Individuals sentenced (citizenship known)", "people"),
+      sentenced_citizen: m("U.S. citizens sentenced", "people"),
+      sentenced_noncitizen: m("Non-citizens sentenced", "people"),
+      noncitizen_share: m("Non-citizen share of individuals sentenced", "percent"),
+      sentenced_race_total: m("Individuals sentenced (race known)", "people"),
+      sentenced_white: m("White individuals sentenced", "people"),
+      sentenced_black: m("Black individuals sentenced", "people"),
+      sentenced_hispanic: m("Hispanic individuals sentenced", "people"),
+      sentenced_other: m("Individuals of other races sentenced", "people"),
+      sentenced_white_share: m("White share of individuals sentenced", "percent"),
+      sentenced_black_share: m("Black share of individuals sentenced", "percent"),
+      sentenced_hispanic_share: m("Hispanic share of individuals sentenced", "percent"),
+      sentenced_other_share: m("Other races' share of individuals sentenced", "percent"),
+    },
+  },
+  "bop-population": {
+    title: "Federal Prison Population",
+    topic: "crime",
+    publisher: "Federal Bureau of Prisons",
+    sourceUrl: "https://www.bop.gov/about/statistics/statistics_inmate_citizenship.jsp",
+    cadence: "Weekly (snapshots kept from each import)",
+    license: "Public domain (U.S. government work)",
+    description:
+      "People in federal prison custody by citizenship (U.S., Mexico, Colombia, Cuba, Dominican Republic, other), race, ethnicity, sex, age, sentence length, and offense.",
+    methodology:
+      "The Bureau of Prisons publishes only the current week's figures; each import stores that week's snapshot (period = the BOP's update date), so the series grows from the first import. Counts cover people in BOP facilities and contract facilities, including those not yet sentenced. Federal prisons hold about a tenth of U.S. prisoners; state prisons and local jails are not included. Race and ethnicity are separate: Hispanic inmates are also counted in a race.",
+    metrics: {},
+  },
+  "texas-dps-noncitizen": {
+    title: "Texas Criminal Illegal Noncitizen Data",
+    topic: "immigration",
+    publisher: "Texas Department of Public Safety",
+    sourceUrl: "https://www.dps.texas.gov/section/crime-records/texas-criminal-illegal-noncitizen-data",
+    cadence: "Monthly (snapshots kept from each import)",
+    license: "Public data, cited from Texas DPS",
+    description:
+      "Noncitizens booked into Texas jails since June 2011 whom DHS identified as illegally present, and the criminal charges and convictions against them by offense (homicide, assault, sexual assault, drug, weapon, …).",
+    methodology:
+      "When anyone is booked into a Texas jail, their fingerprints go to DHS, which returns an immigration status; DPS counts people DHS classified as illegally present and arrested for a state offense (typically Class B misdemeanor or higher). Figures are cumulative from June 1, 2011 to the as-of date. 'Window' counts charges from arrests within that period; 'career' counts each person's entire Texas criminal history, including arrests before 2011. A second population was identified only after arriving in state prison. Convictions are those recorded so far, so recent charges are still pending. Federal charges are not included. Each import stores the published totals with the as-of date.",
+    metrics: dpsMetrics(),
+  },
+  "fbi-leoka": {
+    title: "Law Enforcement Officers Killed",
+    topic: "crime",
+    publisher: "FBI Law Enforcement Officers Killed and Assaulted Program",
+    sourceUrl: "https://cde.ucr.cjis.gov/LATEST/webapp/#/pages/le/leoka",
+    cadence: "Monthly year-to-date; final each May",
+    license: "Public domain (U.S. government work)",
+    description:
+      "Law enforcement officers killed in the line of duty each year, feloniously or accidentally, with the weapons used and the offenders' race, sex, and status in felonious killings, 2020 onward.",
+    methodology:
+      "Felonious deaths result from an offender's willful act; accidental deaths include vehicle crashes and officers struck by vehicles. Counts cover city, county, state, tribal, and federal officers reported to the FBI. Offender counts include every identified offender, so they can exceed the number of officers killed. The current year is year-to-date (metadata.partial).",
+    metrics: {},
+  },
+  "bjs-prisoners": {
+    title: "Prisoners by Race and Citizenship",
+    topic: "crime",
+    publisher: "Bureau of Justice Statistics (National Prisoner Statistics)",
+    sourceUrl: "https://bjs.ojp.gov/library/publications/prisoners-2023-statistical-tables",
+    cadence: "Annual",
+    license: "Public domain (U.S. government work)",
+    description:
+      "Imprisonment rates by race and Hispanic origin and by sex over ten years, and state and federal prisoners by race and by U.S. citizenship for each jurisdiction.",
+    methodology:
+      "Imprisonment rates count sentenced prisoners (sentences over a year) under state or federal jurisdiction per 100,000 U.S. residents of each group. White, black, Asian, and American Indian groups exclude Hispanics. Counts by race are prisoners under each jurisdiction on December 31; states differ in how they record race and ethnicity, and some report few or no Hispanic prisoners. Citizenship counts prisoners in state or federal prisons (not local jails) and depend on what each state records; California and some others do not report it. Local jails are not included anywhere in this dataset.",
+    metrics: {
+      ...Object.fromEntries(
+        Object.entries({ total: "all", federal: "federal", state: "state", male: "male", female: "female", white_nh: "white non-Hispanic", black_nh: "black non-Hispanic", hispanic: "Hispanic", aian_nh: "American Indian or Alaska Native", asian_nh: "Asian" }).map(
+          ([g, l]) => [`imprisonment_rate_${g}`, m(`Imprisonment rate, ${l}`, "per_100k")],
+        ),
+      ),
+      ...Object.fromEntries(
+        Object.entries({ total: "all", white_nh: "white non-Hispanic", black_nh: "black non-Hispanic", hispanic: "Hispanic", aian_nh: "American Indian or Alaska Native", asian_nh: "Asian", nhpi_nh: "Native Hawaiian or Pacific Islander", multiracial_nh: "two or more races", other: "other race", race_unknown: "race unknown", race_not_reported: "race not reported" }).map(
+          ([g, l]) => [`prisoners_${g}`, m(`Prisoners, ${l}`, "people")],
+        ),
+      ),
+      prisoners_citizen: m("U.S. citizen prisoners", "people"),
+      prisoners_noncitizen: m("Non-U.S. citizen prisoners", "people"),
+      noncitizen_share: m("Non-citizens as a share of prisoners", "percent"),
+    },
+  },
+  "bjs-recidivism": {
+    title: "Recidivism of Released State Prisoners",
+    topic: "crime",
+    publisher: "Bureau of Justice Statistics",
+    sourceUrl: "https://bjs.ojp.gov/library/publications/recidivism-prisoners-released-34-states-2012-5-year-follow-period-2012-2017",
+    cadence: "Irregular (latest cohort released 2012)",
+    license: "Public domain (U.S. government work)",
+    description:
+      "Share of state prisoners released in 2012 who were arrested again, convicted again, or returned to prison within one to five years, by sex, race and Hispanic origin, age at release, and the offense they had served time for.",
+    methodology:
+      "A sample of about 92,100 prisoners representing the 408,300 released from state prisons in 34 states in 2012, followed through criminal-history records for five years. Shares are cumulative: 'year 3' is arrested at least once within three years. Arrests anywhere in the U.S. count, including in other states. Conviction data cover 31 states and return-to-prison data 21 states. Groups are rows of the report's tables (geo_level 'group'); white, black, and other groups exclude Hispanics.",
+    metrics: {
+      released: m("Prisoners released (study population)", "people"),
+      ...Object.fromEntries(
+        [1, 2, 3, 4, 5].flatMap((y) => [
+          [`arrested_year_${y}_pct`, m(`Arrested within ${y} year${y > 1 ? "s" : ""} of release`, "percent")],
+          [`convicted_year_${y}_pct`, m(`Arrested and convicted within ${y} year${y > 1 ? "s" : ""}`, "percent")],
+          [`reimprisoned_year_${y}_pct`, m(`Returned to prison within ${y} year${y > 1 ? "s" : ""}`, "percent")],
+        ]),
+      ),
+    },
+  },
+  "gallup-lgbt": {
+    title: "LGBTQ+ Identification (Gallup)",
+    topic: "demographics",
+    publisher: "Gallup",
+    sourceUrl: "https://news.gallup.com/poll/702206/lgbtq-identification-holds.aspx",
+    cadence: "Annual (each February)",
+    license: "Published figures, cited from Gallup",
+    description:
+      "Share of U.S. adults who identify as lesbian, gay, bisexual, transgender, or something other than heterosexual, 2012 onward; each identity from 2020; and the latest year by age, gender, race and ethnicity, party, and place of residence.",
+    methodology:
+      "Gallup's annual aggregate of its telephone surveys of U.S. adults. Respondents can name more than one identity, so the identities add up to slightly more than the total. Subgroup rows (geo_level 'group') are the latest year only; Gallup marks cells with too few cases with an asterisk and those are left out.",
+    metrics: {
+      lgbtq_total: m("Identify as LGBTQ+", "percent"),
+      lesbian: m("Lesbian", "percent"),
+      gay: m("Gay", "percent"),
+      bisexual: m("Bisexual", "percent"),
+      transgender: m("Transgender", "percent"),
+      other_lgbtq: m("Other LGBTQ+ identity", "percent"),
+    },
+  },
+  "census-projections": {
+    title: "National Population Projections",
+    topic: "demographics",
+    publisher: "U.S. Census Bureau",
+    sourceUrl: "https://www.census.gov/programs-surveys/popproj.html",
+    cadence: "Irregular (latest 2023)",
+    license: "Public domain (U.S. government work)",
+    description:
+      "Projected U.S. population to 2100 (by race and Hispanic origin to 2060), with median age and the year the non-Hispanic white share falls below half, under the main series and low-, high-, and zero-immigration scenarios.",
+    methodology:
+      "The 2023 projections start from the Vintage 2022 estimates and carry forward assumed fertility, mortality, and net international migration; the scenarios change only the immigration assumption. Groups are non-Hispanic single races plus Hispanics of any race. The majority-minority year is the first projected year in which non-Hispanic whites (white alone) are under 50% of the population.",
+    metrics: {
+      pop_total: m("Projected population", "people"),
+      share_hispanic: m("Hispanic share", "percent"),
+      share_white_nh: m("White, non-Hispanic share", "percent"),
+      share_black_nh: m("Black, non-Hispanic share", "percent"),
+      share_asian_nh: m("Asian, non-Hispanic share", "percent"),
+      share_aian_nh: m("American Indian and Alaska Native, non-Hispanic share", "percent"),
+      share_nhpi_nh: m("Native Hawaiian and Pacific Islander, non-Hispanic share", "percent"),
+      share_multiracial_nh: m("Two or more races, non-Hispanic share", "percent"),
+      median_age: m("Projected median age", "years"),
+      majority_minority_year: m("Year non-Hispanic whites fall under 50%", "year"),
+      pop_total_low: m("Projected population, low immigration", "people"),
+      pop_total_high: m("Projected population, high immigration", "people"),
+      pop_total_zero: m("Projected population, zero immigration", "people"),
+      share_white_nh_low: m("White, non-Hispanic share, low immigration", "percent"),
+      share_white_nh_high: m("White, non-Hispanic share, high immigration", "percent"),
+      share_white_nh_zero: m("White, non-Hispanic share, zero immigration", "percent"),
+      majority_minority_year_low: m("Majority-minority year, low immigration", "year"),
+      majority_minority_year_high: m("Majority-minority year, high immigration", "year"),
+      majority_minority_year_zero: m("Majority-minority year, zero immigration", "year"),
+    },
+  },
   "census-acs1-immigration": {
     title: "Foreign-Born Population (ACS 1-year)",
     topic: "immigration",
@@ -218,6 +590,61 @@ export const CATALOG = {
       emigrants_by_country: m("U.S.-born living abroad, by country of residence", "people"),
       emigrants_by_region: m("U.S.-born living abroad, by region of residence", "people"),
       immigrants_total: m("Foreign-born living in the U.S.", "people"),
+    },
+  },
+  "crs-israel-aid": {
+    title: "U.S. Foreign Aid to Israel",
+    topic: "foreign-relations",
+    publisher: "Congressional Research Service",
+    sourceUrl: "https://www.congress.gov/crs-product/RL33222",
+    cadence: "Irregular (report updates)",
+    license: "Public domain (U.S. government work)",
+    description:
+      "U.S. aid to Israel by fiscal year since 1949: military grants and loans, economic aid, and Defense Department missile-defense funding (Arrow, David's Sling, Iron Dome, Iron Beam), including emergency supplementals.",
+    methodology:
+      "Current (not inflation-adjusted) dollars. CRS report RL33222 stopped printing a year-by-year table after 2016, so editions are stitched together and metadata.basis names the one each year comes from: FY1949–FY1999 are CRS appropriation figures (2016 edition, Tables B-1 and B-2; the 1976 transition quarter is folded into FY1976); FY2000–FY2018 are USAID Greenbook obligations (2020 edition, Table A-1); FY2019 onward are Table 1 of the 2020 and 2025 editions. Missile defense is Defense Department funding the Greenbook leaves out: Arrow only before FY2006, every program after. Loan guarantees are excluded because no U.S. funds were transferred.",
+    metrics: {
+      total: m("Total aid", "usd", "Military, economic and missile defense together."),
+      military: m("Military aid", "usd", "Foreign Military Financing grants and earlier military loans."),
+      economic: m("Economic aid", "usd", "Economic Support Fund, food aid, refugee resettlement, Ex-Im Bank loans, schools and hospitals."),
+      missile_defense: m("Missile defense", "usd", "Defense Department appropriations for joint U.S.-Israeli missile defense."),
+      md_arrow: m("Arrow II", "usd"),
+      md_arrow_3: m("Arrow III", "usd"),
+      md_davids_sling: m("David's Sling", "usd"),
+      md_iron_dome: m("Iron Dome", "usd"),
+      md_iron_beam: m("Iron Beam", "usd"),
+    },
+  },
+  "census-trade": {
+    title: "U.S. Trade in Goods by Country",
+    topic: "foreign-relations",
+    publisher: "U.S. Census Bureau",
+    sourceUrl: "https://www.census.gov/foreign-trade/balance/",
+    cadence: "Monthly",
+    license: "Public domain (U.S. government work)",
+    description:
+      "Monthly and annual U.S. goods exports to, imports from, and trade balance with Israel, Egypt, Jordan, Saudi Arabia, Ukraine and Taiwan since 1985.",
+    methodology:
+      "Census basis, goods only (services are not included), nominal dollars, not seasonally adjusted. Exports are valued free alongside ship; imports at customs value. Country rows use geo_level 'country' and the ISO alpha-3 code as geoid. Annual rows are calendar years; the current year is partial and metadata.months says how many months it covers.",
+    metrics: {
+      exports: m("U.S. goods exports", "usd"),
+      imports: m("U.S. goods imports", "usd"),
+      balance: m("U.S. goods trade balance", "usd", "Exports minus imports; negative is a U.S. deficit."),
+    },
+  },
+  "un-votes": {
+    title: "UN Votes on Israel and the Middle East",
+    topic: "foreign-relations",
+    publisher: "United Nations Dag Hammarskjöld Library",
+    sourceUrl: "https://digitallibrary.un.org/search?cc=Voting+Data",
+    cadence: "As votes are held",
+    license: "UN Digital Library terms of use",
+    description:
+      "Recorded General Assembly and Security Council votes on Israel, the Palestinians, Jerusalem, the Golan, UNRWA and the Middle East, with how the United States and Israel each voted.",
+    methodology:
+      "Votes from the UN Digital Library's Voting Data collection matching Palestine, Israel, the Middle East, Jerusalem, the Golan, UNRWA or Gaza. One row per resolution per country (USA, ISR): 1 yes, -1 no, 0 abstain; a member that did not vote has no row. period is the resolution symbol and period_start the vote date. metadata holds the title, body, draft symbol, subject headings and the full yes/no/abstain tally. Security Council drafts that fail, vetoed drafts included, are not in the collection.",
+    metrics: {
+      vote: m("Vote", "vote", "1 yes, -1 no, 0 abstain."),
     },
   },
   "fbi-cde": {
@@ -347,7 +774,7 @@ export const CATALOG = {
     description:
       "Crime as reported by victims in a nationally representative household survey, whether or not it was reported to police: victimization rates by type of crime, the share reported to police, and violence by the victim's relationship to the offender.",
     methodology:
-      "Computed by Worldview from the NCVS Select person- and household-level files: sums of the series-adjusted victimization weight (NEWWGT) over the persons-age-12-or-older and household weights for each year. Violent rates are per 1,000 persons age 12 or older; property rates per 1,000 households. Violent crime excludes homicide, which a survey of victims cannot measure. Reported-to-police shares exclude victimizations with a missing answer. Domestic violence is violence by an intimate partner or other relative. Estimates come from a sample and carry sampling error, which is larger for rarer crimes and single years.",
+      "Computed by Worldview from the NCVS Select person- and household-level files: sums of the series-adjusted victimization weight (NEWWGT) over the persons-age-12-or-older and household weights for each year. Violent rates are per 1,000 persons age 12 or older; property rates per 1,000 households. Violent crime excludes homicide, which a survey of victims cannot measure. Reported-to-police shares exclude victimizations with a missing answer. Domestic violence is violence by an intimate partner or other relative. Estimates come from a sample and carry sampling error, which is larger for rarer crimes and single years. Offender race and Hispanic origin (2012 on) are as the victim perceived them; a group of offenders counts under a race only when all or most shared it. Serious violent crime is rape or sexual assault, robbery, and aggravated assault.",
     metrics: {
       violent_rate: m("Violent victimization rate", "per_1000"),
       property_rate: m("Property victimization rate", "per_1000"),
@@ -364,6 +791,18 @@ export const CATALOG = {
       ...Object.fromEntries(
         ["violent", "property", "rape_sexual_assault", "robbery", "aggravated_assault", "simple_assault", "burglary", "motor_vehicle_theft", "other_theft"].map(
           (k) => [`${k}_reported_pct`, m(`Share reported to police: ${k.replace(/_/g, " ")}`, "percent")],
+        ),
+      ),
+      ...Object.fromEntries(
+        Object.entries({
+          violent: "violent victimizations", serious_violent: "serious violent victimizations",
+          violent_victim_white_nh: "violence against white non-Hispanic victims", violent_victim_black_nh: "violence against black non-Hispanic victims",
+          violent_victim_hispanic: "violence against Hispanic victims",
+        }).flatMap(([scope, sl]) =>
+          Object.entries({
+            white_nh: "white non-Hispanic", black_nh: "black non-Hispanic", hispanic: "Hispanic", asian_nhpi_nh: "Asian or Pacific Islander",
+            aian_nh: "American Indian or Alaska Native", other_nh: "other or two or more races", mixed_group: "a group of mixed races", unknown: "unknown",
+          }).map(([g, gl]) => [`${scope}_offender_${g}_pct`, m(`Offender perceived as ${gl}, share of ${sl}`, "percent")]),
         ),
       ),
     },
@@ -1005,6 +1444,22 @@ export const CATALOG = {
     methodology:
       "Series are read from FRED, which republishes each agency's figures unchanged; each metric's description names the original series. Inflation and wage growth are year-over-year percent changes computed from the index levels. Monthly figures are seasonally adjusted where the agency publishes an adjusted series. State unemployment rates are BLS Local Area Unemployment Statistics; annual state rates are averages of the twelve months. State minimum wages are the January 1 rate in state law (Department of Labor); states with no minimum wage law, or one below the federal rate, pay the federal minimum. Recessions are NBER-dated.",
     metrics: {
+      unemployment_rate_foreign_born: m("Unemployment rate, foreign-born", "percent"),
+      unemployment_rate_native_born: m("Unemployment rate, native-born", "percent"),
+      labor_force_participation_foreign_born: m("Labor force participation, foreign-born", "percent"),
+      labor_force_participation_native_born: m("Labor force participation, native-born", "percent"),
+      employment_population_foreign_born: m("Employment-population ratio, foreign-born", "percent"),
+      employment_population_native_born: m("Employment-population ratio, native-born", "percent"),
+      labor_force_foreign_born: m("Foreign-born labor force", "people"),
+      labor_force_native_born: m("Native-born labor force", "people"),
+      food_at_home_inflation: m("Grocery (food at home) inflation, 12 months", "percent"),
+      price_eggs_dozen: m("Eggs, grade A large, per dozen", "usd_cents"),
+      price_ground_beef_lb: m("Ground beef, 100% beef, per pound", "usd_cents"),
+      price_milk_gallon: m("Milk, whole, per gallon", "usd_cents"),
+      price_bread_lb: m("White bread, per pound", "usd_cents"),
+      price_chicken_lb: m("Chicken, whole, per pound", "usd_cents"),
+      price_coffee_lb: m("Coffee, ground roast, per pound", "usd_cents"),
+      business_applications: m("New business applications (seasonally adjusted)", "applications"),
       unemployment_rate: m("Unemployment rate", "percent", "BLS (UNRATE; state: LAUS)."),
       unemployment_rate_annual: m("Unemployment rate, annual average", "percent", "BLS Local Area Unemployment Statistics."),
       payroll_jobs: m("Nonfarm payroll jobs", "jobs", "BLS Current Employment Statistics (PAYEMS), seasonally adjusted."),
@@ -1176,7 +1631,7 @@ export const CATALOG = {
     license: "Public domain (U.S. government work)",
     description: "Average math and reading scores and the share of students at or above NAEP Proficient, grades 4 and 8, for the nation's public schools and every state — math since 1996, reading since 1998.",
     methodology:
-      "NAEP tests samples of students in every state. Scores are on 0–500 scales that are comparable across years within a subject and grade. \"Proficient\" is NAEP's own benchmark for solid academic performance, set by the National Assessment Governing Board, and is higher than most states' own definitions of grade level. National figures are for public schools, so they match the state figures. Accommodations for students with disabilities and English learners were permitted from 1996 (math) and 1998 (reading); earlier years are not shown.",
+      "NAEP tests samples of students in every state. Scores are on 0–500 scales that are comparable across years within a subject and grade. \"Proficient\" is NAEP's own benchmark for solid academic performance, set by the National Assessment Governing Board, and is higher than most states' own definitions of grade level. National figures are for public schools, so they match the state figures. Accommodations for students with disabilities and English learners were permitted from 1996 (math) and 1998 (reading); earlier years are not shown. Race groups are as reported by schools; White, Black, and Asian/Pacific Islander exclude Hispanic students. District rows (geo_level 'district') are the big-city public school systems in the Trial Urban District Assessment, which joined in different years.",
     metrics: {
       math_4_score: m("Grade 4 math, average score", "points"),
       math_8_score: m("Grade 8 math, average score", "points"),
@@ -1186,6 +1641,17 @@ export const CATALOG = {
       math_8_proficient: m("Grade 8 math, at or above Proficient", "percent"),
       reading_4_proficient: m("Grade 4 reading, at or above Proficient", "percent"),
       reading_8_proficient: m("Grade 8 reading, at or above Proficient", "percent"),
+      ...Object.fromEntries(
+        ["math", "reading"].flatMap((subj) =>
+          [4, 8].flatMap((g) =>
+            [["score", "average score", "points"], ["proficient", "at or above Proficient", "percent"]].flatMap(([stat, sl, unit]) =>
+              Object.entries({ white: "White", black: "Black", hispanic: "Hispanic", asian_pi: "Asian/Pacific Islander", aian: "American Indian/Alaska Native", multiracial: "Two or more races", male: "boys", female: "girls" }).map(
+                ([k, l]) => [`${subj}_${g}_${stat}_${k}`, m(`Grade ${g} ${subj}, ${sl}: ${l}`, unit)],
+              ),
+            ),
+          ),
+        ),
+      ),
     },
   },
   "fred-education": {
@@ -1273,8 +1739,12 @@ export const CATALOG = {
   },
 };
 
-export async function registerDataset(pg, slug) {
-  const d = CATALOG[slug];
+Object.assign(CATALOG, GAPS_CATALOG);
+
+// `extraMetrics` adds labels for metrics named from the source data (a
+// weapon or relationship category), merged into the catalog's own.
+export async function registerDataset(pg, slug, extraMetrics = {}) {
+  const d = CATALOG[slug] && { ...CATALOG[slug], metrics: { ...extraMetrics, ...CATALOG[slug].metrics } };
   if (!d) throw new Error(`No catalog entry for dataset "${slug}" (scripts/lib/catalog.mjs)`);
   await pg.query(
     `insert into datasets (slug, title, topic, publisher, description, methodology, source_url, license, cadence, metrics, status)

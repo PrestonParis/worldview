@@ -30,12 +30,30 @@ const DRY_RUN = flag("dry-run");
 const WITH_FEC = flag("fec");
 // Read after loadEnv() so the key in .env.local / ENV_FILE is used.
 const fecApiKey = () => process.env.FEC_API_KEY || "DEMO_KEY";
-const SOURCE_TYPES = new Set(["primary", "secondary", "transcript", "article", "filing", "video", "official_statement"]);
+const SOURCE_TYPES = new Set([
+  "primary",
+  "secondary",
+  "transcript",
+  "article",
+  "filing",
+  "video",
+  "official_statement",
+]);
 const CATEGORIES = new Set(["career", "finance", "politics", "ideas", "legal", "personal"]);
 const DATE_RE = /^\d{4}(-\d{2}(-\d{2})?)?$/;
 
+function sourcePublishedAt(value) {
+  if (!value) return null;
+  if (/^\d{4}$/.test(value)) return `${value}-01-01T12:00:00Z`;
+  if (/^\d{4}-\d{2}$/.test(value)) return `${value}-01T12:00:00Z`;
+  return `${value}T12:00:00Z`;
+}
+
 const slugs = flag("all")
-  ? fs.readdirSync(DIR).filter((f) => f.endsWith(".json")).map((f) => f.replace(/\.json$/, ""))
+  ? fs
+      .readdirSync(DIR)
+      .filter((f) => f.endsWith(".json") && f !== "lookup-queue.json")
+      .map((f) => f.replace(/\.json$/, ""))
   : [arg("profile")].filter(Boolean);
 if (!slugs.length) throw new Error("Pass --profile=<slug> or --all");
 
@@ -61,27 +79,35 @@ function validate(slug, d) {
     cite(`relationship ${r.key}`, r.sources);
     if (!r.sources?.length) errors.push(`relationship ${r.key}: no evidence`);
     if (!relationshipTypeBySlug[r.relType]) errors.push(`relationship ${r.key}: unknown relType ${r.relType}`);
-    for (const end of [r.source, r.target]) if (!entityKeys.has(end)) errors.push(`relationship ${r.key}: unknown entity ${end}`);
+    for (const end of [r.source, r.target])
+      if (!entityKeys.has(end)) errors.push(`relationship ${r.key}: unknown entity ${end}`);
   }
   for (const e of d.events ?? []) {
     cite(`event ${e.key}`, e.sources);
     if (!e.sources?.length) errors.push(`event ${e.key}: no evidence`);
     if (!DATE_RE.test(e.date)) errors.push(`event ${e.key}: bad date ${e.date}`);
     if (!CATEGORIES.has(e.category)) errors.push(`event ${e.key}: bad category ${e.category}`);
-    for (const [key] of e.participants ?? []) if (!entityKeys.has(key)) errors.push(`event ${e.key}: unknown participant ${key}`);
+    for (const [key] of e.participants ?? [])
+      if (!entityKeys.has(key)) errors.push(`event ${e.key}: unknown participant ${key}`);
   }
   for (const s of d.statements ?? []) {
     cite(`statement ${s.key}`, [s.source]);
     if (!s.quote && !s.summary) errors.push(`statement ${s.key}: needs a quote or summary`);
-    if (s.verbatim === false && !s.summary) errors.push(`statement ${s.key}: a non-verbatim quote needs a summary saying where the wording comes from`);
+    if (s.verbatim === false && !s.summary)
+      errors.push(`statement ${s.key}: a non-verbatim quote needs a summary saying where the wording comes from`);
   }
   const statementKeys = new Set((d.statements ?? []).map((s) => s.key));
-  for (const k of d.ideas?.featuredQuotes ?? []) if (!statementKeys.has(k)) errors.push(`ideas.featuredQuotes: unknown statement ${k}`);
+  for (const k of d.ideas?.featuredQuotes ?? [])
+    if (!statementKeys.has(k)) errors.push(`ideas.featuredQuotes: unknown statement ${k}`);
   for (const t of d.ideas?.traditions ?? []) cite(`tradition ${t.label}`, t.sources);
   for (const i of d.ideas?.influences ?? []) cite(`influence ${i.name}`, i.sources);
   for (const w of d.ideas?.works ?? []) cite(`work ${w.title}`, [w.source]);
   for (const c of d.chapters ?? []) {
-    for (const m of c.body.matchAll(/\[\[([^\]]+)\]\]/g)) cite(`chapter ${c.key}`, m[1].split(",").map((k) => k.trim()));
+    for (const m of c.body.matchAll(/\[\[([^\]]+)\]\]/g))
+      cite(
+        `chapter ${c.key}`,
+        m[1].split(",").map((k) => k.trim()),
+      );
   }
   if (d.finance?.fec) cite("finance.fec", [d.finance.fec.source]);
   if (errors.length) throw new Error(`${slug}: ${errors.length} problem(s)\n  ${errors.join("\n  ")}`);
@@ -94,7 +120,10 @@ async function resolveEntities(pg, d) {
   for (const [key, spec] of Object.entries(d.entities)) {
     if (spec.match?.identifier) {
       const [scheme, value] = spec.match.identifier;
-      const { rows } = await pg.query("select entity_id from entity_identifiers where scheme = $1 and value = $2", [scheme, value]);
+      const { rows } = await pg.query("select entity_id from entity_identifiers where scheme = $1 and value = $2", [
+        scheme,
+        value,
+      ]);
       if (!rows.length) throw new Error(`entity ${key}: no entity with ${scheme} ${value}`);
       ids[key] = rows[0].entity_id;
       continue;
@@ -148,7 +177,7 @@ async function upsertSources(pg, d, accessedAt) {
         s.url ?? null,
         s.publisher,
         s.type,
-        s.publishedAt ? `${s.publishedAt}T12:00:00Z` : null,
+        sourcePublishedAt(s.publishedAt),
         s.notes ?? null,
         s.author ?? null,
         s.documentId ?? null,
@@ -206,6 +235,9 @@ async function importDossier(pg, slug, d) {
     ],
   );
 
+  // A dossier portrait (Wikimedia Commons) replaces whatever the subject had.
+  if (d.image) await pg.query("update entities set image_url = $2, updated_at = now() where id = $1", [subjectId, d.image]);
+
   // Facts: the dossier owns the subject's whole fact list.
   await pg.query("delete from entity_facts where entity_id = $1 and not (fact_key = any($2))", [
     subjectId,
@@ -240,7 +272,10 @@ async function importDossier(pg, slug, d) {
     })),
     { keepValidFrom: false },
   );
-  await pg.query("delete from entity_edges where source_key like $1 and not (source_key = any($2))", [`${prefix}%`, edgeKeys]);
+  await pg.query("delete from entity_edges where source_key like $1 and not (source_key = any($2))", [
+    `${prefix}%`,
+    edgeKeys,
+  ]);
   for (const r of d.relationships) {
     const { rows } = await pg.query(
       `update entity_edges set status = $2, prominence = $3, source_record_id = $4 where source_key = $1 returning id`,
@@ -251,7 +286,10 @@ async function importDossier(pg, slug, d) {
 
   // Events and their participants.
   const eventKeys = d.events.map((e) => `${prefix}${e.key}`);
-  await pg.query("delete from entity_events where event_key like $1 and not (event_key = any($2))", [`${prefix}%`, eventKeys]);
+  await pg.query("delete from entity_events where event_key like $1 and not (event_key = any($2))", [
+    `${prefix}%`,
+    eventKeys,
+  ]);
   for (const e of d.events) {
     const { rows } = await pg.query(
       `insert into entity_events (event_key, subject_entity_id, date_start, date_end, title, summary, category, significance, chapter_key, status, status_note)
@@ -330,22 +368,32 @@ async function importDossier(pg, slug, d) {
 // only if the name matches exactly and either the employer matches or the
 // filing address is one of the subject's known cities; each row records
 // which test it passed.
-async function fetchScheduleA(contributorName) {
-  const rows = [];
-  let cursor = "";
-  for (;;) {
-    const url =
-      `https://api.open.fec.gov/v1/schedules/schedule_a/?api_key=${fecApiKey()}` +
-      `&contributor_name=${encodeURIComponent(contributorName)}&is_individual=true&per_page=100` +
-      `&sort=-contribution_receipt_amount${cursor}`;
-    const page = await fetchJson(url, {}, { label: "FEC schedule_a" });
-    rows.push(...page.results);
-    const last = page.pagination?.last_indexes;
-    if (!last || !page.results.length) break;
-    cursor = `&last_index=${last.last_index}&last_contribution_receipt_amount=${last.last_contribution_receipt_amount}`;
-    await sleep(fecApiKey() === "DEMO_KEY" ? 1500 : 300);
+async function fetchScheduleA(contributorName, keepAlive, employerFilters = []) {
+  const bySubId = new Map();
+  // A common name can match hundreds of thousands of unrelated rows. When a
+  // dossier supplies literal employer searches, let OpenFEC narrow each query
+  // before applying the dossier's stricter regex locally.
+  for (const employerFilter of employerFilters.length ? employerFilters : [null]) {
+    let cursor = "";
+    let pages = 0;
+    for (;;) {
+      const url =
+        `https://api.open.fec.gov/v1/schedules/schedule_a/?api_key=${fecApiKey()}` +
+        `&contributor_name=${encodeURIComponent(contributorName)}&is_individual=true&per_page=100` +
+        (employerFilter ? `&contributor_employer=${encodeURIComponent(employerFilter)}` : "") +
+        `&sort=-contribution_receipt_amount${cursor}`;
+      const page = await fetchJson(url, {}, { label: "FEC schedule_a" });
+      for (const row of page.results) bySubId.set(String(row.sub_id), row);
+      pages++;
+      // Long searches otherwise leave the cloud Postgres connection idle.
+      if (keepAlive && pages % 20 === 0) await keepAlive();
+      const last = page.pagination?.last_indexes;
+      if (!last || !page.results.length) break;
+      cursor = `&last_index=${last.last_index}&last_contribution_receipt_amount=${last.last_contribution_receipt_amount}`;
+      await sleep(fecApiKey() === "DEMO_KEY" ? 1500 : 300);
+    }
   }
-  return rows;
+  return [...bySubId.values()];
 }
 
 async function importFec(pg, { subjectId, d, src }) {
@@ -358,15 +406,16 @@ async function importFec(pg, { subjectId, d, src }) {
   if (cache && fs.existsSync(cache)) {
     raw = JSON.parse(fs.readFileSync(cache, "utf8"));
   } else {
-    raw = await fetchScheduleA(cfg.contributorName);
+    raw = await fetchScheduleA(cfg.contributorName, () => pg.query("select 1"), cfg.employers);
     if (cache) fs.writeFileSync(cache, JSON.stringify(raw));
   }
   const matched = raw.flatMap((r) => {
     if (!name.test(r.contributor_name ?? "")) return [];
     const job = `${r.contributor_employer ?? ""} ${r.contributor_occupation ?? ""}`;
-    if (employer.test(job)) return [{ r, basis: "employer" }];
-    if (cities.has(r.contributor_city)) return [{ r, basis: "city" }];
-    return [];
+    const basis = employer.test(job) ? "employer" : cities.has(r.contributor_city) ? "city" : null;
+    if (!basis) return [];
+    if (!r.contribution_receipt_date || !Number.isFinite(Number(r.contribution_receipt_amount))) return [];
+    return [{ r, basis }];
   });
   console.log(`  FEC: ${raw.length} rows for "${cfg.contributorName}", ${matched.length} matched to the subject`);
 
@@ -391,7 +440,8 @@ async function importFec(pg, { subjectId, d, src }) {
       for (const cand of c.candidate_ids ?? []) if (byCandidate.has(cand)) return byCandidate.get(cand);
     }
     if (byCommittee.has(r.committee_id)) return byCommittee.get(r.committee_id);
-    if (!newCommittees.has(r.committee_id)) newCommittees.set(r.committee_id, { id: randomUUID(), name: titleCase(c.name ?? r.committee_id) });
+    if (!newCommittees.has(r.committee_id))
+      newCommittees.set(r.committee_id, { id: randomUUID(), name: titleCase(c.name ?? r.committee_id) });
     return newCommittees.get(r.committee_id).id;
   };
 
@@ -418,18 +468,29 @@ async function importFec(pg, { subjectId, d, src }) {
   });
   if (DRY_RUN) {
     const counted = rows.filter((row) => row.memo_code !== "X");
-    console.log(`  would upsert ${rows.length} contributions (${counted.length} counted, $${counted.reduce((t, row) => t + row.amount, 0).toLocaleString()})`);
+    console.log(
+      `  would upsert ${rows.length} contributions (${counted.length} counted, $${counted.reduce((t, row) => t + row.amount, 0).toLocaleString()})`,
+    );
     return { inserted: 0 };
   }
 
   if (newCommittees.size) {
     await upsertEntities(
       pg,
-      [...newCommittees.values()].map((c) => ({ id: c.id, type: "organization", name: c.name, description: "Federal political committee (FEC)." })),
+      [...newCommittees.values()].map((c) => ({
+        id: c.id,
+        type: "organization",
+        name: c.name,
+        description: "Federal political committee (FEC).",
+      })),
     );
     const conflicts = await addIdentifiers(
       pg,
-      [...newCommittees.entries()].map(([committeeId, c]) => ({ entityId: c.id, scheme: "fec_committee", value: committeeId })),
+      [...newCommittees.entries()].map(([committeeId, c]) => ({
+        entityId: c.id,
+        scheme: "fec_committee",
+        value: committeeId,
+      })),
     );
     for (const conflict of conflicts) console.warn(`  identifier conflict: ${describeConflict(conflict)}`);
   }
@@ -448,9 +509,24 @@ async function importFec(pg, { subjectId, d, src }) {
          recipient_kind = excluded.recipient_kind, recipient_party = excluded.recipient_party, updated_at = now()
        returning (xmax = 0) as inserted`,
       [
-        subjectId, row.recipient, row.amount, row.date, sourceId, row.notes, row.donor_state, row.donor_city,
-        row.donor_zip, row.employer, row.occupation, row.external_id, row.receipt_type, row.memo_code, row.cycle,
-        row.committee_id, row.recipient_kind, row.recipient_party,
+        subjectId,
+        row.recipient,
+        row.amount,
+        row.date,
+        sourceId,
+        row.notes,
+        row.donor_state,
+        row.donor_city,
+        row.donor_zip,
+        row.employer,
+        row.occupation,
+        row.external_id,
+        row.receipt_type,
+        row.memo_code,
+        row.cycle,
+        row.committee_id,
+        row.recipient_kind,
+        row.recipient_party,
       ],
     );
     if (out[0].inserted) inserted++;

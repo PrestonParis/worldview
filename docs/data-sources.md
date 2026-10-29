@@ -13,8 +13,8 @@ production build), mirrored in `src/lib/db/schema.ts`.
 ## Two databases: Supabase + Neon
 
 `area_stats` is split across two Postgres databases. Supabase (`DATABASE_URL`)
-is kept just under its 500 MB plan cap, since past the cap it goes
-read-only. The datasets that don't fit go to Neon (`NEON_DATABASE_URL`, 1 GB
+is on the Pro plan (8 GB disk) and is filled to about 80% of it. The
+datasets that don't fit go to Neon (`NEON_DATABASE_URL`, 1 GB
 per branch). Each dataset's rows are all in
 one of the two; `datasets.storage` (`supabase` | `neon`, kept in Supabase)
 records which. Everything else, including the catalog, accounts and other
@@ -24,10 +24,11 @@ tables, stays in Supabase.
   merges queries that span datasets.
 - Writes: importers' `upsertRows(pg, "area_stats", ...)` routes by dataset
   (`scripts/lib/stores.mjs`). If a write would take Supabase past
-  `SUPABASE_LIMIT_MB` (480), that dataset is moved to Neon first.
+  `SUPABASE_LIMIT_MB` (6550, about 80% of the Pro plan's 8 GB disk), that
+  dataset is moved to Neon first.
 - Rebalancing: `ENV_FILE=.env.cloud npm run db:rebalance` prints the plan,
   and `-- --apply` carries it out. It fills Supabase up to `--target`
-  (`SUPABASE_TARGET_MB`, 450) and moves the rest to Neon. Moves copy the
+  (`SUPABASE_TARGET_MB`, 6000) and moves the rest to Neon. Moves copy the
   rows, switch `datasets.storage`, wait out the app's 60s placement cache,
   then delete the old copy. Afterwards it rebuilds Supabase's `area_stats`
   so the freed space counts. Don't run imports during a rebalance.
@@ -48,7 +49,7 @@ tables, stays in Supabase.
 ## The lake: files outside the databases
 
 Supabase Storage holds files the databases don't need to: it has its own
-quota, separate from the 500 MB database cap.
+quota, separate from the database's disk.
 
 - `raw` (private): source files as downloaded. An importer that calls
   `fetchArchived(pg, source, url)` (`scripts/lib/lake.mjs`) keeps each
@@ -147,13 +148,32 @@ and `lda_registrant` ids as they match or create entities.
 | `import:scdb` | Supreme Court Database | `court_cases`, `case_votes` | — (pass `--url=` for a new release) |
 | `import:supreme-court` | `data/supreme-court.json` (hand-curated: seats, appointing president, nomination/confirmation/seating dates, Senate vote, Wikidata id, Commons portrait) | `judge` entities matched by SCDB code (`scdb` crosswalk scheme, never by name), `nominated` + `serves-in` edges, fills `case_votes.justice_entity_id`; run after `import:scdb` | — |
 | `import:administration` | `data/administration.json` (hand-curated cabinet and cabinet-level roster, map group, start dates, departures under `former`) | `appointed` + `serves-in` edges from the President, `metadata.branch`/`office` on current appointees; prunes this term's edges the file no longer produces | — |
-| `import:acs` | Census ACS 5-year | `area_stats` (`census-acs5`; us/state/county/cd/sldu/sldl) | `CENSUS_API_KEY` |
+| `import:acs` | Census ACS 5-year (`--year=`; county history loaded for 2009–2024, education from B15002 before 2012, unemployment from 2011) | `area_stats` (`census-acs5`; us/state/county/cd/sldu/sldl) | `CENSUS_API_KEY` |
 | `import:usaspending` | USAspending.gov | `area_stats` (`usaspending`; state/county/cd by award type, agencies) | — |
 | `import:fbi-crime` | FBI Crime Data Explorer | `area_stats` (`fbi-cde`; nation/state monthly) | api.data.gov (`FBI_API_KEY`, `FEC_API_KEY`, or `CONGRESS_GOV_API_KEY`) |
 | `import:fbi-cities` | FBI Crime Data Explorer, agency level | `area_stats` (`fbi-cde-cities`; police departments of cities over 100k, monthly offenses + annual staffing; geo_level `agency`, geoid = ORI) | api.data.gov + `CENSUS_API_KEY` (city list) |
 | `import:fbi-annual` | FBI Crime Data Explorer hate crime + arrest tables | `area_stats` (`fbi-hate-crime`, `fbi-arrests`; nation/state annual) | api.data.gov |
 | `import:cdc-violent-deaths` | CDC Mapping Injury, Overdose, and Violence (NVSS) | `area_stats` (`cdc-violent-deaths`; homicide + firearm deaths, nation/state 2019–, county homicide; `*_ttm` trailing 12 months) | — |
-| `import:ncvs` | BJS National Crime Victimization Survey (NCVS Select microdata via api.ojp.gov) | `area_stats` (`bjs-ncvs`; national victimization rates, share reported to police, domestic violence, 1993–) | — |
+| `import:ncvs` | BJS National Crime Victimization Survey (NCVS Select microdata via api.ojp.gov) | `area_stats` (`bjs-ncvs`; national victimization rates, share reported to police, domestic violence, 1993–; offender race as victims perceived it, 2012–) | — |
+| `import:fbi-arrest-demographics` | FBI Crime Data Explorer arrest tables by offense id (`--nation-only`, `--states=`) | `area_stats` (`fbi-arrest-demographics`; nation 17 offenses + violent, states 5 offenses; race, sex, age bands; 2015–; no ethnicity in CDE) | api.data.gov |
+| `import:fbi-homicide` | CDE Supplementary Homicide Reports + NIBRS 09A/11A/120/13A (`--only=shr,nibrs`) | `area_stats` (`fbi-shr`: victims/offenders by race, ethnicity, sex, age; victims by weapon, relationship, circumstance; nation 1990–, states 2010–. `fbi-nibrs-people`: nation 2016–) | api.data.gov |
+| `import:fbi-leoka` | CDE LEOKA year-to-date JSON (`cde.ucr.cjis.gov/LATEST/leoka/ytd`) | `area_stats` (`fbi-leoka`; officers killed felonious/accidental, weapons, offender race/sex; 2020–) | — |
+| `import:ussc` | U.S. Sentencing Commission Sourcebook Tables 5 and 9 (PDF, via `scripts/lib/pdf.mjs`) | `area_stats` (`ussc-sourcebook`; sentenced individuals by citizenship and by race, overall + geo_level `offense`; FY2016–) | — |
+| `import:bop` | BOP quick-facts JSON | `area_stats` (`bop-population`; weekly snapshot: citizenship, race, ethnicity, sex, age, offense, sentence; accumulates per run) | — |
+| `import:texas-dps` | Texas DPS criminal illegal noncitizen page (text parsed) | `area_stats` (`texas-dps-noncitizen`; cumulative charges/convictions by offense since June 2011, snapshot per as-of date) | — |
+| `import:bjs-prisoners` | BJS Prisoners in 2023 statistical tables (`--report=p24st` next year) | `area_stats` (`bjs-prisoners`; imprisonment rates by race 2013–2023; prisoners by race and by citizenship per state + federal) | — |
+| `import:bjs-recidivism` | BJS recidivism of prisoners released in 2012 (CSV tables) | `area_stats` (`bjs-recidivism`; arrested/convicted/reimprisoned within 1–5 years by group, geo_level `group`) | — |
+| `import:fred` (additions) | FRED: native- vs foreign-born CPS series, food-at-home CPI + BLS average prices, business applications | `area_stats` (`fred-economy`) | — |
+| `import:bls-cps` | BLS Public Data API v1 (keyless, 25 requests/day) | `area_stats` (`bls-cps`; prime-age LFPR and employment by sex, 1948–) | — |
+| `import:world-bank-remittances` | World Bank API | `area_stats` (`world-bank-remittances`; U.S. paid, received by country + % of GDP) | — |
+| `import:irs-migration` | IRS SOI state inflow/outflow CSVs | `area_stats` (`irs-soi-migration`; state in/out/net returns, people, AGI; state-pair flows; 2012–) | — |
+| `import:irs-tax-shares` | IRS SOI Table 4.1 (`--file=` for a newer year) | `area_stats` (`irs-soi-tax-shares`; tax and AGI shares, average rates, floors by percentile, 2001–) | — |
+| `import:ohss-monthly` | DHS OHSS enforcement and legal processes monthly workbook (last edition Nov 2024) | `area_stats` (`ohss-enforcement`; border book-outs, ICE arrests/book-ins/removals by criminality, credible fear, CBP One, CHNV; monthly FY2014–) | — |
+| `import:eoir` | EOIR adjudication statistics PDFs | `area_stats` (`eoir`; backlog, receipts, completions 1983–; asylum decisions, grant rates, applications 2016–; current-FY removal orders) | — |
+| `import:unauthorized-estimates` | Pew and CIS reports, transcribed with quotes in metadata | `area_stats` (`unauthorized-estimates`) | — |
+| `import:acs-pums-nativity` | ACS 1-year PUMS via the Census microdata API (`tabulate`) | `area_stats` (`census-pums-welfare`; SNAP, Medicaid, cash, SSI by citizenship; nation 2012–, states 2021–) | `CENSUS_API_KEY` |
+| `import:acs-family-groups` | ACS 1-year B13008, B13002H/B/D/I, B11001H/B/D/I, B17006 | `area_stats` (`census-acs1-family-groups`; births by nativity and race, unmarried share, families by race, child poverty by family type; 2010–) | `CENSUS_API_KEY` |
+| `import:h1b` | USCIS H-1B Employer Data Hub archive CSVs (FY2009–2023) | `area_stats` (`uscis-h1b`; nation, state, industry, top 250 employers) | — |
 | `import:abortion` | Guttmacher Monthly Abortion Provision Study + 1973–2020 series (OSF), CDC Abortion Surveillance tables (PubMed Central), Guttmacher state policy summaries | `area_stats` (`guttmacher-monthly-abortions`: nation/state monthly 2023–, annual travel + telehealth, occurrence×residence flows; `guttmacher-pregnancy-history`: state of residence 1973–2020; `cdc-abortion-surveillance`: state of occurrence 2019–, method/age/gestation/race; `abortion-gestational-limits`: monthly snapshot). `--only=monthly,history,cdc,limits`. New CDC reports are added to `CDC_REPORTS` by hand | — |
 | `import:cbp` | CBP nationwide encounters (state + area-of-responsibility files) | `area_stats` (`cbp`; state/border region/nation/citizenship monthly; Border Patrol vs. Field Operations; sector/field office) | — |
 | `import:ice-detention` | ICE detention statistics workbooks (FY19–) | `area_stats` (`ice-detention`; nation/state/facility ADP per FY) | — |
@@ -161,6 +181,10 @@ and `lda_registrant` ids as they match or create entities.
 | `import:dhs-unauthorized` | DHS OHSS unauthorized immigrant population estimates (PDF, transcribed) | `area_stats` (`dhs-unauthorized`; nation 2000, 2005–2022; top countries, top states, period of entry) | — |
 | `import:census-historical-nativity` | Census foreign-born population by decennial census (Working Paper 29 + Census 2000 brief, transcribed) | `area_stats` (`census-historical-nativity`; nation 1850–2000: foreign-born, share, total population) | — |
 | `import:census-pep` | Census Population Estimates (V2020 + latest) | `area_stats` (`census-pep`; nation/state/county population, births, deaths, net international/domestic migration, 2011–) | — |
+| `import:census-race` | Census population estimates by race, Hispanic origin and age (1990s ST-99-28 text tables, 2000s intercensal, V2020 + latest county ALLDATA/AGESEX and state ALLDATA6), cached in `.cache/census-race/` | `area_stats` (`census-pep-race`; nation/state race counts + shares 1990–, county shares 2010–; median age overall and by group, under 18, 65+). `--levels=nation,state,county` | — |
+| `import:census-projections` | Census 2023 National Population Projections (np2023_d1 files) | `area_stats` (`census-projections`; nation 2022–2100 population, race shares to 2060, median age; low/high/zero-immigration scenarios; majority-minority year) | — |
+| `import:acs-ancestry` | Census ACS 1-year ancestry (B04006) and Hispanic origin (B03001), matched by label | `area_stats` (`census-acs1-ancestry`; nation/state 2010–, share + count per group) | `CENSUS_API_KEY` |
+| `import:gallup-lgbt` | Gallup annual LGBTQ+ identification release (`--url=` for a newer one) | `area_stats` (`gallup-lgbt`; nation 2012–, identities 2020–, latest year by age/gender/race/party/place as geo_level `group`) | — |
 | `import:acs-immigration` | Census ACS 1-year B05002/B05006 | `area_stats` (`census-acs1-immigration`; foreign-born, citizenship, region/country of birth; nation/state 2005–) | `CENSUS_API_KEY` for 2005–2019; without one, 2021+ loads from the keyless summary files |
 | `import:state-migration` | Census State-to-State Migration Flows (ACS 1-year) | `area_stats` (`census-state-migration`; origin→destination flows + in/out/net/from-abroad per state, 2022–) | — |
 | `import:un-migrant-stock` | UN DESA International Migrant Stock | `area_stats` (`un-migrant-stock`; U.S.-born living abroad by country/region, foreign-born in the U.S., 1990–) | — |
