@@ -7,6 +7,7 @@ export interface GlossaryEntry {
   term: string;
   definition: string;
   also?: string[]; // related entries, by id
+  source?: { label: string; href: string }; // official page for the term
 }
 
 export const GLOSSARY = {
@@ -95,6 +96,7 @@ export const GLOSSARY = {
     definition:
       "Proof of lawful permanent resident status. A green-card holder can live and work in the U.S. permanently and can usually apply to become a citizen after five years (three if married to a U.S. citizen).",
     also: ["lpr", "adjustment-of-status", "naturalization"],
+    source: { label: "USCIS — Green card", href: "https://www.uscis.gov/green-card" },
   },
   lpr: {
     term: "Lawful permanent resident (LPR)",
@@ -194,6 +196,7 @@ export const GLOSSARY = {
     term: "Stock vs. flow",
     definition:
       "A stock is how many people are in a group at one moment (the foreign-born population on a given date). A flow is how many enter or leave a group over a period (green cards granted in a year). Comparing one with the other mixes different questions.",
+    source: { label: "DHS Office of Homeland Security Statistics", href: "https://ohss.dhs.gov/" },
   },
   cbp: {
     term: "CBP",
@@ -221,6 +224,7 @@ export const GLOSSARY = {
   eoir: {
     term: "EOIR",
     definition: "The Executive Office for Immigration Review, part of the Justice Department — the immigration courts, where judges decide removal cases and defensive asylum claims.",
+    source: { label: "EOIR — Executive Office for Immigration Review", href: "https://www.justice.gov/eoir" },
   },
 } satisfies Record<string, GlossaryEntry>;
 

@@ -36,42 +36,38 @@ export function ImmigrationChapterDeck({ chapters, children }: { chapters: Immig
 
   return (
     <section id="immigration-chapters" className="scroll-mt-24 space-y-6">
-      <label className="block lg:hidden">
+      <label className="block sm:hidden">
         <span className="mb-1.5 block text-xs font-semibold tracking-wide text-slate-500 uppercase dark:text-slate-400">Explore immigration</span>
         <select value={activeIndex} onChange={(event) => select(Number(event.target.value))} className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm font-medium dark:border-slate-700 dark:bg-slate-900">
           {chapters.map((chapter, index) => <option key={chapter.id} value={index}>{chapter.label}</option>)}
         </select>
       </label>
 
-      <div className="grid items-start gap-8 lg:grid-cols-[12rem_minmax(0,1fr)]">
-        <nav className="sticky top-20 hidden max-h-[calc(100vh-6rem)] overflow-y-auto pr-2 lg:block" aria-label="Immigration explorer">
-          <p className="mb-4 text-xs font-semibold tracking-[0.14em] text-blue-700 uppercase dark:text-blue-400">Explore immigration</p>
-          <div className="space-y-4">
-            {groups.map((group) => (
-              <div key={group}>
-                {group !== "Start" && <p className="mb-1 px-2 text-[10px] font-semibold tracking-wider text-slate-400 uppercase">{group}</p>}
-                <div className="space-y-0.5" role="tablist" aria-label={group}>
-                  {chapters.map((chapter, index) => chapter.group === group && (
-                    <button
-                      key={chapter.id}
-                      type="button"
-                      role="tab"
-                      aria-selected={index === activeIndex}
-                      onClick={() => select(index)}
-                      className={`block w-full rounded-lg px-2.5 py-2 text-left text-sm font-medium transition ${index === activeIndex ? "bg-slate-900 text-white shadow-sm dark:bg-white dark:text-slate-950" : "text-slate-600 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"}`}
-                    >
-                      {chapter.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
+      {/* A bar above the chapter, not a second sidebar: inside IssueView the
+          tool rail already holds the left column. */}
+      <nav className="hidden flex-wrap items-center gap-x-1 gap-y-2 rounded-2xl border border-slate-200 bg-white p-2 sm:flex dark:border-slate-800 dark:bg-slate-950" aria-label="Immigration explorer">
+        {groups.map((group, groupIndex) => (
+          <div key={group} className="flex flex-wrap items-center gap-1" role="tablist" aria-label={group}>
+            {groupIndex > 0 && <span aria-hidden className="mx-1.5 h-5 w-px bg-slate-200 dark:bg-slate-800" />}
+            {group !== "Start" && <span className="px-1.5 text-[10px] font-semibold tracking-wider text-slate-400 uppercase">{group}</span>}
+            {chapters.map((chapter, index) => chapter.group === group && (
+              <button
+                key={chapter.id}
+                type="button"
+                role="tab"
+                aria-selected={index === activeIndex}
+                onClick={() => select(index)}
+                className={`rounded-lg px-2.5 py-1.5 text-sm font-medium whitespace-nowrap transition ${index === activeIndex ? "bg-slate-900 text-white shadow-sm dark:bg-white dark:text-slate-950" : "text-slate-600 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"}`}
+              >
+                {chapter.label}
+              </button>
             ))}
           </div>
-        </nav>
+        ))}
+      </nav>
 
-        <div key={active.id} role="tabpanel" aria-label={active.label} className="min-w-0 motion-safe:animate-[chapter-in_240ms_ease-out]">
-          {items[activeIndex]}
-        </div>
+      <div key={active.id} role="tabpanel" aria-label={active.label} className="min-w-0 motion-safe:animate-[chapter-in_240ms_ease-out]">
+        {items[activeIndex]}
       </div>
 
       <nav className="flex items-center justify-between border-t border-slate-200 pt-5 dark:border-slate-800" aria-label="Immigration chapters">

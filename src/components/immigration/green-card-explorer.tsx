@@ -158,13 +158,13 @@ const SOURCES = {
   pep: { label: "Census Bureau Population Estimates", href: "/datasets/census-pep" },
 };
 
-function ViewTabs({ focus, panelId }: { focus: ImmigrationFocus; panelId: string }) {
+function ViewTabs({ focus, panelId, omit = [] }: { focus: ImmigrationFocus; panelId: string; omit?: readonly string[] }) {
   const { getView, setView } = useExplorer();
   const view = getView(focus);
   return (
     <div className="-mx-1 overflow-x-auto px-1" role="tablist" aria-label={`${TOPICS[focus].title} views`}>
       <div className="flex min-w-max gap-1 rounded-xl bg-slate-100 p-1 dark:bg-slate-900">
-        {IMMIGRATION_FOCUS_VIEWS[focus].map((item) => (
+        {IMMIGRATION_FOCUS_VIEWS[focus].filter((item) => !omit.includes(item)).map((item) => (
           <button key={item} type="button" role="tab" id={`${panelId}-tab-${item}`} aria-selected={view === item} aria-controls={panelId} onClick={() => setView(focus, item)} className={`rounded-lg px-3 py-2 text-sm font-medium transition ${view === item ? "bg-white text-slate-950 shadow-sm dark:bg-slate-700 dark:text-white" : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"}`}>
             {VIEW_LABELS[focus][item]}
           </button>
@@ -237,6 +237,7 @@ export function ImmigrationOverviewExplorer({ flow, data }: { flow: ImmigrationF
   return <div className="space-y-4"><ImmigrationFlow {...flow} selectedFocus={focus} onFocusSelect={(next) => setFocus(focus === next ? null : next)} /><div className={`grid transition-all duration-500 ${focus && topic ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}><div className="overflow-hidden">{focus && topic && <section id="immigration-focus" className="scroll-mt-28 space-y-4 rounded-2xl border border-blue-200 bg-blue-50/40 p-4 sm:p-6 dark:border-blue-900 dark:bg-blue-950/15"><div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"><div className="max-w-2xl"><p className="text-xs font-semibold tracking-[0.14em] text-blue-700 uppercase dark:text-blue-400">System focus · {topic.eyebrow}</p><h3 className="mt-1 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">{topic.title}</h3><p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">{topic.description}</p></div><button type="button" onClick={() => setFocus(null)} className="self-start text-sm text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">Close</button></div><TopicSummary focus={focus} data={data} /><ViewTabs focus={focus} panelId="immigration-focus-view" /><TopicVisualization focus={focus} data={data} panelId="immigration-focus-view" /><a href={`#${topic.section}`} className="inline-flex text-sm font-semibold text-blue-700 hover:underline dark:text-blue-300">Explore the full {topic.sectionLabel} with {VIEW_LABELS[focus][getView(focus)].toLowerCase()} selected ↓</a></section>}</div></div></div>;
 }
 
-export function GreenCardChapter({ data }: { data: GreenCardData }) {
-  return <div className="space-y-5"><p className="max-w-3xl text-base leading-7 text-slate-600 dark:text-slate-300">A green card makes someone a lawful permanent resident. Some recipients arrive with an immigrant visa; most are already living in the United States and adjust their status. The views below keep those different questions together without stacking every chart.</p><GreenCardSummary data={data} /><ViewTabs focus="green-cards" panelId="green-card-chapter-view" /><GreenCardVisualization data={data} panelId="green-card-chapter-view" /></div>;
+// `omit` drops views shown elsewhere, e.g. "citizenship" where naturalization has its own panel.
+export function GreenCardChapter({ data, omit }: { data: GreenCardData; omit?: readonly GreenCardView[] }) {
+  return <div className="space-y-5"><p className="max-w-3xl text-base leading-7 text-slate-600 dark:text-slate-300">A green card makes someone a lawful permanent resident. Some recipients arrive with an immigrant visa; most are already living in the United States and adjust their status. The views below keep those different questions together without stacking every chart.</p><GreenCardSummary data={data} /><ViewTabs focus="green-cards" panelId="green-card-chapter-view" omit={omit} /><GreenCardVisualization data={data} panelId="green-card-chapter-view" /></div>;
 }
