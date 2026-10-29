@@ -1,0 +1,689 @@
+{
+  "subject": "schiff",
+  "reviewedAt": "2026-10-25",
+  "sourcesVerifiedAt": "2026-10-25",
+  "brief": {
+    "inclusion": "U.S. senator from California since December 2024 and, before that, the House Intelligence Committee chairman and lead impeachment manager in Donald Trump's first trial, now the target of a Trump-administration mortgage-fraud referral.",
+    "identifiers": {
+      "wikidata": "Q350843",
+      "bioguide": "S001150",
+      "fec_candidate": "S4CA00555; H0CA27085"
+    },
+    "namesakes": "Distinct from former Rep. Steven Schiff of New Mexico and from commentator Peter Schiff. The Worldview entity is named \"Adam B. Schiff.\"",
+    "coverage": {
+      "from": "1960",
+      "through": "2026-10-25",
+      "lags": "Senate votes and campaign receipts update continuously; the Justice Department mortgage-fraud inquiry had no public resolution as of this review."
+    },
+    "openQuestions": [
+      "Status of the Maryland grand-jury mortgage inquiry after October 2025: NBC reported it stalled; no public closure or charge found.",
+      "Current Senate committee assignments need the Senate committee-assignments page.",
+      "Primary and general-election vote totals for 2024 should be added from the California Secretary of State's statement of vote."
+    ],
+    "review": []
+  },
+  "summary": "Democratic senator from California since December 2024 after 24 years in the House, where he chaired the Intelligence Committee and was lead manager in Donald Trump's first impeachment trial in 2020. The Republican House censured him in 2023 over the Trump-Russia investigation; he won the Senate seat in 2024 after spending heavily to lift a Republican, Steve Garvey, into the top-two runoff. Since May 2025 he has been the subject of a Trump-administration mortgage-fraud referral that Maryland prosecutors had not found grounds to charge as of late 2025.",
+  "roles": [
+    {
+      "label": "U.S. senator",
+      "detail": "California, since December 9, 2024",
+      "sources": ["schiff-senate-bio", "wikipedia"]
+    },
+    {
+      "label": "Former House member",
+      "detail": "Represented Los Angeles-area districts, 2001–2024",
+      "sources": ["schiff-senate-bio", "wikipedia"]
+    },
+    {
+      "label": "Former Intelligence chair",
+      "detail": "House Permanent Select Committee on Intelligence: ranking member from 2015, chairman 2019–2023",
+      "sources": ["schiff-senate-bio", "wikipedia"]
+    },
+    {
+      "label": "Impeachment manager",
+      "detail": "Lead House manager, Trump's first Senate trial (January–February 2020)",
+      "sources": ["usatoday-closing-2020", "wikipedia"]
+    },
+    {
+      "label": "Former federal prosecutor",
+      "detail": "Assistant U.S. attorney, Los Angeles, 1987–1993",
+      "sources": ["schiff-senate-bio", "wikipedia"]
+    }
+  ],
+  "finance": {
+    "coverage": "Contributions received by Schiff's House and Senate committees come from Worldview's FEC committee data. His personal giving is not separately matched in this dossier. California State Senate campaign finance (1996–2000) is outside the record."
+  },
+  "entities": {
+    "schiff": {
+      "match": { "identifier": ["bioguide", "S001150"] }
+    },
+    "trump": {
+      "match": { "name": "Donald Trump", "type": "politician" }
+    },
+    "rogan": {
+      "match": { "identifier": ["bioguide", "R000386"] }
+    },
+    "feinstein": {
+      "match": { "identifier": ["bioguide", "F000062"] }
+    },
+    "garvey": {
+      "match": { "identifier": ["fec_candidate", "S4CA00803"] }
+    },
+    "porter": {
+      "match": { "identifier": ["bioguide", "P000618"] }
+    },
+    "pelosi": {
+      "match": { "identifier": ["bioguide", "P000197"] }
+    },
+    "biden": {
+      "match": { "identifier": ["fec_candidate", "P80000722"] }
+    },
+    "house-intel": {
+      "create": {
+        "name": "House Permanent Select Committee on Intelligence",
+        "type": "organization",
+        "description": "U.S. House committee overseeing the intelligence community.",
+        "websiteUrl": "https://intelligence.house.gov/"
+      }
+    },
+    "jan6-committee": {
+      "create": {
+        "name": "House Select Committee to Investigate the January 6th Attack on the United States Capitol",
+        "type": "organization",
+        "description": "House select committee, 2021–2023."
+      }
+    },
+    "fhfa-pulte": {
+      "create": {
+        "name": "Bill Pulte",
+        "type": "politician",
+        "description": "Director of the Federal Housing Finance Agency since 2025."
+      }
+    }
+  },
+  "sources": [
+    {
+      "key": "schiff-senate-bio",
+      "title": "About Adam",
+      "publisher": "Office of Senator Adam Schiff",
+      "type": "primary",
+      "url": "https://www.schiff.senate.gov/about/"
+    },
+    {
+      "key": "wikipedia",
+      "title": "Adam Schiff",
+      "publisher": "Wikipedia",
+      "type": "secondary",
+      "url": "https://en.wikipedia.org/wiki/Adam_Schiff",
+      "notes": "Reference work; cited for dates of early life, prosecutorial career, state and House elections, committee service and the 2024 Senate sequence."
+    },
+    {
+      "key": "usatoday-closing-2020",
+      "title": "What was the Senate chamber like while Rep. Adam Schiff made his final Thursday speech?",
+      "publisher": "USA Today (via Yahoo News)",
+      "author": "Nicholas Wu and Savannah Behrmann",
+      "type": "article",
+      "publishedAt": "2020-01-24",
+      "url": "https://www.yahoo.com/news/senate-chamber-while-rep-adam-054237730.html"
+    },
+    {
+      "key": "ap-censure-2023",
+      "title": "House censures Rep. Adam Schiff over Trump-Russia investigations",
+      "publisher": "The Associated Press (via Global News)",
+      "author": "Mary Clare Jalonick",
+      "type": "article",
+      "publishedAt": "2023-06-21",
+      "url": "https://globalnews.ca/news/9785190/us-adam-schiff-censure-trump-russia/"
+    },
+    {
+      "key": "calmatters-primary-2024",
+      "title": "California election results: U.S. Senate primary",
+      "publisher": "CalMatters",
+      "author": "Yue Stella Yu",
+      "type": "article",
+      "publishedAt": "2024-03-05",
+      "url": "https://calmatters.org/politics/elections/2024/03/california-election-results-us-senate/"
+    },
+    {
+      "key": "npr-biden-2024",
+      "title": "California Rep. Adam Schiff calls for Biden to step aside",
+      "publisher": "NPR (via OPB)",
+      "author": "Deirdre Walsh",
+      "type": "article",
+      "publishedAt": "2024-07-17",
+      "url": "https://opb.org/article/2024/07/17/california-rep-adam-schiff-calls-for-biden-to-step-aside"
+    },
+    {
+      "key": "toi-win-2024",
+      "title": "Trump antagonist Adam Schiff wins California senate seat",
+      "publisher": "The Times of Israel",
+      "type": "article",
+      "publishedAt": "2024-11-06",
+      "url": "https://www.timesofisrael.com/trump-antagonist-adam-schiff-wins-california-senate-seat/"
+    },
+    {
+      "key": "jta-2024",
+      "title": "Adam Schiff, California's Jewish senator-elect and Trump's nemesis, says the US is 'very much weakened as a democracy'",
+      "publisher": "JTA (via J. The Jewish News of Northern California)",
+      "author": "Ron Kampeas",
+      "type": "transcript",
+      "publishedAt": "2024-11-26",
+      "url": "https://jweekly.com/2024/11/26/adam-schiff-californias-jewish-senator-elect-and-trumps-nemesis-says-the-us-is-very-much-weakened-as-a-democracy/"
+    },
+    {
+      "key": "nbc-referral-2025",
+      "title": "DOJ investigating N.Y. AG's office and Sen. Adam Schiff",
+      "publisher": "NBC News",
+      "author": "Ryan J. Reilly, Jonathan Dienst, Tom Winter, Vaughn Hillyard and Dareh Gregorian",
+      "type": "article",
+      "publishedAt": "2025-08-08",
+      "url": "https://www.nbcnews.com/politics/justice-department/doj-opens-investigation-new-york-ags-office-brought-fraud-case-trump-rcna223731"
+    },
+    {
+      "key": "tnnd-referral-2025",
+      "title": "Sen. Adam Schiff under criminal investigation for alleged mortgage fraud: report",
+      "publisher": "The National News Desk",
+      "author": "Maria Tedesco",
+      "type": "article",
+      "publishedAt": "2025-08-06",
+      "url": "https://thenationaldesk.com/news/americas-news-now/sen-adam-schiff-under-criminal-investigation-alleged-mortage-fraud-report-maryland-california-home-tax-impeach-president-donald-trump-justice-department",
+      "notes": "Relays Fox News reporting; quotes the FHFA referral letter."
+    },
+    {
+      "key": "nbc-stalled-2025",
+      "title": "The Adam Schiff criminal probe has stalled, sources say",
+      "publisher": "NBC News",
+      "author": "Ryan J. Reilly, Kristen Welker, Michael Kosnar and Carol E. Lee",
+      "type": "article",
+      "publishedAt": "2025-10-23",
+      "url": "https://www.nbcnews.com/politics/rcna239375"
+    },
+    {
+      "key": "nbc-mtp-2026",
+      "title": "Adam Schiff says Dems would 'win both' House and Senate if election was today: Full interview",
+      "publisher": "NBC News, Meet the Press",
+      "type": "video",
+      "publishedAt": "2026-10-25",
+      "url": "https://www.nbcnews.com/meet-the-press/video/adam-schiff-says-dems-would-win-both-house-and-senate-if-election-was-today-full-interview-272190533580"
+    }
+  ],
+  "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "June 22, 1960",
+      "detail": "Framingham, Massachusetts; raised in Alamo, California",
+      "sources": ["wikipedia", "schiff-senate-bio"]
+    },
+    {
+      "key": "sex",
+      "label": "Sex",
+      "value": "Male",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "religion",
+      "label": "Religion",
+      "value": "Jewish",
+      "detail": "Raised at Temple Sinai, a Reform congregation in Glendale; says Jewish ethics guide him. His family is not currently a synagogue member.",
+      "sources": ["jta-2024"]
+    },
+    {
+      "key": "spouse",
+      "label": "Spouse",
+      "value": "Eve Sanderson Schiff",
+      "detail": "Married 1995.",
+      "sources": ["wikipedia", "schiff-senate-bio"]
+    },
+    {
+      "key": "children",
+      "label": "Children",
+      "value": "Two (Alexa and Eli)",
+      "sources": ["wikipedia", "schiff-senate-bio"]
+    },
+    {
+      "key": "residence",
+      "label": "Residence",
+      "value": "Burbank, California",
+      "detail": "His use of a Maryland home is the subject of the 2025 mortgage-fraud referral.",
+      "sources": ["wikipedia", "nbc-referral-2025"]
+    },
+    {
+      "key": "party",
+      "label": "Party",
+      "value": "Democratic",
+      "sources": ["schiff-senate-bio"]
+    },
+    {
+      "key": "education",
+      "label": "Education",
+      "value": "BA, political science, Stanford University (1982); JD, Harvard Law School (1985)",
+      "sources": ["wikipedia", "schiff-senate-bio"]
+    },
+    {
+      "key": "current-roles",
+      "label": "Current roles",
+      "value": "U.S. senator from California",
+      "featured": true,
+      "asOf": "2026-10-25",
+      "sources": ["schiff-senate-bio", "nbc-mtp-2026"]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "schiff-rogan",
+      "source": "schiff",
+      "target": "rogan",
+      "relType": "opposed",
+      "role": "Lost two 1994 Assembly races to Rogan; defeated him for Congress in 2000 in what was then the most expensive House race",
+      "from": "1994",
+      "until": "2000-11",
+      "prominence": 2,
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "schiff-house-intel",
+      "source": "schiff",
+      "target": "house-intel",
+      "relType": "chairs",
+      "role": "Member from 2008; ranking member from 2015; chairman 2019–2023",
+      "from": "2008",
+      "until": "2023-01",
+      "prominence": 3,
+      "sources": ["wikipedia", "schiff-senate-bio"]
+    },
+    {
+      "key": "schiff-jan6",
+      "source": "schiff",
+      "target": "jan6-committee",
+      "relType": "sits-on-committee",
+      "role": "Member; led the fourth public hearing (June 21, 2022)",
+      "from": "2021-07-01",
+      "until": "2023-01",
+      "prominence": 2,
+      "sources": ["wikipedia", "schiff-senate-bio"]
+    },
+    {
+      "key": "schiff-trump",
+      "source": "schiff",
+      "target": "trump",
+      "relType": "opposed",
+      "role": "Led the Trump-Russia inquiry as Intelligence ranking member and Trump's first impeachment as chairman and lead manager; Trump calls him \"the enemy within\" and has demanded his prosecution",
+      "from": "2017",
+      "prominence": 3,
+      "sources": ["usatoday-closing-2020", "jta-2024", "nbc-referral-2025"]
+    },
+    {
+      "key": "pelosi-schiff",
+      "source": "pelosi",
+      "target": "schiff",
+      "relType": "endorsed",
+      "role": "Endorsed his Senate campaign, February 2, 2023",
+      "from": "2023-02-02",
+      "until": "2024-11",
+      "prominence": 2,
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "schiff-feinstein",
+      "source": "schiff",
+      "target": "feinstein",
+      "relType": "succeeded",
+      "role": "Won the seat Feinstein held until her death in 2023",
+      "from": "2024-12-09",
+      "prominence": 2,
+      "sources": ["toi-win-2024", "jta-2024"]
+    },
+    {
+      "key": "schiff-garvey",
+      "source": "schiff",
+      "target": "garvey",
+      "relType": "opposed",
+      "role": "Ran ads calling him \"too conservative for California\" that helped him past Porter in the primary; defeated him in November 2024",
+      "from": "2024",
+      "until": "2024-11-05",
+      "prominence": 2,
+      "sources": ["calmatters-primary-2024", "toi-win-2024"]
+    },
+    {
+      "key": "schiff-porter",
+      "source": "schiff",
+      "target": "porter",
+      "relType": "opposed",
+      "role": "Primary rival; she called his Garvey strategy \"the Schiff gift to the Republican Party in California\"",
+      "from": "2023",
+      "until": "2024-03-05",
+      "prominence": 1,
+      "sources": ["calmatters-primary-2024"]
+    },
+    {
+      "key": "pulte-schiff",
+      "source": "fhfa-pulte",
+      "target": "schiff",
+      "relType": "opposed",
+      "role": "Sent the Justice Department a criminal referral alleging mortgage fraud (May 2025)",
+      "from": "2025-05",
+      "prominence": 2,
+      "sources": ["nbc-referral-2025"]
+    }
+  ],
+  "events": [
+    {
+      "key": "born",
+      "date": "1960-06-22",
+      "title": "Born in Framingham, Massachusetts",
+      "summary": "His family later moves to Arizona and then Alamo, California.",
+      "category": "personal",
+      "significance": 1,
+      "chapter": "prosecutor",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "harvard",
+      "date": "1985",
+      "title": "Graduates from Harvard Law School",
+      "summary": "After a Stanford BA (1982); clerks for Judge William Matthew Byrne Jr.",
+      "category": "career",
+      "significance": 1,
+      "chapter": "prosecutor",
+      "sources": ["wikipedia", "schiff-senate-bio"]
+    },
+    {
+      "key": "prosecutor",
+      "date": "1987",
+      "date_end": "1993",
+      "title": "Federal prosecutor in Los Angeles",
+      "summary": "Prosecutes Richard Miller, the first FBI agent indicted for spying for the Soviet Union, through three trials.",
+      "category": "career",
+      "significance": 2,
+      "chapter": "prosecutor",
+      "sources": ["wikipedia", "schiff-senate-bio"]
+    },
+    {
+      "key": "state-senate",
+      "date": "1996",
+      "date_end": "2000",
+      "title": "Serves in the California State Senate",
+      "summary": "After losing two 1994 Assembly races to James Rogan; chairs the Judiciary Committee.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "prosecutor",
+      "participants": [["rogan", "opponent"]],
+      "sources": ["wikipedia", "schiff-senate-bio"]
+    },
+    {
+      "key": "house-2000",
+      "date": "2000-11-07",
+      "title": "Defeats Rep. James Rogan for Congress",
+      "summary": "Rogan had been a House manager in Bill Clinton's impeachment; the race was then the most expensive House contest on record.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "house",
+      "participants": [["rogan", "incumbent"]],
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "intel-ranking",
+      "date": "2015",
+      "title": "Becomes ranking Democrat on the House Intelligence Committee",
+      "summary": "The post from which he leads Democrats' Trump-Russia inquiry after 2017.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "trump",
+      "participants": [["house-intel", "committee"]],
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "intel-chair",
+      "date": "2019-01",
+      "title": "Becomes Intelligence Committee chairman",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "trump",
+      "participants": [["house-intel", "committee"]],
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "impeachment",
+      "date": "2019-12-18",
+      "title": "House impeaches Trump after Schiff's Ukraine inquiry",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "trump",
+      "participants": [["trump", "president"]],
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "closing",
+      "date": "2020-01-23",
+      "title": "Closes the House case in the Senate trial: \"right matters\"",
+      "summary": "Trump is acquitted on February 5, 2020.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "trump",
+      "participants": [["trump", "defendant"]],
+      "sources": ["usatoday-closing-2020", "wikipedia"]
+    },
+    {
+      "key": "midnight",
+      "date": "2021-10",
+      "title": "Publishes Midnight in Washington",
+      "category": "ideas",
+      "significance": 1,
+      "chapter": "trump",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "jan6-hearing",
+      "date": "2022-06-21",
+      "title": "Leads the January 6 committee's fourth public hearing",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "trump",
+      "participants": [["jan6-committee", "committee"]],
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "senate-launch",
+      "date": "2023-01-26",
+      "title": "Announces a run for Dianne Feinstein's Senate seat",
+      "summary": "Nancy Pelosi endorses him a week later.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "senate",
+      "participants": [["pelosi", "endorser"], ["feinstein", "incumbent"]],
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "censure",
+      "date": "2023-06-21",
+      "title": "Censured by the House, 213–209",
+      "summary": "Over his statements on Trump and Russia as Intelligence chair; Republicans dropped a proposed $16 million fine to pass it. He calls it a \"badge of honor.\"",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "trump",
+      "sources": ["ap-censure-2023"]
+    },
+    {
+      "key": "primary-2024",
+      "date": "2024-03-05",
+      "title": "Finishes first in the Senate primary with Garvey second",
+      "summary": "31.6% to Garvey's 31.5%, ahead of Katie Porter (15.3%) and Barbara Lee; his campaign spent about $38 million, including ads raising Garvey's profile.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "senate",
+      "participants": [["garvey", "opponent"], ["porter", "opponent"]],
+      "sources": ["calmatters-primary-2024"]
+    },
+    {
+      "key": "biden-step-aside",
+      "date": "2024-07-17",
+      "title": "Calls on President Biden to end his reelection bid",
+      "summary": "The highest-profile Democrat to do so at the time; Biden withdraws four days later.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "senate",
+      "participants": [["biden", "president"]],
+      "sources": ["npr-biden-2024", "wikipedia"]
+    },
+    {
+      "key": "senate-win",
+      "date": "2024-11-05",
+      "title": "Wins the Senate seat over Steve Garvey",
+      "summary": "Both the special election for the rest of Feinstein's term and the full term; sworn in December 9.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "senate",
+      "participants": [["garvey", "opponent"]],
+      "sources": ["toi-win-2024", "wikipedia"]
+    },
+    {
+      "key": "referral",
+      "date": "2025-05",
+      "title": "FHFA director Bill Pulte refers Schiff for alleged mortgage fraud",
+      "summary": "Alleging he falsified bank documents and property records to get better loan terms. Attorney General Pam Bondi names Ed Martin a special attorney, and a Maryland grand jury takes up the matter. Schiff calls it what \"tinpot dictators do.\"",
+      "category": "legal",
+      "significance": 3,
+      "chapter": "senator",
+      "participants": [["fhfa-pulte", "referring official"], ["trump", "president"]],
+      "sources": ["nbc-referral-2025"]
+    },
+    {
+      "key": "probe-stalled",
+      "date": "2025-10-23",
+      "title": "NBC: Maryland prosecutors lack evidence to charge Schiff",
+      "summary": "The inquiry \"came to a standstill\" but no final decision was made, and prosecutors were told to seek more evidence.",
+      "category": "legal",
+      "significance": 2,
+      "chapter": "senator",
+      "status": "unresolved",
+      "statusNote": "No public charge or closure found as of October 2026.",
+      "sources": ["nbc-stalled-2025"]
+    },
+    {
+      "key": "mtp-2026",
+      "date": "2026-10-25",
+      "title": "Predicts Democrats would win both chambers if the midterms were held now",
+      "summary": "On Meet the Press, conditional on Democrats holding against \"dark money\" spending.",
+      "category": "politics",
+      "significance": 1,
+      "chapter": "senator",
+      "sources": ["nbc-mtp-2026"]
+    }
+  ],
+  "statements": [
+    {
+      "key": "right-matters-2020",
+      "issue": "Trump and the rule of law",
+      "date": "2020-01-23",
+      "venue": "Closing argument, Senate impeachment trial of Donald Trump",
+      "quote": "Because right matters. And the truth matters. Otherwise, we are lost.",
+      "source": "usatoday-closing-2020"
+    },
+    {
+      "key": "badge-2023",
+      "issue": "Trump and the rule of law",
+      "date": "2023-06-21",
+      "venue": "House floor, on his censure",
+      "quote": "I will not yield.",
+      "summary": "He also said he would wear the censure as a \"badge of honor\" and called the resolution \"red meat\" for Trump's supporters.",
+      "source": "ap-censure-2023"
+    },
+    {
+      "key": "biden-concerns-2024",
+      "issue": "Democratic Party",
+      "date": "2024-07-17",
+      "venue": "Statement calling on Biden to step aside",
+      "quote": "I have serious concerns about whether the President can defeat Donald Trump in November.",
+      "source": "npr-biden-2024"
+    },
+    {
+      "key": "foundation-2024",
+      "issue": "Trump and the rule of law",
+      "date": "2024-07-17",
+      "venue": "Statement calling on Biden to step aside",
+      "quote": "A second Trump presidency will undermine the very foundation of our democracy",
+      "source": "npr-biden-2024"
+    },
+    {
+      "key": "weakened-2024",
+      "issue": "Democracy",
+      "date": "2024-11-26",
+      "venue": "Interview with JTA",
+      "quote": "I think we are weak, very much weakened as a democracy. We are very fragile.",
+      "source": "jta-2024"
+    },
+    {
+      "key": "shtetl-2024",
+      "issue": "Jewish identity",
+      "date": "2024-11-26",
+      "venue": "Interview with JTA",
+      "quote": "from the shtetl to the Congress in three generations, only in America",
+      "source": "jta-2024"
+    },
+    {
+      "key": "taboo-2024",
+      "issue": "Antisemitism",
+      "date": "2024-11-26",
+      "venue": "Interview with JTA",
+      "quote": "It's as if the taboo against being overtly antisemitic has lost its power.",
+      "summary": "On antisemitism on the left and the right since October 7, 2023.",
+      "source": "jta-2024"
+    },
+    {
+      "key": "tinpot-2025",
+      "issue": "Trump and the rule of law",
+      "date": "2025-07",
+      "venue": "Video statement on the mortgage-fraud referral",
+      "quote": "This is the kind of stuff you see tinpot dictators do.",
+      "summary": "He added that it was \"designed to intimidate his political opponents.\"",
+      "source": "nbc-referral-2025"
+    }
+  ],
+  "ideas": {
+    "traditions": [],
+    "influences": [],
+    "works": [
+      {
+        "title": "Midnight in Washington",
+        "year": "2021",
+        "kind": "Book",
+        "detail": "Memoir of the Trump-era investigations and impeachment",
+        "source": "wikipedia"
+      }
+    ],
+    "featuredQuotes": ["right-matters-2020", "weakened-2024"]
+  },
+  "chapters": [
+    {
+      "key": "prosecutor",
+      "title": "Prosecutor and state senator",
+      "dek": "A Soviet-spy case and two lost races before a seat in Sacramento.",
+      "body": "Schiff was born in Framingham, Massachusetts, on June 22, 1960, and grew up in Arizona and then Alamo, California [[wikipedia, schiff-senate-bio]]. His family belonged to Temple Sinai, a Reform congregation in Glendale; he describes his family's story as \"from the shtetl to the Congress in three generations\" [[jta-2024]]. He studied political science at Stanford and graduated from Harvard Law School in 1985 [[wikipedia]].\n\nAs an assistant U.S. attorney in Los Angeles from 1987 to 1993 he prosecuted Richard Miller, the first FBI agent indicted for spying for the Soviet Union; it took three trials to secure a conviction that stood [[wikipedia, schiff-senate-bio]]. He lost a 1994 special election and rematch for the State Assembly to James Rogan, then won a State Senate seat in 1996, where he chaired the Judiciary Committee [[wikipedia, schiff-senate-bio]]."
+    },
+    {
+      "key": "house",
+      "title": "Twenty-four years in the House",
+      "dek": "Beating an impeachment manager, then rising on the Intelligence Committee.",
+      "body": "In 2000 Schiff defeated Rogan, by then one of the House managers in Bill Clinton's impeachment, in what was the most expensive House race to that point [[wikipedia]]. He was reelected eleven times as his Los Angeles-area district became more Democratic, and served on the Judiciary, Foreign Affairs and Appropriations committees [[wikipedia, schiff-senate-bio]]. In 2015 he said he regretted his vote for the 2003 invasion of Iraq [[wikipedia]].\n\nHe joined the Intelligence Committee in 2008 and became its senior Democrat in 2015, which put him at the center of Congress's response to Russian interference in the 2016 election [[wikipedia]]."
+    },
+    {
+      "key": "trump",
+      "title": "Trump's chief antagonist in Congress",
+      "dek": "Russia, Ukraine, impeachment, January 6 and censure.",
+      "body": "As ranking member and, from January 2019, chairman of the Intelligence Committee, Schiff led Democrats' Trump-Russia inquiry and then the Ukraine investigation that produced Trump's impeachment on December 18, 2019 [[wikipedia]]. As lead House manager in the Senate trial, he closed his January 23, 2020, argument to a silent chamber: \"Because right matters. And the truth matters. Otherwise, we are lost\" [[usatoday-closing-2020]]. The Senate acquitted Trump in February [[wikipedia]]. He later sat on the January 6 committee and led its fourth public hearing, and published Midnight in Washington in 2021 [[wikipedia]].\n\nAfter Republicans won the House, they censured him on June 21, 2023, by 213 to 209, over his statements on Trump and Russia; the sponsor dropped a proposed $16 million fine to win the votes. Schiff called the censure a \"badge of honor\" and said, \"I will not yield\" [[ap-censure-2023]]. Trump has called him \"the enemy within\" and demanded he face trial [[jta-2024]]."
+    },
+    {
+      "key": "senate",
+      "title": "The Senate race",
+      "dek": "A top-two strategy that lifted a Republican, and a call for Biden to step aside.",
+      "body": "Schiff announced for Dianne Feinstein's seat on January 26, 2023, and Nancy Pelosi endorsed him days later [[wikipedia]]. California's top-two primary shaped his strategy. His campaign spent about $38 million before the March 2024 primary, much of it on ads, including on Fox News and in mail to Republicans, that called Steve Garvey \"too conservative for California\" and raised Garvey's profile among Republican voters. Schiff finished with 31.6 percent to Garvey's 31.5, shutting out Katie Porter, who called the tactic \"the Schiff gift to the Republican Party in California\" [[calmatters-primary-2024]].\n\nOn July 17, 2024, he became the most prominent Democrat to that point to ask Joe Biden to \"pass the torch,\" saying he had \"serious concerns about whether the President can defeat Donald Trump\" [[npr-biden-2024]]. Biden withdrew four days later [[wikipedia]]. Schiff beat Garvey in November and was sworn in on December 9, 2024 [[toi-win-2024, wikipedia]]."
+    },
+    {
+      "key": "senator",
+      "title": "Senator under investigation",
+      "dek": "A mortgage-fraud referral from a Trump appointee, and a stalled grand jury.",
+      "body": "Shortly after taking office Schiff told JTA that the country was \"very much weakened as a democracy\" and that antisemitism had grown on both left and right since October 7, 2023 [[jta-2024]]. In May 2025 Bill Pulte, Trump's director of the Federal Housing Finance Agency, sent the Justice Department a criminal referral alleging Schiff had falsified bank documents and property records to get better loan terms. Attorney General Pam Bondi appointed Ed Martin as a special attorney on the case, and a grand jury in Maryland took it up [[nbc-referral-2025, tnnd-referral-2025]]. Schiff called it \"the kind of stuff you see tinpot dictators do\"; his lawyer, Preet Bharara, called the allegations \"transparently false, stale, and long debunked\" [[nbc-referral-2025]].\n\nIn October 2025 NBC reported, citing four people familiar with the case, that Maryland prosecutors had not found enough evidence to charge him and that the inquiry \"came to a standstill,\" though no final decision had been made and the U.S. attorney was told to pursue more evidence [[nbc-stalled-2025]]. A year later Schiff was campaigning for his party's midterm candidates, predicting on Meet the Press that Democrats would win both chambers if they could hold off \"dark money\" spending [[nbc-mtp-2026]]."
+    }
+  ]
+}

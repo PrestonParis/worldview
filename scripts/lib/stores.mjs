@@ -13,11 +13,11 @@ import path from "node:path";
 import pg from "pg";
 
 export const MB = 1024 * 1024;
-// Supabase free plan: 500 MB, after which the project goes read-only.
+// Supabase Pro includes an 8 GB disk; the limit is about 80% of it.
 // db-rebalance fills Supabase to the target; an import that would push it
 // past the limit spills its dataset to Neon instead.
-export const supabaseTargetBytes = () => Number(process.env.SUPABASE_TARGET_MB || 450) * MB;
-export const supabaseLimitBytes = () => Number(process.env.SUPABASE_LIMIT_MB || 480) * MB;
+export const supabaseTargetBytes = () => Number(process.env.SUPABASE_TARGET_MB || 6000) * MB;
+export const supabaseLimitBytes = () => Number(process.env.SUPABASE_LIMIT_MB || 6550) * MB;
 // Roughly what one area_stats row costs on disk, indexes included.
 export const BYTES_PER_ROW = 350;
 // src/lib/db/stores.ts caches placements this long.

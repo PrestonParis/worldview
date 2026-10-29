@@ -23,7 +23,7 @@ export function MeasureChartCard({
   markers,
 }: {
   title: string;
-  source?: ChartSource;
+  source?: ChartSource | ChartSource[];
   measures: Measure[];
   height?: number;
   gapOver?: number;
@@ -38,7 +38,11 @@ export function MeasureChartCard({
       source={source}
       table={seriesTable(m.series, m.unit)}
       controls={
-        <div className="flex shrink-0 rounded-lg bg-slate-100 p-0.5 text-xs font-medium dark:bg-slate-900" role="group" aria-label="Measure">
+        <div
+          className="flex shrink-0 rounded-lg bg-slate-100 p-0.5 text-xs font-medium dark:bg-slate-900"
+          role="group"
+          aria-label="Measure"
+        >
           {measures.map((x, j) => (
             <button
               key={x.label}
@@ -46,7 +50,9 @@ export function MeasureChartCard({
               aria-pressed={j === i}
               onClick={() => setI(j)}
               className={`rounded-md px-2.5 py-1 ${
-                j === i ? "bg-white text-slate-900 shadow-sm dark:bg-slate-700 dark:text-white" : "text-slate-500 dark:text-slate-400"
+                j === i
+                  ? "bg-white text-slate-900 shadow-sm dark:bg-slate-700 dark:text-white"
+                  : "text-slate-500 dark:text-slate-400"
               }`}
             >
               {x.label}

@@ -1,0 +1,508 @@
+{
+  "subject": "byron-donalds",
+  "reviewedAt": "2026-10-28",
+  "sourcesVerifiedAt": "2026-10-28",
+  "brief": {
+    "inclusion": "Fishback's principal 2026 Republican primary opponent and the party's Florida gubernatorial nominee.",
+    "coverage": {
+      "from": "1978",
+      "through": "2026-10-28",
+      "lags": "Florida state finance continues to update."
+    },
+    "openQuestions": [
+      "Reconcile Friends of Byron Donalds PAC transactions to official state rows."
+    ],
+    "review": [
+      {
+        "kind": "evidence",
+        "by": "Codex conversion review",
+        "at": "2026-10-28"
+      },
+      {
+        "kind": "quantitative",
+        "by": "Codex conversion review",
+        "at": "2026-10-28"
+      },
+      {
+        "kind": "editorial",
+        "by": "Codex conversion review",
+        "at": "2026-10-28"
+      },
+      {
+        "kind": "product",
+        "by": "Codex conversion review",
+        "at": "2026-10-28"
+      }
+    ]
+  },
+  "summary": "Florida Republican politician who represented the state's 19th congressional district before winning the 2026 Republican nomination for governor. His record connects federal immigration and Israel votes, Donald Trump's endorsement, Florida campaign finance and the primary contest against James Fishback.",
+  "roles": [
+    {
+      "label": "2026 Republican nominee for governor of Florida",
+      "detail": "Won the August 18, 2026 primary",
+      "sources": [
+        "BD03"
+      ]
+    },
+    {
+      "label": "U.S. representative",
+      "detail": "Florida's 19th district, 2021–2026",
+      "sources": [
+        "BD01",
+        "BD05"
+      ]
+    },
+    {
+      "label": "Florida state representative",
+      "detail": "District 80, 2016–2020",
+      "sources": [
+        "BD02",
+        "BD04"
+      ]
+    }
+  ],
+  "entities": {
+    "byron-donalds": {
+      "match": {
+        "identifier": [
+          "fec_candidate",
+          "H2FL14186"
+        ]
+      }
+    },
+    "donald-trump": {
+      "create": {
+        "name": "Donald Trump",
+        "type": "politician",
+        "description": "President of the United States."
+      }
+    },
+    "james-fishback": {
+      "create": {
+        "name": "James Fishback",
+        "type": "politician",
+        "description": "Florida political candidate and investment executive."
+      }
+    },
+    "ron-desantis": {
+      "create": {
+        "name": "Ron DeSantis",
+        "type": "politician",
+        "description": "Governor of Florida."
+      }
+    },
+    "friends-of-byron-donalds": {
+      "create": {
+        "name": "Friends of Byron Donalds PAC",
+        "type": "organization",
+        "description": "Florida political committee associated in reporting with Byron Donalds."
+      }
+    }
+  },
+  "sources": [
+    {
+      "key": "BD01",
+      "title": "U.S. House History, Art & Archives",
+      "publisher": "U.S. House History",
+      "type": "secondary",
+      "url": "https://history.house.gov/People/Detail/25769817054",
+      "notes": "original official House biography; verify current congressional term information separately."
+    },
+    {
+      "key": "BD02",
+      "title": "Florida House, 2016–2018 member record",
+      "publisher": "Florida House",
+      "type": "secondary",
+      "url": "https://www.flhouse.gov/Sections/Representatives/details.aspx?LegislativeTermId=87&MemberId=4636",
+      "notes": "original state legislative profile."
+    },
+    {
+      "key": "BD03",
+      "title": "Florida Election Watch, Official 2026 Primary Election Results",
+      "publisher": "Florida Election Watch",
+      "type": "official_statement",
+      "url": "https://floridaelectionwatch.gov/TrackCounty/MON",
+      "notes": "original state returns. Page presented as “Track by Monroe County” but table explicitly lists statewide totals, as shown by the full 1,697,330-vote Republican governor count. Confirm election export/metadata in production."
+    },
+    {
+      "key": "BD04",
+      "title": "Florida House, 2018–2020 member record",
+      "publisher": "Florida House",
+      "type": "secondary",
+      "url": "https://flhouse.gov/Sections/Representatives/details.aspx?LegislativeTermId=88&MemberId=4636",
+      "notes": "original state legislative profile."
+    },
+    {
+      "key": "BD05",
+      "title": "House Clerk, member record",
+      "publisher": "House Clerk",
+      "type": "secondary",
+      "url": "https://clerk.house.gov/members/D000032",
+      "notes": "official congressional office/committee data."
+    },
+    {
+      "key": "BD06",
+      "title": "House Clerk, April 20, 2024, roll call 152",
+      "publisher": "House Clerk",
+      "type": "secondary",
+      "url": "https://clerk.house.gov/Votes/2024152",
+      "notes": "original recorded vote."
+    },
+    {
+      "key": "BD07",
+      "title": "House Clerk, Jan. 7, 2025, roll call 6",
+      "publisher": "House Clerk",
+      "type": "secondary",
+      "url": "https://clerk.house.gov/Votes/20256",
+      "notes": "original recorded vote."
+    },
+    {
+      "key": "BD08",
+      "title": "WPBF, Feb. 21, 2025",
+      "publisher": "WPBF",
+      "type": "secondary",
+      "url": "https://www.wpbf.com/article/florida-trump-endorses-congressman-byron-donalds-for-governor-of-florida/63860136",
+      "notes": "secondary reporting; seek preserved original Truth Social post."
+    },
+    {
+      "key": "BD09",
+      "title": "Byron Donalds campaign, Feb. 26, 2025, launch press release",
+      "publisher": "Byron Donalds campaign",
+      "type": "official_statement",
+      "url": "https://byrondonalds.com/trump-endorsed-conservative-fighter-byron-donalds-enters-race-for-florida-governor/",
+      "notes": "primary campaign document, interested source."
+    },
+    {
+      "key": "BD10",
+      "title": "Roll Call, Feb. 25, 2025",
+      "publisher": "Roll Call",
+      "type": "secondary",
+      "url": "https://rollcall.com/2025/02/25/byron-donalds-florida-governor-trump/",
+      "notes": "independent timing/launch confirmation."
+    },
+    {
+      "key": "BD11",
+      "title": "Florida Politics, Nov. 24, 2025",
+      "publisher": "Florida Politics",
+      "type": "secondary",
+      "url": "https://floridapolitics.com/archives/767144-james-fishback-derides-byron-donalds-as-slave-of-corporate-interests/",
+      "notes": "attributed description of Fishback's criticism; obtain original recording for verbatim quote entry."
+    },
+    {
+      "key": "BD12",
+      "title": "WKMG/ClickOrlando, Jan. 23, 2026, updated Jan. 29",
+      "publisher": "WKMG/ClickOrlando",
+      "type": "secondary",
+      "url": "https://www.clickorlando.com/news/politics/2026/01/24/florida-gop-governor-candidate-byron-donalds-defends-ice-supports-property-tax-repeal-in-interview/",
+      "notes": "original on-camera interview and reporting; verify legally controversial statements against primary legal sources."
+    },
+    {
+      "key": "BD13",
+      "title": "Republican Party of Florida, June 12, 2026",
+      "publisher": "Republican Party of Florida",
+      "type": "secondary",
+      "url": "https://florida.gop/republican-party-of-florida-rescinds-james-fishbacks-invitation-to-sunshine-state-showdown/",
+      "notes": "primary interested party's announcement; its explanation is an allegation/reason from the party, not objective adjudication."
+    },
+    {
+      "key": "BD14",
+      "title": "WUSF, June 16, 2026",
+      "publisher": "WUSF",
+      "type": "secondary",
+      "url": "https://www.wusf.org/politics-issues/2026-06-16/desantis-clashes-florida-gop-lack-gubernatorial-debate",
+      "notes": "third-party reporting on debate qualification controversy, includes statements from participants."
+    },
+    {
+      "key": "BD15",
+      "title": "WFLX, July 6, 2026",
+      "publisher": "WFLX",
+      "type": "secondary",
+      "url": "https://www.wflx.com/2026/07/06/absent-frontrunner-byron-donalds-dominates-florida-gop-governor-debate-he-skipped/",
+      "notes": "independent coverage of non-party debate. Supplement with complete recorded debate before importing alleged direct quotes."
+    },
+    {
+      "key": "BD16",
+      "title": "CBS News, Aug. 23, 2026, full Face the Nation interview transcript",
+      "publisher": "CBS News",
+      "type": "transcript",
+      "url": "https://www.cbsnews.com/news/byron-donalds-florida-governor-candidate-face-the-nation-transcript-08-23-2026/",
+      "notes": "original broadcast transcript, manually check edited captions and recordings for exact quotes."
+    },
+    {
+      "key": "BD17",
+      "title": "WUSF, Sept. 3, 2026",
+      "publisher": "WUSF",
+      "type": "secondary",
+      "url": "https://wusf.org/text/politics-issues/2026-09-03/desantis-endorses-donalds-florida-governor-despite-past-tensions",
+      "notes": "first-hand local reporting with first-person remarks, on Sept. 1 forum."
+    },
+    {
+      "key": "BD18",
+      "title": "WUSF, Sept. 30, 2026",
+      "publisher": "WUSF",
+      "type": "secondary",
+      "url": "https://wusf.org/text/politics-issues/2026-09-30/immigration-detention-money-flows-florida-governors-race",
+      "notes": "original investigative reporting on state records/detention vendors. WLRN and WFIT syndicated versions *repeat* BD18; not independent corroboration."
+    },
+    {
+      "key": "BD19",
+      "title": "Florida Division of Elections, Candidate Campaign Finance Activity",
+      "publisher": "Florida Division of Elections",
+      "type": "secondary",
+      "url": "https://dos.elections.myflorida.com/cgi-bin/TreSel.exe?CanCom=Cand&account=89042&candname=Byron+Donalds+%28REP%29&elecdesc=2026+General+Election&office=Governor",
+      "notes": "official finance database, state candidate account; dynamic page changes as new reports are filed."
+    },
+    {
+      "key": "BD20",
+      "title": "Florida Division of Elections, Friends of Byron Donalds PAC",
+      "publisher": "Florida Division of Elections",
+      "type": "secondary",
+      "url": "https://dos.elections.myflorida.com/committees/ComDetail.asp?account=89043",
+      "notes": "official state committee registration, not financial totals."
+    },
+    {
+      "key": "BD21",
+      "title": "SignalData, Friends of Byron Donalds PAC",
+      "publisher": "SignalData",
+      "type": "secondary",
+      "url": "https://signaldata.org/entities/friends-of-byron-donalds/",
+      "notes": "third-party reconstruction of official state rows, snapshot through Oct. 9, 2026. Good research lead, not substitute for official line-item transaction validation."
+    },
+    {
+      "key": "BD22",
+      "title": "SignalData, detention relationships",
+      "publisher": "SignalData",
+      "type": "secondary",
+      "url": "https://signaldata.org/fl/detention/graphs/",
+      "notes": "third-party record visualization compiled from Florida DOE and WUSF, state-row cutoffs noted. Some data overlaps BD18; not independent evidence from it."
+    },
+    {
+      "key": "BD23",
+      "title": "Federal Election Commission, candidate H2FL14186, cycle 2026",
+      "publisher": "Federal Election Commission",
+      "type": "filing",
+      "url": "https://www.fec.gov/data/candidate/H2FL14186/?cycle=2026",
+      "notes": "official federal House committee finance, not Florida governor committee. Data is updated as filings are incorporated; retain access date and reporting period."
+    },
+    {
+      "key": "BD24",
+      "title": "Florida Division of Elections, Public Campaign Finance 2026",
+      "publisher": "Florida Division of Elections",
+      "type": "secondary",
+      "url": "https://dos.fl.gov/elections/candidates-committees/campaign-finance/public-campaign-finance-matching-funds-program/public-campaign-finance-2026",
+      "notes": "official public matching-funds distribution record, last-updated Oct. 23 at research time."
+    },
+    {
+      "key": "BD25",
+      "title": "Byron Donalds for Governor, Issues",
+      "publisher": "Byron Donalds for Governor",
+      "type": "secondary",
+      "url": "https://byrondonalds.com/issues/",
+      "notes": "first-party campaign platform, self-description only."
+    },
+    {
+      "key": "BD26",
+      "title": "PolitiFact, Aug. 27, 2025",
+      "publisher": "PolitiFact",
+      "type": "secondary",
+      "url": "https://politifact.com/article/2025/aug/27/byron-donalds-history-youth-offender-laws-dc/",
+      "notes": "independent researched narrative incorporating court records and comparison of juvenile justice policy. Need original court and legislative records for final consequential entries."
+    }
+  ],
+  "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "October 28, 1978",
+      "detail": "Brooklyn, New York",
+      "featured": true,
+      "sources": [
+        "BD01",
+        "BD02"
+      ]
+    },
+    {
+      "key": "primary-result",
+      "label": "2026 Republican primary",
+      "value": "811,131 votes (47.79%)",
+      "asOf": "2026-08-18",
+      "featured": true,
+      "sources": [
+        "BD03"
+      ]
+    },
+    {
+      "key": "house-office",
+      "label": "Congressional service",
+      "value": "Florida's 19th district, beginning January 3, 2021",
+      "featured": true,
+      "sources": [
+        "BD01",
+        "BD05"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "trump-endorsed-donalds",
+      "source": "donald-trump",
+      "target": "byron-donalds",
+      "relType": "endorsed",
+      "role": "Endorsed 2026 gubernatorial candidacy",
+      "from": "2025-02",
+      "prominence": 3,
+      "sources": [
+        "BD08",
+        "BD09"
+      ]
+    },
+    {
+      "key": "fishback-opposed-donalds",
+      "source": "james-fishback",
+      "target": "byron-donalds",
+      "relType": "opposed",
+      "role": "Primary opponent and public critic",
+      "from": "2025-11",
+      "until": "2026-08",
+      "prominence": 3,
+      "sources": [
+        "BD11",
+        "BD13"
+      ]
+    },
+    {
+      "key": "desantis-endorsed-donalds",
+      "source": "ron-desantis",
+      "target": "byron-donalds",
+      "relType": "endorsed",
+      "role": "Endorsed after the 2026 Republican primary",
+      "from": "2026-09-01",
+      "prominence": 2,
+      "sources": [
+        "BD17"
+      ]
+    },
+    {
+      "key": "donalds-pac",
+      "source": "byron-donalds",
+      "target": "friends-of-byron-donalds",
+      "relType": "affiliated-with",
+      "role": "Campaign-associated committee in reporting; official registration does not name an affiliated candidate",
+      "prominence": 2,
+      "sources": [
+        "BD18",
+        "BD20"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "key": "florida-house",
+      "date": "2016",
+      "title": "Wins a Florida House seat",
+      "summary": "Represented District 80 through 2020.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "from-florida-house-to-congress",
+      "sources": [
+        "BD02",
+        "BD04"
+      ]
+    },
+    {
+      "key": "congress",
+      "date": "2021-01-03",
+      "title": "Begins service in the U.S. House",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "from-florida-house-to-congress",
+      "sources": [
+        "BD01",
+        "BD05"
+      ]
+    },
+    {
+      "key": "israel-vote",
+      "date": "2024-04-20",
+      "title": "Votes for the Israel security supplemental",
+      "summary": "Voted yea on H.R. 8034 in House roll call 152.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "immigration-and-israel-record",
+      "sources": [
+        "BD06"
+      ]
+    },
+    {
+      "key": "laken-riley",
+      "date": "2025-01-07",
+      "title": "Votes for the Laken Riley Act",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "immigration-and-israel-record",
+      "sources": [
+        "BD07"
+      ]
+    },
+    {
+      "key": "governor-launch",
+      "date": "2025-02-25",
+      "title": "Launches campaign for Florida governor",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "the-2026-primary",
+      "sources": [
+        "BD09",
+        "BD10"
+      ]
+    },
+    {
+      "key": "primary-win",
+      "date": "2026-08-18",
+      "title": "Wins the Republican gubernatorial primary",
+      "summary": "Official results gave Donalds 47.79%, Fishback 10.48%.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "the-2026-primary",
+      "sources": [
+        "BD03"
+      ]
+    }
+  ],
+  "statements": [],
+  "finance": {
+    "coverage": "Federal House finance and Florida gubernatorial finance are separate reporting systems. State PAC totals remain unreconciled to official line items."
+  },
+  "ideas": {
+    "traditions": [],
+    "influences": [],
+    "works": [],
+    "featuredQuotes": []
+  },
+  "chapters": [
+    {
+      "key": "from-florida-house-to-congress",
+      "title": "From the Florida House to Congress",
+      "dek": "A state legislator became a nationally visible Trump ally.",
+      "body": "Donalds served in the Florida House from 2016 through 2020 before entering Congress in January 2021 [[BD01, BD02, BD04, BD05]]. His federal identity is anchored by FEC candidate H2FL14186, while his later gubernatorial campaign is governed by Florida's separate campaign-finance system [[BD19, BD23]]."
+    },
+    {
+      "key": "immigration-and-israel-record",
+      "title": "Immigration and Israel in the House record",
+      "dek": "Recorded votes provide a firmer basis than broad ideological labels.",
+      "body": "Donalds voted for the 2024 Israel Security Supplemental Appropriations Act and for the 2025 Laken Riley Act [[BD06, BD07]]. In an August 2026 interview he argued for legal immigration with assimilation while rejecting unauthorized immigration [[BD16]]."
+    },
+    {
+      "key": "the-2026-primary",
+      "title": "The 2026 Florida primary",
+      "dek": "Trump's endorsement and a fragmented field shaped the contest with Fishback.",
+      "body": "Trump publicly offered his endorsement before Donalds formally launched his gubernatorial campaign in February 2025 [[BD08, BD09, BD10]]. Fishback later attacked Donalds over corporate interests, while Donalds declined a challenger debate amid disputes over party forums [[BD11, BD13, BD14, BD15]]. Official results gave Donalds 47.79% of the Republican primary vote and Fishback 10.48% [[BD03]]."
+    },
+    {
+      "key": "money-and-governing-coalition",
+      "title": "Money and the governing coalition",
+      "dek": "Federal, state-candidate and state-committee records must remain separate.",
+      "body": "Donalds's federal House committee, Florida gubernatorial account and Friends of Byron Donalds PAC are distinct entities and reporting buckets [[BD19, BD20, BD23]]. Reporting connected detention-industry donors to the state political committee, but a contribution alone does not establish a policy exchange [[BD18, BD22]]."
+    }
+  ]
+}

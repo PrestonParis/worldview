@@ -11,19 +11,17 @@
     "namesakes": "No plausible namesake in the presidential record; campaign-finance records should be matched by candidate identifier rather than name.",
     "coverage": {
       "from": "1946",
-      "through": "2025-01-20",
-      "lags": "This first writing pass ends at the second inauguration. The second administration's policy record, appointments, financial disclosures, business conflicts and legal outcomes after January 20, 2025 still require dedicated current-record passes."
+      "through": "2026-10-22",
+      "lags": "The record is current through October 22, 2026. Pending appeals and litigation remain unresolved, and the 2026 campaign-finance picture will continue changing through the midterm election."
     },
     "openQuestions": [
-      "Add a primary-record policy pass for both presidential terms, including legislation, executive actions, appointments and foreign policy.",
-      "Recheck the status of every criminal and civil case through 2026-10-22, including appeals and monetary judgments.",
-      "Build the campaign-finance and political-organization records without treating committee receipts as the candidate's personal money.",
-      "Document the second administration through the current review date before publication.",
-      "Run separate evidence, quantitative, editorial and product reviews after the remaining records are complete."
+      "Recheck every pending criminal and civil appeal immediately before publication.",
+      "Reconcile campaign, leadership-PAC, joint-fundraising and allied-group totals after the complete 2026 cycle is filed.",
+      "Run the evidence, quantitative, editorial and product reviews before import."
     ],
     "review": []
   },
-  "summary": "The 45th and 47th president of the United States, Donald Trump converted a family real-estate business, a licensing brand and television celebrity into control of the Republican Party and two nonconsecutive presidential victories. His political record includes a first term ending in two impeachments and an effort to overturn his 2020 defeat, followed by a 2024 return that made him the second U.S. president elected to nonconsecutive terms.",
+  "summary": "The 45th and 47th president of the United States, Donald Trump converted a family real-estate business, a licensing brand and television celebrity into control of the Republican Party and two nonconsecutive presidential victories. His first term produced a major tax law, three Supreme Court appointments, restrictive immigration policies and two impeachments, and ended with his effort to overturn the 2020 election. Returned to office in 2025, he has pursued a more centralized presidency built around executive power, tariffs, mass-removal policy and direct military action, including the 2026 war with Iran.",
   "roles": [
     {
       "label": "President of the United States",
@@ -52,7 +50,7 @@
     }
   ],
   "finance": {
-    "coverage": "Campaign receipts and spending are not yet imported for this draft. Presidential campaign committees, leadership PACs, joint fundraising committees, super PACs and Trump-controlled businesses must be kept analytically separate."
+    "coverage": "Presidential campaign committees, leadership PACs, joint fundraising committees, allied super PACs and Trump-controlled businesses are analytically separate. Candidate receipts belong in the campaign-finance system rather than being counted as Trump's personal money; this dossier records only personally attributable ownership and court-ordered financial liabilities."
   },
   "entities": {
     "trump": {
@@ -68,7 +66,69 @@
         "description": "Privately held collection of real-estate, hospitality, licensing and other businesses principally owned by Donald Trump.",
         "websiteUrl": "https://www.trump.com/"
       }
-    }
+    },
+    "republican-party": {
+      "create": {
+        "name": "Republican Party",
+        "type": "organization",
+        "description": "One of the two major political parties in the United States.",
+        "websiteUrl": "https://www.gop.com/"
+      }
+    },
+    "trump-media": {
+      "create": {
+        "name": "Trump Media & Technology Group",
+        "type": "company",
+        "description": "Publicly traded media and technology company that operates Truth Social.",
+        "websiteUrl": "https://www.tmtgcorp.com/"
+      }
+    },
+    "melania": {
+      "create": {
+        "name": "Melania Trump",
+        "type": "politician",
+        "description": "First lady of the United States and wife of Donald Trump."
+      }
+    },
+    "donald-jr": {
+      "create": {
+        "name": "Donald Trump Jr.",
+        "type": "donor",
+        "description": "Trump Organization executive, political fundraiser and eldest son of Donald Trump."
+      }
+    },
+    "ivanka": {
+      "create": {
+        "name": "Ivanka Trump",
+        "type": "politician",
+        "description": "Business executive and former White House adviser; daughter of Donald Trump."
+      }
+    },
+    "eric": {
+      "create": {
+        "name": "Eric Trump",
+        "type": "donor",
+        "description": "Trump Organization executive and son of Donald Trump."
+      }
+    },
+    "kushner": {
+      "create": {
+        "name": "Jared Kushner",
+        "type": "politician",
+        "description": "Business executive and former senior White House adviser; son-in-law of Donald Trump."
+      }
+    },
+    "pence": { "match": { "name": "Mike Pence" } },
+    "vance": { "match": { "name": "JD Vance" } },
+    "bannon": { "match": { "name": "Steve Bannon" } },
+    "wiles": { "match": { "name": "Susie Wiles" } },
+    "miller": { "match": { "identifier": ["wikidata", "Q27916730"] } },
+    "musk": { "match": { "name": "Elon Musk" } },
+    "sacks": { "match": { "name": "David Sacks" } },
+    "thiel": { "match": { "name": "Peter Thiel" } },
+    "gorsuch": { "match": { "name": "Neil Gorsuch" } },
+    "kavanaugh": { "match": { "name": "Brett Kavanaugh" } },
+    "barrett": { "match": { "name": "Amy Coney Barrett" } }
   },
   "sources": [
     {
@@ -210,6 +270,254 @@
       "type": "transcript",
       "url": "https://www.whitehouse.gov/remarks/2025/01/the-inaugural-address/",
       "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "miller-domestic-affairs",
+      "title": "Donald Trump: Domestic Affairs",
+      "publisher": "Miller Center, University of Virginia",
+      "author": "Benjamin C. Waterhouse",
+      "type": "secondary",
+      "url": "https://millercenter.org/president/trump/domestic-affairs",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "supreme-court-travel-ban",
+      "title": "Trump v. Hawaii, 585 U.S. 667",
+      "publisher": "Supreme Court of the United States",
+      "publishedAt": "2018-06-26",
+      "type": "filing",
+      "url": "https://www.supremecourt.gov/opinions/17pdf/17-965_h315.pdf",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "crs-2017-tax-law",
+      "title": "The Economic Effects of the 2017 Tax Revision: Preliminary Observations",
+      "publisher": "Congressional Research Service",
+      "publishedAt": "2019-06-07",
+      "type": "primary",
+      "url": "https://www.congress.gov/crs_external_products/R/PDF/R45736/R45736.4.pdf",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "gao-family-separation",
+      "title": "Southwest Border: Actions Needed to Improve DHS Processing of Families and Coordination between DHS and HHS",
+      "publisher": "U.S. Government Accountability Office",
+      "publishedAt": "2020-02",
+      "type": "primary",
+      "url": "https://www.gao.gov/assets/710/705980.pdf",
+      "documentId": "GAO-20-245",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "senate-supreme-court-nominations",
+      "title": "Supreme Court Nominations (1789–Present)",
+      "publisher": "United States Senate",
+      "type": "primary",
+      "url": "https://www.senate.gov/legislative/nominations/SupremeCourtNominations1789present.htm",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "mueller-statement-2019",
+      "title": "Special Counsel Robert S. Mueller III Makes Statement on Investigation into Russian Interference in the 2016 Presidential Election",
+      "publisher": "U.S. Department of Justice",
+      "author": "Robert S. Mueller III",
+      "publishedAt": "2019-05-29",
+      "type": "official_statement",
+      "url": "https://www.justice.gov/archives/opa/speech/special-counsel-robert-s-mueller-iii-makes-statement-investigation-russian-interference",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "white-house-paris-2017",
+      "title": "Statement by President Trump on the Paris Climate Accord",
+      "publisher": "Trump White House Archives",
+      "author": "Donald J. Trump",
+      "publishedAt": "2017-06-01",
+      "type": "transcript",
+      "url": "https://trumpwhitehouse.archives.gov/briefings-statements/statement-president-trump-paris-climate-accord/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "ustr-usmca",
+      "title": "United States-Mexico-Canada Agreement",
+      "publisher": "Office of the United States Trade Representative",
+      "type": "primary",
+      "url": "https://ustr.gov/trade-agreements/free-trade-agreements/united-states-mexico-canada-agreement",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "state-abraham-accords",
+      "title": "The Abraham Accords Declaration",
+      "publisher": "U.S. Department of State",
+      "publishedAt": "2020-09-15",
+      "type": "primary",
+      "url": "https://2021-2025.state.gov/wp-content/uploads/2020/10/Abraham-Accords-signed-FINAL-15-Sept-2020-508-1.pdf",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "gao-warp-speed",
+      "title": "Operation Warp Speed: Accelerated COVID-19 Vaccine Development Status and Efforts to Address Manufacturing Challenges",
+      "publisher": "U.S. Government Accountability Office",
+      "publishedAt": "2021-02-11",
+      "type": "primary",
+      "url": "https://www.gao.gov/products/gao-21-319",
+      "documentId": "GAO-21-319",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "cdc-covid-timeline",
+      "title": "CDC Museum COVID-19 Timeline",
+      "publisher": "Centers for Disease Control and Prevention",
+      "type": "primary",
+      "url": "https://www.cdc.gov/museum/timeline/covid19.html",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "ny-fraud-appeal-2025",
+      "title": "People v Trump",
+      "publisher": "New York State Unified Court System",
+      "publishedAt": "2025-08-21",
+      "type": "filing",
+      "url": "https://www.nycourts.gov/reporter/3dseries/2025/2025_04756.shtml",
+      "accessedAt": "2026-10-22",
+      "notes": "The divided appellate court vacated the disgorgement awards while leaving the fraud findings undisturbed; further appeal followed."
+    },
+    {
+      "key": "carroll-docket",
+      "title": "Trump v. Carroll, docket 25-573",
+      "publisher": "Supreme Court of the United States",
+      "type": "filing",
+      "url": "https://www.supremecourt.gov/docket/docketfiles/html/public/25-573.html",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "carroll-83m-petition-2026",
+      "title": "Trump v. Carroll, petition for a writ of certiorari",
+      "publisher": "Supreme Court of the United States",
+      "publishedAt": "2026-07-28",
+      "type": "filing",
+      "url": "https://www.supremecourt.gov/DocketPDF/26/26-141/417484/20260728152024760_26-%20Petition.pdf",
+      "accessedAt": "2026-10-22",
+      "notes": "Petition states the lower-court history of the $83.3 million defamation judgment; the petition remained pending at the review cutoff."
+    },
+    {
+      "key": "doj-smith-report-2025",
+      "title": "Final Report on the Special Counsel's Investigations and Prosecutions, Volume One: The Election Case",
+      "publisher": "U.S. Department of Justice",
+      "author": "Jack Smith",
+      "publishedAt": "2025-01",
+      "type": "primary",
+      "url": "https://www.justice.gov/storage/Report-of-Special-Counsel-Smith-Volume-1-January-2025.pdf",
+      "accessedAt": "2026-10-22",
+      "notes": "Prosecutorial report; its factual and legal conclusions are attributed in prose. The federal case was dismissed after Trump's 2024 election under Justice Department policy concerning a sitting president."
+    },
+    {
+      "key": "sec-tmtg-ownership-2025",
+      "title": "Schedule 13D: Trump Media & Technology Group Corp.",
+      "publisher": "U.S. Securities and Exchange Commission",
+      "publishedAt": "2025-12-19",
+      "type": "filing",
+      "url": "https://www.sec.gov/Archives/edgar/data/947033/000114036125046424/xslSCHEDULE_13D_X01/primary_doc.xml",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "white-house-administration-2026",
+      "title": "The Trump Administration",
+      "publisher": "The White House",
+      "type": "official_statement",
+      "url": "https://www.whitehouse.gov/administration/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "white-house-staff-2026",
+      "title": "Annual Report to Congress on White House Office Personnel",
+      "publisher": "The White House",
+      "publishedAt": "2026-07-01",
+      "type": "primary",
+      "url": "https://www.whitehouse.gov/wp-content/uploads/2026/07/2026-Annual-Report-to-Congress-on-White-House-Staff.pdf",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "white-house-j6-clemency-2025",
+      "title": "Granting Pardons and Commutation of Sentences for Certain Offenses Relating to the Events at or Near the United States Capitol on January 6, 2021",
+      "publisher": "The White House",
+      "publishedAt": "2025-01-20",
+      "type": "primary",
+      "url": "https://www.whitehouse.gov/presidential-actions/2025/01/granting-pardons-and-commutation-of-sentences-for-certain-offenses-relating-to-the-events-at-or-near-the-united-states-capitol-on-january-6-2021/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "white-house-border-2025",
+      "title": "Guaranteeing the States Protection Against Invasion",
+      "publisher": "The White House",
+      "publishedAt": "2025-01-20",
+      "type": "primary",
+      "url": "https://www.whitehouse.gov/presidential-actions/2025/01/guaranteeing-the-states-protection-against-invasion/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "white-house-birthright-2025",
+      "title": "Protecting the Meaning and Value of American Citizenship",
+      "publisher": "The White House",
+      "publishedAt": "2025-01-20",
+      "type": "primary",
+      "url": "https://www.whitehouse.gov/presidential-actions/2025/01/protecting-the-meaning-and-value-of-american-citizenship/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "white-house-obbba-2025",
+      "title": "President Trump's One Big Beautiful Bill Is Now the Law",
+      "publisher": "The White House",
+      "publishedAt": "2025-07-04",
+      "type": "official_statement",
+      "url": "https://www.whitehouse.gov/releases/2025/07/president-trumps-one-big-beautiful-bill-is-now-the-law/",
+      "accessedAt": "2026-10-22",
+      "notes": "Administration account of its signature legislation; quantitative effects require independent scoring."
+    },
+    {
+      "key": "white-house-gaza-2025",
+      "title": "The Trump Declaration for Enduring Peace and Prosperity",
+      "publisher": "The White House",
+      "publishedAt": "2025-10-13",
+      "type": "primary",
+      "url": "https://www.whitehouse.gov/presidential-actions/2025/10/the-trump-declaration-for-enduring-peace-and-prosperity/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "white-house-iran-2026",
+      "title": "Operation Epic Fury: Decisive American Power to Crush Iran's Terror Regime",
+      "publisher": "The White House",
+      "publishedAt": "2026-03-12",
+      "type": "official_statement",
+      "url": "https://www.whitehouse.gov/releases/2026/03/operation-epic-fury-decisive-american-power-to-crush-irans-terror-regime/",
+      "accessedAt": "2026-10-22",
+      "notes": "Administration description of the war's objectives and operations; pair with independent reporting for outcomes and consequences."
+    },
+    {
+      "key": "ap-iran-war-2026",
+      "title": "Iran says 7 tankers on fire or damaged in the Strait of Hormuz, and other Mideast news",
+      "publisher": "Associated Press",
+      "publishedAt": "2026-10-22",
+      "type": "article",
+      "url": "https://apnews.com/article/dde5b98a8bf961224514994b02babce9",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "ap-midterms-spending-2026",
+      "title": "Trump's political groups spend nearly $277 million in late midterm blitz on behalf of GOP candidates",
+      "publisher": "Associated Press",
+      "publishedAt": "2026-10-21",
+      "type": "article",
+      "url": "https://apnews.com/article/0194a89b2209920efa4e3e83ef981205",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "ap-economy-2026",
+      "title": "Fact Focus: When it comes to Trump's economy, these are the numbers that matter before Nov. 3",
+      "publisher": "Associated Press",
+      "publishedAt": "2026-10-21",
+      "type": "article",
+      "url": "https://apnews.com/article/38c6e694edd13742244e23cff5f96446",
+      "accessedAt": "2026-10-22"
     }
   ],
   "facts": [
@@ -250,6 +558,64 @@
       "detail": "Acquitted by the Senate in 2020 and 2021",
       "featured": true,
       "sources": ["senate-impeachment-cases", "miller-life-brief"]
+    },
+    {
+      "key": "full-name",
+      "label": "Full name",
+      "value": "Donald John Trump",
+      "sources": ["miller-life-brief"]
+    },
+    {
+      "key": "citizenship",
+      "label": "Citizenship",
+      "value": "United States",
+      "sources": ["miller-life-brief"]
+    },
+    {
+      "key": "party",
+      "label": "Party",
+      "value": "Republican",
+      "detail": "Republican presidential nominee in 2016, 2020 and 2024",
+      "featured": true,
+      "sources": ["miller-campaigns", "fec-2016-results", "fec-2020-results", "fec-2024-results"]
+    },
+    {
+      "key": "spouse",
+      "label": "Spouse",
+      "value": "Melania Trump",
+      "detail": "Married in 2005",
+      "sources": ["miller-life-brief"]
+    },
+    {
+      "key": "children",
+      "label": "Children",
+      "value": "Donald Jr., Ivanka, Eric, Tiffany and Barron",
+      "sources": ["miller-life-brief"]
+    },
+    {
+      "key": "business",
+      "label": "Family business",
+      "value": "Trump Organization",
+      "detail": "Led the business from 1971; retained ownership after transferring day-to-day management to Donald Jr. and Eric in 2017",
+      "sources": ["miller-before-presidency"]
+    },
+    {
+      "key": "criminal-record",
+      "label": "Criminal record",
+      "value": "34 felony convictions",
+      "detail": "New York falsifying-business-records case; sentenced to an unconditional discharge in January 2025; appeal remained active in 2026",
+      "asOf": "2026-10-22",
+      "featured": true,
+      "sources": ["manhattan-da-conviction", "ny-courts-sentencing-order"]
+    },
+    {
+      "key": "trump-media-interest",
+      "label": "Trump Media interest",
+      "value": "41.5% beneficial interest",
+      "detail": "114,750,000 shares held by the Donald J. Trump Revocable Trust; Donald Trump Jr. is trustee",
+      "asOf": "2025-12-15",
+      "featured": true,
+      "sources": ["sec-tmtg-ownership-2025"]
     }
   ],
   "relationships": [
@@ -264,6 +630,170 @@
       "status": "verified",
       "prominence": 3,
       "sources": ["miller-before-presidency"]
+    },
+    {
+      "key": "republican-party",
+      "source": "trump",
+      "target": "republican-party",
+      "relType": "party-member",
+      "role": "Presidential nominee in 2016, 2020 and 2024; party leader during two presidencies",
+      "from": "2015",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["miller-campaigns", "fec-2016-results", "fec-2020-results", "fec-2024-results"]
+    },
+    {
+      "key": "married-melania",
+      "source": "trump",
+      "target": "melania",
+      "relType": "married-to",
+      "role": "Married in 2005; first lady during both presidencies",
+      "from": "2005",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["miller-life-brief", "white-house-administration-2026"]
+    },
+    {
+      "key": "father-donald-jr",
+      "source": "trump",
+      "target": "donald-jr",
+      "relType": "family-of",
+      "role": "Father; Donald Jr. became a Trump Organization executive and trustee of Trump's Trump Media shares",
+      "status": "verified",
+      "prominence": 2,
+      "sources": ["miller-life-brief", "sec-tmtg-ownership-2025"]
+    },
+    {
+      "key": "father-ivanka",
+      "source": "trump",
+      "target": "ivanka",
+      "relType": "family-of",
+      "role": "Father; Ivanka served as a White House adviser during the first presidency",
+      "status": "verified",
+      "prominence": 2,
+      "sources": ["miller-life-brief"]
+    },
+    {
+      "key": "father-eric",
+      "source": "trump",
+      "target": "eric",
+      "relType": "family-of",
+      "role": "Father; Eric became a Trump Organization executive",
+      "status": "verified",
+      "prominence": 2,
+      "sources": ["miller-life-brief", "miller-before-presidency"]
+    },
+    {
+      "key": "kushner-family",
+      "source": "trump",
+      "target": "kushner",
+      "relType": "family-of",
+      "role": "Father-in-law; Kushner served as a senior White House adviser during the first presidency",
+      "status": "verified",
+      "prominence": 2,
+      "sources": ["miller-life-brief"]
+    },
+    {
+      "key": "ivanka-adviser",
+      "source": "ivanka",
+      "target": "trump",
+      "relType": "adviser-to",
+      "role": "White House adviser, first presidency",
+      "from": "2017",
+      "until": "2021",
+      "status": "verified",
+      "prominence": 2,
+      "sources": ["miller-life-brief"]
+    },
+    {
+      "key": "kushner-adviser",
+      "source": "kushner",
+      "target": "trump",
+      "relType": "adviser-to",
+      "role": "Senior White House adviser, first presidency",
+      "from": "2017",
+      "until": "2021",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["miller-life-brief"]
+    },
+    {
+      "key": "nominated-pence",
+      "source": "trump",
+      "target": "pence",
+      "relType": "nominated",
+      "role": "Selected as running mate in 2016; vice president from 2017 to 2021",
+      "from": "2016",
+      "until": "2021",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["miller-campaigns", "january-6-report"]
+    },
+    {
+      "key": "nominated-vance",
+      "source": "trump",
+      "target": "vance",
+      "relType": "nominated",
+      "role": "Selected as running mate in 2024; vice president since 2025",
+      "from": "2024",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["white-house-administration-2026", "fec-2024-results"]
+    },
+    {
+      "key": "nominated-gorsuch",
+      "source": "trump",
+      "target": "gorsuch",
+      "relType": "nominated",
+      "role": "Nominated to the Supreme Court and confirmed in 2017",
+      "from": "2017",
+      "status": "verified",
+      "prominence": 2,
+      "sources": ["senate-supreme-court-nominations"]
+    },
+    {
+      "key": "nominated-kavanaugh",
+      "source": "trump",
+      "target": "kavanaugh",
+      "relType": "nominated",
+      "role": "Nominated to the Supreme Court and confirmed in 2018",
+      "from": "2018",
+      "status": "verified",
+      "prominence": 2,
+      "sources": ["senate-supreme-court-nominations"]
+    },
+    {
+      "key": "nominated-barrett",
+      "source": "trump",
+      "target": "barrett",
+      "relType": "nominated",
+      "role": "Nominated to the Supreme Court and confirmed in 2020",
+      "from": "2020",
+      "status": "verified",
+      "prominence": 2,
+      "sources": ["senate-supreme-court-nominations"]
+    },
+    {
+      "key": "wiles-chief-of-staff",
+      "source": "wiles",
+      "target": "trump",
+      "relType": "staffer-for",
+      "role": "Campaign manager in 2024; White House chief of staff in the second presidency",
+      "from": "2024",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["ap-2024-comeback", "white-house-staff-2026"]
+    },
+    {
+      "key": "miller-deputy-chief",
+      "source": "miller",
+      "target": "trump",
+      "relType": "staffer-for",
+      "role": "Immigration-policy adviser in the first presidency; deputy chief of staff in the second",
+      "from": "2017",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["white-house-staff-2026"]
     }
   ],
   "events": [
@@ -482,6 +1012,316 @@
       "participants": [["trump", "president"]],
       "sources": ["white-house-inaugural-2025", "white-house-biography", "miller-life-brief"],
       "chapter": "second-inauguration"
+    },
+    {
+      "key": "housing-suit-1973",
+      "date": "1973",
+      "title": "Justice Department sues the family company over housing discrimination",
+      "summary": "The Justice Department accused the Trump company of discriminating against Black rental applicants. The company denied wrongdoing and resolved the case through a consent decree requiring fair-housing measures.",
+      "category": "legal",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        ["trump", "company executive"],
+        ["trump-organization", "defendant company"]
+      ],
+      "sources": ["miller-before-presidency"],
+      "chapter": "queens-to-manhattan"
+    },
+    {
+      "key": "grand-hyatt-1976",
+      "date": "1976",
+      "title": "Assembles the Commodore Hotel redevelopment",
+      "summary": "Trump used a Hyatt partnership and a long New York City tax abatement to redevelop the bankrupt Commodore Hotel as the Grand Hyatt, establishing his Manhattan business model.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        ["trump", "developer"],
+        ["trump-organization", "developer"]
+      ],
+      "sources": ["miller-before-presidency"],
+      "chapter": "queens-to-manhattan"
+    },
+    {
+      "key": "casino-bankruptcy-1991",
+      "date": "1991",
+      "title": "Trump Taj Mahal enters bankruptcy protection",
+      "summary": "Heavy borrowing for the Atlantic City casino expansion produced a debt crisis; the Taj Mahal entered bankruptcy protection in 1991 and Trump Plaza Hotel followed in 1992.",
+      "category": "finance",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        ["trump", "owner"],
+        ["trump-organization", "business group"]
+      ],
+      "sources": ["miller-before-presidency"],
+      "chapter": "the-brand"
+    },
+    {
+      "key": "birther-campaign-2011",
+      "date": "2011",
+      "title": "Makes the false birther claim a national political cause",
+      "summary": "Trump became a leading promoter of the false claim that President Barack Obama was not born in the United States, using television appearances and social media to question Obama's legitimacy.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [["trump", "promoter"]],
+      "sources": ["miller-campaigns"],
+      "chapter": "candidate"
+    },
+    {
+      "key": "travel-ban-2017",
+      "date": "2017-01-27",
+      "title": "Orders entry restrictions that become the travel ban",
+      "summary": "Trump's first version of the policy restricted entry from several Muslim-majority countries. After revisions and litigation, the Supreme Court upheld the 2017 proclamation in Trump v. Hawaii in 2018.",
+      "category": "politics",
+      "significance": 2,
+      "status": "verified",
+      "participants": [["trump", "president"]],
+      "sources": ["supreme-court-travel-ban", "miller-domestic-affairs"],
+      "chapter": "first-presidency"
+    },
+    {
+      "key": "paris-withdrawal-2017",
+      "date": "2017-06-01",
+      "title": "Announces withdrawal from the Paris climate agreement",
+      "summary": "Trump presented withdrawal as protection for American sovereignty, industry and workers and halted implementation of the U.S. commitment.",
+      "category": "politics",
+      "significance": 2,
+      "status": "verified",
+      "participants": [["trump", "president"]],
+      "sources": ["white-house-paris-2017"],
+      "chapter": "first-presidency"
+    },
+    {
+      "key": "tax-law-2017",
+      "date": "2017-12-22",
+      "title": "Signs the 2017 tax law",
+      "summary": "The law permanently reduced the corporate tax rate to 21 percent and temporarily changed individual rates, deductions and credits; it was the first term's largest legislative achievement.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [["trump", "president"]],
+      "sources": ["crs-2017-tax-law", "miller-domestic-affairs"],
+      "chapter": "first-presidency"
+    },
+    {
+      "key": "family-separation-2018",
+      "date": "2018-04",
+      "date_end": "2018-06",
+      "title": "Zero-tolerance prosecutions drive family separations",
+      "summary": "The administration's referral of parents for criminal prosecution sharply increased separations of children from parents at the southwest border until a court order and policy change in June.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [["trump", "president"]],
+      "sources": ["gao-family-separation", "miller-domestic-affairs"],
+      "chapter": "first-presidency"
+    },
+    {
+      "key": "supreme-court-majority-2020",
+      "date": "2020-10-26",
+      "title": "Third Supreme Court nominee is confirmed",
+      "summary": "The Senate's confirmation of Amy Coney Barrett followed those of Neil Gorsuch and Brett Kavanaugh, giving Trump three appointments that moved the Court substantially to the right.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["trump", "nominating president"],
+        ["gorsuch", "justice"],
+        ["kavanaugh", "justice"],
+        ["barrett", "justice"]
+      ],
+      "sources": ["senate-supreme-court-nominations", "miller-domestic-affairs"],
+      "chapter": "first-presidency"
+    },
+    {
+      "key": "mueller-report-2019",
+      "date": "2019-03",
+      "title": "Special counsel completes Russia investigation",
+      "summary": "Robert Mueller documented a Russian campaign to influence the 2016 election and numerous contacts involving Trump associates, but said the evidence was insufficient to charge a broader conspiracy; the report did not make a traditional prosecutorial judgment on obstruction by Trump.",
+      "category": "legal",
+      "significance": 3,
+      "status": "verified",
+      "participants": [["trump", "president and investigation subject"]],
+      "sources": ["mueller-statement-2019"],
+      "chapter": "first-presidency"
+    },
+    {
+      "key": "covid-emergency-2020",
+      "date": "2020-03",
+      "title": "COVID-19 becomes the defining crisis of the first term",
+      "summary": "Trump declared a national emergency and signed the $2.2 trillion CARES Act as schools, workplaces and public life shut down. By the end of his term the reported U.S. death toll had passed 400,000.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [["trump", "president"]],
+      "sources": ["miller-domestic-affairs", "cdc-covid-timeline"],
+      "chapter": "pandemic-and-election"
+    },
+    {
+      "key": "warp-speed-2020",
+      "date": "2020-05",
+      "title": "Launches Operation Warp Speed",
+      "summary": "The federal effort supported multiple vaccine candidates and accelerated manufacturing; Moderna and Pfizer-BioNTech vaccines received emergency authorization before Trump left office.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [["trump", "president"]],
+      "sources": ["gao-warp-speed", "cdc-covid-timeline"],
+      "chapter": "pandemic-and-election"
+    },
+    {
+      "key": "usmca-2020",
+      "date": "2020-07-01",
+      "title": "USMCA replaces NAFTA",
+      "summary": "The United States-Mexico-Canada Agreement entered into force after Trump made renegotiating NAFTA a central campaign promise.",
+      "category": "politics",
+      "significance": 2,
+      "status": "verified",
+      "participants": [["trump", "president"]],
+      "sources": ["ustr-usmca"],
+      "chapter": "first-presidency"
+    },
+    {
+      "key": "abraham-accords-2020",
+      "date": "2020-09-15",
+      "title": "Hosts the Abraham Accords signing",
+      "summary": "Israel, the United Arab Emirates and Bahrain signed normalization agreements at the White House, the first of several Arab-Israeli agreements negotiated during the administration.",
+      "category": "politics",
+      "significance": 2,
+      "status": "verified",
+      "participants": [["trump", "host and U.S. signatory"]],
+      "sources": ["state-abraham-accords"],
+      "chapter": "first-presidency"
+    },
+    {
+      "key": "carroll-verdict-2023",
+      "date": "2023-05-09",
+      "title": "Jury finds Trump liable for sexually abusing and defaming E. Jean Carroll",
+      "summary": "A federal civil jury awarded Carroll $5 million. The judgment survived appellate review and reached the Supreme Court docket; a separate 2024 defamation verdict awarded Carroll another $83.3 million.",
+      "category": "legal",
+      "significance": 3,
+      "status": "verified",
+      "participants": [["trump", "civil defendant"]],
+      "sources": ["carroll-docket", "carroll-83m-petition-2026"],
+      "chapter": "legal-cases"
+    },
+    {
+      "key": "federal-election-indictment-2023",
+      "date": "2023-08",
+      "title": "Federally indicted over the 2020 election effort",
+      "summary": "Special counsel Jack Smith charged Trump in the election case. The prosecution was dismissed after Trump's 2024 victory under the Justice Department's policy against prosecuting a sitting president, without a trial verdict.",
+      "category": "legal",
+      "significance": 3,
+      "status": "verified",
+      "participants": [["trump", "defendant"]],
+      "sources": ["doj-smith-report-2025"],
+      "chapter": "legal-cases"
+    },
+    {
+      "key": "trump-media-public-2024",
+      "date": "2024-03",
+      "title": "Trump Media becomes publicly traded",
+      "summary": "The owner of Truth Social completed its combination with Digital World Acquisition Corp. Trump's shares became a large, publicly priced component of his wealth and were later transferred to his revocable trust.",
+      "category": "finance",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        ["trump", "beneficial owner"],
+        ["trump-media", "company"]
+      ],
+      "sources": ["sec-tmtg-ownership-2025"],
+      "chapter": "legal-cases"
+    },
+    {
+      "key": "j6-clemency-2025",
+      "date": "2025-01-20",
+      "title": "Pardons or commutes sentences for January 6 offenses",
+      "summary": "On his first day back in office, Trump commuted fourteen named sentences, pardoned all other people convicted of offenses connected to January 6 and directed dismissal of pending indictments.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [["trump", "president"]],
+      "sources": ["white-house-j6-clemency-2025"],
+      "chapter": "second-presidency"
+    },
+    {
+      "key": "border-orders-2025",
+      "date": "2025-01-20",
+      "title": "Opens second term with sweeping immigration orders",
+      "summary": "Trump declared the southern border situation an invasion, restricted asylum access and ordered agencies not to recognize citizenship for some U.S.-born children, initiating immediate constitutional litigation.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [["trump", "president"]],
+      "sources": ["white-house-border-2025", "white-house-birthright-2025"],
+      "chapter": "second-presidency"
+    },
+    {
+      "key": "obbba-2025",
+      "date": "2025-07-04",
+      "title": "Signs the second term's central tax-and-spending law",
+      "summary": "The law extended major provisions of the 2017 tax law and advanced the administration's border, energy and social-policy priorities through budget reconciliation.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [["trump", "president"]],
+      "sources": ["white-house-obbba-2025"],
+      "chapter": "second-presidency"
+    },
+    {
+      "key": "gaza-agreement-2025",
+      "date": "2025-10-13",
+      "title": "Signs declaration supporting the Gaza peace agreement",
+      "summary": "Trump joined the leaders of Egypt, Qatar and Turkey in a declaration backing implementation of an agreement intended to end the Gaza war and create a framework for security and reconstruction.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [["trump", "signatory"]],
+      "sources": ["white-house-gaza-2025"],
+      "chapter": "second-presidency"
+    },
+    {
+      "key": "fraud-appeal-2025",
+      "date": "2025-08-21",
+      "title": "Appeals court vacates civil-fraud financial penalty",
+      "summary": "A divided New York appellate court vacated the disgorgement awards as excessive while leaving the underlying fraud findings and other relief undisturbed; further appeal followed.",
+      "category": "legal",
+      "significance": 2,
+      "status": "unresolved",
+      "statusNote": "New York's highest court had not supplied a final disposition in the sources checked for this review.",
+      "participants": [
+        ["trump", "appellant"],
+        ["trump-organization", "appellant organization"]
+      ],
+      "sources": ["ny-fraud-appeal-2025"],
+      "chapter": "legal-cases"
+    },
+    {
+      "key": "iran-war-2026",
+      "date": "2026-02-28",
+      "title": "United States and Israel begin joint war against Iran",
+      "summary": "Trump ordered major U.S. combat operations against Iran. The administration described goals including destroying missile capacity, naval forces and routes to a nuclear weapon; the war and its effects on shipping and energy remained active in October 2026.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [["trump", "commander in chief"]],
+      "sources": ["white-house-iran-2026", "ap-iran-war-2026"],
+      "chapter": "second-presidency"
+    },
+    {
+      "key": "midterm-spending-2026",
+      "date": "2026-10-21",
+      "title": "Trump groups spend nearly $277 million on the midterms",
+      "summary": "Associated Press reporting found that Trump's political groups had spent nearly $277 million late in the 2026 campaign to support Republican candidates, demonstrating his continued control over party resources while in office.",
+      "category": "finance",
+      "significance": 2,
+      "status": "verified",
+      "participants": [["trump", "political-group leader"]],
+      "sources": ["ap-midterms-spending-2026"],
+      "chapter": "second-presidency"
     }
   ],
   "statements": [
@@ -504,6 +1344,88 @@
       "summary": "Trump described his return to office as a decisive break with the preceding administration.",
       "stance": "explicit",
       "source": "white-house-inaugural-2025"
+    },
+    {
+      "key": "immigration-launch-2015",
+      "date": "2015-06-16",
+      "venue": "Presidential campaign announcement, Trump Tower",
+      "issue": "Immigration",
+      "quote": "They're bringing drugs. They're bringing crime. They're rapists. And some, I assume, are good people.",
+      "summary": "Trump made a sweeping accusation about immigrants from Mexico while launching his first successful presidential campaign.",
+      "stance": "explicit",
+      "source": "miller-campaigns"
+    },
+    {
+      "key": "paris-pittsburgh-2017",
+      "date": "2017-06-01",
+      "venue": "White House statement on the Paris climate agreement",
+      "issue": "Climate and sovereignty",
+      "quote": "I was elected to represent the citizens of Pittsburgh, not Paris.",
+      "summary": "Trump cast withdrawal from the climate agreement as a choice between international commitments and domestic economic sovereignty.",
+      "stance": "explicit",
+      "source": "white-house-paris-2017"
+    },
+    {
+      "key": "capitalist-debt-2011",
+      "date": "2011",
+      "datePrecision": "year",
+      "venue": "Retrospective account of his business career",
+      "issue": "Business and bankruptcy",
+      "quote": "I've used the laws of this country to pare debt.",
+      "summary": "Trump defended using corporate bankruptcy protection as a business tool.",
+      "stance": "explicit",
+      "source": "miller-before-presidency"
+    },
+    {
+      "key": "election-fraud-2020",
+      "date": "2020-11",
+      "datePrecision": "month",
+      "venue": "Post-election public statements",
+      "issue": "2020 election",
+      "quote": "Frankly, we did win this election.",
+      "summary": "Trump asserted victory before counting was complete and continued claiming the election was stolen after certified results showed his defeat.",
+      "stance": "explicit",
+      "source": "january-6-report"
+    },
+    {
+      "key": "fight-like-hell-2021",
+      "date": "2021-01-06",
+      "venue": "Save America rally at the Ellipse",
+      "issue": "2020 election",
+      "quote": "If you don't fight like hell, you're not going to have a country anymore.",
+      "summary": "Trump urged supporters to fight against certification of the election shortly before members of the crowd marched to the Capitol.",
+      "stance": "explicit",
+      "source": "january-6-report"
+    },
+    {
+      "key": "j6-clemency-2025",
+      "date": "2025-01-20",
+      "venue": "Presidential clemency proclamation",
+      "issue": "January 6 prosecutions",
+      "quote": "This proclamation ends a grave national injustice that has been perpetrated upon the American people over the last four years.",
+      "summary": "Trump described the federal prosecution of January 6 defendants as unjust while pardoning or commuting their sentences.",
+      "stance": "explicit",
+      "source": "white-house-j6-clemency-2025"
+    },
+    {
+      "key": "border-invasion-2025",
+      "date": "2025-01-20",
+      "venue": "Presidential proclamation",
+      "issue": "Immigration",
+      "quote": "The current situation at the southern border qualifies as an invasion under Article IV, Section 4 of the Constitution of the United States.",
+      "summary": "Trump used the constitutional language of invasion to justify restricting entry and access to asylum.",
+      "stance": "explicit",
+      "source": "white-house-border-2025"
+    },
+    {
+      "key": "iran-objectives-2026",
+      "date": "2026-03-02",
+      "venue": "Remarks on Operation Epic Fury",
+      "issue": "Iran war",
+      "quote": "Our objectives are clear. First, we're destroying Iran's missile capabilities... Second, we're annihilating their navy... Third, we're ensuring that the world's number one sponsor of terror can never obtain a nuclear weapon.",
+      "summary": "Trump defined the initial military objectives of the U.S. campaign against Iran.",
+      "stance": "explicit",
+      "source": "white-house-iran-2026"
     }
   ],
   "ideas": {
@@ -518,7 +1440,7 @@
         "source": "miller-before-presidency"
       }
     ],
-    "featuredQuotes": ["america-first-2025", "liberation-day-2025"]
+    "featuredQuotes": ["immigration-launch-2015", "fight-like-hell-2021", "america-first-2025", "iran-objectives-2026"]
   },
   "chapters": [
     {
@@ -543,7 +1465,13 @@
       "key": "first-presidency",
       "title": "The first presidency",
       "dek": "Trump governed through the Republican Party while preserving the personal organization and communication style of his campaign.",
-      "body": "Trump took office as the 45th president on January 20, 2017. He transferred day-to-day management of the Trump Organization to his sons Donald Jr. and Eric but did not divest his ownership, leaving critics to argue that official decisions and private financial interests could overlap. The arrangement also kept family members at the center of both the business and the administration: Ivanka Trump and her husband, Jared Kushner, served as White House advisers. [[miller-before-presidency, miller-life-brief]]\n\nHis first term remade the Republican Party around his leadership and intensified arguments about the boundaries of presidential power and political norms. In December 2019 the House impeached him for abuse of power and obstruction of Congress after he pressed Ukraine's president to announce investigations that could affect the 2020 election. The Senate acquitted him on February 5, 2020. [[miller-life-brief, senate-impeachment-cases]]"
+      "body": "Trump took office as the 45th president on January 20, 2017. He transferred day-to-day management of the Trump Organization to his sons Donald Jr. and Eric but did not divest his ownership. Ivanka Trump and her husband, Jared Kushner, joined the White House as advisers, keeping family members at the center of both the business and the administration and sustaining criticism that official decisions and private financial interests could overlap. [[miller-before-presidency, miller-life-brief]]\n\nImmigration supplied the first test of presidential power. Trump's January 2017 entry order produced airport detentions, protests and immediate litigation; a revised proclamation restricted entry from several countries, most of them Muslim-majority, and the Supreme Court upheld it in 2018. At the southwest border, the administration's 2018 zero-tolerance prosecution policy sharply increased the separation of children from parents before a federal court order and policy revision curtailed the practice. [[supreme-court-travel-ban, gao-family-separation, miller-domestic-affairs]]\n\nWith Republican congressional majorities, Trump signed the Tax Cuts and Jobs Act in December 2017. It permanently cut the corporate tax rate to 21 percent and temporarily changed individual rates, credits and deductions. His administration also pursued broad deregulation and announced withdrawal from the Paris climate agreement, which Trump framed as protection of American workers and sovereignty. [[crs-2017-tax-law, miller-domestic-affairs, white-house-paris-2017]]\n\nAppointments became one of the term's longest-lasting consequences. The Senate confirmed Neil Gorsuch, Brett Kavanaugh and Amy Coney Barrett to the Supreme Court, giving Trump three lifetime appointments and moving the Court substantially to the right. His cabinet and White House, by contrast, experienced unusually high turnover as Trump repeatedly replaced senior officials who lost his confidence. [[senate-supreme-court-nominations, miller-domestic-affairs]]\n\nThe foreign-policy record mixed withdrawal with new agreements. Trump left the Paris accord and the Iran nuclear agreement, used tariffs as leverage against China and allies, and renegotiated NAFTA as the United States-Mexico-Canada Agreement, which entered into force in July 2020. In September 2020 he hosted the Abraham Accords signing, which normalized relations between Israel and the United Arab Emirates and Bahrain. [[white-house-paris-2017, ustr-usmca, state-abraham-accords]]\n\nSpecial counsel Robert Mueller documented extensive Russian efforts to influence the 2016 election and contacts involving Trump associates, but said the evidence was insufficient to charge a broader conspiracy. Mueller did not make a conventional prosecutorial judgment on whether Trump obstructed the investigation. Later in 2019 the House impeached Trump for abuse of power and obstruction of Congress after he pressed Ukraine's president to announce investigations affecting the 2020 campaign; the Senate acquitted him in February 2020. [[mueller-statement-2019, miller-life-brief, senate-impeachment-cases]]"
+    },
+    {
+      "key": "pandemic-and-election",
+      "title": "The pandemic and the 2020 campaign",
+      "dek": "COVID-19 brought the first presidency's deepest crisis, a rapid vaccine program and an election fought under emergency conditions.",
+      "body": "COVID-19 reached the United States in early 2020 and overtook public life in March. Trump declared a national emergency and signed the $2.2 trillion CARES Act as states closed schools and businesses. He repeatedly minimized the danger in public, clashed with public-health officials and governors over reopening, and used racialized names for the virus while blaming China. By January 18, 2021, the reported U.S. death toll had passed 400,000. [[miller-domestic-affairs, cdc-covid-timeline]]\n\nThe administration also created Operation Warp Speed, a partnership of the health and defense departments that funded vaccine candidates and manufacturing before trial results were complete. By the end of Trump's term, the Pfizer-BioNTech and Moderna vaccines had received emergency authorization. The program was a major administrative success even as the initial distribution fell short of the administration's announced target. [[gao-warp-speed, cdc-covid-timeline]]\n\nThe emergency changed how Americans voted. Trump spent months attacking expanded mail voting and warning, without evidence, that fraud would be widespread. Election officials nevertheless certified Joe Biden's victory: 306 electoral votes to Trump's 232, with Biden ahead by about seven million votes nationally. [[fec-2020-results, january-6-report]]\n\nTrump's refusal to accept that result turned the election from a campaign defeat into a constitutional crisis. Advisers, campaign lawyers and Justice Department officials told him that fraud claims were unsupported or insufficient to alter the result, but he continued to assert that he had won and began pressing officials who could affect certification. [[january-6-report, doj-smith-report-2025]]"
     },
     {
       "key": "defeat-and-january-6",
@@ -555,13 +1483,25 @@
       "key": "return",
       "title": "Legal jeopardy and political return",
       "dek": "Criminal and civil cases became part of Trump's campaign narrative rather than removing him from Republican leadership.",
-      "body": "Out of office, Trump remained the dominant Republican political figure. By the 2024 campaign he faced multiple criminal prosecutions and major civil judgments. In February 2024 a New York trial court entered a civil-fraud judgment against Trump, other defendants and Trump Organization entities. On May 30 a Manhattan jury convicted him on 34 counts of falsifying business records. He denied wrongdoing and pursued appeals; this draft records the trial-level outcomes but leaves their later appellate disposition open for the legal review. [[ny-ag-fraud-judgment, manhattan-da-conviction, ny-courts-sentencing-order]]\n\nThe prosecutions did not prevent Trump from sweeping the Republican primaries. His campaign portrayed the cases as political persecution, an account that helped turn legal proceedings into campaign events. On July 13, 2024, a gunman shot at him during a rally in Butler, Pennsylvania, grazing his ear and killing an attendee. Images of Trump rising with his fist raised while calling “Fight” became a defining symbol of the campaign. [[ap-2024-comeback, fbi-butler]]\n\nOn November 5 Trump defeated Vice President Kamala Harris. The official results gave him 312 electoral votes to Harris's 226, and he also won the national popular vote. The victory made him the second president, after Grover Cleveland, elected to nonconsecutive terms. It also demonstrated that the movement built around Trump could outlast an election defeat, two impeachments, criminal indictments and a felony conviction. [[fec-2024-results, miller-life-brief, ap-2024-comeback]]"
+      "body": "Out of office, Trump remained the dominant Republican political figure. He continued telling supporters that the 2020 election had been stolen, endorsed candidates in Republican primaries and announced another presidential campaign while investigations of his conduct expanded. The party's institutions and electorate did not move on to a successor; challengers in the 2024 primary were forced to define themselves in relation to him. [[ap-2024-comeback, miller-campaigns]]\n\nThe prosecutions became part of Trump's campaign narrative. He described each case as political persecution and used court appearances to address supporters and news cameras. Rather than separating his legal defense from his campaign, he made the claim that both were one struggle against the same establishment. His Republican opponents largely rallied to him after indictments, narrowing the political cost of the cases inside the party. [[ap-2024-comeback]]\n\nOn July 13, 2024, a gunman opened fire during a Trump rally in Butler, Pennsylvania, grazing Trump's ear, killing attendee Corey Comperatore and seriously wounding two others. After Secret Service agents surrounded him, Trump rose with blood on his face, raised his fist and called “Fight.” The image became a campaign emblem two days before he appeared at the Republican convention. [[fbi-butler, ap-2024-comeback]]\n\nTrump defeated Vice President Kamala Harris on November 5. The official results gave him 312 electoral votes to Harris's 226, and he won 49.8 percent of the national popular vote to Harris's 48.3 percent. The victory made him the second president, after Grover Cleveland, elected to nonconsecutive terms and showed that his movement could survive an election defeat, two impeachments, four criminal indictments, civil judgments and a felony conviction. [[fec-2024-results, miller-life-brief, ap-2024-comeback]]"
+    },
+    {
+      "key": "legal-cases",
+      "title": "The cases that followed him back to office",
+      "dek": "Civil verdicts, criminal indictments and a felony conviction produced real judgments but did not prevent a second election victory.",
+      "body": "The legal cases arose from different conduct and ended in different procedural postures. In May 2023 a federal civil jury found Trump liable for sexually abusing and defaming writer E. Jean Carroll and awarded $5 million. A second jury awarded $83.3 million in January 2024 for additional defamatory statements. Trump denied Carroll's account and appealed; the first judgment survived appellate review, while a Supreme Court petition concerning the larger award remained pending at the review cutoff. [[carroll-docket, carroll-83m-petition-2026]]\n\nNew York's attorney general separately pursued a civil case over financial statements used by the Trump Organization. The trial court found persistent fraud and imposed disgorgement and business restrictions in February 2024. In August 2025 a divided appellate court vacated the monetary awards as excessive but left the fraud findings undisturbed, and further appeal followed. [[ny-ag-fraud-judgment, ny-fraud-appeal-2025]]\n\nFour criminal indictments were filed in 2023: a New York business-records case, federal and Georgia cases concerning the 2020 election, and a federal classified-documents case. The cases did not all reach trial. Special counsel Jack Smith dismissed the federal election prosecution after Trump's 2024 victory under Justice Department policy against prosecuting a sitting president; the dismissal was not an acquittal or a verdict on the evidence. [[ap-2024-comeback, doj-smith-report-2025]]\n\nThe New York case did reach a jury. On May 30, 2024, Trump was convicted on 34 felony counts of falsifying business records connected to reimbursements for a payment made before the 2016 election. In January 2025 the court imposed an unconditional discharge—no incarceration, fine or probation—so the conviction could become final for appeal before inauguration. Trump continued seeking to overturn it in 2026. [[manhattan-da-conviction, ny-courts-sentencing-order]]\n\nAt the same time, Trump Media & Technology Group became publicly traded, turning Truth Social into a large and volatile component of Trump's disclosed wealth. A December 2025 SEC filing reported 114.75 million shares—41.5 percent of the company—held by his revocable trust, with Donald Trump Jr. controlling voting and investment decisions as trustee and Trump remaining the sole beneficiary. [[sec-tmtg-ownership-2025]]"
     },
     {
       "key": "second-inauguration",
       "title": "A second inauguration",
       "dek": "Trump returned with a stronger claim to party control and a promise to move quickly through executive power.",
       "body": "Trump was sentenced to an unconditional discharge in the New York criminal case before taking office, leaving the conviction in place without jail, a fine, probation or community service while he pursued an appeal. On January 20, 2025, at age 78, he took the oath as the 47th president and became the oldest person inaugurated to the office. [[miller-life-brief, ny-courts-sentencing-order]]\n\nHis inaugural address described January 20 as “Liberation Day” and promised that every day of the administration would put “America first.” He announced immediate action on immigration, energy, the federal workforce, gender policy and other subjects, presenting his return not as a restoration of the first term but as authority to reverse the preceding administration quickly. [[white-house-inaugural-2025]]"
+    },
+    {
+      "key": "second-presidency",
+      "title": "A more concentrated second presidency",
+      "dek": "Trump returned with tighter control of his party, a loyalty-tested administration and a broader theory of executive authority.",
+      "body": "The second administration was organized around people whose political standing depended more directly on Trump. JD Vance replaced Mike Pence as vice president; Susie Wiles, who managed the 2024 campaign, became chief of staff; and Stephen Miller returned as deputy chief of staff with broad responsibility for immigration policy. Family members did not hold the same formal White House posts they had in the first term, but Trump's political, business and family networks remained closely connected. [[white-house-administration-2026, white-house-staff-2026]]\n\nTrump used the first day to erase symbols and consequences of his defeat. He pardoned nearly everyone convicted of offenses connected to January 6, commuted fourteen named sentences and ordered dismissal of pending cases. He also declared the southern border situation an “invasion,” restricted asylum access and directed agencies to withhold recognition of citizenship from some children born in the United States, producing immediate constitutional challenges. [[white-house-j6-clemency-2025, white-house-border-2025, white-house-birthright-2025]]\n\nThe administration moved through executive orders to reduce the federal workforce, reverse environmental and diversity policies, expand immigration enforcement and use emergency authority for tariffs. Congress supplied its central legislative vehicle on July 4, 2025, when Trump signed the One Big Beautiful Bill Act, extending core provisions of the 2017 tax law and financing border, energy and social-policy priorities. The administration celebrated the law as fulfillment of campaign promises; its distributional and fiscal effects require the independent quantitative treatment kept outside that claim. [[white-house-obbba-2025, ap-economy-2026]]\n\nForeign policy moved from campaign promises to end wars toward greater direct use of American power. Trump backed an October 2025 agreement intended to end the Gaza war and signed a declaration with Egypt, Qatar and Turkey supporting its implementation. On February 28, 2026, the United States and Israel began joint strikes against Iran. Trump said the American objectives were to destroy Iranian missile capacity and naval forces and prevent a nuclear weapon; by October the war and conflict around the Strait of Hormuz remained active and were contributing to higher energy prices. [[white-house-gaza-2025, white-house-iran-2026, ap-iran-war-2026, ap-economy-2026]]\n\nTrump's control of Republican resources remained a separate source of power from formal office. By October 21, 2026, his political groups had spent nearly $277 million in a late push for Republican midterm candidates, an extraordinary intervention by a sitting president's organizations. The spending tied congressional careers to Trump's fundraising network while the election became a referendum on tariffs, immigration, prices and the Iran war. [[ap-midterms-spending-2026, ap-economy-2026]]\n\nThe second presidency is still an active record. Its defining pattern through October 22, 2026 is the conversion of personal political authority into control over appointments, party money and aggressive assertions of executive power. Some actions produced durable law; others remained in litigation or depended on emergency powers. The profile therefore records outcomes separately from announcements and leaves unresolved cases marked as such. [[white-house-staff-2026, white-house-obbba-2025, ap-midterms-spending-2026]]"
     }
   ]
 }

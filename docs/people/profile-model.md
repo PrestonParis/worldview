@@ -8,7 +8,7 @@ One rule: **a fact that can be reused is a row, and every row points at its sour
 
 | Record | Table | Notes |
 |---|---|---|
-| Person / identity | `entities`, `entity_identifiers` | unchanged |
+| Person / identity | `entities`, `entity_identifiers` | a dossier's `image` (a Wikimedia Commons `Special:FilePath` URL) sets `entities.image_url` |
 | Editorial layer | `entity_profiles` | summary, roles (each sourced), biography chapters, ideas (traditions, influences, works, featured quotes), coverage notes, editorial review and source-check dates |
 | Reference facts | `entity_facts` | birth, citizenship, education, roles, net worth with `as_of` |
 | Relationships | `entity_edges` + `status`, `prominence` | type from `src/lib/relationships.ts` (now includes `invested-in`, `collaborated-with`), role, dates |

@@ -1,0 +1,639 @@
+{
+  "subject": "musk",
+  "reviewedAt": "2026-10-24",
+  "sourcesVerifiedAt": "2026-10-24",
+  "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Elon%20Musk%20-%2054820081119%20(3x4%20cropped%2C%20Rule%20of%20thirds).jpg?width=400",
+  "brief": {
+    "inclusion": "Technology executive, platform owner, federal contractor, former presidential adviser and the largest known individual political donor in both the 2024 election and the 2026 midterm cycle.",
+    "identifiers": {
+      "wikidata": "Q317521",
+      "fec_contributor": "MUSK, ELON",
+      "sec_tesla_cik": "0001494730"
+    },
+    "namesakes": "Elon Reeve Musk, born in Pretoria in 1971, is the Tesla and SpaceX executive; match political records with SpaceX, Tesla, X or Austin-area addresses rather than name alone.",
+    "coverage": {
+      "from": "1971",
+      "through": "2026-10-24",
+      "lags": "The 2026 election is still in progress and post-election FEC amendments are not yet available. Private-company valuations before SpaceX's 2026 offering, X ownership and gifts routed through organizations are not fully observable."
+    },
+    "openQuestions": [
+      "Refresh 2026-cycle FEC totals after the post-general filing and amendments.",
+      "Reconcile every 2024 and 2026 Musk-funded committee against Schedule A before importing with --fec.",
+      "Update the SpaceX, Tesla and X ownership facts after their next annual filings.",
+      "The America Party was announced in July 2025 but did not become the vehicle for Musk's 2026 spending; determine whether it ever completed federal or state party registration."
+    ],
+    "review": []
+  },
+  "summary": "Elon Musk built his wealth and institutional power through online payments, Tesla, SpaceX and the companies now grouped around X and xAI. He converted that power into electoral influence by spending at least $277 million for Donald Trump and other Republicans in 2024, serving briefly as a White House adviser associated with DOGE, and becoming the largest known donor of the 2026 midterm cycle. His political reach now combines campaign money, ownership of a major communications platform and companies whose launch, satellite and technology businesses are deeply connected to the federal government.",
+  "roles": [
+    {
+      "label": "Technology executive",
+      "detail": "Chief executive of Tesla since 2008 and founder and chief executive of SpaceX since 2002",
+      "sources": ["tesla-bio", "spacex-leadership"]
+    },
+    {
+      "label": "Controlling shareholder",
+      "detail": "Largest shareholder of Tesla and controlling shareholder of SpaceX after its 2026 public offering",
+      "sources": ["tesla-13g-2026", "spacex-s1-2026"]
+    },
+    {
+      "label": "Platform and AI owner",
+      "detail": "Controls the corporate group containing X, xAI and Grok through SpaceX",
+      "sources": ["spacex-10q-2026", "tesla-proxy-2026"]
+    },
+    {
+      "label": "Political donor",
+      "detail": "Largest known individual donor of the 2024 election and 2026 midterm cycle",
+      "sources": ["cbs-donations-2024", "ap-midterms-2026", "fec-musk"]
+    },
+    {
+      "label": "Former presidential adviser",
+      "detail": "White House special government employee and senior adviser associated with the 2025 DOGE effort",
+      "sources": ["gao-doge-personnel-2026", "white-house-departure-2025"]
+    }
+  ],
+  "finance": {
+    "fec": {
+      "contributorName": "MUSK, ELON",
+      "namePattern": "^MUSK, ELON( REEVE| R\\.?| MR\\.?)?$",
+      "employerPattern": "TESLA|SPACEX|SPACE EXPLORATION|X CORP|X\\.AI|SELF[- ]EMPLOYED",
+      "cities": ["AUSTIN", "BOCA CHICA", "BROWNSVILLE", "HAWTHORNE", "LOS ANGELES", "PALO ALTO", "STARBASE"],
+      "source": "fec-musk"
+    },
+    "coverage": "Itemized federal contributions reported to the FEC under an exact-name and employer-or-city identity rule. The record excludes state and local contributions, nonprofit spending, platform support, corporate expenditures, services not reported as contributions and any political activity by companies rather than Musk personally. The 2026 cycle remains open."
+  },
+  "entities": {
+    "musk": { "match": { "name": "Elon Musk", "type": "donor" } },
+    "trump": { "match": { "name": "Donald Trump", "type": "politician" } },
+    "thiel": { "match": { "name": "Peter Thiel", "type": "donor" } },
+    "tesla": {
+      "create": {
+        "name": "Tesla",
+        "type": "company",
+        "description": "Electric-vehicle, energy-storage and energy-generation company led by Elon Musk since 2008.",
+        "websiteUrl": "https://www.tesla.com/"
+      }
+    },
+    "spacex": {
+      "create": {
+        "name": "SpaceX",
+        "type": "company",
+        "description": "Launch, satellite communications and technology company founded by Elon Musk in 2002 and taken public in 2026.",
+        "websiteUrl": "https://www.spacex.com/"
+      }
+    },
+    "paypal": {
+      "create": {
+        "name": "PayPal",
+        "type": "company",
+        "description": "Online payments company formed from the merger of X.com and Confinity and acquired by eBay in 2002.",
+        "websiteUrl": "https://www.paypal.com/"
+      }
+    },
+    "x": {
+      "create": {
+        "name": "X Corp.",
+        "type": "company",
+        "description": "Social platform formerly known as Twitter, acquired by Elon Musk in 2022 and later folded into his xAI and SpaceX group.",
+        "websiteUrl": "https://x.com/"
+      }
+    },
+    "xai": {
+      "create": {
+        "name": "xAI",
+        "type": "company",
+        "description": "Artificial-intelligence company founded by Elon Musk in 2023 and acquired by SpaceX in 2026.",
+        "websiteUrl": "https://x.ai/"
+      }
+    },
+    "neuralink": {
+      "create": {
+        "name": "Neuralink",
+        "type": "company",
+        "description": "Neurotechnology company co-founded by Elon Musk.",
+        "websiteUrl": "https://neuralink.com/"
+      }
+    },
+    "boring": {
+      "create": {
+        "name": "The Boring Company",
+        "type": "company",
+        "description": "Tunnel-construction company founded by Elon Musk.",
+        "websiteUrl": "https://www.boringcompany.com/"
+      }
+    },
+    "america-pac": {
+      "create": {
+        "name": "America PAC",
+        "type": "organization",
+        "description": "Super PAC created in 2024 and principally financed by Elon Musk to support Donald Trump and Republican candidates."
+      }
+    },
+    "doge": {
+      "create": {
+        "name": "U.S. DOGE Service",
+        "type": "organization",
+        "description": "Executive-branch organization created in January 2025 from the U.S. Digital Service to pursue the Trump administration's government-efficiency agenda."
+      }
+    },
+    "republican-party": { "match": { "name": "Republican Party", "type": "organization" } }
+  },
+  "sources": [
+    {
+      "key": "fec-musk",
+      "title": "Individual contributions: Musk, Elon (Schedule A)",
+      "publisher": "Federal Election Commission",
+      "type": "filing",
+      "url": "https://www.fec.gov/data/receipts/individual-contributions/?contributor_name=MUSK%2C+ELON",
+      "documentId": "OpenFEC /schedules/schedule_a",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "tesla-bio",
+      "title": "Elon Musk",
+      "publisher": "Tesla Investor Relations",
+      "type": "primary",
+      "url": "https://ir.tesla.com/corporate/elon-musk",
+      "accessedAt": "2026-10-24",
+      "notes": "Company biography; used for roles and company chronology, not independent evaluation."
+    },
+    {
+      "key": "spacex-leadership",
+      "title": "Leadership: Elon Musk",
+      "publisher": "SpaceX",
+      "type": "primary",
+      "url": "https://ir.spacex.com/leadership/default.aspx",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "spacex-s1-2026",
+      "title": "Space Exploration Technologies Corp. registration statement",
+      "publisher": "U.S. Securities and Exchange Commission",
+      "publishedAt": "2026-05-20",
+      "type": "filing",
+      "url": "https://www.sec.gov/Archives/edgar/data/1181412/000162828026036936/spaceexplorationtechnologi.htm",
+      "documentId": "Form S-1",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "spacex-10q-2026",
+      "title": "Space Exploration Technologies Corp. quarterly report for the period ended September 30, 2026",
+      "publisher": "U.S. Securities and Exchange Commission",
+      "publishedAt": "2026-10-22",
+      "type": "filing",
+      "url": "https://www.sec.gov/Archives/edgar/data/1181412/000162828026066880/spcx-20260930.htm",
+      "documentId": "Form 10-Q",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "spacex-ipo-8k",
+      "title": "Completion of SpaceX initial public offering",
+      "publisher": "U.S. Securities and Exchange Commission",
+      "publishedAt": "2026-06-15",
+      "type": "filing",
+      "url": "https://www.sec.gov/Archives/edgar/data/1181412/000162828026043288/spaceexplorationtechnologi.htm",
+      "documentId": "Form 8-K",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "tesla-proxy-2026",
+      "title": "Tesla 2026 proxy statement",
+      "publisher": "U.S. Securities and Exchange Commission",
+      "publishedAt": "2026-10-19",
+      "type": "filing",
+      "url": "https://www.sec.gov/Archives/edgar/data/1318605/000110465926116700/tm267596-1_def14a.htm",
+      "documentId": "DEF 14A",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "tesla-13g-2026",
+      "title": "Elon Musk beneficial ownership of Tesla",
+      "publisher": "U.S. Securities and Exchange Commission",
+      "publishedAt": "2026-04-21",
+      "type": "filing",
+      "url": "https://www.sec.gov/Archives/edgar/data/1494730/000110465926047683/xslSCHEDULE_13G_X02/primary_doc.xml",
+      "documentId": "Schedule 13G",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "biography-2026",
+      "title": "Elon Musk: Biography, Entrepreneur, SpaceX and Tesla Founder",
+      "publisher": "Biography.com",
+      "author": "Biography.com Editors, Tyler Piccotti and Catherine Caruso",
+      "publishedAt": "2026-10-05",
+      "type": "secondary",
+      "url": "https://www.biography.com/business-leaders/elon-musk",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "time-fortune-2021",
+      "title": "How Elon Musk Built His Fortune—and Became the Richest Private Citizen in the World",
+      "publisher": "Time",
+      "author": "Andrew R. Chow",
+      "publishedAt": "2021-12-13",
+      "type": "article",
+      "url": "https://time.com/6127754/elon-musk-net-worth-person-of-the-year/",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "stanford-bio",
+      "title": "Elon Musk",
+      "publisher": "Stanford Technology Ventures Program",
+      "type": "secondary",
+      "url": "https://stvp.stanford.edu/people/elon-musk",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "cnn-immigration-2024",
+      "title": "Elon Musk once described his past immigration status as a 'gray area'",
+      "publisher": "CNN",
+      "publishedAt": "2024-09-29",
+      "type": "article",
+      "url": "https://amp.cnn.com/cnn/2024/09/29/us/elon-musk-immigration-gray-area-cec",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "twitter-13d-2022",
+      "title": "Twitter Schedule 13D amendment recording completion of the Musk acquisition",
+      "publisher": "U.S. Securities and Exchange Commission",
+      "publishedAt": "2022-10-27",
+      "type": "filing",
+      "url": "https://www.sec.gov/Archives/edgar/data/1418091/000110465922113051/tm2229215d1_sc13da.htm",
+      "documentId": "Schedule 13D/A",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "sec-tesla-settlement-2018",
+      "title": "Elon Musk Settles SEC Fraud Charges; Tesla Charged With and Resolves Securities Law Charge",
+      "publisher": "U.S. Securities and Exchange Commission",
+      "publishedAt": "2018-09-29",
+      "type": "official_statement",
+      "url": "https://www.sec.gov/newsroom/press-releases/2018-226",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "sec-twitter-complaint-2026",
+      "title": "SEC amended complaint concerning Musk's Twitter beneficial-ownership disclosure",
+      "publisher": "U.S. Securities and Exchange Commission",
+      "publishedAt": "2026-05-04",
+      "type": "filing",
+      "url": "https://www.sec.gov/files/litigation/complaints/2026/comp26548.pdf",
+      "documentId": "SEC v. Musk, No. 1:25-cv-00105",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "tesla-master-plan-2006",
+      "title": "The Secret Tesla Motors Master Plan (just between you and me)",
+      "publisher": "Tesla",
+      "author": "Elon Musk",
+      "publishedAt": "2006-08-02",
+      "type": "primary",
+      "url": "https://www.tesla.com/secret-master-plan",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "tesla-master-plan-2016",
+      "title": "Master Plan, Part Deux",
+      "publisher": "Tesla",
+      "author": "Elon Musk",
+      "publishedAt": "2016-07-20",
+      "type": "primary",
+      "url": "https://www.tesla.com/master-plan-part-deux",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "spacex-mission",
+      "title": "Making Humanity Multiplanetary",
+      "publisher": "SpaceX",
+      "type": "primary",
+      "url": "https://www.spacex.com/mission/",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "ted-2022",
+      "title": "Elon Musk talks Twitter, Tesla and how his brain works — live at TED2022",
+      "publisher": "TED",
+      "author": "Elon Musk and Chris Anderson",
+      "publishedAt": "2022-04-14",
+      "type": "transcript",
+      "url": "https://www.ted.com/talks/elon_musk_elon_musk_talks_twitter_tesla_and_how_his_brain_works_live_at_ted2022",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "cbs-donations-2024",
+      "title": "Elon Musk spends $277 million to back Trump and Republican candidates",
+      "publisher": "CBS News",
+      "author": "Melissa Quinn",
+      "publishedAt": "2024-12-06",
+      "type": "article",
+      "url": "https://www.cbsnews.com/news/elon-musk-277-million-trump-republican-candidates-donations/",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "ap-butler-2024",
+      "title": "Elon Musk makes his first appearance at a Trump rally and casts the election in dire terms",
+      "publisher": "Associated Press",
+      "author": "Meg Kinnard",
+      "publishedAt": "2024-10-05",
+      "type": "article",
+      "url": "https://apnews.com/article/elon-musk-donald-trump-rally-butler-election-f718967ec29431a2b9858b1121e70da1",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "x-endorsement-2024",
+      "title": "I fully endorse President Trump and hope for his rapid recovery",
+      "publisher": "X",
+      "author": "Elon Musk",
+      "publishedAt": "2024-07-13",
+      "type": "official_statement",
+      "url": "https://x.com/elonmusk/status/1812256998588662068",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "white-house-doge-order-2025",
+      "title": "Establishing and Implementing the President's Department of Government Efficiency",
+      "publisher": "The White House",
+      "publishedAt": "2025-01-20",
+      "type": "official_statement",
+      "url": "https://www.whitehouse.gov/presidential-actions/2025/01/establishing-and-implementing-the-presidents-department-of-government-efficiency/",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "white-house-departure-2025",
+      "title": "President Trump participates in a press conference with departing DOGE adviser Elon Musk",
+      "publisher": "The White House",
+      "publishedAt": "2025-05-30",
+      "type": "official_statement",
+      "url": "https://www.whitehouse.gov/gallery/president-trump-participates-in-a-press-conference-with-departing-doge-adviser-elon-musk/",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "gao-doge-personnel-2026",
+      "title": "DOGE: Information on Personnel and Ethics Activities",
+      "publisher": "U.S. Government Accountability Office",
+      "publishedAt": "2026-08",
+      "type": "primary",
+      "url": "https://files.gao.gov/reports/GAO-26-108403/index.html",
+      "documentId": "GAO-26-108403",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "gao-doge-receipts-2026",
+      "title": "DOGE Wall of Receipts: More Transparency Needed on How Savings Are Derived from Contract, Grant, and Lease Terminations",
+      "publisher": "U.S. Government Accountability Office",
+      "publishedAt": "2026-08",
+      "type": "primary",
+      "url": "https://www.gao.gov/products/gao-26-108615",
+      "documentId": "GAO-26-108615",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "ap-doge-departure-2025",
+      "title": "Elon Musk leaving Trump administration after efforts to slash federal budget through DOGE",
+      "publisher": "Associated Press",
+      "publishedAt": "2025-05-29",
+      "type": "article",
+      "url": "https://www.pbs.org/newshour/politics/elon-musk-leaving-trump-administration-after-efforts-to-slash-federal-budget-through-doge",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "reuters-feud-2025",
+      "title": "Trump, Musk feud explodes with threats of cutting contracts, backing impeachment",
+      "publisher": "Reuters",
+      "publishedAt": "2025-06-05",
+      "type": "article",
+      "url": "https://www.investing.com/news/world-news/trump-blames-musks-criticism-on-decision-to-cut-ev-tax-credits-4083630",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "reuters-america-party-2025",
+      "title": "Musk announces forming of 'America Party' in further break from Trump",
+      "publisher": "Reuters",
+      "author": "David Brunnstrom and Bhargav Acharya",
+      "publishedAt": "2025-07-05",
+      "type": "article",
+      "url": "https://www.investing.com/news/economy-news/musk-says-america-party-is-formed-in-us-4123646",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "ap-midterms-2026",
+      "title": "Elon Musk quietly becomes biggest known donor in midterm contests as he tries to save Republicans",
+      "publisher": "Associated Press",
+      "publishedAt": "2026-10-12",
+      "type": "article",
+      "url": "https://apnews.com/article/elon-musk-midterms-republicans-donors-c06efc774a2e7c5d345e0d46641eb510",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "reuters-midterms-2026",
+      "title": "Trump and Musk super PACs unleash millions to boost Republicans in battleground races",
+      "publisher": "Reuters",
+      "publishedAt": "2026-09-11",
+      "type": "article",
+      "url": "https://www.investing.com/news/stock-market-news/trump-and-musk-super-pacs-unleash-millions-to-boost-republicans-in-battleground-races-4897512",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "forbes-net-worth-2026",
+      "title": "Elon Musk",
+      "publisher": "Forbes",
+      "publishedAt": "2026-10-21",
+      "type": "secondary",
+      "url": "https://www.forbes.com/profile/elon-musk/",
+      "accessedAt": "2026-10-24"
+    }
+  ],
+  "facts": [
+    { "key": "born", "label": "Born", "value": "June 28, 1971, Pretoria, South Africa", "featured": true, "sources": ["biography-2026"] },
+    { "key": "sex", "label": "Sex", "value": "Male", "sources": ["biography-2026"] },
+    { "key": "citizenship", "label": "Citizenship", "value": "South Africa, Canada and United States", "detail": "Moved to Canada in 1989 and became a U.S. citizen in 2002.", "sources": ["cnn-immigration-2024"] },
+    { "key": "education", "label": "Education", "value": "University of Pennsylvania", "detail": "Bachelor's degrees in physics and economics; briefly entered graduate study at Stanford.", "sources": ["tesla-bio", "stanford-bio"] },
+    { "key": "residence", "label": "Residence", "value": "Texas", "detail": "SEC filings list Austin, Texas.", "sources": ["sec-twitter-complaint-2026"] },
+    { "key": "party", "label": "Party", "value": "No documented formal affiliation", "detail": "Publicly supports Republican candidates and committees; announced an 'America Party' in 2025 but returned to Republican spending in 2026.", "sources": ["reuters-america-party-2025", "ap-midterms-2026"] },
+    { "key": "current-roles", "label": "Current roles", "value": "CEO of Tesla and SpaceX", "detail": "Also holds management positions across X, xAI, Neuralink and The Boring Company.", "featured": true, "sources": ["tesla-bio", "spacex-leadership", "tesla-proxy-2026"] },
+    { "key": "net-worth", "label": "Estimated net worth", "value": "$989 billion", "detail": "Forbes estimate after market close; concentrated in SpaceX and Tesla holdings.", "asOf": "2026-10-21", "featured": true, "sources": ["forbes-net-worth-2026"] },
+    { "key": "tesla-ownership", "label": "Tesla beneficial ownership", "value": "20.3%", "detail": "Includes shares and options exercisable within 60 days under the filing's assumptions.", "asOf": "2026-04-21", "sources": ["tesla-13g-2026"] },
+    { "key": "political-giving", "label": "2026 midterm giving", "value": "More than $276 million since July 2026", "detail": "Associated Press tally confirmed by an America PAC spokesperson; the election-cycle total remains open.", "asOf": "2026-10-12", "featured": true, "sources": ["ap-midterms-2026"] }
+  ],
+  "relationships": [
+    { "key": "musk-tesla", "source": "musk", "target": "tesla", "relType": "works-for", "role": "Chief executive since October 2008; director since 2004 and largest shareholder", "from": "2004", "prominence": 3, "sources": ["tesla-bio", "tesla-13g-2026"] },
+    { "key": "musk-spacex", "source": "musk", "target": "spacex", "relType": "founded", "role": "Founder, chief executive and controlling shareholder", "from": "2002", "prominence": 3, "sources": ["spacex-leadership", "spacex-s1-2026"] },
+    { "key": "musk-paypal", "source": "musk", "target": "paypal", "relType": "co-founded", "role": "Founded X.com, which merged with Confinity and became PayPal; removed as CEO in 2000 but remained the largest shareholder at the 2002 sale", "from": "1999", "until": "2002", "prominence": 2, "sources": ["time-fortune-2021", "tesla-bio"] },
+    { "key": "musk-thiel", "source": "musk", "target": "thiel", "relType": "collaborated-with", "role": "X.com and Confinity merged in 2000; Thiel replaced Musk as chief executive of the company that became PayPal", "from": "2000", "until": "2002", "prominence": 2, "sources": ["time-fortune-2021"] },
+    { "key": "musk-x", "source": "musk", "target": "x", "relType": "invested-in", "role": "Acquired Twitter for $44 billion and became controlling owner; renamed the platform X", "from": "2022-10-27", "prominence": 3, "sources": ["twitter-13d-2022", "spacex-10q-2026"] },
+    { "key": "musk-xai", "source": "musk", "target": "xai", "relType": "founded", "role": "Founder and executive; xAI acquired X in 2025 and was acquired by SpaceX in 2026", "from": "2023", "prominence": 2, "sources": ["tesla-proxy-2026", "spacex-10q-2026"] },
+    { "key": "musk-neuralink", "source": "musk", "target": "neuralink", "relType": "co-founded", "role": "Co-founder and management role", "from": "2016", "prominence": 1, "sources": ["tesla-bio", "tesla-proxy-2026"] },
+    { "key": "musk-boring", "source": "musk", "target": "boring", "relType": "founded", "role": "Founder and management role", "from": "2016", "prominence": 1, "sources": ["tesla-bio", "tesla-proxy-2026"] },
+    { "key": "musk-america-pac", "source": "musk", "target": "america-pac", "relType": "founded", "role": "Created and principally financed the super PAC's Republican turnout and advertising operations", "from": "2024", "prominence": 3, "sources": ["cbs-donations-2024", "ap-midterms-2026"] },
+    { "key": "musk-trump", "source": "musk", "target": "trump", "relType": "endorsed", "role": "Endorsed, campaigned and spent heavily for Trump in 2024; served as an adviser in 2025, then publicly feuded before returning to Republican spending", "from": "2024-07-13", "prominence": 3, "sources": ["x-endorsement-2024", "ap-butler-2024", "reuters-feud-2025", "ap-midterms-2026"] },
+    { "key": "musk-doge", "source": "musk", "target": "doge", "relType": "adviser-to", "role": "White House special government employee and senior adviser who advised the DOGE effort but did not hold a position in USDS", "from": "2025-01", "until": "2025-05-30", "prominence": 3, "sources": ["gao-doge-personnel-2026", "white-house-departure-2025"] },
+    { "key": "musk-republicans", "source": "musk", "target": "republican-party", "relType": "donated-to", "role": "Financed Republican candidates, turnout operations and party-aligned super PACs in 2024 and 2026", "from": "2024", "prominence": 3, "sources": ["cbs-donations-2024", "ap-midterms-2026", "fec-musk"] }
+  ],
+  "events": [
+    { "key": "born", "date": "1971-06-28", "title": "Is born in Pretoria, South Africa", "category": "personal", "significance": 1, "chapter": "formation", "sources": ["biography-2026"] },
+    { "key": "canada", "date": "1989", "title": "Moves from South Africa to Canada", "summary": "Musk obtained Canadian citizenship through his mother before later moving to the United States.", "category": "personal", "significance": 1, "chapter": "formation", "sources": ["cnn-immigration-2024"] },
+    { "key": "zip2", "date": "1995", "title": "Co-founds Zip2", "summary": "The online city-guide business became Musk's first major company and was sold to Compaq in 1999.", "category": "career", "significance": 2, "chapter": "formation", "sources": ["time-fortune-2021", "tesla-bio"] },
+    { "key": "xcom", "date": "1999", "title": "Founds online bank X.com", "category": "career", "significance": 2, "chapter": "paypal", "participants": [["paypal", "predecessor company"]], "sources": ["time-fortune-2021"] },
+    { "key": "paypal-merger", "date": "2000-03", "title": "X.com merges with Confinity", "summary": "The combined business became PayPal; its board replaced Musk with Peter Thiel as chief executive later that year.", "category": "career", "significance": 3, "chapter": "paypal", "participants": [["paypal", "company"], ["thiel", "successor as CEO"]], "sources": ["time-fortune-2021"] },
+    { "key": "spacex-founded", "date": "2002-05", "title": "Founds SpaceX", "category": "career", "significance": 3, "chapter": "industrial", "participants": [["spacex", "company"]], "sources": ["spacex-leadership", "spacex-s1-2026"] },
+    { "key": "paypal-sale", "date": "2002-10", "title": "eBay acquires PayPal for $1.5 billion", "summary": "Musk remained PayPal's largest shareholder and received roughly $180 million from the sale, supplying capital for SpaceX and Tesla.", "category": "finance", "significance": 3, "chapter": "paypal", "participants": [["paypal", "acquired company"]], "sources": ["time-fortune-2021", "tesla-bio"] },
+    { "key": "tesla-investment", "date": "2004-04", "title": "Leads Tesla's first institutional financing round and joins its board", "category": "finance", "significance": 3, "chapter": "industrial", "participants": [["tesla", "company"]], "sources": ["tesla-bio", "tesla-master-plan-2006"] },
+    { "key": "tesla-ceo", "date": "2008-10", "title": "Becomes Tesla chief executive", "category": "career", "significance": 3, "chapter": "industrial", "participants": [["tesla", "company"]], "sources": ["tesla-bio"] },
+    { "key": "sec-settlement", "date": "2018-09-29", "title": "Settles SEC fraud charges over the 'funding secured' post", "summary": "Without admitting or denying the allegations, Musk agreed to step down as Tesla chair for three years, pay a $20 million penalty and accept oversight of specified communications.", "category": "legal", "significance": 2, "chapter": "platform", "participants": [["tesla", "company"]], "sources": ["sec-tesla-settlement-2018"] },
+    { "key": "twitter-purchase", "date": "2022-10-27", "title": "Completes the $44 billion acquisition of Twitter", "summary": "The public company became a private company controlled by Musk; he later renamed it X.", "category": "finance", "significance": 3, "chapter": "platform", "participants": [["x", "acquired company"]], "sources": ["twitter-13d-2022", "sec-twitter-complaint-2026"] },
+    { "key": "xai-founded", "date": "2023-03", "title": "Founds xAI", "category": "career", "significance": 2, "chapter": "platform", "participants": [["xai", "company"]], "sources": ["tesla-proxy-2026"] },
+    { "key": "trump-endorsement", "date": "2024-07-13", "title": "Endorses Donald Trump", "summary": "Musk endorsed Trump immediately after the attempted assassination at a Pennsylvania rally.", "category": "politics", "significance": 3, "chapter": "election-2024", "participants": [["trump", "endorsed candidate"]], "sources": ["x-endorsement-2024"] },
+    { "key": "butler-rally", "date": "2024-10-05", "title": "Campaigns with Trump in Butler, Pennsylvania", "summary": "At his first Trump rally, Musk called himself 'Dark MAGA' and urged registration and turnout.", "category": "politics", "significance": 2, "chapter": "election-2024", "participants": [["trump", "candidate"]], "sources": ["ap-butler-2024"] },
+    { "key": "largest-donor-2024", "date": "2024-12-05", "title": "Filings establish Musk as the largest individual donor of the 2024 election", "summary": "Year-end filings showed at least $277 million spent to support Trump and other Republicans, including $239 million to America PAC.", "category": "politics", "significance": 3, "chapter": "election-2024", "participants": [["america-pac", "funded committee"], ["trump", "supported candidate"]], "sources": ["cbs-donations-2024", "fec-musk"] },
+    { "key": "doge-created", "date": "2025-01-20", "title": "Trump creates the U.S. DOGE Service", "summary": "The executive order renamed the U.S. Digital Service and required agency DOGE teams; Musk advised the effort as a White House special government employee rather than as the USDS administrator.", "category": "politics", "significance": 3, "chapter": "doge", "participants": [["doge", "executive organization"], ["trump", "president"]], "sources": ["white-house-doge-order-2025", "gao-doge-personnel-2026"] },
+    { "key": "xai-x-merger", "date": "2025-03-28", "title": "xAI acquires X", "summary": "X and xAI became subsidiaries of a common parent controlled by Musk.", "category": "finance", "significance": 2, "chapter": "platform", "participants": [["x", "acquired company"], ["xai", "acquirer"]], "sources": ["spacex-10q-2026", "tesla-proxy-2026"] },
+    { "key": "doge-departure", "date": "2025-05-30", "title": "Leaves his White House advisory role", "summary": "Musk's temporary special-government-employee service ended after four months of high-profile agency cuts and disputed savings claims.", "category": "politics", "significance": 3, "chapter": "doge", "participants": [["doge", "advised effort"], ["trump", "president"]], "sources": ["white-house-departure-2025", "ap-doge-departure-2025"] },
+    { "key": "trump-feud", "date": "2025-06-05", "title": "Breaks publicly with Trump over the tax and spending bill", "summary": "Trump threatened Musk's companies' federal support while Musk suggested Trump should be impeached; Musk later said some posts went too far.", "category": "politics", "significance": 2, "chapter": "break-return", "participants": [["trump", "political adversary"]], "sources": ["reuters-feud-2025"] },
+    { "key": "america-party", "date": "2025-07-05", "title": "Announces an 'America Party'", "summary": "Musk presented the party as a response to the administration's tax and spending law, but the cited record does not establish a durable registered party organization.", "category": "politics", "significance": 2, "status": "unresolved", "statusNote": "Announcement verified; formal organization and continuing activity remain unclear.", "chapter": "break-return", "sources": ["reuters-america-party-2025"] },
+    { "key": "spacex-xai-merger", "date": "2026-02-02", "title": "SpaceX acquires xAI and X", "summary": "The share-exchange merger placed xAI, Grok and X inside the SpaceX corporate group.", "category": "finance", "significance": 3, "chapter": "wealth-2026", "participants": [["spacex", "acquirer"], ["xai", "acquired company"], ["x", "subsidiary"]], "sources": ["spacex-10q-2026", "tesla-proxy-2026"] },
+    { "key": "spacex-ipo", "date": "2026-06-15", "title": "SpaceX completes the largest U.S. initial public offering", "summary": "The company sold 638.9 million shares at $135 and raised about $85.7 billion net, greatly increasing the public estimate of Musk's wealth.", "category": "finance", "significance": 3, "chapter": "wealth-2026", "participants": [["spacex", "public company"]], "sources": ["spacex-ipo-8k", "spacex-10q-2026", "forbes-net-worth-2026"] },
+    { "key": "midterm-spending", "date": "2026-10-12", "title": "Becomes the largest known donor of the 2026 midterm contests", "summary": "Associated Press reported more than $276 million in gifts since July, including $158 million to Senate Leadership Fund and $76 million to America PAC.", "category": "politics", "significance": 3, "chapter": "break-return", "participants": [["america-pac", "funded committee"], ["republican-party", "supported party"]], "sources": ["ap-midterms-2026", "reuters-midterms-2026", "fec-musk"] }
+  ],
+  "statements": [
+    {
+      "key": "sustainable-2006",
+      "issue": "Energy and industry",
+      "date": "2006-08-02",
+      "venue": "The Secret Tesla Motors Master Plan",
+      "quote": "The overarching purpose of Tesla Motors (and the reason I am funding the company) is to help expedite the move from a mine-and-burn hydrocarbon economy towards a solar electric economy.",
+      "source": "tesla-master-plan-2006"
+    },
+    {
+      "key": "future-2016",
+      "issue": "Energy and industry",
+      "date": "2016-07-20",
+      "venue": "Master Plan, Part Deux",
+      "quote": "The point of all this was, and remains, accelerating the advent of sustainable energy, so that we can imagine far into the future and life is still good.",
+      "source": "tesla-master-plan-2016"
+    },
+    {
+      "key": "spacefaring",
+      "issue": "Space and civilization",
+      "date": "2017",
+      "datePrecision": "year",
+      "venue": "SpaceX, Making Humanity Multiplanetary",
+      "quote": "You want to wake up in the morning and think the future is going to be great — and that's what being a spacefaring civilization is all about.",
+      "source": "spacex-mission"
+    },
+    {
+      "key": "twitter-trust-2022",
+      "issue": "Speech and platforms",
+      "date": "2022-04-14",
+      "venue": "TED2022 interview",
+      "quote": "In order for Twitter to deserve public trust, it must be politically neutral, which effectively means upsetting the far right and the far left equally.",
+      "source": "ted-2022"
+    },
+    {
+      "key": "endorsement-2024",
+      "issue": "Elections",
+      "date": "2024-07-13",
+      "venue": "Post on X",
+      "quote": "I fully endorse President Trump and hope for his rapid recovery.",
+      "source": "x-endorsement-2024"
+    },
+    {
+      "key": "dark-maga-2024",
+      "issue": "Elections",
+      "date": "2024-10-05",
+      "venue": "Trump rally, Butler, Pennsylvania",
+      "quote": "As you can see I am not just MAGA — I am Dark MAGA.",
+      "source": "ap-butler-2024"
+    },
+    {
+      "key": "last-election-2024",
+      "issue": "Elections",
+      "date": "2024-10-05",
+      "venue": "Trump rally, Butler, Pennsylvania",
+      "quote": "This will be the last election" ,
+      "summary": "Musk said this would be the last election if Trump did not win, casting the choice as an existential threat to constitutional government.",
+      "source": "ap-butler-2024"
+    },
+    {
+      "key": "america-party-2025",
+      "issue": "Parties and public spending",
+      "date": "2025-07-05",
+      "venue": "Post on X announcing the America Party",
+      "quote": "Today, the America Party is formed to give you back your freedom.",
+      "source": "reuters-america-party-2025"
+    }
+  ],
+  "ideas": {
+    "traditions": [
+      {
+        "label": "Tech right",
+        "atlasId": "tech-right",
+        "basis": "Worldview Atlas",
+        "context": "His 2024–2026 campaign spending, ownership of X and arguments about speech, regulation and technological acceleration place him within the Atlas's technology-centered right.",
+        "sources": ["ted-2022", "cbs-donations-2024", "ap-midterms-2026"]
+      },
+      {
+        "label": "Techno-optimism",
+        "atlasId": "techno-optimism",
+        "basis": "Stated ideas",
+        "context": "His Tesla and SpaceX plans frame technology, abundant energy and space settlement as the route to a better and more durable civilization.",
+        "sources": ["tesla-master-plan-2006", "tesla-master-plan-2016", "spacex-mission"]
+      }
+    ],
+    "influences": [],
+    "works": [
+      { "title": "The Secret Tesla Motors Master Plan", "year": "2006", "kind": "Essay", "detail": "Tesla", "source": "tesla-master-plan-2006" },
+      { "title": "Master Plan, Part Deux", "year": "2016", "kind": "Essay", "detail": "Tesla", "source": "tesla-master-plan-2016" }
+    ],
+    "featuredQuotes": ["twitter-trust-2022", "endorsement-2024"]
+  },
+  "chapters": [
+    {
+      "key": "formation",
+      "title": "Pretoria, Canada and Silicon Valley",
+      "dek": "An immigrant path through two countries, two degrees and the first internet company.",
+      "body": "Elon Reeve Musk was born in Pretoria, South Africa, on June 28, 1971. He moved to Canada in 1989, drawing citizenship from his Canadian-born mother, and moved to the United States for university. He earned bachelor's degrees in physics and economics at the University of Pennsylvania and briefly entered a Stanford graduate program before leaving to work on an internet business [[biography-2026, cnn-immigration-2024, stanford-bio]].\n\nIn 1995 Musk and his brother Kimbal started Zip2, which sold online directory and mapping tools to newspapers. Compaq acquired it in 1999 for $307 million; Time reported that Musk received about $22 million. The sale supplied the capital for his next company and established the pattern that defined his career: reinvesting the proceeds of one technology business into a much more capital-intensive one [[time-fortune-2021, tesla-bio]]."
+    },
+    {
+      "key": "paypal",
+      "title": "X.com, PayPal and the first large fortune",
+      "dek": "A bank, a merger, removal as chief executive and a stake that kept appreciating.",
+      "body": "Musk used part of the Zip2 proceeds to found X.com, an online bank, in 1999. X.com merged with Peter Thiel's Confinity in March 2000. The combined company concentrated on the PayPal payments product; its board removed Musk as chief executive later that year and installed Thiel. Musk remained the largest shareholder [[time-fortune-2021]].\n\nWhen eBay bought PayPal for $1.5 billion in October 2002, Musk received roughly $180 million. The sale did more than make him wealthy: it funded the two companies that became the main sources of his economic and public power, SpaceX and Tesla [[time-fortune-2021, tesla-bio]]."
+    },
+    {
+      "key": "industrial",
+      "title": "SpaceX and Tesla",
+      "dek": "Private capital, federal contracts and a pair of companies that changed launch and electric-car markets.",
+      "body": "Musk founded SpaceX in May 2002 with the stated goal of reducing launch costs and making human life multiplanetary. After three failed Falcon 1 launches, the fourth reached orbit in 2008; the company then won a major NASA cargo contract. SpaceX's later reusable rockets, crew flights and Starlink network made it a central launch and communications supplier to the federal government [[spacex-s1-2026, spacex-mission, time-fortune-2021]].\n\nMusk joined Tesla in 2004 by leading its first institutional financing round and became chief executive in October 2008. He described the strategy in a 2006 post: begin with an expensive sports car, use the proceeds to build progressively cheaper cars and add zero-emission energy products. Tesla went public in 2010, expanded through the Model S and Model 3, and made most of Musk's publicly visible wealth before the SpaceX offering [[tesla-bio, tesla-master-plan-2006, tesla-master-plan-2016]].\n\nThe combination also tied his private interests to public policy. Tesla benefited from energy and vehicle policy, while SpaceX earned federal launch, satellite and defense business. Those relationships do not make company contracts personal political contributions, but they became central to conflict-of-interest questions once Musk entered the White House [[spacex-s1-2026, gao-doge-personnel-2026]]."
+    },
+    {
+      "key": "platform",
+      "title": "Regulation, Twitter and control of a platform",
+      "dek": "A securities-law settlement preceded the $44 billion purchase that turned an executive into a platform owner.",
+      "body": "Musk's use of social media had already produced a governance dispute before he owned a platform. In August 2018 he posted that he had secured funding to take Tesla private at $420 a share. The SEC alleged that the claim lacked an adequate basis; Musk and Tesla settled without admitting or denying the allegations. Musk stepped down as Tesla chair for three years, both paid penalties and Tesla agreed to oversee specified communications [[sec-tesla-settlement-2018]].\n\nIn April 2022 Musk offered to buy Twitter after accumulating a large stake. He completed the $44 billion transaction on October 27 after attempting to terminate the merger agreement and being sued by Twitter. The company became privately controlled by Musk and was later renamed X [[twitter-13d-2022, sec-twitter-complaint-2026]].\n\nMusk said the acquisition was about speech and public trust. Ownership also gave him power over distribution, moderation and the platform on which he made endorsements, interviewed Trump and promoted America PAC. In 2025 xAI acquired X, and in February 2026 SpaceX acquired the xAI parent, placing the platform, the Grok model and AI infrastructure within the publicly traded SpaceX group [[ted-2022, spacex-10q-2026, tesla-proxy-2026]]."
+    },
+    {
+      "key": "election-2024",
+      "title": "The largest donor of the 2024 election",
+      "dek": "An endorsement after the Butler shooting became a turnout organization and at least $277 million in spending.",
+      "body": "Musk had previously donated to candidates in both parties and described himself as politically mixed. In 2022 he said he had voted Republican for the first time. His decisive move came on July 13, 2024, when he endorsed Donald Trump minutes after the attempted assassination in Butler, Pennsylvania [[x-endorsement-2024, cnn-immigration-2024]].\n\nMusk created and financed America PAC, which paid for canvassing, digital advertising and other turnout work in battleground states. On October 5 he appeared with Trump at the Butler site, called himself 'Dark MAGA' and warned that the election could be the last if Trump lost [[ap-butler-2024]].\n\nFilings available in December put Musk's spending for Trump and other Republicans at no less than $277 million, the most of any individual donor that cycle. CBS reported $239 million to America PAC and also linked Musk to RBG PAC, which used Ruth Bader Ginsburg's name in ads arguing that her abortion position resembled Trump's; Ginsburg's granddaughter called that use an affront to her legacy [[cbs-donations-2024, fec-musk]]."
+    },
+    {
+      "key": "doge",
+      "title": "Four months inside the White House",
+      "dek": "A temporary advisory role drove personnel and contract cuts, while later audits questioned the savings ledger.",
+      "body": "Trump's January 20, 2025 executive order renamed the U.S. Digital Service as the U.S. DOGE Service and created a temporary organization to pursue an eighteen-month efficiency agenda. Musk was not the USDS administrator. GAO later established that he worked in the White House as a special government employee and senior adviser, advised USDS personnel and was publicly described by Trump as leading the overall DOGE effort [[white-house-doge-order-2025, gao-doge-personnel-2026]].\n\nThe effort pressed agencies to reduce staff, terminate grants and contracts, sell property and change information systems. Musk initially discussed savings on a far larger scale than DOGE later claimed. His temporary service ended May 30, when Trump staged a departure event in the Oval Office [[ap-doge-departure-2025, white-house-departure-2025]].\n\nLater review separated the existence of cuts from their claimed value. In August 2026 GAO reported that DOGE's Wall of Receipts listed $110 billion in savings from contracts, grants and leases through July 7, but found incorrect estimates, unsupported calculations and 108 leases already being phased out before DOGE. GAO recommended prominent disclosure of the data's limits. The findings do not erase every termination; they mean the displayed total was not a verified measure of net federal savings [[gao-doge-receipts-2026]].\n\nMusk's company holdings created recurring ethics questions because several agencies affected by federal policy also regulated or contracted with his businesses. GAO documented that ethics officials advised on recusals and financial conflicts; its report did not conclude that every DOGE action involving those agencies was directed by Musk or violated the law [[gao-doge-personnel-2026]]."
+    },
+    {
+      "key": "break-return",
+      "title": "Break with Trump and return to Republican finance",
+      "dek": "The threatened third party did not replace America PAC or Republican super PACs.",
+      "body": "Within a week of leaving government, Musk attacked Trump's tax and spending bill as inconsistent with DOGE's deficit-cutting mission. The dispute escalated on June 5: Trump threatened federal support for Musk's companies, and Musk endorsed impeachment and made an allegation involving unreleased Epstein records that he later deleted. Musk subsequently said some of his posts had gone too far [[reuters-feud-2025]].\n\nOn July 5 Musk announced that an 'America Party' had been formed. He said it would challenge the two-party system and oppose lawmakers who backed the spending law, but the announcement did not become the main vehicle for his next election campaign [[reuters-america-party-2025]].\n\nBy the 2026 midterms Musk was again the largest known individual donor, now to Republican organizations. Associated Press reported more than $276 million since July, including $158 million to Senate Leadership Fund and $76 million to America PAC. The PAC revived the turnout operation it had used in 2024 and spent in competitive congressional races [[ap-midterms-2026, reuters-midterms-2026, fec-musk]]."
+    },
+    {
+      "key": "wealth-2026",
+      "title": "SpaceX goes public and the companies converge",
+      "dek": "A record offering brought rockets, satellites, X and xAI under one public-company roof.",
+      "body": "SpaceX acquired the parent of xAI and X on February 2, 2026. Its filings described three businesses: launch and spacecraft, Starlink connectivity, and an AI segment spanning Grok, X and computing infrastructure. Tesla separately invested $2 billion in SpaceX after its planned xAI investment converted in the merger [[spacex-10q-2026, tesla-proxy-2026]].\n\nOn June 15 SpaceX completed an initial public offering of about 638.9 million shares at $135 each, producing roughly $85.7 billion in net proceeds. The filing preserved Musk's control through the company's voting structure while making the value of his holdings visible to public markets [[spacex-ipo-8k, spacex-s1-2026]].\n\nForbes estimated Musk's wealth at $989 billion after market close on October 21. The exact number changes with public share prices and estimates of less liquid holdings, but the source of political capacity is clear: concentrated ownership in companies whose market values, federal business and communications reach all expanded during the period in which his election spending reached record levels [[forbes-net-worth-2026, tesla-13g-2026, spacex-10q-2026]]."
+    }
+  ]
+}

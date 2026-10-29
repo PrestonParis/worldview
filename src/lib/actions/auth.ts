@@ -10,6 +10,8 @@ import { deleteUserData, updateDisplayName } from "../db/profiles";
 import { finalizeSignIn, getCurrentUser, safeNext } from "../auth/session";
 import { claimAfterSignIn } from "../quiz/access";
 import type { ActionResult } from "./result";
+import { enforceRateLimits } from "../security/rate-limit";
+import { productionCaptchaConfigured, verifyTurnstileToken } from "../security/turnstile";
 
 // Sign-in and registration (docs/auth.md): Google, email + password, or
 // a code emailed to the address (which also creates new accounts). New
@@ -49,6 +51,28 @@ function normalizeEmail(email: string): string | null {
   return z.email().safeParse(value).success ? value : null;
 }
 
+async function authLimit(scope: string, email: string, limit = 8, accountId?: string): Promise<string | null> {
+  const ipLimited = await enforceRateLimits([{ scope: `auth-${scope}-ip`, limit, windowSeconds: 600 }]);
+  if (ipLimited) return "Too many attempts. Wait a few minutes and try again.";
+  if (accountId) {
+    const accountLimited = await enforceRateLimits([{ scope: `auth-${scope}-account`, limit, windowSeconds: 600 }], {
+      identity: `account:${accountId}`,
+    });
+    if (accountLimited) return "Too many attempts for this account. Wait a few minutes and try again.";
+  }
+  const targetLimited = await enforceRateLimits(
+    [{ scope: `auth-${scope}-target`, limit: Math.max(3, Math.floor(limit / 2)), windowSeconds: 600 }],
+    { identity: `email:${email}` },
+  );
+  return targetLimited ? "Too many attempts for this email address. Wait a few minutes and try again." : null;
+}
+
+function captchaError(token?: string): string | null {
+  if (process.env.NODE_ENV !== "production") return null;
+  if (!productionCaptchaConfigured()) return "Email security checks are not configured. Try again later.";
+  return token ? null : "Complete the security check and try again.";
+}
+
 const passwordSchema = z
   .string()
   .min(8, "Use at least 8 characters for your password.")
@@ -68,6 +92,8 @@ export async function passwordSignInAction(input: {
   const email = normalizeEmail(input.email);
   if (!email) return { ok: false, error: "Enter a valid email address." };
   if (!input.password) return { ok: false, error: "Enter your password." };
+  const limited = await authLimit("password", email, 10);
+  if (limited) return { ok: false, error: limited };
 
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({
@@ -78,9 +104,11 @@ export async function passwordSignInAction(input: {
   if (error) {
     if (/invalid login credentials/i.test(error.message)) return { ok: false, error: "Wrong email or password." };
     // Registered but never entered the confirmation code: send a fresh one
-    // (best effort; the first code may still be valid) and ask for it.
+    // only through the explicit resend control, which obtains a fresh
+    // single-use CAPTCHA token on the verification step.
     if (/email not confirmed/i.test(error.message)) {
-      await supabase.auth.resend({ type: "signup", email });
+      const captcha = captchaError(input.captchaToken);
+      if (captcha) return { ok: false, error: captcha };
       return { ok: true, data: "verify" };
     }
     return { ok: false, error: authErrorMessage(error) };
@@ -98,6 +126,10 @@ export async function passwordRegisterAction(input: {
   if (!email) return { ok: false, error: "Enter a valid email address." };
   const password = passwordSchema.safeParse(input.password);
   if (!password.success) return { ok: false, error: password.error.issues[0]?.message ?? "Invalid password." };
+  const captcha = captchaError(input.captchaToken);
+  if (captcha) return { ok: false, error: captcha };
+  const limited = await authLimit("register", email, 5);
+  if (limited) return { ok: false, error: limited };
 
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signUp({
@@ -121,11 +153,22 @@ export async function passwordRegisterAction(input: {
   return { ok: false, error: "An account with that email already exists. Sign in instead." };
 }
 
-export async function resendSignupCodeAction(input: { email: string }): Promise<ActionResult<null>> {
+export async function resendSignupCodeAction(input: {
+  email: string;
+  captchaToken?: string;
+}): Promise<ActionResult<null>> {
   const email = normalizeEmail(input.email);
   if (!email) return { ok: false, error: "Enter a valid email address." };
+  const captcha = captchaError(input.captchaToken);
+  if (captcha) return { ok: false, error: captcha };
+  const limited = await authLimit("resend-signup", email, 4);
+  if (limited) return { ok: false, error: limited };
   const supabase = await createClient();
-  const { error } = await supabase.auth.resend({ type: "signup", email });
+  const { error } = await supabase.auth.resend({
+    type: "signup",
+    email,
+    options: { captchaToken: input.captchaToken },
+  });
   return error ? { ok: false, error: authErrorMessage(error) } : { ok: true, data: null };
 }
 
@@ -137,6 +180,10 @@ export async function sendSignInCodeAction(input: {
 }): Promise<ActionResult<null>> {
   const email = normalizeEmail(input.email);
   if (!email) return { ok: false, error: "Enter a valid email address." };
+  const captcha = captchaError(input.captchaToken);
+  if (captcha) return { ok: false, error: captcha };
+  const limited = await authLimit("email-code", email, 5);
+  if (limited) return { ok: false, error: limited };
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithOtp({
     email,
@@ -155,6 +202,10 @@ export async function sendResetCodeAction(input: {
 }): Promise<ActionResult<null>> {
   const email = normalizeEmail(input.email);
   if (!email) return { ok: false, error: "Enter a valid email address." };
+  const captcha = captchaError(input.captchaToken);
+  if (captcha) return { ok: false, error: captcha };
+  const limited = await authLimit("reset-code", email, 4);
+  if (limited) return { ok: false, error: limited };
   const supabase = await createClient();
   const { error } = await supabase.auth.resetPasswordForEmail(email, { captchaToken: input.captchaToken });
   return error ? { ok: false, error: authErrorMessage(error) } : { ok: true, data: null };
@@ -181,6 +232,8 @@ export async function verifyEmailCodeAction(input: {
   if (!email) return { ok: false, error: "Enter a valid email address." };
   const token = codeFrom(input.token);
   if (!token) return { ok: false, error: "Enter the code from the email." };
+  const limited = await authLimit("verify-code", email, 10);
+  if (limited) return { ok: false, error: limited };
 
   const supabase = await createClient();
   const type = input.purpose === "reset" ? "recovery" : "email";
@@ -225,12 +278,22 @@ export async function changePasswordAction(input: { password: string }): Promise
 // Account page: move sign-in to another address. Supabase emails a code to
 // the new address and, with "Secure email change" on, another to the current
 // one; the change applies once every code is entered.
-export async function requestEmailChangeAction(input: { email: string }): Promise<ActionResult<null>> {
+export async function requestEmailChangeAction(input: {
+  email: string;
+  captchaToken?: string;
+}): Promise<ActionResult<null>> {
   const user = await getCurrentUser();
   if (!user) return { ok: false, error: "Sign in again to change your email." };
   const email = normalizeEmail(input.email);
   if (!email) return { ok: false, error: "Enter a valid email address." };
   if (email === user.email) return { ok: false, error: "That's already your email." };
+  const captcha = captchaError(input.captchaToken);
+  if (captcha) return { ok: false, error: captcha };
+  const limited = await authLimit("email-change", email, 4, user.id);
+  if (limited) return { ok: false, error: limited };
+  if (!(await verifyTurnstileToken(input.captchaToken, await headers()))) {
+    return { ok: false, error: "The security check expired. Complete it again." };
+  }
   const supabase = await createClient();
   const { error } = await supabase.auth.updateUser({ email });
   if (error) {
@@ -255,6 +318,8 @@ export async function verifyEmailChangeAction(input: {
   if (!email) return { ok: false, error: "Enter a valid email address." };
   const token = codeFrom(input.token);
   if (!token) return { ok: false, error: "Enter the code from the email." };
+  const limited = await authLimit("verify-email-change", email, 10, user.id);
+  if (limited) return { ok: false, error: limited };
 
   const supabase = await createClient();
   const { error } = await supabase.auth.verifyOtp({

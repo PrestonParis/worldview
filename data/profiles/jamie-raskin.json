@@ -1,0 +1,788 @@
+{
+  "subject": "raskin",
+  "reviewedAt": "2026-10-25",
+  "sourcesVerifiedAt": "2026-10-25",
+  "brief": {
+    "inclusion": "Constitutional-law professor turned House member who led Trump's second impeachment, sat on the January 6 committee and, as ranking Democrat on the Judiciary Committee since 2025, directs House Democrats' oversight of the Trump Justice Department, the Epstein files and the Trump family's business interests.",
+    "identifiers": {
+      "wikidata": "Q640835",
+      "bioguide": "R000606",
+      "fec_candidate": "H6MD08457"
+    },
+    "namesakes": "No significant namesake; the Worldview entity matches on Bioguide R000606.",
+    "coverage": {
+      "from": "1962",
+      "through": "2026-10-25",
+      "lags": "Committee press releases are the minority's own statements; they are cited as his positions, not as findings."
+    },
+    "openQuestions": [
+      "Synagogue: AP (2016) and Jewish Insider (2017) say Temple Sinai; another account says Temple Emanuel in Chevy Chase.",
+      "Exact date of Tommy Raskin's death and the Biden pardon need primary sources (family statement; White House pardon list)."
+    ],
+    "review": []
+  },
+  "summary": "Democratic representative from Maryland since 2017 and a former American University constitutional-law professor and Maryland state senator. Days after burying his son, he was lead manager in Donald Trump's second impeachment trial in February 2021, which ended 57–43 for conviction, short of two-thirds; he then served on the January 6 committee. Since 2025 he has led House Judiciary Democrats against the Trump Justice Department, including a November 2025 report putting the Trump family's crypto holdings at up to $11.6 billion.",
+  "roles": [
+    {
+      "label": "U.S. representative",
+      "detail": "Maryland's 8th district, since January 2017",
+      "sources": [
+        "raskin-house-bio",
+        "wikipedia"
+      ]
+    },
+    {
+      "label": "Judiciary Committee ranking member",
+      "detail": "Top Democrat on the House Judiciary Committee since January 2025; Oversight ranking member 2023–2025",
+      "sources": [
+        "raskin-judiciary-2024",
+        "wikipedia"
+      ]
+    },
+    {
+      "label": "Impeachment manager",
+      "detail": "Lead House manager, Trump's second Senate trial (February 2021)",
+      "sources": [
+        "raskin-house-bio"
+      ]
+    },
+    {
+      "label": "Former state senator",
+      "detail": "Maryland State Senate, 2007–2016; majority whip",
+      "sources": [
+        "raskin-house-bio",
+        "wikipedia"
+      ]
+    },
+    {
+      "label": "Law professor and author",
+      "detail": "American University Washington College of Law from 1990; Overruling Democracy, Unthinkable",
+      "sources": [
+        "wikipedia",
+        "raskin-house-bio"
+      ]
+    }
+  ],
+  "finance": {
+    "coverage": "Contributions received by Raskin's House committee come from Worldview's FEC committee data. His personal giving is not separately matched in this dossier, and Maryland state campaign finance (2006–2014) is outside the record."
+  },
+  "entities": {
+    "raskin": {
+      "match": {
+        "identifier": [
+          "bioguide",
+          "R000606"
+        ]
+      }
+    },
+    "trump": {
+      "match": {
+        "name": "Donald Trump",
+        "type": "politician"
+      }
+    },
+    "nadler": {
+      "match": {
+        "identifier": [
+          "bioguide",
+          "N000002"
+        ]
+      }
+    },
+    "biden": {
+      "match": {
+        "identifier": [
+          "bioguide",
+          "B000444"
+        ]
+      }
+    },
+    "american-university": {
+      "create": {
+        "name": "American University Washington College of Law",
+        "type": "organization",
+        "description": "Law school of American University in Washington, D.C."
+      }
+    },
+    "jan6-committee": {
+      "match": {
+        "name": "House Select Committee to Investigate the January 6th Attack on the United States Capitol",
+        "type": "organization"
+      }
+    },
+    "house-judiciary-dems": {
+      "create": {
+        "name": "House Judiciary Committee",
+        "type": "organization",
+        "description": "Standing committee of the U.S. House with jurisdiction over the Justice Department, courts, immigration law and impeachment.",
+        "websiteUrl": "https://judiciary.house.gov/"
+      }
+    },
+    "freethought-caucus": {
+      "create": {
+        "name": "Congressional Freethought Caucus",
+        "type": "organization",
+        "description": "House caucus founded in 2018 to promote secular government and science-based policy."
+      }
+    }
+  },
+  "sources": [
+    {
+      "key": "raskin-house-bio",
+      "title": "About Jamie",
+      "publisher": "Office of Rep. Jamie Raskin",
+      "type": "primary",
+      "url": "https://raskin.house.gov/about"
+    },
+    {
+      "key": "wikipedia",
+      "title": "Jamie Raskin",
+      "publisher": "Wikipedia",
+      "type": "secondary",
+      "url": "https://en.wikipedia.org/wiki/Jamie_Raskin",
+      "notes": "Reference work; cited for birth, education, teaching career, state-senate record, committee dates, illnesses and the 2025 pardon."
+    },
+    {
+      "key": "ap-humanist-2016",
+      "title": "Man billed as possibly the first atheist in Congress actually isn't",
+      "publisher": "The Associated Press (via Crux)",
+      "type": "article",
+      "publishedAt": "2016-05-05",
+      "url": "https://cruxnow.com/ap/2016/05/man-billed-as-possibly-the-first-atheist-in-congress-actually-isnt"
+    },
+    {
+      "key": "ji-2017",
+      "title": "Professor, Politician & Wannabe Football Player: Meet Rep. Raskin",
+      "publisher": "Jewish Insider",
+      "type": "transcript",
+      "publishedAt": "2017-03-09",
+      "url": "https://jewishinsider.com/2017/03/professor-politician-wannabe-football-player-meet-rep-raskin/"
+    },
+    {
+      "key": "rev-opening-2021",
+      "title": "Rep. Jamie Raskin Opening Statement Transcript: Trump's Second Impeachment Trial",
+      "publisher": "Rev",
+      "type": "transcript",
+      "publishedAt": "2021-02-09",
+      "url": "https://www.rev.com/transcripts/rep-jamie-raskin-opening-statement-transcript-trumps-second-impeachment-trial"
+    },
+    {
+      "key": "amnews-2021",
+      "title": "Impeachment trial underway; Trump in Florida",
+      "publisher": "New York Amsterdam News",
+      "author": "Herb Boyd",
+      "type": "article",
+      "publishedAt": "2021-02-11",
+      "url": "https://amsterdamnews.com/news/2021/02/11/impeachment-trial-underway-trump-florida/"
+    },
+    {
+      "key": "raskin-judiciary-2024",
+      "title": "Rep. Jamie Raskin to Lead Democrats on House Judiciary Committee",
+      "publisher": "Office of Rep. Jamie Raskin",
+      "type": "official_statement",
+      "publishedAt": "2024-12-18",
+      "url": "https://raskin.house.gov/2024/12/rep-jamie-raskin-to-lead-democrats-on-house-judiciary-committee"
+    },
+    {
+      "key": "judiciary-crypto-2025",
+      "title": "New Report Exposes the Trump Family's Multi-Billion Dollar Crypto Empire Fueled by Self-Dealing and Corrupt Foreign Interests",
+      "publisher": "House Judiciary Committee Democrats",
+      "type": "official_statement",
+      "publishedAt": "2025-11-25",
+      "url": "https://democrats-judiciary.house.gov/media-center/press-releases/new-report-exposes-the-trump-family-s-multi-billion-dollar-crypto-empire-fueled-by-self-dealing-and-corrupt-foreign-interests",
+      "notes": "Minority staff report; partisan."
+    },
+    {
+      "key": "raskin-25th-2026",
+      "title": "Ranking Member Raskin Introduces Legislation Establishing Independent Commission on Presidential Capacity",
+      "publisher": "Office of Rep. Jamie Raskin",
+      "type": "official_statement",
+      "publishedAt": "2026-04-14",
+      "url": "https://raskin.house.gov/press-releases?id=ED750830-13EE-49DC-8C47-B276617DC6E7"
+    },
+    {
+      "key": "judiciary-tech-2026",
+      "title": "Ranking Member Raskin Presses Big Tech to Enforce Its Rules Against Trump's Mail Voting Lies Ahead of Midterms",
+      "publisher": "House Judiciary Committee Democrats",
+      "type": "official_statement",
+      "publishedAt": "2026-10-23",
+      "url": "https://democrats-judiciary.house.gov/media-center/press-releases/ranking-member-raskin-presses-big-tech-to-enforce-its-rules-against-trump-s-mail-voting-lies-ahead-of-midterms"
+    },
+    {
+      "key": "judiciary-epstein-2026",
+      "title": "Ranking Member Raskin Demands Answers on DOJ's Obstruction of State and Foreign Investigations Into Epstein's Co-Conspirators",
+      "publisher": "House Judiciary Committee Democrats",
+      "type": "official_statement",
+      "publishedAt": "2026-10",
+      "url": "https://democrats-judiciary.house.gov/media-center/press-releases/ranking-member-raskin-demands-answers-on-doj-s-obstruction-of-state-and-foreign-investigations-into-epstein-s-co-conspirators"
+    }
+  ],
+  "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "December 13, 1962",
+      "detail": "Washington, D.C.; son of Marcus Raskin, co-founder of the Institute for Policy Studies",
+      "sources": [
+        "wikipedia"
+      ]
+    },
+    {
+      "key": "sex",
+      "label": "Sex",
+      "value": "Male",
+      "sources": [
+        "wikipedia"
+      ]
+    },
+    {
+      "key": "religion",
+      "label": "Religion",
+      "value": "Jewish",
+      "detail": "Member of Temple Sinai, a Reform synagogue; describes himself as a \"humanist with a small 'h'\" and co-chairs the Congressional Freethought Caucus.",
+      "sources": [
+        "ap-humanist-2016",
+        "ji-2017",
+        "wikipedia"
+      ]
+    },
+    {
+      "key": "spouse",
+      "label": "Spouse",
+      "value": "Sarah Bloom Raskin",
+      "detail": "Former deputy treasury secretary and Federal Reserve governor.",
+      "sources": [
+        "wikipedia"
+      ]
+    },
+    {
+      "key": "party",
+      "label": "Party",
+      "value": "Democratic",
+      "sources": [
+        "raskin-house-bio"
+      ]
+    },
+    {
+      "key": "education",
+      "label": "Education",
+      "value": "BA, Harvard College (1983); JD, Harvard Law School (1987), Harvard Law Review editor",
+      "sources": [
+        "wikipedia",
+        "raskin-house-bio"
+      ]
+    },
+    {
+      "key": "current-roles",
+      "label": "Current roles",
+      "value": "U.S. representative (MD-8); ranking member, House Judiciary Committee",
+      "featured": true,
+      "asOf": "2026-10-25",
+      "sources": [
+        "judiciary-tech-2026",
+        "raskin-house-bio"
+      ]
+    },
+    {
+      "key": "health",
+      "label": "Health",
+      "value": "Colon cancer (2010); lymphoma diagnosed December 2022, in remission by April 2023",
+      "detail": "Disclosed publicly by Raskin.",
+      "sources": [
+        "wikipedia"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "raskin-american-u",
+      "source": "raskin",
+      "target": "american-university",
+      "relType": "former-role",
+      "role": "Professor of constitutional law for more than 25 years from 1990",
+      "from": "1990",
+      "prominence": 2,
+      "sources": [
+        "wikipedia"
+      ]
+    },
+    {
+      "key": "raskin-trump",
+      "source": "raskin",
+      "target": "trump",
+      "relType": "opposed",
+      "role": "Lead manager in his second impeachment trial (2021); January 6 committee member; leads Judiciary Democrats' oversight of his administration",
+      "from": "2021",
+      "prominence": 3,
+      "sources": [
+        "raskin-house-bio",
+        "judiciary-crypto-2025"
+      ]
+    },
+    {
+      "key": "raskin-jan6",
+      "source": "raskin",
+      "target": "jan6-committee",
+      "relType": "sits-on-committee",
+      "role": "Member; delivered the committee's criminal referral to the Justice Department",
+      "from": "2021-07",
+      "until": "2023-01",
+      "prominence": 2,
+      "sources": [
+        "raskin-house-bio"
+      ]
+    },
+    {
+      "key": "raskin-judiciary",
+      "source": "raskin",
+      "target": "house-judiciary-dems",
+      "relType": "sits-on-committee",
+      "role": "Ranking member, 119th Congress",
+      "from": "2025-01",
+      "prominence": 3,
+      "sources": [
+        "raskin-judiciary-2024",
+        "judiciary-tech-2026"
+      ]
+    },
+    {
+      "key": "raskin-nadler",
+      "source": "raskin",
+      "target": "nadler",
+      "relType": "succeeded",
+      "role": "Succeeded Nadler as top Judiciary Democrat; Nadler withdrew and endorsed him",
+      "from": "2024-12-18",
+      "prominence": 1,
+      "sources": [
+        "raskin-judiciary-2024"
+      ]
+    },
+    {
+      "key": "raskin-freethought",
+      "source": "raskin",
+      "target": "freethought-caucus",
+      "relType": "co-founded",
+      "role": "Co-founder and co-chair",
+      "from": "2018-04",
+      "prominence": 1,
+      "sources": [
+        "wikipedia"
+      ]
+    },
+    {
+      "key": "biden-raskin-pardon",
+      "source": "biden",
+      "target": "raskin",
+      "relType": "affiliated-with",
+      "role": "Issued a preemptive pardon to January 6 committee members, including Raskin, January 2025",
+      "from": "2025-01",
+      "until": "2025-01",
+      "prominence": 1,
+      "sources": [
+        "wikipedia"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "key": "born",
+      "date": "1962-12-13",
+      "title": "Born in Washington, D.C.",
+      "summary": "Son of Marcus Raskin, co-founder of the Institute for Policy Studies; his grandfather was the first Jewish member of the Minnesota legislature.",
+      "category": "personal",
+      "significance": 1,
+      "chapter": "professor",
+      "sources": [
+        "wikipedia",
+        "ji-2017"
+      ]
+    },
+    {
+      "key": "harvard-law",
+      "date": "1987",
+      "title": "Graduates from Harvard Law School",
+      "summary": "After Harvard College (1983); an editor of the Harvard Law Review.",
+      "category": "career",
+      "significance": 1,
+      "chapter": "professor",
+      "sources": [
+        "wikipedia",
+        "raskin-house-bio"
+      ]
+    },
+    {
+      "key": "american-u",
+      "date": "1990",
+      "title": "Begins teaching constitutional law at American University",
+      "summary": "Writes We the Students and Overruling Democracy over the following years.",
+      "category": "career",
+      "significance": 2,
+      "chapter": "professor",
+      "participants": [
+        [
+          "american-university",
+          "employer"
+        ]
+      ],
+      "sources": [
+        "wikipedia",
+        "raskin-house-bio"
+      ]
+    },
+    {
+      "key": "state-senate",
+      "date": "2007",
+      "date_end": "2016",
+      "title": "Serves in the Maryland State Senate",
+      "summary": "Majority whip; builds coalitions for marriage equality, death-penalty repeal, the first benefit-corporation law and the National Popular Vote compact.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "annapolis",
+      "sources": [
+        "raskin-house-bio",
+        "wikipedia"
+      ]
+    },
+    {
+      "key": "house-elected",
+      "date": "2016-11-08",
+      "title": "Elected to the U.S. House from Maryland's 8th district",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "annapolis",
+      "sources": [
+        "raskin-house-bio",
+        "wikipedia"
+      ]
+    },
+    {
+      "key": "freethought",
+      "date": "2018-04",
+      "title": "Co-founds the Congressional Freethought Caucus",
+      "category": "ideas",
+      "significance": 1,
+      "chapter": "annapolis",
+      "participants": [
+        [
+          "freethought-caucus",
+          "caucus"
+        ]
+      ],
+      "sources": [
+        "wikipedia"
+      ]
+    },
+    {
+      "key": "tommy",
+      "date": "2020-12",
+      "title": "His son Tommy dies",
+      "summary": "The family buries him on January 5, 2021; Raskin's daughter and son-in-law are with him at the Capitol during the riot the next day.",
+      "category": "personal",
+      "significance": 2,
+      "chapter": "impeachment",
+      "sources": [
+        "amnews-2021",
+        "wikipedia"
+      ]
+    },
+    {
+      "key": "impeachment-trial",
+      "date": "2021-02-09",
+      "date_end": "2021-02-13",
+      "title": "Leads the House case in Trump's second impeachment trial",
+      "summary": "The Senate votes 57–43 to convict, short of the two-thirds required.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "impeachment",
+      "participants": [
+        [
+          "trump",
+          "defendant"
+        ]
+      ],
+      "sources": [
+        "raskin-house-bio",
+        "rev-opening-2021",
+        "amnews-2021"
+      ]
+    },
+    {
+      "key": "jan6-committee",
+      "date": "2021-07",
+      "date_end": "2023-01",
+      "title": "Serves on the January 6 select committee",
+      "summary": "Delivers its criminal referral of Trump to the Justice Department.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "impeachment",
+      "participants": [
+        [
+          "jan6-committee",
+          "committee"
+        ],
+        [
+          "trump",
+          "subject"
+        ]
+      ],
+      "sources": [
+        "raskin-house-bio"
+      ]
+    },
+    {
+      "key": "unthinkable",
+      "date": "2022-01",
+      "title": "Publishes Unthinkable",
+      "summary": "A memoir of his son's death, January 6 and the impeachment; a No. 1 New York Times best-seller.",
+      "category": "ideas",
+      "significance": 2,
+      "chapter": "impeachment",
+      "sources": [
+        "raskin-house-bio",
+        "wikipedia"
+      ]
+    },
+    {
+      "key": "lymphoma",
+      "date": "2022-12",
+      "title": "Diagnosed with lymphoma",
+      "summary": "In remission by April 2023.",
+      "category": "personal",
+      "significance": 1,
+      "chapter": "judiciary",
+      "sources": [
+        "wikipedia"
+      ]
+    },
+    {
+      "key": "oversight",
+      "date": "2023-01",
+      "title": "Becomes ranking Democrat on the Oversight Committee",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "judiciary",
+      "sources": [
+        "wikipedia"
+      ]
+    },
+    {
+      "key": "judiciary",
+      "date": "2024-12-18",
+      "title": "Elected top Democrat on the Judiciary Committee",
+      "summary": "Unanimously by the Democratic caucus, after Jerry Nadler withdrew and endorsed him.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "judiciary",
+      "participants": [
+        [
+          "nadler",
+          "predecessor"
+        ],
+        [
+          "house-judiciary-dems",
+          "committee"
+        ]
+      ],
+      "sources": [
+        "raskin-judiciary-2024"
+      ]
+    },
+    {
+      "key": "pardon",
+      "date": "2025-01-20",
+      "title": "Receives a preemptive pardon from President Biden",
+      "summary": "Covering members of the January 6 committee.",
+      "category": "legal",
+      "significance": 2,
+      "chapter": "judiciary",
+      "participants": [
+        [
+          "biden",
+          "president"
+        ]
+      ],
+      "sources": [
+        "wikipedia"
+      ]
+    },
+    {
+      "key": "crypto-report",
+      "date": "2025-11-25",
+      "title": "Releases a report on the Trump family's crypto holdings",
+      "summary": "Judiciary Democrats estimate holdings of up to $11.6 billion and more than $800 million in crypto sales in the first half of 2025.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "judiciary",
+      "participants": [
+        [
+          "trump",
+          "subject"
+        ]
+      ],
+      "sources": [
+        "judiciary-crypto-2025"
+      ]
+    },
+    {
+      "key": "capacity-commission",
+      "date": "2026-04-14",
+      "title": "Introduces a bill creating a 25th Amendment commission on presidential capacity",
+      "summary": "With 50 Democratic original cosponsors.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "judiciary",
+      "participants": [
+        [
+          "trump",
+          "president"
+        ]
+      ],
+      "sources": [
+        "raskin-25th-2026"
+      ]
+    },
+    {
+      "key": "election-letters",
+      "date": "2026-10-23",
+      "title": "Presses Google, Meta, TikTok and X on false mail-voting claims before the midterms",
+      "category": "politics",
+      "significance": 1,
+      "chapter": "judiciary",
+      "sources": [
+        "judiciary-tech-2026"
+      ]
+    }
+  ],
+  "statements": [
+    {
+      "key": "humanist-2016",
+      "issue": "Religion and public life",
+      "date": "2016-05-05",
+      "venue": "Interview with The Associated Press",
+      "quote": "I've always described myself as a humanist, because I think it's the greatest philosophical movement in human history.",
+      "summary": "Responding to a PAC's claim that he would be the only open nontheist in Congress; he said, \"I've never called myself an atheist.\"",
+      "source": "ap-humanist-2016"
+    },
+    {
+      "key": "zionist-grandfather-2017",
+      "issue": "Jewish identity",
+      "date": "2017-03-09",
+      "venue": "Interview with Jewish Insider",
+      "quote": "We got Israeli bonds every year for our birthdays from my grandfather.",
+      "source": "ji-2017"
+    },
+    {
+      "key": "lose-son-2021",
+      "issue": "January 6",
+      "date": "2021-01",
+      "venue": "Interview with CNN's Jake Tapper",
+      "quote": "I'm not going to lose my son at the end of 2020 and my country and my republic in 2021.",
+      "source": "amnews-2021"
+    },
+    {
+      "key": "our-future-2021",
+      "issue": "January 6",
+      "date": "2021-02-09",
+      "venue": "Opening presentation, Senate impeachment trial of Donald Trump",
+      "quote": "Senators, this cannot be our future.",
+      "source": "amnews-2021"
+    },
+    {
+      "key": "january-exception-2021",
+      "issue": "Constitution",
+      "date": "2021-02-09",
+      "venue": "Opening statement, Senate impeachment trial of Donald Trump",
+      "quote": "This would create a brand new January exception to the Constitution of the United States of America.",
+      "summary": "Arguing against the defense claim that a president cannot be tried after leaving office.",
+      "source": "rev-opening-2021"
+    },
+    {
+      "key": "dangerous-moment-2021",
+      "issue": "Constitution",
+      "date": "2021-02-09",
+      "venue": "Opening statement, Senate impeachment trial of Donald Trump",
+      "quote": "The transition of power is always the most dangerous moment for democracies.",
+      "source": "rev-opening-2021"
+    },
+    {
+      "key": "defend-freedom-2024",
+      "issue": "Oversight",
+      "date": "2024-12-18",
+      "venue": "Statement on his election as Judiciary ranking member",
+      "quote": "I'm ready to mobilize our extraordinary members of the Judiciary Committee to defend American freedom",
+      "source": "raskin-judiciary-2024"
+    },
+    {
+      "key": "crypto-2025",
+      "issue": "Oversight",
+      "date": "2025-11-25",
+      "venue": "Judiciary Democrats' report on Trump family crypto holdings",
+      "quote": "Donald Trump has turned the Oval Office into the world's most corrupt crypto startup operation",
+      "source": "judiciary-crypto-2025"
+    }
+  ],
+  "ideas": {
+    "traditions": [],
+    "influences": [
+      {
+        "name": "Marcus Raskin",
+        "note": "His father, co-founder of the Institute for Policy Studies.",
+        "sources": [
+          "wikipedia"
+        ]
+      }
+    ],
+    "works": [
+      {
+        "title": "We the Students: Supreme Court Cases for and About America's Students",
+        "year": "2000",
+        "kind": "Book",
+        "detail": "Casebook for the Marshall-Brennan Constitutional Literacy Project",
+        "source": "raskin-house-bio"
+      },
+      {
+        "title": "Overruling Democracy: The Supreme Court versus the American People",
+        "year": "2003",
+        "kind": "Book",
+        "source": "raskin-house-bio"
+      },
+      {
+        "title": "Unthinkable: Trauma, Truth and the Trials of American Democracy",
+        "year": "2022",
+        "kind": "Book",
+        "detail": "Memoir",
+        "source": "raskin-house-bio"
+      }
+    ],
+    "featuredQuotes": [
+      "our-future-2021",
+      "crypto-2025"
+    ]
+  },
+  "chapters": [
+    {
+      "key": "professor",
+      "title": "A constitutional-law professor from a political family",
+      "dek": "Harvard, a Washington think-tank upbringing and 25 years teaching law.",
+      "body": "Raskin was born in Washington, D.C., on December 13, 1962. His father, Marcus Raskin, co-founded the Institute for Policy Studies [[wikipedia]]. His grandfather was the first Jewish member of the Minnesota legislature and \"a very strong Zionist\" who sent the grandchildren Israel bonds every birthday [[ji-2017]].\n\nHe graduated from Harvard College in 1983 and Harvard Law School in 1987, where he was an editor of the Harvard Law Review [[wikipedia, raskin-house-bio]]. From 1990 he taught constitutional law at American University's Washington College of Law for more than 25 years, wrote the student casebook We the Students and Overruling Democracy, a critique of the Supreme Court [[wikipedia, raskin-house-bio]]."
+    },
+    {
+      "key": "annapolis",
+      "title": "Annapolis and the House",
+      "dek": "Marriage equality, death-penalty repeal and a seat in Congress.",
+      "body": "Raskin served in the Maryland State Senate from 2007 to 2016, where colleagues elected him majority whip. He was a coalition-builder on marriage equality, abolition of the death penalty, the first benefit-corporation law in the country and Maryland's adoption of the National Popular Vote compact [[raskin-house-bio, wikipedia]].\n\nHe won Maryland's 8th congressional district in 2016 [[raskin-house-bio]]. That spring a humanist PAC had billed him as an open nontheist; he said, \"I've never called myself an atheist\" and described himself as \"a humanist with a small 'h'\" while remaining a member of Temple Sinai [[ap-humanist-2016]]. In 2018 he co-founded the Congressional Freethought Caucus [[wikipedia]]."
+    },
+    {
+      "key": "impeachment",
+      "title": "Tommy, January 6 and the second impeachment",
+      "dek": "A personal loss and a national crisis in the same week.",
+      "body": "Raskin's son Tommy died at the end of December 2020. The family buried him on January 5, and the next day Raskin's daughter and son-in-law were with him at the Capitol when rioters broke in [[amnews-2021, wikipedia]]. \"I'm not going to lose my son at the end of 2020 and my country and my republic in 2021,\" he told CNN [[amnews-2021]].\n\nAs lead manager for Trump's second impeachment, opening the trial on February 9, 2021, he rejected the claim that a former president could not be tried, calling it \"a brand new January exception to the Constitution,\" and told the Senate, \"Senators, this cannot be our future\" [[rev-opening-2021, amnews-2021]]. The Senate voted 57–43 to convict, short of the required two-thirds [[raskin-house-bio]]. He then sat on the January 6 select committee and delivered its criminal referral of Trump to the Justice Department, and in 2022 published Unthinkable, a memoir of those months that reached No. 1 on the New York Times list [[raskin-house-bio]]."
+    },
+    {
+      "key": "judiciary",
+      "title": "Leading Judiciary Democrats against the Trump Justice Department",
+      "dek": "Oversight, the Epstein files, crypto and the 25th Amendment.",
+      "body": "Raskin was diagnosed with lymphoma in December 2022, his second cancer after colon cancer in 2010, and said in April 2023 that it was in remission [[wikipedia]]. He served as the top Democrat on the Oversight Committee from 2023, and on December 18, 2024, the Democratic caucus unanimously chose him to lead its members on the Judiciary Committee after Jerry Nadler withdrew and endorsed him [[wikipedia, raskin-judiciary-2024]]. In January 2025 President Biden issued a preemptive pardon covering the January 6 committee's members, Raskin among them [[wikipedia]].\n\nFrom the minority he has pursued the second Trump administration on several fronts. In November 2025 Judiciary Democrats estimated the Trump family's crypto holdings at up to $11.6 billion, with more than $800 million in sales in the first half of 2025; Raskin said Trump had \"turned the Oval Office into the world's most corrupt crypto startup operation\" [[judiciary-crypto-2025]]. In April 2026 he introduced a bill to create the presidential-capacity commission envisioned by the 25th Amendment, with 50 Democratic cosponsors [[raskin-25th-2026]]. That fall he pressed the Justice Department over its handling of investigations into Jeffrey Epstein's associates and asked the major platforms to enforce their rules against false claims about mail voting before the midterms [[judiciary-epstein-2026, judiciary-tech-2026]]."
+    }
+  ]
+}

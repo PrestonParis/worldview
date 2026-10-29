@@ -53,6 +53,7 @@ export interface StateCrimeData {
   rows: StateCrimeRow[];
   us: Record<OffenseKey, (number | null)[]>;
   usCleared: Record<ClearedKey, number | null>;
+  usCoverage: (number | null)[]; // national mean monthly coverage, aligned with `years`
   extra?: { byState: Record<string, StateExtra>; us: StateExtra; cdcYear: string | null; hateYear: string | null };
 }
 

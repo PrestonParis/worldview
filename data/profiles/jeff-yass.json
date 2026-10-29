@@ -1,0 +1,725 @@
+{
+  "subject": "yass",
+  "reviewedAt": "2026-10-25",
+  "sourcesVerifiedAt": "2026-10-25",
+  "brief": {
+    "inclusion": "Susquehanna International Group co-founder whose trading fortune funds Republican, libertarian and school-choice organizations at national and state scale.",
+    "identifiers": { "fec_contributor": "YASS, JEFFREY" },
+    "namesakes": "Matched through Susquehanna/SIG employment and Philadelphia-area addresses; records for other Jeffrey or Jeff Yasses are excluded.",
+    "coverage": {
+      "from": "1958",
+      "through": "2026-10-25",
+      "lags": "The 2026 cycle remains open; state giving and nonprofit grants are outside the FEC ledger."
+    },
+    "openQuestions": ["SIG and its ByteDance holding are private, so ownership values are estimates."],
+    "review": [
+      { "kind": "evidence", "by": "OA", "at": "2026-10-25" },
+      { "kind": "chronology", "by": "OA", "at": "2026-10-25" },
+      { "kind": "neutrality", "by": "OA", "at": "2026-10-25" },
+      { "kind": "current", "by": "OA", "at": "2026-10-25" }
+    ]
+  },
+  "summary": "Jeffrey Yass co-founded Susquehanna International Group, a privately held trading firm whose options and market-making businesses made him one of America's wealthiest financiers. He has become a leading Republican and libertarian donor, with school choice as his most sustained policy priority and SIG's large ByteDance stake placing his financial interests inside the national debate over TikTok.",
+  "roles": [
+    {
+      "label": "Co-founder, Susquehanna International Group",
+      "detail": "Co-founded the trading firm in 1987 and remains a principal owner.",
+      "sources": ["forbes-yass-2026", "nyt-yass-2022"]
+    },
+    {
+      "label": "Republican and libertarian megadonor",
+      "detail": "Among the largest disclosed federal donors in the 2024 and 2026 cycles.",
+      "sources": ["opensecrets-2024", "wapo-school-choice-2025"]
+    },
+    {
+      "label": "School-choice funder",
+      "detail": "Funds voucher, tax-credit scholarship and education-advocacy efforts nationally and in Pennsylvania.",
+      "sources": ["ap-school-choice-2023", "wapo-school-choice-2025"]
+    }
+  ],
+  "entities": {
+    "yass": { "match": { "name": "Jeff Yass", "type": "donor" } },
+    "sig": {
+      "create": {
+        "name": "Susquehanna International Group",
+        "type": "company",
+        "description": "Privately held trading, market-making and investment firm co-founded by Jeff Yass in 1987.",
+        "websiteUrl": "https://sig.com/"
+      }
+    },
+    "bytedance": {
+      "create": {
+        "name": "ByteDance",
+        "type": "company",
+        "description": "Chinese-founded technology company and parent of TikTok."
+      }
+    },
+    "club-growth": { "match": { "name": "Club for Growth Action", "type": "organization" } },
+    "republican-party": { "match": { "name": "Republican Party", "type": "organization" } },
+    "trump": { "match": { "name": "Donald Trump", "type": "politician" } },
+    "maga-inc": { "match": { "name": "MAGA Inc.", "type": "organization" } },
+    "protect-freedom": {
+      "create": {
+        "name": "Protect Freedom PAC",
+        "type": "organization",
+        "description": "Libertarian-oriented federal super PAC funded substantially by Jeff Yass."
+      }
+    },
+    "commonwealth": {
+      "create": {
+        "name": "Commonwealth Foundation",
+        "type": "organization",
+        "description": "Pennsylvania free-market policy organization active on school choice."
+      }
+    },
+    "abbott": {
+      "create": { "name": "Greg Abbott", "type": "politician", "description": "Republican governor of Texas." }
+    },
+    "susquehanna-foundation": {
+      "create": {
+        "name": "Susquehanna Foundation",
+        "type": "organization",
+        "description": "Philadelphia-area charitable foundation associated with Susquehanna International Group principals."
+      }
+    }
+  },
+  "sources": [
+    {
+      "key": "forbes-yass-2026",
+      "title": "Jeff Yass",
+      "publisher": "Forbes",
+      "type": "secondary",
+      "url": "https://www.forbes.com/profile/jeff-yass/",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "nyt-yass-2022",
+      "title": "The Billionaire Who Fueled the Right-Wing Campaign Against Biden's Agenda",
+      "publisher": "The New York Times",
+      "type": "article",
+      "url": "https://www.nytimes.com/2022/05/14/business/jeff-yass-taxes-susquehanna.html",
+      "publishedAt": "2022-05-14",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "propublica-yass-2021",
+      "title": "Meet the Billionaire and Rising GOP Mega-Donor Who's Gaming the Tax System",
+      "publisher": "ProPublica",
+      "type": "article",
+      "url": "https://www.propublica.org/article/jeff-yass-susquehanna-taxes",
+      "publishedAt": "2021-06-21",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "opensecrets-2024",
+      "title": "Elon Musk tops list of 2024 political donors, but six others gave more than $100 million",
+      "publisher": "OpenSecrets",
+      "type": "article",
+      "url": "https://www.opensecrets.org/news/2025/03/elon-musk-tops-list-of-2024-political-donors-but-six-others-gave-more-than-100-million",
+      "publishedAt": "2025-03",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "wapo-donors-2024",
+      "title": "Meet the top 50 campaign donors pumping millions into the 2024 election",
+      "publisher": "The Washington Post",
+      "type": "article",
+      "url": "https://www.washingtonpost.com/elections/interactive/2024/biggest-campaign-donors-election-2024/",
+      "publishedAt": "2024",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "axios-tiktok-2024",
+      "title": "ByteDance investor Jeff Yass tops 2024 donor list with TikTok under fire",
+      "publisher": "Axios",
+      "type": "article",
+      "url": "https://www.axios.com/2024/03/21/tiktok-jeff-yass-bytedance-donor-conservative",
+      "publishedAt": "2024-03-21",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "wapo-school-choice-2025",
+      "title": "Billionaire Jeff Yass is on a quest to remake American education",
+      "publisher": "The Washington Post",
+      "type": "article",
+      "url": "https://www.washingtonpost.com/politics/2025/12/05/jeff-yass-school-choice-trump/",
+      "publishedAt": "2025-12-05",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "ap-school-choice-2023",
+      "title": "Pennsylvania's Democratic governor crosses partisan school choice divide",
+      "publisher": "Associated Press",
+      "type": "article",
+      "url": "https://apnews.com/article/2e4f893b76efa1c5919c7fe482f950d0",
+      "publishedAt": "2023-10-06",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "wsj-tiktok-2023",
+      "title": "The Billionaire Keeping TikTok on Phones in the U.S.",
+      "publisher": "The Wall Street Journal",
+      "type": "article",
+      "url": "https://www.wsj.com/tech/jeff-yass-tiktok-bytedance-donor-3db1fbd8",
+      "publishedAt": "2023-09",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "inquirer-yass-2024",
+      "title": "What to know about Jeff Yass, the Pennsylvania billionaire and TikTok investor",
+      "publisher": "The Philadelphia Inquirer",
+      "type": "article",
+      "url": "https://www.inquirer.com/politics/pennsylvania/jeff-yass-tiktok-trump-republican-donor-20240318.html",
+      "publishedAt": "2024-03-18",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "inside-philanthropy-2026",
+      "title": "Jeff Yass Is One of School Choice's Top Billionaire Donors",
+      "publisher": "Inside Philanthropy",
+      "type": "article",
+      "url": "https://www.insidephilanthropy.com/home/jeff-yass-is-one-of-school-choices-top-billionaire-donors-heres-a-closer-look",
+      "publishedAt": "2026-10",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "fec-yass",
+      "title": "Individual contributions by Yass, Jeffrey",
+      "publisher": "Federal Election Commission",
+      "type": "filing",
+      "url": "https://www.fec.gov/data/receipts/individual-contributions/?contributor_name=YASS%2C+JEFFREY",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "sig-about",
+      "title": "About Susquehanna International Group",
+      "publisher": "Susquehanna International Group",
+      "type": "primary",
+      "url": "https://sig.com/about/",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "yass-inquirer-op-ed-2023",
+      "title": "Parents deserve choices in their children's education",
+      "publisher": "The Philadelphia Inquirer",
+      "author": "Jeff and Janine Yass",
+      "type": "primary",
+      "url": "https://www.inquirer.com/opinion/commentary/school-choice-lifeline-scholarships-pennsylvania-20230629.html",
+      "publishedAt": "2023-06-29",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "texas-tribune-yass-2023",
+      "title": "Billionaire Jeff Yass gives Greg Abbott $6 million",
+      "publisher": "The Texas Tribune",
+      "type": "article",
+      "url": "https://www.texastribune.org/2023/12/21/greg-abbott-jeff-yass-campaign-donation/",
+      "publishedAt": "2023-12-21",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "haaretz-kohelet-2021",
+      "title": "The American Billionaires Behind Israel's Right-wing Think Tank",
+      "publisher": "Haaretz",
+      "type": "article",
+      "url": "https://www.haaretz.com/israel-news/2021-03-18/ty-article-magazine/.premium/the-american-billionaires-behind-israels-right-wing-think-tank/0000017f-f2da-df98-a5ff-f3ff3b290000",
+      "publishedAt": "2021-03-18",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "reuters-yass-2024",
+      "title": "Republican hedge fund owner and TikTok investor Yass emerges as top donor",
+      "publisher": "Reuters",
+      "type": "article",
+      "url": "https://www.reuters.com/world/us/republican-hedge-fund-owner-tiktok-investor-yass-emerges-top-donor-us-election-2024-03-21/",
+      "publishedAt": "2024-03-21",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "forbes-yass-2026-giving",
+      "title": "Jeff Yass political giving in 2026",
+      "publisher": "Forbes",
+      "type": "article",
+      "url": "https://www.forbes.com/sites/kylemullins/2026/08/01/jeff-yass-political-donations-2026/",
+      "publishedAt": "2026-08",
+      "accessedAt": "2026-10-25",
+      "notes": "Current-cycle totals remain provisional."
+    }
+  ],
+  "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "1958",
+      "detail": "Queens, New York; exact date is not established in the reviewed sources.",
+      "featured": true,
+      "sources": ["forbes-yass-2026", "nyt-yass-2022"]
+    },
+    { "key": "sex", "label": "Sex", "value": "Male", "sources": ["forbes-yass-2026"] },
+    { "key": "citizenship", "label": "Citizenship", "value": "United States", "sources": ["forbes-yass-2026"] },
+    {
+      "key": "spouse",
+      "label": "Spouse",
+      "value": "Janine Yass",
+      "sources": ["wapo-school-choice-2025", "yass-inquirer-op-ed-2023"]
+    },
+    {
+      "key": "residence",
+      "label": "Residence",
+      "value": "Haverford, Pennsylvania",
+      "asOf": "2026-10-25",
+      "sources": ["forbes-yass-2026"]
+    },
+    {
+      "key": "religion",
+      "label": "Religion",
+      "value": "Judaism",
+      "detail": "Documented through family and philanthropic affiliations; no denomination assigned.",
+      "sources": ["haaretz-kohelet-2021"]
+    },
+    {
+      "key": "education",
+      "label": "Education",
+      "value": "Binghamton University",
+      "detail": "B.A., mathematics and economics.",
+      "sources": ["nyt-yass-2022", "forbes-yass-2026"]
+    },
+    {
+      "key": "party",
+      "label": "Political affiliation",
+      "value": "Republican and libertarian-aligned donor",
+      "sources": ["fec-yass", "reuters-yass-2024"]
+    },
+    {
+      "key": "current-roles",
+      "label": "Current role",
+      "value": "Co-founder and principal, Susquehanna International Group",
+      "featured": true,
+      "asOf": "2026-10-25",
+      "sources": ["sig-about", "forbes-yass-2026"]
+    },
+    {
+      "key": "net-worth",
+      "label": "Estimated net worth",
+      "value": "$49.6 billion",
+      "detail": "Forbes estimate; private-company and ByteDance valuations can move substantially.",
+      "featured": true,
+      "asOf": "2026-10-25",
+      "sources": ["forbes-yass-2026"]
+    },
+    {
+      "key": "bytedance-stake",
+      "label": "Estimated ByteDance interest",
+      "value": "About 7% personally",
+      "detail": "Estimate derived from reporting on SIG's larger stake, not a public securities filing.",
+      "asOf": "2024-03-01",
+      "sources": ["axios-tiktok-2024", "wsj-tiktok-2023"]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "sig",
+      "source": "yass",
+      "target": "sig",
+      "relType": "co-founded",
+      "role": "Co-founder and principal owner",
+      "from": "1987",
+      "prominence": 3,
+      "sources": ["sig-about", "nyt-yass-2022"]
+    },
+    {
+      "key": "bytedance",
+      "source": "yass",
+      "target": "bytedance",
+      "relType": "invested-in",
+      "role": "Economic interest through SIG's early investment; reported personal equivalent near 7%",
+      "from": "2012",
+      "prominence": 3,
+      "sources": ["axios-tiktok-2024", "wsj-tiktok-2023"]
+    },
+    {
+      "key": "club",
+      "source": "yass",
+      "target": "club-growth",
+      "relType": "donated-to",
+      "role": "Longtime principal funder",
+      "from": "2010",
+      "prominence": 3,
+      "sources": ["fec-yass", "reuters-yass-2024"]
+    },
+    {
+      "key": "party",
+      "source": "yass",
+      "target": "republican-party",
+      "relType": "donated-to",
+      "role": "Major donor to Republican candidates and outside groups",
+      "prominence": 2,
+      "sources": ["fec-yass", "opensecrets-2024"]
+    },
+    {
+      "key": "protect",
+      "source": "yass",
+      "target": "protect-freedom",
+      "relType": "donated-to",
+      "role": "Principal libertarian-oriented funder",
+      "from": "2020",
+      "prominence": 2,
+      "sources": ["fec-yass"]
+    },
+    {
+      "key": "commonwealth",
+      "source": "yass",
+      "target": "commonwealth",
+      "relType": "donated-to",
+      "role": "Supports Pennsylvania school-choice policy advocacy",
+      "prominence": 2,
+      "sources": ["ap-school-choice-2023", "wapo-school-choice-2025"]
+    },
+    {
+      "key": "abbott",
+      "source": "yass",
+      "target": "abbott",
+      "relType": "donated-to",
+      "role": "$6 million state contribution during Texas voucher fight",
+      "from": "2023",
+      "prominence": 2,
+      "sources": ["texas-tribune-yass-2023"]
+    },
+    {
+      "key": "trump",
+      "source": "yass",
+      "target": "trump",
+      "relType": "donated-to",
+      "role": "Supported Trump-aligned organizations after meeting him in 2024; later funded 2026 projects",
+      "from": "2024",
+      "prominence": 2,
+      "sources": ["wapo-school-choice-2025", "forbes-yass-2026-giving"]
+    },
+    {
+      "key": "maga",
+      "source": "yass",
+      "target": "maga-inc",
+      "relType": "donated-to",
+      "role": "Major 2026 contribution",
+      "from": "2026",
+      "prominence": 2,
+      "sources": ["forbes-yass-2026-giving"]
+    },
+    {
+      "key": "foundation",
+      "source": "yass",
+      "target": "susquehanna-foundation",
+      "relType": "board-member-of",
+      "role": "Vice president and family foundation funder",
+      "prominence": 1,
+      "sources": ["inside-philanthropy-2026"]
+    }
+  ],
+  "events": [
+    {
+      "key": "birth",
+      "date": "1958",
+      "title": "Born in Queens",
+      "summary": "Jeffrey Yass was born in Queens, New York.",
+      "category": "personal",
+      "significance": 1,
+      "chapter": "formation",
+      "sources": ["nyt-yass-2022", "forbes-yass-2026"]
+    },
+    {
+      "key": "college",
+      "date": "1979",
+      "title": "Graduates from Binghamton",
+      "summary": "He studied mathematics and economics, foundations for a career in probabilistic trading.",
+      "category": "career",
+      "significance": 1,
+      "chapter": "formation",
+      "sources": ["nyt-yass-2022"]
+    },
+    {
+      "key": "poker",
+      "date": "1980",
+      "date_end": "1986",
+      "title": "Trades and plays poker",
+      "summary": "Yass and future partners developed probability and risk skills through options trading and professional poker.",
+      "category": "career",
+      "significance": 1,
+      "chapter": "formation",
+      "sources": ["nyt-yass-2022", "propublica-yass-2021"]
+    },
+    {
+      "key": "sig",
+      "date": "1987",
+      "title": "Co-founds Susquehanna International Group",
+      "summary": "The firm grew from options trading into global market making and private investment.",
+      "category": "career",
+      "significance": 3,
+      "chapter": "sig",
+      "participants": [["sig", "company"]],
+      "sources": ["sig-about", "nyt-yass-2022"]
+    },
+    {
+      "key": "school-choice",
+      "date": "1990",
+      "date_end": "2026",
+      "title": "Builds a school-choice funding network",
+      "summary": "Yass and his wife backed scholarships, vouchers and advocacy groups, especially in Pennsylvania.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "education",
+      "status": "unresolved",
+      "statusNote": "The work spans decades; no single source establishes one start date.",
+      "sources": ["wapo-school-choice-2025", "inside-philanthropy-2026"]
+    },
+    {
+      "key": "bytedance",
+      "date": "2012",
+      "title": "SIG invests in ByteDance",
+      "summary": "An early investment became one of SIG's most valuable private holdings and later connected Yass to TikTok policy.",
+      "category": "finance",
+      "significance": 3,
+      "chapter": "tiktok",
+      "participants": [["bytedance", "investment"]],
+      "sources": ["wsj-tiktok-2023", "axios-tiktok-2024"]
+    },
+    {
+      "key": "giving-rise",
+      "date": "2015",
+      "date_end": "2022",
+      "title": "Political giving accelerates",
+      "summary": "Yass became a central funder of Club for Growth, libertarian super PACs and Pennsylvania organizations.",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "politics",
+      "sources": ["nyt-yass-2022", "fec-yass"]
+    },
+    {
+      "key": "tax-report",
+      "date": "2021-06-21",
+      "title": "ProPublica details tax strategy",
+      "summary": "An investigation described how SIG characterized trading income and litigated IRS disputes; Yass and SIG defended their compliance with law.",
+      "category": "legal",
+      "significance": 2,
+      "chapter": "scrutiny",
+      "status": "disputed",
+      "statusNote": "The reporting and the firm's response disagree over the substance and significance of the tax treatment.",
+      "sources": ["propublica-yass-2021"]
+    },
+    {
+      "key": "abbott",
+      "date": "2023-12",
+      "title": "Gives Greg Abbott $6 million",
+      "summary": "The record-setting Texas contribution supported a governor pressing Republican legislators to adopt school vouchers.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "education",
+      "participants": [["abbott", "recipient"]],
+      "sources": ["texas-tribune-yass-2023"]
+    },
+    {
+      "key": "tiktok-debate",
+      "date": "2024-03",
+      "title": "ByteDance stake becomes a campaign issue",
+      "summary": "As Congress advanced divest-or-ban legislation, reporting focused on Yass's large ByteDance interest and donations to politicians opposed to a ban.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "tiktok",
+      "participants": [["bytedance", "affected company"]],
+      "sources": ["axios-tiktok-2024", "reuters-yass-2024"]
+    },
+    {
+      "key": "trump-meeting",
+      "date": "2024-03",
+      "title": "Meets Trump as TikTok position shifts",
+      "summary": "Yass met Donald Trump shortly before Trump publicly opposed a TikTok ban; both men said the conversation did not center on TikTok.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "tiktok",
+      "status": "unresolved",
+      "statusNote": "Timing is documented; evidence reviewed does not establish that Yass caused Trump's change.",
+      "participants": [["trump", "meeting participant"]],
+      "sources": ["axios-tiktok-2024", "inquirer-yass-2024"]
+    },
+    {
+      "key": "2024-total",
+      "date": "2024-12-31",
+      "title": "Yass household exceeds $100 million in cycle giving",
+      "summary": "OpenSecrets counted Jeff and Janine Yass at about $101.1 million, overwhelmingly supporting Republican groups.",
+      "category": "finance",
+      "significance": 3,
+      "chapter": "politics",
+      "sources": ["opensecrets-2024"]
+    },
+    {
+      "key": "education-scale",
+      "date": "2025-12",
+      "title": "Reported political giving since 2015 passes $350 million",
+      "summary": "The Washington Post traced a decade of spending designed especially to expand school-choice policy.",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "education",
+      "sources": ["wapo-school-choice-2025"]
+    },
+    {
+      "key": "2026-giving",
+      "date": "2026-08",
+      "title": "Adds major 2026 contributions",
+      "summary": "Current-cycle reporting identified large gifts to MAGA Inc., Club for Growth Action and a super PAC supporting Vivek Ramaswamy.",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "present",
+      "participants": [
+        ["maga-inc", "recipient"],
+        ["club-growth", "recipient"]
+      ],
+      "sources": ["forbes-yass-2026-giving"]
+    }
+  ],
+  "statements": [
+    {
+      "key": "school-choice",
+      "date": "2023-06-29",
+      "datePrecision": "day",
+      "venue": "Philadelphia Inquirer op-ed",
+      "issue": "Education",
+      "verbatim": false,
+      "summary": "Jeff and Janine Yass argued that public funding should follow families to the school they choose rather than remain tied to residential assignment.",
+      "source": "yass-inquirer-op-ed-2023"
+    },
+    {
+      "key": "tiktok-ban",
+      "date": "2024-03",
+      "datePrecision": "month",
+      "venue": "Public comments reported by Axios",
+      "issue": "TikTok",
+      "verbatim": false,
+      "summary": "Yass opposed banning TikTok and argued that restricting a communications platform would harm competition and speech.",
+      "source": "axios-tiktok-2024"
+    },
+    {
+      "key": "trump-talk",
+      "date": "2024-03",
+      "datePrecision": "month",
+      "venue": "Statement after Trump meeting",
+      "issue": "TikTok",
+      "verbatim": false,
+      "summary": "Yass said he did not discuss TikTok with Trump during their brief meeting.",
+      "source": "inquirer-yass-2024"
+    },
+    {
+      "key": "probability",
+      "date": "2022",
+      "datePrecision": "year",
+      "venue": "Profile interviews",
+      "issue": "Decision-making",
+      "verbatim": false,
+      "summary": "Yass described markets and politics through probabilistic outcomes rather than certainty, an approach rooted in poker and options trading.",
+      "source": "nyt-yass-2022"
+    },
+    {
+      "key": "education-urgency",
+      "date": "2025-12",
+      "datePrecision": "month",
+      "venue": "Washington Post profile",
+      "issue": "Education",
+      "verbatim": false,
+      "summary": "Yass framed school choice as the political project on which he most wants measurable change during his lifetime.",
+      "source": "wapo-school-choice-2025"
+    }
+  ],
+  "finance": {
+    "fec": {
+      "contributorName": "YASS, JEFFREY",
+      "namePattern": "^YASS, (JEFFREY|JEFF)( S\\.?)?$",
+      "employerPattern": "SUSQUEHANNA|SIG|SELF[- ]EMPLOYED",
+      "cities": ["HAVERFORD", "BALA CYNWYD", "PHILADELPHIA", "VILLANOVA"],
+      "source": "fec-yass"
+    },
+    "coverage": "Itemized federal contributions matched by exact name plus Susquehanna employment or known Philadelphia-area locations. It excludes Janine Yass's giving, state donations, nonprofit grants, company investments and spending by recipient committees. The 2026 cycle remains open."
+  },
+  "ideas": {
+    "traditions": [
+      {
+        "label": "Libertarianism",
+        "atlasId": "libertarianism",
+        "basis": "Funding for libertarian candidates and organizations and stated preference for market choice.",
+        "context": "His electoral giving also supports Republican candidates who are not libertarians.",
+        "sources": ["nyt-yass-2022", "fec-yass"]
+      },
+      {
+        "label": "Market liberalism",
+        "atlasId": "classical-liberalism",
+        "basis": "School-choice advocacy and opposition to platform bans emphasize competition and individual choice.",
+        "context": "The ByteDance investment creates a financial interest that must be considered alongside the stated principle.",
+        "sources": ["yass-inquirer-op-ed-2023", "axios-tiktok-2024"]
+      }
+    ],
+    "influences": [
+      {
+        "name": "Poker and probability",
+        "note": "Yass applies probabilistic thinking learned through poker and options trading to business and politics.",
+        "sources": ["nyt-yass-2022"]
+      }
+    ],
+    "works": [
+      {
+        "title": "Parents deserve choices in their children's education",
+        "year": "2023",
+        "kind": "Op-ed",
+        "detail": "Joint argument with Janine Yass for Pennsylvania school-choice funding.",
+        "source": "yass-inquirer-op-ed-2023"
+      }
+    ],
+    "featuredQuotes": ["school-choice", "tiktok-ban", "education-urgency"]
+  },
+  "chapters": [
+    {
+      "key": "formation",
+      "title": "Probability as formation",
+      "dek": "Math, poker and risk",
+      "body": "Jeff Yass was born in Queens in 1958 and studied mathematics and economics at Binghamton University. He and future partners treated poker and options trading as related problems of probability, pricing and disciplined risk [[nyt-yass-2022, propublica-yass-2021]].\n\nThat background matters because Yass still describes decisions in expected-value terms. It shaped a trading culture willing to make many small, hedged bets rather than one directional wager [[nyt-yass-2022]]."
+    },
+    {
+      "key": "sig",
+      "title": "Building Susquehanna",
+      "dek": "A private trading firm becomes the source of political capital",
+      "body": "Yass co-founded Susquehanna International Group in 1987. The firm expanded from options into market making, trading and private investment while remaining closely held [[sig-about, nyt-yass-2022]].\n\nBecause SIG is private, Yass's wealth and ownership are estimates. Forbes and investigative reporting agree that the firm—and especially its ByteDance investment—accounts for most of his fortune [[forbes-yass-2026, propublica-yass-2021]]."
+    },
+    {
+      "key": "education",
+      "title": "School choice as the central project",
+      "dek": "A donor builds policy pressure state by state",
+      "body": "Yass and his wife have supported scholarships and voucher advocacy for decades. In Pennsylvania, their money flows through candidates, policy organizations and charitable vehicles rather than one campaign alone [[ap-school-choice-2023, inside-philanthropy-2026]].\n\nThe strategy is national. A $6 million gift to Greg Abbott came during a Texas legislative fight over vouchers, while the couple's own writing argues that public support should follow families to chosen schools [[texas-tribune-yass-2023, yass-inquirer-op-ed-2023]]."
+    },
+    {
+      "key": "politics",
+      "title": "Republican money with a libertarian center",
+      "dek": "Outside groups provide leverage across factions",
+      "body": "Yass became a principal funder of Club for Growth and libertarian-oriented PACs before joining the very top tier of Republican donors. He often funds outside groups that can intervene in primaries as well as general elections [[fec-yass, nyt-yass-2022]].\n\nOpenSecrets counted Jeff and Janine Yass at roughly $101.1 million in the 2024 federal cycle. Household totals show scale, but this profile's money ledger assigns only contributions matched to Jeff [[opensecrets-2024, fec-yass]]."
+    },
+    {
+      "key": "tiktok",
+      "title": "TikTok, policy and financial interest",
+      "dek": "A private holding becomes a national-security controversy",
+      "body": "SIG's early ByteDance investment became enormously valuable. Reporting estimated Yass's personal economic equivalent near seven percent, though no public filing supplies a precise current stake [[wsj-tiktok-2023, axios-tiktok-2024]].\n\nYass opposed a TikTok ban while donating to lawmakers and groups active in the debate. His brief 2024 meeting with Trump preceded Trump's public reversal, but both said TikTok was not discussed; timing alone does not prove influence [[axios-tiktok-2024, inquirer-yass-2024]]."
+    },
+    {
+      "key": "scrutiny",
+      "title": "Taxes and scrutiny",
+      "dek": "Complex trading meets public accountability",
+      "body": "ProPublica reported that SIG used sophisticated trading structures and fought the IRS over the characterization of income. Yass and the firm maintained that their tax positions complied with law and challenged the investigation's framing [[propublica-yass-2021]].\n\nThe dispute is relevant because tax savings increased the capital available for investment and giving, but the public record does not justify treating disputed tax positions as criminal findings [[propublica-yass-2021, nyt-yass-2022]]."
+    },
+    {
+      "key": "network",
+      "title": "Institutions beyond campaigns",
+      "dek": "Foundations, think tanks and international policy",
+      "body": "The Susquehanna Foundation and allied charitable vehicles support education and Philadelphia-area organizations. Yass-related funding has also reached free-market institutions abroad, including Israel's Kohelet Policy Forum [[inside-philanthropy-2026, haaretz-kohelet-2021]].\n\nThese channels are less transparent than FEC contributions. The profile separates documented grants from political spending and does not infer control from support alone [[inside-philanthropy-2026]]."
+    },
+    {
+      "key": "present",
+      "title": "Present influence",
+      "dek": "A donor active in both policy and the 2026 cycle",
+      "body": "By late 2026, Yass remained an active funder of Club for Growth Action, MAGA Inc. and candidate-specific super PACs. Current-cycle totals are provisional until filings close [[forbes-yass-2026-giving, fec-yass]].\n\nHis influence rests on three reinforcing assets: SIG wealth, durable school-choice institutions and large checks to groups that shape Republican primaries. ByteDance adds a fourth channel—and an unusually direct financial stake in a live federal policy dispute [[wapo-school-choice-2025, axios-tiktok-2024]]."
+    }
+  ]
+}

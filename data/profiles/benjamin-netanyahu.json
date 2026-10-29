@@ -1,0 +1,487 @@
+{
+  "subject": "benjamin-netanyahu",
+  "reviewedAt": "2026-10-28",
+  "sourcesVerifiedAt": "2026-10-28",
+  "brief": {
+    "inclusion": "The foreign leader who has addressed Congress more often than any other and has repeatedly shaped U.S. debates over Israel aid, Iran and presidential foreign policy.",
+    "coverage": {
+      "from": "1996",
+      "through": "2026-10-28",
+      "lags": "Strictly limited to U.S.-facing political significance."
+    },
+    "openQuestions": [
+      "Add transaction-level U.S. donor relationships only when a lawful public record supports the specific relationship.",
+      "Recheck the 2026 U.S.–Israel relationship after the next presidential or congressional action."
+    ],
+    "review": [
+      {
+        "kind": "evidence",
+        "by": "Codex",
+        "at": "2026-10-28"
+      },
+      {
+        "kind": "quantitative",
+        "by": "Codex",
+        "at": "2026-10-28"
+      },
+      {
+        "kind": "editorial",
+        "by": "Codex",
+        "at": "2026-10-28"
+      },
+      {
+        "kind": "product",
+        "by": "Codex",
+        "at": "2026-10-28",
+        "note": "Schema and importer validation performed; production browser review follows import."
+      }
+    ]
+  },
+  "summary": "Israeli prime minister whose direct engagement with American presidents, Congress and U.S. advocacy organizations has shaped debates over military aid, Iran, Jerusalem and the Gaza war. He has addressed joint meetings of Congress four times—more than any other foreign dignitary—while cultivating alliances and public disputes across successive U.S. administrations.",
+  "roles": [
+    {
+      "label": "Prime Minister of Israel",
+      "detail": "Profile covers only U.S.-facing political activity",
+      "sources": [
+        "house-addresses",
+        "crs-israel"
+      ]
+    },
+    {
+      "label": "Four-time speaker to joint meetings of Congress",
+      "detail": "1996, 2011, 2015 and 2024",
+      "sources": [
+        "house-addresses"
+      ]
+    }
+  ],
+  "entities": {
+    "benjamin-netanyahu": {
+      "create": {
+        "name": "Benjamin Netanyahu",
+        "type": "politician",
+        "description": "Prime Minister of Israel, profiled only for U.S.-facing political significance."
+      }
+    },
+    "united-states-congress": {
+      "create": {
+        "name": "United States Congress",
+        "type": "organization",
+        "description": "The legislative branch of the United States."
+      }
+    },
+    "barack-obama": {
+      "create": {
+        "name": "Barack Obama",
+        "type": "politician",
+        "description": "Former president of the United States."
+      }
+    },
+    "donald-trump": {
+      "create": {
+        "name": "Donald Trump",
+        "type": "politician",
+        "description": "President of the United States."
+      }
+    },
+    "joe-biden": {
+      "create": {
+        "name": "Joe Biden",
+        "type": "politician",
+        "description": "Former president of the United States."
+      }
+    },
+    "aipac": {
+      "create": {
+        "name": "AIPAC",
+        "type": "organization",
+        "description": "American Israel Public Affairs Committee, a U.S. pro-Israel advocacy organization."
+      }
+    }
+  },
+  "sources": [
+    {
+      "key": "house-addresses",
+      "title": "Foreign Leader Fast Facts",
+      "publisher": "U.S. House of Representatives: History, Art & Archives",
+      "type": "primary",
+      "url": "https://history.house.gov/Institution/Foreign-Leaders/Fast-Facts/",
+      "notes": "Lists Netanyahu's four joint-meeting addresses and identifies him as the most frequent foreign dignitary speaker."
+    },
+    {
+      "key": "govinfo-2015",
+      "title": "Benjamin Netanyahu address to a joint meeting of Congress",
+      "publisher": "U.S. Government Publishing Office",
+      "type": "transcript",
+      "publishedAt": "2015-03-03",
+      "url": "https://www.govinfo.gov/content/pkg/CRECB-2015-pt3/pdf/CRECB-2015-pt3.pdf"
+    },
+    {
+      "key": "obama-iran",
+      "title": "Remarks by the President on the Iran Nuclear Deal",
+      "publisher": "Obama White House Archives",
+      "type": "official_statement",
+      "publishedAt": "2015-08-05",
+      "url": "https://obamawhitehouse.archives.gov/the-press-office/2015/08/05/remarks-president-iran-nuclear-deal/"
+    },
+    {
+      "key": "obama-meeting",
+      "title": "Remarks by President Obama and Prime Minister Netanyahu before bilateral meeting",
+      "publisher": "Obama White House Archives",
+      "type": "transcript",
+      "publishedAt": "2015-11-09",
+      "url": "https://obamawhitehouse.archives.gov/the-press-office/2015/11/09/remarks-president-obama-and-prime-minister-netanyahu-israel-bilateral"
+    },
+    {
+      "key": "mou-2016",
+      "title": "Memorandum of Understanding between the United States and Israel on Security Assistance",
+      "publisher": "U.S. Department of State",
+      "type": "filing",
+      "publishedAt": "2016-09-14",
+      "url": "https://2009-2017.state.gov/documents/organization/265160.pdf",
+      "notes": "Commits $33 billion in FMF and additional missile-defense support for FY2019–2028."
+    },
+    {
+      "key": "state-security",
+      "title": "U.S. Security Cooperation with Israel",
+      "publisher": "U.S. Department of State",
+      "type": "official_statement",
+      "publishedAt": "2023",
+      "url": "https://2021-2025.state.gov/u-s-security-cooperation-with-israel/"
+    },
+    {
+      "key": "trump-golan",
+      "title": "Remarks at signing of proclamation recognizing Israel's sovereignty over the Golan Heights",
+      "publisher": "Trump White House Archives",
+      "type": "transcript",
+      "publishedAt": "2019-03-25",
+      "url": "https://trumpwhitehouse.archives.gov/briefings-statements/remarks-president-trump-signing-presidential-proclamation-recognizing-israels-sovereign-right-golan-heights/"
+    },
+    {
+      "key": "trump-plan",
+      "title": "Remarks by President Trump and Prime Minister Netanyahu in joint statements",
+      "publisher": "Trump White House Archives",
+      "type": "transcript",
+      "publishedAt": "2020-01-28",
+      "url": "https://trumpwhitehouse.archives.gov/briefings-statements/remarks-president-trump-prime-minister-netanyahu-state-israel-joint-statements/"
+    },
+    {
+      "key": "abraham-accords",
+      "title": "Abraham Accords declaration",
+      "publisher": "Trump White House Archives",
+      "type": "filing",
+      "publishedAt": "2020-09-15",
+      "url": "https://trumpwhitehouse.archives.gov/briefings-statements/abraham-accords-declaration-peace-cooperation-constructive-diplomatic-friendly-relations/"
+    },
+    {
+      "key": "govinfo-2024",
+      "title": "Joint meeting to hear an address by Benjamin Netanyahu",
+      "publisher": "U.S. Government Publishing Office",
+      "type": "transcript",
+      "publishedAt": "2024-07-24",
+      "url": "https://www.govinfo.gov/content/pkg/CREC-2024-07-24/pdf/CREC-2024-07-24.pdf"
+    },
+    {
+      "key": "crs-israel",
+      "title": "Israel: Background and U.S. Relations",
+      "publisher": "Congressional Research Service",
+      "type": "secondary",
+      "publishedAt": "2024-07-26",
+      "url": "https://www.congress.gov/crs_external_products/IF/PDF/IF10211/IF10211.19.pdf"
+    },
+    {
+      "key": "aipac-delegation-2026",
+      "title": "Prime Minister Netanyahu meets with U.S. Congress delegation organized by AIPAC",
+      "publisher": "Israel Ministry of Foreign Affairs",
+      "type": "official_statement",
+      "publishedAt": "2026-01-29",
+      "url": "https://embassies.gov.il/nepal/en/node/9912",
+      "notes": "Israeli government account of the meeting."
+    },
+    {
+      "key": "reuters-iran-2026",
+      "title": "U.S.-Iran deal may leave Netanyahu as biggest casualty",
+      "publisher": "Reuters",
+      "type": "article",
+      "publishedAt": "2026-06-24",
+      "url": "https://sa.marketscreener.com/news/us-iran-deal-may-leave-netanyahu-as-biggest-casualty-ce7f5fdbd18bf425",
+      "notes": "Reuters analysis republished by MarketScreener."
+    },
+    {
+      "key": "ap-trump-2026",
+      "title": "Trump endorses Benjamin Netanyahu for reelection",
+      "publisher": "Associated Press",
+      "type": "article",
+      "publishedAt": "2026-10-18",
+      "url": "https://apnews.com/article/ba88cdd728422d51e837231b2efbea81"
+    }
+  ],
+  "facts": [
+    {
+      "key": "congress-addresses",
+      "label": "Addresses to Congress",
+      "value": "Four",
+      "detail": "1996, 2011, 2015 and 2024; more than any other foreign dignitary",
+      "featured": true,
+      "sources": [
+        "house-addresses"
+      ]
+    },
+    {
+      "key": "security-mou",
+      "label": "Current U.S. security-assistance framework",
+      "value": "$38 billion over FY2019–2028",
+      "detail": "$33 billion in Foreign Military Financing plus missile-defense support",
+      "asOf": "2016-09-14",
+      "featured": true,
+      "sources": [
+        "mou-2016",
+        "state-security"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "netanyahu-congress",
+      "source": "benjamin-netanyahu",
+      "target": "united-states-congress",
+      "relType": "guest-on",
+      "role": "Addressed joint meetings four times",
+      "from": "1996",
+      "prominence": 3,
+      "sources": [
+        "house-addresses",
+        "govinfo-2015",
+        "govinfo-2024"
+      ]
+    },
+    {
+      "key": "netanyahu-obama",
+      "source": "benjamin-netanyahu",
+      "target": "barack-obama",
+      "relType": "opposed",
+      "role": "Publicly opposed the Obama administration's Iran nuclear agreement while continuing security cooperation",
+      "from": "2009",
+      "until": "2017",
+      "prominence": 3,
+      "sources": [
+        "govinfo-2015",
+        "obama-iran",
+        "obama-meeting",
+        "mou-2016"
+      ]
+    },
+    {
+      "key": "netanyahu-trump",
+      "source": "benjamin-netanyahu",
+      "target": "donald-trump",
+      "relType": "allied-with",
+      "role": "Worked together on Jerusalem, the Golan Heights, Iran and regional normalization; the relationship also included later policy disputes",
+      "from": "2017",
+      "prominence": 3,
+      "sources": [
+        "trump-golan",
+        "trump-plan",
+        "abraham-accords",
+        "ap-trump-2026"
+      ]
+    },
+    {
+      "key": "netanyahu-biden",
+      "source": "benjamin-netanyahu",
+      "target": "joe-biden",
+      "relType": "collaborated-with",
+      "role": "Security cooperation after October 7 coexisted with disputes over Gaza policy",
+      "from": "2021",
+      "until": "2025",
+      "prominence": 2,
+      "sources": [
+        "govinfo-2024",
+        "crs-israel"
+      ]
+    },
+    {
+      "key": "netanyahu-aipac",
+      "source": "benjamin-netanyahu",
+      "target": "aipac",
+      "relType": "collaborated-with",
+      "role": "Repeated engagement with AIPAC and AIPAC-organized congressional delegations",
+      "from": "1996",
+      "prominence": 2,
+      "sources": [
+        "aipac-delegation-2026"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "key": "first-congress-address",
+      "date": "1996-07-10",
+      "title": "Addresses Congress as prime minister",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "congress-as-a-political-arena",
+      "sources": [
+        "house-addresses"
+      ]
+    },
+    {
+      "key": "third-congress-address",
+      "date": "2015-03-03",
+      "title": "Challenges the emerging Iran nuclear agreement before Congress",
+      "summary": "The invitation and speech placed Netanyahu directly in a U.S. executive-legislative foreign-policy dispute.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "iran-and-the-obama-break",
+      "sources": [
+        "govinfo-2015",
+        "obama-iran"
+      ]
+    },
+    {
+      "key": "security-mou",
+      "date": "2016-09-14",
+      "title": "U.S. and Israel conclude a ten-year security-assistance memorandum",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "aid-beyond-personal-conflict",
+      "sources": [
+        "mou-2016",
+        "state-security"
+      ]
+    },
+    {
+      "key": "golan",
+      "date": "2019-03-25",
+      "title": "Trump recognizes Israeli sovereignty over the Golan Heights",
+      "summary": "Netanyahu appeared with Trump for the signing and framed it as strengthening the alliance.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "the-trump-alignment",
+      "sources": [
+        "trump-golan"
+      ]
+    },
+    {
+      "key": "abraham-accords",
+      "date": "2020-09-15",
+      "title": "Signs regional normalization agreements at the White House",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "the-trump-alignment",
+      "sources": [
+        "abraham-accords"
+      ]
+    },
+    {
+      "key": "fourth-congress-address",
+      "date": "2024-07-24",
+      "title": "Addresses Congress during the Gaza war",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "gaza-and-the-biden-years",
+      "sources": [
+        "govinfo-2024",
+        "crs-israel"
+      ]
+    },
+    {
+      "key": "aipac-delegation",
+      "date": "2026-01-29",
+      "title": "Meets an AIPAC-organized bipartisan congressional delegation",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "the-u-s-advocacy-relationship",
+      "sources": [
+        "aipac-delegation-2026"
+      ]
+    },
+    {
+      "key": "trump-endorsement-2026",
+      "date": "2026-10-18",
+      "title": "Receives Trump's endorsement for reelection after policy disputes",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "alliance-and-dependence",
+      "sources": [
+        "ap-trump-2026",
+        "reuters-iran-2026"
+      ]
+    }
+  ],
+  "statements": [
+    {
+      "key": "iran-deal-2015",
+      "date": "2015-03-03",
+      "issue": "Iran",
+      "venue": "Joint meeting of Congress",
+      "summary": "Argued that the proposed agreement would leave Iran with a large nuclear infrastructure and a path to a bomb.",
+      "stance": "explicit",
+      "source": "govinfo-2015"
+    },
+    {
+      "key": "trump-friend-2020",
+      "date": "2020-01-28",
+      "issue": "U.S.–Israel relations",
+      "venue": "White House joint statement",
+      "quote": "You have been the greatest friend that Israel has ever had in the White House.",
+      "source": "trump-plan"
+    }
+  ],
+  "finance": {
+    "coverage": "This profile does not attribute U.S. campaign contributions or AIPAC spending to Netanyahu personally. U.S. aid, PAC spending, nonprofit activity and private donations are separate legal and accounting categories."
+  },
+  "ideas": {
+    "traditions": [],
+    "influences": [],
+    "works": [],
+    "featuredQuotes": [
+      "iran-deal-2015",
+      "trump-friend-2020"
+    ]
+  },
+  "chapters": [
+    {
+      "key": "congress-as-a-political-arena",
+      "title": "Congress as a political arena",
+      "dek": "Four joint-meeting addresses gave Netanyahu an unusual platform inside American politics.",
+      "body": "Netanyahu addressed joint meetings of Congress in 1996, 2011, 2015 and 2024, more often than any other foreign dignitary [[house-addresses]]. The repeated invitations made Congress an independent arena for his relationship with the United States, not merely an audience for bilateral diplomacy."
+    },
+    {
+      "key": "iran-and-the-obama-break",
+      "title": "Iran and the Obama break",
+      "dek": "The 2015 speech turned a policy dispute into an American partisan confrontation.",
+      "body": "Netanyahu's March 2015 address argued against the emerging nuclear agreement with Iran while the Obama administration defended the agreement as the strongest available restraint on Iran's nuclear program [[govinfo-2015, obama-iran]]. The dispute strained political relations without ending military and intelligence cooperation [[obama-meeting]]."
+    },
+    {
+      "key": "aid-beyond-personal-conflict",
+      "title": "Aid beyond personal conflict",
+      "dek": "Institutional security cooperation outlasted disputes between leaders.",
+      "body": "In September 2016 the two governments concluded a ten-year assistance memorandum covering FY2019 through FY2028. It committed $33 billion in Foreign Military Financing and additional missile-defense support, producing the commonly cited $38 billion framework [[mou-2016, state-security]]. The agreement is U.S. government assistance to Israel, not money paid to Netanyahu."
+    },
+    {
+      "key": "the-trump-alignment",
+      "title": "The Trump alignment",
+      "dek": "Jerusalem, the Golan Heights, Iran and normalization brought the two leaders together.",
+      "body": "Netanyahu publicly praised Trump's recognition decisions and withdrawal from the Iran nuclear agreement [[trump-plan, trump-golan]]. The 2020 Abraham Accords added diplomatic normalization between Israel and Arab states to that alignment [[abraham-accords]]."
+    },
+    {
+      "key": "gaza-and-the-biden-years",
+      "title": "Gaza and the Biden years",
+      "dek": "Security support and public disagreement existed at the same time.",
+      "body": "Netanyahu returned to Congress in July 2024 during the Gaza war. The invitation, attendance disputes and speech showed both the depth of congressional support and the widening American disagreement over the conduct and duration of the war [[govinfo-2024, crs-israel]]."
+    },
+    {
+      "key": "the-u-s-advocacy-relationship",
+      "title": "The U.S. advocacy relationship",
+      "dek": "AIPAC connects congressional politics to the bilateral relationship but remains a distinct American institution.",
+      "body": "In January 2026 Netanyahu met a bipartisan congressional delegation organized by AIPAC and thanked its members for supporting Israel [[aipac-delegation-2026]]. AIPAC, its PAC and United Democracy Project are American organizations with their own legal records; their spending must not be presented as Netanyahu's personal money."
+    },
+    {
+      "key": "alliance-and-dependence",
+      "title": "Alliance and dependence",
+      "dek": "The relationship with Trump remained politically valuable but no longer eliminated policy conflict.",
+      "body": "Reporting in 2026 described disagreements over Iran, Lebanon and Gaza alongside continued political support. Trump ultimately endorsed Netanyahu for reelection, illustrating both the value of the American relationship and the risk to Netanyahu when the two leaders diverged [[reuters-iran-2026, ap-trump-2026]]."
+    }
+  ]
+}

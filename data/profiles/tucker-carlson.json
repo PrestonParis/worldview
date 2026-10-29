@@ -1,0 +1,1594 @@
+{
+  "subject": "tucker-carlson",
+  "reviewedAt": "2026-10-28",
+  "sourcesVerifiedAt": "2026-10-28",
+  "brief": {
+    "inclusion": "Fishback interview and influence over Republican disputes concerning immigration, Israel/Iran, antisemitism and institutional gatekeeping.",
+    "coverage": {
+      "from": "2000s",
+      "through": "2026-10-28",
+      "lags": "Converted from an external research handoff; unresolved items remain listed below."
+    },
+    "openQuestions": [
+      "What is Carlson’s currently canonical person ID and are any legacy relationships or money entries attached?",
+      "Which TCN private ownership documents (if any) independently confirm a buyout and capitalization?",
+      "Can 2026 monthly and annual subscription prices be verified on a dated pricing page?",
+      "Are audited/third-party audience and unique-reach data available for Apr-Oct 2026?",
+      "Can every highlighted Carlson quotation be checked against complete original audio/video?",
+      "Are there specific documented FEC contributions under an independently matched Tucker Carlson identity?",
+      "Which direct communications, if any, between Fishback and Carlson beyond the published interview are evidenced?",
+      "Did Carlson issue a correction of the Isaac Herzog/Epstein island claim?",
+      "Can claim-specific AIPAC references be linked to dated lobbying filings instead of vague institution labels?",
+      "How does his 2026 immigration language differ from 2021 and what specific policies does he advocate?",
+      "Which of the 2026 Iran war allegations about private meetings were acknowledged by independent participants?",
+      "Are there original transcripts of TCN episodes suitable for source-compliant verbatim review?",
+      "Were any claimed alliances with Fuentes, Heritage or emerging Republican candidates formally reciprocated?"
+    ],
+    "review": [
+      {
+        "kind": "evidence",
+        "by": "Codex conversion review",
+        "at": "2026-10-28",
+        "note": "Primary documents and independent reporting cross-checked selectively; full episode and legal-claim verification not completed."
+      },
+      {
+        "kind": "quantitative",
+        "by": "Codex conversion review",
+        "at": "2026-10-28",
+        "note": "Audience metrics tagged self-reported; no personal FEC donor matching or audited TCN financials."
+      },
+      {
+        "kind": "editorial",
+        "by": "Codex conversion review",
+        "at": "2026-10-28",
+        "note": "Attribution/claim-status pass performed during drafting; independent editorial review not completed."
+      },
+      {
+        "kind": "product",
+        "by": "Codex conversion review",
+        "at": "2026-10-28",
+        "note": "No Worldview importer, schema validation or rendered web profile available."
+      }
+    ]
+  },
+  "summary": "Tucker Carlson is an American political-media figure who moved from CNN and MSNBC to Fox News before founding the subscription-based Tucker Carlson Network. He has used his independent platform to amplify candidates including James Fishback, interview controversial figures including Nick Fuentes, and challenge the Republican establishment over Israel, immigration, and the 2026 war with Iran. His ties to Trump shifted from public support in 2024 to sharp criticism in 2026, while his published audience estimates remain difficult to translate into unique reach or electoral effect.",
+  "roles": [
+    {
+      "label": "CNN and MSNBC political-program commentator",
+      "detail": "2000s",
+      "sources": [
+        "TC01"
+      ]
+    },
+    {
+      "label": "Co-founder, The Daily Caller",
+      "detail": "2010 onward",
+      "sources": [
+        "TC02"
+      ]
+    },
+    {
+      "label": "Host, Tucker Carlson Tonight, Fox News",
+      "detail": "2016-11-14 to 2023-04-21",
+      "sources": [
+        "TC01",
+        "TC03"
+      ]
+    },
+    {
+      "label": "Co-founder/presenter, Tucker Carlson Network",
+      "detail": "2023 onward",
+      "sources": [
+        "TC13",
+        "TC36"
+      ]
+    },
+    {
+      "label": "Independent political interviewer and commentator",
+      "detail": "2023-2026",
+      "sources": [
+        "TC15",
+        "TC20",
+        "TC23"
+      ]
+    }
+  ],
+  "entities": {
+    "tucker-carlson": {
+      "match": {
+        "name": "Tucker Carlson",
+        "type": "pundit"
+      }
+    },
+    "neil-patel": {
+      "create": {
+        "name": "Neil Patel",
+        "type": "politician",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "fox-news": {
+      "create": {
+        "name": "Fox News",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "tucker-carlson-network": {
+      "create": {
+        "name": "Tucker Carlson Network",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "the-daily-caller": {
+      "create": {
+        "name": "The Daily Caller",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "1789-capital": {
+      "create": {
+        "name": "1789 Capital",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "red-seat-ventures": {
+      "create": {
+        "name": "Red Seat Ventures",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "fox-corp": {
+      "create": {
+        "name": "Fox Corp",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "donald-trump": {
+      "create": {
+        "name": "Donald Trump",
+        "type": "politician",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "jd-vance": {
+      "create": {
+        "name": "JD Vance",
+        "type": "politician",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "nick-fuentes": {
+      "create": {
+        "name": "Nick Fuentes",
+        "type": "politician",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "kevin-roberts": {
+      "create": {
+        "name": "Kevin Roberts",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "james-fishback": {
+      "create": {
+        "name": "James Fishback",
+        "type": "politician",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "byron-donalds": {
+      "create": {
+        "name": "Byron Donalds",
+        "type": "politician",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "mike-huckabee": {
+      "create": {
+        "name": "Mike Huckabee",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "jonathan-greenblatt": {
+      "create": {
+        "name": "Jonathan Greenblatt",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "vladimir-putin": {
+      "create": {
+        "name": "Vladimir Putin",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "megyn-kelly": {
+      "create": {
+        "name": "Megyn Kelly",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    },
+    "ben-shapiro": {
+      "create": {
+        "name": "Ben Shapiro",
+        "type": "organization",
+        "description": "Organization or person documented in a Worldview profile."
+      }
+    }
+  },
+  "sources": [
+    {
+      "key": "TC01",
+      "title": "Fox announces launch of Tucker Carlson Tonight, prior CNN/MSNBC career",
+      "publisher": "Fox News Media",
+      "type": "official_statement",
+      "url": "https://press.foxnews.com/2016/11/fox-news-channel-to-debut-tucker-carlson-tonight-on-monday-november-14-at-7pmet",
+      "publishedAt": "2016-11-14",
+      "notes": "Employer source; useful for dates, not independent performance review"
+    },
+    {
+      "key": "TC02",
+      "title": "Daily Caller founded by Carlson and Neil Patel in 2010",
+      "publisher": "The Daily Caller",
+      "type": "official_statement",
+      "url": "https://dailycaller.com/footer/about-us/",
+      "publishedAt": "2026-10-28",
+      "notes": "Interested institutional history"
+    },
+    {
+      "key": "TC03",
+      "title": "Fox and Carlson parted ways; final broadcast 2023-04-21",
+      "publisher": "Fox News Media",
+      "type": "official_statement",
+      "url": "https://press.foxnews.com/press/2023/04/fox-news-media-and-tucker-carlson-part-ways",
+      "publishedAt": "2023-04-24",
+      "notes": "Does not establish the reason for separation"
+    },
+    {
+      "key": "TC04",
+      "title": "Fox/News agreed to pay Dominion $787.5m",
+      "publisher": "Fox Corp, SEC 8-K",
+      "type": "filing",
+      "url": "https://www.sec.gov/Archives/edgar/data/1754301/000119312523106432/d454159d8k.htm",
+      "publishedAt": "2023-04-19",
+      "notes": "Settlement with company, not proof that Carlson personally paid or was found liable"
+    },
+    {
+      "key": "TC05",
+      "title": "Jan. 6 surveillance footage presentation omitted violence/context",
+      "publisher": "FactCheck.org",
+      "type": "article",
+      "url": "https://www.factcheck.org/2023/03/explaining-the-missing-context-of-tucker-carlsons-jan-6-presentation/",
+      "publishedAt": "2023-03-10",
+      "notes": "Independent analysis; primary police/DOJ records linked in article"
+    },
+    {
+      "key": "TC06",
+      "title": "Carlson electoral replacement remarks",
+      "publisher": "Media Matters / Fox broadcast transcript excerpt",
+      "type": "secondary",
+      "url": "https://www.mediamatters.org/fox-news/tucker-carlson-gives-passionate-defense-white-replacement-theory",
+      "publishedAt": "2021-04-08",
+      "notes": "Check original video if promoting verbatim quotation; advocacy publisher"
+    },
+    {
+      "key": "TC07",
+      "title": "Jonathan Greenblatt demands action over replacement framing",
+      "publisher": "ADL letter to Fox CEO",
+      "type": "official_statement",
+      "url": "https://www.adl.org/resources/media-watch/adl-letter-fox-news-condemns-tucker-carlsons-impassioned-defense-great",
+      "publishedAt": "2021-04-09",
+      "notes": "Advocacy source for ADL position, not neutral determination"
+    },
+    {
+      "key": "TC08",
+      "title": "TCN launched paid subscription service at $9/month or $72/year at launch",
+      "publisher": "Axios",
+      "type": "article",
+      "url": "https://www.axios.com/2023/12/11/tucker-carlson-network-streaming-service",
+      "publishedAt": "2023-12-11",
+      "notes": "Launch prices, not current prices or realized recurring revenue"
+    },
+    {
+      "key": "TC09",
+      "title": "Putin interview dated Feb 6, released Feb 8; US foreign-policy relevance",
+      "publisher": "Tucker Carlson Network",
+      "type": "transcript",
+      "url": "https://next-prod.tuckercarlson.com/the-vladimir-putin-interview",
+      "publishedAt": "2024-02-08",
+      "notes": "Page transcript is placeholder lorem ipsum; use original video, not placeholder"
+    },
+    {
+      "key": "TC10",
+      "title": "Kremlin confirms interview; disputes suggestion Western press did not seek access",
+      "publisher": "Associated Press",
+      "type": "article",
+      "url": "https://apnews.com/article/6fb00b1f2d5f4bc639518b4a3445e1f8",
+      "publishedAt": "2024-02-07",
+      "notes": "Pre-release reporting, so not evidence of full exchange"
+    },
+    {
+      "key": "TC11",
+      "title": "Carlson speaks at Republican National Convention",
+      "publisher": "PBS NewsHour",
+      "type": "video",
+      "url": "https://www.pbs.org/newshour/politics/watch-tucker-carlson-speaks-at-2024-republican-national-convention",
+      "publishedAt": "2024-07-18",
+      "notes": "Video of original event"
+    },
+    {
+      "key": "TC12",
+      "title": "RNC speech praising Trump and JD Vance",
+      "publisher": "Roll Call Factba.se",
+      "type": "transcript",
+      "url": "https://rollcall.com/factbase/trump/transcript/donald-trump-convention-day-4-part-2-milwaukee-july-18-2024/",
+      "publishedAt": "2024-07-18",
+      "notes": "Machine-produced transcription: verify exact wording against video"
+    },
+    {
+      "key": "TC13",
+      "title": "Carlson/Neil Patel buy out TCN outside investors; ~$15m originally raised",
+      "publisher": "Axios",
+      "type": "official_statement",
+      "url": "https://www.axios.com/2025/06/13/tucker-carlson-investors",
+      "publishedAt": "2025-06-13",
+      "notes": "Investor structure details attributed to sources; private financials not audited"
+    },
+    {
+      "key": "TC14",
+      "title": "Fox Corp buys Red Seat Ventures, advertising services firm working with Carlson",
+      "publisher": "Los Angeles Times",
+      "type": "article",
+      "url": "https://www.latimes.com/entertainment-arts/business/story/2025-02-10/fox-corp-acquires-podcast-marketer-red-seat-ventures",
+      "publishedAt": "2025-02-10",
+      "notes": "Service provider is not same as Fox editorial ownership of TCN"
+    },
+    {
+      "key": "TC15",
+      "title": "2h23 Nick Fuentes interview, chapter timestamps and sponsor listings",
+      "publisher": "Tucker Carlson YouTube channel",
+      "type": "video",
+      "url": "https://www.youtube.com/watch?v=efBB0D4tf1Y",
+      "publishedAt": "2025-10-27",
+      "notes": "YouTube views are dynamic, not census of unique viewers"
+    },
+    {
+      "key": "TC16",
+      "title": "Fuentes appearance and Heritage conflict, Trump response and institutional reactions",
+      "publisher": "Associated Press",
+      "type": "article",
+      "url": "https://apnews.com/article/fd5c708aced52b0edfc24ab94809913f",
+      "publishedAt": "2025-11",
+      "notes": "Recheck full article date before importing precise day"
+    },
+    {
+      "key": "TC17",
+      "title": "Heritage Foundation upheaval following interview and Roberts reaction",
+      "publisher": "The New Yorker",
+      "type": "article",
+      "url": "https://www.newyorker.com/magazine/2026/10/12/the-battle-for-the-post-trump-right",
+      "publishedAt": "2026-10-12",
+      "notes": "Institutional analysis; corroborate staffing changes with primary statements"
+    },
+    {
+      "key": "TC18",
+      "title": "The 9/11 Files series promotional claims and release",
+      "publisher": "Tucker Carlson Network",
+      "type": "official_statement",
+      "url": "https://tuckercarlson.com/the911files",
+      "publishedAt": "2025-09-23",
+      "notes": "Publisher claims are not independent proof of underlying theories"
+    },
+    {
+      "key": "TC19",
+      "title": "9/11 conspiratorial claims vs official evidence; independent YouTube estimates",
+      "publisher": "PolitiFact",
+      "type": "secondary",
+      "url": "https://politifact.com/article/2026/sep/11/tucker-carlson-9-11-conspiracies/",
+      "publishedAt": "2026-09-11",
+      "notes": "Social Blade metrics dated September 2026, not present reach"
+    },
+    {
+      "key": "TC20",
+      "title": "Fishback 2026 interview timestamp, host, description, chapter markers",
+      "publisher": "Apple Podcasts / Tucker Carlson Show",
+      "type": "official_statement",
+      "url": "https://podcasts.apple.com/us/podcast/james-fishback-on-desantiss-attack-on-free-speech-randy/id1719657632?i=1000744477169",
+      "publishedAt": "2026-01-09",
+      "notes": "Platform duration may differ from cropped streaming edition"
+    },
+    {
+      "key": "TC21",
+      "title": "Fishback interview; critique DeSantis/Fine/Donalds, Carlson promotional description",
+      "publisher": "Tucker Carlson Network",
+      "type": "official_statement",
+      "url": "https://tuckercarlson.com/tucker-show-james-fishback",
+      "publishedAt": "2026-01-09",
+      "notes": "TCN page says 74 min; Apple version 80 min; keep platform-specific"
+    },
+    {
+      "key": "TC22",
+      "title": "Fishback amplification, interview and surrounding reaction",
+      "publisher": "Media Matters",
+      "type": "article",
+      "url": "https://www.mediamatters.org/tucker-carlson/james-fishback-radical-rights-great-white-hope",
+      "publishedAt": "2026-01-22",
+      "notes": "Advocacy source for contextual criticism; verify original podcast"
+    },
+    {
+      "key": "TC23",
+      "title": "Carlson interview with U.S. ambassador Mike Huckabee in Israel",
+      "publisher": "Tucker Carlson YouTube channel",
+      "type": "video",
+      "url": "https://www.youtube.com/watch?v=XS7itdfgNnU",
+      "publishedAt": "2026-02-20",
+      "notes": "Video includes Carlson monologue and interview; do not conflate"
+    },
+    {
+      "key": "TC24",
+      "title": "Huckabee Israel border claims, Carlson questions; disputed airport screening claim",
+      "publisher": "Axios",
+      "type": "article",
+      "url": "https://www.axios.com/2026/02/20/tucker-carlson-mike-huckabee-israel-middle-east",
+      "publishedAt": "2026-02-20",
+      "notes": "Preserve Huckabee qualifications and airport authority denial"
+    },
+    {
+      "key": "TC25",
+      "title": "Fallout from Huckabee interview; Arab/Muslim government response",
+      "publisher": "Jewish Telegraphic Agency",
+      "type": "article",
+      "url": "https://www.jta.org/2026/02/21/united-states/tucker-carlson-interview-with-mike-huckabee-sparks-antisemitism-clash-and-diplomatic-backlash",
+      "publishedAt": "2026-02-21",
+      "notes": "Political/diplomatic reaction is not proof of interviewee assertion"
+    },
+    {
+      "key": "TC26",
+      "title": "Flags false Herzog-Epstein island allegation in Carlson program",
+      "publisher": "Times of Israel",
+      "type": "article",
+      "url": "https://www.timesofisrael.com/tucker-carlson-falsely-says-herzog-visited-epstein-island-in-interview-with-us-envoy/",
+      "publishedAt": "2026-02-21",
+      "notes": "Find original monologue and correction before exact quote import"
+    },
+    {
+      "key": "TC27",
+      "title": "Carlson, Kelly and others criticize Trump Iran attack; Trump dismisses criticism",
+      "publisher": "Associated Press",
+      "type": "article",
+      "url": "https://apnews.com/article/cb283ae306f172cea02f25ddc44dd56f",
+      "publishedAt": "2026-02",
+      "notes": "Check article timestamp if precise event date matters"
+    },
+    {
+      "key": "TC28",
+      "title": "Garcia-Navarro questions Carlson on Trump break, Israel, Fuentes and Vance",
+      "publisher": "The New York Times interview, reposted by RealClearPolitics",
+      "type": "transcript",
+      "url": "https://www.realclearpolitics.com/video/2026/05/03/tucker_carlson_interview_with_nyt_trump_iran_israel.html",
+      "publishedAt": "2026-05-03",
+      "notes": "Original interview NYT; RCP retranscription is derivative; check video before verbatim final"
+    },
+    {
+      "key": "TC29",
+      "title": "TCN claims 1.53b cross-platform views in 8.5 weeks, 56.8m average episode views",
+      "publisher": "Tucker Carlson Network press release / PR Newswire",
+      "type": "official_statement",
+      "url": "https://www.prnewswire.com/news-releases/tucker-carlson-network-sees-historic-growth-as-audiences-flock-to-independent-coverage-of-the-iran-war-302759092.html",
+      "publishedAt": "2026-04-30",
+      "notes": "Self-reported, unattributed methodology, not unique viewers or audited reach"
+    },
+    {
+      "key": "TC30",
+      "title": "Carlson describes opposition to Iran conflict and alleged Trump private conversation",
+      "publisher": "NPR / Steve Inskeep",
+      "type": "transcript",
+      "url": "https://www.nprillinois.org/2026-09-24/tucker-carlson-on-the-war-with-iran-and-why-he-worries-about-the-spread-of-tribalism",
+      "publishedAt": "2026-09-24",
+      "notes": "Trump conversation is an unverified personal account; transcript warns of rush errors"
+    },
+    {
+      "key": "TC31",
+      "title": "Carlson answers antisemitism question, discusses Israel and Vance",
+      "publisher": "NPR extended interview / NCPR transcript",
+      "type": "transcript",
+      "url": "https://www.northcountrypublicradio.org/news/npr/nx-s1-5903129/tucker-carlson-has-a-new-enemy-the-politics-he-helped-build",
+      "publishedAt": "2026-09-24",
+      "notes": "Use NPR audio as authoritative when verbatim text matters"
+    },
+    {
+      "key": "TC32",
+      "title": "Carlson retrospective on influence, Trump split and Vance; paywalled",
+      "publisher": "Financial Times",
+      "type": "transcript",
+      "url": "https://www.ft.com/content/98417e57-fe7e-4309-8f56-6e844c55c6e1",
+      "publishedAt": "2026-10-24",
+      "notes": "Paywall / only excerpt and summary reviewed; no quote without article/audio check"
+    },
+    {
+      "key": "TC33",
+      "title": "Documents ADL objections to Carlson guest selection, Israel remarks",
+      "publisher": "ADL profile of Tucker Carlson",
+      "type": "secondary",
+      "url": "https://www.adl.org/resources/backgrounder/tucker-carlson",
+      "publishedAt": "2026-05",
+      "notes": "Interested advocacy source, not independent adjudication of each allegation"
+    },
+    {
+      "key": "TC34",
+      "title": "Independent confirmation of Dominion settlement",
+      "publisher": "Fox Corp / sec 2024 annual report",
+      "type": "official_statement",
+      "url": "https://media.foxcorporation.com/wp-content/uploads/prod/2024/09/26132119/FOX-2024-Annual-Report_Bookmarked.pdf",
+      "publishedAt": "2024-09",
+      "notes": "Annual report aggregates separate related litigation; distinguish $787.5m suit"
+    },
+    {
+      "key": "TC35",
+      "title": "Fabricated purported Putin/Carlson border quote viral before interview",
+      "publisher": "PolitiFact",
+      "type": "article",
+      "url": "https://politifact.com/factchecks/2024/feb/09/instagram-posts/tucker-carlson-vladimir-putin-interview-exchange-o/",
+      "publishedAt": "2024-02-09",
+      "notes": "Avoid import of fake quote"
+    },
+    {
+      "key": "TC36",
+      "title": "Subscription model, weekly shows, documentaries, app distribution",
+      "publisher": "TCN FAQ",
+      "type": "official_statement",
+      "url": "https://prod-cf.tuckercarlson.com/faq",
+      "publishedAt": "2026-10-28",
+      "notes": "Marketing copy, not independent usage measure"
+    },
+    {
+      "key": "TC37",
+      "title": "Previous media positions and 2016 new show launch",
+      "publisher": "FOX News / channel company announcement",
+      "type": "official_statement",
+      "url": "https://press.foxnews.com/2016/11/fox-news-channel-to-debut-tucker-carlson-tonight-on-monday-november-14-at-7pmet",
+      "publishedAt": "2016-11-14",
+      "notes": "Duplicates TC01; set repeats TC01"
+    },
+    {
+      "key": "TC38",
+      "title": "Carlson condemnation of Feb 28 strikes relayed via Jonathan Karl",
+      "publisher": "The Guardian",
+      "type": "article",
+      "url": "https://www.theguardian.com/world/2026/feb/28/iran-attack-us-political-reaction",
+      "publishedAt": "2026-02-28",
+      "notes": "Indirect reporting of quote; seek original broadcast before verbatim import"
+    },
+    {
+      "key": "TC39",
+      "title": "Identity and donor matching, candidate vs contributor status",
+      "publisher": "FEC individual contribution research",
+      "type": "official_statement",
+      "url": "https://www.fec.gov/data/receipts/individual-contributions/",
+      "publishedAt": "2026",
+      "notes": "General methodology only; does not establish that Carlson contributed"
+    }
+  ],
+  "facts": [
+    {
+      "key": "identity-1",
+      "label": "Identity",
+      "value": "U.S. media figure, broadcaster and independent media entrepreneur; office-holder status: none established.",
+      "featured": true,
+      "sources": [
+        "TC01",
+        "TC02",
+        "TC03"
+      ]
+    },
+    {
+      "key": "career-2",
+      "label": "Career",
+      "value": "Early career includes CNN and MSNBC programs before Fox employment; exact early career spans sourced from employer.",
+      "featured": true,
+      "sources": [
+        "TC01"
+      ]
+    },
+    {
+      "key": "career-3",
+      "label": "Career",
+      "value": "Co-founded the Daily Caller with Neil Patel in 2010.",
+      "featured": true,
+      "sources": [
+        "TC02"
+      ]
+    },
+    {
+      "key": "career-4",
+      "label": "Career",
+      "value": "Hosted Tucker Carlson Tonight from Nov 2016 through Apr 21 2023.",
+      "featured": true,
+      "sources": [
+        "TC01",
+        "TC03"
+      ]
+    },
+    {
+      "key": "business-5",
+      "label": "Business",
+      "value": "Co-founded Tucker Carlson Network in 2023 with Neil Patel.",
+      "featured": false,
+      "sources": [
+        "TC13",
+        "TC36"
+      ]
+    },
+    {
+      "key": "business-6",
+      "label": "Business",
+      "value": "TCN is funded by subscriptions and advertising, and also produces documentaries.",
+      "featured": false,
+      "sources": [
+        "TC13",
+        "TC36"
+      ]
+    },
+    {
+      "key": "business-7",
+      "label": "Business",
+      "value": "TCN launched subscriptions at $9 per month or $72 annual in Dec 2023.",
+      "detail": "Not current pricing.",
+      "featured": false,
+      "sources": [
+        "TC08"
+      ]
+    },
+    {
+      "key": "business-8",
+      "label": "Business",
+      "value": "TCN and Patel/Carlson originally raised approximately $15m from investors including 1789 Capital and later bought them out.",
+      "detail": "Estimated financing from Axios, private firm without public audited cap table.",
+      "featured": false,
+      "sources": [
+        "TC13"
+      ]
+    },
+    {
+      "key": "business-9",
+      "label": "Business",
+      "value": "Red Seat Ventures supplied podcast ad/marketing services and was acquired by Fox in 2025.",
+      "detail": "Service relationship alone does not imply Fox controlled editorial content.",
+      "featured": false,
+      "sources": [
+        "TC14"
+      ]
+    },
+    {
+      "key": "reach-10",
+      "label": "Reach",
+      "value": "TCN claimed its episodes averaged 56.8m views across multiple platforms during Iran-war coverage.",
+      "detail": "Not independent unique audience, not a consistent per-person reach.",
+      "featured": false,
+      "sources": [
+        "TC29"
+      ]
+    },
+    {
+      "key": "reach-11",
+      "label": "Reach",
+      "value": "TCN reported 1.53b total cross-platform views during 8.5 weeks following Iran war outbreak, +101% vs previous eight-week period.",
+      "detail": "No independent methods or deduplication.",
+      "featured": false,
+      "sources": [
+        "TC29"
+      ]
+    },
+    {
+      "key": "reach-12",
+      "label": "Reach",
+      "value": "PolitiFact cited about 5.7m YouTube subscribers as of 2026-09-10 and 16.5m aggregate series views for The 9/11 Files.",
+      "detail": "Time-stamped third-party platform and Social Blade estimates.",
+      "featured": false,
+      "sources": [
+        "TC19"
+      ]
+    },
+    {
+      "key": "politics-13",
+      "label": "Politics",
+      "value": "Carlson spoke at 2024 Republican convention, supported Trump and described Vance as his friend.",
+      "featured": false,
+      "sources": [
+        "TC11",
+        "TC12"
+      ]
+    },
+    {
+      "key": "politics-14",
+      "label": "Politics",
+      "value": "Carlson aired Jan 2026 candidate interview with James Fishback and publicly praised his direction.",
+      "featured": false,
+      "sources": [
+        "TC20",
+        "TC21"
+      ]
+    },
+    {
+      "key": "politics-15",
+      "label": "Politics",
+      "value": "An interview and public praise are not proof of a formal campaign role or money transfer.",
+      "detail": "Explicitly limit relationship classification.",
+      "featured": false,
+      "sources": [
+        "TC20",
+        "TC21"
+      ]
+    },
+    {
+      "key": "politics-16",
+      "label": "Politics",
+      "value": "He interviewed Nick Fuentes in Oct 2025, prompting backlash and disputes over antisemitism in right-wing institutions.",
+      "featured": false,
+      "sources": [
+        "TC15",
+        "TC16",
+        "TC17"
+      ]
+    },
+    {
+      "key": "politics-17",
+      "label": "Politics",
+      "value": "In 2021 Carlson claimed an immigration-driven electoral replacement mechanism, while framing it as a franchise/political power concern rather than racial replacement.",
+      "detail": "Report exact position and response from ADL.",
+      "featured": false,
+      "sources": [
+        "TC06",
+        "TC07"
+      ]
+    },
+    {
+      "key": "politics-18",
+      "label": "Politics",
+      "value": "Carlson criticized US assistance/strategic alignment toward Israel, especially in Feb-Sep 2026.",
+      "featured": false,
+      "sources": [
+        "TC23",
+        "TC24",
+        "TC28",
+        "TC30"
+      ]
+    },
+    {
+      "key": "politics-19",
+      "label": "Politics",
+      "value": "Carlson argued 2026 Iran war was driven by Israeli demands; this is Carlson’s interpretation, not an adjudicated fact.",
+      "featured": false,
+      "sources": [
+        "TC30",
+        "TC31"
+      ]
+    },
+    {
+      "key": "politics-20",
+      "label": "Politics",
+      "value": "He said Trump privately acknowledged Israel drove the Iran war; neither White House nor independent witnesses verified that conversation.",
+      "detail": "Do not make into a fact about Trump’s private thoughts.",
+      "featured": false,
+      "sources": [
+        "TC30"
+      ]
+    },
+    {
+      "key": "claims-21",
+      "label": "Claims",
+      "value": "The show falsely alleged President Isaac Herzog visited Epstein island, according to reporting that identified a fabricated image.",
+      "detail": "Check clip and record correction if any.",
+      "featured": false,
+      "sources": [
+        "TC26"
+      ]
+    },
+    {
+      "key": "claims-22",
+      "label": "Claims",
+      "value": "His 9/11 program includes disputed claims, and PolitiFact found a number unsupported by records.",
+      "detail": "Distinguish legitimate records-release questions from conspiratorial assertions.",
+      "featured": false,
+      "sources": [
+        "TC18",
+        "TC19"
+      ]
+    },
+    {
+      "key": "legal-23",
+      "label": "Legal",
+      "value": "Fox and Fox News settled Dominion case for $787.5m; no finding Carlson individually liable evidenced here.",
+      "featured": false,
+      "sources": [
+        "TC04",
+        "TC34"
+      ]
+    },
+    {
+      "key": "legal-24",
+      "label": "Legal",
+      "value": "Fox/Carlson split announced Apr 24 2023; Fox notice does not state why.",
+      "featured": false,
+      "sources": [
+        "TC03"
+      ]
+    },
+    {
+      "key": "legal-25",
+      "label": "Legal",
+      "value": "FactCheck.org found Carlson’s 2023 January 6 coverage omitted critical context.",
+      "detail": "Record as critical analysis, not judicial finding.",
+      "featured": false,
+      "sources": [
+        "TC05"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "tucker-carlson-neil-patel-co-founded-daily-caller-2010-co-founded-tcn-2023",
+      "source": "tucker-carlson",
+      "target": "neil-patel",
+      "relType": "co-founded",
+      "role": "co-founded Daily Caller (2010); co-founded TCN (2023)",
+      "status": "verified",
+      "prominence": 3,
+      "notes": "Business collaboration, not an electoral coalition",
+      "sources": [
+        "TC02",
+        "TC13"
+      ]
+    },
+    {
+      "key": "tucker-carlson-fox-news-hosted-tucker-carlson-tonight-2016-2023",
+      "source": "tucker-carlson",
+      "target": "fox-news",
+      "relType": "hosts",
+      "role": "hosted Tucker Carlson Tonight (2016-2023)",
+      "status": "verified",
+      "prominence": 3,
+      "notes": "Ended April 2023",
+      "sources": [
+        "TC01",
+        "TC03"
+      ]
+    },
+    {
+      "key": "tucker-carlson-tucker-carlson-network-co-founder-and-presenter",
+      "source": "tucker-carlson",
+      "target": "tucker-carlson-network",
+      "relType": "co-founded",
+      "role": "co-founder and presenter",
+      "status": "verified",
+      "prominence": 3,
+      "notes": "Ensure entity matching for the organization",
+      "sources": [
+        "TC13",
+        "TC36"
+      ]
+    },
+    {
+      "key": "tucker-carlson-the-daily-caller-co-founder",
+      "source": "tucker-carlson",
+      "target": "the-daily-caller",
+      "relType": "co-founded",
+      "role": "co-founder",
+      "status": "verified",
+      "prominence": 3,
+      "notes": "Do not imply ongoing editorial control",
+      "sources": [
+        "TC02"
+      ]
+    },
+    {
+      "key": "tucker-carlson-network-1789-capital-received-startup-investment-later-bought-out",
+      "source": "tucker-carlson-network",
+      "target": "1789-capital",
+      "relType": "affiliated-with",
+      "role": "received startup investment, later bought out",
+      "status": "verified",
+      "prominence": 3,
+      "notes": "2023 capital, buyout announced June 2025; no current equity inferred",
+      "sources": [
+        "TC13"
+      ]
+    },
+    {
+      "key": "tucker-carlson-network-red-seat-ventures-podcast-marketing-advertising-services",
+      "source": "tucker-carlson-network",
+      "target": "red-seat-ventures",
+      "relType": "affiliated-with",
+      "role": "podcast marketing / advertising services",
+      "status": "verified",
+      "prominence": 3,
+      "notes": "Services association; NOT FOX editorial ownership",
+      "sources": [
+        "TC14"
+      ]
+    },
+    {
+      "key": "fox-corp-red-seat-ventures-acquired-in-2025",
+      "source": "fox-corp",
+      "target": "red-seat-ventures",
+      "relType": "affiliated-with",
+      "role": "acquired in 2025",
+      "status": "verified",
+      "prominence": 2,
+      "notes": "Distinct from TCN ownership",
+      "sources": [
+        "TC14"
+      ]
+    },
+    {
+      "key": "tucker-carlson-donald-trump-2024-public-supporter-2026-public-critic-over-iran",
+      "source": "tucker-carlson",
+      "target": "donald-trump",
+      "relType": "opposed",
+      "role": "2024 public supporter; 2026 public critic over Iran",
+      "status": "verified",
+      "prominence": 2,
+      "notes": "Time-bounded, changed political relationship",
+      "sources": [
+        "TC11",
+        "TC12",
+        "TC27",
+        "TC30"
+      ]
+    },
+    {
+      "key": "tucker-carlson-jd-vance-publicly-praised-2024-described-as-personal-friend",
+      "source": "tucker-carlson",
+      "target": "jd-vance",
+      "relType": "affiliated-with",
+      "role": "publicly praised 2024; described as personal friend",
+      "status": "verified",
+      "prominence": 2,
+      "notes": "Do not infer continuing private access or control over administration",
+      "sources": [
+        "TC12",
+        "TC28",
+        "TC31"
+      ]
+    },
+    {
+      "key": "tucker-carlson-nick-fuentes-hosted-october-2025-interview",
+      "source": "tucker-carlson",
+      "target": "nick-fuentes",
+      "relType": "hosts",
+      "role": "hosted October 2025 interview",
+      "status": "verified",
+      "prominence": 2,
+      "notes": "Not equivalent to blanket agreement with all views; criticize handling where documented",
+      "sources": [
+        "TC15",
+        "TC16"
+      ]
+    },
+    {
+      "key": "kevin-roberts-tucker-carlson-publicly-defended-carlson-in-fuentes-controversy",
+      "source": "kevin-roberts",
+      "target": "tucker-carlson",
+      "relType": "affiliated-with",
+      "role": "publicly defended Carlson in Fuentes controversy",
+      "status": "verified",
+      "prominence": 2,
+      "notes": "Roberts response does not establish Heritage organization endorsed Fuentes",
+      "sources": [
+        "TC16",
+        "TC17"
+      ]
+    },
+    {
+      "key": "tucker-carlson-james-fishback-hosted-january-2026-interview-favorable-promotional-remarks",
+      "source": "tucker-carlson",
+      "target": "james-fishback",
+      "relType": "hosts",
+      "role": "hosted January 2026 interview; favorable promotional remarks",
+      "status": "verified",
+      "prominence": 2,
+      "notes": "Direct media amplification, not proof financial or official campaign role",
+      "sources": [
+        "TC20",
+        "TC21",
+        "TC22"
+      ]
+    },
+    {
+      "key": "tucker-carlson-byron-donalds-donalds-discussed-criticized-in-fishback-interview",
+      "source": "tucker-carlson",
+      "target": "byron-donalds",
+      "relType": "hosts",
+      "role": "Donalds discussed/criticized in Fishback interview",
+      "status": "verified",
+      "prominence": 1,
+      "notes": "Distinguish Fishback claims from host claims; exact utterances require episode transcript",
+      "sources": [
+        "TC20",
+        "TC21"
+      ]
+    },
+    {
+      "key": "tucker-carlson-mike-huckabee-interviewed-feb-2026-regarding-us-israel-relationship",
+      "source": "tucker-carlson",
+      "target": "mike-huckabee",
+      "relType": "hosts",
+      "role": "interviewed Feb 2026 regarding US-Israel relationship",
+      "status": "verified",
+      "prominence": 1,
+      "notes": "Direct public debate, not alliance",
+      "sources": [
+        "TC23",
+        "TC24",
+        "TC25"
+      ]
+    },
+    {
+      "key": "tucker-carlson-jonathan-greenblatt-public-subject-of-adl-chief-s-criticisms",
+      "source": "tucker-carlson",
+      "target": "jonathan-greenblatt",
+      "relType": "opposed",
+      "role": "public subject of ADL chief’s criticisms",
+      "status": "verified",
+      "prominence": 1,
+      "notes": "Criticism from Greenblatt toward Carlson, not reciprocal alliance",
+      "sources": [
+        "TC07"
+      ]
+    },
+    {
+      "key": "tucker-carlson-vladimir-putin-interviewed-2024",
+      "source": "tucker-carlson",
+      "target": "vladimir-putin",
+      "relType": "hosts",
+      "role": "interviewed 2024",
+      "status": "verified",
+      "prominence": 1,
+      "notes": "Foreign figure as US-facing event participant only; no separate profile",
+      "sources": [
+        "TC09",
+        "TC10"
+      ]
+    },
+    {
+      "key": "tucker-carlson-megyn-kelly-similar-public-critics-of-2026-iran-decision",
+      "source": "tucker-carlson",
+      "target": "megyn-kelly",
+      "relType": "opposed",
+      "role": "similar public critics of 2026 Iran decision",
+      "status": "verified",
+      "prominence": 1,
+      "notes": "Parallel publicly stated positions ≠ coordinated organization",
+      "sources": [
+        "TC27"
+      ]
+    },
+    {
+      "key": "tucker-carlson-ben-shapiro-publicly-debated-opposing-approaches-to-antisemitism-and-right-wing-boundaries",
+      "source": "tucker-carlson",
+      "target": "ben-shapiro",
+      "relType": "opposed",
+      "role": "publicly debated opposing approaches to antisemitism and right-wing boundaries",
+      "status": "verified",
+      "prominence": 1,
+      "notes": "Seek direct first-person exchanges before linking as formal adversarial campaign",
+      "sources": [
+        "TC15",
+        "TC16"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "key": "2000s-cnn-and-msnbc-commentator",
+      "date": "2026",
+      "title": "CNN and MSNBC commentator",
+      "summary": "Hosted Crossfire at CNN and later Tucker on MSNBC before Fox appointment; formal dates to be crosschecked in employer history.",
+      "category": "career",
+      "significance": 3,
+      "status": "verified",
+      "chapter": "the-commentator-who-became-a-media-institution",
+      "sources": [
+        "TC01"
+      ]
+    },
+    {
+      "key": "2010-founds-daily-caller",
+      "date": "2010",
+      "title": "Founds Daily Caller",
+      "summary": "Co-founds conservative news site The Daily Caller with Neil Patel.",
+      "category": "career",
+      "significance": 3,
+      "status": "verified",
+      "chapter": "the-commentator-who-became-a-media-institution",
+      "sources": [
+        "TC02"
+      ]
+    },
+    {
+      "key": "2016-11-14-fox-primetime-show-launch",
+      "date": "2016-11-14",
+      "title": "Fox primetime show launch",
+      "summary": "Tucker Carlson Tonight debuts in Fox 7 p.m. slot, later moves to 8 p.m.",
+      "category": "career",
+      "significance": 3,
+      "status": "verified",
+      "chapter": "the-commentator-who-became-a-media-institution",
+      "sources": [
+        "TC01"
+      ]
+    },
+    {
+      "key": "2021-04-08-replacement-electorate-remarks",
+      "date": "2021-04-08",
+      "title": "Replacement/electorate remarks",
+      "summary": "In a broadcast interview, argues Democratic immigration aims to replace existing electorate; characterizes his rationale as voting rights.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "chapter": "fox-era-persuasion-immigration-and-january-6",
+      "sources": [
+        "TC06"
+      ]
+    },
+    {
+      "key": "2021-04-09-adl-response",
+      "date": "2021-04-09",
+      "title": "ADL response",
+      "summary": "ADL chief Jonathan Greenblatt sends Fox a letter condemning Carlson’s remarks.",
+      "category": "career",
+      "significance": 3,
+      "status": "verified",
+      "chapter": "fox-era-persuasion-immigration-and-january-6",
+      "sources": [
+        "TC07"
+      ]
+    },
+    {
+      "key": "2023-03-06-jan-6-footage-segment",
+      "date": "2023-03-06",
+      "title": "Jan. 6 footage segment",
+      "summary": "Carlson uses portions of released security video to argue against dominant riot narrative; fact-checkers and Capitol Police challenge omissions.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "a-new-media-company-and-the-limits-of-audience-statistics",
+      "sources": [
+        "TC05"
+      ]
+    },
+    {
+      "key": "2023-04-18-fox-settles-dominion-lawsuit",
+      "date": "2023-04-18",
+      "title": "Fox settles Dominion lawsuit",
+      "summary": "Fox and Fox News settle with Dominion for $787.5 million; this is a corporate outcome, not a Carlson judgment.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "a-new-media-company-and-the-limits-of-audience-statistics",
+      "sources": [
+        "TC04"
+      ]
+    },
+    {
+      "key": "2023-04-21-final-fox-show",
+      "date": "2023-04-21",
+      "title": "Final Fox show",
+      "summary": "Fox later identifies April 21 as last airing of Carlson’s show.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "a-new-media-company-and-the-limits-of-audience-statistics",
+      "sources": [
+        "TC03"
+      ]
+    },
+    {
+      "key": "2023-04-24-fox-carlson-split-announced",
+      "date": "2023-04-24",
+      "title": "Fox/Carlson split announced",
+      "summary": "Fox says they have agreed to part ways; reason not established by announcement.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "from-trump-ally-to-post-trump-factional-critic",
+      "sources": [
+        "TC03"
+      ]
+    },
+    {
+      "key": "2023-12-11-tcn-launches-subscriptions",
+      "date": "2023-12-11",
+      "title": "TCN launches subscriptions",
+      "summary": "Subscription streaming model at $9 monthly or $72 annual at launch.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "from-trump-ally-to-post-trump-factional-critic",
+      "sources": [
+        "TC08"
+      ]
+    },
+    {
+      "key": "2024-02-06-interviews-vladimir-putin",
+      "date": "2024-02-06",
+      "title": "Interviews Vladimir Putin",
+      "summary": "Interview recorded; released publicly Feb 8, centered on Ukraine and US policy.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "israel-us-political-obligations-and-the-huckabee-confrontation",
+      "sources": [
+        "TC09",
+        "TC10"
+      ]
+    },
+    {
+      "key": "2024-07-18-republican-convention-speech",
+      "date": "2024-07-18",
+      "title": "Republican convention speech",
+      "summary": "Carlson endorses Trump’s approach and praises friend JD Vance on RNC stage.",
+      "category": "ideas",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "israel-us-political-obligations-and-the-huckabee-confrontation",
+      "sources": [
+        "TC11",
+        "TC12"
+      ]
+    },
+    {
+      "key": "2025-02-10-red-seat-ownership-transition",
+      "date": "2025-02-10",
+      "title": "Red Seat ownership transition",
+      "summary": "Fox purchases advertising/services firm Red Seat Ventures, which services Carlson and other podcasts.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "israel-us-political-obligations-and-the-huckabee-confrontation",
+      "sources": [
+        "TC14"
+      ]
+    },
+    {
+      "key": "2025-06-13-tcn-ownership-buyout-reported",
+      "date": "2025-06-13",
+      "title": "TCN ownership buyout reported",
+      "summary": "Carlson and Patel buy out outside TCN investors; Axios reports original ~15m funding.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "immigration-and-the-limits-of-ideological-labels",
+      "sources": [
+        "TC13"
+      ]
+    },
+    {
+      "key": "2025-09-23-the-9-11-files-launched",
+      "date": "2025-09-23",
+      "title": "The 9/11 Files launched",
+      "summary": "TCN releases five-part documentary questioning established accounts of 9/11.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "immigration-and-the-limits-of-ideological-labels",
+      "sources": [
+        "TC18",
+        "TC19"
+      ]
+    },
+    {
+      "key": "2025-10-27-interviews-nick-fuentes",
+      "date": "2025-10-27",
+      "title": "Interviews Nick Fuentes",
+      "summary": "Long-form platform interview causes criticism of perceived normalization of white nationalist antisemitism and disputes within Heritage.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "nick-fuentes-institutional-gatekeeping-and-antisemitism-disputes",
+      "sources": [
+        "TC15",
+        "TC16",
+        "TC17"
+      ]
+    },
+    {
+      "key": "2026-01-09-interviews-james-fishback",
+      "date": "2026-01-09",
+      "title": "Interviews James Fishback",
+      "summary": "Publishes candidate interview with favorable introduction; discusses Donalds, DeSantis, immigration, Israel and state power.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "nick-fuentes-institutional-gatekeeping-and-antisemitism-disputes",
+      "sources": [
+        "TC20",
+        "TC21"
+      ]
+    },
+    {
+      "key": "2026-01-22-fishback-coverage-scrutinized",
+      "date": "2026-01-22",
+      "title": "Fishback coverage scrutinized",
+      "summary": "Media Matters analyzes media support of Fishback, including Carlson platform.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "chapter": "nick-fuentes-institutional-gatekeeping-and-antisemitism-disputes",
+      "sources": [
+        "TC22"
+      ]
+    },
+    {
+      "key": "2026-02-20-huckabee-interview-released",
+      "date": "2026-02-20",
+      "title": "Huckabee interview released",
+      "summary": "Carlson interviews US ambassador to Israel Mike Huckabee; widely debated biblical territorial rights and US Israel policy.",
+      "category": "career",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "james-fishback-direct-amplification-rather-than-proven-campaign-coordination",
+      "sources": [
+        "TC23",
+        "TC24",
+        "TC25"
+      ]
+    },
+    {
+      "key": "2026-02-28-condemns-iran-war-strikes",
+      "date": "2026-02-28",
+      "title": "Condemns Iran war strikes",
+      "summary": "After US strikes on Iran, Carlson condemns decision; first-person remarks relayed through journalists.",
+      "category": "career",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "james-fishback-direct-amplification-rather-than-proven-campaign-coordination",
+      "sources": [
+        "TC27",
+        "TC38"
+      ]
+    },
+    {
+      "key": "2026-04-30-tcn-publishes-audience-growth-claims",
+      "date": "2026-04-30",
+      "title": "TCN publishes audience-growth claims",
+      "summary": "Network reports 1.53b aggregate views during first eight and a half weeks of Iran conflict.",
+      "category": "career",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "conspiratorial-claims-corrections-and-changing-views",
+      "sources": [
+        "TC29"
+      ]
+    },
+    {
+      "key": "2026-05-03-nyt-interview-on-trump-rupture",
+      "date": "2026-05-03",
+      "title": "NYT interview on Trump rupture",
+      "summary": "Carlson describes Trump breaking promises and relationship with JD Vance; reflects on Fuentes interview.",
+      "category": "career",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "conspiratorial-claims-corrections-and-changing-views",
+      "sources": [
+        "TC28"
+      ]
+    },
+    {
+      "key": "2026-09-11-9-11-claims-investigated",
+      "date": "2026-09-11",
+      "title": "9/11 claims investigated",
+      "summary": "PolitiFact investigates Carlson’s 9/11 claims and gives dated 5.7m YouTube subscribers estimate.",
+      "category": "legal",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "conspiratorial-claims-corrections-and-changing-views",
+      "sources": [
+        "TC19"
+      ]
+    },
+    {
+      "key": "2026-09-24-npr-newsmakers-interview",
+      "date": "2026-09-24",
+      "title": "NPR Newsmakers interview",
+      "summary": "Carlson details break with Trump, alleges Trump acknowledged Israeli pressure, denies antisemitism.",
+      "category": "career",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "what-the-numbers-cannot-tell-us-about-political-power",
+      "sources": [
+        "TC30",
+        "TC31"
+      ]
+    },
+    {
+      "key": "2026-10-24-ft-retrospective",
+      "date": "2026-10-24",
+      "title": "FT retrospective",
+      "summary": "FT interviews Carlson about limits of political influence and post-Trump Republican conflict.",
+      "category": "career",
+      "significance": 1,
+      "status": "verified",
+      "chapter": "what-the-numbers-cannot-tell-us-about-political-power",
+      "sources": [
+        "TC32"
+      ]
+    }
+  ],
+  "statements": [
+    {
+      "key": "2021-04-08-statement",
+      "date": "2021-04-08",
+      "issue": "Political views",
+      "venue": "Broadcast excerpt shown by Media Matters; verify source video for final quote field",
+      "quote": "If you change the population, you dilute the political power of the people who live there.",
+      "source": "TC06"
+    },
+    {
+      "key": "2024-07-18-statement",
+      "date": "2024-07-18",
+      "issue": "Political views",
+      "venue": "Original RNC speech; transcript capitalization normalized; check video",
+      "quote": "A President’s duty is to his citizens.",
+      "source": "TC12"
+    },
+    {
+      "key": "2025-06-13-statement",
+      "date": "2025-06-13",
+      "issue": "Political views",
+      "venue": "Carlson directly quoted by Axios",
+      "quote": "Our business is owned by the people who work there.",
+      "source": "TC13"
+    },
+    {
+      "key": "2026-01-09-statement",
+      "date": "2026-01-09",
+      "issue": "Political views",
+      "venue": "Original episode description; not verified as spoken sentence on audio",
+      "quote": "Pretty soon, all winning Republican politicians will talk like this.",
+      "source": "TC20"
+    },
+    {
+      "key": "2026-02-20-statement",
+      "date": "2026-02-20",
+      "issue": "Political views",
+      "venue": "Attributed by Axios to interview; verify video timecode before import",
+      "quote": "Does Israel have the right to that land?",
+      "source": "TC24"
+    },
+    {
+      "key": "2026-02-28-statement",
+      "date": "2026-02-28",
+      "issue": "Political views",
+      "venue": "Reported by journalist relayed in Guardian; not first-person source, DO NOT publish as verified verbatim quote",
+      "quote": "disgusting and evil",
+      "source": "TC38"
+    },
+    {
+      "key": "2026-04-30-statement",
+      "date": "2026-04-30",
+      "issue": "Political views",
+      "venue": "First-party company PR; NOT Carlson personal quote",
+      "quote": "People can tell they’re not getting the full story.",
+      "source": "TC29"
+    },
+    {
+      "key": "2026-05-03-statement",
+      "date": "2026-05-03",
+      "issue": "Political views",
+      "venue": "NYT interview through secondary transcript; verify original video",
+      "quote": "He betrayed his promises to me and everybody else.",
+      "source": "TC28"
+    },
+    {
+      "key": "2026-05-03-statement-2",
+      "date": "2026-05-03",
+      "issue": "Political views",
+      "venue": "Interview text through retranscription; quote short and context matters",
+      "quote": "I am opposed to antisemitism.",
+      "source": "TC28"
+    },
+    {
+      "key": "2026-09-24-statement",
+      "date": "2026-09-24",
+      "issue": "Political views",
+      "venue": "Original NPR audio with rush transcript; attributed opinion not established causal fact",
+      "quote": "He was pushed by a foreign country to do this.",
+      "source": "TC30"
+    },
+    {
+      "key": "2026-09-24-statement-2",
+      "date": "2026-09-24",
+      "issue": "Political views",
+      "venue": "Referent: tribalism; check original NPR video for transcription accuracy",
+      "quote": "I fear it and worry about it a lot.",
+      "source": "TC31"
+    }
+  ],
+  "finance": {
+    "coverage": "Noncandidate broadcaster and private-company founder; no verified FEC candidate account or personal donor total."
+  },
+  "ideas": {
+    "traditions": [],
+    "influences": [],
+    "works": [],
+    "featuredQuotes": [
+      "2021-04-08-statement",
+      "2024-07-18-statement",
+      "2025-06-13-statement"
+    ]
+  },
+  "chapters": [
+    {
+      "key": "the-commentator-who-became-a-media-institution",
+      "title": "The commentator who became a media institution",
+      "dek": "Tucker Carlson is an American political-media figure who moved from CNN and MSNBC to Fox News before founding the subscription-based Tucker Carlson Network. He has used his independent platform to amplify candidates including James Fishback, interview controversial figures including Nick Fuentes, and challenge the Republican establishment over Israel, immigration, and the 2026 war with Iran. His ties to Trump shifted from public support in 2024 to sharp criticism in 2026, while his published audience estimates remain difficult to translate into unique reach or electoral effect.",
+      "body": "Carlson moved through CNN and MSNBC before Fox launched Tucker Carlson Tonight in November 2016. The Daily Caller, which he co-founded with Neil Patel in 2010, anticipated the digital creator-to-publisher model he later adopted. Fox said he left after the April 21, 2023 show, but its statement does not identify a cause for the split. [[TC01,TC02,TC03]]\n\nHis unusual political position follows from control over distribution: cable prime time supplied regular exposure, while TCN’s direct subscription and podcast outlets enabled him to host guests without a conventional network programming process. This is a change in business structure, not independent evidence that his audience grew. [[TC08,TC13,TC36]]"
+    },
+    {
+      "key": "fox-era-persuasion-immigration-and-january-6",
+      "title": "Fox-era persuasion, immigration and January 6",
+      "dek": "",
+      "body": "On April 8, 2021, Carlson asserted that Democrats sought to change the electorate through immigration. He framed the issue as dilution of existing voters’ political influence and rejected the description of his claim as explicitly racial. ADL chief Jonathan Greenblatt argued that the rhetoric drew on the white-supremacist “great replacement” idea. Record the statement and the criticism separately; a warning by an advocacy organization is evidence of its response, not evidence of the speaker’s private intent. [[TC06,TC07]]\n\nIn March 2023 Carlson aired selected January 6 surveillance footage and argued the total record challenged the characterization of the riot. FactCheck.org and Capitol Police noted his selective framing did not account for documented violence and officer assaults. Fox’s $787.5m settlement with Dominion in April 2023 settled the company’s defamation case; it was not a personal judicial finding against Carlson. [[TC05,TC04,TC34]]"
+    },
+    {
+      "key": "a-new-media-company-and-the-limits-of-audience-statistics",
+      "title": "A new media company and the limits of audience statistics",
+      "dek": "",
+      "body": "TCN began paid subscriptions in December 2023, with launch pricing of $9 per month or $72 annually. According to Axios, Carlson and Patel originally raised about $15m from investors including 1789 Capital, and bought those investors out by June 2025. The private company’s subscription revenue, profit, operating costs and current cap table cannot be independently established from the materials reviewed. [[TC08,TC13]]\n\nTCN’s April 30, 2026 press release claimed 1.53 billion cross-platform content views during the first eight and a half weeks of the Iran conflict and an average of 56.8 million views per episode. These are publisher-reported exposure metrics, subject to unknown duplication, engagement length and platform counting conventions; do not compare them directly with cable television average-minute audiences. Separately, PolitiFact reported a September 2026 snapshot of about 5.7 million YouTube subscribers. [[TC29,TC19]]"
+    },
+    {
+      "key": "from-trump-ally-to-post-trump-factional-critic",
+      "title": "From Trump ally to post-Trump factional critic",
+      "dek": "",
+      "body": "Carlson spoke favorably of Trump at the 2024 Republican National Convention and praised JD Vance, calling him a friend. He remained an influential public supporter, although claims that he selected Vance personally exceed the evidence gathered here. In February 2026 he broke publicly with the administration over the Iran strikes, later arguing Israel had driven the decision against American interests. These are arguments about motive and policy, not independently established secret control. [[TC11,TC12,TC27,TC38]]\n\nIn his May 2026 New York Times interview and September NPR Newsmakers appearance, Carlson said he thought Trump had broken promises to supporters, criticized the administration’s foreign policy, and still spoke positively of Vance. He asserted that Trump made a dismissive private remark about war risks; NPR said the White House did not specifically address the alleged exchange. The record supports Carlson’s report of a conversation, not verification of the conversation itself. [[TC28,TC30,TC31]]"
+    },
+    {
+      "key": "israel-us-political-obligations-and-the-huckabee-confrontation",
+      "title": "Israel, US political obligations and the Huckabee confrontation",
+      "dek": "",
+      "body": "The Feb. 2026 interview with US Ambassador to Israel Mike Huckabee raised concrete questions about biblical territorial claims, treatment of Christians, US aid and potential war with Iran. Huckabee’s speculation about larger historical boundaries generated international criticism; he later qualified the remarks, saying Israel was not seeking to take over neighboring states. Report Carlson’s questions, Huckabee’s responses and reactions separately. [[TC23,TC24,TC25]]\n\nThe same program contained allegations that required independent verification. Times of Israel identified one Carlson claim about Isaac Herzog visiting Epstein’s island as false, based on a fabricated image. Any claims of systematic US political control by Israel or AIPAC should be attributed to speakers and tested against specific lobbying filings, political expenditure datasets and documented votes; this project has not verified a direct Carlson–AIPAC financial relationship. [[TC26,TC28,TC30]]"
+    },
+    {
+      "key": "immigration-and-the-limits-of-ideological-labels",
+      "title": "Immigration and the limits of ideological labels",
+      "dek": "",
+      "body": "Carlson’s 2021 “replacement” remarks tied immigration to party competition and democratic legitimacy. He has subsequently hosted candidates and commentators who want restrictions on immigration, including James Fishback in January 2026. Those observations justify a record on his restrictionist political rhetoric, but do not establish a single, detailed legal-immigration program or a formal legislative agenda authored by Carlson. [[TC06,TC20,TC21]]\n\nThe proper comparative lens for Worldview is: what did Carlson himself say; what did a guest say; what did the host affirm or reject; and what policies were adopted by governments afterward. Inferring an endorsement of each guest position from the mere act of interviewing is not sound. [[TC15,TC20,TC23]]"
+    },
+    {
+      "key": "nick-fuentes-institutional-gatekeeping-and-antisemitism-disputes",
+      "title": "Nick Fuentes, institutional gatekeeping and antisemitism disputes",
+      "dek": "",
+      "body": "Carlson interviewed Nick Fuentes on October 27, 2025, for more than two hours. Fuentes has publicly espoused white-nationalist and antisemitic positions; his access to Carlson’s audience produced criticism about normalization and how aggressively the host challenged him. Kevin Roberts of the Heritage Foundation defended Carlson’s right to conduct the interview, setting off a broader dispute inside and around Heritage. The interview is a clear documented platform relationship; reciprocal ideological endorsement requires its own evidence. [[TC15,TC16,TC17]]\n\nIn May and September 2026 interviews Carlson rejected the charge that criticism of Israel is intrinsically antisemitic and denied antisemitism himself. At the same time, critics argued that some of his rhetoric and guest selections trafficked in historically antisemitic conspiratorial motifs. A careful dossier retains his self-description, specific remarks, and critics’ objections, rather than giving either side sole interpretive authority. [[TC28,TC31,TC33]]"
+    },
+    {
+      "key": "james-fishback-direct-amplification-rather-than-proven-campaign-coordination",
+      "title": "James Fishback: direct amplification rather than proven campaign coordination",
+      "dek": "",
+      "body": "Carlson hosted gubernatorial candidate James Fishback on January 9, 2026. The episode addressed immigration, Ron DeSantis, Florida legislator Randy Fine, Byron Donalds’s financing, and competing visions of the Republican Party. The program’s publisher said that winning Republican politicians would eventually speak like Fishback. This is significant positive media exposure and the strongest direct Carlson–Fishback relationship found so far. [[TC20,TC21]]\n\nThat favorable introduction does not document donations, an official campaign post, independent expenditures, private strategic advice, or a reciprocal formal endorsement by Fishback. Media Matters criticized the interview in an explicitly adversarial analysis; that document is evidence of critical reception and a research lead, not a replacement for the primary recording. [[TC22,TC20]]"
+    },
+    {
+      "key": "conspiratorial-claims-corrections-and-changing-views",
+      "title": "Conspiratorial claims, corrections and changing views",
+      "dek": "",
+      "body": "TCN’s 2025 documentary The 9/11 Files challenged established accounts of the attacks, including claims about foreknowledge and the collapse of World Trade Center 7. PolitiFact’s September 2026 investigation traced a change from Carlson’s earlier hostility to such theories and identified claims it found unsupported or misleading. The editorial record should separate calls for declassification (a policy position) from any claim of proven government or foreign orchestration of the attacks. [[TC18,TC19]]\n\nThe evidentiary stakes are high because large independent digital audiences can spread claims widely without pre-publication newsroom review. Audience reach alone cannot measure persuasion, electoral causality or truthfulness. The public interest is to reconstruct what Carlson claimed, when, what contradictory records showed, and whether he later corrected the record. [[TC19,TC26,TC29]]"
+    },
+    {
+      "key": "what-the-numbers-cannot-tell-us-about-political-power",
+      "title": "What the numbers cannot tell us about political power",
+      "dek": "",
+      "body": "The Carlson network’s self-reported reach is substantial but cannot be translated into votes, supporters, unique persons or dollar donations. Similarly, Carlson’s personal federal political giving has not been verified; he is not a federal candidate, and TCN financing must not be treated as FEC candidate receipts. The source hierarchy should prioritize verified campaign/committee transfers, registration data, original sponsorship disclosures and any legally required disclosures that actually exist. [[TC13,TC29,TC39]]\n\nThe plausible mechanism is agenda-setting and elite faction signaling: Carlson introduces rising candidates or controversial speakers to a large audience, then party elites respond or debate that material. Fishback’s January 2026 appearance, the Heritage reaction to the Fuentes interview, and the Huckabee debate are traceable examples. Measuring their actual influence requires subsequent polling, candidate-level donation data, event attendance, and traceable public actions—none of which should be fabricated here. [[TC20,TC16,TC24]]"
+    }
+  ]
+}

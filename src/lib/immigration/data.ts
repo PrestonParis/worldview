@@ -309,6 +309,10 @@ export async function loadImmigration() {
       compare: `vs ${prev(netMigration)?.period ?? ""}`,
       spark: netMigration.map((p) => p.value),
     },
+    naturalChange: last(naturalChange) && {
+      value: last(naturalChange)!.value,
+      period: last(naturalChange)!.period,
+    },
     foreignBorn: last(fb) && {
       value: last(fb)!.value,
       period: last(fb)!.period,

@@ -33,12 +33,16 @@ function Row({
         const years = [...row.years].sort();
         return (
           <li key={row.entityId} className="flex items-center justify-between gap-4 py-2 text-sm">
-            <Link
-              href={e ? publicEntityPath(e) : "#"}
-              className="min-w-0 truncate font-medium text-slate-800 hover:underline dark:text-slate-200"
-            >
-              {e?.name ?? "Unknown entity"}
-            </Link>
+            {e ? (
+              <Link
+                href={publicEntityPath(e)}
+                className="min-w-0 truncate font-medium text-slate-800 hover:underline dark:text-slate-200"
+              >
+                {e.name}
+              </Link>
+            ) : (
+              <span className="min-w-0 truncate font-medium text-slate-800 dark:text-slate-200">Unknown entity</span>
+            )}
             <span className="shrink-0 tabular-nums text-slate-600 dark:text-slate-400">
               {row.total > 0 ? formatAmount(row.total, "USD") : `${row.filings} filing${row.filings === 1 ? "" : "s"}`}
               <span className="ml-2 text-xs text-slate-400">

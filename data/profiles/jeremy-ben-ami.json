@@ -1,0 +1,654 @@
+{
+  "subject": "ben-ami",
+  "reviewedAt": "2026-10-25",
+  "sourcesVerifiedAt": "2026-10-25",
+  "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Jeremy%20Ben-Ami%202019.jpg?width=400",
+  "brief": {
+    "inclusion": "Founder and president of J Street, the liberal pro-Israel lobby and PAC he built from 2007 into the main organized Jewish counterweight to AIPAC inside the Democratic Party, now pressing to end U.S. military subsidies to Israel and spending against AIPAC-backed candidates.",
+    "identifiers": {
+      "fec_contributor": "BEN-AMI, JEREMY"
+    },
+    "namesakes": "No other FEC contributor of this name was found; rows file from Washington or Chevy Chase with J Street or Fenton employers.",
+    "coverage": {
+      "from": "1962",
+      "through": "2026-10-25",
+      "lags": "J Street Action Fund 2026 independent expenditures update as filed. J Street's Form 990s on ProPublica run through 2024. His personal political giving is small; the organization's money is not counted as his."
+    },
+    "openQuestions": [
+      "Exact birth date not in any source found; Wikipedia gives 1962 only.",
+      "J Street's founding: Wikipedia gives November 29, 2007; public launch and the PAC came in April 2008.",
+      "J Street's total 2015 Iran-deal spending is described only as \"multimillion dollar.\""
+    ],
+    "review": []
+  },
+  "summary": "Founder of J Street, the \"pro-Israel, pro-peace\" lobby and PAC he launched in 2008 to give Democrats a Jewish organization that backs a two-state solution and opposes Israeli settlement policy. He led J Street's campaign for the 2015 Iran nuclear deal, wrote in August 2025 that he had been persuaded courts will find Israel violated the Genocide Convention, and in 2026 backed ending U.S. subsidies for Israeli arms purchases while directing J Street's largest-ever super PAC spending, $3 million, against AIPAC-backed Republicans.",
+  "roles": [
+    {
+      "label": "Organization founder",
+      "detail": "Founder and president of J Street (2007–) and its PAC",
+      "sources": ["wikipedia-jstreet", "wikipedia"]
+    },
+    {
+      "label": "Political operative",
+      "detail": "Deputy domestic policy adviser to President Clinton (mid-1990s); national policy director for Howard Dean's 2004 campaign",
+      "sources": ["princeton-2026", "moment-2011"]
+    },
+    {
+      "label": "Communications strategist",
+      "detail": "Senior vice president, Fenton Communications; earlier communications director of the New Israel Fund",
+      "sources": ["wikipedia"]
+    },
+    {
+      "label": "Foundation trustee",
+      "detail": "Trustee of the Rockefeller Brothers Fund since February 2026",
+      "sources": ["ji-rbf-2026"]
+    },
+    {
+      "label": "Author",
+      "detail": "A New Voice for Israel (2011)",
+      "sources": ["wikipedia"]
+    }
+  ],
+  "finance": {
+    "fec": {
+      "contributorName": "BEN-AMI, JEREMY",
+      "namePattern": "^BEN[- ]?AMI, JEREMY( S\\.?)?( MR\\.?)?$",
+      "employerPattern": "J\\.? ?STREET|JSTREET|FENTON|SELF|DEAN",
+      "cities": ["WASHINGTON", "BETHESDA", "CHEVY CHASE", "NORTH CHEVY CHASE"],
+      "source": "fec-benami"
+    },
+    "coverage": "Ben-Ami's own itemized federal contributions reported to the FEC on Schedule A, matched on exact name plus employer or Washington-area city. They are small and mostly to JStreetPAC. Spending by J Street, JStreetPAC and the J Street Action Fund super PAC is the organization's, not his, and is not counted."
+  },
+  "entities": {
+    "ben-ami": {
+      "match": { "name": "Jeremy Ben-Ami", "type": "politician" }
+    },
+    "jstreet": {
+      "match": { "identifier": ["fec_committee", "C90014028"] }
+    },
+    "jstreet-action": {
+      "match": { "identifier": ["fec_committee", "C00815753"] }
+    },
+    "aipac": {
+      "match": { "identifier": ["fec_committee", "C00797670"] }
+    },
+    "soros": {
+      "match": { "name": "George Soros", "type": "donor" }
+    },
+    "collins": {
+      "match": { "identifier": ["fec_candidate", "S6GA00390"] }
+    },
+    "rbf": {
+      "create": {
+        "name": "Rockefeller Brothers Fund",
+        "type": "organization",
+        "description": "New York philanthropic foundation established in 1940; a longtime funder of J Street.",
+        "websiteUrl": "https://www.rbf.org/"
+      }
+    },
+    "nif": {
+      "create": {
+        "name": "New Israel Fund",
+        "type": "organization",
+        "description": "Foundation supporting civil-rights and democracy organizations in Israel.",
+        "websiteUrl": "https://www.nif.org/"
+      }
+    },
+    "fenton": {
+      "create": {
+        "name": "Fenton Communications",
+        "type": "company",
+        "description": "Public-relations firm working for progressive causes."
+      }
+    }
+  },
+  "sources": [
+    {
+      "key": "wikipedia",
+      "title": "Jeremy Ben-Ami",
+      "publisher": "Wikipedia",
+      "type": "secondary",
+      "url": "https://en.wikipedia.org/wiki/Jeremy_Ben-Ami",
+      "notes": "Reference work; cited for family background, education, early career and marriage."
+    },
+    {
+      "key": "wikipedia-jstreet",
+      "title": "J Street",
+      "publisher": "Wikipedia",
+      "type": "secondary",
+      "url": "https://en.wikipedia.org/wiki/J_Street",
+      "notes": "Reference work drawing on IRS filings and contemporary reporting; cited for founding dates, PAC totals and the 2010 Soros disclosure."
+    },
+    {
+      "key": "princeton-2026",
+      "title": "Jeremy Ben-Ami '84, President, J Street",
+      "publisher": "Princeton School of Public and International Affairs",
+      "type": "primary",
+      "publishedAt": "2026-09-15",
+      "url": "https://spia.princeton.edu/events/jeremy-ben-ami-84-president-j-street",
+      "notes": "Event biography."
+    },
+    {
+      "key": "moment-2011",
+      "title": "The Man on J Street: The Story of Jeremy Ben-Ami",
+      "publisher": "Moment",
+      "author": "Mandy Katz",
+      "type": "article",
+      "publishedAt": "2010-03",
+      "url": "https://momentmag.com/the-man-on-j-street-the-story-of-jeremy-ben-ami/",
+      "notes": "From the March–April 2010 issue; posted online in 2011."
+    },
+    {
+      "key": "jstreet-iran-2015",
+      "title": "J Street Launches Multimillion Dollar Campaign to Build Support for Iran Deal",
+      "publisher": "J Street",
+      "type": "official_statement",
+      "publishedAt": "2015-07-15",
+      "url": "https://jstreet.org/press-releases/j-street-launches-multimillion-dollar-campaign-to-build-support-for-iran-deal_1/"
+    },
+    {
+      "key": "jta-genocide-2025",
+      "title": "J Street head says he was persuaded by arguments that Israel is committing genocide in Gaza",
+      "publisher": "JTA",
+      "author": "Grace Gilson",
+      "type": "article",
+      "publishedAt": "2025-08-04",
+      "url": "https://www.jta.org/2025/08/04/united-states/j-street-head-says-he-was-persuaded-by-arguments-that-israel-is-committing-genocide-in-gaza",
+      "notes": "Quotes his Substack newsletter of August 3, 2025."
+    },
+    {
+      "key": "ji-rbf-2026",
+      "title": "J Street President Jeremy Ben-Ami elected as trustee of Rockefeller Brothers Fund",
+      "publisher": "Jewish Insider",
+      "author": "Matthew Kassel",
+      "type": "article",
+      "publishedAt": "2026-02-11",
+      "url": "https://jewishinsider.com/2026/02/j-street-president-jeremy-ben-ami-rockefeller-brothers-fund-trustee/"
+    },
+    {
+      "key": "jstreet-aid-2026",
+      "title": "J Street's Position on US-Israel Defense Technology Cooperation and the Future of the Security Relationship",
+      "publisher": "J Street",
+      "type": "official_statement",
+      "publishedAt": "2026-06-04",
+      "url": "https://jstreet.org/press-releases/j-streets-position-on-us-israel-defense-technology-cooperation-and-the-future-of-the-security-relationship/"
+    },
+    {
+      "key": "jta-aipac-2026",
+      "title": "J Street goes on the offensive against AIPAC-backed candidates",
+      "publisher": "JTA",
+      "author": "Joseph Strauss",
+      "type": "article",
+      "publishedAt": "2026-09-11",
+      "url": "https://www.jta.org/2026/09/11/politics/j-street-goes-on-the-offensive-against-aipac-backed-candidates"
+    },
+    {
+      "key": "fec-benami",
+      "title": "Individual contributions: Ben-Ami, Jeremy (Schedule A)",
+      "publisher": "Federal Election Commission",
+      "type": "filing",
+      "url": "https://www.fec.gov/data/receipts/individual-contributions/?contributor_name=BEN-AMI%2C+JEREMY",
+      "documentId": "OpenFEC /schedules/schedule_a"
+    }
+  ],
+  "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "1962",
+      "detail": "Raised in New York City.",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "sex",
+      "label": "Sex",
+      "value": "Male",
+      "sources": ["wikipedia", "jta-genocide-2025"]
+    },
+    {
+      "key": "religion",
+      "label": "Religion",
+      "value": "Jewish",
+      "detail": "Bar mitzvah at Congregation Rodeph Sholom, New York; his great-grandparents were among the first settlers of Petah Tikva.",
+      "sources": ["wikipedia", "princeton-2026"]
+    },
+    {
+      "key": "spouse",
+      "label": "Spouse",
+      "value": "Alisa Biran",
+      "detail": "Married 2001.",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "party",
+      "label": "Party",
+      "value": "Democratic",
+      "detail": "Served in the Clinton White House and on Howard Dean's 2004 campaign; has worked on seven presidential campaigns.",
+      "sources": ["princeton-2026", "moment-2011"]
+    },
+    {
+      "key": "education",
+      "label": "Education",
+      "value": "AB, Princeton University (1984); JD, New York University",
+      "sources": ["princeton-2026", "wikipedia"]
+    },
+    {
+      "key": "current-roles",
+      "label": "Current roles",
+      "value": "President, J Street; trustee, Rockefeller Brothers Fund",
+      "featured": true,
+      "asOf": "2026-10-25",
+      "sources": ["jta-aipac-2026", "ji-rbf-2026"]
+    },
+    {
+      "key": "jstreet-pac-2016",
+      "label": "JStreetPAC giving (2016 cycle)",
+      "value": "$3.6 million to 124 endorsed candidates",
+      "detail": "Up from $600,000 raised in 2008.",
+      "asOf": "2016-12-31",
+      "featured": true,
+      "sources": ["wikipedia-jstreet"]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "benami-jstreet",
+      "source": "ben-ami",
+      "target": "jstreet",
+      "relType": "founded",
+      "role": "Founder; executive director, then president; also runs JStreetPAC",
+      "from": "2007-11",
+      "prominence": 3,
+      "sources": ["wikipedia-jstreet", "wikipedia"]
+    },
+    {
+      "key": "benami-jstreet-action",
+      "source": "ben-ami",
+      "target": "jstreet-action",
+      "relType": "chairs",
+      "role": "As J Street president, directs the super PAC's 2026 campaign against AIPAC-backed Republicans",
+      "from": "2026",
+      "prominence": 2,
+      "sources": ["jta-aipac-2026"]
+    },
+    {
+      "key": "benami-aipac",
+      "source": "ben-ami",
+      "target": "aipac",
+      "relType": "opposed",
+      "role": "Built J Street as a liberal alternative to AIPAC; in 2026 targeted AIPAC-backed candidates directly",
+      "from": "2008",
+      "prominence": 3,
+      "sources": ["jta-aipac-2026", "moment-2011"]
+    },
+    {
+      "key": "benami-collins",
+      "source": "jstreet-action",
+      "target": "collins",
+      "relType": "opposed",
+      "role": "Targeted in J Street's $3 million 2026 ad campaign in his Senate race against Jon Ossoff",
+      "from": "2026-09",
+      "prominence": 1,
+      "sources": ["jta-aipac-2026"]
+    },
+    {
+      "key": "soros-jstreet",
+      "source": "soros",
+      "target": "jstreet",
+      "relType": "donated-to",
+      "role": "About $750,000 from 2008, roughly 15% of early funding; disclosed in 2010 after Ben-Ami's earlier denials",
+      "from": "2008",
+      "until": "2010",
+      "prominence": 2,
+      "sources": ["wikipedia-jstreet"]
+    },
+    {
+      "key": "rbf-jstreet",
+      "source": "rbf",
+      "target": "jstreet",
+      "relType": "donated-to",
+      "role": "Longtime major funder",
+      "prominence": 1,
+      "sources": ["ji-rbf-2026"]
+    },
+    {
+      "key": "benami-rbf",
+      "source": "ben-ami",
+      "target": "rbf",
+      "relType": "board-member-of",
+      "role": "Trustee",
+      "from": "2026-02",
+      "prominence": 2,
+      "sources": ["ji-rbf-2026"]
+    },
+    {
+      "key": "benami-nif",
+      "source": "ben-ami",
+      "target": "nif",
+      "relType": "former-role",
+      "role": "Communications director (late 1990s, in Israel)",
+      "prominence": 1,
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "benami-fenton",
+      "source": "ben-ami",
+      "target": "fenton",
+      "relType": "former-role",
+      "role": "Senior vice president",
+      "until": "2007",
+      "prominence": 1,
+      "sources": ["wikipedia"]
+    }
+  ],
+  "events": [
+    {
+      "key": "born",
+      "date": "1962",
+      "title": "Born, son of Irgun veteran Yitshaq Ben-Ami",
+      "summary": "Raised in New York; his father, born in Mandatory Palestine, had joined the Irgun.",
+      "category": "personal",
+      "significance": 2,
+      "chapter": "family",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "princeton",
+      "date": "1984",
+      "title": "Graduates from Princeton",
+      "summary": "Later earns a law degree at New York University.",
+      "category": "career",
+      "significance": 1,
+      "chapter": "family",
+      "sources": ["princeton-2026", "wikipedia"]
+    },
+    {
+      "key": "clinton",
+      "date": "1995",
+      "title": "Serves as deputy domestic policy adviser to President Clinton",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "operative",
+      "status": "unresolved",
+      "statusNote": "Princeton dates it to the mid-1990s; 1995 is a placeholder within that range, and no source gives exact dates.",
+      "sources": ["princeton-2026", "wikipedia"]
+    },
+    {
+      "key": "israel-years",
+      "date": "1998",
+      "title": "Works in Israel for the New Israel Fund and his own communications firm",
+      "category": "career",
+      "significance": 1,
+      "chapter": "operative",
+      "participants": [["nif", "employer"]],
+      "status": "unresolved",
+      "statusNote": "Wikipedia places this in the late 1990s without exact years.",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "dean",
+      "date": "2003",
+      "title": "National policy director for Howard Dean's presidential campaign",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "operative",
+      "sources": ["moment-2011", "wikipedia"]
+    },
+    {
+      "key": "founds-jstreet",
+      "date": "2007-11-29",
+      "title": "Founds J Street",
+      "summary": "Launched publicly in April 2008 with a separate PAC, JStreetPAC, as a \"pro-Israel, pro-peace\" lobby; first-year budget $1.5 million.",
+      "category": "career",
+      "significance": 3,
+      "chapter": "founding",
+      "participants": [["jstreet", "organization"]],
+      "sources": ["wikipedia-jstreet", "moment-2011"]
+    },
+    {
+      "key": "first-conference",
+      "date": "2009-10",
+      "title": "Holds J Street's first national conference",
+      "summary": "Israel's ambassador, Michael Oren, declines to attend.",
+      "category": "politics",
+      "significance": 1,
+      "chapter": "founding",
+      "participants": [["jstreet", "host"]],
+      "sources": ["wikipedia-jstreet"]
+    },
+    {
+      "key": "soros-disclosure",
+      "date": "2010-09",
+      "title": "IRS records show George Soros funded J Street",
+      "summary": "About $750,000 since 2008; Ben-Ami apologizes for earlier misleading statements about the funding.",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "founding",
+      "participants": [["soros", "donor"]],
+      "sources": ["wikipedia-jstreet"]
+    },
+    {
+      "key": "new-voice",
+      "date": "2011",
+      "title": "Publishes A New Voice for Israel",
+      "summary": "Argues for a two-state solution and for active U.S. diplomacy to achieve it.",
+      "category": "ideas",
+      "significance": 2,
+      "chapter": "founding",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "iran-deal",
+      "date": "2015-07-15",
+      "title": "Launches a multimillion-dollar campaign for the Iran nuclear deal",
+      "summary": "TV and print ads and lobbying during Congress's 60-day review, citing a J Street poll showing 59% of American Jews in support.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "iran",
+      "participants": [["jstreet", "organization"]],
+      "sources": ["jstreet-iran-2015"]
+    },
+    {
+      "key": "pac-2016",
+      "date": "2016",
+      "title": "JStreetPAC gives $3.6 million to 124 endorsed candidates",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "iran",
+      "participants": [["jstreet", "PAC"]],
+      "sources": ["wikipedia-jstreet"]
+    },
+    {
+      "key": "sanders-resolutions",
+      "date": "2024-11",
+      "title": "J Street backs Senate resolutions to block some arms sales to Israel",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "gaza",
+      "participants": [["jstreet", "organization"]],
+      "sources": ["wikipedia-jstreet"]
+    },
+    {
+      "key": "genocide",
+      "date": "2025-08-03",
+      "title": "Writes that courts will likely find Israel violated the Genocide Convention",
+      "summary": "Days after rejecting the charge in a podcast debate; he says he is unlikely to use the term himself because of his family's Holocaust history.",
+      "category": "ideas",
+      "significance": 3,
+      "chapter": "gaza",
+      "sources": ["jta-genocide-2025"]
+    },
+    {
+      "key": "rbf",
+      "date": "2026-02-11",
+      "title": "Elected a trustee of the Rockefeller Brothers Fund",
+      "summary": "A longtime J Street funder that also funds groups supporting BDS, which J Street opposes.",
+      "category": "career",
+      "significance": 1,
+      "chapter": "new-era",
+      "participants": [["rbf", "foundation"]],
+      "sources": ["ji-rbf-2026"]
+    },
+    {
+      "key": "aid-phaseout",
+      "date": "2026-06-04",
+      "title": "Calls for ending U.S. subsidies for Israel's arms purchases",
+      "summary": "J Street's position shifts toward phasing out military financing after the current memorandum of understanding expires in 2028, while keeping cooperation on missile defense.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "new-era",
+      "participants": [["jstreet", "organization"]],
+      "sources": ["jstreet-aid-2026", "jta-aipac-2026"]
+    },
+    {
+      "key": "anti-aipac",
+      "date": "2026-09-11",
+      "title": "Announces $3 million against five AIPAC-backed Republicans",
+      "summary": "J Street's largest super PAC investment, aimed at Reps. Mike Collins, Max Miller, Derrick Van Orden, Ryan Mackenzie and Mariannette Miller-Meeks.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "new-era",
+      "participants": [["jstreet-action", "super PAC"], ["collins", "target"], ["aipac", "rival"]],
+      "sources": ["jta-aipac-2026"]
+    }
+  ],
+  "statements": [
+    {
+      "key": "rule-book-2010",
+      "issue": "American Jewish politics",
+      "date": "2010-03",
+      "venue": "Interview with Moment",
+      "quote": "One of the goals of J Street is to rewrite this chapter in the rule book",
+      "summary": "On the political rule that candidates must defer to the established pro-Israel lobby.",
+      "source": "moment-2011"
+    },
+    {
+      "key": "occupation-2010",
+      "issue": "Israel",
+      "date": "2010-03",
+      "venue": "Interview with Moment",
+      "quote": "is an existential threat to the state of Israel as a Jewish democracy",
+      "summary": "On the continuing occupation and the absence of a two-state agreement.",
+      "source": "moment-2011"
+    },
+    {
+      "key": "iran-safer-2015",
+      "issue": "Iran",
+      "date": "2015-07-15",
+      "venue": "J Street statement launching its Iran-deal campaign",
+      "quote": "This deal makes the United States, Israel and the entire world safer",
+      "source": "jstreet-iran-2015"
+    },
+    {
+      "key": "iran-irresponsible-2015",
+      "issue": "Iran",
+      "date": "2015-07-15",
+      "venue": "J Street statement launching its Iran-deal campaign",
+      "quote": "highly irresponsible for Congress to reject it",
+      "source": "jstreet-iran-2015"
+    },
+    {
+      "key": "no-rationale-2025",
+      "issue": "Gaza war",
+      "date": "2025-08-03",
+      "venue": "Substack newsletter, Tisha B'Av",
+      "quote": "Yet none of that provides any rationale for what Israel is doing now in Gaza",
+      "summary": "After recounting his parents' Holocaust experience and Hamas's October 7 attack.",
+      "source": "jta-genocide-2025"
+    },
+    {
+      "key": "deflect-2025",
+      "issue": "Gaza war",
+      "date": "2025-08-03",
+      "venue": "Substack newsletter, Tisha B'Av",
+      "quote": "Until now, I have tried to deflect and defend when challenged to call this genocide",
+      "source": "jta-genocide-2025"
+    },
+    {
+      "key": "persuaded-2025",
+      "issue": "Gaza war",
+      "date": "2025-08-03",
+      "venue": "Substack newsletter, Tisha B'Av",
+      "quote": "I have, however, been persuaded rationally by legal and scholarly arguments",
+      "summary": "That international courts will one day find Israel broke the Genocide Convention.",
+      "source": "jta-genocide-2025"
+    },
+    {
+      "key": "end-subsidies-2026",
+      "issue": "U.S. aid to Israel",
+      "date": "2026-06-04",
+      "venue": "J Street statement on the future of the U.S.–Israel security relationship",
+      "quote": "the time has come to rapidly and responsibly end America's financial subsidies for Israel's arms purchases",
+      "source": "jstreet-aid-2026"
+    },
+    {
+      "key": "security-interest-2026",
+      "issue": "U.S. aid to Israel",
+      "date": "2026-06-04",
+      "venue": "J Street statement on the future of the U.S.–Israel security relationship",
+      "quote": "Israel's security is – and should remain – an American interest.",
+      "source": "jstreet-aid-2026"
+    },
+    {
+      "key": "new-era-2026",
+      "issue": "American Jewish politics",
+      "date": "2026-09-11",
+      "venue": "Interview with JTA",
+      "quote": "It's a new era for us",
+      "summary": "On J Street's $3 million campaign against AIPAC-backed candidates, which he said put \"the shoe on the other foot.\"",
+      "source": "jta-aipac-2026"
+    }
+  ],
+  "ideas": {
+    "traditions": [],
+    "influences": [],
+    "works": [
+      {
+        "title": "A New Voice for Israel",
+        "year": "2011",
+        "kind": "Book",
+        "detail": "On a two-state solution and U.S. diplomacy",
+        "source": "wikipedia"
+      }
+    ],
+    "featuredQuotes": ["end-subsidies-2026", "deflect-2025"]
+  },
+  "chapters": [
+    {
+      "key": "family",
+      "title": "An Irgun veteran's son",
+      "dek": "Petah Tikva roots, a New York childhood and Princeton.",
+      "body": "Ben-Ami was born in 1962 and grew up in New York City, the son of Eve and Yitshaq Ben-Ami. His father was born in Mandatory Palestine and joined the Irgun, the pre-state militia [[wikipedia]]. The family's ties to the land go back further: his great-grandparents were among the first settlers of Petah Tikva in the 1880s [[princeton-2026]]. He had his bar mitzvah at Congregation Rodeph Sholom and went to the Collegiate School [[wikipedia]].\n\nHe graduated from Princeton in 1984 and earned a law degree at New York University [[princeton-2026, wikipedia]]. In 2001 he married Alisa Biran, whose father had been a cantor at his childhood synagogue [[wikipedia]]."
+    },
+    {
+      "key": "operative",
+      "title": "Democratic operative and communicator",
+      "dek": "The Clinton White House, Israel, the Dean campaign and Fenton.",
+      "body": "Ben-Ami's career before J Street was in Democratic politics and political communications. He was deputy domestic policy adviser in President Bill Clinton's White House in the mid-1990s and, by his own count, has worked on seven presidential campaigns [[princeton-2026, wikipedia]]. In the late 1990s he lived in Israel, where he was communications director of the New Israel Fund and ran his own firm [[wikipedia]].\n\nIn 2003 he became national policy director of Howard Dean's presidential campaign [[moment-2011]]. He then worked as a senior vice president at Fenton Communications, a firm for progressive causes, and with the Geneva Initiative and the Center for Middle East Peace, groups promoting a negotiated two-state agreement [[wikipedia]]."
+    },
+    {
+      "key": "founding",
+      "title": "Founding J Street",
+      "dek": "A \"pro-Israel, pro-peace\" lobby built to change the rules of Washington's Israel debate.",
+      "body": "J Street was founded on November 29, 2007, and launched publicly in April 2008 alongside a separate political action committee, JStreetPAC; its name played on K Street, home of Washington's lobbyists [[wikipedia-jstreet]]. Ben-Ami described it as \"pro-Israel, pro-peace\" and said one of its goals was \"to rewrite this chapter in the rule book\" under which politicians deferred to the established pro-Israel lobby [[moment-2011]]. He argued that the continuing occupation \"is an existential threat to the state of Israel as a Jewish democracy\" [[moment-2011]].\n\nThe group grew quickly, from a first-year budget of $1.5 million [[wikipedia-jstreet]]. Its first national conference, in October 2009, was boycotted by Israel's ambassador, Michael Oren [[wikipedia-jstreet]]. In September 2010 IRS records showed that George Soros had given about $750,000 since 2008, roughly 15 percent of its early funding; Ben-Ami apologized for having made misleading statements about Soros's support [[wikipedia-jstreet]]. In 2011 he set out the group's argument in A New Voice for Israel [[wikipedia]]."
+    },
+    {
+      "key": "iran",
+      "title": "The Iran deal and the PAC",
+      "dek": "J Street's largest policy fight, and the money behind its endorsements.",
+      "body": "J Street's defining campaign was for the 2015 nuclear agreement with Iran. On July 15, 2015, Ben-Ami announced a multimillion-dollar national campaign of television and print ads, briefings and grassroots lobbying during Congress's 60-day review, calling the deal one that \"makes the United States, Israel and the entire world safer\" and saying it would be \"highly irresponsible for Congress to reject it\" [[jstreet-iran-2015]]. J Street cited its own poll showing 59 percent of American Jews in support [[jstreet-iran-2015]].\n\nThe PAC gave J Street electoral weight among Democrats. It raised $600,000 in 2008, gave more than $2.4 million to 95 endorsed candidates in 2014 and $3.6 million to 124 in 2016 [[wikipedia-jstreet]]. Ben-Ami's own federal contributions are small, mostly to JStreetPAC [[fec-benami]]."
+    },
+    {
+      "key": "gaza",
+      "title": "The Gaza war",
+      "dek": "From defending Israel against the genocide charge to accepting the legal case for it.",
+      "body": "After Hamas's October 7, 2023, attack and Israel's war in Gaza, Ben-Ami criticized the Netanyahu government and J Street called for an end to the war [[wikipedia]]. In November 2024 it supported Sen. Bernie Sanders's resolutions to block some arms sales to Israel [[wikipedia-jstreet]].\n\nOn August 3, 2025, Tisha B'Av, Ben-Ami published a newsletter reversing a position he had defended in a podcast debate days earlier. Recalling his parents' experience of the Holocaust and Hamas's crimes, he wrote, \"none of that provides any rationale for what Israel is doing now in Gaza.\" \"Until now, I have tried to deflect and defend when challenged to call this genocide,\" he wrote, but \"I have, however, been persuaded rationally by legal and scholarly arguments\" that international courts would one day find Israel had violated the Genocide Convention. He said he was unlikely to use the word himself [[jta-genocide-2025]]."
+    },
+    {
+      "key": "new-era",
+      "title": "Ending subsidies and taking on AIPAC",
+      "dek": "J Street's 2026 turn: phasing out military aid and spending against AIPAC-backed Republicans.",
+      "body": "In February 2026 Ben-Ami was elected a trustee of the Rockefeller Brothers Fund, one of J Street's longtime major funders [[ji-rbf-2026]]. That June he said J Street welcomed the emerging view that \"the time has come to rapidly and responsibly end America's financial subsidies for Israel's arms purchases,\" while keeping cooperation on missile defense and intelligence and insisting that \"Israel's security is – and should remain – an American interest\" [[jstreet-aid-2026]]. Reporting describes the shift as support for phasing out military aid when the current ten-year agreement expires in 2028 [[jta-aipac-2026]].\n\nIn September he announced J Street's largest super PAC investment, $3 million through the J Street Action Fund against five AIPAC-backed Republican House members, among them Rep. Mike Collins, Sen. Jon Ossoff's Republican challenger in Georgia. \"It's a new era for us,\" he said; candidates were \"afraid of what AIPAC might be able to do politically,\" and J Street was putting \"the shoe on the other foot.\" AIPAC called J Street a \"dark money super PAC\" [[jta-aipac-2026]]."
+    }
+  ]
+}

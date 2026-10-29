@@ -1,0 +1,756 @@
+{
+  "subject": "elizabeth",
+  "reviewedAt": "2026-10-25",
+  "sourcesVerifiedAt": "2026-10-25",
+  "brief": {
+    "inclusion": "Uline co-founder and chief executive who combines direct control of a major private company, a public catalog column and nine-figure household political giving.",
+    "identifiers": { "fec_contributor": "UIHLEIN, ELIZABETH" },
+    "namesakes": "Federal records are matched through Uline employment and Lake Forest, Illinois or Pleasant Prairie, Wisconsin addresses; gifts by other Uihlein relatives are excluded.",
+    "coverage": {
+      "from": "1945",
+      "through": "2026-10-25",
+      "lags": "The 2026 federal and state cycles remain open; many state contributions are outside the FEC dataset."
+    },
+    "openQuestions": [
+      "The reviewed sources do not establish an exact birth date or completed degree.",
+      "Uline's private ownership structure is not fully disclosed."
+    ],
+    "review": [
+      { "kind": "evidence", "by": "OA", "at": "2026-10-25" },
+      { "kind": "chronology", "by": "OA", "at": "2026-10-25" },
+      { "kind": "neutrality", "by": "OA", "at": "2026-10-25" },
+      { "kind": "current", "by": "OA", "at": "2026-10-25" }
+    ]
+  },
+  "summary": "Elizabeth “Liz” Uihlein co-founded Uline with her husband, Richard, and runs the private shipping-supplies company as chief executive. She is independently one of the Republican Party's largest donors and uses Uline's widely distributed catalog and website to publish her own views on government, labor, trade, public health and social policy.",
+  "roles": [
+    {
+      "label": "Uline co-founder and CEO",
+      "detail": "Co-founded Uline in 1980 and leads its day-to-day operations.",
+      "sources": ["uline-history", "propublica-box-empire-2022"]
+    },
+    {
+      "label": "Republican megadonor",
+      "detail": "Gives through her own federal and state records, distinct from her husband's ledger.",
+      "sources": ["fec-elizabeth", "opensecrets-2024"]
+    },
+    {
+      "label": "Uline catalog columnist",
+      "detail": "Publishes signed “From the President” letters distributed through company catalogs and its website.",
+      "sources": ["uline-president", "wapo-richard-2018"]
+    }
+  ],
+  "entities": {
+    "elizabeth": { "match": { "name": "Elizabeth Uihlein", "type": "donor" } },
+    "richard": { "match": { "name": "Richard Uihlein", "type": "donor" } },
+    "uline": {
+      "create": {
+        "name": "Uline",
+        "type": "company",
+        "description": "Privately held distributor of shipping, packaging and industrial supplies founded by Richard and Elizabeth Uihlein in 1980.",
+        "websiteUrl": "https://www.uline.com/"
+      }
+    },
+    "republican-party": { "match": { "name": "Republican Party", "type": "organization" } },
+    "trump": { "match": { "name": "Donald Trump", "type": "politician" } },
+    "america-first": {
+      "create": {
+        "name": "America First Action",
+        "type": "organization",
+        "description": "Super PAC that supported Donald Trump and Republican candidates."
+      }
+    },
+    "restoration-pac": {
+      "create": {
+        "name": "Restoration PAC",
+        "type": "organization",
+        "description": "Federal super PAC principally funded by Richard Uihlein."
+      }
+    },
+    "restoration-america": {
+      "create": {
+        "name": "Restoration of America",
+        "type": "organization",
+        "description": "Conservative nonprofit organization in the Uihlein-funded Restoration network."
+      }
+    },
+    "rnc": {
+      "create": {
+        "name": "Republican National Committee",
+        "type": "organization",
+        "description": "National committee of the Republican Party."
+      }
+    },
+    "nrsc": {
+      "create": {
+        "name": "National Republican Senatorial Committee",
+        "type": "organization",
+        "description": "Republican Party committee supporting Senate candidates."
+      }
+    },
+    "slf": { "match": { "name": "Senate Leadership Fund", "type": "organization" } },
+    "ebben": {
+      "create": {
+        "name": "Jessie Rodriguez Ebben",
+        "type": "politician",
+        "description": "Wisconsin Republican political candidate supported by Elizabeth Uihlein in the 2026 Seventh District primary."
+      }
+    }
+  },
+  "sources": [
+    {
+      "key": "uline-history",
+      "title": "About Uline — Company History",
+      "publisher": "Uline",
+      "type": "primary",
+      "url": "https://www.uline.com/Corporate/About_History",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "uline-president",
+      "title": "From the President",
+      "publisher": "Uline",
+      "author": "Elizabeth Uihlein",
+      "type": "primary",
+      "url": "https://www.uline.com/Corporate/About_President",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "propublica-box-empire-2022",
+      "title": "How the Uline Box Empire Has Fueled Election Denial",
+      "publisher": "ProPublica",
+      "author": "Justin Elliott, Megan O'Matz and Doris Burke",
+      "type": "article",
+      "url": "https://www.propublica.org/article/uline-uihlein-election-denial",
+      "publishedAt": "2022-10-26",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "nyt-uihleins-2018",
+      "title": "The Most Powerful Conservative Couple You've Never Heard Of",
+      "publisher": "The New York Times",
+      "type": "article",
+      "url": "https://www.nytimes.com/2018/06/07/us/politics/liz-dick-uihlein-republican-donors.html",
+      "publishedAt": "2018-06-07",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "wapo-richard-2018",
+      "title": "Meet the little-known big-fish megadonor setting the tone for GOP primary races",
+      "publisher": "The Washington Post",
+      "type": "article",
+      "url": "https://www.washingtonpost.com/politics/meet-the-little-known-big-fish-megadonor-setting-the-tone-for-gop-primary-races/2018/04/29/2e784d76-3215-11e8-94fa-32d48460b955_story.html",
+      "publishedAt": "2018-04-29",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "propublica-immigration-2019",
+      "title": "While Trump Cracked Down on Immigration, a Republican Megadonor Sued for a Special Visa",
+      "publisher": "ProPublica",
+      "type": "article",
+      "url": "https://www.propublica.org/article/while-trump-cracked-down-on-immigration-a-republican-megadonor-sued-for-a-special-visa",
+      "publishedAt": "2019-04-25",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "opensecrets-2024",
+      "title": "Elon Musk tops list of 2024 political donors, but six others gave more than $100 million",
+      "publisher": "OpenSecrets",
+      "type": "article",
+      "url": "https://www.opensecrets.org/news/2025/03/elon-musk-tops-list-of-2024-political-donors-but-six-others-gave-more-than-100-million",
+      "publishedAt": "2025-03",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "opensecrets-uihleins-2022",
+      "title": "Richard and Elizabeth Uihlein — 2022 federal donor data",
+      "publisher": "OpenSecrets",
+      "type": "filing",
+      "url": "https://www.opensecrets.org/elections-overview/biggest-donors",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "fec-elizabeth",
+      "title": "Individual contributions by Uihlein, Elizabeth",
+      "publisher": "Federal Election Commission",
+      "type": "filing",
+      "url": "https://www.fec.gov/data/receipts/individual-contributions/?contributor_name=UIHLEIN%2C+ELIZABETH",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "wapo-donors-2024",
+      "title": "Meet the top 50 campaign donors pumping millions into the 2024 election",
+      "publisher": "The Washington Post",
+      "type": "article",
+      "url": "https://www.washingtonpost.com/elections/interactive/2024/biggest-campaign-donors-election-2024/",
+      "publishedAt": "2024",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "wisdc-uihleins-2022",
+      "title": "Influence Peddler for August 2022 — Richard and Elizabeth Uihlein",
+      "publisher": "Wisconsin Democracy Campaign",
+      "type": "article",
+      "url": "https://www.wisdc.org/news/press-releases/136-press-release-2022/7161-influence-peddler-for-august-2022-richard-and-elizabeth-uihlein",
+      "publishedAt": "2022-08",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "propublica-voteref-2022",
+      "title": "Billionaire-Backed Group Enlists Trump-Supporting Citizens to Hunt for Voter Fraud Using Discredited Techniques",
+      "publisher": "ProPublica",
+      "type": "article",
+      "url": "https://www.propublica.org/article/voter-ref-foundation",
+      "publishedAt": "2022-03-07",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "propublica-catholic-tribune-2024",
+      "title": "Who's Mailing the Catholic Tribune? It's Not the Church",
+      "publisher": "ProPublica",
+      "type": "article",
+      "url": "https://www.propublica.org/article/church-no-affiliation-catholic-tribune-metric-media",
+      "publishedAt": "2024-10-20",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "wpr-court-2025",
+      "title": "Out-of-state billionaires fuel Wisconsin Supreme Court election",
+      "publisher": "Wisconsin Public Radio",
+      "type": "article",
+      "url": "https://www.wpr.org/news/billionaires-wisconsin-supreme-court-election-crawford-schimel-musk-soros-pritzker-uihlein",
+      "publishedAt": "2025",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "ap-wisconsin-primary-2026",
+      "title": "Sean Duffy's son-in-law divides Trump-backing Republicans in a Wisconsin congressional race",
+      "publisher": "Associated Press",
+      "type": "article",
+      "url": "https://apnews.com/article/76b0af2f6a1497939129294a8535a22d",
+      "publishedAt": "2026-07",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "atlantic-duffy-2026",
+      "title": "Trump's Cozy Transportation Secretary",
+      "publisher": "The Atlantic",
+      "type": "article",
+      "url": "https://www.theatlantic.com/politics/2026/04/trump-sean-duffy-transportation-ethics/686649/",
+      "publishedAt": "2026-04-02",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "guardian-uihlein-workers-2025",
+      "title": "Uline accused of using lower-paid Mexican workers at US warehouses",
+      "publisher": "The Guardian",
+      "type": "article",
+      "url": "https://www.theguardian.com/us-news/2025/sep/18/uline-mexican-workers",
+      "publishedAt": "2025-09-18",
+      "accessedAt": "2026-10-25",
+      "notes": "Reports allegations from workers and records; Uline disputed wrongdoing. Treat claims as reported, not adjudicated."
+    },
+    {
+      "key": "guardian-cartoon-2025",
+      "title": "Trump donor Liz Uihlein mocked president's China trade claims in staff message",
+      "publisher": "The Guardian",
+      "type": "article",
+      "url": "https://www.theguardian.com/us-news/2025/sep/19/liz-uihlein-trump-china-cartoon",
+      "publishedAt": "2025-09-19",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "uline-nafta",
+      "title": "NAFTA — It's Complicated",
+      "publisher": "Uline",
+      "author": "Elizabeth Uihlein",
+      "type": "primary",
+      "url": "https://img.uline.com/is/content/uline/DZ_NaftaItsComplicated_ENUS_pdf",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "forbes-richard-2026",
+      "title": "Richard Uihlein",
+      "publisher": "Forbes",
+      "type": "secondary",
+      "url": "https://www.forbes.com/profile/richard-uihlein/",
+      "publishedAt": "2026-09-15",
+      "accessedAt": "2026-10-25",
+      "notes": "Forbes estimates the couple's business fortune primarily on Richard's profile; it does not provide a separate Elizabeth net-worth estimate."
+    }
+  ],
+  "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "1945",
+      "detail": "The reviewed sources establish the year but not an exact date.",
+      "featured": true,
+      "sources": ["propublica-box-empire-2022", "nyt-uihleins-2018"]
+    },
+    { "key": "sex", "label": "Sex", "value": "Female", "sources": ["uline-history"] },
+    { "key": "citizenship", "label": "Citizenship", "value": "United States", "sources": ["nyt-uihleins-2018"] },
+    {
+      "key": "spouse",
+      "label": "Spouse",
+      "value": "Richard Uihlein",
+      "featured": true,
+      "sources": ["uline-history", "propublica-box-empire-2022"]
+    },
+    {
+      "key": "children",
+      "label": "Children",
+      "value": "3",
+      "detail": "Their adult children hold executive roles at Uline.",
+      "sources": ["uline-history", "forbes-richard-2026"]
+    },
+    {
+      "key": "residence",
+      "label": "Residence",
+      "value": "Lake Forest, Illinois",
+      "asOf": "2026-10-25",
+      "sources": ["uline-president", "forbes-richard-2026"]
+    },
+    {
+      "key": "party",
+      "label": "Political affiliation",
+      "value": "Republican",
+      "sources": ["fec-elizabeth", "wapo-richard-2018"]
+    },
+    {
+      "key": "current-roles",
+      "label": "Current role",
+      "value": "Chief executive officer, Uline",
+      "featured": true,
+      "asOf": "2026-10-25",
+      "sources": ["uline-history"]
+    },
+    {
+      "key": "wealth-source",
+      "label": "Source of wealth",
+      "value": "Uline",
+      "detail": "Private-company ownership shared within the Uihlein family; no defensible separate estimate for Elizabeth was found.",
+      "featured": true,
+      "asOf": "2026-10-25",
+      "sources": ["uline-history", "forbes-richard-2026"]
+    },
+    {
+      "key": "public-platform",
+      "label": "Published platform",
+      "value": "Uline's “From the President” letters",
+      "detail": "Signed commentary distributed through the company's catalog and website.",
+      "sources": ["uline-president", "wapo-richard-2018"]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "spouse",
+      "source": "elizabeth",
+      "target": "richard",
+      "relType": "married-to",
+      "role": "Married before 1967; business co-founder and political-donor partner",
+      "from": "1967",
+      "prominence": 3,
+      "sources": ["propublica-box-empire-2022", "uline-history"]
+    },
+    {
+      "key": "uline-founder",
+      "source": "elizabeth",
+      "target": "uline",
+      "relType": "co-founded",
+      "role": "Co-founder (1980); chief executive officer",
+      "from": "1980",
+      "prominence": 3,
+      "sources": ["uline-history", "propublica-box-empire-2022"]
+    },
+    {
+      "key": "republican",
+      "source": "elizabeth",
+      "target": "republican-party",
+      "relType": "party-member",
+      "role": "Major donor to national and state Republican committees",
+      "prominence": 2,
+      "sources": ["fec-elizabeth", "opensecrets-2024"]
+    },
+    {
+      "key": "trump",
+      "source": "elizabeth",
+      "target": "trump",
+      "relType": "donated-to",
+      "role": "Funded Trump-aligned committees while sometimes criticizing his conduct or policies",
+      "from": "2016",
+      "prominence": 2,
+      "sources": ["propublica-immigration-2019", "guardian-cartoon-2025"]
+    },
+    {
+      "key": "america-first",
+      "source": "elizabeth",
+      "target": "america-first",
+      "relType": "donated-to",
+      "role": "Donated $500,000 to the Trump-aligned super PAC in the 2018 cycle",
+      "from": "2018",
+      "until": "2018",
+      "prominence": 1,
+      "sources": ["propublica-immigration-2019"]
+    },
+    {
+      "key": "restoration-pac",
+      "source": "elizabeth",
+      "target": "restoration-pac",
+      "relType": "donated-to",
+      "role": "Contributed alongside Richard to the wider Restoration political network",
+      "from": "2020",
+      "prominence": 1,
+      "sources": ["propublica-box-empire-2022", "propublica-catholic-tribune-2024"]
+    },
+    {
+      "key": "rnc",
+      "source": "elizabeth",
+      "target": "rnc",
+      "relType": "donated-to",
+      "role": "Recurring federal party-committee donor",
+      "prominence": 2,
+      "sources": ["fec-elizabeth", "opensecrets-uihleins-2022"]
+    },
+    {
+      "key": "nrsc",
+      "source": "elizabeth",
+      "target": "nrsc",
+      "relType": "donated-to",
+      "role": "Recurring donor to the Republican Senate committee",
+      "prominence": 2,
+      "sources": ["fec-elizabeth", "opensecrets-uihleins-2022"]
+    },
+    {
+      "key": "slf",
+      "source": "elizabeth",
+      "target": "slf",
+      "relType": "donated-to",
+      "role": "Major outside-group recipient in congressional cycles",
+      "prominence": 2,
+      "sources": ["fec-elizabeth", "opensecrets-uihleins-2022"]
+    },
+    {
+      "key": "ebben",
+      "source": "elizabeth",
+      "target": "ebben",
+      "relType": "donated-to",
+      "role": "Gave $1 million to a super PAC supporting her 2026 congressional primary campaign",
+      "from": "2026",
+      "until": "2026",
+      "prominence": 1,
+      "sources": ["ap-wisconsin-primary-2026"]
+    }
+  ],
+  "events": [
+    {
+      "key": "birth",
+      "date": "1945",
+      "title": "Born",
+      "summary": "Elizabeth Uihlein was born in 1945 and grew up in the Chicago area.",
+      "category": "personal",
+      "significance": 1,
+      "chapter": "formation",
+      "sources": ["nyt-uihleins-2018", "propublica-box-empire-2022"]
+    },
+    {
+      "key": "marriage",
+      "date": "1967",
+      "title": "Marries Richard Uihlein",
+      "summary": "The couple married before Richard's Stanford graduation and later built their company and donor activity together.",
+      "category": "personal",
+      "significance": 1,
+      "chapter": "formation",
+      "participants": [["richard", "spouse"]],
+      "sources": ["propublica-box-empire-2022"]
+    },
+    {
+      "key": "uline",
+      "date": "1980",
+      "title": "Co-founds Uline",
+      "summary": "Liz and Dick Uihlein started a shipping-supplies business from their basement; Elizabeth came to direct daily operations and customer-service culture.",
+      "category": "career",
+      "significance": 3,
+      "chapter": "uline",
+      "participants": [
+        ["richard", "co-founder"],
+        ["uline", "company"]
+      ],
+      "sources": ["uline-history", "propublica-box-empire-2022"]
+    },
+    {
+      "key": "catalog",
+      "date": "2000",
+      "date_end": "2026",
+      "title": "Turns the Uline catalog into a personal publishing platform",
+      "summary": "Her signed letters mix company commentary with views on trade, regulation, elections and social policy.",
+      "category": "ideas",
+      "significance": 2,
+      "chapter": "voice",
+      "status": "unresolved",
+      "statusNote": "The archive demonstrates a long-running series but does not supply one definitive start date.",
+      "sources": ["uline-president", "wapo-richard-2018"]
+    },
+    {
+      "key": "2018-cycle",
+      "date": "2018",
+      "title": "Emerges as a major donor in her own name",
+      "summary": "Elizabeth gave more than $1.5 million federally in the 2018 cycle, including $500,000 to America First Action.",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "giving",
+      "participants": [["america-first", "recipient"]],
+      "sources": ["propublica-immigration-2019"]
+    },
+    {
+      "key": "visa-case",
+      "date": "2019",
+      "title": "Uline resolves specialized-worker visa dispute",
+      "summary": "The company withdrew litigation after immigration authorities approved a later visa petition for a Mexican employee.",
+      "category": "legal",
+      "significance": 1,
+      "chapter": "business-politics",
+      "sources": ["propublica-immigration-2019"]
+    },
+    {
+      "key": "pandemic",
+      "date": "2020",
+      "title": "Opposes shutdown policies and brings office staff back",
+      "summary": "ProPublica reported that Uihlein campaigned against pandemic shutdowns and required office returns before vaccines were available, as demand for Uline products surged.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "business-politics",
+      "sources": ["propublica-box-empire-2022"]
+    },
+    {
+      "key": "voteref",
+      "date": "2021",
+      "title": "Household-funded network expands into voter files",
+      "summary": "Restoration-linked funding supported a project publishing voter data and pursuing alleged irregularities with methods criticized by election experts.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "network",
+      "participants": [["restoration-pac", "network committee"]],
+      "sources": ["propublica-voteref-2022"]
+    },
+    {
+      "key": "2022-cycle",
+      "date": "2022",
+      "title": "Uihleins spend at least $121 million in two years",
+      "summary": "A ProPublica analysis combined state and federal activity by both spouses, who backed Republican candidates and conservative causes.",
+      "category": "finance",
+      "significance": 3,
+      "chapter": "giving",
+      "participants": [["richard", "co-donor"]],
+      "sources": ["propublica-box-empire-2022"]
+    },
+    {
+      "key": "2024-cycle",
+      "date": "2024-12-31",
+      "title": "Household giving reaches approximately $143.5 million",
+      "summary": "OpenSecrets ranked Richard and Elizabeth among the 2024 cycle's six donor households above $100 million, all on the Republican side in its classification.",
+      "category": "finance",
+      "significance": 3,
+      "chapter": "giving",
+      "participants": [["richard", "co-donor"]],
+      "sources": ["opensecrets-2024"]
+    },
+    {
+      "key": "workers-report",
+      "date": "2025-09",
+      "title": "Reporting raises questions about cross-border staffing",
+      "summary": "The Guardian reported allegations that Uline used Mexican employees at U.S. warehouses under arrangements that paid them less than U.S. colleagues; the company disputed unlawful conduct.",
+      "category": "legal",
+      "significance": 2,
+      "chapter": "business-politics",
+      "status": "unresolved",
+      "statusNote": "These are reported allegations, not an adjudicated finding in the reviewed record.",
+      "sources": ["guardian-uihlein-workers-2025"]
+    },
+    {
+      "key": "trump-cartoon",
+      "date": "2025-09-19",
+      "title": "Reportedly circulates cartoon mocking Trump's China claim",
+      "summary": "The Guardian reported that she shared a cartoon with staff challenging Trump's claims about leverage in trade negotiations, showing distance from a politician she had helped fund.",
+      "category": "ideas",
+      "significance": 1,
+      "chapter": "voice",
+      "status": "unresolved",
+      "statusNote": "Based on a reported internal message rather than a public statement issued by Uihlein.",
+      "sources": ["guardian-cartoon-2025"]
+    },
+    {
+      "key": "trucking",
+      "date": "2026-04",
+      "title": "Uline's trucking-policy advocacy draws scrutiny",
+      "summary": "The Atlantic examined Uline lobbying against federal hours-of-service restrictions alongside political giving in Transportation Secretary Sean Duffy's network; it did not establish an exchange.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "business-politics",
+      "status": "unresolved",
+      "statusNote": "The overlap is documented; a quid pro quo is not.",
+      "sources": ["atlantic-duffy-2026"]
+    },
+    {
+      "key": "wisconsin-split",
+      "date": "2026-07",
+      "title": "Backs a different Wisconsin candidate than her husband",
+      "summary": "Elizabeth gave $1 million to a super PAC for Jessie Rodriguez Ebben while Richard funded an opposing candidate.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "independent",
+      "participants": [
+        ["richard", "backed opposing candidate"],
+        ["ebben", "candidate"]
+      ],
+      "sources": ["ap-wisconsin-primary-2026"]
+    }
+  ],
+  "statements": [
+    {
+      "key": "fox-news",
+      "date": "2018",
+      "datePrecision": "year",
+      "venue": "Uline catalog letter",
+      "issue": "Media",
+      "quote": "Dick and I love reading newspapers and when we watch TV news, the channel is mostly set on Fox News.",
+      "summary": "She described the household's media habits in a company catalog letter.",
+      "source": "wapo-richard-2018"
+    },
+    {
+      "key": "red-blue",
+      "date": "2026",
+      "datePrecision": "year",
+      "venue": "From the President",
+      "issue": "Partisanship",
+      "quote": "Right now, I'm trying to tone down my ‘rhetoric’ and think about what's great about these states outside of politics.",
+      "summary": "She framed a comparison of Illinois and Wisconsin as an effort to move beyond partisan rhetoric.",
+      "source": "uline-president"
+    },
+    {
+      "key": "not-trump",
+      "date": "2026",
+      "datePrecision": "year",
+      "venue": "From the President",
+      "issue": "Donald Trump",
+      "quote": "This isn't about Donald Trump although he hasn't helped the situation.",
+      "summary": "She distinguished her broader political complaint from Trump while also criticizing his role.",
+      "source": "uline-president"
+    },
+    {
+      "key": "nafta",
+      "date": "2018",
+      "datePrecision": "year",
+      "venue": "Uline catalog",
+      "issue": "Trade",
+      "verbatim": false,
+      "summary": "Uihlein argued that North American trade rules involve real supply-chain tradeoffs and should not be reduced to a slogan.",
+      "source": "uline-nafta"
+    },
+    {
+      "key": "family-values",
+      "date": "2022",
+      "datePrecision": "year",
+      "venue": "Uline catalog",
+      "issue": "Social change",
+      "quote": "We, like so many families, were raised with a sharp moral compass. The rules were the rules, but it was OK.",
+      "summary": "In a tribute to her father-in-law, she connected family memory to criticism of contemporary social change.",
+      "source": "propublica-box-empire-2022"
+    }
+  ],
+  "finance": {
+    "fec": {
+      "contributorName": "UIHLEIN, ELIZABETH",
+      "namePattern": "^UIHLEIN, (ELIZABETH|LIZ)( A\\.?| MRS\\.?)?$",
+      "employerPattern": "ULINE|ULINE INC|SELF[- ]EMPLOYED",
+      "cities": ["LAKE FOREST", "LAKE BLUFF", "PLEASANT PRAIRIE", "MANITOWISH WATERS"],
+      "source": "fec-elizabeth"
+    },
+    "coverage": "Itemized federal contributions matched by exact name plus Uline employment or known locations. The ledger excludes Richard Uihlein's donations, state and local giving, company lobbying, nonprofit grants and downstream spending by recipient committees. The 2026 cycle remains open."
+  },
+  "ideas": {
+    "traditions": [
+      {
+        "label": "Conservatism",
+        "atlasId": "conservatism",
+        "basis": "Her signed writings and sustained giving to Republican and conservative organizations.",
+        "context": "The record supports positions on government, trade and social policy without assuming she endorses every position taken by a recipient.",
+        "sources": ["uline-president", "wapo-richard-2018"]
+      },
+      {
+        "label": "Economic nationalism",
+        "atlasId": "economic-nationalism",
+        "basis": "Her catalog writing on North American trade, manufacturing and China competition.",
+        "context": "Her writing also acknowledges cross-border supply-chain complexity.",
+        "sources": ["uline-nafta", "guardian-cartoon-2025"]
+      }
+    ],
+    "influences": [
+      {
+        "name": "Edgar Uihlein Jr.",
+        "note": "Her 2022 catalog tribute described her father-in-law's values and family political discussions as formative.",
+        "sources": ["propublica-box-empire-2022"]
+      }
+    ],
+    "works": [
+      {
+        "title": "From the President",
+        "year": "2000–present",
+        "kind": "Catalog column",
+        "detail": "A long-running series of signed essays distributed through Uline's catalogs and website; exact start year is not established.",
+        "source": "uline-president"
+      }
+    ],
+    "featuredQuotes": ["red-blue", "not-trump", "family-values"]
+  },
+  "chapters": [
+    {
+      "key": "formation",
+      "title": "Family and partnership",
+      "dek": "A marriage becomes a business and political partnership",
+      "body": "Elizabeth Uihlein was born in 1945 and grew up in the Chicago area. She married Richard Uihlein before his 1967 Stanford graduation, entering a family whose business history and conservative politics would become part of their shared public identity [[nyt-uihleins-2018, propublica-box-empire-2022]].\n\nThe couple's public record is often aggregated, but they are separate actors. Each reports contributions under an individual name, and in 2026 they backed opposing candidates in the same Wisconsin congressional primary [[fec-elizabeth, ap-wisconsin-primary-2026]]."
+    },
+    {
+      "key": "uline",
+      "title": "The operator behind Uline",
+      "dek": "Service discipline and a private-company fortune",
+      "body": "Liz and Dick Uihlein founded Uline in their basement in 1980, beginning with a carton-sizing product. The company expanded across North America into packaging, industrial, safety and material-handling supplies [[uline-history]].\n\nUline identifies Elizabeth as chief executive. Reporting describes her as the hands-on operator responsible for next-day shipping, tightly specified workplace practices and a customer-service culture that helped turn the company into a multibillion-dollar private enterprise [[uline-history, propublica-box-empire-2022]]."
+    },
+    {
+      "key": "voice",
+      "title": "A catalog as a political platform",
+      "dek": "The chief executive writes directly to customers",
+      "body": "Elizabeth's role differs from that of a donor who speaks only through checks. Her “From the President” letters appear in Uline catalogs and online, mixing corporate stories with arguments about taxes, trade, marijuana, news media, public policy and social change [[uline-president, wapo-richard-2018]].\n\nThe archive supplies unusually direct evidence of her views, but dates and versions are not always easy to reconstruct. Statements in this profile therefore cite an identified letter or contemporary reporting rather than treating every reposted image as authentic [[uline-president, uline-nafta]]."
+    },
+    {
+      "key": "giving",
+      "title": "An independent donor record",
+      "dek": "Household rankings can hide who signed each check",
+      "body": "Elizabeth became a major federal donor in her own name, generally favoring national party committees and congressional outside groups. That pattern has sometimes differed from Richard's heavier use of candidate-specific and ideological super PACs [[fec-elizabeth, opensecrets-uihleins-2022]].\n\nOpenSecrets placed the couple's combined 2024-cycle giving near $143.5 million. The household number explains their joint scale; the FEC ledger on this profile is deliberately narrower and attributes only records matched to Elizabeth [[opensecrets-2024, fec-elizabeth]]."
+    },
+    {
+      "key": "network",
+      "title": "Shared institutions",
+      "dek": "The Uihlein political network extends beyond candidate committees",
+      "body": "Elizabeth's giving overlaps with Richard's through Trump-aligned groups, congressional committees and the Restoration network. Restoration-funded projects have included voter-file work, advertising and partisan publications presented in local-news formats [[propublica-voteref-2022, propublica-catholic-tribune-2024]].\n\nEvidence of a donation establishes financial support, not operational control. Richard is the documented principal funder of Restoration PAC, so the network is included here only where records or reporting connect Elizabeth directly or describe joint household activity [[propublica-box-empire-2022]]."
+    },
+    {
+      "key": "business-politics",
+      "title": "Business policy and public policy",
+      "dek": "Trade, labor and regulation cross the company boundary",
+      "body": "Uline's commercial interests make some of Elizabeth's political writing directly relevant to the business. She has written about NAFTA and China, while the company has lobbied on truck-driver hours and other distribution rules [[uline-nafta, atlantic-duffy-2026]].\n\nTwo reported controversies require careful attribution. ProPublica documented Uline's successful later visa petition after a denial; the Guardian later reported allegations about Mexican employees working in U.S. facilities, which Uline disputed. Neither episode by itself proves hypocrisy or unlawful conduct by Elizabeth [[propublica-immigration-2019, guardian-uihlein-workers-2025]]."
+    },
+    {
+      "key": "independent",
+      "title": "Alignment without uniformity",
+      "dek": "A Republican donor who sometimes parts company with allies",
+      "body": "Elizabeth has funded Trump-aligned groups, but her own writing and reported internal messages show criticism as well as support. In 2025 she reportedly circulated a cartoon mocking Trump's account of trade leverage with China [[propublica-immigration-2019, guardian-cartoon-2025]].\n\nThe 2026 Wisconsin primary made the distinction between the spouses concrete: she gave $1 million to a group supporting Jessie Rodriguez Ebben while Richard backed a rival. A shared company, marriage and broad partisan alignment do not erase separate political judgment [[ap-wisconsin-primary-2026]]."
+    },
+    {
+      "key": "present",
+      "title": "Present influence",
+      "dek": "Corporate reach, personal speech and political money",
+      "body": "As of October 2026, Elizabeth remains Uline's chief executive, a catalog columnist and an active donor. Those roles reinforce one another: company ownership produces resources, the catalog supplies an audience and contributions finance political organizations [[uline-history, uline-president, fec-elizabeth]].\n\nThe public record is still incomplete. Uline is private, Forbes does not separate the spouses' ownership into defensible individual fortunes and state reporting sits outside the federal ledger. The profile therefore reports the source of wealth and each disclosed contribution rather than assigning Elizabeth half of a household estimate [[forbes-richard-2026, fec-elizabeth]]."
+    }
+  ]
+}

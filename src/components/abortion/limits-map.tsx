@@ -20,22 +20,28 @@ const fill = (c: number | undefined) => (c ? `var(--limit-${c})` : "var(--viz-em
 const ink = (c: number | undefined) => (c ? `var(--limit-ink-${c})` : "var(--viz-muted)");
 
 // U.S. map of each state's gestational limit. Hover, focus, or tap a state for
-// its law's wording; the legend counts states per category.
+// its law's wording; the legend counts states per category. With `onSelect`,
+// clicking a state picks it and the picked state stays outlined.
 export function LimitsMap({
   width,
   height,
   states,
   limits,
   categories,
+  selected = null,
+  onSelect,
 }: {
   width: number;
   height: number;
   states: StatePath[];
   limits: Record<string, StateLimit>;
   categories: LimitCategory[];
+  selected?: string | null;
+  onSelect?: (abbr: string) => void;
 }) {
-  const [active, setActive] = useState<string | null>(null);
+  const [hovered, setActive] = useState<string | null>(null);
   const [highlight, setHighlight] = useState<number | null>(null);
+  const active = hovered ?? selected;
   const cur = active ? states.find((s) => s.abbr === active) : null;
   const curLimit = cur ? limits[cur.abbr] : null;
   const label = (c: number | undefined) => categories.find((x) => x.value === c)?.label ?? "No data";
@@ -61,7 +67,7 @@ export function LimitsMap({
         ))}
       </ul>
 
-      <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Map of abortion gestational limits by state" className="block h-auto w-full">
+      <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Map of abortion gestational limits by state" className="block h-auto w-full text-slate-950 dark:text-white">
         {states.map((s) => {
           const c = limits[s.abbr]?.category;
           const dim = highlight !== null && c !== highlight;
@@ -75,11 +81,18 @@ export function LimitsMap({
               onPointerLeave={() => setActive(null)}
               onFocus={() => setActive(s.abbr)}
               onBlur={() => setActive(null)}
-              onClick={() => setActive(s.abbr)}
+              onClick={() => (onSelect ? onSelect(s.abbr) : setActive(s.abbr))}
+              onKeyDown={(e) => {
+                if (onSelect && (e.key === "Enter" || e.key === " ")) {
+                  e.preventDefault();
+                  onSelect(s.abbr);
+                }
+              }}
               style={{
                 fill: fill(c),
-                stroke: active === s.abbr ? "var(--viz-muted)" : "var(--viz-surface)",
-                strokeWidth: active === s.abbr ? 2 : 1,
+                stroke: s.abbr === selected ? "currentColor" : active === s.abbr ? "var(--viz-muted)" : "var(--viz-surface)",
+                strokeWidth: s.abbr === selected ? 2.5 : active === s.abbr ? 2 : 1,
+                cursor: onSelect ? "pointer" : undefined,
                 opacity: dim ? 0.25 : 1,
                 outline: "none",
                 transition: "opacity 120ms",

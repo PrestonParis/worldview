@@ -1,0 +1,1031 @@
+{
+  "subject": "saban",
+  "reviewedAt": "2026-10-24",
+  "sourcesVerifiedAt": "2026-10-24",
+  "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Haim%20Saban.jpg?width=400",
+  "brief": {
+    "inclusion": "Entertainment and private-equity billionaire who has given more than $40 million in itemized federal contributions, almost all to Democratic committees, and who uses that giving, a Brookings policy center and a Washington forum he funds to press the Democratic Party on Israel.",
+    "identifiers": {
+      "wikidata": "Q559844",
+      "fec_contributor": "SABAN, HAIM"
+    },
+    "namesakes": "FEC rows for a Haim Saban or Haim Cohen-Saban in Brooklyn (handbag manufacturing, L S Industries) are a different person. The subject files from Los Angeles, Beverly Hills or Burbank with Saban Entertainment, Saban Capital Group or Fox Kids employers. His wife Cheryl Saban gives separately and is not counted.",
+    "coverage": {
+      "from": "1944",
+      "through": "2026-10-24",
+      "lags": "FEC Schedule A for the 2026 cycle updates as committees file. California state giving (ballot measures, the 2026 governor and Los Angeles mayor races) is not in the federal record. Saban Capital Group holdings are private."
+    },
+    "openQuestions": [
+      "The \"one-issue guy\" quotation is attributed to a 2004 New York Times profile; the original wording was not checked.",
+      "A 2026 Real Deal report of a gift to Xavier Becerra's California governor campaign could not be opened; state giving needs a California Cal-Access pass.",
+      "Confirm the date of the Univision consortium's exit after the 2020–2021 Searchlight sale.",
+      "Ethnicity and race: Wikipedia describes an Egyptian-Jewish family; no source states a race directly."
+    ],
+    "review": []
+  },
+  "summary": "Egyptian-born Israeli-American who made his fortune from Power Rangers and the $5.2 billion sale of Fox Family Worldwide to Disney in 2001, then built Saban Capital Group. He has given more than $40 million in itemized federal contributions since 1988, from a $7 million gift to the Democratic National Committee's building fund in 2002 to $5 million for AIPAC's super PAC, United Democracy Project, since 2022, and he funds the Brookings Middle East center and annual Saban Forum.",
+  "roles": [
+    {
+      "label": "Investor",
+      "detail": "Chairman and chief executive, Saban Capital Group (founded 2001)",
+      "sources": ["labj-2026"]
+    },
+    {
+      "label": "Entertainment executive",
+      "detail": "Founded Saban Entertainment (1988), producer of Power Rangers; co-owned Fox Family Worldwide until its 2001 sale to Disney",
+      "sources": ["labj-2026", "disney-2001"]
+    },
+    {
+      "label": "Political donor",
+      "detail": "Federal contributions recorded by the FEC since 1988, almost all to Democrats",
+      "sources": ["fec-saban"]
+    },
+    {
+      "label": "Think-tank founder",
+      "detail": "Founding funder of the Saban Center for Middle East Policy at Brookings (2002) and host of the Saban Forum",
+      "sources": ["brookings-2002", "jta-ellison-2016"]
+    },
+    {
+      "label": "Board member",
+      "detail": "Director, Universal Music Group",
+      "sources": ["labj-2026"]
+    }
+  ],
+  "finance": {
+    "fec": {
+      "contributorName": "SABAN, HAIM",
+      "namePattern": "^(SABAN,? +HAIM|HAIM SABAN)( +MR\\.?)?[ ,]*(\\(MEMO\\))?( C/O SABAN ENTERTAINMENT)?$",
+      "employerPattern": "SABAN|FOX KIDS|FOX FAMILY",
+      "cities": ["LOS ANGELES", "BEVERLY HILLS", "BURBANK", "STUDIO CITY"],
+      "source": "fec-saban"
+    },
+    "coverage": "Itemized contributions reported to the FEC on Schedule A since 1988, including pre-2003 party \"soft money\" accounts such as the DNC building fund, matched on exact name plus a Saban or Fox employer or his Los Angeles-area filing cities. Gifts by Cheryl Saban, California state and local giving, foundation grants and the Brookings and Saban Forum funding are outside this record."
+  },
+  "entities": {
+    "saban": {
+      "create": {
+        "name": "Haim Saban",
+        "type": "donor",
+        "description": "Israeli-American media and private-equity investor; founder of Saban Entertainment and Saban Capital Group and a major Democratic donor.",
+        "websiteUrl": "https://www.saban.com/"
+      }
+    },
+    "saban-entertainment": {
+      "create": {
+        "name": "Saban Entertainment",
+        "type": "company",
+        "description": "Television production company founded by Haim Saban in 1988; producer of Mighty Morphin Power Rangers. Sold with Fox Family Worldwide to Disney in 2001."
+      }
+    },
+    "fox-family": {
+      "create": {
+        "name": "Fox Family Worldwide",
+        "type": "company",
+        "description": "Joint venture of Haim Saban and News Corporation (formed as Fox Kids Worldwide); sold to Disney in 2001 and renamed ABC Family."
+      }
+    },
+    "disney": {
+      "create": {
+        "name": "The Walt Disney Company",
+        "type": "company",
+        "description": "Media and entertainment company.",
+        "websiteUrl": "https://thewaltdisneycompany.com/"
+      }
+    },
+    "saban-capital": {
+      "create": {
+        "name": "Saban Capital Group",
+        "type": "company",
+        "description": "Los Angeles private investment firm founded by Haim Saban in 2001; invests in media, entertainment and communications.",
+        "websiteUrl": "https://www.saban.com/"
+      }
+    },
+    "univision": {
+      "create": {
+        "name": "Univision Communications",
+        "type": "company",
+        "description": "Spanish-language U.S. broadcaster; acquired in 2007 by a consortium led by Saban Capital Group; now TelevisaUnivision."
+      }
+    },
+    "prosieben": {
+      "create": {
+        "name": "ProSiebenSat.1 Media",
+        "type": "company",
+        "description": "German television broadcaster controlled by a Saban-led consortium from 2003 to 2007."
+      }
+    },
+    "hasbro": {
+      "create": {
+        "name": "Hasbro",
+        "type": "company",
+        "description": "Toy and entertainment company; bought Power Rangers from Saban in 2018.",
+        "websiteUrl": "https://corporate.hasbro.com/"
+      }
+    },
+    "umg": {
+      "create": {
+        "name": "Universal Music Group",
+        "type": "company",
+        "description": "Recorded-music and publishing company.",
+        "websiteUrl": "https://www.universalmusic.com/"
+      }
+    },
+    "brookings": {
+      "create": {
+        "name": "Brookings Institution",
+        "type": "organization",
+        "description": "Washington public-policy research organization.",
+        "websiteUrl": "https://www.brookings.edu/"
+      }
+    },
+    "indyk": {
+      "create": {
+        "name": "Martin Indyk",
+        "type": "politician",
+        "description": "U.S. ambassador to Israel under Clinton; founding director of the Saban Center at Brookings; died 2024."
+      }
+    },
+    "dnc": {
+      "match": { "identifier": ["fec_committee", "C00010603"] }
+    },
+    "priorities": {
+      "match": { "identifier": ["fec_committee", "C00495861"] }
+    },
+    "smp": {
+      "match": { "identifier": ["fec_committee", "C00484642"] }
+    },
+    "udp": {
+      "match": { "identifier": ["fec_committee", "C00799031"] }
+    },
+    "clinton": {
+      "match": { "identifier": ["fec_candidate", "S0NY00188"] }
+    },
+    "biden": {
+      "match": { "identifier": ["fec_candidate", "P80000722"] }
+    },
+    "harris": {
+      "match": { "identifier": ["fec_candidate", "P00009423"] }
+    },
+    "trump": {
+      "match": { "name": "Donald Trump", "type": "politician" }
+    },
+    "kushner": {
+      "match": { "name": "Jared Kushner", "type": "politician" }
+    },
+    "ellison": {
+      "match": { "identifier": ["fec_candidate", "H6MN05183"] }
+    },
+    "otaiba": {
+      "create": {
+        "name": "Yousef Al Otaiba",
+        "type": "politician",
+        "description": "United Arab Emirates ambassador to the United States since 2008."
+      }
+    }
+  },
+  "sources": [
+    {
+      "key": "fec-saban",
+      "title": "Individual contributions: Saban, Haim (Schedule A)",
+      "publisher": "Federal Election Commission",
+      "type": "filing",
+      "url": "https://www.fec.gov/data/receipts/individual-contributions/?contributor_name=SABAN%2C+HAIM",
+      "documentId": "OpenFEC /schedules/schedule_a"
+    },
+    {
+      "key": "wikidata",
+      "title": "Haim Saban (Q559844)",
+      "publisher": "Wikidata",
+      "type": "secondary",
+      "url": "https://www.wikidata.org/wiki/Q559844",
+      "notes": "Structured reference record: birth date and place, citizenships (Israel, United States, Egypt), religion, spouse."
+    },
+    {
+      "key": "wikipedia",
+      "title": "Haim Saban",
+      "publisher": "Wikipedia",
+      "type": "secondary",
+      "url": "https://en.wikipedia.org/wiki/Haim_Saban",
+      "notes": "Reference work; cited for early life, music career and German media holdings."
+    },
+    {
+      "key": "forbes-profile",
+      "title": "Haim Saban: real-time net worth",
+      "publisher": "Forbes",
+      "type": "secondary",
+      "url": "https://www.forbes.com/profile/haim-saban/"
+    },
+    {
+      "key": "labj-2026",
+      "title": "LA500 2026: Haim Saban",
+      "publisher": "Los Angeles Business Journal",
+      "type": "article",
+      "publishedAt": "2026-05-11",
+      "url": "https://labusinessjournal.com/la500-2026/banking-finance-2026/la500-2026-haim-saban/"
+    },
+    {
+      "key": "disney-2001",
+      "title": "Disney completes acquisition of Fox Family Worldwide (press release, exhibit to Form 8-K)",
+      "publisher": "The Walt Disney Company via SEC EDGAR",
+      "type": "filing",
+      "publishedAt": "2001-10-24",
+      "url": "https://www.sec.gov/Archives/edgar/data/1001039/000091205701537037/a2062068zex-99.htm"
+    },
+    {
+      "key": "hasbro-2018",
+      "title": "Hasbro to Acquire Saban Brands' Power Rangers and Other Entertainment Assets",
+      "publisher": "Hasbro",
+      "type": "official_statement",
+      "publishedAt": "2018-05-01",
+      "url": "https://newsroom.hasbro.com/node/28456"
+    },
+    {
+      "key": "brookings-2002",
+      "title": "Brookings Announces New Saban Center for Middle East Policy",
+      "publisher": "Brookings Institution",
+      "type": "official_statement",
+      "publishedAt": "2002-05-09",
+      "url": "https://www.brookings.edu/news-releases/brookings-announces-new-saban-center-for-middle-east-policy/"
+    },
+    {
+      "key": "nyt-2004",
+      "title": "New York Times profile of Haim Saban",
+      "publisher": "The New York Times",
+      "type": "article",
+      "publishedAt": "2004",
+      "documentId": "The New York Times, 2004",
+      "notes": "Source of the widely repeated \"one-issue guy\" quotation; the original was not opened."
+    },
+    {
+      "key": "toi-trump-2016",
+      "title": "Israeli-American mogul Haim Saban: Trump win would be 'disastrous' for Israel",
+      "publisher": "The Times of Israel",
+      "type": "article",
+      "publishedAt": "2016-07-29",
+      "url": "https://www.timesofisrael.com/israeli-american-mogul-haim-saban-trump-win-would-be-disastrous-for-israel/",
+      "notes": "Reports an interview on Israel's Channel 10, in Hebrew."
+    },
+    {
+      "key": "jta-clown-2016",
+      "title": "Haim Saban calls Trump a 'clown' and 'dangerous'",
+      "publisher": "JTA",
+      "type": "article",
+      "publishedAt": "2016-03-06",
+      "url": "https://www.jta.org/2016/03/06/politics/haim-saban-calls-trump-a-clown-and-dangerous",
+      "notes": "Reports an interview on Israel's Channel 2."
+    },
+    {
+      "key": "jta-ellison-2016",
+      "title": "Keith Ellison would be a 'disaster' as DNC head, Haim Saban says",
+      "publisher": "JTA",
+      "author": "Ron Kampeas",
+      "type": "article",
+      "publishedAt": "2016-12-03",
+      "url": "https://jta.org/?p=1289878"
+    },
+    {
+      "key": "ji-peace-plan-2020",
+      "title": "Democratic megadonor Haim Saban says he supports Trump's Mideast plan",
+      "publisher": "Jewish Insider",
+      "author": "Jacob Kornbluh",
+      "type": "article",
+      "publishedAt": "2020-01-28",
+      "url": "https://jewishinsider.com/2020/01/democratic-megadonor-haim-saban-says-he-supports-trumps-mideast-plan/"
+    },
+    {
+      "key": "uae-oped-2020",
+      "title": "Ambassador Al Otaiba Op-Ed: Annexation Will Be a Serious Setback for Better Relations with the Arab World",
+      "publisher": "Embassy of the United Arab Emirates",
+      "type": "primary",
+      "publishedAt": "2020-06-12",
+      "url": "https://www.uae-embassy.org/news/ambassador-al-otaiba-op-ed-annexation-will-be-serious-setback-better-relations-arab-world-0",
+      "notes": "Op-ed first published in Yedioth Ahronoth."
+    },
+    {
+      "key": "toi-oped-2021",
+      "title": "UAE op-ed that offered normalization to nix annexation riled Netanyahu, ToI told",
+      "publisher": "The Times of Israel",
+      "author": "Jacob Magid",
+      "type": "article",
+      "publishedAt": "2021-12-17",
+      "url": "https://www.timesofisrael.com/uae-op-ed-that-offered-normalization-to-nix-annexation-riled-netanyahu-toi-told/"
+    },
+    {
+      "key": "yahoo-25th-2021",
+      "title": "Democratic megadonor Haim Saban urges Trump's removal via 25th Amendment",
+      "publisher": "Yahoo Finance",
+      "author": "Max Zahn and Andy Serwer",
+      "type": "transcript",
+      "publishedAt": "2021-01-12",
+      "url": "https://finance.yahoo.com/news/billionaire-democrat-haim-saban-backs-trumps-removal-via-25th-amendment-133757882.html"
+    },
+    {
+      "key": "wrap-rafah-2024",
+      "title": "Haim Saban Fires Off Email to White House Officials Over 'Bad' Decision to Withhold Weapons Shipments if Israel Invades Rafah",
+      "publisher": "TheWrap",
+      "author": "Natalie Korach",
+      "type": "article",
+      "publishedAt": "2024-05-09",
+      "url": "https://www.thewrap.com/biden-israeli-weapons-haim-saban-response/",
+      "notes": "The email was first reported by Axios."
+    },
+    {
+      "key": "yahoo-rafah-2024",
+      "title": "Hollywood mega-donor Haim Saban slams Biden's decision to halt weapons shipment to Israel",
+      "publisher": "Yahoo News",
+      "type": "article",
+      "publishedAt": "2024-05-09",
+      "url": "https://au.news.yahoo.com/hollywood-mega-donor-haim-saban-014914668.html"
+    }
+  ],
+  "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "October 15, 1944",
+      "detail": "Alexandria, Egypt",
+      "sources": ["wikidata", "wikipedia"]
+    },
+    {
+      "key": "sex",
+      "label": "Sex",
+      "value": "Male",
+      "sources": ["wikidata"]
+    },
+    {
+      "key": "ethnicity",
+      "label": "Ethnicity",
+      "value": "Egyptian Jewish",
+      "detail": "Born to an Egyptian-Jewish family that emigrated to Israel in 1956.",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "citizenship",
+      "label": "Citizenship",
+      "value": "United States; Israel",
+      "detail": "Born a subject of the Kingdom of Egypt.",
+      "sources": ["wikidata", "forbes-profile"]
+    },
+    {
+      "key": "religion",
+      "label": "Religion",
+      "value": "Jewish",
+      "sources": ["wikidata"]
+    },
+    {
+      "key": "spouse",
+      "label": "Spouse",
+      "value": "Cheryl Saban",
+      "detail": "Married 1987.",
+      "sources": ["wikipedia", "wikidata"]
+    },
+    {
+      "key": "children",
+      "label": "Children",
+      "value": "Four, including two stepchildren",
+      "sources": ["forbes-profile", "wikipedia"]
+    },
+    {
+      "key": "residence",
+      "label": "Residence",
+      "value": "Beverly Hills, California",
+      "sources": ["forbes-profile"]
+    },
+    {
+      "key": "party",
+      "label": "Party",
+      "value": "Democratic",
+      "detail": "Calls himself \"a lifelong and continuing Democrat.\"",
+      "sources": ["ji-peace-plan-2020"]
+    },
+    {
+      "key": "education",
+      "label": "Education",
+      "value": "High school (night school, Israel)",
+      "sources": ["forbes-profile", "wikipedia"]
+    },
+    {
+      "key": "current-roles",
+      "label": "Current roles",
+      "value": "Chairman and CEO, Saban Capital Group; director, Universal Music Group",
+      "featured": true,
+      "asOf": "2026-05-11",
+      "sources": ["labj-2026"]
+    },
+    {
+      "key": "net-worth",
+      "label": "Net worth (estimate)",
+      "value": "$3.3 billion",
+      "detail": "Forbes real-time estimate",
+      "asOf": "2026-10-24",
+      "featured": true,
+      "sources": ["forbes-profile"]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "saban-entertainment",
+      "source": "saban",
+      "target": "saban-entertainment",
+      "relType": "founded",
+      "role": "Founder; producer of Mighty Morphin Power Rangers",
+      "from": "1988",
+      "until": "2001",
+      "prominence": 3,
+      "sources": ["labj-2026", "disney-2001"]
+    },
+    {
+      "key": "saban-fox-family",
+      "source": "saban",
+      "target": "fox-family",
+      "relType": "co-founded",
+      "role": "Co-owner with News Corporation; sold to Disney in 2001",
+      "from": "1995",
+      "until": "2001",
+      "prominence": 3,
+      "sources": ["labj-2026", "disney-2001"]
+    },
+    {
+      "key": "saban-capital",
+      "source": "saban",
+      "target": "saban-capital",
+      "relType": "founded",
+      "role": "Founder, chairman and chief executive",
+      "from": "2001",
+      "prominence": 3,
+      "sources": ["labj-2026"]
+    },
+    {
+      "key": "saban-univision",
+      "source": "saban",
+      "target": "univision",
+      "relType": "invested-in",
+      "role": "Led the consortium that bought Univision for $13.7 billion (2007); majority stake sold to Searchlight Capital in 2020",
+      "from": "2007",
+      "until": "2020",
+      "prominence": 2,
+      "sources": ["forbes-profile", "wikipedia"]
+    },
+    {
+      "key": "saban-prosieben",
+      "source": "saban",
+      "target": "prosieben",
+      "relType": "invested-in",
+      "role": "Led the consortium that took control from the bankrupt Kirch group; sold to KKR and Permira",
+      "from": "2003",
+      "until": "2007",
+      "prominence": 1,
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "saban-hasbro",
+      "source": "hasbro",
+      "target": "saban-capital",
+      "relType": "client-of",
+      "role": "Bought Power Rangers and other Saban Properties brands for $522 million in cash and stock (2018)",
+      "from": "2018",
+      "until": "2018",
+      "prominence": 1,
+      "sources": ["hasbro-2018", "forbes-profile"]
+    },
+    {
+      "key": "saban-umg",
+      "source": "saban",
+      "target": "umg",
+      "relType": "board-member-of",
+      "role": "Director",
+      "prominence": 1,
+      "sources": ["labj-2026"]
+    },
+    {
+      "key": "saban-brookings",
+      "source": "saban",
+      "target": "brookings",
+      "relType": "donated-to",
+      "role": "Founding grant for the Saban Center for Middle East Policy (2002); chairs its international advisory council; funds the annual Saban Forum",
+      "from": "2002",
+      "prominence": 3,
+      "sources": ["brookings-2002", "jta-ellison-2016"]
+    },
+    {
+      "key": "indyk-saban-center",
+      "source": "indyk",
+      "target": "brookings",
+      "relType": "works-for",
+      "role": "Founding director of the Saban Center",
+      "from": "2002",
+      "prominence": 1,
+      "sources": ["brookings-2002"]
+    },
+    {
+      "key": "saban-dnc",
+      "source": "saban",
+      "target": "dnc",
+      "relType": "donated-to",
+      "role": "$7 million to the DNC building fund (January 2002) and further party soft-money gifts",
+      "from": "2002",
+      "prominence": 3,
+      "sources": ["fec-saban"]
+    },
+    {
+      "key": "saban-clinton",
+      "source": "saban",
+      "target": "clinton",
+      "relType": "donated-to",
+      "role": "Backer of her 2008 and 2016 presidential campaigns; with his wife gave about $7 million to the pro-Clinton super PAC Priorities USA Action in 2015–2016",
+      "from": "2007",
+      "until": "2016",
+      "prominence": 3,
+      "sources": ["fec-saban", "toi-trump-2016", "wikipedia"]
+    },
+    {
+      "key": "saban-priorities",
+      "source": "saban",
+      "target": "priorities",
+      "relType": "donated-to",
+      "role": "Largest itemized recipient of his 2016 giving",
+      "from": "2015",
+      "until": "2016",
+      "prominence": 2,
+      "sources": ["fec-saban"]
+    },
+    {
+      "key": "saban-smp",
+      "source": "saban",
+      "target": "smp",
+      "relType": "donated-to",
+      "role": "Repeated seven-figure gifts to the Senate Democrats' main super PAC since 2014",
+      "from": "2014",
+      "prominence": 2,
+      "sources": ["fec-saban"]
+    },
+    {
+      "key": "saban-udp",
+      "source": "saban",
+      "target": "udp",
+      "relType": "donated-to",
+      "role": "$1 million a year to AIPAC's super PAC, 2022–2026",
+      "from": "2022",
+      "prominence": 3,
+      "sources": ["fec-saban"]
+    },
+    {
+      "key": "saban-biden",
+      "source": "saban",
+      "target": "biden",
+      "relType": "donated-to",
+      "role": "Gave to the Biden Victory Fund (2020) and hosted a $4.5 million reelection fundraiser (February 2024); broke with the administration over the May 2024 weapons pause",
+      "from": "2020",
+      "until": "2024",
+      "prominence": 2,
+      "sources": ["fec-saban", "wrap-rafah-2024"]
+    },
+    {
+      "key": "saban-harris",
+      "source": "saban",
+      "target": "harris",
+      "relType": "donated-to",
+      "role": "Gave to the Harris Victory Fund (2024)",
+      "from": "2024",
+      "until": "2024",
+      "prominence": 1,
+      "sources": ["fec-saban"]
+    },
+    {
+      "key": "saban-trump",
+      "source": "saban",
+      "target": "trump",
+      "relType": "opposed",
+      "role": "Called him \"a conman\" and \"dangerous\" in 2016 and urged his removal under the 25th Amendment in 2021; praised his 2020 Middle East plan",
+      "from": "2016",
+      "prominence": 2,
+      "sources": ["toi-trump-2016", "yahoo-25th-2021", "ji-peace-plan-2020"]
+    },
+    {
+      "key": "saban-ellison",
+      "source": "saban",
+      "target": "ellison",
+      "relType": "opposed",
+      "role": "Called him \"clearly an anti-Semite\" during his 2016 bid to chair the DNC",
+      "from": "2016-12",
+      "until": "2017-02",
+      "prominence": 1,
+      "sources": ["jta-ellison-2016"]
+    },
+    {
+      "key": "otaiba-saban",
+      "source": "otaiba",
+      "target": "saban",
+      "relType": "collaborated-with",
+      "role": "Enlisted Saban to place his June 2020 anti-annexation op-ed in Yedioth Ahronoth",
+      "from": "2020-06",
+      "until": "2020-06",
+      "prominence": 2,
+      "sources": ["toi-oped-2021"]
+    }
+  ],
+  "events": [
+    {
+      "key": "born",
+      "date": "1944-10-15",
+      "title": "Born in Alexandria, Egypt",
+      "category": "personal",
+      "significance": 2,
+      "chapter": "early",
+      "sources": ["wikidata", "wikipedia"]
+    },
+    {
+      "key": "aliyah",
+      "date": "1956",
+      "title": "Family emigrates to Israel",
+      "summary": "With much of Egypt's Jewish community after the Suez crisis; he later serves in the Israel Defense Forces.",
+      "category": "personal",
+      "significance": 2,
+      "chapter": "early",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "lions-of-judah",
+      "date": "1966",
+      "title": "Becomes bassist and manager of the Lions of Judah",
+      "summary": "The start of a music-promotion career that collapses into debt around the 1973 war and moves to France.",
+      "category": "career",
+      "significance": 1,
+      "chapter": "early",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "to-us",
+      "date": "1983",
+      "title": "Moves to the United States",
+      "summary": "Writes and supplies music for children's television with Shuki Levy.",
+      "category": "career",
+      "significance": 2,
+      "chapter": "early",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "saban-entertainment",
+      "date": "1988",
+      "title": "Founds Saban Entertainment",
+      "summary": "Its Mighty Morphin Power Rangers, adapted from Japanese footage, becomes a global franchise in the 1990s.",
+      "category": "career",
+      "significance": 3,
+      "chapter": "power-rangers",
+      "participants": [["saban-entertainment", "company"]],
+      "sources": ["labj-2026", "wikipedia"]
+    },
+    {
+      "key": "fox-kids",
+      "date": "1995",
+      "title": "Forms a children's-television joint venture with News Corporation",
+      "summary": "Fox Kids Worldwide, later Fox Family Worldwide, which buys the Family Channel in 1997.",
+      "category": "career",
+      "significance": 2,
+      "chapter": "power-rangers",
+      "participants": [["fox-family", "joint venture"]],
+      "status": "unresolved",
+      "statusNote": "The LA Business Journal dates the venture to 1995; Wikipedia dates the merger to 1996.",
+      "sources": ["labj-2026", "wikipedia"]
+    },
+    {
+      "key": "composer-settlement",
+      "date": "1998",
+      "title": "Settles claims over music credits",
+      "summary": "After The Hollywood Reporter reported he had not written all the music credited to him, ten composers threatened suit; he settled out of court.",
+      "category": "legal",
+      "significance": 1,
+      "chapter": "power-rangers",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "disney-sale",
+      "date": "2001-10-24",
+      "title": "Disney completes its $5.2 billion purchase of Fox Family Worldwide",
+      "summary": "About $2.9 billion in cash plus $2.3 billion in assumed obligations, from Saban and Fox. Saban's profit was reported at about $1.6 billion.",
+      "category": "finance",
+      "significance": 3,
+      "chapter": "power-rangers",
+      "participants": [["disney", "buyer"], ["fox-family", "company"]],
+      "sources": ["disney-2001", "wikipedia"]
+    },
+    {
+      "key": "saban-capital",
+      "date": "2001",
+      "title": "Founds Saban Capital Group in Century City",
+      "category": "career",
+      "significance": 2,
+      "chapter": "investor",
+      "participants": [["saban-capital", "firm"]],
+      "sources": ["labj-2026"]
+    },
+    {
+      "key": "dnc-building",
+      "date": "2002-01-31",
+      "title": "Gives $7 million to the DNC's building fund",
+      "summary": "Among the last large party soft-money gifts before the McCain–Feingold ban took effect; with a further $3 million that September, the largest single entries in his federal record.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "money",
+      "participants": [["dnc", "recipient"]],
+      "sources": ["fec-saban"]
+    },
+    {
+      "key": "saban-center",
+      "date": "2002-05-13",
+      "title": "Saban Center for Middle East Policy opens at Brookings",
+      "summary": "Founded on his grant and directed by former ambassador to Israel Martin Indyk; the King of Jordan gives the launch address.",
+      "category": "ideas",
+      "significance": 3,
+      "chapter": "brookings",
+      "participants": [["brookings", "host"], ["indyk", "director"]],
+      "sources": ["brookings-2002"]
+    },
+    {
+      "key": "prosieben",
+      "date": "2003-08",
+      "title": "Takes control of Germany's ProSiebenSat.1",
+      "summary": "Sold to KKR and Permira in 2007 at 22.40 euros a share, after buying in at 7.5 euros.",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "investor",
+      "participants": [["prosieben", "company"]],
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "univision",
+      "date": "2007",
+      "title": "Saban-led consortium completes the $13.7 billion purchase of Univision",
+      "category": "finance",
+      "significance": 3,
+      "chapter": "investor",
+      "participants": [["univision", "company"]],
+      "sources": ["forbes-profile", "wikipedia"]
+    },
+    {
+      "key": "priorities-2016",
+      "date": "2015-06-29",
+      "date_end": "2016-10-31",
+      "title": "Gives $6.1 million to Priorities USA Action for Hillary Clinton",
+      "summary": "Part of what he called an \"eight figures\" commitment to her campaign.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "money",
+      "participants": [["priorities", "super PAC"], ["clinton", "candidate"]],
+      "sources": ["fec-saban", "toi-trump-2016"]
+    },
+    {
+      "key": "trump-conman",
+      "date": "2016-07-28",
+      "title": "Calls Trump \"a conman\" and \"disastrous\" for Israel on Israeli television",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "democrats-israel",
+      "participants": [["trump", "candidate"]],
+      "sources": ["toi-trump-2016", "jta-clown-2016"]
+    },
+    {
+      "key": "ellison",
+      "date": "2016-12-02",
+      "title": "Calls Keith Ellison \"clearly an anti-Semite\" at the Saban Forum",
+      "summary": "Says Ellison's election as DNC chair would be \"a disaster\" for Jewish–Democratic relations. Ellison loses the race to Tom Perez in February 2017.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "democrats-israel",
+      "participants": [["ellison", "DNC candidate"]],
+      "sources": ["jta-ellison-2016"]
+    },
+    {
+      "key": "hasbro",
+      "date": "2018-05-01",
+      "title": "Sells Power Rangers to Hasbro for $522 million",
+      "summary": "He had bought the franchise back from Disney in 2010.",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "investor",
+      "participants": [["hasbro", "buyer"]],
+      "sources": ["hasbro-2018", "forbes-profile"]
+    },
+    {
+      "key": "peace-plan",
+      "date": "2020-01-28",
+      "title": "Endorses the Trump administration's Middle East plan",
+      "summary": "Credits Trump and Jared Kushner with an \"out-of-the-box\" framework.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "democrats-israel",
+      "participants": [["trump", "president"], ["kushner", "adviser"]],
+      "sources": ["ji-peace-plan-2020"]
+    },
+    {
+      "key": "otaiba-oped",
+      "date": "2020-06-12",
+      "title": "Helps place the UAE ambassador's anti-annexation op-ed in Yedioth Ahronoth",
+      "summary": "The first op-ed by a Gulf diplomat in an Israeli paper, offering better relations in exchange for shelving annexation; the Abraham Accords follow in August and September.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "democrats-israel",
+      "participants": [["otaiba", "author"], ["kushner", "consulted"]],
+      "sources": ["uae-oped-2020", "toi-oped-2021"]
+    },
+    {
+      "key": "25th-amendment",
+      "date": "2021-01-12",
+      "title": "Urges Pence to invoke the 25th Amendment against Trump",
+      "summary": "Six days after the Capitol riot, which he says Trump incited.",
+      "category": "politics",
+      "significance": 1,
+      "chapter": "democrats-israel",
+      "participants": [["trump", "president"]],
+      "sources": ["yahoo-25th-2021"]
+    },
+    {
+      "key": "udp",
+      "date": "2022-02-15",
+      "title": "Gives $1 million to AIPAC's new super PAC, United Democracy Project",
+      "summary": "The first of five annual $1 million gifts through June 2026, for $5 million in all.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "money",
+      "participants": [["udp", "super PAC"]],
+      "sources": ["fec-saban"]
+    },
+    {
+      "key": "biden-fundraiser",
+      "date": "2024-02",
+      "title": "Hosts a $4.5 million fundraiser for Biden's reelection",
+      "summary": "At his Beverly Park home; he missed it after testing positive for Covid.",
+      "category": "politics",
+      "significance": 1,
+      "chapter": "money",
+      "participants": [["biden", "candidate"]],
+      "sources": ["wrap-rafah-2024", "yahoo-rafah-2024"]
+    },
+    {
+      "key": "rafah-email",
+      "date": "2024-05-09",
+      "title": "Emails Biden's aides against pausing bomb shipments to Israel",
+      "summary": "Writes to Steve Ricchetti and Anita Dunn that the decision is a bad one, arguing that more Jewish voters care about Israel than Muslim voters care about Hamas; Muslim American leaders condemn the line.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "democrats-israel",
+      "participants": [["biden", "president"]],
+      "sources": ["wrap-rafah-2024", "yahoo-rafah-2024"]
+    },
+    {
+      "key": "harris-2024",
+      "date": "2024-09-30",
+      "title": "Gives $923,000 to the Harris Victory Fund",
+      "category": "politics",
+      "significance": 1,
+      "chapter": "money",
+      "participants": [["harris", "candidate"]],
+      "sources": ["fec-saban"]
+    },
+    {
+      "key": "udp-2026",
+      "date": "2026-06-25",
+      "title": "Makes a fifth $1 million gift to United Democracy Project",
+      "summary": "During a midterm cycle in which the AIPAC super PAC spends heavily in Democratic and Republican primaries.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "money",
+      "participants": [["udp", "super PAC"]],
+      "sources": ["fec-saban"]
+    }
+  ],
+  "statements": [
+    {
+      "key": "one-issue",
+      "issue": "Israel",
+      "date": "2004",
+      "venue": "Interview with The New York Times",
+      "quote": "I'm a one-issue guy, and my issue is Israel.",
+      "verbatim": false,
+      "summary": "His most widely quoted self-description, attributed to a 2004 New York Times profile and repeated in later coverage; the original wording was not checked.",
+      "source": "nyt-2004"
+    },
+    {
+      "key": "brookings-peace",
+      "issue": "Israel",
+      "date": "2002-05-09",
+      "venue": "Brookings announcement of the Saban Center",
+      "quote": "As someone who has an abiding interest in promoting Arab-Israeli peace",
+      "summary": "On why he funded the center.",
+      "source": "brookings-2002"
+    },
+    {
+      "key": "trump-dangerous",
+      "issue": "Donald Trump",
+      "date": "2016-03-05",
+      "venue": "Interview on Israel's Channel 2",
+      "quote": "dangerous for the world, and since Israel is part of the world, therefore he's dangerous for Israel.",
+      "source": "jta-clown-2016"
+    },
+    {
+      "key": "trump-conman",
+      "issue": "Donald Trump",
+      "date": "2016-07-28",
+      "venue": "Interview on Israel's Channel 10",
+      "quote": "Don't believe a single word this man says.",
+      "summary": "Addressed to Israeli viewers; he also called Trump \"a conman, a liar, a cheat, a thief.\"",
+      "source": "toi-trump-2016"
+    },
+    {
+      "key": "eight-figures",
+      "issue": "Money in politics",
+      "date": "2016-07-28",
+      "venue": "Interview on Israel's Channel 10",
+      "quote": "eight figures",
+      "summary": "His description of the size of his support for Hillary Clinton's 2016 campaign; asked if he was her biggest donor, he said, \"That's what the papers write.\"",
+      "source": "toi-trump-2016"
+    },
+    {
+      "key": "ellison-disaster",
+      "issue": "The Democratic Party",
+      "date": "2016-12-02",
+      "venue": "Saban Forum, Washington",
+      "quote": "Keith Ellison would be a disaster for the relationship between the Jewish community and the Democratic Party.",
+      "source": "jta-ellison-2016"
+    },
+    {
+      "key": "ellison-antisemite",
+      "issue": "The Democratic Party",
+      "date": "2016-12-02",
+      "venue": "Saban Forum, Washington",
+      "quote": "he's clearly an anti-Semite and anti-Israel individual",
+      "summary": "Ellison said the 2010 remarks cited against him were taken out of context.",
+      "source": "jta-ellison-2016"
+    },
+    {
+      "key": "lifelong-democrat",
+      "issue": "Israel",
+      "date": "2020-01-28",
+      "venue": "Statement to Jewish Insider on the Trump peace plan",
+      "quote": "as a lifelong and continuing Democrat who does not often see eye-to-eye with President Trump",
+      "summary": "He gave Trump and Kushner \"credit for developing a framework that is out-of-the-box and lays out a basis for negotiations.\"",
+      "source": "ji-peace-plan-2020"
+    },
+    {
+      "key": "incitement",
+      "issue": "Donald Trump",
+      "date": "2021-01-12",
+      "venue": "Interview with Yahoo Finance",
+      "quote": "I'm no lawyer but it sounds to me like incitement to commit a crime.",
+      "summary": "On Trump and the January 6 Capitol riot.",
+      "source": "yahoo-25th-2021"
+    },
+    {
+      "key": "hamas-defeated",
+      "issue": "Israel",
+      "date": "2024-05-09",
+      "venue": "Email to Biden aides Steve Ricchetti and Anita Dunn",
+      "quote": "We, the U.S., as you stated numerous times, believe that Hamas should be defeated.",
+      "source": "wrap-rafah-2024"
+    }
+  ],
+  "ideas": {
+    "traditions": [],
+    "influences": [],
+    "works": [],
+    "featuredQuotes": ["ellison-disaster", "hamas-defeated"]
+  },
+  "chapters": [
+    {
+      "key": "early",
+      "title": "Alexandria, Tel Aviv and Paris",
+      "dek": "An Egyptian-Jewish refugee who went from rock promoter to children's-television supplier.",
+      "body": "Saban was born in Alexandria, Egypt, on October 15, 1944, to an Egyptian-Jewish family [[wikidata, wikipedia]]. In 1956, after the Suez crisis, the family left for Israel with much of Egypt's Jewish community. He was expelled from a Youth Aliyah boarding school, finished high school at night and served in the Israel Defense Forces [[wikipedia]].\n\nIn 1966 he became bassist and manager of a rock band, the Lions of Judah, and went on to promote tours in Israel until losses around the 1973 war left him in debt. He moved to France, where he produced records including the theme for the French version of a Japanese robot cartoon, and in 1983 to the United States, where with Shuki Levy he wrote and supplied music for children's television [[wikipedia]]."
+    },
+    {
+      "key": "power-rangers",
+      "title": "Power Rangers and the Disney sale",
+      "dek": "A Japanese-footage franchise and a $5.2 billion exit.",
+      "body": "He founded Saban Entertainment in 1988. Its Mighty Morphin Power Rangers, which spliced Japanese action footage with American actors, became a global franchise in the 1990s [[labj-2026, wikipedia]]. In the mid-1990s he combined his company with News Corporation's children's network in a joint venture that became Fox Family Worldwide [[labj-2026, wikipedia]]. In 1998 ten composers threatened to sue after The Hollywood Reporter reported he had not written all the music credited to him; he settled out of court [[wikipedia]].\n\nIn October 2001 Disney completed its purchase of Fox Family Worldwide from Saban and Fox for $5.2 billion, about $2.9 billion in cash plus $2.3 billion in assumed obligations, and renamed the channel ABC Family [[disney-2001]]. Saban's profit was reported at about $1.6 billion [[wikipedia]]."
+    },
+    {
+      "key": "investor",
+      "title": "Saban Capital Group",
+      "dek": "German television, Univision and the return of the Power Rangers.",
+      "body": "He founded Saban Capital Group in Century City in 2001 [[labj-2026]]. In 2003 he led a consortium that took control of the German broadcaster ProSiebenSat.1 from the bankrupt Kirch group, and in 2007 sold the stake to KKR and Permira at 22.40 euros a share, three times the 7.5 euros he had paid [[wikipedia]]. The same year a Saban-led consortium completed a $13.7 billion purchase of Univision, the largest Spanish-language broadcaster in the United States; the group agreed in 2020 to sell a majority stake to Searchlight Capital Partners [[forbes-profile, wikipedia]].\n\nHe bought the Power Rangers back from Disney in 2010 and sold the franchise and other brands to Hasbro in 2018 for $522 million in cash and stock [[hasbro-2018, forbes-profile]]. He remains chairman and chief executive of Saban Capital Group and sits on the board of Universal Music Group [[labj-2026]]. Forbes estimates his net worth at $3.3 billion and reports that he and his wife have given about $230 million to charity [[forbes-profile]]."
+    },
+    {
+      "key": "money",
+      "title": "Forty million dollars for Democrats",
+      "dek": "From party soft money to presidential super PACs to AIPAC's super PAC.",
+      "body": "FEC records show Saban's itemized federal giving beginning in 1988 and growing in the late 1990s, almost all of it to Democrats [[fec-saban]]. The largest entries are from 2002, before the McCain–Feingold ban on party soft money took effect: $7 million to the Democratic National Committee's building fund that January and $3 million more to the party's non-federal account in September [[fec-saban]].\n\nAfter the 2010 Citizens United decision opened the way for super PACs, his money moved there. He gave $6.1 million to Priorities USA Action, the main pro-Hillary Clinton super PAC, from June 2015 to October 2016, and repeated seven-figure sums to the House and Senate Democratic super PACs from 2014 on [[fec-saban]]. He described his commitment to Clinton's campaign as \"eight figures\" [[toi-trump-2016]]. He gave to the Biden Victory Fund in 2020 and to the Harris Victory Fund in 2024, and in February 2024 hosted a fundraiser for Biden's reelection that raised $4.5 million [[fec-saban, wrap-rafah-2024]].\n\nSince 2022 his largest recurring gift has gone to United Democracy Project, the super PAC created by AIPAC, which spends in primaries of both parties: $1 million a year from February 2022 to June 2026, $5 million in all [[fec-saban]]."
+    },
+    {
+      "key": "brookings",
+      "title": "A center at Brookings and a forum of his own",
+      "dek": "Buying a seat in the Washington policy debate on the Middle East.",
+      "body": "In May 2002 Brookings announced a Saban Center for Middle East Policy, made possible by his founding grant and directed by Martin Indyk, a former U.S. ambassador to Israel; Saban chaired its international advisory council [[brookings-2002]]. He presented the gift as the act of \"someone who has an abiding interest in promoting Arab-Israeli peace\" [[brookings-2002]]. The center's grant was reported at about $13 million [[wikipedia]].\n\nThe annual Saban Forum, which he funds and Brookings organizes, brings American and Israeli officials together each year [[jta-ellison-2016]]. It is also a platform for Saban's own interventions in Democratic politics."
+    },
+    {
+      "key": "democrats-israel",
+      "title": "A Democrat who polices his party on Israel",
+      "dek": "Against Trump in 2016, against Ellison at the DNC, for Trump's peace plan, against Biden's weapons pause.",
+      "body": "Saban's best-known description of himself, from a 2004 New York Times interview, is that he is \"a one-issue guy, and my issue is Israel\" [[nyt-2004]]. In 2016 he campaigned against Donald Trump on Israeli television, calling him a \"clown\" and \"dangerous for Israel\" in March and, on the night of Clinton's acceptance speech, \"a conman\" whose election would be \"disastrous\" for Israel [[jta-clown-2016, toi-trump-2016]].\n\nThat December, at the Saban Forum, he said unprompted that Rep. Keith Ellison, then running to chair the DNC, was \"clearly an anti-Semite and anti-Israel individual\" and would be \"a disaster\" for the relationship between Jews and the party. Ellison said the remarks cited against him had been taken out of context [[jta-ellison-2016]].\n\nHe parted from his party on specific Trump policies. In January 2020 he endorsed the administration's Middle East plan, crediting Trump and Jared Kushner with \"a framework that is out-of-the-box\" [[ji-peace-plan-2020]]. That June the UAE's ambassador, Yousef Al Otaiba, enlisted Saban to place an op-ed in Yedioth Ahronoth offering Israel better Arab relations if it dropped plans to annex West Bank land; the Abraham Accords followed that summer [[uae-oped-2020, toi-oped-2021]]. After the January 6 riot he urged Vice President Pence to invoke the 25th Amendment, saying Trump's conduct sounded \"like incitement to commit a crime\" [[yahoo-25th-2021]].\n\nIn May 2024, three months after hosting a Biden fundraiser, he emailed the president's aides Steve Ricchetti and Anita Dunn to protest the pause in bomb shipments to Israel before a Rafah offensive, writing that \"Hamas should be defeated\" and arguing that more Jewish voters care about Israel than Muslim voters care about Hamas; Muslim American leaders condemned the line [[wrap-rafah-2024, yahoo-rafah-2024]]."
+    }
+  ]
+}

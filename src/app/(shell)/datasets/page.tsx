@@ -26,6 +26,7 @@ const TOPICS: Record<string, string> = {
   economy: "Economy",
   housing: "Housing",
   spending: "Government spending",
+  "foreign-relations": "Foreign relations",
   elections: "Elections",
   money: "Money in politics",
   legislation: "Congress",

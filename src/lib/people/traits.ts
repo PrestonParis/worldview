@@ -114,7 +114,9 @@ export function traitFacts(rows: TraitRow[]): { label: string; value: string; de
   push("Sex", pick("sex"), (row) => ({ female: "Female", male: "Male", nonbinary: "Nonbinary" })[row.value] ?? row.value);
   push("Born", [...pick("birth_year"), ...pick("birth_country")], (row) => row.value);
   push("Race & ethnicity", pick("race"), (row) => raceLabels[row.value] ?? row.value);
+  // Ancestry is descent, not faith: "Jewish" alone would read as a religion.
   push("Ancestry", pick("ancestry"), (row) => row.value);
+  if (facts.at(-1)?.label === "Ancestry") facts.at(-1)!.value = `${facts.at(-1)!.value.replace(/, ([^,]+)$/, " and $1")} descent`;
   push("Religion", pick("religion"), (row) => religionLabels[row.value] ?? row.value);
   return facts;
 }

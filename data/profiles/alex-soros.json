@@ -1,0 +1,636 @@
+{
+  "subject": "alex",
+  "reviewedAt": "2026-10-25",
+  "sourcesVerifiedAt": "2026-10-25",
+  "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Alexander%20Soros%20on%20March%209%202012.jpg?width=400",
+  "brief": {
+    "inclusion": "Chair of Open Society Foundations and successor to George Soros who directs a major international philanthropic and Democratic political network.",
+    "identifiers": { "fec_contributor": "SOROS, ALEXANDER" },
+    "namesakes": "Matched through Alexander George/Alex Soros forms, Open Society or Soros Fund affiliations and New York addresses.",
+    "coverage": {
+      "from": "1985-10-27",
+      "through": "2026-10-25",
+      "lags": "Organizational grants and family-controlled committee transfers are not necessarily personal contributions."
+    },
+    "openQuestions": [
+      "Public reporting does not always separate Alex Soros's personal direction from decisions made by OSF boards and professional staff.",
+      "Succession continues to evolve across family investment, foundation and political entities."
+    ],
+    "review": [
+      { "kind": "evidence", "by": "OA", "at": "2026-10-25" },
+      { "kind": "chronology", "by": "OA", "at": "2026-10-25" },
+      { "kind": "neutrality", "by": "OA", "at": "2026-10-25" },
+      { "kind": "current", "by": "OA", "at": "2026-10-25" }
+    ]
+  },
+  "summary": "Alex Soros chairs the Open Society Foundations and has taken over much of the Soros family's philanthropic and political leadership from his father George. His influence comes from governing a global grantmaking institution, helping direct Democratic-aligned political resources and maintaining relationships with elected officials rather than from the scale of his personal fortune alone.",
+  "roles": [
+    {
+      "label": "Chair, Open Society Foundations",
+      "detail": "Elected in 2022 and publicly identified as George Soros's successor in 2023.",
+      "sources": ["osf-board", "reuters-succession"]
+    },
+    {
+      "label": "Founder, Alexander Soros Foundation",
+      "detail": "Created a personal foundation focused on rights, environmental defense and social justice.",
+      "sources": ["asf-about"]
+    },
+    {
+      "label": "Democratic donor and political network leader",
+      "detail": "Makes personal contributions and represents the family network in meetings with Democratic officials.",
+      "sources": ["fec-alex", "wsj-succession", "politico-white-house"]
+    }
+  ],
+  "entities": {
+    "alex": { "match": { "name": "Alex Soros", "type": "donor" } },
+    "george": { "match": { "name": "George Soros", "type": "donor" } },
+    "osf": { "match": { "name": "Open Society Foundations", "type": "organization" } },
+    "asf": {
+      "create": {
+        "name": "Alexander Soros Foundation",
+        "type": "organization",
+        "description": "Foundation established by Alex Soros in 2012."
+      }
+    },
+    "democracy-pac": { "match": { "identifier": ["fec_committee", "C00693382"] } },
+    "democratic-party": { "match": { "name": "Democratic Party", "type": "organization" } },
+    "biden": {
+      "create": {
+        "name": "Joe Biden",
+        "type": "politician",
+        "description": "Forty-sixth president of the United States."
+      }
+    },
+    "harris": {
+      "create": {
+        "name": "Kamala Harris",
+        "type": "politician",
+        "description": "Former vice president of the United States and 2024 Democratic presidential nominee."
+      }
+    },
+    "ceu": { "match": { "name": "Central European University", "type": "organization" } },
+    "international-crisis-group": {
+      "create": {
+        "name": "International Crisis Group",
+        "type": "organization",
+        "description": "Independent organization conducting analysis and advocacy on armed conflict."
+      }
+    }
+  },
+  "sources": [
+    {
+      "key": "osf-board",
+      "title": "Alex Soros — Board of Directors",
+      "publisher": "Open Society Foundations",
+      "type": "primary",
+      "url": "https://www.opensocietyfoundations.org/who-we-are/board-of-directors/alex-soros",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "osf-leadership",
+      "title": "Who We Are",
+      "publisher": "Open Society Foundations",
+      "type": "primary",
+      "url": "https://www.opensocietyfoundations.org/who-we-are",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "reuters-succession",
+      "title": "George Soros hands control of empire to son Alex",
+      "publisher": "Reuters",
+      "type": "article",
+      "url": "https://www.reuters.com/world/us/george-soros-hands-control-empire-son-alex-wsj-2023-06-11/",
+      "publishedAt": "2023-06-11",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "wsj-succession",
+      "title": "George Soros Hands Control of $25 Billion Empire to His Son Alex",
+      "publisher": "The Wall Street Journal",
+      "type": "article",
+      "url": "https://www.wsj.com/articles/george-soros-heir-son-alexander-soros-e3c4ca13",
+      "publishedAt": "2023-06-11",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "asf-about",
+      "title": "About Alex Soros",
+      "publisher": "Alexander Soros Foundation",
+      "type": "primary",
+      "url": "https://alexsoros.com/about/",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "fec-alex",
+      "title": "Individual contributions by Soros, Alexander",
+      "publisher": "Federal Election Commission",
+      "type": "filing",
+      "url": "https://www.fec.gov/data/receipts/individual-contributions/?contributor_name=SOROS%2C+ALEXANDER",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "politico-white-house",
+      "title": "The younger Soros has become a White House regular",
+      "publisher": "Politico",
+      "type": "article",
+      "url": "https://www.politico.com/news/2023/04/11/alex-soros-white-house-00091472",
+      "publishedAt": "2023-04-11",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "nyt-succession",
+      "title": "A New Generation Takes the Helm of the Soros Philanthropy",
+      "publisher": "The New York Times",
+      "type": "article",
+      "url": "https://www.nytimes.com/2023/06/12/business/dealbook/alex-soros-george-soros-open-society-foundations.html",
+      "publishedAt": "2023-06-12",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "osf-restructure",
+      "title": "Open Society Foundations Announce New Operating Model",
+      "publisher": "Open Society Foundations",
+      "type": "official_statement",
+      "url": "https://www.opensocietyfoundations.org/newsroom/open-society-foundations-announce-new-operating-model",
+      "publishedAt": "2023",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "osf-leadership-change",
+      "title": "Open Society Foundations Announce New Leadership",
+      "publisher": "Open Society Foundations",
+      "type": "official_statement",
+      "url": "https://www.opensocietyfoundations.org/newsroom/open-society-foundations-announce-new-leadership",
+      "publishedAt": "2023",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "ceu-alex",
+      "title": "Alex Soros",
+      "publisher": "Central European University",
+      "type": "secondary",
+      "url": "https://www.ceu.edu/alex-soros",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "icg-board",
+      "title": "Board of Trustees",
+      "publisher": "International Crisis Group",
+      "type": "primary",
+      "url": "https://www.crisisgroup.org/who-we-are/board",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "ap-succession",
+      "title": "George Soros' son takes over family's philanthropic empire",
+      "publisher": "Associated Press",
+      "type": "article",
+      "url": "https://apnews.com/article/george-soros-alex-open-society-foundations-27e69dca87bf68bb7c989f0d96492fb6",
+      "publishedAt": "2023-06-12",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "osf-ukraine",
+      "title": "Alex Soros: Why Ukraine's Future Matters",
+      "publisher": "Open Society Foundations",
+      "type": "article",
+      "url": "https://www.opensocietyfoundations.org/voices/why-ukraines-future-matters",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "asf-award",
+      "title": "Alexander Soros Foundation Award",
+      "publisher": "Alexander Soros Foundation",
+      "type": "primary",
+      "url": "https://alexsoros.com/award/",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "washpost-profile",
+      "title": "Alex Soros takes the reins",
+      "publisher": "The Washington Post",
+      "type": "article",
+      "url": "https://www.washingtonpost.com/politics/2023/06/12/alex-soros-george-soros/",
+      "publishedAt": "2023-06-12",
+      "accessedAt": "2026-10-25"
+    }
+  ],
+  "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "October 27, 1985",
+      "detail": "New York, New York.",
+      "featured": true,
+      "sources": ["asf-about", "ceu-alex"]
+    },
+    { "key": "sex", "label": "Sex", "value": "Male", "sources": ["asf-about"] },
+    {
+      "key": "ethnicity",
+      "label": "Ethnicity",
+      "value": "Hungarian Jewish American",
+      "detail": "Son of Hungarian-born Jewish philanthropist George Soros and historian Susan Weber.",
+      "sources": ["asf-about", "osf-board"]
+    },
+    {
+      "key": "race",
+      "label": "Race",
+      "value": "White",
+      "detail": "Based on documented Hungarian Jewish ancestry.",
+      "sources": ["asf-about"]
+    },
+    { "key": "citizenship", "label": "Citizenship", "value": "United States", "sources": ["asf-about"] },
+    {
+      "key": "education",
+      "label": "Education",
+      "value": "New York University; University of California, Berkeley",
+      "detail": "B.A. and Ph.D. in history.",
+      "sources": ["asf-about", "ceu-alex"]
+    },
+    {
+      "key": "party",
+      "label": "Political affiliation",
+      "value": "Democratic",
+      "sources": ["fec-alex", "wsj-succession"]
+    },
+    {
+      "key": "current-roles",
+      "label": "Current role",
+      "value": "Chair, Open Society Foundations",
+      "featured": true,
+      "asOf": "2026-10-25",
+      "sources": ["osf-board", "osf-leadership"]
+    },
+    {
+      "key": "residence",
+      "label": "Residence",
+      "value": "New York, New York",
+      "asOf": "2026-10-25",
+      "sources": ["fec-alex", "asf-about"]
+    },
+    {
+      "key": "family-role",
+      "label": "Family-network role",
+      "value": "Successor to George Soros",
+      "featured": true,
+      "asOf": "2023-06-11",
+      "sources": ["reuters-succession", "wsj-succession"]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "george",
+      "source": "alex",
+      "target": "george",
+      "relType": "family-of",
+      "role": "Son and chosen successor",
+      "prominence": 3,
+      "sources": ["reuters-succession", "wsj-succession"]
+    },
+    {
+      "key": "osf-chair",
+      "source": "alex",
+      "target": "osf",
+      "relType": "chairs",
+      "role": "Chair of board of directors",
+      "from": "2022",
+      "prominence": 3,
+      "sources": ["osf-board", "osf-leadership"]
+    },
+    {
+      "key": "asf",
+      "source": "alex",
+      "target": "asf",
+      "relType": "founded",
+      "role": "Founder",
+      "from": "2012",
+      "prominence": 2,
+      "sources": ["asf-about"]
+    },
+    {
+      "key": "democrats",
+      "source": "alex",
+      "target": "democratic-party",
+      "relType": "donated-to",
+      "role": "Donor to candidates, party committees and aligned organizations",
+      "prominence": 2,
+      "sources": ["fec-alex", "politico-white-house"]
+    },
+    {
+      "key": "democracy-pac",
+      "source": "alex",
+      "target": "democracy-pac",
+      "relType": "affiliated-with",
+      "role": "Family political network represented by the Soros successor",
+      "from": "2023",
+      "prominence": 2,
+      "sources": ["reuters-succession"]
+    },
+    {
+      "key": "biden",
+      "source": "alex",
+      "target": "biden",
+      "relType": "allied-with",
+      "role": "Donor and frequent visitor to Biden White House officials",
+      "from": "2021",
+      "until": "2025",
+      "prominence": 2,
+      "sources": ["politico-white-house", "fec-alex"]
+    },
+    {
+      "key": "harris",
+      "source": "alex",
+      "target": "harris",
+      "relType": "endorsed",
+      "role": "Supported the 2024 Democratic presidential nominee",
+      "from": "2024",
+      "until": "2024",
+      "prominence": 2,
+      "sources": ["fec-alex", "washpost-profile"]
+    },
+    {
+      "key": "ceu",
+      "source": "alex",
+      "target": "ceu",
+      "relType": "board-member-of",
+      "role": "Trustee and family institutional representative",
+      "prominence": 1,
+      "sources": ["ceu-alex"]
+    },
+    {
+      "key": "icg",
+      "source": "alex",
+      "target": "international-crisis-group",
+      "relType": "board-member-of",
+      "role": "Trustee",
+      "prominence": 1,
+      "sources": ["icg-board", "asf-about"]
+    }
+  ],
+  "events": [
+    {
+      "key": "birth",
+      "date": "1985-10-27",
+      "title": "Born in New York",
+      "summary": "Alexander Soros was born to George Soros and Susan Weber.",
+      "category": "personal",
+      "significance": 1,
+      "chapter": "formation",
+      "sources": ["asf-about"]
+    },
+    {
+      "key": "nyu",
+      "date": "2009",
+      "title": "Graduates from New York University",
+      "summary": "Soros completed undergraduate study before pursuing a doctorate in history.",
+      "category": "personal",
+      "significance": 1,
+      "chapter": "formation",
+      "sources": ["asf-about", "ceu-alex"]
+    },
+    {
+      "key": "foundation",
+      "date": "2012",
+      "title": "Establishes Alexander Soros Foundation",
+      "summary": "His personal foundation backed human rights defenders, environmental protection and social-justice work.",
+      "category": "career",
+      "significance": 2,
+      "chapter": "own-platform",
+      "sources": ["asf-about", "asf-award"]
+    },
+    {
+      "key": "phd",
+      "date": "2018",
+      "title": "Completes history doctorate",
+      "summary": "Soros earned a Ph.D. from the University of California, Berkeley.",
+      "category": "personal",
+      "significance": 1,
+      "chapter": "formation",
+      "sources": ["asf-about"]
+    },
+    {
+      "key": "osf-deputy",
+      "date": "2018",
+      "title": "Becomes deputy chair of Open Society",
+      "summary": "The role placed Soros in formal governance before the eventual succession.",
+      "category": "career",
+      "significance": 2,
+      "chapter": "institution",
+      "sources": ["osf-board", "nyt-succession"]
+    },
+    {
+      "key": "board-chair",
+      "date": "2022-12",
+      "title": "Elected Open Society board chair",
+      "summary": "The board selected Alex Soros to lead oversight of the global foundations.",
+      "category": "career",
+      "significance": 3,
+      "chapter": "succession",
+      "sources": ["osf-board", "reuters-succession"]
+    },
+    {
+      "key": "white-house",
+      "date": "2023-04-11",
+      "title": "White House visits draw scrutiny",
+      "summary": "Visitor logs showed repeated meetings with Biden administration officials, reflecting his intermediary role in Democratic politics.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "political-network",
+      "participants": [["biden", "administration"]],
+      "sources": ["politico-white-house"]
+    },
+    {
+      "key": "public-succession",
+      "date": "2023-06-11",
+      "title": "Named successor to George Soros",
+      "summary": "George Soros publicly confirmed that Alex would lead the family's philanthropic and political network.",
+      "category": "career",
+      "significance": 3,
+      "chapter": "succession",
+      "participants": [["george", "predecessor"]],
+      "sources": ["reuters-succession", "wsj-succession"]
+    },
+    {
+      "key": "restructure",
+      "date": "2023-06",
+      "title": "Open Society begins operating-model overhaul",
+      "summary": "The foundations reorganized programs and staffing as leadership shifted to Alex Soros and a new management team.",
+      "category": "career",
+      "significance": 3,
+      "chapter": "restructure",
+      "sources": ["osf-restructure", "osf-leadership-change"]
+    },
+    {
+      "key": "ukraine",
+      "date": "2023",
+      "title": "Makes Ukraine a stated strategic priority",
+      "summary": "Soros argued that continued support for Ukraine was central to European security and open-society commitments.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "global-agenda",
+      "sources": ["osf-ukraine"]
+    },
+    {
+      "key": "harris",
+      "date": "2024-07",
+      "title": "Supports Kamala Harris presidential campaign",
+      "summary": "Soros backed the Democratic nominee as family political leadership moved into a new election cycle.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "political-network",
+      "participants": [["harris", "candidate"]],
+      "sources": ["fec-alex", "washpost-profile"]
+    },
+    {
+      "key": "new-leadership",
+      "date": "2024",
+      "title": "Installs new Open Society leadership structure",
+      "summary": "Board oversight and executive management were recast around a more selective global program.",
+      "category": "career",
+      "significance": 2,
+      "chapter": "restructure",
+      "sources": ["osf-leadership-change", "osf-restructure"]
+    }
+  ],
+  "statements": [
+    {
+      "key": "political",
+      "date": "2023-06-11",
+      "datePrecision": "day",
+      "venue": "Wall Street Journal succession interview",
+      "issue": "Politics",
+      "quote": "I'm more political.",
+      "summary": "Alex Soros contrasted his public political engagement with his father's style.",
+      "verbatim": true,
+      "source": "wsj-succession"
+    },
+    {
+      "key": "voting-rights",
+      "date": "2023-06-11",
+      "datePrecision": "day",
+      "venue": "Wall Street Journal succession interview",
+      "issue": "Democracy",
+      "summary": "Soros said the network would continue supporting voting rights, abortion rights and Democratic political causes.",
+      "verbatim": false,
+      "source": "wsj-succession"
+    },
+    {
+      "key": "ukraine",
+      "date": "2023",
+      "datePrecision": "year",
+      "venue": "Open Society essay",
+      "issue": "Foreign policy",
+      "summary": "Soros argued that Ukraine's survival as a democratic state is inseparable from Europe's security and the credibility of open societies.",
+      "verbatim": false,
+      "source": "osf-ukraine"
+    },
+    {
+      "key": "family",
+      "date": "2023-06-11",
+      "datePrecision": "day",
+      "venue": "Succession interview",
+      "issue": "Leadership",
+      "summary": "He presented the succession as continuity in values paired with greater attention to American politics and generational change.",
+      "verbatim": false,
+      "source": "reuters-succession"
+    },
+    {
+      "key": "risk",
+      "date": "2023",
+      "datePrecision": "year",
+      "venue": "Open Society leadership transition",
+      "issue": "Philanthropy",
+      "summary": "Soros supported concentrating Open Society resources where the institution could have distinctive impact rather than preserving every inherited program.",
+      "verbatim": false,
+      "source": "osf-restructure"
+    }
+  ],
+  "finance": {
+    "fec": {
+      "contributorName": "SOROS, ALEXANDER",
+      "namePattern": "^SOROS, (ALEX|ALEXANDER)( GEORGE)?( [A-Z]\\.?)?$",
+      "employerPattern": "SOROS|OPEN SOCIETY|FOUNDATION|SELF",
+      "cities": ["NEW YORK"],
+      "source": "fec-alex"
+    },
+    "coverage": "Federal itemized receipts matched to Alex or Alexander Soros using New York and family-institution affiliations. OSF grants and committee spending funded by George Soros are not treated as Alex Soros's personal contributions."
+  },
+  "ideas": {
+    "traditions": [
+      {
+        "label": "Open society",
+        "atlasId": "liberal-constitutionalism",
+        "basis": "institutional and stated",
+        "context": "Democratic pluralism, rights and independent civil society, with a more openly political emphasis than his predecessor.",
+        "sources": ["osf-board", "wsj-succession", "osf-ukraine"]
+      }
+    ],
+    "influences": [
+      {
+        "name": "George Soros",
+        "note": "Father, predecessor and originator of the institution Alex Soros now chairs.",
+        "sources": ["reuters-succession", "wsj-succession"]
+      }
+    ],
+    "works": [
+      {
+        "title": "The Social Democrat's Dilemma",
+        "year": "2018",
+        "kind": "Doctoral dissertation",
+        "detail": "Historical research completed at UC Berkeley.",
+        "source": "asf-about"
+      }
+    ],
+    "featuredQuotes": ["political"]
+  },
+  "chapters": [
+    {
+      "key": "formation",
+      "title": "An heir trained as a historian",
+      "dek": "Alex Soros entered the family institution through academic and board work rather than investment management.",
+      "body": "Born in New York in 1985, Soros studied at NYU and completed a doctorate in history at Berkeley. That route distinguished him from his father's finance career and supplied an institutional vocabulary grounded in historical memory, rights and democratic fragility. [[asf-about, ceu-alex]]"
+    },
+    {
+      "key": "own-platform",
+      "title": "Creating an independent platform",
+      "dek": "The Alexander Soros Foundation gave him a grantmaking identity before he inherited Open Society leadership.",
+      "body": "Founded in 2012, the Alexander Soros Foundation supported rights defenders, environmental activists and awards for work carried out under political pressure. The smaller foundation was both a personal vehicle and an apprenticeship in selecting grantees and representing causes publicly. [[asf-about, asf-award]]"
+    },
+    {
+      "key": "institution",
+      "title": "Learning Open Society governance",
+      "dek": "Board service placed Soros inside the mechanics of a sprawling global foundation network.",
+      "body": "Soros joined Open Society governance and became deputy chair before his election as chair. The role involved budgets and strategy across many legal entities and regions, making the eventual succession an institutional transition rather than only a family announcement. [[osf-board, osf-leadership]]"
+    },
+    {
+      "key": "succession",
+      "title": "The 2023 succession",
+      "dek": "George Soros's decision resolved a family question while creating new questions about authority and accountability.",
+      "body": "In June 2023 George Soros confirmed Alex as the leader of the family's philanthropic and political work. Alex described himself as more political, signaling continuity in causes but a different public posture. The transfer did not make every OSF grant his personal choice; board and executive structures still mediate authority. [[reuters-succession, wsj-succession, nyt-succession]]"
+    },
+    {
+      "key": "political-network",
+      "title": "A visible Democratic intermediary",
+      "dek": "Meetings and contributions make Soros's access legible even when the largest family funds move through organizations.",
+      "body": "Alex Soros has donated personally, met repeatedly with Democratic officials and represented the family network in electoral politics. His influence is best understood as coordination and access layered on top of institutions capitalized by George Soros—not as ownership of every grant or super-PAC decision. [[fec-alex, politico-white-house, reuters-succession]]"
+    },
+    {
+      "key": "restructure",
+      "title": "Reshaping the inherited institution",
+      "dek": "A new operating model narrowed programs and altered staffing soon after the leadership change.",
+      "body": "Open Society announced a substantial reorganization during the transition. The changes sought a more integrated and selective organization, but they also disrupted longstanding programs and made the succession consequential for employees and grantees as well as for political allies. [[osf-restructure, osf-leadership-change, nyt-succession]]"
+    },
+    {
+      "key": "global-agenda",
+      "title": "Europe, Ukraine and democratic security",
+      "dek": "Soros frames foreign-policy engagement as defense of institutions rather than a separate charitable field.",
+      "body": "His writing on Ukraine links military survival, European security and the future of democratic governance. Board work at international institutions and CEU extends that agenda beyond U.S. party politics, even as his American relationships draw more attention. [[osf-ukraine, icg-board, ceu-alex]]"
+    },
+    {
+      "key": "power",
+      "title": "Inherited capital, exercised authority",
+      "dek": "The central analytical distinction is between wealth inherited as institutional capacity and decisions made through formal governance.",
+      "body": "Alex Soros's power comes from chairing a foundation network funded by his father, participating in family political vehicles and maintaining direct relationships with officeholders. The relevant record therefore spans FEC receipts, foundation announcements and board responsibilities. Treating all Soros-network activity as his personal act would overstate control; ignoring the succession would miss the authority he now holds. [[osf-board, fec-alex, reuters-succession]]"
+    }
+  ]
+}

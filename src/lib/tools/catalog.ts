@@ -19,7 +19,7 @@ export const SUITE_TOOLS: ToolMetadata[] = [
     tagline: "People & Money",
     badge: "Flagship",
     description:
-      "One workspace for people, organizations, campaign finance, outside spending, lobbying, donor geography, and documented power networks.",
+      "People, organizations, campaign finance, outside spending, lobbying, donor geography, and documented power networks.",
     href: "/subpoena",
     iconName: "Briefcase",
     capabilities: [
@@ -49,7 +49,7 @@ export const SUITE_TOOLS: ToolMetadata[] = [
     tagline: "Government & Elections",
     badge: "Government",
     description:
-      "One workspace for legislation, roll calls, courts, member comparisons, elections, districts, the electorate, and your representatives.",
+      "Legislation, roll calls, courts, member comparisons, elections, districts, the electorate, and your representatives.",
     href: "/writ",
     iconName: "Scroll",
     capabilities: [
@@ -75,10 +75,10 @@ export const SUITE_TOOLS: ToolMetadata[] = [
   {
     id: "issueview",
     name: "IssueView",
-    tagline: "Every Issue, One Workspace",
+    tagline: "Issues & Places",
     badge: "Analytics",
     description:
-      "Every Worldview issue, state profile, and spending view in one workspace, plus a cross-topic comparator for state and county metrics.",
+      "Every Worldview issue, state profile, and spending view in one tool, plus a cross-topic comparator for state and county metrics.",
     href: "/issueview",
     iconName: "SlidersHorizontal",
     capabilities: [
@@ -104,7 +104,7 @@ export const SUITE_TOOLS: ToolMetadata[] = [
   {
     id: "atlas",
     name: "Worldview Atlas",
-    tagline: "Ideology Mapping & Political Philosophy",
+    tagline: "Ideology & Traditions",
     badge: "Quiz & Profiling",
     description:
       "Adaptive political profiling across 20 dimensions and major issue fights, specialist policy modules, and an interactive library of historical political traditions.",

@@ -135,8 +135,9 @@ export function GlobalSearch({
 
       {open && query.trim() ? (
         <div
-          className={`absolute top-full left-0 z-30 mt-2 w-full overflow-hidden rounded-lg border border-slate-200 bg-white shadow-lg dark:border-slate-700 dark:bg-slate-900 ${
-            size === "lg" ? "max-h-96 overflow-y-auto" : ""
+          className={`absolute top-full z-30 mt-2 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-lg dark:border-slate-700 dark:bg-slate-900 ${
+            // The header's box is narrow, so its results open wider, leftward.
+            size === "lg" ? "left-0 max-h-96 w-full overflow-y-auto" : "right-0 w-[max(100%,min(22rem,calc(100vw-2rem)))]"
           }`}
         >
           {loading ? (

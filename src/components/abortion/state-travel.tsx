@@ -7,19 +7,21 @@ import type { StateTravel } from "@/lib/abortion/data";
 import { formatValue } from "@/lib/format";
 
 // Pick a state: where its residents went for abortions, and where patients
-// treated there came from (Guttmacher occurrence × residence table).
-export function StateTravelPicker({ states, year, defaultFips = "48" }: { states: StateTravel[]; year: string; defaultFips?: string }) {
-  const [fips, setFips] = useState(defaultFips);
+// treated there came from (Guttmacher occurrence × residence table). Passing
+// `fips` controls the state from outside and hides the picker.
+export function StateTravelPicker({ states, year, defaultFips = "48", fips: controlled }: { states: StateTravel[]; year: string; defaultFips?: string; fips?: string }) {
+  const [picked, setFips] = useState(defaultFips);
+  const fips = controlled ?? picked;
   const s = states.find((x) => x.fips === fips) ?? states[0];
 
   return (
     <figure className="min-w-0 space-y-6 rounded-2xl border border-slate-200 p-5 dark:border-slate-800">
       <figcaption className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h3 className="text-base font-semibold text-slate-950 dark:text-white">Travel to and from one state</h3>
+          <h3 className="text-base font-semibold text-slate-950 dark:text-white">{controlled ? `Travel to and from ${s.name}` : "Travel to and from one state"}</h3>
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{year} · flows under 100 are not published</p>
         </div>
-        <label className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+        {!controlled && <label className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
           State
           <select
             value={fips}
@@ -32,7 +34,7 @@ export function StateTravelPicker({ states, year, defaultFips = "48" }: { states
               </option>
             ))}
           </select>
-        </label>
+        </label>}
       </figcaption>
 
       <dl className="grid grid-cols-1 gap-4 sm:grid-cols-3">

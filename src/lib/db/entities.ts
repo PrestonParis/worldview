@@ -1,8 +1,8 @@
 import { and, asc, count, desc, eq, ilike, inArray, sql } from "drizzle-orm";
 import { db } from "./client";
-import { entities, entityIdentifiers, entityMerges } from "./schema";
+import { entities, entityIdentifiers, entityMerges, entityProfiles } from "./schema";
 import type { Entity, EntityInput, EntityType } from "../validation/entity";
-import { publicEntitySlug } from "../people/public";
+import { publicEntityPath, publicEntitySlug } from "../people/public";
 
 // Crosswalk schemes in entity_identifiers (scripts/lib/entities.mjs has the
 // Neo4j property each maps to).
@@ -73,20 +73,112 @@ export async function listEntities(filter?: { type?: EntityType; limit?: number 
   return rows.map(toEntity);
 }
 
-// Profiles with the richest editorial material first. Used by biography-led
-// discovery surfaces where alphabetical FEC imports make poor recommendations.
+// Public relevance: full dossiers first, then the size of the documented
+// network (membership edges excluded, or every legislature and committee would
+// outrank the people in it), political money given or received, federal office
+// and curated-collection membership. Text length only breaks ties.
+const relevance = sql<number>`
+  (case when exists (select 1 from entity_profiles p where p.entity_id = ${entities.id}) then 1000000 else 0 end) +
+  60 * least((
+    select count(*) from entity_edges x
+    where (x.source_entity_id = ${entities.id} or x.target_entity_id = ${entities.id})
+      and x.rel_type not in ('serves-in', 'sits-on-committee', 'member-of', 'party-member', 'holds-office', 'chairs', 'governor-of')
+  ), 50) +
+  15 * least((select count(*) from entity_event_participants x where x.entity_id = ${entities.id}), 40) +
+  120 * log(1 + greatest(coalesce((
+    select sum(c.amount) from contributions c
+    where (c.donor_entity_id = ${entities.id} or c.recipient_entity_id = ${entities.id})
+      and coalesce(c.memo_code, '') <> 'X'
+  ), 0), 0)) +
+  (case when ${bioguide} is not null then 600 else 0 end) +
+  (case when ${entities.metadata} like '%"collection":%' then 400 else 0 end) +
+  (case when coalesce(${entities.imageUrl}, '') <> '' then 150 else 0 end) +
+  least(length(coalesce(${entities.biography}, '')) + length(coalesce(${entities.description}, '')), 1000) / 20
+`;
+
+// FEC-style "LAST, FIRST" contributor stubs make poor recommendations.
+const notContributorStub = sql`not (${entities.name} like '%,%' and ${entities.name} = upper(${entities.name}))`;
+
+export interface DossierProfile {
+  id: string;
+  name: string;
+  path: string;
+  imageUrl: string;
+  summary: string;
+  roles: string[];
+  given: number;
+}
+
+// Homepage order: the most recognizable finished dossiers, across parties and
+// money. Names not found (or not finished) are skipped; relevance fills the rest.
+const FEATURED_DOSSIERS = ["donald trump", "elon musk", "george soros", "miriam adelson", "stephen miller", "peter thiel"];
+
+// Finished editorial dossiers (reviewed, source-checked, with chapters and a
+// portrait), featured names first and then by relevance, with itemized
+// federal giving for the homepage.
+export async function listDossierProfiles(limit: number): Promise<DossierProfile[]> {
+  const rows = await db
+    .select({
+      id: entities.id,
+      name: entities.name,
+      imageUrl: entities.imageUrl,
+      summary: entityProfiles.summary,
+      roles: sql<
+        string[]
+      >`coalesce((select array_agg(r->>'label') from jsonb_array_elements(${entityProfiles.roles}) r), '{}')`,
+      given: sql<string | null>`(
+        select sum(c.amount) from contributions c
+        where c.donor_entity_id = ${entities.id} and coalesce(c.memo_code, '') <> 'X'
+      )`,
+    })
+    .from(entityProfiles)
+    .innerJoin(entities, eq(entities.id, entityProfiles.entityId))
+    .where(
+      sql`${entityProfiles.summary} <> '' and coalesce(${entities.imageUrl}, '') <> ''
+        and ${entityProfiles.editorialReviewedAt} is not null and ${entityProfiles.sourcesVerifiedAt} is not null
+        and jsonb_array_length(coalesce(${entityProfiles.chapters}, '[]'::jsonb)) > 0`,
+    )
+    .orderBy(
+      sql`array_position(${sql.raw(`array[${FEATURED_DOSSIERS.map((name) => `'${name}'`).join(", ")}]`)}::text[], lower(${entities.name})) nulls last`,
+      desc(relevance),
+      asc(entities.name),
+    )
+    .limit(limit);
+  return rows.map((row) => ({
+    ...row,
+    path: publicEntityPath(row),
+    roles: row.roles ?? [],
+    given: Number(row.given ?? 0),
+  }));
+}
+
+// The most relevant entities of one type, for discovery surfaces.
 export async function listProfiledEntities(type: EntityType, limit: number): Promise<Entity[]> {
-  const profileScore = sql<number>`
-    (case when coalesce(${entities.imageUrl}, '') <> '' then 400 else 0 end) +
-    length(coalesce(${entities.biography}, '')) +
-    length(coalesce(${entities.highlights}, '')) +
-    length(coalesce(${entities.description}, ''))
-  `;
   const rows = await selectEntities()
-    .where(eq(entities.type, type))
-    .orderBy(desc(profileScore), asc(entities.name))
+    .where(and(eq(entities.type, type), notContributorStub))
+    .orderBy(desc(relevance), asc(entities.name))
     .limit(limit);
   return rows.map(toEntity);
+}
+
+// Every entity with a full dossier, most relevant first.
+export async function listCaseFileEntities(limit: number): Promise<Entity[]> {
+  const rows = await selectEntities()
+    .innerJoin(entityProfiles, eq(entityProfiles.entityId, entities.id))
+    .orderBy(desc(relevance), asc(entities.name))
+    .limit(limit);
+  return rows.map(toEntity);
+}
+
+// Entity ids that have a full dossier (an entity_profiles row).
+export async function getDossierEntityIds(ids: string[]): Promise<Set<string>> {
+  const unique = [...new Set(ids.filter(Boolean))];
+  if (unique.length === 0) return new Set();
+  const rows = await db
+    .select({ id: entityProfiles.entityId })
+    .from(entityProfiles)
+    .where(inArray(entityProfiles.entityId, unique));
+  return new Set(rows.map((r) => r.id));
 }
 
 // id -> name for just the given entities (the election overview needs a few
@@ -121,7 +213,9 @@ export async function getIdentifierMap(scheme: IdentifierScheme): Promise<Map<st
 
 // Entities whose name contains `query`, case-insensitive, best matches
 // first: names starting with the query, then a word starting with it.
-export async function searchEntities(query: string, limit: number): Promise<Entity[]> {
+// `byRelevance` breaks ties within each name-match tier by public relevance;
+// it costs a few subqueries per match, so keystroke search leaves it off.
+export async function searchEntities(query: string, limit: number, byRelevance = false): Promise<Entity[]> {
   const q = query.trim().toLowerCase();
   if (!q) return [];
   const pattern = `%${escapeLike(q)}%`;
@@ -131,7 +225,7 @@ export async function searchEntities(query: string, limit: number): Promise<Enti
     else 2 end`;
   const rows = await selectEntities()
     .where(ilike(entities.name, pattern))
-    .orderBy(rank, asc(entities.name))
+    .orderBy(...(byRelevance ? [rank, desc(relevance)] : [rank]), asc(entities.name))
     .limit(limit);
   return rows.map(toEntity);
 }

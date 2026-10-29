@@ -1,5 +1,6 @@
 import { compareByGeo, type CompareSeries } from "@/lib/db/stats";
 import { PublicDataInputError } from "@/lib/data/public-error";
+import { enforceRateLimits, rateLimitResponse } from "@/lib/security/rate-limit";
 
 const MAX_SERIES = 8;
 
@@ -10,8 +11,15 @@ const MAX_SERIES = 8;
 // latest period at that level otherwise); `within` limits places to one
 // parent geoid prefix, e.g. a state FIPS.
 export async function GET(request: Request) {
+  const limited = await enforceRateLimits([{ scope: "data-compare-minute", limit: 30, windowSeconds: 60 }], {
+    request,
+  });
+  if (limited) return rateLimitResponse(limited);
   const q = new URL(request.url).searchParams;
   const level = q.get("level");
+  if ((level?.length ?? 0) > 32 || (q.get("series")?.length ?? 0) > 800 || (q.get("within")?.length ?? 0) > 20) {
+    return Response.json({ error: "Comparison query is too long." }, { status: 400 });
+  }
   const raw = (q.get("series") ?? "")
     .split(",")
     .map((s) => s.trim())
@@ -31,7 +39,9 @@ export async function GET(request: Request) {
   }
   const within = q.get("within") ?? undefined;
   try {
-    return Response.json(await compareByGeo(level, series, within ? { within } : {}));
+    return Response.json(await compareByGeo(level, series, within ? { within } : {}), {
+      headers: { "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400" },
+    });
   } catch (error) {
     if (error instanceof PublicDataInputError) {
       return Response.json({ error: error.message }, { status: 400 });

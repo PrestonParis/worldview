@@ -14,13 +14,13 @@ export const metadata: Metadata = {
 export const revalidate = 86400;
 
 export default async function SubpoenaPage() {
-  const featured = await getFeaturedSubpoenaEntities();
+  const directory = await getFeaturedSubpoenaEntities();
 
   return (
     <>
       <ToolBreadcrumb items={[{ label: "Subpoena" }]} />
       <h1 className="sr-only">Subpoena</h1>
-      <SubpoenaWorkspace featuredEntities={featured} initialQuery="" />
+      <SubpoenaWorkspace directory={directory} initialQuery="" />
     </>
   );
 }

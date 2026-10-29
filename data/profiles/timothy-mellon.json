@@ -1,0 +1,952 @@
+{
+  "subject": "mellon",
+  "reviewedAt": "2026-10-24",
+  "sourcesVerifiedAt": "2026-10-24",
+  "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Timothy%20Mellon%20via%20the%20Associated%20Press.jpg?width=400",
+  "brief": {
+    "inclusion": "Banking-family heir and former transportation-company owner who became the second-largest disclosed individual donor of the 2024 federal election and made unusually large gifts for a state border wall and military pay.",
+    "identifiers": {
+      "wikidata": "Q7807399",
+      "fec_contributor": "MELLON, TIMOTHY"
+    },
+    "namesakes": "Timothy W. Mellon, born July 22, 1942, is the son of Paul Mellon and former owner of Pan Am Systems; distinguish him from other members of the Mellon family through Pan Am, Wyoming and Connecticut records.",
+    "coverage": {
+      "from": "1942",
+      "through": "2026-10-24",
+      "lags": "The 2026 election cycle remains open. His current wealth and privately held assets are not publicly disclosed, and nonprofit gifts can appear only after delayed filings or property-record reporting."
+    },
+    "openQuestions": [
+      "Refresh 2026-cycle FEC contributions after post-election filings and amendments.",
+      "Confirm whether the reported August 2026 Congressional Leadership Fund gift appears in a public filing.",
+      "The Pentagon acknowledged the 2025 gift but did not publicly identify Mellon; his identity rests on reporting citing people familiar with the transaction.",
+      "Current beneficial ownership after the 2022 Pan Am Systems sale and Mellon's individual net worth remain private."
+    ],
+    "review": []
+  },
+  "summary": "Timothy Mellon inherited part of the Mellon banking fortune and built a four-decade transportation business by assembling New England railroads into Guilford Transportation Industries, later Pan Am Systems. He became a major political financier late in life, giving about $197 million in the 2024 federal cycle—including $150 million to Donald Trump's principal super PAC and $25 million to a group backing Robert F. Kennedy Jr. His influence also runs through gifts outside campaign finance: $53.1 million for Texas's border wall, property transferred to Kennedy's former nonprofit and a reported $130 million gift intended for military pay during the 2025 government shutdown.",
+  "roles": [
+    {
+      "label": "Political donor",
+      "detail": "Second-largest disclosed individual donor of the 2024 federal election cycle",
+      "sources": ["opensecrets-2024", "fec-mellon"]
+    },
+    {
+      "label": "Transportation executive",
+      "detail": "Founded Guilford Transportation Industries in 1981 and led its successor Pan Am Systems until its 2022 sale",
+      "sources": ["stb-csx-2022", "panam-book-publisher", "dc-court-guilford-2000"]
+    },
+    {
+      "label": "Investor and heir",
+      "detail": "Grandson of financier and Treasury secretary Andrew Mellon; individual wealth is privately held and uncertain",
+      "sources": ["wapo-profile-2024", "forbes-family-2026"]
+    },
+    {
+      "label": "Author",
+      "detail": "Author of the memoir panam.captain, self-published in 2015 and commercially reissued in 2024",
+      "sources": ["panam-book-preview", "panam-book-publisher"]
+    }
+  ],
+  "finance": {
+    "fec": {
+      "contributorName": "MELLON, TIMOTHY",
+      "namePattern": "^MELLON, TIMOTHY( W\\.?| MR\\.?)?$",
+      "employerPattern": "PAN AM|GUILFORD|SELF[- ]EMPLOYED|RETIRED|INVESTOR",
+      "cities": ["SARATOGA", "OLD LYME", "LYME", "GUILFORD", "RIVERTON"],
+      "source": "fec-mellon"
+    },
+    "coverage": "Itemized federal contributions reported to the FEC under an exact-name and employer-or-city identity rule. The total excludes the Texas border-wall gift, the military-pay gift, transfers to nonprofits, state and local contributions, private litigation funding and gifts not reported under federal campaign-finance law. The 2026 cycle remains open."
+  },
+  "entities": {
+    "mellon": { "match": { "name": "Timothy Mellon", "type": "donor" } },
+    "trump": { "match": { "name": "Donald Trump", "type": "politician" } },
+    "kennedy": { "match": { "name": "Robert F. Kennedy Jr.", "type": "politician" } },
+    "republican-party": { "match": { "name": "Republican Party", "type": "organization" } },
+    "pan-am": {
+      "create": {
+        "name": "Pan Am Systems",
+        "type": "company",
+        "description": "Transportation holding company formerly known as Guilford Transportation Industries, controlled by Timothy Mellon until its 2022 sale to CSX."
+      }
+    },
+    "csx": {
+      "create": {
+        "name": "CSX",
+        "type": "company",
+        "description": "Public freight railroad that acquired Pan Am Systems in 2022.",
+        "websiteUrl": "https://www.csx.com/"
+      }
+    },
+    "mellon-foundation": {
+      "create": {
+        "name": "Andrew W. Mellon Foundation",
+        "type": "organization",
+        "description": "Private foundation supporting arts, culture, humanities and higher education.",
+        "websiteUrl": "https://www.mellon.org/"
+      }
+    },
+    "maga-inc": {
+      "create": {
+        "name": "MAGA Inc.",
+        "type": "organization",
+        "description": "Super PAC supporting Donald Trump's 2024 presidential campaign."
+      }
+    },
+    "american-values": {
+      "create": {
+        "name": "American Values 2024",
+        "type": "organization",
+        "description": "Outside political group that supported Robert F. Kennedy Jr.'s 2024 presidential campaign."
+      }
+    },
+    "texas-wall": {
+      "create": {
+        "name": "Texas Border Wall Fund",
+        "type": "organization",
+        "description": "State-administered donation fund created in 2021 to support construction of barriers along the Texas-Mexico border."
+      }
+    },
+    "chd": {
+      "create": {
+        "name": "Children's Health Defense",
+        "type": "organization",
+        "description": "Nonprofit founded by Robert F. Kennedy Jr. that campaigns against vaccines and public-health mandates.",
+        "websiteUrl": "https://childrenshealthdefense.org/"
+      }
+    },
+    "defense": {
+      "create": {
+        "name": "U.S. Department of Defense",
+        "type": "organization",
+        "description": "Federal department responsible for the United States armed forces.",
+        "websiteUrl": "https://www.defense.gov/"
+      }
+    },
+    "clf": {
+      "create": {
+        "name": "Congressional Leadership Fund",
+        "type": "organization",
+        "description": "Super PAC aligned with Republican House leadership."
+      }
+    },
+    "slf": {
+      "create": {
+        "name": "Senate Leadership Fund",
+        "type": "organization",
+        "description": "Super PAC aligned with Republican Senate leadership."
+      }
+    }
+  },
+  "sources": [
+    {
+      "key": "fec-mellon",
+      "title": "Individual contributions: Mellon, Timothy (Schedule A)",
+      "publisher": "Federal Election Commission",
+      "type": "filing",
+      "url": "https://www.fec.gov/data/receipts/individual-contributions/?contributor_name=MELLON%2C+TIMOTHY",
+      "documentId": "OpenFEC /schedules/schedule_a",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "opensecrets-2024",
+      "title": "Top individual contributors: 2024 election cycle",
+      "publisher": "OpenSecrets",
+      "type": "secondary",
+      "url": "https://www.opensecrets.org/elections-overview/biggest-donors?cycle=2024",
+      "accessedAt": "2026-10-24",
+      "notes": "Cycle-level aggregation used as a cross-check against the underlying FEC filings."
+    },
+    {
+      "key": "wapo-profile-2024",
+      "title": "Trump's biggest donor is a Gilded Age heir also backing RFK Jr.",
+      "publisher": "The Washington Post",
+      "author": "Michelle Ye Hee Lee, Clara Ence Morse and Marianne LeVine",
+      "publishedAt": "2024-07-17",
+      "type": "article",
+      "url": "https://www.washingtonpost.com/politics/2024/07/17/timothy-mellon-donor-trump-rfk/",
+      "accessedAt": "2026-10-24",
+      "notes": "Some claims about donor interactions rely on unnamed sources; those are attributed in the profile."
+    },
+    {
+      "key": "panam-book-preview",
+      "title": "panam.captain",
+      "publisher": "Skyhorse Publishing",
+      "author": "Timothy Mellon",
+      "publishedAt": "2024-07-23",
+      "type": "primary",
+      "url": "https://www.everand.com/book/749562325/panam-captain",
+      "accessedAt": "2026-10-24",
+      "notes": "Author's memoir and account of his life; consequential claims are independently checked."
+    },
+    {
+      "key": "panam-book-publisher",
+      "title": "panam.captain",
+      "publisher": "Skyhorse Publishing",
+      "author": "Timothy Mellon",
+      "publishedAt": "2024-07-23",
+      "type": "primary",
+      "url": "https://www.skyhorsepublishing.com/9781510780347/panam-captain/",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "dc-court-guilford-2000",
+      "title": "Guilford Transportation Industries, Inc. v. Wilner",
+      "publisher": "District of Columbia Court of Appeals",
+      "publishedAt": "2000-12-14",
+      "type": "filing",
+      "url": "https://www.dccourts.gov/sites/default/files/pdf-opinions/99CV349.PDF",
+      "documentId": "No. 99-CV-349",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "boston-magazine-2006",
+      "title": "Air Apparent",
+      "publisher": "Boston Magazine",
+      "publishedAt": "2006-05-15",
+      "type": "article",
+      "url": "https://www.bostonmagazine.com/uncategorized/2006/05/15/air-apparent/",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "stb-csx-2022",
+      "title": "Surface Transportation Board Approves CSX's Revised Merger Application to Acquire Pan Am",
+      "publisher": "Surface Transportation Board",
+      "publishedAt": "2022-04-14",
+      "type": "official_statement",
+      "url": "https://www.stb.gov/news-communications/latest-news/pr-22-22/",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "rail-sale-2022",
+      "title": "Goodbye Pan Am: CSX Completes Takeover of New England Regional",
+      "publisher": "Railfan & Railroad Magazine",
+      "author": "Justin Franz",
+      "publishedAt": "2022-06-01",
+      "type": "article",
+      "url": "https://railfan.com/goodbye-pan-am-csx-completes-takeover-of-new-england-regional/",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "wapo-autobiography-2020",
+      "title": "Timothy Mellon, top donor to Trump super PAC, used racial stereotypes to describe African Americans in his autobiography",
+      "publisher": "The Washington Post",
+      "author": "Michelle Ye Hee Lee and Isaac Stanley-Becker",
+      "publishedAt": "2020-06-18",
+      "type": "article",
+      "url": "https://www.washingtonpost.com/politics/timothy-mellon-top-donor-to-trump-super-pac-used-racial-stereotypes-to-describe-african-americans-in-his-autobiography/2020/06/18/89206c5a-a742-11ea-b619-3f9133bbb482_story.html",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "texas-tribune-wall-2021",
+      "title": "Texas has raised $54 million in private donations for its border wall plan. Almost all of it came from this one billionaire",
+      "publisher": "The Texas Tribune",
+      "author": "James Barragán and Carla Astudillo",
+      "publishedAt": "2021-10-06",
+      "type": "article",
+      "url": "https://www.texastribune.org/2021/10/06/timothy-mellon-texas-border-wall/",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "time-national-guard-2021",
+      "title": "Billionaire GOP Donor Bankrolls National Guard Border Deployment",
+      "publisher": "Time",
+      "author": "Vera Bergengruen",
+      "publishedAt": "2021-06-30",
+      "type": "article",
+      "url": "https://time.com/6076921/billionaire-gop-donor-bankrolls-national-guard-border-deployment/",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "ap-kennedy-complaint-2024",
+      "title": "DNC files federal complaint alleging RFK Jr.'s super PAC is working too closely with his campaign",
+      "publisher": "Associated Press",
+      "publishedAt": "2024-02-09",
+      "type": "article",
+      "url": "https://apnews.com/article/09d42502ca757cd4656b4829c4b4c00d",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "reuters-kennedy-2024",
+      "title": "Key Trump donor Mellon gives RFK Jr super PAC $5 million more",
+      "publisher": "Reuters",
+      "publishedAt": "2024-05-21",
+      "type": "article",
+      "url": "https://www.investing.com/news/politics/key-trump-donor-mellon-gives-rfk-jr-super-pac-5-million-more-3448979",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "time-trump-gift-2024",
+      "title": "Meet the Billionaire Boosting Trump's Campaign With a $50 Million Donation",
+      "publisher": "Time",
+      "publishedAt": "2024-06-21",
+      "type": "article",
+      "url": "https://time.com/6990520/donald-trump-campaign-billionaire-donor-timothy-mellon-federal-filings/",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "forbes-profile-2024",
+      "title": "Who Is Timothy Mellon? Trump's Biggest Donor Is A Billionaire Banking Heir—And RFK Jr. Backer",
+      "publisher": "Forbes",
+      "author": "Sara Dorn",
+      "publishedAt": "2024-06-21",
+      "type": "secondary",
+      "url": "https://www.forbes.com/sites/saradorn/2024/06/21/who-is-timothy-mellon-trumps-biggest-donor-is-a-secretive-billionaire-banking-scion-who-paid-53-million-for-border-wall/",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "forbes-family-2026",
+      "title": "Mellon family",
+      "publisher": "Forbes",
+      "publishedAt": "2026-06-29",
+      "type": "secondary",
+      "url": "https://www.forbes.com/profile/mellon/",
+      "accessedAt": "2026-10-24",
+      "notes": "Family-level estimate, not Timothy Mellon's individual net worth."
+    },
+    {
+      "key": "ap-pentagon-gift-2025",
+      "title": "Pentagon accepts $130 million donation to help pay the military during the government shutdown",
+      "publisher": "Associated Press",
+      "publishedAt": "2025-10-24",
+      "type": "article",
+      "url": "https://apnews.com/article/e327c306292043755d9d700731039e83",
+      "accessedAt": "2026-10-24",
+      "notes": "Confirms the Pentagon accepted the anonymous gift and describes the legal questions; does not identify Mellon."
+    },
+    {
+      "key": "nyt-military-gift-2025",
+      "title": "Timothy Mellon Is Donor Who Gave $130 Million to Pay Troops During Shutdown",
+      "publisher": "The New York Times",
+      "author": "Tyler Pager",
+      "publishedAt": "2025-10-25",
+      "type": "article",
+      "url": "https://www.nytimes.com/2025/10/25/us/politics/timothy-mellon-donation-troops.html",
+      "accessedAt": "2026-10-24",
+      "notes": "Identification attributed to two people familiar with the matter; the Pentagon did not publicly name the donor."
+    },
+    {
+      "key": "reuters-military-gift-2025",
+      "title": "Trump says private donor gave $130 million to cover military pay during shutdown",
+      "publisher": "Reuters",
+      "author": "Gram Slattery and Jarrett Renshaw",
+      "publishedAt": "2025-10-23",
+      "type": "article",
+      "url": "https://www.investing.com/news/economy-news/trump-says-private-donor-gave-130-million-to-cover-military-pay-during-shutdown-4306365",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "nyt-chd-property-2026",
+      "title": "Trump Megadonor Gave $5.5 Million Estate to Robert F. Kennedy Jr. Nonprofit",
+      "publisher": "The New York Times",
+      "author": "Rebecca Davis O'Brien and Theodore Schleifer",
+      "publishedAt": "2026-06-02",
+      "type": "article",
+      "url": "https://www.nytimes.com/2026/06/02/us/politics/timothy-mellon-rfk-jr-childrens-health-defense.html",
+      "accessedAt": "2026-10-24",
+      "notes": "Based on Lyme, Connecticut property records; accessible syndicated copy was used to verify details."
+    },
+    {
+      "key": "ctinsider-chd-2026",
+      "title": "Connecticut estate worth $5.5M transferred from Trump donor to anti-vaccine group",
+      "publisher": "CT Insider",
+      "author": "Alex Putterman",
+      "publishedAt": "2026-06-02",
+      "type": "article",
+      "url": "https://www.ctinsider.com/connecticut/article/timothy-mellon-lyme-trump-rfk-childrens-health-22287691.php",
+      "accessedAt": "2026-10-24"
+    },
+    {
+      "key": "nyt-senate-pullback-2026",
+      "title": "Trump Megadonor Timothy Mellon Stops Writing Checks in G.O.P. Senate Snub",
+      "publisher": "The New York Times",
+      "publishedAt": "2026-09-23",
+      "type": "article",
+      "url": "https://www.nytimes.com/2026/09/23/us/politics/timothy-mellon-republican-donor-senate.html",
+      "accessedAt": "2026-10-24",
+      "notes": "Reported motive and an unfiled House super-PAC gift rely on unnamed sources; public FEC totals are distinguished from those reports."
+    }
+  ],
+  "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "July 22, 1942, Pittsburgh, Pennsylvania",
+      "featured": true,
+      "sources": ["panam-book-preview"]
+    },
+    { "key": "sex", "label": "Sex", "value": "Male", "sources": ["panam-book-preview"] },
+    {
+      "key": "citizenship",
+      "label": "Citizenship",
+      "value": "United States",
+      "sources": ["panam-book-preview", "wapo-profile-2024"]
+    },
+    {
+      "key": "education",
+      "label": "Education",
+      "value": "Yale University",
+      "detail": "Bachelor's degree, 1964; later graduate study in city planning.",
+      "sources": ["wapo-profile-2024", "dc-court-guilford-2000"]
+    },
+    {
+      "key": "residence",
+      "label": "Residence",
+      "value": "Saratoga, Wyoming",
+      "detail": "Moved from Connecticut to Wyoming in 2005.",
+      "sources": ["panam-book-publisher", "wapo-profile-2024"]
+    },
+    {
+      "key": "party",
+      "label": "Party",
+      "value": "Republican",
+      "detail": "Previously voted for Democratic presidential candidates; his recent federal giving overwhelmingly supports Republicans and conservative groups.",
+      "sources": ["panam-book-preview", "fec-mellon", "wapo-profile-2024"]
+    },
+    { "key": "spouse", "label": "Spouse", "value": "Patricia Mellon", "sources": ["wapo-profile-2024"] },
+    {
+      "key": "children",
+      "label": "Children",
+      "value": "No biological children",
+      "detail": "Described himself in a 2014 deposition as grandfather to seven through his wife's children.",
+      "sources": ["wapo-profile-2024"]
+    },
+    {
+      "key": "current-roles",
+      "label": "Current roles",
+      "value": "Investor, political donor and author",
+      "detail": "Sold Pan Am Systems to CSX in 2022.",
+      "featured": true,
+      "sources": ["stb-csx-2022", "panam-book-publisher", "fec-mellon"]
+    },
+    {
+      "key": "net-worth",
+      "label": "Estimated net worth",
+      "value": "Unknown",
+      "detail": "Forbes estimated close to $1 billion in 2024; Mellon said he was not a billionaire. Forbes estimates the extended family's wealth, not his personal assets, at $17.2 billion in 2026.",
+      "asOf": "2026-06-29",
+      "featured": true,
+      "sources": ["forbes-profile-2024", "forbes-family-2026"]
+    },
+    {
+      "key": "political-giving-2024",
+      "label": "2024 federal political giving",
+      "value": "$197.0 million",
+      "detail": "OpenSecrets cycle total; about $172 million supported conservative groups and $25.0 million went to a group backing Kennedy.",
+      "asOf": "2024-12-31",
+      "featured": true,
+      "sources": ["opensecrets-2024", "fec-mellon"]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "mellon-pan-am",
+      "source": "mellon",
+      "target": "pan-am",
+      "relType": "founded",
+      "role": "Founded Guilford Transportation Industries in 1981; chairman and controlling owner of successor Pan Am Systems until its sale",
+      "from": "1981",
+      "until": "2022-06",
+      "prominence": 3,
+      "sources": ["dc-court-guilford-2000", "stb-csx-2022", "panam-book-publisher"]
+    },
+    {
+      "key": "mellon-foundation-role",
+      "source": "mellon",
+      "target": "mellon-foundation",
+      "relType": "board-member-of",
+      "role": "Trustee for twenty-one years",
+      "from": "1981",
+      "until": "2002",
+      "prominence": 1,
+      "sources": ["panam-book-publisher"]
+    },
+    {
+      "key": "pan-am-csx",
+      "source": "pan-am",
+      "target": "csx",
+      "relType": "affiliated-with",
+      "role": "Acquired by CSX after Surface Transportation Board approval",
+      "from": "2022-06",
+      "until": "2022-06",
+      "prominence": 1,
+      "sources": ["stb-csx-2022", "rail-sale-2022"]
+    },
+    {
+      "key": "mellon-trump",
+      "source": "mellon",
+      "target": "trump",
+      "relType": "donated-to",
+      "role": "Principal donor to Trump-aligned super PACs in 2020 and 2024, including $150 million to MAGA Inc. in the 2024 cycle",
+      "from": "2016",
+      "prominence": 3,
+      "sources": ["fec-mellon", "opensecrets-2024", "time-trump-gift-2024"]
+    },
+    {
+      "key": "mellon-maga",
+      "source": "mellon",
+      "target": "maga-inc",
+      "relType": "donated-to",
+      "role": "$150 million across the 2024 cycle",
+      "from": "2023",
+      "until": "2024",
+      "prominence": 3,
+      "sources": ["fec-mellon", "opensecrets-2024", "time-trump-gift-2024"]
+    },
+    {
+      "key": "mellon-kennedy",
+      "source": "mellon",
+      "target": "kennedy",
+      "relType": "donated-to",
+      "role": "Financed American Values 2024 and maintained a relationship through Children's Health Defense",
+      "from": "2023",
+      "prominence": 3,
+      "sources": ["wapo-profile-2024", "reuters-kennedy-2024", "nyt-chd-property-2026"]
+    },
+    {
+      "key": "mellon-american-values",
+      "source": "mellon",
+      "target": "american-values",
+      "relType": "donated-to",
+      "role": "$25 million supporting Kennedy's 2024 presidential campaign",
+      "from": "2023",
+      "until": "2024",
+      "prominence": 3,
+      "sources": ["fec-mellon", "reuters-kennedy-2024", "opensecrets-2024"]
+    },
+    {
+      "key": "mellon-texas-wall",
+      "source": "mellon",
+      "target": "texas-wall",
+      "relType": "donated-to",
+      "role": "$53.1 million in stock, nearly all private gifts then received by the fund",
+      "from": "2021-08",
+      "until": "2021-08",
+      "prominence": 3,
+      "sources": ["texas-tribune-wall-2021"]
+    },
+    {
+      "key": "mellon-chd",
+      "source": "mellon",
+      "target": "chd",
+      "relType": "donated-to",
+      "role": "Major donor; transferred two Connecticut properties appraised at $5.5 million in 2025",
+      "from": "2020",
+      "prominence": 2,
+      "sources": ["wapo-profile-2024", "nyt-chd-property-2026", "ctinsider-chd-2026"]
+    },
+    {
+      "key": "mellon-defense",
+      "source": "mellon",
+      "target": "defense",
+      "relType": "donated-to",
+      "role": "Reported donor of $130 million intended to offset military salaries and benefits during the 2025 shutdown",
+      "from": "2025-10",
+      "until": "2025-10",
+      "status": "unresolved",
+      "prominence": 3,
+      "notes": "The Pentagon confirmed the anonymous gift but did not publicly identify Mellon; The New York Times identified him through two people familiar with the matter.",
+      "sources": ["ap-pentagon-gift-2025", "nyt-military-gift-2025", "reuters-military-gift-2025"]
+    },
+    {
+      "key": "mellon-clf",
+      "source": "mellon",
+      "target": "clf",
+      "relType": "donated-to",
+      "role": "Major House Republican super-PAC donor across multiple cycles",
+      "from": "2018",
+      "prominence": 2,
+      "sources": ["fec-mellon", "nyt-senate-pullback-2026"]
+    },
+    {
+      "key": "mellon-slf",
+      "source": "mellon",
+      "target": "slf",
+      "relType": "donated-to",
+      "role": "Major Senate Republican super-PAC donor through 2024; reported to have withheld new 2026 support",
+      "from": "2020",
+      "until": "2024",
+      "prominence": 2,
+      "sources": ["fec-mellon", "nyt-senate-pullback-2026"]
+    },
+    {
+      "key": "mellon-republicans",
+      "source": "mellon",
+      "target": "republican-party",
+      "relType": "donated-to",
+      "role": "Federal giving overwhelmingly supports Republican candidates and party-aligned committees",
+      "from": "1996",
+      "prominence": 2,
+      "sources": ["fec-mellon", "opensecrets-2024"]
+    }
+  ],
+  "events": [
+    {
+      "key": "born",
+      "date": "1942-07-22",
+      "title": "Is born in Pittsburgh",
+      "summary": "Mellon was the son of philanthropist and art collector Paul Mellon and Mary Conover Mellon and the grandson of Andrew Mellon.",
+      "category": "personal",
+      "significance": 1,
+      "chapter": "formation",
+      "sources": ["panam-book-preview", "wapo-profile-2024"]
+    },
+    {
+      "key": "yale",
+      "date": "1964",
+      "title": "Graduates from Yale",
+      "summary": "He studied political science, then worked at Yale's computer center and pursued city-planning study.",
+      "category": "career",
+      "significance": 1,
+      "chapter": "formation",
+      "sources": ["wapo-profile-2024", "dc-court-guilford-2000"]
+    },
+    {
+      "key": "software",
+      "date": "1965",
+      "date_end": "1970",
+      "title": "Builds an early software business",
+      "summary": "After working at Yale's computer center, Mellon created a company that supplied software and computer services.",
+      "category": "career",
+      "significance": 1,
+      "chapter": "formation",
+      "status": "unresolved",
+      "statusNote": "Sources place the business in the later 1960s but do not provide a precise founding date.",
+      "sources": ["wapo-profile-2024", "panam-book-preview"]
+    },
+    {
+      "key": "perma-treat",
+      "date": "1977",
+      "title": "Founds railroad-tie producer Perma Treat",
+      "category": "career",
+      "significance": 2,
+      "chapter": "railroads",
+      "sources": ["boston-magazine-2006", "dc-court-guilford-2000"]
+    },
+    {
+      "key": "guilford",
+      "date": "1981",
+      "title": "Founds Guilford Transportation Industries",
+      "summary": "Mellon and David Fink began assembling Maine Central, Boston & Maine and Delaware & Hudson into a regional freight system.",
+      "category": "career",
+      "significance": 3,
+      "chapter": "railroads",
+      "participants": [["pan-am", "company"]],
+      "sources": ["dc-court-guilford-2000", "boston-magazine-2006"]
+    },
+    {
+      "key": "pan-am-brand",
+      "date": "1998",
+      "title": "Acquires the Pan Am name and airline assets",
+      "summary": "Guilford bought assets of a bankrupt Pan Am successor and later applied the brand to its rail and transportation group.",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "pan-am",
+      "participants": [["pan-am", "company"]],
+      "sources": ["boston-magazine-2006", "panam-book-publisher"]
+    },
+    {
+      "key": "foundation-exit",
+      "date": "2002",
+      "title": "Ends twenty-one years as a Mellon Foundation trustee",
+      "category": "career",
+      "significance": 1,
+      "chapter": "formation",
+      "participants": [["mellon-foundation", "foundation"]],
+      "sources": ["panam-book-publisher"]
+    },
+    {
+      "key": "arizona-defense",
+      "date": "2010",
+      "title": "Gives $1.5 million for Arizona's defense of SB 1070",
+      "summary": "The gift supported the legal defense of the immigration-enforcement law challenged as encouraging racial profiling.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "political-turn",
+      "sources": ["texas-tribune-wall-2021", "wapo-profile-2024"]
+    },
+    {
+      "key": "memoir",
+      "date": "2015",
+      "title": "Self-publishes panam.captain",
+      "summary": "The memoir described Mellon's business career and political turn and included racial stereotypes and a denunciation of social programs as 'slavery redux.'",
+      "category": "ideas",
+      "significance": 2,
+      "chapter": "political-turn",
+      "sources": ["panam-book-preview", "wapo-autobiography-2020"]
+    },
+    {
+      "key": "house-giving",
+      "date": "2018",
+      "title": "Begins large-scale federal outside-group giving",
+      "summary": "Mellon moved from comparatively modest candidate gifts to eight-figure contributions supporting Republican congressional candidates.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "political-money",
+      "participants": [["clf", "recipient"]],
+      "sources": ["fec-mellon", "wapo-profile-2024"]
+    },
+    {
+      "key": "trump-2020",
+      "date": "2020",
+      "title": "Becomes a major Trump and Senate Republican donor",
+      "summary": "Mellon gave $20 million to a pro-Trump super PAC and $30 million to Senate Leadership Fund during the cycle.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "political-money",
+      "participants": [
+        ["trump", "supported candidate"],
+        ["slf", "recipient"]
+      ],
+      "sources": ["fec-mellon", "wapo-profile-2024"]
+    },
+    {
+      "key": "wall-gift",
+      "date": "2021-08",
+      "title": "Gives $53.1 million for Texas's border wall",
+      "summary": "The stock gift supplied nearly 98 percent of private donations in the state fund at the time of reporting.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "border",
+      "participants": [["texas-wall", "recipient"]],
+      "sources": ["texas-tribune-wall-2021"]
+    },
+    {
+      "key": "pan-am-sale",
+      "date": "2022-06",
+      "title": "Completes the sale of Pan Am Systems to CSX",
+      "summary": "The transaction ended Mellon's forty-one years controlling the New England rail system.",
+      "category": "finance",
+      "significance": 3,
+      "chapter": "pan-am",
+      "participants": [
+        ["pan-am", "acquired company"],
+        ["csx", "acquirer"]
+      ],
+      "sources": ["stb-csx-2022", "rail-sale-2022"]
+    },
+    {
+      "key": "kennedy-first",
+      "date": "2023",
+      "title": "Finances the super PAC supporting Robert F. Kennedy Jr.",
+      "summary": "Mellon gave $15 million during 2023 after Kennedy began as a Democratic primary candidate and then shifted to an independent campaign.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "election-2024",
+      "participants": [
+        ["kennedy", "supported candidate"],
+        ["american-values", "recipient"]
+      ],
+      "sources": ["ap-kennedy-complaint-2024", "fec-mellon"]
+    },
+    {
+      "key": "maga-fifty",
+      "date": "2024-05-31",
+      "title": "Gives $50 million to MAGA Inc.",
+      "summary": "The contribution, made the day after Trump's New York criminal conviction, was then the largest disclosed individual gift of the cycle.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "election-2024",
+      "participants": [
+        ["maga-inc", "recipient"],
+        ["trump", "supported candidate"]
+      ],
+      "sources": ["time-trump-gift-2024", "fec-mellon"]
+    },
+    {
+      "key": "election-total-2024",
+      "date": "2024-12-31",
+      "title": "Finishes the 2024 cycle with about $197 million in federal giving",
+      "summary": "OpenSecrets ranked Mellon second among disclosed individual donors; $150 million went to MAGA Inc. and $25 million to American Values 2024.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "election-2024",
+      "participants": [
+        ["maga-inc", "recipient"],
+        ["american-values", "recipient"]
+      ],
+      "sources": ["opensecrets-2024", "fec-mellon"]
+    },
+    {
+      "key": "chd-property",
+      "date": "2025-08",
+      "title": "Transfers Connecticut property to Children's Health Defense",
+      "summary": "Property records showed two Lyme parcels later appraised at $5.5 million transferred for no payment, with Mellon agreeing to maintenance and insurance terms.",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "after-2024",
+      "participants": [
+        ["chd", "recipient"],
+        ["kennedy", "organization's founder"]
+      ],
+      "sources": ["nyt-chd-property-2026", "ctinsider-chd-2026"]
+    },
+    {
+      "key": "military-gift",
+      "date": "2025-10-23",
+      "title": "Reportedly gives $130 million intended for military pay",
+      "summary": "The Pentagon confirmed receiving an anonymous conditional gift during the shutdown; The New York Times identified Mellon through two people familiar with the matter.",
+      "category": "politics",
+      "significance": 3,
+      "status": "unresolved",
+      "statusNote": "The government confirmed the gift but has not publicly identified the donor; Mellon's identity is based on sourced reporting.",
+      "chapter": "after-2024",
+      "participants": [
+        ["defense", "recipient"],
+        ["trump", "president who announced gift"]
+      ],
+      "sources": ["ap-pentagon-gift-2025", "nyt-military-gift-2025", "reuters-military-gift-2025"]
+    },
+    {
+      "key": "senate-pullback",
+      "date": "2026-09",
+      "title": "Withholds major new Senate giving in the midterm cycle",
+      "summary": "The New York Times reported that Mellon declined a Senate fundraising appeal over failure to pass the SAVE America Act; public filings then showed roughly $3.1 million in Republican giving rather than his prior cycle's scale.",
+      "category": "politics",
+      "significance": 2,
+      "status": "unresolved",
+      "statusNote": "The reported motive and an additional unfiled House gift rely on people familiar with private communications.",
+      "chapter": "after-2024",
+      "participants": [
+        ["slf", "prior recipient"],
+        ["republican-party", "supported party"]
+      ],
+      "sources": ["nyt-senate-pullback-2026", "fec-mellon"]
+    }
+  ],
+  "statements": [
+    {
+      "key": "own-words",
+      "issue": "Personal record",
+      "date": "2015",
+      "datePrecision": "year",
+      "venue": "panam.captain",
+      "quote": "This book was not ghost-written: every single word is my own.",
+      "source": "panam-book-preview"
+    },
+    {
+      "key": "firm-beliefs",
+      "issue": "Personal philosophy",
+      "date": "2015",
+      "datePrecision": "year",
+      "venue": "panam.captain",
+      "quote": "Don't back down from your firm beliefs.",
+      "source": "panam-book-preview"
+    },
+    {
+      "key": "stand-up",
+      "issue": "Personal philosophy",
+      "date": "2015",
+      "datePrecision": "year",
+      "venue": "panam.captain",
+      "quote": "One must stand up for one's beliefs, no matter the odds and the deck stacked against you.",
+      "source": "panam-book-publisher"
+    },
+    {
+      "key": "freedom",
+      "issue": "Personal philosophy",
+      "date": "2015",
+      "datePrecision": "year",
+      "venue": "panam.captain",
+      "quote": "Freedom is not free. A lesson we must remember over and over lest we become complacent.",
+      "source": "panam-book-publisher"
+    },
+    {
+      "key": "uncle-sam",
+      "issue": "Government and welfare",
+      "date": "2015",
+      "datePrecision": "year",
+      "venue": "panam.captain, chapter 'Slavery Redux'",
+      "quote": "They have become slaves of a new Master, Uncle Sam.",
+      "summary": "Mellon used the line in an argument against social-welfare programs that also relied on racial stereotypes about Black Americans.",
+      "source": "wapo-autobiography-2020"
+    },
+    {
+      "key": "belligerent",
+      "issue": "Race and welfare",
+      "date": "2015",
+      "datePrecision": "year",
+      "venue": "panam.captain, chapter 'Slavery Redux'",
+      "quote": "became even more belligerent and unwilling to pitch in to improve their own situations",
+      "summary": "Mellon's description of Black Americans after the expansion of Great Society programs, quoted and criticized in reporting on the memoir.",
+      "source": "wapo-autobiography-2020"
+    }
+  ],
+  "ideas": {
+    "traditions": [
+      {
+        "label": "Conservatism",
+        "atlasId": "conservatism",
+        "basis": "Stated ideas and political giving",
+        "context": "Mellon's memoir rejects the expansion of government welfare and regulation, while his federal giving overwhelmingly supports Republican candidates and conservative outside groups.",
+        "sources": ["wapo-autobiography-2020", "fec-mellon", "opensecrets-2024"]
+      },
+      {
+        "label": "Libertarianism",
+        "atlasId": "libertarianism",
+        "basis": "Attributed self-understanding",
+        "context": "Robert F. Kennedy Jr. described their shared outlook as a libertarian opposition to censorship, government corruption, interventionist war and surveillance; Mellon's memoir supplies parallel anti-government arguments.",
+        "sources": ["wapo-profile-2024", "wapo-autobiography-2020"]
+      }
+    ],
+    "influences": [],
+    "works": [
+      {
+        "title": "panam.captain",
+        "year": "2015",
+        "kind": "Memoir",
+        "detail": "Self-published in 2015; commercially reissued by Skyhorse in 2024",
+        "source": "panam-book-publisher"
+      }
+    ],
+    "featuredQuotes": ["freedom", "uncle-sam"]
+  },
+  "chapters": [
+    {
+      "key": "formation",
+      "title": "The Mellon inheritance and a technical education",
+      "dek": "Family wealth supplied security, while computing and planning became the route into business.",
+      "body": "Timothy Mellon was born in Pittsburgh on July 22, 1942, the son of Paul Mellon and Mary Conover Mellon and a grandson of banker and Treasury secretary Andrew Mellon. His mother died when he was four. He grew up on the family's Virginia estate and attended boarding schools before Yale [[panam-book-preview, wapo-profile-2024]].\n\nMellon graduated from Yale in 1964 after studying political science. He worked at the university's computer center, pursued city-planning study and started a software business serving institutional computers. His family inheritance gave him capital unavailable to most founders, but his later wealth also came from acquiring and operating transportation assets over four decades [[wapo-profile-2024, dc-court-guilford-2000]].\n\nHe served for twenty-one years as a trustee of the Andrew W. Mellon Foundation, leaving in 2002. In 2005 he moved from Connecticut to rural Wyoming. His personal assets remain private: Forbes estimated close to $1 billion in 2024, which Mellon disputed, while its 2026 figure of $17.2 billion covers the extended family rather than him alone [[panam-book-publisher, forbes-profile-2024, forbes-family-2026]]."
+    },
+    {
+      "key": "railroads",
+      "title": "Building a New England railroad",
+      "dek": "A railroad-tie business became a network assembled from distressed carriers.",
+      "body": "Mellon and railroad executive David Fink first built Perma Treat, a treated-tie company. In 1981 they formed Guilford Transportation Industries and acquired Maine Central, followed by the bankrupt Boston & Maine and Delaware & Hudson. The result was a regional system spanning much of New England and connecting to larger national railroads [[dc-court-guilford-2000, boston-magazine-2006]].\n\nThe acquisitions were not merely passive investments. Mellon supplied capital and remained the principal owner while Fink managed operations. The company pursued lower operating costs and changes to labor arrangements; unions and regulators challenged parts of that strategy, and a later appellate opinion preserved the contemporary criticism rather than resolving every claim about management motives [[dc-court-guilford-2000]].\n\nThe rail system became the main independently built source of Mellon's resources and public identity. It also made his political trajectory unusual among modern megadonors: he entered large-scale campaign finance after a long career operating infrastructure rather than while still leading a fast-growing public company."
+    },
+    {
+      "key": "pan-am",
+      "title": "Pan Am and the sale to CSX",
+      "dek": "An aviation brand unified the transportation group before a $600 million exit.",
+      "body": "After a successor to Pan American World Airways entered bankruptcy, Mellon and Fink acquired the Pan Am name and airline assets in 1998. Guilford later adopted the brand across its holding company and railroads. The aviation venture was smaller and less durable than the rail operation, but it reflected Mellon's lifelong interest in flying and supplied the name under which the group became nationally recognizable [[boston-magazine-2006, panam-book-publisher]].\n\nCSX agreed to acquire Pan Am Systems in 2020. The Surface Transportation Board approved a revised application in April 2022 with conditions intended to protect competition and passenger service, and the transaction closed that June. Reporting valued the sale at about $600 million. It ended Mellon's forty-one-year control of the regional railroad and made his liquid resources easier to direct elsewhere just as his political giving accelerated [[stb-csx-2022, rail-sale-2022]]."
+    },
+    {
+      "key": "political-turn",
+      "title": "From Democratic votes to an anti-government memoir",
+      "dek": "A political shift became explicit in his own writing before it became visible in nine-figure checks.",
+      "body": "Mellon wrote that he had voted for Lyndon Johnson, George McGovern and Jimmy Carter before moving right during the Reagan era. His later positions centered on taxation, regulation, immigration enforcement and opposition to the growth of federal social programs [[panam-book-preview, wapo-profile-2024]].\n\nIn 2010 he gave $1.5 million to Arizona's defense of SB 1070, the immigration law that required police in some circumstances to check immigration status and was challenged as encouraging racial profiling. The gift anticipated his later support for border enforcement but was not a federal campaign contribution [[texas-tribune-wall-2021]].\n\nHis 2015 memoir, panam.captain, made the worldview public. In a chapter titled 'Slavery Redux,' Mellon called recipients of government benefits 'slaves of a new Master, Uncle Sam' and used racial stereotypes to argue that Great Society programs made Black Americans more dependent and 'belligerent.' Reporting in 2020 brought the passages wider attention; Mellon declined to comment. Describing those words is necessary to explain his stated politics, but they are his claims, not evidence about the people he described [[wapo-autobiography-2020]]."
+    },
+    {
+      "key": "political-money",
+      "title": "From candidate checks to super PACs",
+      "dek": "The scale changed after 2018, when outside groups became the main instrument.",
+      "body": "Mellon's federal contributions were comparatively modest through the 2016 election. In 2018 he began giving at eight-figure scale to the Congressional Leadership Fund, which supports Republican House candidates. In 2020 he gave $20 million to a pro-Trump super PAC and $30 million to Senate Leadership Fund; OpenSecrets ranked him among the cycle's largest donors [[fec-mellon, wapo-profile-2024]].\n\nSuper PACs can accept unlimited contributions but cannot legally coordinate their independent spending with candidates. Mellon's money therefore financed advertising and other outside activity rather than entering campaign accounts directly. His limited contact with campaign fundraisers, reported by The Washington Post, makes the disclosed transfer of money clearer than the private reasoning behind each gift [[wapo-profile-2024]]."
+    },
+    {
+      "key": "border",
+      "title": "$53.1 million for a state border wall",
+      "dek": "One stock transfer turned a stalled Texas donation fund into a nationally visible project.",
+      "body": "In June 2021 Texas created a fund to accept private donations for border-barrier construction. By mid-August it had raised only about $1.25 million. On August 27 the balance jumped; public records later showed that Mellon had given $53.1 million in stock, nearly 98 percent of all donations then received [[texas-tribune-wall-2021]].\n\nThe gift sat outside campaign-finance reporting and went directly to a state-controlled project. It followed the Arizona legal-defense payment and coincided with other privately funded border activity, including South Dakota's deployment of National Guard troops financed by a different Republican donor. Critics questioned whether border infrastructure and deployments should depend on private patrons; supporters treated them as a response to federal inaction [[texas-tribune-wall-2021, time-national-guard-2021]]."
+    },
+    {
+      "key": "election-2024",
+      "title": "Trump and Kennedy in the same election",
+      "dek": "$150 million to Trump's super PAC and $25 million to a group backing an independent rival.",
+      "body": "Mellon began financing American Values 2024 while Robert F. Kennedy Jr. was seeking the Democratic nomination, and continued after Kennedy became an independent candidate. By May 2024 he had given the group $25 million. Democrats alleged that the outside group coordinated unlawfully with the campaign and portrayed Kennedy as a spoiler; Kennedy's campaign denied coordination, and the cited record did not establish that Mellon funded him for the purpose Democrats alleged [[ap-kennedy-complaint-2024, reuters-kennedy-2024]].\n\nAt the same time Mellon was Trump's largest donor. On May 31, the day after a New York jury convicted Trump on 34 felony counts, Mellon gave $50 million to MAGA Inc. He ultimately gave the super PAC $150 million during the cycle. The timing is documented; no cited statement from Mellon establishes that the verdict caused the gift [[time-trump-gift-2024, fec-mellon]].\n\nOpenSecrets calculated about $197 million in total federal giving for the cycle, ranking Mellon second only to Elon Musk. Roughly $172 million supported conservative groups and $25 million went to the Kennedy-aligned group. Kennedy ended his independent campaign and endorsed Trump in August, so both streams of Mellon's presidential giving ultimately supported figures in the same coalition, but they began as distinct candidacies [[opensecrets-2024, wapo-profile-2024]]."
+    },
+    {
+      "key": "after-2024",
+      "title": "Gifts outside elections and a 2026 pullback",
+      "dek": "Property, military pay and a quieter midterm cycle extended—and then qualified—the donor record.",
+      "body": "Property records show that in August 2025 Mellon transferred two adjacent Lyme, Connecticut parcels to Children's Health Defense, the nonprofit founded by Kennedy, for no payment. The parcels were appraised at $5.5 million in 2026, and an agreement required a Mellon entity to maintain and insure them. The transaction extended a relationship that predated Kennedy's campaign [[nyt-chd-property-2026, ctinsider-chd-2026, wapo-profile-2024]].\n\nDuring the October 2025 government shutdown, Trump announced that an unnamed friend had offered $130 million toward military salaries and benefits. The Pentagon confirmed accepting the gift under general gift authority but did not name its source. The New York Times identified Mellon through two people familiar with the matter. The money covered only a small fraction of payroll, and legal specialists and lawmakers questioned whether a conditional private gift could substitute for congressional appropriations; no cited final ruling resolved those questions [[reuters-military-gift-2025, ap-pentagon-gift-2025, nyt-military-gift-2025]].\n\nMellon's 2026 federal giving was far below his 2024 pace as of September. The New York Times reported that he refused a Senate fundraising appeal because Republicans had not enacted the SAVE America Act's citizenship-document requirements for voter registration. The reported motive comes from unnamed people familiar with the exchange, and a reported $20 million House super-PAC gift had not yet appeared in public filings. The defensible current conclusion is narrower: public records showed a major pullback from Senate giving, not a withdrawal from Republican politics [[nyt-senate-pullback-2026, fec-mellon]]."
+    }
+  ]
+}

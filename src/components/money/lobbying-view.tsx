@@ -91,19 +91,32 @@ export function LobbyingView({
                     className="align-top hover:bg-slate-50 dark:hover:bg-slate-900/60"
                   >
                     <td className="px-4 py-2.5">
-                      <Link
-                        href={client ? publicEntityPath(client) : "#"}
-                        className="inline-flex items-center gap-2 font-medium text-slate-800 hover:underline dark:text-slate-200"
-                      >
-                        <span
-                          className="h-2 w-2 shrink-0 rounded-full border-2"
-                          style={{
-                            background: entityColorFor(client?.type ?? "").bg,
-                            borderColor: entityColorFor(client?.type ?? "").border,
-                          }}
-                        />
-                        {nameOf(row.clientEntityId)}
-                      </Link>
+                      {client ? (
+                        <Link
+                          href={publicEntityPath(client)}
+                          className="inline-flex items-center gap-2 font-medium text-slate-800 hover:underline dark:text-slate-200"
+                        >
+                          <span
+                            className="h-2 w-2 shrink-0 rounded-full border-2"
+                            style={{
+                              background: entityColorFor(client.type).bg,
+                              borderColor: entityColorFor(client.type).border,
+                            }}
+                          />
+                          {nameOf(row.clientEntityId)}
+                        </Link>
+                      ) : (
+                        <span className="inline-flex items-center gap-2 font-medium text-slate-800 dark:text-slate-200">
+                          <span
+                            className="h-2 w-2 shrink-0 rounded-full border-2"
+                            style={{
+                              background: entityColorFor("").bg,
+                              borderColor: entityColorFor("").border,
+                            }}
+                          />
+                          {nameOf(row.clientEntityId)}
+                        </span>
+                      )}
                     </td>
                     <td className="px-4 py-2.5 text-slate-700 dark:text-slate-300">
                       {row.inHouse ? (

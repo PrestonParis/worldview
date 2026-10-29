@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
 import { Field, inputClass } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
+import { Turnstile } from "@/components/auth/turnstile";
 import { changePasswordAction, requestEmailChangeAction, verifyEmailChangeAction } from "@/lib/actions/auth";
 
 const linkButton =
@@ -79,13 +80,21 @@ export function PasswordSection() {
 // current address (only when Supabase's "Secure email change" is on).
 type EmailStep = "idle" | "new_code" | "current_code";
 
-export function EmailSection({ currentEmail }: { currentEmail: string | null }) {
+export function EmailSection({
+  currentEmail,
+  turnstileSiteKey,
+}: {
+  currentEmail: string | null;
+  turnstileSiteKey: string | null;
+}) {
   const router = useRouter();
   const [step, setStep] = useState<EmailStep>("idle");
   const [newEmail, setNewEmail] = useState("");
   const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [captchaReset, setCaptchaReset] = useState(0);
   const [pending, startTransition] = useTransition();
   const target = newEmail.trim().toLowerCase();
 
@@ -100,7 +109,8 @@ export function EmailSection({ currentEmail }: { currentEmail: string | null }) 
     setError(null);
     setSuccess(null);
     startTransition(async () => {
-      const result = await requestEmailChangeAction({ email: newEmail });
+      const result = await requestEmailChangeAction({ email: newEmail, captchaToken: captchaToken ?? undefined });
+      setCaptchaReset((value) => value + 1);
       if (!result.ok) return setError(result.error);
       setStep("new_code");
     });
@@ -148,10 +158,13 @@ export function EmailSection({ currentEmail }: { currentEmail: string | null }) 
               />
             </Field>
           </div>
-          <Button type="submit" disabled={pending || !target}>
+          <Button type="submit" disabled={pending || !target || (!!turnstileSiteKey && !captchaToken)}>
             {pending ? "Sending…" : "Change email"}
           </Button>
         </div>
+        {turnstileSiteKey ? (
+          <Turnstile siteKey={turnstileSiteKey} resetKey={captchaReset} onToken={setCaptchaToken} />
+        ) : null}
         <Status error={error} success={success} />
       </form>
     );

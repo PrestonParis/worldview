@@ -1,219 +1,176 @@
 # Worldview
 
-Worldview is a public-data platform for understanding the United States: immigration, crime, the economy, elections, political money, Congress, and the people and institutions behind them. Every figure links back to the government record or published study it came from.
+Worldview is a public-data intelligence platform for understanding the United States: immigration, crime, the economy, elections, political money, Congress, and the people and institutions behind them. Every figure links back to the government record, agency dataset, or published study it came from.
 
-![CI](https://github.com/PrestonParis/worldview/actions/workflows/ci.yml/badge.svg) · **Live:** [worldviewpolitics.com](https://www.worldviewpolitics.com)
+[![CI](https://github.com/PrestonParis/worldview/actions/workflows/ci.yml/badge.svg)](https://github.com/PrestonParis/worldview/actions/workflows/ci.yml) · **Live:** [worldviewpolitics.com](https://www.worldviewpolitics.com)
 
-![Worldview home page](docs/images/worldview-home.png)
+---
 
-![Immigration issue hub](docs/images/worldview-immigration.png)
+## The Platform at a Glance
 
-## Features
+Worldview operates on two coordinated layers:
+1. **Public Issue Hubs & State Profiles:** Curated, source-verified reference pages covering 13 core policy domains and all 50 states.
+2. **The Tools Suite:** Flexible workspaces designed for deep research, cross-dataset correlation, opposition analysis, and real-time election tracking.
 
-- Browse issue hubs for immigration, crime, guns, health care, energy, the economy, housing, education, abortion, demographics, religion, family, and government spending, each with sources and methods.
-- Compare all 50 states on one page each, drawing on the same datasets as the issue hubs.
-- Search a catalog of 57 public datasets from 40 publishers, with a documented read API and a keyed partner API for institutions that publish their own.
-- Open a sourced case file on any person or organization in **Subpoena**: biography, relationships, political money and quotes, built from structured records.
-- Follow bills, members and races in **Writ**, including a live Georgia close-races report ranked by vote margin on election night.
-- Chart, map and compare any statistic by place in **IssueView**.
-- Browse bills, roll-call votes, committees, court cases, and executive actions.
-- Trace contributions, lobbying registrations, and independent expenditures.
-- Look up the federal, state, and local offices representing a U.S. address.
-- Compare election results, demographics, and geography through maps and projections.
-- Take a versioned political quiz whose results can be revisited, shared, and claimed without storing raw edit tokens.
+### Core Tool Suite
+
+| Tool | Focus | Capabilities |
+| :--- | :--- | :--- |
+| **[Subpoena](/tools/subpoena)** | **People, Money & Networks** | Sourced case files on political figures and organizations. Itemized FEC Schedule A contributions (excluding memo lines), Schedule E independent expenditures, Senate LDA lobbying registrations, power network graphs (~14,000 entities), and verified verbatim quotes. |
+| **[Writ](/tools/writ)** | **Legislation & Elections** | Dockets for congressional bills, members, and races. DW-NOMINATE ideological polarization, roll-call party unity and defector analysis, Supreme Court (SCDB) docket tracking, and the live **Georgia close-races election-night tracker**. |
+| **[IssueView](/tools/issueview)** | **Cross-Topic Analytics** | Bivariate correlation analysis, unconstrained metric combination across agencies (e.g., FBI crime vs. Census median income), geographic state and county rankings, and clean CSV/JSON exports. |
+| **[Atlas](/atlas)** | **Political Philosophy** | Multi-axis political philosophy engine measuring policy positions across governance, economics, culture, and foreign policy, alongside a historical taxonomy of political movements and traditions. |
+
+### Public Reference Hubs
+
+* **Issues:** [Immigration](/immigration) (CBP encounters, asylum, ICE detention, foreign-born trends, state flows), [Crime](/crime) (FBI CDE, violent crime, NCVS underreporting, city police staffing), [Guns](/guns) (CDC injury mortality, Gallup ownership trends), [Abortion](/abortion) (Guttmacher monthly trends, CDC surveillance).
+* **Economy:** [Economy](/economy) (FRED indicators, CPI inflation, GDP, payrolls, household income), [Housing](/housing) (Case-Shiller, homeownership, rent burden), [Health Care](/healthcare) (uninsured rates, Medicaid/Medicare, overdose mortality), [Energy](/energy) (emissions, electricity mix, fuel prices).
+* **Society:** [Demographics](/demographics) (Census PEP, race forecasts, ancestry, urban/rural distribution), [Education](/education) (NAEP math/reading proficiency, student loan debt), [Religion](/religion) (Pew Religious Landscape Study, Gallup historical trends), [Family](/family) (marriage, divorce, fertility rates).
+* **Government & Power:** [Legislation](/legislation) (bills, roll calls, member ideology), [Elections](/elections) (historical presidential and Senate returns, county choropleths), [Spending](/spending) (OMB historical receipts/outlays, Treasury debt to the penny, payment accuracy), [States](/states) (comparative dashboards for all 50 states), [My Government](/my-government) (address lookup for federal, state, and local representatives).
+
+---
 
 ## Architecture
 
 ```mermaid
 flowchart LR
-    Browser[Next.js application] --> Actions[Server actions and route handlers]
-    Actions --> Postgres[(Supabase PostgreSQL)]
-    Actions --> Neon[(Neon PostgreSQL overflow)]
-    Imports[Idempotent public-data importers] --> Postgres
+    Browser[Next.js 16 Web App] --> Actions[Server Actions & Route Handlers]
+    Actions --> Postgres[(Supabase PostgreSQL\nCore Tables, Catalog, Graph)]
+    Actions --> Neon[(Neon PostgreSQL\nArea Stats Overflow)]
+    Actions --> Neo4j[(Neo4j Aura\nGraph Projection)]
+    Actions --> Lake[(Supabase Storage Lake\nParquet Exports & DuckDB)]
+    Imports[Idempotent Data Importers] --> Postgres
     Imports --> Neon
-    Postgres -- daily sync --> Neo4j[(Neo4j graph copy)]
-    Sources[FEC, Congress.gov, Census, Voteview, SCDB and others] --> Imports
-    Actions --> Maps[MapLibre visualization]
+    Postgres -- daily sync --> Neo4j
+    Postgres -- export-lake --> Lake
+    Sources[FEC, Congress.gov, Census, Voteview, SCDB, FRED, CBP, FBI, CDC] --> Imports
+    Actions --> Maps[MapLibre GL & Konva Annotation]
 ```
 
-Worldview uses PostgreSQL for structured records such as claims, sources, bills, votes, contributions, elections, and quiz sessions. Area-level statistics that outgrow the Supabase plan's size cap live in a second PostgreSQL database on Neon. Each dataset sits wholly in one database, recorded in `datasets.storage`, and a rebalance script moves datasets between the two. The People & Power graph (entities, their relationships, and an ID crosswalk to Bioguide, FEC, ICPSR, Open States, Wikidata, LDA, and other identifiers) lives in PostgreSQL too, so bills, votes, money, and elections reference entities through foreign keys. A daily job rebuilds a read-only copy in Neo4j for path and network queries. Importers resolve people and organizations through the crosswalk and use upserts so interrupted or repeated runs do not duplicate data. Server actions and shared Zod schemas keep interactive edits and batch ingestion on the same validation boundary.
+### Engineering Highlights
 
-## Tech stack
+* **Two-Database Tiered Storage:** Relational records (bills, votes, claims, entities, edges, contributions) and dataset catalogs live in Supabase PostgreSQL (`DATABASE_URL`). High-volume statistical observations (`area_stats`) that exceed storage limits route dynamically to Neon PostgreSQL (`NEON_DATABASE_URL`). `src/lib/db/stores.ts` seamlessly splits writes and merges cross-database queries.
+* **Dual Graph Architecture:** The canonical entity graph (~14,000 people and organizations, with external crosswalk IDs for Bioguide, FEC, ICPSR, Open States, and Wikidata) lives in PostgreSQL. A read-only replica is synced daily to Neo4j Aura for deep traversal and Cypher path queries (`npm run graph:sync`).
+* **DuckDB-Ready Parquet Data Lake:** Analytical extracts of every published dataset (`area-stats/<slug>.parquet`) and public table are generated weekly (`npm run data:lake`). Researchers and data scientists can query them directly via DuckDB, Polars, pandas, or R from public URLs.
+* **Idempotent Ingestion & External Identifiers:** Importers resolve entities through a crosswalk (`entity_identifiers`) and use upserts on natural keys (`source, metric, geo_level, geoid, period`), guaranteeing that interrupted or repeated runs never duplicate data.
+* **Strict Validation & Role-Gated Mutations:** Shared Zod schemas (`src/lib/validation/`) validate batch API ingest (`POST /api/ingest/batch`), server actions, and editor forms. Shared data edits require the `editor` role, enforced server-side.
+* **Forward-Only Migrations:** Dated SQL files in `supabase/sql/` are automatically verified and applied during CI and production deploys before Next.js builds.
 
-- **Frontend:** Next.js 16, React 19, TypeScript, Tailwind CSS, MapLibre GL
-- **Backend:** Server Actions, Route Handlers, Zod, Drizzle ORM
-- **Data:** Supabase PostgreSQL and Auth, Neon PostgreSQL, Neo4j Aura, public government datasets and APIs
-- **Infrastructure:** Vercel, GitHub Actions for CI, migrations, and scheduled data sync, Docker Compose for local services
-- **Quality:** Vitest, Playwright, ESLint, Prettier
+---
 
-## Engineering highlights
+## Tech Stack
 
-- **Stores with explicit ownership.** PostgreSQL is the record for every relational record and the entity graph, Neo4j holds a synced copy of the graph for traversal, and large statistical datasets are routed between Supabase and Neon per dataset to stay inside free-tier size limits.
-- **Forward-only migrations.** Dated, idempotent SQL files are applied on every production build before `next build`, so a deploy never ships code ahead of its tables.
-- **Idempotent ingestion.** Stable source IDs, an entity ID crosswalk, unique indexes, and upserts make imports resumable and safe to rerun.
-- **Source-aware public data.** Importers preserve external identifiers and provenance across FEC, Congress.gov, Census, Voteview, the Supreme Court Database, and other public sources.
-- **Guarded editing.** Anyone can browse or sign up; changing shared data takes an editor role checked inside every server action. The Supabase Data API is closed with row-level security on every table, partner API keys are stored only as SHA-256 hashes, and quiz edit tokens live in httpOnly cookies with only their hashes in the database.
-- **Recoverable operations.** Export, restore, dry-run, cursor, and audit-report workflows were added after real recovery incidents exposed the need for stronger operational boundaries.
+* **Frontend:** Next.js 16 (App Router), React 19, TypeScript 5, Tailwind CSS v4, MapLibre GL 6, React-Konva
+* **Backend:** Server Actions, Route Handlers, Zod 4, Drizzle ORM
+* **Databases & Storage:** Supabase PostgreSQL & Auth, Neon PostgreSQL, Neo4j Aura, Supabase Storage (Parquet Data Lake)
+* **Testing & Quality:** Vitest (537 tests across 64 test files), Playwright (E2E browser smoke tests), ESLint 9, Prettier
+* **Infrastructure & CI:** Vercel, GitHub Actions, Docker Compose
 
-## Testing
+---
+
+## Testing & Quality
+
+Run the complete validation suite:
 
 ```bash
-npm run check
-npm run build
-npm run test:e2e
+npm run check       # Format check, ESLint, TypeScript typecheck, Vitest
+npm run build       # Production build with automatic migration precheck
+npm run test:e2e    # Playwright desktop and mobile browser smoke tests
 ```
 
-About 520 unit tests across 63 files, plus desktop and mobile browser smoke tests that CI runs against a production build on a fresh database built from the migrations. The suite covers validation, money and election calculations, legislation helpers, authentication guards, demographic forecasting, government lookup, public-data utilities, the political quiz engine, and migration safety checks.
+The Vitest suite includes **537 unit and integration tests across 64 files**, covering:
+* Validation schemas and batch ingestion rules
+* FEC contribution normalization and deduplication
+* DW-NOMINATE calculations and election-margin evaluations
+* Georgia close-races election-night runoff and recount criteria
+* Demographic projection and forecasting models
+* Address-to-representative lookup pipelines
+* Authentication guards and role permissions
 
-## Deployment
+---
 
-Production runs on Vercel against Supabase, Neon, and Neo4j Aura. Browsing is open to everyone; anyone can register with email and password, confirmed by an emailed code. New accounts are members, and editing shared data requires the editor role.
+## Local Development
 
-GitHub Actions workflows (`.github/workflows/`):
+### 1. Prerequisites
+* Node.js 20+
+* Docker Desktop (required for local PostgreSQL and Neo4j)
 
-- `ci.yml`: formatting, lint, tests and typecheck, then migrations into an empty Postgres, a production build and Chromium smoke tests, on every push to `main` and every pull request.
-- `post-deploy.yml`: after each successful production deploy, applies pending migrations and loads any catalog dataset that has no rows yet.
-- `sync-legislation.yml`, `sync-money.yml`, `sync-public-data.yml`: weekly refreshes from Congress.gov, the FEC, and the agency datasets.
-- `sync-graph.yml`: a daily rebuild of the Neo4j graph copy from PostgreSQL, which also keeps the free Aura instance from pausing.
-- `export-lake.yml`: weekly Parquet exports to the data lake and a data health report (failing importers, datasets behind their cadence).
-- `ga-results-watch.yml`, `ga-results-daily.yml`, `ga-results-health.yml`: the election-night ingest for the Georgia close-races report, its daily follow-up until certification, and a watchdog (see docs/elections/ga-close-races-runbook.md).
-
-## Status and next steps
-
-Worldview is live at [worldviewpolitics.com](https://www.worldviewpolitics.com) and under active development. Lint, tests, typecheck, and the production build pass. Before wider promotion, sign-up needs a CAPTCHA (Cloudflare Turnstile is wired in but not yet configured in production) and anonymous quiz creation needs rate limiting. The databases run on free tiers, so large imports are size-checked first.
-
-Built with AI-assisted development (Claude Code).
-
-## Local development
-
-### 1. Install dependencies
+### 2. Install Dependencies
 
 ```bash
 npm install
 ```
 
-### 2. Configure
+### 3. Configure Environment
 
 ```bash
 cp .env.example .env.local
 ```
 
-The defaults point at the local stack. `.env.example` documents every variable; API keys
-for the importers are optional. If you keep `.env.local.docker` and `.env.cloud` copies,
-`npm run env:docker` / `npm run env:cloud` switch between them and `npm run env:status`
-shows which is active. Postgres/Auth and Neo4j always move together, never split.
+Worldview supports seamless switching between local Docker containers and cloud staging:
+* `npm run env:docker` — switch `.env.local` to local Docker services
+* `npm run env:cloud` — switch `.env.local` to cloud staging
+* `npm run env:status` — view the active Supabase target
 
-The graph (~14,000 people and organizations) lives in Postgres. Neo4j only holds a copy:
-`npm run graph:sync` rebuilds it from Postgres, so a paused or wiped Aura instance loses
-nothing. `npm run graph:import-neo4j` is the one-time copy of an older Neo4j-only graph
-into Postgres (ids are kept).
-
-### 3. Start infrastructure (Docker required for local Postgres/Neo4j)
+### 4. Start Infrastructure
 
 ```bash
-npm run infra:up      # supabase start + the Neo4j container
+npm run infra:up      # Starts local Supabase and Neo4j Docker containers
 ```
 
-`npm run infra:down` stops both. `npm run infra:status` shows what's running. On
-`env:cloud` with an Aura URI, you don't need `infra:up` at all.
+*(Use `npm run infra:down` to shut down containers, and `npm run infra:status` to check health.)*
 
-### 4. Apply migrations
+### 5. Run Migrations & Seed
 
 ```bash
-npm run db:migrate
+npm run db:migrate    # Applies pending SQL migrations in supabase/sql/
+npm run db:seed       # Idempotent fixture seed (entities, sample elections)
+npm run graph:sync    # Rebuilds the Neo4j graph copy from PostgreSQL
 ```
 
-Builds the schema from the dated `supabase/sql/` files, applying only pending ones (`npm run
-dev` also does this first). Safe to re-run. `npm run db:studio` opens Drizzle Studio.
-
-### 5. Seed (optional)
+### 6. Start Development Server
 
 ```bash
-npm run db:seed       # idempotent — a few entities and one certified election
-npm run graph:sync    # copy the entities into Neo4j
+npm dev
 ```
 
-Enough to make every page render without empty states. Safe on a populated database
-(upserts on fixed IDs).
+* **Web Application:** [http://localhost:3001](http://localhost:3001) *(port 3001 by default)*
+* **Local Supabase Studio:** [http://localhost:54323](http://localhost:54323)
+* **Neo4j Browser:** [http://localhost:7474](http://localhost:7474)
 
-### 6. Run it
+---
 
-```bash
-npm run dev
-```
+## Key Operational & Data Scripts
 
-- App: [http://localhost:3001](http://localhost:3001) (not 3000 — kept free for other local projects)
-- Local Supabase Studio: [http://localhost:54323](http://localhost:54323) (only in `env:docker` mode)
-- Neo4j Browser: [http://localhost:7474](http://localhost:7474) (local Docker only)
+| Command | Description |
+| :--- | :--- |
+| `npm run import:all` | Run all public data importers in dependency order (`-- quick` skips long sweeps) |
+| `npm run import:profile -- <file>` | Ingest a structured JSON political dossier into Subpoena records |
+| `npm run sync:ga-results` | Pull latest election returns for Georgia close-races tracking |
+| `npm run data:lake` | Export all published datasets and tables as Parquet to the public storage lake |
+| `npm run db:rebalance` | Rebalance dataset storage between Supabase and Neon to prevent disk overflow |
+| `npm run data:health` | Run health check on importers, stale data, and refresh schedules |
+| `npm run data:merge-entities` | Identify and merge duplicate entities based on verified FEC/Bioguide IDs |
+| `npm run db:export` | Point-in-time database export to `backups/<timestamp>/` |
+| `npm run db:restore-postgres -- <dir>` | Restore tables idempotently from a backup directory |
+| `npm run auth:role -- <email> <role>` | Grant an account `editor` or `admin` permissions |
 
-### 7. Sign in
+See [docs/data-sources.md](docs/data-sources.md) for detailed documentation on all 65 public datasets, API keys, and importer flags.
 
-Editing and account pages require a session. `src/proxy.ts` (Next 16 renamed
-`middleware.ts` to `proxy.ts`) refreshes it on each request; the ingest API has its
-own bearer-token authentication. Anyone can create an account with email and password,
-confirmed by an emailed code; a forgotten password is reset the same way. New accounts
-are members, who own their quizzes and saved governments. Changing shared data needs an editor,
-granted with `npm run auth:role -- <email> editor`.
+---
 
-## Adding data
+## Deployment & GitHub Actions
 
-Records come in through idempotent importers (`npm run import:*`), the `/data` editor
-forms, or `POST /api/ingest/batch`, all validated against the same Zod schemas in
-`src/lib/validation/`. Every importer, its source, the tables it writes and the key it
-needs are listed in [docs/data-sources.md](docs/data-sources.md); `npm run import:all`
-runs the full load in dependency order.
+Production deploys run on Vercel backed by Supabase Pro, Neon, and Neo4j Aura.
 
-## Backups and recovery
+* `ci.yml`: Format, lint, typecheck, unit tests, migrations in isolated Postgres, production build, and Playwright smoke tests.
+* `post-deploy.yml`: Applies pending database migrations and backfills missing catalog entries post-deploy.
+* `sync-public-data.yml`, `sync-legislation.yml`, `sync-money.yml`: Scheduled weekly syncs from Congress.gov, OpenFEC, and federal agencies.
+* `sync-graph.yml`: Daily sync from Postgres to Neo4j Aura (maintains active instance status).
+* `export-lake.yml`: Weekly Parquet lake rebuild and data health report.
+* `ga-results-watch.yml`, `ga-results-daily.yml`, `ga-results-health.yml`: Real-time election-night monitoring and certification watchdog for Georgia contests.
 
-Two incidents drove this: the cloud Postgres lost `claims` / `sources` to a bad
-script, and — separately — `.env.local` got repointed at an empty Neo4j Aura instance
-while the real graph sat untouched in the local Docker Neo4j. Neither store had a
-backup. The graph has since moved into Postgres, so Neo4j holds nothing that
-`npm run graph:sync` can't rebuild. Now:
-
-- **`npm run db:export`** — point-in-time dump to `backups/<timestamp>/` (one JSON file
-  per Postgres table, the entity graph included, + `manifest.json`). Run it before any destructive change and on a schedule. `backups/`
-  is gitignored except the two committed recovery snapshots; copy anything else you
-  want to keep somewhere durable.
-- **`npm run db:restore-postgres -- <dir>`** — replays `sources` / `claims` /
-  `contributions` from a dump directory, idempotently (`ON CONFLICT DO NOTHING`).
-- **`npm run graph:sync`** — rebuilds Neo4j from Postgres.
-- **`npm run data:lake`** — Parquet copies of every dataset and record table in the
-  public `lake` Storage bucket; raw source files can be kept in `raw`. See
-  `docs/data-sources.md`.
-- **`npm run db:seed`** — the floor: a known-good minimal fixture for a from-empty
-  database (see step 5).
-
-## Project layout
-
-- `src/app/(shell)/` — the public pages: issue hubs (`immigration`, `crime`, `economy`, ...),
-  `states`, `spending`, `people`, `money`, `legislation`, `elections`, `my-government`,
-  `datasets`, `quiz`, `atlas`, the `subpoena`, `writ` and `issueview` tools, and the `data/`
-  editor CRUD, sharing the header nav.
-- `src/app/geography/` — the map/annotation studio, deliberately outside the shell
-  (full-bleed, its own chrome) and limited to the site owner's account.
-- `src/app/api/` — route handlers: batch ingest, the public data API, quiz, search, Writ.
-- `src/lib/db/` — data access for every Postgres table, the entity graph included.
-- `src/lib/validation/` — the Zod schemas everything else (forms, server actions, ingest)
-  validates against. Start here when adding a field.
-- `src/lib/actions/` — `"use server"` mutations, each guarded by role or ownership.
-- `src/components/<domain>/` — the UI for each page or tool; `src/components/tools/` holds
-  the shared tool shell and the three workspaces, `src/components/{map,annotate,layout}/`
-  the Geography studio.
-- `scripts/` — importers and operational commands (see [scripts/README.md](scripts/README.md)).
-- `tests/e2e/` — Playwright smoke tests.
-
-More in [docs/](docs/README.md): architecture, data sources, auth, the quiz, Geography,
-people profiles and the close-races report.
-
-## Infra
-
-- `infra/docker/docker-compose.yml` — the local Neo4j container.
-- `supabase/config.toml` — local Supabase CLI config.
-- `supabase/sql/` — dated migrations, applied in order by `scripts/migrate.mjs`
-  (`supabase/sql/neon/` for the Neon database).
-- `drizzle.config.ts` — reads `DATABASE_URL` from `.env.local`; throws if it's missing
-  rather than silently defaulting anywhere.
+---
 
 ## License
 

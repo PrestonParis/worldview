@@ -1,0 +1,603 @@
+{
+  "subject": "schumer",
+  "reviewedAt": "2026-10-25",
+  "sourcesVerifiedAt": "2026-10-25",
+  "brief": {
+    "inclusion": "Senate Democratic leader since 2017 (majority leader 2021–2025), the first Jewish leader of either party in the Senate, who steered the Biden-era industrial and climate laws, organized the Senate's first bipartisan AI policy process, and now leads his party into the 2026 midterms under pressure from its left.",
+    "identifiers": {
+      "wikidata": "Q380900",
+      "bioguide": "S000148",
+      "fec_candidate": "S8NY00082; H0NY16010"
+    },
+    "namesakes": "The Worldview entity is \"Charles E. Schumer\"; matched on Bioguide S000148.",
+    "coverage": {
+      "from": "1950",
+      "through": "2026-10-25",
+      "lags": "Contributions received by his committees come from Worldview's FEC data; his leadership PAC and the Senate Majority PAC are separate entities. The November 3, 2026 result and the leadership election that follows are pending."
+    },
+    "openQuestions": [
+      "October 2026 reports that he will run for leader \"win or lose\" and that several Democratic nominees oppose him need a source that could be opened (one syndication was blocked as unsafe).",
+      "March 2025 continuing-resolution vote tallies differ across reports (62–38 cloture; 54–46 passage); confirm on senate.gov.",
+      "Release date of Antisemitism in America: announced for February 18, 2025; retail listings give March 18, 2025."
+    ],
+    "review": []
+  },
+  "summary": "New York's senior senator since 1999 and Senate Democratic leader since 2017, majority leader from 2021 to 2025 when the Senate passed the American Rescue Plan, the CHIPS and Science Act and the Inflation Reduction Act; he was the first Jewish Senate leader. He convened the Senate's AI Insight Forums and its 2024 AI roadmap, called in March 2024 for Israel to hold new elections, and in 2025 drew calls to step down from his own party's left after a March funding vote and the 43-day fall shutdown.",
+  "roles": [
+    {
+      "label": "Senate Democratic leader",
+      "detail": "Minority leader 2017–2021 and since 2025; majority leader January 2021–January 2025",
+      "sources": ["wikipedia"]
+    },
+    {
+      "label": "U.S. senator",
+      "detail": "New York, since January 3, 1999",
+      "sources": ["wikipedia"]
+    },
+    {
+      "label": "Former House member",
+      "detail": "Brooklyn and Queens, 1981–1999; New York State Assembly, 1975–1980",
+      "sources": ["wikipedia"]
+    },
+    {
+      "label": "Former DSCC chair",
+      "detail": "Chaired the Democratic Senatorial Campaign Committee, 2005–2009",
+      "sources": ["wikipedia"]
+    },
+    {
+      "label": "Author",
+      "detail": "Antisemitism in America: A Warning (2025)",
+      "sources": ["ji-book-2024"]
+    }
+  ],
+  "finance": {
+    "coverage": "Contributions received by Schumer's Senate and House committees come from Worldview's FEC data. His personal giving is not separately matched. Senate Majority PAC and his leadership PAC are recorded as separate committees."
+  },
+  "entities": {
+    "schumer": {
+      "match": { "identifier": ["bioguide", "S000148"] }
+    },
+    "reid": {
+      "match": { "identifier": ["bioguide", "R000146"] }
+    },
+    "mcconnell": {
+      "match": { "identifier": ["bioguide", "M000355"] }
+    },
+    "rounds": {
+      "match": { "identifier": ["bioguide", "R000605"] }
+    },
+    "heinrich": {
+      "match": { "identifier": ["bioguide", "H001046"] }
+    },
+    "young": {
+      "match": { "identifier": ["bioguide", "Y000064"] }
+    },
+    "shaheen": {
+      "match": { "identifier": ["bioguide", "S001181"] }
+    },
+    "khanna": {
+      "match": { "identifier": ["bioguide", "K000389"] }
+    },
+    "netanyahu": {
+      "match": { "name": "Benjamin Netanyahu", "type": "politician" }
+    },
+    "trump": {
+      "match": { "name": "Donald Trump", "type": "politician" }
+    },
+    "dscc": {
+      "create": {
+        "name": "Democratic Senatorial Campaign Committee",
+        "type": "organization",
+        "description": "Senate Democrats' campaign committee.",
+        "websiteUrl": "https://www.dscc.org/"
+      }
+    },
+    "ai-working-group": {
+      "create": {
+        "name": "Senate Bipartisan AI Working Group",
+        "type": "organization",
+        "description": "Senators Schumer, Rounds, Heinrich and Young; ran the 2023 AI Insight Forums and released the May 2024 AI policy roadmap."
+      }
+    }
+  },
+  "sources": [
+    {
+      "key": "wikipedia",
+      "title": "Chuck Schumer",
+      "publisher": "Wikipedia",
+      "type": "secondary",
+      "url": "https://en.wikipedia.org/wiki/Chuck_Schumer",
+      "notes": "Reference work; cited for biography, offices, leadership dates and legislation passed under his majority."
+    },
+    {
+      "key": "ap-israel-2024",
+      "title": "Top Democrat Schumer calls for new elections in Israel, saying Netanyahu has 'lost his way'",
+      "publisher": "The Associated Press (via ClickOrlando)",
+      "author": "Mary Clare Jalonick and Ellen Knickmeyer",
+      "type": "article",
+      "publishedAt": "2024-03-14",
+      "url": "https://www.clickorlando.com/news/world/2024/03/14/top-democrat-schumer-calls-for-new-elections-in-israel-saying-netanyahu-has-lost-his-way/"
+    },
+    {
+      "key": "mayer-brown-ai-2024",
+      "title": "Senate AI Working Group Releases Roadmap for Artificial Intelligence Policy",
+      "publisher": "Mayer Brown",
+      "type": "article",
+      "publishedAt": "2024-05",
+      "url": "https://mayerbrown.com/en/insights/publications/2024/05/senate-ai-working-group-releases-roadmap-for-artificial-intelligence-policy",
+      "notes": "Law-firm analysis of the May 15, 2024 roadmap."
+    },
+    {
+      "key": "ji-book-2024",
+      "title": "Schumer to release book next February 'warning' of rise of domestic antisemitism",
+      "publisher": "Jewish Insider",
+      "author": "Emily Jacobs",
+      "type": "article",
+      "publishedAt": "2024-08-14",
+      "url": "https://jewishinsider.com/2024/08/schumer-to-release-book-next-february-warning-rise-of-domestic-antisemitism/"
+    },
+    {
+      "key": "hill-cr-2025",
+      "title": "Schumer says he is not stepping down after shutdown vote pushback",
+      "publisher": "The Hill (via Yahoo News)",
+      "author": "Rachel Scully",
+      "type": "article",
+      "publishedAt": "2025-03-23",
+      "url": "https://www.yahoo.com/news/schumer-says-not-stepping-down-162300423.html"
+    },
+    {
+      "key": "wapo-shutdown-2025",
+      "title": "Schumer opposed the shutdown deal. Some Democrats still want him out.",
+      "publisher": "The Washington Post (via Anchorage Daily News)",
+      "author": "Theodoric Meyer and Marianna Sotomayor",
+      "type": "article",
+      "publishedAt": "2025-11-12",
+      "url": "https://www.adn.com/nation-world/2025/11/12/schumer-opposed-the-shutdown-deal-some-democrats-still-want-him-out/"
+    },
+    {
+      "key": "politicalwire-2026",
+      "title": "Schumer's Final Fight",
+      "publisher": "Political Wire",
+      "type": "article",
+      "publishedAt": "2026-10-15",
+      "url": "https://politicalwire.com/2026/10/15/schumers-final-fight/",
+      "notes": "Summarizes Axios reporting (\"YOLO Chuck: Schumer's final fight,\" October 15, 2026)."
+    }
+  ],
+  "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "November 23, 1950",
+      "detail": "Midwood, Brooklyn, New York",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "sex",
+      "label": "Sex",
+      "value": "Male",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "religion",
+      "label": "Religion",
+      "value": "Jewish",
+      "detail": "Describes his role as \"Shomer Yisroel — a guardian of the People of Israel\"; the first Jewish leader of either party in the Senate.",
+      "sources": ["ap-israel-2024", "wikipedia"]
+    },
+    {
+      "key": "party",
+      "label": "Party",
+      "value": "Democratic",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "education",
+      "label": "Education",
+      "value": "AB, Harvard College (1971); JD, Harvard Law School (1974)",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "current-roles",
+      "label": "Current roles",
+      "value": "U.S. senator from New York; Senate Democratic leader",
+      "featured": true,
+      "asOf": "2026-10-25",
+      "sources": ["politicalwire-2026", "wikipedia"]
+    },
+    {
+      "key": "tenure",
+      "label": "Years in public office",
+      "value": "52",
+      "detail": "Since his 1974 election to the New York Assembly; age 75, turning 76 before the new Congress convenes.",
+      "asOf": "2026-10-15",
+      "featured": true,
+      "sources": ["politicalwire-2026"]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "schumer-dscc",
+      "source": "schumer",
+      "target": "dscc",
+      "relType": "chairs",
+      "role": "Chairman",
+      "from": "2005",
+      "until": "2009",
+      "prominence": 2,
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "schumer-reid",
+      "source": "schumer",
+      "target": "reid",
+      "relType": "succeeded",
+      "role": "Succeeded him as Senate Democratic leader",
+      "from": "2017-01",
+      "prominence": 1,
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "schumer-mcconnell",
+      "source": "schumer",
+      "target": "mcconnell",
+      "relType": "opposed",
+      "role": "Counterpart as party leader, 2017–2025",
+      "from": "2017",
+      "until": "2025-01",
+      "prominence": 2,
+      "sources": ["wikipedia", "ap-israel-2024"]
+    },
+    {
+      "key": "schumer-ai-group",
+      "source": "schumer",
+      "target": "ai-working-group",
+      "relType": "founded",
+      "role": "Convened it with Senators Rounds, Heinrich and Young",
+      "from": "2023",
+      "until": "2024-05",
+      "prominence": 2,
+      "sources": ["mayer-brown-ai-2024"]
+    },
+    {
+      "key": "rounds-ai",
+      "source": "rounds",
+      "target": "ai-working-group",
+      "relType": "member-of",
+      "role": "Member",
+      "from": "2023",
+      "prominence": 1,
+      "sources": ["mayer-brown-ai-2024"]
+    },
+    {
+      "key": "heinrich-ai",
+      "source": "heinrich",
+      "target": "ai-working-group",
+      "relType": "member-of",
+      "role": "Member",
+      "from": "2023",
+      "prominence": 1,
+      "sources": ["mayer-brown-ai-2024"]
+    },
+    {
+      "key": "young-ai",
+      "source": "young",
+      "target": "ai-working-group",
+      "relType": "member-of",
+      "role": "Member",
+      "from": "2023",
+      "prominence": 1,
+      "sources": ["mayer-brown-ai-2024"]
+    },
+    {
+      "key": "schumer-netanyahu",
+      "source": "schumer",
+      "target": "netanyahu",
+      "relType": "opposed",
+      "role": "Called for new Israeli elections, saying Netanyahu had \"lost his way\" (March 2024)",
+      "from": "2024-03-14",
+      "prominence": 2,
+      "sources": ["ap-israel-2024"]
+    },
+    {
+      "key": "shaheen-shutdown",
+      "source": "shaheen",
+      "target": "schumer",
+      "relType": "opposed",
+      "role": "Led the Democrats who broke with Schumer to end the 2025 shutdown",
+      "from": "2025-11",
+      "until": "2025-11",
+      "prominence": 1,
+      "sources": ["wapo-shutdown-2025"]
+    },
+    {
+      "key": "khanna-schumer",
+      "source": "khanna",
+      "target": "schumer",
+      "relType": "opposed",
+      "role": "Called for him to step down as leader after the shutdown",
+      "from": "2025-11",
+      "prominence": 1,
+      "sources": ["wapo-shutdown-2025"]
+    },
+    {
+      "key": "schumer-trump",
+      "source": "schumer",
+      "target": "trump",
+      "relType": "opposed",
+      "role": "Senate Democratic leader through both Trump terms",
+      "from": "2017",
+      "prominence": 2,
+      "sources": ["wikipedia", "hill-cr-2025"]
+    }
+  ],
+  "events": [
+    {
+      "key": "born",
+      "date": "1950-11-23",
+      "title": "Born in Brooklyn",
+      "summary": "Valedictorian of James Madison High School, 1967.",
+      "category": "personal",
+      "significance": 1,
+      "chapter": "brooklyn",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "harvard-law",
+      "date": "1974",
+      "title": "Graduates from Harvard Law School and wins a State Assembly seat",
+      "summary": "Serves in Albany 1975–1980.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "brooklyn",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "house",
+      "date": "1980-11",
+      "title": "Elected to the U.S. House",
+      "summary": "Serves nine terms representing Brooklyn and Queens.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "brooklyn",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "senate-1998",
+      "date": "1998-11-03",
+      "title": "Unseats Sen. Al D'Amato",
+      "summary": "Takes office January 3, 1999; becomes New York's senior senator in 2001.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "senate",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "dscc",
+      "date": "2005",
+      "date_end": "2009",
+      "title": "Chairs the Democratic Senatorial Campaign Committee",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "senate",
+      "participants": [["dscc", "committee"]],
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "leader",
+      "date": "2016-11",
+      "title": "Elected Senate Democratic leader, succeeding Harry Reid",
+      "summary": "The first Jewish leader of either party in the Senate.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "leader",
+      "participants": [["reid", "predecessor"]],
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "majority-leader",
+      "date": "2021-01-20",
+      "title": "Becomes majority leader of a 50–50 Senate",
+      "summary": "Passes the American Rescue Plan, CHIPS and Science Act and Inflation Reduction Act over the next two years.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "leader",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "ai-forums",
+      "date": "2023",
+      "title": "Convenes the Senate's AI Insight Forums",
+      "summary": "Nine closed-door sessions with technology executives, researchers and advocates.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "leader",
+      "participants": [["ai-working-group", "convener"]],
+      "sources": ["mayer-brown-ai-2024"]
+    },
+    {
+      "key": "israel-elections",
+      "date": "2024-03-14",
+      "title": "Calls for new elections in Israel",
+      "summary": "Saying Netanyahu has \"lost his way\"; McConnell calls the speech grotesque and Israel's ambassador calls it counterproductive.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "israel",
+      "participants": [["netanyahu", "prime minister"], ["mcconnell", "critic"]],
+      "sources": ["ap-israel-2024"]
+    },
+    {
+      "key": "ai-roadmap",
+      "date": "2024-05-15",
+      "title": "Releases the bipartisan Senate AI roadmap",
+      "summary": "Calling for at least $32 billion a year in non-defense AI research funding.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "leader",
+      "participants": [["ai-working-group", "authors"], ["rounds", "co-author"], ["heinrich", "co-author"], ["young", "co-author"]],
+      "sources": ["mayer-brown-ai-2024"]
+    },
+    {
+      "key": "book-announced",
+      "date": "2024-08-14",
+      "title": "Announces Antisemitism in America: A Warning",
+      "summary": "Published by Grand Central in 2025.",
+      "category": "ideas",
+      "significance": 1,
+      "chapter": "israel",
+      "sources": ["ji-book-2024"]
+    },
+    {
+      "key": "minority-2025",
+      "date": "2025-01-03",
+      "title": "Returns to minority leader after Republicans win the Senate",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "opposition",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "cr-march-2025",
+      "date": "2025-03-14",
+      "title": "Votes to advance the Republican funding bill, reversing course",
+      "summary": "Argues a shutdown \"would be 15 or 20 times worse\"; progressives call for him to step aside and he refuses.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "opposition",
+      "participants": [["trump", "president"]],
+      "sources": ["hill-cr-2025", "wikipedia"]
+    },
+    {
+      "key": "shutdown-2025",
+      "date": "2025-10-01",
+      "date_end": "2025-11-12",
+      "title": "Leads Democrats into the longest shutdown in U.S. history",
+      "summary": "Over health-care funding; it ends when Shaheen, King, Durbin, Kaine, Hassan, Rosen, Fetterman and Cortez Masto vote with Republicans. Schumer votes no.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "opposition",
+      "participants": [["shaheen", "dealmaker"], ["trump", "president"]],
+      "sources": ["wapo-shutdown-2025"]
+    },
+    {
+      "key": "step-down-calls",
+      "date": "2025-11-10",
+      "title": "Faces calls to step down from House progressives and MoveOn",
+      "summary": "No Democratic senator joins them.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "opposition",
+      "participants": [["khanna", "critic"]],
+      "sources": ["wapo-shutdown-2025"]
+    },
+    {
+      "key": "midterms-2026",
+      "date": "2026-10-15",
+      "title": "Enters the final weeks of the midterms favored to stay as leader",
+      "summary": "Axios reports he is \"more than favored\" to win a secret-ballot leadership vote if Democrats take the majority.",
+      "category": "politics",
+      "significance": 1,
+      "chapter": "opposition",
+      "sources": ["politicalwire-2026"]
+    }
+  ],
+  "statements": [
+    {
+      "key": "lost-his-way-2024",
+      "issue": "Israel",
+      "date": "2024-03-14",
+      "venue": "Senate floor speech",
+      "quote": "Israel cannot survive if it becomes a pariah,",
+      "summary": "In the speech in which he said Netanyahu had \"lost his way\" and called for new elections.",
+      "source": "ap-israel-2024"
+    },
+    {
+      "key": "chips-fall-2024",
+      "issue": "Israel",
+      "date": "2024-03-14",
+      "venue": "Senate floor speech",
+      "quote": "As a democracy, Israel has the right to choose its own leaders, and we should let the chips fall where they may,",
+      "source": "ap-israel-2024"
+    },
+    {
+      "key": "shomer-2024",
+      "issue": "Jewish identity",
+      "date": "2024-03-14",
+      "venue": "Senate floor speech",
+      "quote": "Shomer Yisroel — a guardian of the People of Israel",
+      "summary": "How he describes his duty as the highest-ranking Jewish elected official in the U.S.",
+      "source": "ap-israel-2024"
+    },
+    {
+      "key": "warning-2024",
+      "issue": "Antisemitism",
+      "date": "2024-08-14",
+      "venue": "Announcement of Antisemitism in America",
+      "quote": "Jewish Americans never thought it could happen here in America. Now, for the first time, they're worried it could.",
+      "source": "ji-book-2024"
+    },
+    {
+      "key": "shutdown-worse-2025",
+      "issue": "Government funding",
+      "date": "2025-03-23",
+      "venue": "Interview on Meet the Press",
+      "quote": "There's no off-ramp.",
+      "summary": "Defending his March vote: a shutdown \"would be 15 or 20 times worse\" than a continuing resolution he called \"certainly bad.\"",
+      "source": "hill-cr-2025"
+    },
+    {
+      "key": "health-crisis-2025",
+      "issue": "Health care",
+      "date": "2025-11-09",
+      "venue": "Senate floor remarks on the shutdown deal",
+      "quote": "This health care crisis is so severe, so urgent, so devastating for families back home",
+      "source": "wapo-shutdown-2025"
+    }
+  ],
+  "ideas": {
+    "traditions": [],
+    "influences": [],
+    "works": [
+      {
+        "title": "Antisemitism in America: A Warning",
+        "year": "2025",
+        "kind": "Book",
+        "detail": "Grand Central Publishing",
+        "source": "ji-book-2024"
+      }
+    ],
+    "featuredQuotes": ["lost-his-way-2024", "warning-2024"]
+  },
+  "chapters": [
+    {
+      "key": "brooklyn",
+      "title": "Brooklyn to Albany to Congress",
+      "dek": "A career politician from law school onward.",
+      "body": "Schumer was born in Midwood, Brooklyn, on November 23, 1950, and was valedictorian of James Madison High School in 1967. He graduated from Harvard College in 1971 and Harvard Law School in 1974, the year he was elected to the New York State Assembly [[wikipedia]]. After six years in Albany he won a House seat in 1980 and served nine terms representing parts of Brooklyn and Queens [[wikipedia]]."
+    },
+    {
+      "key": "senate",
+      "title": "Senator and party fundraiser",
+      "dek": "Beating D'Amato and running the Senate campaign committee.",
+      "body": "In 1998 Schumer unseated Republican Sen. Al D'Amato and took office in January 1999, becoming New York's senior senator when Daniel Patrick Moynihan retired in 2001 [[wikipedia]]. As chairman of the Democratic Senatorial Campaign Committee from 2005 to 2009 and was vice chair of the Democratic caucus from 2007 to 2017 [[wikipedia]]."
+    },
+    {
+      "key": "leader",
+      "title": "Democratic leader and majority leader",
+      "dek": "The Biden agenda, and the Senate's first serious look at AI.",
+      "body": "Schumer succeeded Harry Reid as Senate Democratic leader in 2017, the first Jewish leader of either party in the Senate, and became majority leader of a 50–50 chamber in January 2021 [[wikipedia]]. Over the next two years the Senate passed the American Rescue Plan, the CHIPS and Science Act and the Inflation Reduction Act [[wikipedia]].\n\nHe also made artificial intelligence a leadership project. With Senators Mike Rounds, Martin Heinrich and Todd Young he convened nine AI Insight Forums in 2023 with technology executives, researchers and advocates, and on May 15, 2024, the group released a bipartisan roadmap calling for at least $32 billion a year in non-defense AI research funding, meant as a foundation for committee legislation [[mayer-brown-ai-2024]]."
+    },
+    {
+      "key": "israel",
+      "title": "\"Shomer Yisroel\"",
+      "dek": "A call for new Israeli elections and a book on antisemitism.",
+      "body": "On March 14, 2024, Schumer, describing his role as \"Shomer Yisroel — a guardian of the People of Israel,\" told the Senate that Benjamin Netanyahu had \"lost his way\" and that a new Israeli election was needed. \"Israel cannot survive if it becomes a pariah,\" he said, while adding that Israelis should choose their own leaders and \"we should let the chips fall where they may.\" Mitch McConnell called the speech grotesque, House Speaker Mike Johnson called it inappropriate, and Israel's ambassador called it counterproductive [[ap-israel-2024]].\n\nThat August he announced Antisemitism in America: A Warning, published by Grand Central in 2025. \"Jewish Americans never thought it could happen here in America,\" he said. \"Now, for the first time, they're worried it could\" [[ji-book-2024]]."
+    },
+    {
+      "key": "opposition",
+      "title": "Leading the opposition, and his critics",
+      "dek": "Two funding fights in 2025 and a final campaign for the majority.",
+      "body": "Back in the minority in 2025, Schumer surprised his party in March by voting to advance a Republican stopgap funding bill after signaling he would oppose it. He argued that a shutdown \"would be 15 or 20 times worse\" because \"there's no off-ramp,\" and said he would not step down despite calls from progressives to do so [[hill-cr-2025]].\n\nIn the fall he led Democrats into the longest government shutdown in U.S. history over health-care funding. It ended in November when eight members of his caucus, led by Jeanne Shaheen, voted with Republicans; Schumer voted no. Rep. Ro Khanna and other House progressives, MoveOn and activist groups called on him to quit as leader, though no Democratic senator did [[wapo-shutdown-2025]].\n\nIn October 2026, at 75 and after 52 years in public office, he was campaigning for a Democratic Senate majority; Axios reported that he was \"more than favored\" to keep the leadership in a secret-ballot vote if Democrats won it [[politicalwire-2026]]."
+    }
+  ]
+}

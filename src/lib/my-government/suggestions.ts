@@ -1,31 +1,41 @@
 import { z } from "zod";
 import { matchedAddressError } from "./address";
+import { normalizePrivateCacheKey, TtlDedupe } from "@/lib/security/ttl-dedupe";
 
-const ARCGIS_SUGGEST_URL =
-  "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/suggest";
+const ARCGIS_SUGGEST_URL = "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/suggest";
 const ARCGIS_CANDIDATES_URL =
   "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates";
 
 // Rooftop / parcel-level and interpolated street matches. Anything coarser
 // (street centroid, postal code, locality) cannot place a home in a district.
 const ADDRESS_MATCH_TYPES = new Set(["PointAddress", "Subaddress", "StreetAddress", "StreetAddressExt"]);
+const suggestionCache = new TtlDedupe<AddressSuggestion[]>(2 * 60_000, 300);
+const resolutionCache = new TtlDedupe<ResolvedAddress>(5 * 60_000, 300);
 
 const arcGisResponseSchema = z.object({
-  suggestions: z.array(z.object({
-    text: z.string(),
-    magicKey: z.string(),
-    isCollection: z.boolean().optional(),
-  })).optional(),
+  suggestions: z
+    .array(
+      z.object({
+        text: z.string(),
+        magicKey: z.string(),
+        isCollection: z.boolean().optional(),
+      }),
+    )
+    .optional(),
   error: z.object({ message: z.string().optional() }).optional(),
 });
 
 const arcGisCandidatesSchema = z.object({
-  candidates: z.array(z.object({
-    address: z.string(),
-    location: z.object({ x: z.number(), y: z.number() }),
-    score: z.number(),
-    attributes: z.object({ Addr_type: z.string().optional() }).optional(),
-  })).optional(),
+  candidates: z
+    .array(
+      z.object({
+        address: z.string(),
+        location: z.object({ x: z.number(), y: z.number() }),
+        score: z.number(),
+        attributes: z.object({ Addr_type: z.string().optional() }).optional(),
+      }),
+    )
+    .optional(),
   error: z.object({ message: z.string().optional() }).optional(),
 });
 
@@ -44,7 +54,10 @@ export function parseAddressSuggestions(payload: unknown, query = ""): AddressSu
   const parsed = arcGisResponseSchema.safeParse(payload);
   if (!parsed.success || parsed.data.error) return [];
 
-  const requestedNumber = query.trim().match(/^(\d+[A-Z]?)(?:\s|$)/i)?.[1]?.toUpperCase();
+  const requestedNumber = query
+    .trim()
+    .match(/^(\d+[A-Z]?)(?:\s|$)/i)?.[1]
+    ?.toUpperCase();
   const seen = new Set<string>();
   const suggestions: AddressSuggestion[] = [];
   for (const suggestion of parsed.data.suggestions ?? []) {
@@ -60,6 +73,10 @@ export function parseAddressSuggestions(payload: unknown, query = ""): AddressSu
 }
 
 export async function suggestAddresses(query: string): Promise<AddressSuggestion[]> {
+  return suggestionCache.get(normalizePrivateCacheKey(query), () => suggestAddressesUncached(query));
+}
+
+async function suggestAddressesUncached(query: string): Promise<AddressSuggestion[]> {
   const parameters = new URLSearchParams({
     text: query,
     countryCode: "USA",
@@ -86,15 +103,26 @@ export function parseResolvedSuggestion(payload: unknown, selected: string): Res
   const parsed = arcGisCandidatesSchema.safeParse(payload);
   if (!parsed.success || parsed.data.error) return null;
 
-  const selectedNumber = selected.trim().match(/^(\d+[A-Z]?)(?:\s|$)/i)?.[1]?.toUpperCase();
-  const candidate = parsed.data.candidates?.find((item) =>
-    item.score >= 90
-    && ADDRESS_MATCH_TYPES.has(item.attributes?.Addr_type ?? "")
-    && item.address.trim().match(/^(\d+[A-Z]?)(?:\s|$)/i)?.[1]?.toUpperCase() === selectedNumber
-    && !matchedAddressError(selected, item.address),
+  const selectedNumber = selected
+    .trim()
+    .match(/^(\d+[A-Z]?)(?:\s|$)/i)?.[1]
+    ?.toUpperCase();
+  const candidate = parsed.data.candidates?.find(
+    (item) =>
+      item.score >= 90 &&
+      ADDRESS_MATCH_TYPES.has(item.attributes?.Addr_type ?? "") &&
+      item.address
+        .trim()
+        .match(/^(\d+[A-Z]?)(?:\s|$)/i)?.[1]
+        ?.toUpperCase() === selectedNumber &&
+      !matchedAddressError(selected, item.address),
   );
   if (!candidate) return null;
-  return { address: selected.replace(/,\s*USA$/i, ""), longitude: candidate.location.x, latitude: candidate.location.y };
+  return {
+    address: selected.replace(/,\s*USA$/i, ""),
+    longitude: candidate.location.x,
+    latitude: candidate.location.y,
+  };
 }
 
 // A selected suggestion already identifies one address point, so resolve it
@@ -103,6 +131,12 @@ export function parseResolvedSuggestion(payload: unknown, selected: string): Res
 // Complete free-typed addresses use the same resolver as a fallback when the
 // Census address matcher changes a meaningful part of the street address.
 export async function resolveSuggestion(text: string, magicKey?: string): Promise<ResolvedAddress> {
+  return resolutionCache.get(`${normalizePrivateCacheKey(text)}\0${magicKey ?? ""}`, () =>
+    resolveSuggestionUncached(text, magicKey),
+  );
+}
+
+async function resolveSuggestionUncached(text: string, magicKey?: string): Promise<ResolvedAddress> {
   const parameters = new URLSearchParams({
     SingleLine: text,
     outFields: "Addr_type",
@@ -121,6 +155,9 @@ export async function resolveSuggestion(text: string, magicKey?: string): Promis
   if (!response.ok) throw new Error("The address service is temporarily unavailable.");
 
   const resolved = parseResolvedSuggestion(await response.json(), text);
-  if (!resolved) throw new Error("That address could not be located precisely. Enter the full street address, city, state, and ZIP code.");
+  if (!resolved)
+    throw new Error(
+      "That address could not be located precisely. Enter the full street address, city, state, and ZIP code.",
+    );
   return resolved;
 }

@@ -3,6 +3,7 @@ import { searchEntities } from "@/lib/db/entities";
 import { listDatasets } from "@/lib/db/stats";
 import { publicEntityPath } from "@/lib/people/public";
 import { findTopics, normalizeQuery, searchSite, significantWords } from "@/lib/search/site";
+import { enforceRateLimits, rateLimitResponse } from "@/lib/security/rate-limit";
 
 const MAX_PER_GROUP = 6;
 
@@ -21,17 +22,19 @@ export interface SearchResponse {
 }
 
 export async function GET(request: Request) {
+  const limited = await enforceRateLimits([{ scope: "global-search-minute", limit: 60, windowSeconds: 60 }], {
+    request,
+  });
+  if (limited) return rateLimitResponse(limited);
   const { searchParams } = new URL(request.url);
   const q = (searchParams.get("q") ?? "").trim().toLowerCase();
 
   if (!q) {
     return NextResponse.json<SearchResponse>({ pages: [], datasets: [], entities: [] });
   }
+  if (q.length > 100) return NextResponse.json({ error: "Query too long" }, { status: 400 });
 
-  const [entities, datasets] = await Promise.all([
-    searchEntities(q, MAX_PER_GROUP),
-    listDatasets().catch(() => []),
-  ]);
+  const [entities, datasets] = await Promise.all([searchEntities(q, MAX_PER_GROUP), listDatasets().catch(() => [])]);
 
   const pageResults: SearchResult[] = searchSite(q).slice(0, MAX_PER_GROUP);
 
@@ -62,9 +65,8 @@ export async function GET(request: Request) {
     type: e.type,
   }));
 
-  return NextResponse.json<SearchResponse>({
-    pages: pageResults,
-    datasets: datasetResults,
-    entities: entityResults,
-  });
+  return NextResponse.json<SearchResponse>(
+    { pages: pageResults, datasets: datasetResults, entities: entityResults },
+    { headers: { "Cache-Control": "public, s-maxage=600, stale-while-revalidate=3600" } },
+  );
 }

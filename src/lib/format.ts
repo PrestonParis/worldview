@@ -38,6 +38,8 @@ export function formatValue(value: number | null | undefined, unit?: Unit, opts:
       return value.toFixed(2);
     case "usd":
       return `$${formatNumber(value, opts)}`;
+    case "year": // a calendar year, e.g. a projected crossover
+      return String(Math.round(value));
     case "score": // DW-NOMINATE and other −1…+1 scales
       return value.toFixed(2);
     default:

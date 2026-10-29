@@ -1,0 +1,67 @@
+.mapFrame {
+  perspective: 1200px;
+  perspective-origin: 50% 42%;
+}
+
+.mapPlane {
+  overflow: visible;
+  transform: rotateX(6deg) rotateZ(-0.45deg);
+  transform-origin: center 58%;
+  transform-style: preserve-3d;
+  filter: drop-shadow(0 13px 10px rgb(15 23 42 / 0.13));
+  transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.depth {
+  transform: translateY(3px);
+  opacity: 0.5;
+  filter: brightness(0.48) saturate(0.9);
+  pointer-events: none;
+}
+
+.depth path {
+  stroke: var(--viz-surface);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.state {
+  cursor: pointer;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition:
+    fill 320ms ease,
+    stroke 180ms ease,
+    stroke-width 180ms ease,
+    transform 190ms cubic-bezier(0.16, 1, 0.3, 1),
+    filter 190ms ease;
+}
+
+.activeState {
+  transform: translateY(-3px);
+  filter: drop-shadow(0 4px 2px rgb(15 23 42 / 0.24));
+}
+
+@media (hover: hover) {
+  .mapFrame:hover .mapPlane {
+    transform: rotateX(4.5deg) rotateZ(-0.25deg) translateY(-1px);
+  }
+}
+
+@media (max-width: 639px) {
+  .mapPlane {
+    transform: rotateX(3deg);
+    filter: drop-shadow(0 8px 7px rgb(15 23 42 / 0.12));
+  }
+
+  .depth {
+    transform: translateY(2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mapPlane,
+  .state {
+    transition: none;
+  }
+}

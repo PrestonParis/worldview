@@ -56,13 +56,13 @@ links, and the built-in Supabase mailer only delivers about 2 emails an hour.
    built-in mailer sends ~2 emails/hour, which open registration outgrows.
 3. Supabase → Auth → Email Templates — each needs `{{ .Token }}` (the
    defaults only contain a link). Subjects are in `supabase/config.toml`:
-   | Template | File |
-   | --- | --- |
-   | Confirm signup | `supabase/templates/confirm-code.html` |
-   | Magic Link (email sign-in) | `supabase/templates/sign-in-code.html` |
-   | Reset Password | `supabase/templates/reset-code.html` |
-   | Change Email Address | `supabase/templates/email-change-code.html` |
-   Set **Email OTP Length** to 6 (cloud defaulted to 8).
+   | Template                                              | File                                        |
+   | ----------------------------------------------------- | ------------------------------------------- |
+   | Confirm signup                                        | `supabase/templates/confirm-code.html`      |
+   | Magic Link (email sign-in)                            | `supabase/templates/sign-in-code.html`      |
+   | Reset Password                                        | `supabase/templates/reset-code.html`        |
+   | Change Email Address                                  | `supabase/templates/email-change-code.html` |
+   | Set **Email OTP Length** to 6 (cloud defaulted to 8). |
 4. Supabase → Authentication → Sign In / Providers → Email: turn **on**
    "Confirm email" so new accounts must prove their address. The app also
    works with it off (no confirmation step).
@@ -70,9 +70,12 @@ links, and the built-in Supabase mailer only delivers about 2 emails an hour.
    URI `https://<project-ref>.supabase.co/auth/v1/callback`; enable the Google
    provider in Supabase with that client's ID + secret. The button appears on
    its own within 5 minutes.
-6. Optional Turnstile: create a widget at Cloudflare, put the secret in
-   Supabase → Auth → Bot and Abuse Protection, set
-   `NEXT_PUBLIC_TURNSTILE_SITE_KEY`.
+6. Required in production: create a Turnstile widget at Cloudflare, put the
+   secret in Supabase → Auth → Bot and Abuse Protection, and set both
+   `NEXT_PUBLIC_TURNSTILE_SITE_KEY` and `TURNSTILE_SECRET_KEY` in Vercel.
+   Email-sending actions fail closed when the public key or token is missing.
+   Also set `RATE_LIMIT_SALT` to a random deployment secret so rate-limit
+   identifiers stored in Postgres cannot be enumerated from IP addresses.
 
 Locally, `supabase/config.toml` already wires the templates (restart with
 `supabase stop && supabase start` after editing one); mail lands in

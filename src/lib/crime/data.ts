@@ -94,6 +94,7 @@ export async function loadCrime() {
   const offense = (key: OffenseKey) => offenses.find((o) => o.key === key)!;
 
   const states = buildStates(stateYears, years, year, offenses);
+  states.usCoverage = years.map((y) => round1(nation.get(`violent_crime_rate|${y}`)?.coverage ?? null));
   const prelim = buildPrelim(monthly, year);
   const [victimization, deaths, hate, arrests, cities, extras] = await Promise.all([
     loadVictimization(),
@@ -161,6 +162,7 @@ function buildStates(rows: YearlyValue[], years: string[], year: string | null, 
       offenses.map((o) => [o.key, years.map((y) => round1(o.rates.find((p) => p.year === y)?.value ?? null))]),
     ) as StateCrimeData["us"],
     usCleared,
+    usCoverage: [],
     rows: STATES_51.map((s) => ({
       abbr: s.abbr,
       name: s.name,

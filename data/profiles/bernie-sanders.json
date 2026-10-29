@@ -1,0 +1,625 @@
+{
+  "subject": "sanders",
+  "reviewedAt": "2026-10-25",
+  "sourcesVerifiedAt": "2026-10-25",
+  "brief": {
+    "inclusion": "Independent senator from Vermont and twice the runner-up for the Democratic presidential nomination, whose small-donor campaigns, rally tours and endorsements organize the party's left, and who has led the Senate push to block arms sales to Israel.",
+    "identifiers": {
+      "wikidata": "Q359442",
+      "bioguide": "S000033",
+      "fec_candidate": "S4VT00033; P60007168; H8VT01016"
+    },
+    "namesakes": "The Worldview entity is \"Bernard Sanders\"; matched on Bioguide S000033.",
+    "coverage": {
+      "from": "1941",
+      "through": "2026-10-25",
+      "lags": "Contributions received by his committees come from Worldview's FEC data; his personal giving is not matched."
+    },
+    "openQuestions": [
+      "Final roll-call tallies of the April 2026 arms-sale resolutions should be checked on senate.gov.",
+      "Kibbutz Sha'ar HaAmakim stay (1963) needs a primary source before it is recorded.",
+      "Whether he will seek a fifth Senate term in 2030 is not stated in a primary source."
+    ],
+    "review": []
+  },
+  "summary": "Vermont's independent senator since 2007, after eight years as Burlington's socialist mayor and 16 in the House, and the longest-serving independent in congressional history. His 2016 and 2020 presidential campaigns made him the leader of the Democratic left; since 2025 his \"Fighting Oligarchy\" tour with Alexandria Ocasio-Cortez has drawn crowds of up to 36,000, and his resolutions to block arms sales to Israel won the votes of 40 members of the Democratic caucus in April 2026.",
+  "roles": [
+    {
+      "label": "U.S. senator",
+      "detail": "Vermont, since January 2007; fourth term began 2025",
+      "sources": ["sanders-senate-bio", "wikipedia"]
+    },
+    {
+      "label": "HELP Committee ranking member",
+      "detail": "Ranking member of the Health, Education, Labor and Pensions Committee; chairman 2023–2025",
+      "sources": ["sanders-senate-bio"]
+    },
+    {
+      "label": "Former presidential candidate",
+      "detail": "Runner-up for the Democratic nomination in 2016 and 2020",
+      "sources": ["wikipedia"]
+    },
+    {
+      "label": "Movement leader",
+      "detail": "Leads the Fighting Oligarchy rally tour (2025–) with Alexandria Ocasio-Cortez",
+      "sources": ["wikipedia-tour"]
+    },
+    {
+      "label": "Former mayor",
+      "detail": "Mayor of Burlington, Vermont, 1981–1989",
+      "sources": ["sanders-senate-bio"]
+    }
+  ],
+  "finance": {
+    "coverage": "Contributions received by Sanders's Senate, House and presidential committees come from Worldview's FEC data. His personal giving is not separately matched."
+  },
+  "entities": {
+    "sanders": {
+      "match": { "identifier": ["bioguide", "S000033"] }
+    },
+    "aoc": {
+      "match": { "identifier": ["bioguide", "O000172"] }
+    },
+    "clinton": {
+      "match": { "identifier": ["fec_candidate", "S0NY00188"] }
+    },
+    "trump": {
+      "match": { "name": "Donald Trump", "type": "politician" }
+    },
+    "platner": {
+      "match": { "identifier": ["fec_candidate", "S6ME00373"] }
+    },
+    "flanagan": {
+      "match": { "name": "Peggy Flanagan", "type": "politician" }
+    },
+    "mamdani": {
+      "create": {
+        "name": "Zohran Mamdani",
+        "type": "politician",
+        "description": "Mayor of New York City since January 2026; democratic socialist."
+      }
+    },
+    "progressive-caucus": {
+      "create": {
+        "name": "Congressional Progressive Caucus",
+        "type": "organization",
+        "description": "House caucus of progressive Democrats, co-founded in 1991.",
+        "websiteUrl": "https://progressives.house.gov/"
+      }
+    },
+    "help-committee": {
+      "create": {
+        "name": "Senate Health, Education, Labor and Pensions Committee",
+        "type": "organization",
+        "description": "U.S. Senate standing committee.",
+        "websiteUrl": "https://www.help.senate.gov/"
+      }
+    }
+  },
+  "sources": [
+    {
+      "key": "sanders-senate-bio",
+      "title": "About Bernie",
+      "publisher": "Office of Senator Bernie Sanders",
+      "type": "primary",
+      "url": "https://www.sanders.senate.gov/about-bernie/"
+    },
+    {
+      "key": "wikipedia",
+      "title": "Bernie Sanders",
+      "publisher": "Wikipedia",
+      "type": "secondary",
+      "url": "https://en.wikipedia.org/wiki/Bernie_Sanders",
+      "notes": "Reference work; cited for early life, Burlington elections, House and Senate service, presidential campaigns and family."
+    },
+    {
+      "key": "wikipedia-tour",
+      "title": "Fighting Oligarchy tour",
+      "publisher": "Wikipedia",
+      "type": "secondary",
+      "url": "https://en.wikipedia.org/wiki/Fighting_Oligarchy_tour",
+      "notes": "Reference work compiling attendance reported at each rally."
+    },
+    {
+      "key": "toi-jewish-2016",
+      "title": "Debating Clinton, Sanders says he's 'very proud to be Jewish'",
+      "publisher": "The Times of Israel",
+      "type": "article",
+      "publishedAt": "2016-03-07",
+      "url": "https://www.timesofisrael.com/debating-clinton-sanders-says-very-proud-to-be-jewish/"
+    },
+    {
+      "key": "cbs-mamdani-2025",
+      "title": "Bernie Sanders endorses Zohran Mamdani for NYC mayor",
+      "publisher": "CBS New York",
+      "type": "article",
+      "publishedAt": "2025-06-17",
+      "url": "https://www.cbsnews.com/amp/newyork/news/bernie-sanders-endorses-zohran-mamdani-nyc-mayor-election"
+    },
+    {
+      "key": "ap-arms-2025",
+      "title": "Senate rejects Sanders' bid to halt sale of bombs and rifles to Israel, but Democratic opposition grows",
+      "publisher": "The Associated Press (via WCAX)",
+      "type": "article",
+      "publishedAt": "2025-07-31",
+      "url": "https://www.wcax.com/2025/07/31/senate-rejects-sanders-bid-halt-sale-bombs-rifles-israel-democratic-opposition-grows/"
+    },
+    {
+      "key": "intercept-arms-2026",
+      "title": "Senate Democrats vote overwhelmingly to block arms sales to Israel",
+      "publisher": "The Intercept",
+      "author": "Matt Sledge",
+      "type": "article",
+      "publishedAt": "2026-04-15",
+      "url": "https://theintercept.com/2026/04/15/senate-democrats-block-arms-sales-israel/"
+    },
+    {
+      "key": "wcax-platner-2026",
+      "title": "Sanders says Platner should drop out of Maine Senate race",
+      "publisher": "WCAX",
+      "type": "article",
+      "publishedAt": "2026-07-07",
+      "url": "https://www.wcax.com/2026/07/07/sanders-says-platner-should-drop-out-maine-senate-race/"
+    },
+    {
+      "key": "nnn-duluth-2026",
+      "title": "Sen. Bernie Sanders promotes Peggy Flanagan, Keith Ellison at Duluth rally",
+      "publisher": "Northern News Now",
+      "type": "article",
+      "publishedAt": "2026-10-24",
+      "url": "https://northernnewsnow.com/2026/10/25/sen-bernie-sanders-promotes-peggy-flanagan-keith-ellison-duluth-rally"
+    }
+  ],
+  "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "September 8, 1941",
+      "detail": "Brooklyn, New York; son of a Polish-Jewish immigrant father",
+      "sources": ["wikipedia", "sanders-senate-bio"]
+    },
+    {
+      "key": "sex",
+      "label": "Sex",
+      "value": "Male",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "religion",
+      "label": "Religion",
+      "value": "Jewish",
+      "detail": "\"I am very proud of being Jewish and that is an essential part of who I am as a human being\" (2016). His father's family was killed in the Holocaust.",
+      "sources": ["toi-jewish-2016"]
+    },
+    {
+      "key": "spouse",
+      "label": "Spouse",
+      "value": "Jane O'Meara Sanders",
+      "detail": "Married 1988; earlier married to Deborah Shiling, 1964–1966.",
+      "sources": ["wikipedia", "sanders-senate-bio"]
+    },
+    {
+      "key": "children",
+      "label": "Children",
+      "value": "Levi Sanders; stepchildren Heather, Carina and David",
+      "sources": ["sanders-senate-bio", "wikipedia"]
+    },
+    {
+      "key": "residence",
+      "label": "Residence",
+      "value": "Burlington, Vermont",
+      "sources": ["sanders-senate-bio"]
+    },
+    {
+      "key": "party",
+      "label": "Party",
+      "value": "Independent (caucuses with Democrats)",
+      "detail": "Ran in the Democratic presidential primaries in 2016 and 2020; Liberty Union candidate in the 1970s.",
+      "sources": ["wikipedia", "sanders-senate-bio"]
+    },
+    {
+      "key": "education",
+      "label": "Education",
+      "value": "BA, political science, University of Chicago (1964)",
+      "detail": "Attended Brooklyn College for a year.",
+      "sources": ["wikipedia", "sanders-senate-bio"]
+    },
+    {
+      "key": "current-roles",
+      "label": "Current roles",
+      "value": "U.S. senator from Vermont; ranking member, Senate HELP Committee",
+      "featured": true,
+      "asOf": "2026-10-25",
+      "sources": ["sanders-senate-bio", "nnn-duluth-2026"]
+    },
+    {
+      "key": "tour-attendance",
+      "label": "Fighting Oligarchy tour attendance",
+      "value": "About 261,000",
+      "detail": "Cumulative reported attendance through November 17, 2025; largest rally about 36,000 in Los Angeles.",
+      "asOf": "2025-11-17",
+      "featured": true,
+      "sources": ["wikipedia-tour"]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "sanders-progressive-caucus",
+      "source": "sanders",
+      "target": "progressive-caucus",
+      "relType": "co-founded",
+      "role": "Co-founder",
+      "from": "1991",
+      "prominence": 1,
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "sanders-help",
+      "source": "sanders",
+      "target": "help-committee",
+      "relType": "chairs",
+      "role": "Chairman 2023–2025; ranking member since 2025",
+      "from": "2023",
+      "prominence": 2,
+      "sources": ["sanders-senate-bio", "wikipedia"]
+    },
+    {
+      "key": "sanders-clinton",
+      "source": "sanders",
+      "target": "clinton",
+      "relType": "opposed",
+      "role": "Primary rival for the 2016 Democratic nomination",
+      "from": "2015",
+      "until": "2016-07",
+      "prominence": 2,
+      "sources": ["wikipedia", "toi-jewish-2016"]
+    },
+    {
+      "key": "sanders-aoc",
+      "source": "sanders",
+      "target": "aoc",
+      "relType": "allied-with",
+      "role": "Co-leads the Fighting Oligarchy tour",
+      "from": "2025-03",
+      "prominence": 3,
+      "sources": ["wikipedia-tour"]
+    },
+    {
+      "key": "sanders-mamdani",
+      "source": "sanders",
+      "target": "mamdani",
+      "relType": "endorsed",
+      "role": "Endorsed him for mayor a week before the June 2025 primary",
+      "from": "2025-06-17",
+      "prominence": 2,
+      "sources": ["cbs-mamdani-2025"]
+    },
+    {
+      "key": "sanders-platner",
+      "source": "sanders",
+      "target": "platner",
+      "relType": "endorsed",
+      "role": "Backed him from his 2025 launch; called on him to quit after a sexual-assault allegation in July 2026",
+      "from": "2025",
+      "until": "2026-07-07",
+      "prominence": 1,
+      "sources": ["wcax-platner-2026"]
+    },
+    {
+      "key": "sanders-flanagan",
+      "source": "sanders",
+      "target": "flanagan",
+      "relType": "campaigned-for",
+      "role": "Rallied for her Minnesota Senate campaign, October 2026",
+      "from": "2026-10-24",
+      "prominence": 1,
+      "sources": ["nnn-duluth-2026"]
+    },
+    {
+      "key": "sanders-trump",
+      "source": "sanders",
+      "target": "trump",
+      "relType": "opposed",
+      "role": "Leading Senate opponent of his second-term agenda",
+      "from": "2016",
+      "prominence": 2,
+      "sources": ["nnn-duluth-2026", "wikipedia"]
+    }
+  ],
+  "events": [
+    {
+      "key": "born",
+      "date": "1941-09-08",
+      "title": "Born in Brooklyn",
+      "summary": "To a Polish-Jewish immigrant father whose family was killed in the Holocaust.",
+      "category": "personal",
+      "significance": 1,
+      "chapter": "early",
+      "sources": ["wikipedia", "toi-jewish-2016"]
+    },
+    {
+      "key": "chicago",
+      "date": "1964",
+      "title": "Graduates from the University of Chicago",
+      "summary": "After civil-rights activism with CORE and SNCC, including a 1962 sit-in and the 1963 March on Washington.",
+      "category": "career",
+      "significance": 1,
+      "chapter": "early",
+      "sources": ["wikipedia", "sanders-senate-bio"]
+    },
+    {
+      "key": "liberty-union",
+      "date": "1972",
+      "date_end": "1976",
+      "title": "Runs for governor and Senate on the Liberty Union ticket",
+      "category": "politics",
+      "significance": 1,
+      "chapter": "early",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "mayor",
+      "date": "1981-03",
+      "title": "Elected mayor of Burlington by 10 votes",
+      "summary": "After a recount; reelected three times and serves until 1989.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "burlington",
+      "sources": ["wikipedia", "sanders-senate-bio"]
+    },
+    {
+      "key": "house",
+      "date": "1990-11",
+      "title": "Elected Vermont's at-large representative",
+      "summary": "Co-founds the Congressional Progressive Caucus in 1991.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "burlington",
+      "participants": [["progressive-caucus", "caucus"]],
+      "sources": ["sanders-senate-bio", "wikipedia"]
+    },
+    {
+      "key": "senate",
+      "date": "2007-01-03",
+      "title": "Takes office as senator from Vermont",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "senate",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "va-reform",
+      "date": "2014",
+      "title": "Passes Veterans Affairs health-care reform as committee chairman",
+      "category": "politics",
+      "significance": 1,
+      "chapter": "senate",
+      "sources": ["sanders-senate-bio"]
+    },
+    {
+      "key": "campaign-2016",
+      "date": "2016",
+      "title": "Finishes second to Hillary Clinton, winning 23 primaries and caucuses",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "campaigns",
+      "participants": [["clinton", "opponent"]],
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "proud-jewish",
+      "date": "2016-03-06",
+      "title": "Says he is \"very proud to be Jewish\" at the Flint debate",
+      "category": "ideas",
+      "significance": 1,
+      "chapter": "campaigns",
+      "sources": ["toi-jewish-2016"]
+    },
+    {
+      "key": "campaign-2020",
+      "date": "2020",
+      "title": "Finishes second for the nomination again, then allies with Joe Biden",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "campaigns",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "budget-chair",
+      "date": "2021",
+      "date_end": "2023",
+      "title": "Chairs the Senate Budget Committee",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "senate",
+      "sources": ["wikipedia", "sanders-senate-bio"]
+    },
+    {
+      "key": "help-chair",
+      "date": "2023",
+      "date_end": "2025",
+      "title": "Chairs the HELP Committee",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "senate",
+      "participants": [["help-committee", "committee"]],
+      "sources": ["wikipedia", "sanders-senate-bio"]
+    },
+    {
+      "key": "reelected-2024",
+      "date": "2024-11-05",
+      "title": "Reelected to a fourth Senate term",
+      "category": "politics",
+      "significance": 1,
+      "chapter": "senate",
+      "sources": ["sanders-senate-bio"]
+    },
+    {
+      "key": "tour-launch",
+      "date": "2025-02-21",
+      "title": "Launches the Fighting Oligarchy tour in Omaha",
+      "summary": "Crowds reach 34,000 in Denver and 36,000 in Los Angeles that spring.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "oligarchy",
+      "participants": [["aoc", "co-headliner"]],
+      "sources": ["wikipedia-tour"]
+    },
+    {
+      "key": "mamdani",
+      "date": "2025-06-17",
+      "title": "Endorses Zohran Mamdani for mayor of New York",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "oligarchy",
+      "participants": [["mamdani", "candidate"]],
+      "sources": ["cbs-mamdani-2025"]
+    },
+    {
+      "key": "arms-2025",
+      "date": "2025-07-30",
+      "title": "Arms-sale resolutions fail but win 27 Democratic votes",
+      "summary": "Then a record; his November 2024 resolutions had drawn 18.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "israel",
+      "sources": ["ap-arms-2025"]
+    },
+    {
+      "key": "arms-2026",
+      "date": "2026-04-15",
+      "title": "40 members of the Democratic caucus back his resolution to block bulldozer sales to Israel",
+      "summary": "A companion bomb resolution fails 36–63.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "israel",
+      "sources": ["intercept-arms-2026"]
+    },
+    {
+      "key": "platner",
+      "date": "2026-07-07",
+      "title": "Calls on Graham Platner to quit Maine's Senate race",
+      "summary": "After a sexual-assault allegation against the candidate he had backed.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "oligarchy",
+      "participants": [["platner", "candidate"]],
+      "sources": ["wcax-platner-2026"]
+    },
+    {
+      "key": "duluth",
+      "date": "2026-10-24",
+      "title": "Rallies for Peggy Flanagan and Keith Ellison in Duluth",
+      "category": "politics",
+      "significance": 1,
+      "chapter": "oligarchy",
+      "participants": [["flanagan", "candidate"]],
+      "sources": ["nnn-duluth-2026"]
+    }
+  ],
+  "statements": [
+    {
+      "key": "proud-2016",
+      "issue": "Jewish identity",
+      "date": "2016-03-06",
+      "venue": "Democratic presidential debate, Flint, Michigan",
+      "quote": "I am very proud of being Jewish and that is an essential part of who I am as a human being.",
+      "source": "toi-jewish-2016"
+    },
+    {
+      "key": "holocaust-2016",
+      "issue": "Jewish identity",
+      "date": "2016-03-06",
+      "venue": "Democratic presidential debate, Flint, Michigan",
+      "quote": "my father's family was wiped out by Hitler in the Holocaust.",
+      "source": "toi-jewish-2016"
+    },
+    {
+      "key": "new-politics-2025",
+      "issue": "Democratic Party",
+      "date": "2025-06-17",
+      "venue": "Endorsement of Zohran Mamdani",
+      "quote": "We need a new politics and new leadership",
+      "summary": "He called Mamdani \"the best choice for mayor of New York City.\"",
+      "source": "cbs-mamdani-2025"
+    },
+    {
+      "key": "status-quo-2025",
+      "issue": "Democratic Party",
+      "date": "2025-06-17",
+      "venue": "Endorsement of Zohran Mamdani",
+      "quote": "status quo politics is not good enough.",
+      "source": "cbs-mamdani-2025"
+    },
+    {
+      "key": "polls-clear-2026",
+      "issue": "Israel and Gaza",
+      "date": "2026-04-15",
+      "venue": "Remarks after the arms-sale votes",
+      "quote": "This is where the American people are. The polls are very clear.",
+      "summary": "He added, \"I think the Democrats have caught on to that.\"",
+      "source": "intercept-arms-2026"
+    },
+    {
+      "key": "step-aside-2026",
+      "issue": "Democratic Party",
+      "date": "2026-07-07",
+      "venue": "Statement on Graham Platner",
+      "quote": "In light of these very serious allegations, I have recommended that he step aside.",
+      "source": "wcax-platner-2026"
+    },
+    {
+      "key": "richest-2026",
+      "issue": "Economic inequality",
+      "date": "2026-10-24",
+      "venue": "Rally in Duluth, Minnesota",
+      "quote": "The policies that he has brought forth and that the republicans have passed have been designed to make the richest people in America richer",
+      "summary": "On Trump.",
+      "source": "nnn-duluth-2026"
+    }
+  ],
+  "ideas": {
+    "traditions": [],
+    "influences": [],
+    "works": [],
+    "featuredQuotes": ["richest-2026", "proud-2016"]
+  },
+  "chapters": [
+    {
+      "key": "early",
+      "title": "Brooklyn, Chicago and Vermont",
+      "dek": "A Holocaust survivor's son turned civil-rights activist and third-party candidate.",
+      "body": "Sanders was born in Brooklyn on September 8, 1941, to a Polish-Jewish immigrant father whose family, he has said, \"was wiped out by Hitler in the Holocaust\" [[wikipedia, toi-jewish-2016]]. After a year at Brooklyn College he transferred to the University of Chicago, where he joined civil-rights protests with CORE and SNCC, including a 1962 sit-in, and attended the 1963 March on Washington; he graduated in 1964 [[wikipedia, sanders-senate-bio]].\n\nHe moved to Vermont in 1968 and ran for governor and the Senate as a Liberty Union candidate between 1972 and 1976 before leaving the party in 1977 [[wikipedia]]."
+    },
+    {
+      "key": "burlington",
+      "title": "Socialist mayor and House independent",
+      "dek": "A 10-vote win in Burlington and 16 years in the House.",
+      "body": "In 1981 Sanders was elected mayor of Burlington by 22 votes, cut to 10 on a recount, and was reelected three times before leaving in 1989 [[wikipedia, sanders-senate-bio]]. Elected Vermont's at-large representative in 1990, he co-founded the Congressional Progressive Caucus in 1991 and served 16 years in the House as an independent [[wikipedia, sanders-senate-bio]]."
+    },
+    {
+      "key": "senate",
+      "title": "The Senate",
+      "dek": "Committee gavels on veterans, the budget and health.",
+      "body": "Sanders entered the Senate in January 2007 and is now in his fourth term, the longest-serving independent in congressional history by his office's count [[wikipedia, sanders-senate-bio]]. As chairman of the Veterans' Affairs Committee he passed a 2014 overhaul of VA health care; he later chaired the Budget Committee (2021–2023) and the Health, Education, Labor and Pensions Committee (2023–2025), where he is now ranking member [[sanders-senate-bio, wikipedia]]."
+    },
+    {
+      "key": "campaigns",
+      "title": "Two presidential campaigns",
+      "dek": "Runner-up twice, and leader of the party's left.",
+      "body": "In 2016 Sanders challenged Hillary Clinton for the Democratic nomination and finished second, winning 23 primaries and caucuses [[wikipedia]]. At a March 2016 debate in Flint, asked whether he kept his Jewish identity in the background, he said, \"I am very proud of being Jewish and that is an essential part of who I am as a human being\" [[toi-jewish-2016]]. He ran again in 2020, finished second to Joe Biden, and became a close Biden ally [[wikipedia]]."
+    },
+    {
+      "key": "oligarchy",
+      "title": "Fighting Oligarchy",
+      "dek": "Rally tours and kingmaking in the second Trump term.",
+      "body": "In February 2025 Sanders began the Fighting Oligarchy tour against the second Trump administration, later co-headlined by Rep. Alexandria Ocasio-Cortez. It drew 34,000 people in Denver and 36,000 in Los Angeles that spring and about 261,000 in all by November 2025, and continued through the 2026 midterms [[wikipedia-tour]].\n\nHe used his standing to shape primaries. In June 2025 he endorsed Zohran Mamdani for mayor of New York, saying, \"We need a new politics and new leadership\" [[cbs-mamdani-2025]]. He backed Graham Platner in Maine's Senate race from its launch, then on July 7, 2026, after a sexual-assault allegation, said, \"I have recommended that he step aside\" [[wcax-platner-2026]]. In late October 2026 he was rallying for Democratic candidates in Minnesota, arguing that Trump's policies were \"designed to make the richest people in America richer\" [[nnn-duluth-2026]]."
+    },
+    {
+      "key": "israel",
+      "title": "Blocking arms for Israel",
+      "dek": "From a handful of votes to most of the Democratic caucus.",
+      "body": "Since the Gaza war Sanders has repeatedly forced Senate votes on resolutions to block U.S. arms sales to Israel. They have all failed, but Democratic support has grown: 18 Democrats in November 2024, 27 in July 2025 on a resolution covering rifles, and in April 2026 40 members of the Democratic caucus on a resolution to block sales of bulldozers, with a companion resolution on 1,000-pound bombs failing 36–63 [[ap-arms-2025, intercept-arms-2026]]. \"This is where the American people are,\" he said; \"I think the Democrats have caught on to that\" [[intercept-arms-2026]]."
+    }
+  ]
+}

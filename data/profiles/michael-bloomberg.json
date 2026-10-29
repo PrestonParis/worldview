@@ -1,0 +1,808 @@
+{
+  "subject": "bloomberg",
+  "reviewedAt": "2026-10-25",
+  "sourcesVerifiedAt": "2026-10-25",
+  "image": "https://commons.wikimedia.org/wiki/Special:FilePath/MichaelBloomberg-byPhilipRomano.jpg?width=400",
+  "brief": {
+    "inclusion": "Bloomberg LP founder and former New York mayor whose self-financed campaigns, electoral spending and policy philanthropy make him a major political institution.",
+    "identifiers": { "fec_contributor": "BLOOMBERG, MICHAEL R." },
+    "namesakes": "Matched through Bloomberg LP/Bloomberg Philanthropies, New York addresses and the middle initial R.",
+    "coverage": {
+      "from": "1942-02-14",
+      "through": "2026-10-25",
+      "lags": "Self-funded campaign spending, independent expenditures, foundation grants and state activity appear in different disclosure systems."
+    },
+    "openQuestions": [
+      "FEC individual receipts do not by themselves capture spending by Bloomberg-controlled committees or his 2020 presidential campaign.",
+      "Philanthropic grants sometimes pursue the same policy aims as electoral organizations but are legally distinct."
+    ],
+    "review": [
+      { "kind": "evidence", "by": "OA", "at": "2026-10-25" },
+      { "kind": "chronology", "by": "OA", "at": "2026-10-25" },
+      { "kind": "neutrality", "by": "OA", "at": "2026-10-25" },
+      { "kind": "current", "by": "OA", "at": "2026-10-25" }
+    ]
+  },
+  "summary": "Michael Bloomberg founded the financial-data and media company Bloomberg LP, served three terms as mayor of New York City and later ran a self-financed presidential campaign. He now combines major Democratic electoral spending with Bloomberg Philanthropies programs on gun violence, climate, public health, cities and education, giving him influence across campaigns, government and policy implementation.",
+  "roles": [
+    {
+      "label": "Founder, Bloomberg LP",
+      "detail": "Created the financial-information company in 1981 and retains controlling ownership.",
+      "sources": ["bloomberg-bio", "company-history"]
+    },
+    {
+      "label": "Founder, Bloomberg Philanthropies",
+      "detail": "Directs a foundation focused on public health, environment, government innovation, education and the arts.",
+      "sources": ["bloomberg-bio", "annual-report"]
+    },
+    {
+      "label": "Former mayor of New York City",
+      "detail": "Served three terms from 2002 through 2013.",
+      "sources": ["nyc-archives", "bloomberg-bio"]
+    },
+    {
+      "label": "Political donor and advocacy funder",
+      "detail": "Finances Democratic campaigns and policy groups including Everytown for Gun Safety.",
+      "sources": ["fec-bloomberg", "opensecrets-2024", "everytown-history"]
+    }
+  ],
+  "entities": {
+    "bloomberg": { "match": { "name": "Michael Bloomberg", "type": "politician" } },
+    "bloomberg-lp": {
+      "create": {
+        "name": "Bloomberg LP",
+        "type": "company",
+        "description": "Financial data, software and media company founded by Michael Bloomberg.",
+        "websiteUrl": "https://www.bloomberg.com/company/"
+      }
+    },
+    "bloomberg-philanthropies": {
+      "create": {
+        "name": "Bloomberg Philanthropies",
+        "type": "organization",
+        "description": "Philanthropic organization founded by Michael Bloomberg.",
+        "websiteUrl": "https://www.bloomberg.org/"
+      }
+    },
+    "new-york-city": {
+      "create": {
+        "name": "City of New York",
+        "type": "organization",
+        "description": "Municipal government of New York City."
+      }
+    },
+    "everytown": {
+      "create": {
+        "name": "Everytown for Gun Safety",
+        "type": "organization",
+        "description": "Gun-violence prevention advocacy organization co-founded and principally funded by Michael Bloomberg.",
+        "websiteUrl": "https://www.everytown.org/"
+      }
+    },
+    "sierra-club": {
+      "create": {
+        "name": "Sierra Club",
+        "type": "organization",
+        "description": "U.S. environmental membership organization."
+      }
+    },
+    "democratic-party": { "match": { "name": "Democratic Party", "type": "organization" } },
+    "johns-hopkins": {
+      "create": {
+        "name": "Johns Hopkins University",
+        "type": "organization",
+        "description": "Private research university and major recipient of Michael Bloomberg's philanthropy.",
+        "websiteUrl": "https://www.jhu.edu/"
+      }
+    },
+    "united-nations": {
+      "create": {
+        "name": "United Nations",
+        "type": "organization",
+        "description": "International organization founded in 1945."
+      }
+    },
+    "who": {
+      "create": {
+        "name": "World Health Organization",
+        "type": "organization",
+        "description": "United Nations specialized agency for international public health."
+      }
+    },
+    "independence-usa": {
+      "create": {
+        "name": "Independence USA PAC",
+        "type": "organization",
+        "description": "Federal super PAC founded and financed by Michael Bloomberg."
+      }
+    },
+    "harris": { "match": { "name": "Kamala Harris", "type": "politician" } }
+  },
+  "sources": [
+    {
+      "key": "bloomberg-bio",
+      "title": "Michael R. Bloomberg",
+      "publisher": "Bloomberg Philanthropies",
+      "type": "primary",
+      "url": "https://www.bloomberg.org/about/mike-bloomberg/",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "company-history",
+      "title": "Company History",
+      "publisher": "Bloomberg LP",
+      "type": "primary",
+      "url": "https://www.bloomberg.com/company/company-history/",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "annual-report",
+      "title": "Bloomberg Philanthropies Annual Report",
+      "publisher": "Bloomberg Philanthropies",
+      "type": "primary",
+      "url": "https://www.bloomberg.org/annualreport/",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "nyc-archives",
+      "title": "Mayor Michael R. Bloomberg administration",
+      "publisher": "New York City Municipal Archives",
+      "type": "primary",
+      "url": "https://www.nyc.gov/site/records/historical-records/bloomberg.page",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "britannica-bloomberg",
+      "title": "Michael Bloomberg",
+      "publisher": "Encyclopaedia Britannica",
+      "type": "secondary",
+      "url": "https://www.britannica.com/biography/Michael-Bloomberg",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "forbes-bloomberg",
+      "title": "Michael Bloomberg",
+      "publisher": "Forbes",
+      "type": "secondary",
+      "url": "https://www.forbes.com/profile/michael-bloomberg/",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "fec-bloomberg",
+      "title": "Individual contributions by Bloomberg, Michael R.",
+      "publisher": "Federal Election Commission",
+      "type": "filing",
+      "url": "https://www.fec.gov/data/receipts/individual-contributions/?contributor_name=BLOOMBERG%2C+MICHAEL+R",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "fec-campaign-2020",
+      "title": "Michael Bloomberg 2020 presidential campaign filings",
+      "publisher": "Federal Election Commission",
+      "type": "filing",
+      "url": "https://www.fec.gov/data/committee/C00728154/",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "opensecrets-2024",
+      "title": "Elon Musk tops list of 2024 political donors",
+      "publisher": "OpenSecrets",
+      "type": "article",
+      "url": "https://www.opensecrets.org/news/2025/03/elon-musk-tops-list-of-2024-political-donors-but-six-others-gave-more-than-100-million/",
+      "publishedAt": "2025-03",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "everytown-history",
+      "title": "Our History",
+      "publisher": "Everytown for Gun Safety",
+      "type": "primary",
+      "url": "https://www.everytown.org/about-everytown/",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "beyond-coal",
+      "title": "Bloomberg Philanthropies and Sierra Club Expand Beyond Coal",
+      "publisher": "Bloomberg Philanthropies",
+      "type": "official_statement",
+      "url": "https://www.bloomberg.org/press/bloomberg-philanthropies-commits-additional-500-million-to-finish-the-job-on-coal-and-halt-the-expansion-of-gas/",
+      "publishedAt": "2023-09-20",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "jhu-gift-2018",
+      "title": "Historic $1.8 billion gift makes Johns Hopkins need-blind",
+      "publisher": "Johns Hopkins University",
+      "type": "official_statement",
+      "url": "https://hub.jhu.edu/2018/11/18/michael-bloomberg-record-financial-aid-gift/",
+      "publishedAt": "2018-11-18",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "jhu-medical-2024",
+      "title": "Bloomberg Philanthropies makes medical school tuition free",
+      "publisher": "Johns Hopkins University",
+      "type": "official_statement",
+      "url": "https://hub.jhu.edu/2024/07/08/bloomberg-philanthropies-medical-school-financial-aid/",
+      "publishedAt": "2024-07-08",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "un-envoy",
+      "title": "Secretary-General Appoints Michael Bloomberg Special Envoy",
+      "publisher": "United Nations",
+      "type": "official_statement",
+      "url": "https://www.un.org/sg/en/content/sg/personnel-appointments/2021-02-05/michael-r-bloomberg-of-the-united-states-special-envoy-for-climate-ambition-and-solutions",
+      "publishedAt": "2021-02-05",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "who-ambassador",
+      "title": "Michael Bloomberg, WHO Global Ambassador",
+      "publisher": "World Health Organization",
+      "type": "primary",
+      "url": "https://www.who.int/about/people/biography/michael-bloomberg",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "ap-campaign-end",
+      "title": "Bloomberg ends presidential bid and endorses Biden",
+      "publisher": "Associated Press",
+      "type": "article",
+      "url": "https://apnews.com/article/538330032e8b9aeb78bdb8b2a5c9ff35",
+      "publishedAt": "2020-03-04",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "nyt-stop-frisk",
+      "title": "Bloomberg apologizes for stop-and-frisk policy",
+      "publisher": "The New York Times",
+      "type": "article",
+      "url": "https://www.nytimes.com/2019/11/17/us/politics/michael-bloomberg-speech.html",
+      "publishedAt": "2019-11-17",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "hbs-bloomberg",
+      "title": "Michael Bloomberg",
+      "publisher": "Harvard Business School",
+      "type": "secondary",
+      "url": "https://www.hbs.edu/about/leadership/people/Pages/michael-bloomberg.aspx",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "mayors-guns",
+      "title": "Mayors Against Illegal Guns coalition launches",
+      "publisher": "City of New York",
+      "type": "official_statement",
+      "url": "https://www.nyc.gov/html/om/html/2006a/pr143-06.html",
+      "publishedAt": "2006-04-25",
+      "accessedAt": "2026-10-25"
+    }
+  ],
+  "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "February 14, 1942",
+      "detail": "Boston, Massachusetts.",
+      "featured": true,
+      "sources": ["bloomberg-bio", "britannica-bloomberg"]
+    },
+    { "key": "sex", "label": "Sex", "value": "Male", "sources": ["bloomberg-bio"] },
+    {
+      "key": "ethnicity",
+      "label": "Ethnicity",
+      "value": "Ashkenazi Jewish American",
+      "sources": ["britannica-bloomberg"]
+    },
+    {
+      "key": "race",
+      "label": "Race",
+      "value": "White",
+      "detail": "Based on documented Ashkenazi Jewish ancestry.",
+      "sources": ["britannica-bloomberg"]
+    },
+    { "key": "citizenship", "label": "Citizenship", "value": "United States", "sources": ["bloomberg-bio"] },
+    { "key": "children", "label": "Children", "value": "2", "sources": ["forbes-bloomberg"] },
+    {
+      "key": "education",
+      "label": "Education",
+      "value": "Johns Hopkins University; Harvard Business School",
+      "detail": "B.S. in electrical engineering; M.B.A.",
+      "sources": ["bloomberg-bio", "hbs-bloomberg"]
+    },
+    {
+      "key": "party",
+      "label": "Political affiliation",
+      "value": "Democratic",
+      "detail": "Previously Republican and independent; re-registered as a Democrat in 2018.",
+      "sources": ["britannica-bloomberg", "fec-bloomberg"]
+    },
+    {
+      "key": "current-roles",
+      "label": "Current roles",
+      "value": "Founder, Bloomberg LP and Bloomberg Philanthropies; UN climate envoy",
+      "featured": true,
+      "asOf": "2026-10-25",
+      "sources": ["bloomberg-bio", "un-envoy"]
+    },
+    {
+      "key": "net-worth",
+      "label": "Estimated net worth",
+      "value": "$109.4 billion",
+      "detail": "Forbes estimate.",
+      "featured": true,
+      "asOf": "2026-10-25",
+      "sources": ["forbes-bloomberg"]
+    },
+    {
+      "key": "giving",
+      "label": "Lifetime giving",
+      "value": "$25.4 billion",
+      "asOf": "2026-10-25",
+      "sources": ["bloomberg-bio", "annual-report"]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "company",
+      "source": "bloomberg",
+      "target": "bloomberg-lp",
+      "relType": "founded",
+      "role": "Founder and controlling owner",
+      "from": "1981",
+      "prominence": 3,
+      "sources": ["company-history", "bloomberg-bio"]
+    },
+    {
+      "key": "philanthropies",
+      "source": "bloomberg",
+      "target": "bloomberg-philanthropies",
+      "relType": "founded",
+      "role": "Founder and principal funder",
+      "prominence": 3,
+      "sources": ["bloomberg-bio", "annual-report"]
+    },
+    {
+      "key": "nyc",
+      "source": "bloomberg",
+      "target": "new-york-city",
+      "relType": "governor-of",
+      "role": "Mayor for three terms",
+      "from": "2002-01-01",
+      "until": "2013-12-31",
+      "prominence": 3,
+      "sources": ["nyc-archives", "bloomberg-bio"]
+    },
+    {
+      "key": "everytown",
+      "source": "bloomberg",
+      "target": "everytown",
+      "relType": "co-founded",
+      "role": "Co-founder and principal funder of gun-safety advocacy network",
+      "from": "2014",
+      "prominence": 3,
+      "sources": ["everytown-history", "mayors-guns"]
+    },
+    {
+      "key": "sierra",
+      "source": "bloomberg",
+      "target": "sierra-club",
+      "relType": "donated-to",
+      "role": "Major funder of Beyond Coal campaign",
+      "from": "2011",
+      "prominence": 2,
+      "sources": ["beyond-coal"]
+    },
+    {
+      "key": "democrats",
+      "source": "bloomberg",
+      "target": "democratic-party",
+      "relType": "donated-to",
+      "role": "Major donor to candidates, committees and aligned super PACs",
+      "from": "2018",
+      "prominence": 3,
+      "sources": ["fec-bloomberg", "opensecrets-2024"]
+    },
+    {
+      "key": "jhu",
+      "source": "bloomberg",
+      "target": "johns-hopkins",
+      "relType": "donated-to",
+      "role": "Largest lifetime donor; financial-aid and public-health benefactor",
+      "prominence": 2,
+      "sources": ["jhu-gift-2018", "jhu-medical-2024"]
+    },
+    {
+      "key": "un",
+      "source": "bloomberg",
+      "target": "united-nations",
+      "relType": "adviser-to",
+      "role": "Special Envoy on Climate Ambition and Solutions",
+      "from": "2021",
+      "prominence": 2,
+      "sources": ["un-envoy", "bloomberg-bio"]
+    },
+    {
+      "key": "who",
+      "source": "bloomberg",
+      "target": "who",
+      "relType": "adviser-to",
+      "role": "Global Ambassador for Noncommunicable Diseases and Injuries",
+      "prominence": 1,
+      "sources": ["who-ambassador"]
+    },
+    {
+      "key": "independence",
+      "source": "bloomberg",
+      "target": "independence-usa",
+      "relType": "founded",
+      "role": "Founder and principal funder",
+      "from": "2012",
+      "prominence": 2,
+      "sources": ["fec-bloomberg"]
+    },
+    {
+      "key": "harris",
+      "source": "bloomberg",
+      "target": "harris",
+      "relType": "donated-to",
+      "role": "Major 2024 supporter through Democratic outside groups",
+      "from": "2024",
+      "until": "2024",
+      "prominence": 2,
+      "sources": ["opensecrets-2024", "fec-bloomberg"]
+    }
+  ],
+  "events": [
+    {
+      "key": "birth",
+      "date": "1942-02-14",
+      "title": "Born in Boston",
+      "summary": "Michael Rubens Bloomberg was raised in Medford, Massachusetts.",
+      "category": "personal",
+      "significance": 1,
+      "chapter": "formation",
+      "sources": ["bloomberg-bio", "britannica-bloomberg"]
+    },
+    {
+      "key": "hopkins",
+      "date": "1964",
+      "title": "Graduates from Johns Hopkins",
+      "summary": "Bloomberg earned an electrical-engineering degree before attending Harvard Business School.",
+      "category": "personal",
+      "significance": 1,
+      "chapter": "formation",
+      "sources": ["bloomberg-bio"]
+    },
+    {
+      "key": "salomon",
+      "date": "1966",
+      "title": "Joins Salomon Brothers",
+      "summary": "He began on Wall Street and became a partner before the firm dismissed him in 1981.",
+      "category": "career",
+      "significance": 2,
+      "chapter": "company",
+      "sources": ["britannica-bloomberg"]
+    },
+    {
+      "key": "company",
+      "date": "1981",
+      "title": "Founds Bloomberg LP precursor",
+      "summary": "Innovative Market Systems built terminals combining financial data, analytics and communications.",
+      "category": "career",
+      "significance": 3,
+      "chapter": "company",
+      "sources": ["company-history", "bloomberg-bio"]
+    },
+    {
+      "key": "mayor-election",
+      "date": "2001-11-06",
+      "title": "Elected mayor of New York City",
+      "summary": "Bloomberg won as a Republican weeks after the September 11 attacks.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "mayor",
+      "sources": ["nyc-archives", "britannica-bloomberg"]
+    },
+    {
+      "key": "mayor-office",
+      "date": "2002-01-01",
+      "title": "Takes office as mayor",
+      "summary": "His administration emphasized managerial measurement, public health, development and school governance.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "mayor",
+      "sources": ["nyc-archives", "bloomberg-bio"]
+    },
+    {
+      "key": "guns",
+      "date": "2006-04-25",
+      "title": "Launches mayors' gun coalition",
+      "summary": "Mayors Against Illegal Guns later combined with Moms Demand Action to form Everytown.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "advocacy",
+      "sources": ["mayors-guns", "everytown-history"]
+    },
+    {
+      "key": "independent",
+      "date": "2007",
+      "title": "Leaves Republican Party",
+      "summary": "Bloomberg governed and pursued a third term as an independent.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "mayor",
+      "sources": ["britannica-bloomberg"]
+    },
+    {
+      "key": "third-term",
+      "date": "2009-11-03",
+      "title": "Wins third mayoral term",
+      "summary": "He won after supporting a temporary change to the city's term-limit law.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "mayor",
+      "sources": ["nyc-archives", "britannica-bloomberg"]
+    },
+    {
+      "key": "beyond-coal",
+      "date": "2011",
+      "title": "Begins major Beyond Coal funding",
+      "summary": "Bloomberg's climate philanthropy helped expand Sierra Club efforts to retire coal plants.",
+      "category": "ideas",
+      "significance": 2,
+      "chapter": "philanthropy",
+      "sources": ["beyond-coal"]
+    },
+    {
+      "key": "leaves-office",
+      "date": "2013-12-31",
+      "title": "Completes twelve years as mayor",
+      "summary": "Bloomberg returned to his company and expanded national and international policy work.",
+      "category": "career",
+      "significance": 2,
+      "chapter": "platform",
+      "sources": ["nyc-archives", "bloomberg-bio"]
+    },
+    {
+      "key": "everytown",
+      "date": "2014",
+      "title": "Forms Everytown for Gun Safety",
+      "summary": "The merger created a national electoral and grassroots gun-policy organization.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "advocacy",
+      "sources": ["everytown-history"]
+    },
+    {
+      "key": "democrat",
+      "date": "2018-10",
+      "title": "Registers as a Democrat",
+      "summary": "The change preceded presidential exploration and increased spending for Democratic congressional candidates.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "presidential",
+      "sources": ["britannica-bloomberg", "fec-bloomberg"]
+    },
+    {
+      "key": "jhu-gift",
+      "date": "2018-11-18",
+      "title": "Gives $1.8 billion to Johns Hopkins",
+      "summary": "The gift funded undergraduate financial aid and need-blind admissions.",
+      "category": "finance",
+      "significance": 3,
+      "chapter": "philanthropy",
+      "sources": ["jhu-gift-2018"]
+    },
+    {
+      "key": "stop-frisk-apology",
+      "date": "2019-11-17",
+      "title": "Apologizes for stop-and-frisk expansion",
+      "summary": "Before announcing his presidential run, Bloomberg said he had been wrong to allow overuse of the policing tactic.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "record",
+      "sources": ["nyt-stop-frisk"]
+    },
+    {
+      "key": "presidential",
+      "date": "2019-11-24",
+      "title": "Enters Democratic presidential primary",
+      "summary": "Bloomberg built a national campaign largely with his own money.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "presidential",
+      "sources": ["fec-campaign-2020", "ap-campaign-end"]
+    },
+    {
+      "key": "ends-campaign",
+      "date": "2020-03-04",
+      "title": "Ends presidential campaign",
+      "summary": "After a poor Super Tuesday result, Bloomberg withdrew and endorsed Joe Biden.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "presidential",
+      "sources": ["ap-campaign-end"]
+    },
+    {
+      "key": "un-envoy",
+      "date": "2021-02-05",
+      "title": "Appointed UN climate envoy",
+      "summary": "The role connected city and private-sector climate initiatives to international diplomacy.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "platform",
+      "sources": ["un-envoy"]
+    },
+    {
+      "key": "medical",
+      "date": "2024-07-08",
+      "title": "Funds medical-school tuition aid",
+      "summary": "A $1 billion Johns Hopkins gift made tuition free for most medical students and expanded aid in other graduate programs.",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "philanthropy",
+      "sources": ["jhu-medical-2024"]
+    },
+    {
+      "key": "election-2024",
+      "date": "2024-11-05",
+      "title": "Ranks as largest disclosed Democratic donor",
+      "summary": "OpenSecrets calculated roughly $64 million in 2024 federal political giving, principally to Democratic-aligned efforts.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "advocacy",
+      "sources": ["opensecrets-2024"]
+    }
+  ],
+  "statements": [
+    {
+      "key": "cities",
+      "date": "2026",
+      "datePrecision": "year",
+      "venue": "Bloomberg Philanthropies annual letter",
+      "issue": "Cities",
+      "quote": "When mayors succeed, millions of lives improve.",
+      "summary": "Bloomberg presents cities as practical units for policy innovation.",
+      "verbatim": true,
+      "source": "annual-report"
+    },
+    {
+      "key": "stop-frisk",
+      "date": "2019-11-17",
+      "datePrecision": "day",
+      "venue": "Brooklyn church address",
+      "issue": "Policing",
+      "summary": "Bloomberg apologized for allowing stop-and-frisk to expand too far and acknowledged the damage done to Black and Latino communities.",
+      "verbatim": false,
+      "source": "nyt-stop-frisk"
+    },
+    {
+      "key": "coal",
+      "date": "2023-09-20",
+      "datePrecision": "day",
+      "venue": "Beyond Carbon announcement",
+      "issue": "Climate",
+      "summary": "Bloomberg argued that retiring coal and blocking new gas infrastructure are necessary to meet U.S. climate targets.",
+      "verbatim": false,
+      "source": "beyond-coal"
+    },
+    {
+      "key": "guns",
+      "date": "2006-04-25",
+      "datePrecision": "day",
+      "venue": "Mayors Against Illegal Guns launch",
+      "issue": "Gun policy",
+      "summary": "Bloomberg framed gun violence as a problem mayors could address while respecting lawful gun ownership.",
+      "verbatim": false,
+      "source": "mayors-guns"
+    },
+    {
+      "key": "education",
+      "date": "2018-11-18",
+      "datePrecision": "day",
+      "venue": "Johns Hopkins gift announcement",
+      "issue": "Education",
+      "summary": "Bloomberg argued that admission should depend on merit rather than a family's ability to pay.",
+      "verbatim": false,
+      "source": "jhu-gift-2018"
+    }
+  ],
+  "finance": {
+    "fec": {
+      "contributorName": "BLOOMBERG, MICHAEL R.",
+      "namePattern": "^BLOOMBERG, MICHAEL( R\\.?)?$",
+      "employerPattern": "BLOOMBERG|SELF|PHILANTHRO",
+      "cities": ["NEW YORK"],
+      "source": "fec-bloomberg"
+    },
+    "coverage": "Federal itemized receipts matched to Michael R. Bloomberg by name, employer and New York address. The ledger does not equal total political spending because his self-funded campaign and Bloomberg-controlled committees file separately."
+  },
+  "ideas": {
+    "traditions": [
+      {
+        "label": "Technocratic governance",
+        "atlasId": "technocracy",
+        "basis": "record and stated method",
+        "context": "Measurement, executive management and replication of city-level interventions across jurisdictions.",
+        "sources": ["bloomberg-bio", "annual-report", "nyc-archives"]
+      }
+    ],
+    "influences": [
+      {
+        "name": "Urban government",
+        "note": "Bloomberg treats mayors and cities as laboratories whose policies can be measured and scaled.",
+        "sources": ["annual-report", "bloomberg-bio"]
+      }
+    ],
+    "works": [
+      {
+        "title": "Bloomberg by Bloomberg",
+        "year": "1997",
+        "kind": "Book",
+        "detail": "Memoir and account of building the company.",
+        "source": "company-history"
+      },
+      {
+        "title": "Climate of Hope",
+        "year": "2017",
+        "kind": "Book",
+        "detail": "Argument with Carl Pope for city and business climate action.",
+        "source": "beyond-coal"
+      }
+    ],
+    "featuredQuotes": ["cities"]
+  },
+  "chapters": [
+    {
+      "key": "formation",
+      "title": "Engineering, business school and Wall Street",
+      "dek": "Bloomberg's political style began with technical training and a career built around financial information.",
+      "body": "Raised in Massachusetts, Bloomberg earned an electrical-engineering degree at Johns Hopkins and an MBA at Harvard. He joined Salomon Brothers in 1966, learned securities and information systems, and became a partner before being dismissed after a merger. [[bloomberg-bio, britannica-bloomberg, hbs-bloomberg]]"
+    },
+    {
+      "key": "company",
+      "title": "Building the Bloomberg terminal",
+      "dek": "The company joined data, analytics, communication and media in a product embedded in financial markets.",
+      "body": "Bloomberg used his Salomon payout to start Innovative Market Systems in 1981. Its terminals reorganized live market data around the needs of traders and expanded into news, television and enterprise services. The private company's scale and recurring revenue became the source of his wealth and autonomy. [[company-history, bloomberg-bio, forbes-bloomberg]]"
+    },
+    {
+      "key": "mayor",
+      "title": "Twelve years governing New York",
+      "dek": "Three terms converted a business executive into a politician with a long administrative record.",
+      "body": "Elected weeks after September 11, Bloomberg governed through public-health rules, rezoning, school control, data systems and large development projects. He changed party registration and supported a term-limit extension before winning a third term. Admirers emphasize management and public-health gains; critics point to inequality, policing and the concentration of executive power. [[nyc-archives, bloomberg-bio, britannica-bloomberg]]"
+    },
+    {
+      "key": "record",
+      "title": "Public health and the policing controversy",
+      "dek": "Bloomberg's preference for measurable intervention produced both durable policies and a defining civil-rights failure.",
+      "body": "The administration restricted smoking, redesigned streets and used administrative data extensively. It also expanded stop-and-frisk, disproportionately affecting Black and Latino New Yorkers. Bloomberg defended the policy for years, then apologized in 2019 as he prepared to seek the Democratic presidential nomination. [[nyc-archives, nyt-stop-frisk]]"
+    },
+    {
+      "key": "advocacy",
+      "title": "Building policy organizations",
+      "dek": "Gun and climate work turned personal philanthropy into national advocacy capacity.",
+      "body": "Mayors Against Illegal Guns evolved into Everytown, combining research, grassroots chapters and election spending. Climate grants supported the Sierra Club's Beyond Coal campaign and later efforts against fossil-fuel expansion. These organizations operate independently in law but depend heavily on Bloomberg's capital and policy agenda. [[mayors-guns, everytown-history, beyond-coal]]"
+    },
+    {
+      "key": "presidential",
+      "title": "The self-financed presidential campaign",
+      "dek": "Personal wealth removed fundraising constraints but could not substitute for a durable primary coalition.",
+      "body": "Bloomberg entered the 2020 Democratic primary late, skipped early states and spent heavily on advertising and staff. Debate scrutiny focused on his mayoral record, wealth and past comments. He withdrew after Super Tuesday and endorsed Joe Biden, while retaining a campaign-scale data and political network. [[fec-campaign-2020, ap-campaign-end, nyt-stop-frisk]]"
+    },
+    {
+      "key": "philanthropy",
+      "title": "Philanthropy at municipal scale",
+      "dek": "Large gifts mix institutional endowments with programs designed to change government practice.",
+      "body": "Bloomberg Philanthropies works across public health, climate, education, arts and city management. Record gifts to Johns Hopkins fund financial aid and medical education, while city programs often provide technical assistance and performance systems. The common method is to finance implementation, measure outcomes and encourage replication. [[annual-report, jhu-gift-2018, jhu-medical-2024]]"
+    },
+    {
+      "key": "platform",
+      "title": "A private platform with public reach",
+      "dek": "Company ownership, philanthropy, electoral spending and international appointments reinforce one another without becoming the same institution.",
+      "body": "Bloomberg returned from City Hall with a recognizable policy brand, global media company and the capacity to spend at election scale. UN and WHO roles give him convening authority; Everytown and climate programs sustain advocacy; Democratic contributions provide partisan leverage. Evaluating that power requires keeping corporate, charitable and electoral records separate while seeing how they advance overlapping priorities. [[un-envoy, who-ambassador, fec-bloomberg, opensecrets-2024]]"
+    }
+  ]
+}

@@ -1,0 +1,877 @@
+{
+  "subject": "miller",
+  "reviewedAt": "2026-10-22",
+  "sourcesVerifiedAt": "2026-10-22",
+  "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Stephen%20Miller%20July%202025.jpg?width=400",
+  "brief": {
+    "inclusion": "White House deputy chief of staff and homeland security adviser who has spent more than a decade turning restrictionist immigration arguments into campaign language, executive actions and enforcement targets.",
+    "identifiers": { "wikidata": "Q27916730" },
+    "namesakes": "Stephen N. Miller, born August 23, 1985, is the Santa Monica-born White House policy adviser; do not merge him with the late Canadian-American writer or other federal donors with the same name.",
+    "coverage": {
+      "from": "1985",
+      "through": "2026-10-22",
+      "lags": "The second administration's immigration program remains active and heavily litigated. Court rulings, removal totals and White House responsibilities can change faster than this dossier is reviewed."
+    },
+    "openQuestions": [
+      "Update the disposition of major challenges to second-term immigration orders before publication.",
+      "Reconcile administration-wide arrest and removal totals with final agency data rather than public targets.",
+      "Review any revised White House title or portfolio in the next annual staff report."
+    ],
+    "review": []
+  },
+  "summary": "Stephen Miller advanced from conservative campus activism and congressional communications work to become Donald Trump's most durable immigration-policy adviser and speechwriter. In the first Trump administration he helped shape the travel ban, family-separation strategy and restrictions on both legal and unauthorized immigration. Between terms he co-founded America First Legal; in 2025 he returned with a larger title—deputy chief of staff for policy and homeland security adviser—and helped drive a government-wide program of expanded arrests, detention, deportation and executive claims about citizenship and invasion.",
+  "roles": [
+    {
+      "label": "White House deputy chief of staff",
+      "detail": "Assistant to the president, deputy chief of staff for policy and homeland security adviser since January 2025",
+      "sources": ["white-house-staff-2025", "white-house-disclosure-2026"]
+    },
+    {
+      "label": "Immigration-policy strategist",
+      "detail": "Principal designer and public advocate of the administration's immigration-enforcement program",
+      "sources": ["ap-appointments-2024", "ap-enforcement-2025", "atlantic-miller-2026"]
+    },
+    {
+      "label": "Former White House senior adviser",
+      "detail": "Senior adviser and director of speechwriting, 2017–2021",
+      "sources": ["yaf-miller", "atlantic-miller-2018"]
+    },
+    {
+      "label": "Legal-advocacy founder",
+      "detail": "Co-founder and former president of America First Legal, 2021–2025",
+      "sources": ["afl-launch-2021", "white-house-disclosure-2026"]
+    },
+    {
+      "label": "Former Senate staffer",
+      "detail": "Communications director and immigration-policy aide to Senator Jeff Sessions",
+      "sources": ["atlantic-miller-2018", "axios-miller-2025"]
+    }
+  ],
+  "finance": {
+    "fec": {
+      "contributorName": "MILLER, STEPHEN",
+      "namePattern": "^MILLER, STEPHEN( N\\.?)?$",
+      "employerPattern": "WHITE HOUSE|AMERICA FIRST LEGAL|U\\.?S\\.? SENATE|TRUMP( |-)?VANCE|DONALD J\\.? TRUMP",
+      "employers": [
+        "WHITE HOUSE",
+        "AMERICA FIRST LEGAL",
+        "U.S. SENATE",
+        "TRUMP VANCE",
+        "DONALD J TRUMP"
+      ],
+      "cities": [],
+      "source": "fec-miller"
+    },
+    "coverage": "Itemized federal contributions are included only when both the exact name and a subject-specific employer match. The common name makes city-only matching unsafe. Spending by America First Legal or other organizations is not personal campaign giving and is kept outside this total."
+  },
+  "entities": {
+    "miller": { "match": { "identifier": ["wikidata", "Q27916730"] } },
+    "trump": { "match": { "name": "Donald Trump", "type": "politician" } },
+    "sessions": {
+      "create": {
+        "name": "Jeff Sessions",
+        "type": "politician",
+        "description": "Former U.S. senator from Alabama and attorney general in the first Trump administration."
+      }
+    },
+    "white-house": {
+      "create": {
+        "name": "White House Office",
+        "type": "organization",
+        "description": "Executive Office unit containing the president's immediate staff and senior advisers.",
+        "websiteUrl": "https://www.whitehouse.gov/"
+      }
+    },
+    "afl": {
+      "create": {
+        "name": "America First Legal",
+        "type": "organization",
+        "description": "Conservative legal-advocacy organization co-founded by Stephen Miller in 2021.",
+        "websiteUrl": "https://aflegal.org/"
+      }
+    },
+    "breitbart": {
+      "create": {
+        "name": "Breitbart News",
+        "type": "organization",
+        "description": "Right-wing digital news and commentary outlet."
+      }
+    },
+    "dhs": {
+      "create": {
+        "name": "U.S. Department of Homeland Security",
+        "type": "organization",
+        "description": "Federal department responsible for border, immigration-enforcement and domestic-security functions.",
+        "websiteUrl": "https://www.dhs.gov/"
+      }
+    },
+    "doj": {
+      "create": {
+        "name": "U.S. Department of Justice",
+        "type": "organization",
+        "description": "Federal department responsible for law enforcement and representation of the United States in court.",
+        "websiteUrl": "https://www.justice.gov/"
+      }
+    },
+    "homan": {
+      "create": {
+        "name": "Tom Homan",
+        "type": "politician",
+        "description": "Trump administration border adviser and former acting director of Immigration and Customs Enforcement."
+      }
+    },
+    "republican-party": { "match": { "name": "Republican Party", "type": "organization" } }
+  },
+  "sources": [
+    {
+      "key": "yaf-miller",
+      "title": "Stephen Miller",
+      "publisher": "Young America's Foundation",
+      "type": "primary",
+      "url": "https://yaf.org/people/stephen-miller/",
+      "accessedAt": "2026-10-22",
+      "notes": "Supportive institutional biography; used for chronology and Miller's stated movement identity."
+    },
+    {
+      "key": "atlantic-miller-2018",
+      "title": "Trump's Right-Hand Troll",
+      "publisher": "The Atlantic",
+      "author": "McKay Coppins",
+      "publishedAt": "2018-05-28",
+      "type": "article",
+      "url": "https://www.theatlantic.com/politics/archive/2018/05/stephen-miller-trump-adviser/561317/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "axios-miller-2025",
+      "title": "What to know about Stephen Miller",
+      "publisher": "Axios",
+      "publishedAt": "2025-05-02",
+      "type": "article",
+      "url": "https://www.axios.com/2025/05/02/stephen-miller-trump-national-security-adviser",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "sessions-immigration-2013",
+      "title": "Immigration bill passes Senate after sustained opposition from Senator Sessions",
+      "publisher": "United States Senate",
+      "publishedAt": "2013-06-27",
+      "type": "official_statement",
+      "url": "https://www.govinfo.gov/content/pkg/CREC-2013-06-27/pdf/CREC-2013-06-27-pt1-PgS5277.pdf",
+      "accessedAt": "2026-10-22",
+      "notes": "Congressional Record for the 2013 immigration bill and opposition; Miller's staff role is established by biographical reporting."
+    },
+    {
+      "key": "ap-appointments-2024",
+      "title": "Trump picks advisers to carry out his immigration crackdown",
+      "publisher": "Associated Press",
+      "publishedAt": "2024-11-12",
+      "type": "article",
+      "url": "https://apnews.com/article/abb1a75497d11c978c369cb20016eecb",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "ap-project-2025",
+      "title": "After Project 2025 denials, Trump taps its authors and influencers",
+      "publisher": "Associated Press",
+      "publishedAt": "2024-11-22",
+      "type": "article",
+      "url": "https://apnews.com/article/843f5ff20131ccba5f056e7ccc5baf23",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "white-house-briefing-2017",
+      "title": "Press Briefing by Press Secretary Sarah Sanders and Senior Policy Advisor Stephen Miller",
+      "publisher": "Trump White House Archives",
+      "author": "Stephen Miller",
+      "publishedAt": "2017-08-02",
+      "type": "transcript",
+      "url": "https://trumpwhitehouse.archives.gov/briefings-statements/press-briefing-press-secretary-sarah-sanders-senior-policy-advisor-stephen-miller-080217/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "travel-ban-2017",
+      "title": "Executive Order Protecting the Nation From Foreign Terrorist Entry Into the United States",
+      "publisher": "Trump White House Archives",
+      "publishedAt": "2017-01-27",
+      "type": "official_statement",
+      "url": "https://trumpwhitehouse.archives.gov/presidential-actions/executive-order-protecting-nation-foreign-terrorist-entry-united-states/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "scotus-travel-ban-2018",
+      "title": "Trump v. Hawaii",
+      "publisher": "Supreme Court of the United States",
+      "publishedAt": "2018-06-26",
+      "type": "filing",
+      "url": "https://www.supremecourt.gov/opinions/17pdf/17-965_h315.pdf",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "doj-zero-tolerance-2018",
+      "title": "Attorney General Announces Zero-Tolerance Policy for Criminal Illegal Entry",
+      "publisher": "U.S. Department of Justice",
+      "publishedAt": "2018-04-06",
+      "type": "official_statement",
+      "url": "https://www.justice.gov/archives/opa/pr/attorney-general-announces-zero-tolerance-policy-criminal-illegal-entry",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "atlantic-family-separation-2022",
+      "title": "An American Catastrophe",
+      "publisher": "The Atlantic",
+      "author": "Caitlin Dickerson",
+      "publishedAt": "2022-08-07",
+      "type": "article",
+      "url": "https://www.theatlantic.com/magazine/archive/2022/09/trump-administration-family-separation-policy-immigration/670604/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "splc-emails-2019",
+      "title": "Stephen Miller: The Breitbart Emails",
+      "publisher": "Southern Poverty Law Center",
+      "publishedAt": "2019-11-12",
+      "type": "primary",
+      "url": "https://www.splcenter.org/stephen-miller-breitbart-emails",
+      "accessedAt": "2026-10-22",
+      "notes": "Archive and analysis of leaked emails supplied by former Breitbart editor Katie McHugh; conclusions are attributed."
+    },
+    {
+      "key": "washpost-emails-2019",
+      "title": "Leaked Stephen Miller emails suggest Trump's point man promoted white nationalism",
+      "publisher": "The Washington Post",
+      "publishedAt": "2019-11-12",
+      "type": "article",
+      "url": "https://www.washingtonpost.com/politics/2019/11/12/leaked-stephen-miller-emails-suggest-trumps-point-man-immigration-promoted-white-nationalism/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "afl-launch-2021",
+      "title": "Senior Trump Officials Launch America First Legal Foundation",
+      "publisher": "America First Legal",
+      "author": "America First Legal",
+      "publishedAt": "2021-04-06",
+      "type": "official_statement",
+      "url": "https://aflegal.org/senior-trump-officials-launch-america-first-legal-foundation/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "white-house-staff-2025",
+      "title": "Annual Report to Congress on White House Office Personnel",
+      "publisher": "The White House",
+      "publishedAt": "2025-07-01",
+      "type": "filing",
+      "url": "https://www.whitehouse.gov/wp-content/uploads/2025/07/2025-Annual-Report-to-Congress-on-White-House-Staff.pdf",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "white-house-disclosure-2026",
+      "title": "Stephen N. Miller annual public financial disclosure",
+      "publisher": "The White House",
+      "publishedAt": "2026-09",
+      "type": "filing",
+      "url": "https://www.whitehouse.gov/wp-content/uploads/2026/09/Miller-Stephen-2026-Annual.pdf",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "protecting-americans-2025",
+      "title": "Protecting the American People Against Invasion",
+      "publisher": "The White House",
+      "publishedAt": "2025-01-20",
+      "type": "official_statement",
+      "url": "https://www.whitehouse.gov/presidential-actions/2025/01/protecting-the-american-people-against-invasion/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "birthright-order-2025",
+      "title": "Protecting the Meaning and Value of American Citizenship",
+      "publisher": "The White House",
+      "publishedAt": "2025-01-20",
+      "type": "official_statement",
+      "url": "https://www.whitehouse.gov/presidential-actions/2025/01/protecting-the-meaning-and-value-of-american-citizenship/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "ap-enforcement-2025",
+      "title": "Los Angeles protests follow weeks of intensifying immigration enforcement",
+      "publisher": "Associated Press",
+      "publishedAt": "2025-06-10",
+      "type": "article",
+      "url": "https://apnews.com/article/eae3354dec46c19310c5c622c29c3e65",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "atlantic-miller-2026",
+      "title": "The Wrath of Stephen Miller",
+      "publisher": "The Atlantic",
+      "publishedAt": "2026-01",
+      "type": "article",
+      "url": "https://www.theatlantic.com/politics/2026/01/stephen-miller-trump-white-house/685516/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "white-house-nspm-2026",
+      "title": "National Security Presidential Memorandum 12",
+      "publisher": "The White House",
+      "publishedAt": "2026-06",
+      "type": "official_statement",
+      "url": "https://www.whitehouse.gov/presidential-actions/2026/06/national-security-presidential-memorandum-nspm-12/",
+      "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "fec-miller",
+      "title": "Individual contributions: Miller, Stephen",
+      "publisher": "Federal Election Commission",
+      "type": "filing",
+      "url": "https://www.fec.gov/data/receipts/individual-contributions/?contributor_name=MILLER%2C%20STEPHEN",
+      "accessedAt": "2026-10-22"
+    }
+  ],
+  "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "August 23, 1985",
+      "detail": "Santa Monica, California",
+      "featured": true,
+      "sources": ["atlantic-miller-2018", "axios-miller-2025"]
+    },
+    { "key": "sex", "label": "Sex", "value": "Male", "sources": ["yaf-miller"] },
+    { "key": "citizenship", "label": "Citizenship", "value": "United States", "sources": ["yaf-miller"] },
+    {
+      "key": "religion",
+      "label": "Religion",
+      "value": "Jewish",
+      "detail": "Raised in a Jewish family; his identity has been discussed publicly in connection with his family's immigrant history",
+      "sources": ["axios-miller-2025", "atlantic-miller-2018"]
+    },
+    {
+      "key": "education",
+      "label": "Education",
+      "value": "B.A., Duke University",
+      "detail": "Graduated in 2007 after conservative campus activism and newspaper commentary",
+      "sources": ["atlantic-miller-2018", "axios-miller-2025"]
+    },
+    {
+      "key": "current-role",
+      "label": "Current role",
+      "value": "Deputy chief of staff for policy and homeland security adviser",
+      "asOf": "2026-10-22",
+      "featured": true,
+      "sources": ["white-house-staff-2025", "white-house-disclosure-2026", "white-house-nspm-2026"]
+    },
+    {
+      "key": "white-house-pay",
+      "label": "White House salary",
+      "value": "$195,200",
+      "detail": "Annual salary in the July 2025 White House staff report",
+      "asOf": "2025-07-01",
+      "sources": ["white-house-staff-2025"]
+    },
+    {
+      "key": "first-term-role",
+      "label": "First-term service",
+      "value": "Senior adviser and director of speechwriting, 2017–2021",
+      "sources": ["yaf-miller", "atlantic-miller-2018"]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "miller-trump",
+      "source": "miller",
+      "target": "trump",
+      "relType": "adviser-to",
+      "role": "Campaign policy adviser, presidential speechwriter, senior adviser and deputy chief of staff",
+      "from": "2016",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["ap-appointments-2024", "white-house-staff-2025"]
+    },
+    {
+      "key": "miller-sessions",
+      "source": "miller",
+      "target": "sessions",
+      "relType": "staffer-for",
+      "role": "Communications director and immigration-policy aide",
+      "from": "2009",
+      "to": "2016",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["atlantic-miller-2018", "axios-miller-2025"]
+    },
+    {
+      "key": "miller-white-house-first",
+      "source": "miller",
+      "target": "white-house",
+      "relType": "former-role",
+      "role": "Senior adviser and director of speechwriting",
+      "from": "2017-01-20",
+      "to": "2021-01-20",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["yaf-miller", "atlantic-miller-2018"]
+    },
+    {
+      "key": "miller-afl",
+      "source": "miller",
+      "target": "afl",
+      "relType": "co-founded",
+      "role": "Co-founder and president before returning to government",
+      "from": "2021-04-06",
+      "to": "2025-01",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["afl-launch-2021", "white-house-disclosure-2026"]
+    },
+    {
+      "key": "miller-breitbart",
+      "source": "miller",
+      "target": "breitbart",
+      "relType": "contributes-to",
+      "role": "Supplied story ideas and source material to editors while a Senate aide and campaign adviser",
+      "from": "2015",
+      "to": "2016",
+      "status": "verified",
+      "prominence": 2,
+      "sources": ["splc-emails-2019", "washpost-emails-2019"]
+    },
+    {
+      "key": "miller-white-house-current",
+      "source": "miller",
+      "target": "white-house",
+      "relType": "works-for",
+      "role": "Deputy chief of staff for policy and homeland security adviser",
+      "from": "2025-01-20",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["white-house-staff-2025", "white-house-disclosure-2026"]
+    },
+    {
+      "key": "miller-dhs",
+      "source": "miller",
+      "target": "dhs",
+      "relType": "adviser-to",
+      "role": "White House coordinator and policy authority over homeland-security priorities",
+      "from": "2025",
+      "status": "verified",
+      "prominence": 3,
+      "sources": ["white-house-staff-2025", "ap-enforcement-2025", "white-house-nspm-2026"]
+    },
+    {
+      "key": "miller-homan",
+      "source": "miller",
+      "target": "homan",
+      "relType": "collaborated-with",
+      "role": "Second-term immigration-enforcement leadership",
+      "from": "2024",
+      "status": "verified",
+      "prominence": 2,
+      "sources": ["ap-appointments-2024", "ap-enforcement-2025"]
+    },
+    {
+      "key": "miller-republican",
+      "source": "miller",
+      "target": "republican-party",
+      "relType": "party-member",
+      "role": "Republican campaign and administration strategist",
+      "from": "2007",
+      "status": "verified",
+      "prominence": 2,
+      "sources": ["atlantic-miller-2018", "ap-project-2025"]
+    }
+  ],
+  "events": [
+    {
+      "key": "born-1985",
+      "date": "1985-08-23",
+      "title": "Born in Santa Monica",
+      "summary": "Stephen N. Miller was born in Santa Monica, California, and raised in a Jewish family.",
+      "category": "personal",
+      "significance": 2,
+      "status": "verified",
+      "participants": [["miller", "subject"]],
+      "sources": ["atlantic-miller-2018", "axios-miller-2025"],
+      "chapter": "formation"
+    },
+    {
+      "key": "duke-2007",
+      "date": "2007",
+      "title": "Graduates from Duke",
+      "summary": "Miller graduated after building a public profile as a conservative campus columnist and activist.",
+      "category": "career",
+      "significance": 2,
+      "status": "verified",
+      "participants": [["miller", "graduate"]],
+      "sources": ["atlantic-miller-2018", "axios-miller-2025"],
+      "chapter": "formation"
+    },
+    {
+      "key": "sessions-2009",
+      "date": "2009",
+      "title": "Joins Jeff Sessions's Senate staff",
+      "summary": "Miller joined Sessions and became a communications and policy aide focused heavily on immigration.",
+      "category": "career",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["miller", "staffer"],
+        ["sessions", "employer"]
+      ],
+      "sources": ["atlantic-miller-2018", "axios-miller-2025"],
+      "chapter": "sessions"
+    },
+    {
+      "key": "immigration-bill-2013",
+      "date": "2013-06-27",
+      "title": "Senate passes immigration bill despite Sessions opposition",
+      "summary": "Miller helped Sessions build the communications case against the bipartisan bill, which died in the House after passing the Senate.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["miller", "staffer"],
+        ["sessions", "senator"]
+      ],
+      "sources": ["sessions-immigration-2013", "atlantic-miller-2018"],
+      "chapter": "sessions"
+    },
+    {
+      "key": "trump-campaign-2016",
+      "date": "2016-01",
+      "title": "Joins Trump campaign",
+      "summary": "Miller became a senior policy adviser and speechwriter, translating restrictionist immigration policy into campaign rhetoric.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["miller", "campaign adviser"],
+        ["trump", "candidate"]
+      ],
+      "sources": ["atlantic-miller-2018", "ap-appointments-2024"],
+      "chapter": "campaign"
+    },
+    {
+      "key": "white-house-2017",
+      "date": "2017-01-20",
+      "title": "Becomes White House senior adviser",
+      "summary": "Miller entered the West Wing as senior adviser and director of speechwriting.",
+      "category": "career",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["miller", "senior adviser"],
+        ["trump", "president"],
+        ["white-house", "employer"]
+      ],
+      "sources": ["yaf-miller", "atlantic-miller-2018"],
+      "chapter": "first-term"
+    },
+    {
+      "key": "travel-ban-2017",
+      "date": "2017-01-27",
+      "title": "Travel-ban order signed",
+      "summary": "Trump signed the first order restricting entry from several Muslim-majority countries; Miller was a central White House advocate of the policy.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["miller", "policy adviser"],
+        ["trump", "president"]
+      ],
+      "sources": ["travel-ban-2017", "atlantic-miller-2018"],
+      "chapter": "first-term"
+    },
+    {
+      "key": "travel-ban-upheld-2018",
+      "date": "2018-06-26",
+      "title": "Supreme Court upholds later travel-ban version",
+      "summary": "The Court upheld the third proclamation, while expressly repudiating Korematsu and recording strong dissents about religious animus.",
+      "category": "legal",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["trump", "president"],
+        ["miller", "policy adviser"]
+      ],
+      "sources": ["scotus-travel-ban-2018"],
+      "chapter": "first-term"
+    },
+    {
+      "key": "zero-tolerance-2018",
+      "date": "2018-04-06",
+      "title": "Justice Department announces zero tolerance",
+      "summary": "The prosecution policy produced large-scale separation of children from parents at the border; later reporting documented Miller's advocacy for deterrence through separation.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["doj", "implementing department"],
+        ["miller", "White House advocate"],
+        ["sessions", "attorney general"]
+      ],
+      "sources": ["doj-zero-tolerance-2018", "atlantic-family-separation-2022"],
+      "chapter": "separation"
+    },
+    {
+      "key": "emails-2019",
+      "date": "2019-11-12",
+      "title": "Breitbart emails published",
+      "summary": "SPLC published a cache showing Miller steering a Breitbart editor toward material associated with white-nationalist and anti-immigration sources; the White House attacked SPLC's credibility.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["miller", "email author"],
+        ["breitbart", "recipient outlet"]
+      ],
+      "sources": ["splc-emails-2019", "washpost-emails-2019"],
+      "chapter": "controversy"
+    },
+    {
+      "key": "afl-2021",
+      "date": "2021-04-06",
+      "title": "Launches America First Legal",
+      "summary": "Miller and former Trump officials created a legal organization to challenge Biden administration actions and advance America First policy through litigation.",
+      "category": "career",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["miller", "co-founder"],
+        ["afl", "organization"]
+      ],
+      "sources": ["afl-launch-2021"],
+      "chapter": "between-terms"
+    },
+    {
+      "key": "msg-2024",
+      "date": "2024-10-27",
+      "title": "Addresses Madison Square Garden rally",
+      "summary": "Miller declared that America was for Americans only, a formulation that critics compared with exclusionary nationalist rhetoric.",
+      "category": "politics",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        ["miller", "speaker"],
+        ["trump", "candidate"]
+      ],
+      "sources": ["ap-project-2025", "ap-appointments-2024"],
+      "chapter": "return"
+    },
+    {
+      "key": "returns-2025",
+      "date": "2025-01-20",
+      "title": "Returns as deputy chief of staff",
+      "summary": "Miller returned with responsibility for policy and homeland security, a broader formal portfolio than in the first term.",
+      "category": "career",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["miller", "deputy chief of staff"],
+        ["trump", "president"],
+        ["white-house", "employer"]
+      ],
+      "sources": ["white-house-staff-2025", "ap-appointments-2024"],
+      "chapter": "return"
+    },
+    {
+      "key": "orders-2025",
+      "date": "2025-01-20",
+      "title": "Administration issues immigration orders",
+      "summary": "The administration declared an invasion framework, directed wider enforcement and attempted to narrow recognition of birthright citizenship, prompting immediate litigation.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["miller", "policy coordinator"],
+        ["trump", "president"],
+        ["dhs", "implementing department"]
+      ],
+      "sources": ["protecting-americans-2025", "birthright-order-2025", "atlantic-miller-2026"],
+      "chapter": "executive-power"
+    },
+    {
+      "key": "arrest-target-2025",
+      "date": "2025-05",
+      "title": "Sets 3,000-arrest daily target",
+      "summary": "Miller publicly pressed ICE to make at least 3,000 arrests a day, far above the administration's average during its first four months.",
+      "category": "politics",
+      "significance": 3,
+      "status": "verified",
+      "participants": [
+        ["miller", "White House official"],
+        ["dhs", "implementing department"],
+        ["homan", "border adviser"]
+      ],
+      "sources": ["ap-enforcement-2025"],
+      "chapter": "enforcement"
+    },
+    {
+      "key": "security-portfolio-2026",
+      "date": "2026-06",
+      "title": "Homeland-security portfolio extends beyond immigration",
+      "summary": "A presidential memorandum assigned reporting and oversight functions to Miller's homeland-security office in national-security cybersecurity policy.",
+      "category": "politics",
+      "significance": 2,
+      "status": "verified",
+      "participants": [
+        ["miller", "homeland security adviser"],
+        ["white-house", "executive office"]
+      ],
+      "sources": ["white-house-nspm-2026", "white-house-disclosure-2026"],
+      "chapter": "enforcement"
+    }
+  ],
+  "statements": [
+    {
+      "key": "statue-liberty-2017",
+      "date": "2017-08-02",
+      "datePrecision": "day",
+      "venue": "White House press briefing",
+      "issue": "Legal immigration",
+      "quote": "The Statue of Liberty is a symbol of liberty and lighting the world.",
+      "summary": "Miller argued that the statue's later-added poem did not define a requirement for unlimited or skills-neutral immigration.",
+      "stance": "explicit",
+      "source": "white-house-briefing-2017"
+    },
+    {
+      "key": "english-2017",
+      "date": "2017-08-02",
+      "datePrecision": "day",
+      "venue": "White House press briefing",
+      "issue": "Legal immigration",
+      "quote": "It's a requirement that to be naturalized you have to speak English.",
+      "summary": "Miller defended an immigration proposal that favored English proficiency and skills.",
+      "stance": "explicit",
+      "source": "white-house-briefing-2017"
+    },
+    {
+      "key": "legal-system-2021",
+      "date": "2021-04-06",
+      "datePrecision": "day",
+      "venue": "America First Legal launch statement",
+      "issue": "Courts and executive power",
+      "quote": "We must deploy these tactics in defense of our nation’s legal, cultural, and constitutional heritage.",
+      "summary": "Miller described litigation as a central instrument of the post-administration movement.",
+      "stance": "explicit",
+      "source": "afl-launch-2021"
+    },
+    {
+      "key": "americans-only-2024",
+      "date": "2024-10-27",
+      "datePrecision": "day",
+      "venue": "Trump campaign rally, Madison Square Garden",
+      "issue": "National identity",
+      "quote": "America is for Americans and Americans only.",
+      "summary": "The line condensed Miller's nationalist campaign message and drew criticism for its exclusionary historical echoes.",
+      "stance": "explicit",
+      "source": "ap-project-2025"
+    },
+    {
+      "key": "arrests-2025",
+      "date": "2025-05",
+      "datePrecision": "month",
+      "venue": "Public direction on immigration enforcement",
+      "issue": "Immigration enforcement",
+      "summary": "Miller said ICE should make at least 3,000 arrests per day.",
+      "verbatim": false,
+      "stance": "explicit",
+      "source": "ap-enforcement-2025"
+    }
+  ],
+  "ideas": {
+    "traditions": [
+      {
+        "label": "National conservatism",
+        "atlasId": "national-conservatism",
+        "basis": "Miller defines government around national sovereignty, border control, cultural cohesion and preference for citizens.",
+        "context": "The label describes a political tradition, not an inference about every policy or personal motive.",
+        "sources": ["atlantic-miller-2018", "ap-project-2025", "yaf-miller"]
+      }
+    ],
+    "influences": [
+      {
+        "name": "Jeff Sessions",
+        "note": "Sessions's Senate office supplied Miller with an institutional base for opposition to comprehensive immigration reform and for a worker-centered restrictionist argument.",
+        "sources": ["sessions-immigration-2013", "atlantic-miller-2018"]
+      },
+      {
+        "name": "Donald Trump",
+        "note": "Trump gave Miller a national campaign platform and sustained executive access across two administrations.",
+        "sources": ["ap-appointments-2024", "white-house-staff-2025"]
+      }
+    ],
+    "works": [
+      {
+        "title": "Trump administration immigration agenda",
+        "year": 2017,
+        "kind": "Policy program",
+        "detail": "Travel restrictions, asylum and refugee limits, enforcement expansion and lower legal-immigration targets developed across the first term.",
+        "source": "atlantic-miller-2018"
+      },
+      {
+        "title": "America First Legal",
+        "year": 2021,
+        "kind": "Legal organization",
+        "detail": "A litigation and advocacy institution created with other former Trump officials.",
+        "source": "afl-launch-2021"
+      }
+    ],
+    "featuredQuotes": ["americans-only-2024", "legal-system-2021"]
+  },
+  "chapters": [
+    {
+      "key": "formation",
+      "title": "A politics formed in liberal Santa Monica",
+      "dek": "Miller learned to turn minority conservative positions into public confrontation before he entered government.",
+      "body": "Stephen N. Miller was born in Santa Monica on August 23, 1985, and raised in a Jewish family with roots in Eastern European immigration. His later politics created a public conflict inside that family: relatives emphasized the refuge the United States had provided their ancestors, while Miller framed immigration primarily through sovereignty, assimilation and the interests of current citizens. [[atlantic-miller-2018, axios-miller-2025]]\n\nAt Santa Monica High School and then Duke University, Miller sought attention as a conservative dissenter. He wrote columns, appeared in campus controversies and attacked multicultural programs and what he regarded as political correctness. The style was not incidental to his later career: public conflict demonstrated commitment, attracted movement patrons and trained him to compress policy into adversarial media language. [[atlantic-miller-2018]]\n\nHe graduated from Duke in 2007 and moved directly into Republican communications work. Unlike aides who built expertise through agencies or law practice, Miller's early specialization was the link between argument, press strategy and institutional power. [[atlantic-miller-2018, axios-miller-2025]]"
+    },
+    {
+      "key": "sessions",
+      "title": "The Sessions office made immigration a governing project",
+      "dek": "A Senate communications job became an apprenticeship in legislative obstruction and policy design.",
+      "body": "After brief work for Republican House members, Miller joined Alabama Senator Jeff Sessions in 2009. Sessions was one of the Senate's most consistent opponents of expanding immigration, and Miller became both communications director and a policy aide. The office taught him how staffing, floor procedure, statistics and outside media could be combined to shift the boundaries of a party debate. [[atlantic-miller-2018, axios-miller-2025]]\n\nThe central test was the 2013 bipartisan immigration bill. It passed the Senate but never received a House vote. Miller helped Sessions argue that legalization and expanded admissions would reduce wages, burden public services and disadvantage existing workers. Supporters of the bill disputed those premises, but its defeat made the Sessions network an important pole inside Republican immigration politics. [[sessions-immigration-2013, atlantic-miller-2018]]\n\nDuring the next presidential cycle, Miller also communicated with Breitbart editors and other restrictionist institutions. This was more than ordinary press outreach: later-released emails showed him proposing frames, sources and stories. By the time Trump emerged, Miller had an organized argument and a media network ready for a national campaign. [[splc-emails-2019, washpost-emails-2019]]"
+    },
+    {
+      "key": "campaign",
+      "title": "Trump supplied the candidate; Miller supplied policy language",
+      "dek": "The 2016 campaign converted a Senate faction's immigration program into a presidential identity.",
+      "body": "Miller joined Donald Trump's campaign in early 2016 as a senior policy adviser and speechwriter. At rallies he often appeared before Trump, testing arguments about borders, trade, refugees and national decline. His value lay in making detailed restrictionist policy sound like a single moral choice between citizens and outsiders. [[atlantic-miller-2018, ap-appointments-2024]]\n\nHe helped craft the campaign's major immigration speeches and then worked on the inaugural address, whose “American carnage” language presented the federal government as having abandoned its own people. Trump supplied the celebrity and intuition; Miller supplied durable formulations and a pathway from rally promise to executive instruction. [[atlantic-miller-2018]]\n\nThat relationship survived staff turnover because Miller rarely sought an independent electoral base. His authority rested on understanding Trump's preferences, producing usable language and remaining aligned when other advisers tried to moderate or redirect policy. [[atlantic-miller-2018, atlantic-miller-2026]]"
+    },
+    {
+      "key": "first-term",
+      "title": "The first term tested the reach of executive restriction",
+      "dek": "Travel, refugee and legal-immigration policy showed both the speed and the legal limits of White House-centered design.",
+      "body": "Miller entered the White House as a senior adviser and director of speechwriting. One week after inauguration, Trump signed an order suspending entry from several Muslim-majority countries and pausing refugee admissions. The rushed first version produced airport confusion and court defeats; revised versions followed. [[travel-ban-2017, atlantic-miller-2018]]\n\nIn 2018 the Supreme Court upheld the third version under the president's statutory power over entry. The majority treated the proclamation as facially grounded in national security, while the dissents stressed the campaign's anti-Muslim statements. The result was a legal victory for the administration without a judicial endorsement of every argument or every earlier version. [[scotus-travel-ban-2018]]\n\nMiller also pressed proposals to reduce refugee admissions, tighten asylum, change public-charge rules and favor higher-skilled legal immigrants. In an August 2017 briefing he disputed the idea that the Statue of Liberty's poem dictated immigration levels. The exchange made visible a central premise: immigration was a policy instrument subject to selection and numerical control, not an open-ended national obligation. [[white-house-briefing-2017, atlantic-miller-2018]]"
+    },
+    {
+      "key": "separation",
+      "title": "Deterrence reached its moral and administrative breaking point",
+      "dek": "Family separation made the human consequences of an enforcement-first strategy impossible to treat as abstraction.",
+      "body": "In April 2018 the Justice Department announced zero tolerance for criminal illegal entry. Because children could not remain in criminal custody with prosecuted parents, the policy produced separation on a large scale. The government lacked a reliable unified system to track and reunify families, turning a deterrence strategy into an administrative and humanitarian crisis. [[doj-zero-tolerance-2018, atlantic-family-separation-2022]]\n\nDetailed later reporting identified Miller as a persistent advocate of stronger deterrence and as someone who pressed the separation idea inside the White House. Formal implementation ran through the Justice and Homeland Security departments, and many officials participated; responsibility was distributed, but Miller was not merely a speechwriter observing the result. [[atlantic-family-separation-2022]]\n\nTrump ended routine separation by executive order after political backlash, and a federal judge ordered reunification. The episode demonstrated both Miller's influence and its limits: he could drive a policy across agencies, but courts, implementation failures and public reaction could force retreat. [[atlantic-family-separation-2022]]"
+    },
+    {
+      "key": "controversy",
+      "title": "The Breitbart archive exposed the sources behind the rhetoric",
+      "dek": "Leaked emails moved criticism from inference about tone to documentary evidence about reading, sourcing and media coordination.",
+      "body": "In November 2019 the Southern Poverty Law Center began publishing material from more than 900 emails Miller had sent to former Breitbart editor Katie McHugh in 2015 and 2016. The archive showed him recommending stories, supplying research and pointing to material circulated by white-nationalist and anti-immigration writers, including discussion of The Camp of the Saints. [[splc-emails-2019, washpost-emails-2019]]\n\nSPLC concluded that the emails demonstrated an affinity for white-nationalist ideas. The White House rejected that characterization and attacked SPLC as a partisan and discredited organization. Independent reporting authenticated exchanges and confirmed McHugh's account, while the precise label applied to Miller remained a matter of interpretation and political dispute. [[splc-emails-2019, washpost-emails-2019]]\n\nThe strongest documentary conclusion is narrower and still consequential: a serving Senate aide who later became a White House adviser used sources and frames associated with extremist movements to shape a national outlet's immigration coverage. His Jewish identity neither disproves that record nor determines how it should be labeled. [[splc-emails-2019, washpost-emails-2019]]"
+    },
+    {
+      "key": "between-terms",
+      "title": "America First Legal preserved the program between presidencies",
+      "dek": "Out of office, Miller built a durable litigation institution rather than waiting for another campaign.",
+      "body": "After Trump left office, Miller co-founded America First Legal with other former administration officials in April 2021. The organization described itself as a conservative answer to progressive public-interest litigation and promised to use courts against what it called unlawful actions by the left. [[afl-launch-2021]]\n\nAFL challenged Biden administration policies, filed civil-rights complaints and developed legal personnel and arguments that could survive beyond a single election. Miller served as its public face and president until returning to government. His 2026 disclosure records the end of that outside role when he joined the White House. [[afl-launch-2021, white-house-disclosure-2026]]\n\nThe organization changed Miller's institutional position. In the first term he depended almost entirely on proximity to Trump; between terms he controlled a platform that could litigate, publicize and recruit. That made the second return less a restoration of one aide than the reunion of a White House office with an allied outside legal network. [[afl-launch-2021, ap-project-2025]]"
+    },
+    {
+      "key": "return",
+      "title": "The second return came with a larger office and a prepared agenda",
+      "dek": "Miller moved from senior adviser to deputy chief of staff with authority spanning policy and homeland security.",
+      "body": "During the 2024 campaign Miller made mass deportation and national identity central themes. At Madison Square Garden he declared that America was for Americans only. Critics compared the phrase with exclusionary nationalist slogans; Miller and allies presented it as an ordinary statement of citizen priority. [[ap-project-2025, ap-appointments-2024]]\n\nTrump named him deputy chief of staff for policy and homeland security adviser, positions that do not require Senate confirmation. The July 2025 staff report listed him at $195,200, and his later financial disclosure confirmed the continuing office. The titles gave him a formal route into domestic policy, border enforcement and national-security coordination. [[white-house-staff-2025, white-house-disclosure-2026]]\n\nThe administration arrived with executive orders ready on its first day. It described unlawful migration as an invasion, widened removal priorities and attempted to deny recognition of citizenship to some U.S.-born children. The orders were policy achievements in the sense of presidential action, not settled legal outcomes; litigation and implementation determine how much survives. [[protecting-americans-2025, birthright-order-2025, atlantic-miller-2026]]"
+    },
+    {
+      "key": "enforcement",
+      "title": "Targets, not titles, reveal the scale of Miller's power",
+      "dek": "Daily arrest demands translated White House preference into operational pressure across agencies and cities.",
+      "body": "By May 2025 Miller was pressing Immigration and Customs Enforcement to make at least 3,000 arrests a day, several times the administration's average during its first four months. The target encouraged wider operations away from the border and placed new demands on detention capacity, field offices and local communities. [[ap-enforcement-2025]]\n\nMiller worked alongside border adviser Tom Homan, but his deputy-chief role reached across departments and into the president's policy process. He could coordinate rather than command statutory officers directly; agency leaders and courts retained their own legal responsibilities. Distinguishing political pressure from formal chain of command is essential to measuring his influence accurately. [[ap-appointments-2024, ap-enforcement-2025]]\n\nBy 2026 official memoranda also routed national-security cybersecurity reporting through the homeland-security adviser, evidence that Miller's portfolio extended beyond immigration. As of October 22, 2026, his power rested on continuity: a long personal relationship with Trump, mastery of executive process, aligned outside institutions and willingness to set measurable enforcement demands. [[white-house-nspm-2026, white-house-disclosure-2026, atlantic-miller-2026]]"
+    }
+  ]
+}

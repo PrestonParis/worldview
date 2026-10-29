@@ -1,0 +1,966 @@
+{
+  "subject": "griffin",
+  "reviewedAt": "2026-10-25",
+  "sourcesVerifiedAt": "2026-10-25",
+  "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Kenneth%20C.%20Griffin.jpg?width=400",
+  "brief": {
+    "inclusion": "Founder of Citadel and Citadel Securities whose market institutions, philanthropy and nine-figure Republican giving create influence across finance, regulation, education and elections.",
+    "identifiers": { "fec_contributor": "GRIFFIN, KENNETH" },
+    "namesakes": "Matched to Citadel employment and Chicago, Palm Beach or Miami addresses; other Kenneth and Ken Griffins are excluded.",
+    "coverage": {
+      "from": "1968-10-15",
+      "through": "2026-10-25",
+      "lags": "The 2026 cycle remains open and real-time private-company wealth estimates fluctuate."
+    },
+    "openQuestions": [
+      "Citadel and Citadel Securities are private, so ownership valuations are estimates.",
+      "The profile does not aggregate donations by employees or companies into Griffin's personal total."
+    ],
+    "review": [
+      { "kind": "evidence", "by": "OA", "at": "2026-10-25" },
+      { "kind": "chronology", "by": "OA", "at": "2026-10-25" },
+      { "kind": "neutrality", "by": "OA", "at": "2026-10-25" },
+      { "kind": "current", "by": "OA", "at": "2026-10-25" }
+    ]
+  },
+  "summary": "Kenneth C. Griffin founded the hedge fund Citadel and the market maker Citadel Securities, two private firms that made him one of the world's wealthiest financiers. He is a leading Republican donor focused on congressional power, economic policy and national defense, while remaining willing to oppose parts of Donald Trump's agenda—especially tariffs, debt policy and conduct he describes as self-enrichment.",
+  "roles": [
+    {
+      "label": "Founder and CEO, Citadel",
+      "detail": "Founded the investment firm in 1990 and remains chief executive.",
+      "sources": ["citadel-bio", "newyorker-griffin-2026"]
+    },
+    {
+      "label": "Founder and non-executive chairman, Citadel Securities",
+      "detail": "Established the market maker with partners in 2002.",
+      "sources": ["citadel-bio", "house-testimony-2021"]
+    },
+    {
+      "label": "Republican megadonor",
+      "detail": "Among the five largest disclosed donor households in the 2024 federal cycle.",
+      "sources": ["opensecrets-2024", "wapo-donors-2024"]
+    },
+    {
+      "label": "Philanthropist and civic donor",
+      "detail": "Has directed billions toward education, health, museums and civic institutions.",
+      "sources": ["citadel-bio", "harvard-gift-2023", "ap-constitution-2025"]
+    }
+  ],
+  "entities": {
+    "griffin": { "match": { "name": "Ken Griffin", "type": "donor" } },
+    "citadel": {
+      "create": {
+        "name": "Citadel",
+        "type": "company",
+        "description": "Alternative investment firm founded by Kenneth C. Griffin in 1990.",
+        "websiteUrl": "https://www.citadel.com/"
+      }
+    },
+    "citadel-securities": {
+      "create": {
+        "name": "Citadel Securities",
+        "type": "company",
+        "description": "Market-making firm founded by Kenneth C. Griffin and partners in 2002.",
+        "websiteUrl": "https://www.citadelsecurities.com/"
+      }
+    },
+    "republican-party": { "match": { "name": "Republican Party", "type": "organization" } },
+    "trump": { "match": { "name": "Donald Trump", "type": "politician" } },
+    "desantis": {
+      "create": {
+        "name": "Ron DeSantis",
+        "type": "politician",
+        "description": "Florida governor and 2024 Republican presidential candidate."
+      }
+    },
+    "haley": {
+      "create": {
+        "name": "Nikki Haley",
+        "type": "politician",
+        "description": "Former South Carolina governor, U.N. ambassador and 2024 Republican presidential candidate."
+      }
+    },
+    "rubio": {
+      "create": {
+        "name": "Marco Rubio",
+        "type": "politician",
+        "description": "Florida Republican politician and former U.S. senator."
+      }
+    },
+    "clf": { "match": { "name": "Congressional Leadership Fund", "type": "organization" } },
+    "slf": { "match": { "name": "Senate Leadership Fund", "type": "organization" } },
+    "rga": {
+      "create": {
+        "name": "Republican Governors Association",
+        "type": "organization",
+        "description": "Political organization supporting Republican gubernatorial candidates."
+      }
+    },
+    "harvard": {
+      "create": {
+        "name": "Harvard University",
+        "type": "organization",
+        "description": "Private university in Cambridge, Massachusetts."
+      }
+    },
+    "constitution-center": {
+      "create": {
+        "name": "National Constitution Center",
+        "type": "organization",
+        "description": "Nonprofit museum and civic-education institution in Philadelphia.",
+        "websiteUrl": "https://constitutioncenter.org/"
+      }
+    },
+    "house-financial-services": {
+      "create": {
+        "name": "U.S. House Committee on Financial Services",
+        "type": "organization",
+        "description": "Committee of the U.S. House with jurisdiction over financial services and markets."
+      }
+    }
+  },
+  "sources": [
+    {
+      "key": "citadel-bio",
+      "title": "Kenneth C. Griffin — Founder & CEO",
+      "publisher": "Citadel",
+      "type": "primary",
+      "url": "https://www.citadel.com/who-we-are/leadership/kenneth-c-griffin/",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "forbes-griffin-2026",
+      "title": "Ken Griffin",
+      "publisher": "Forbes",
+      "type": "secondary",
+      "url": "https://www.forbes.com/profile/ken-griffin/",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "newyorker-griffin-2026",
+      "title": "Ken Griffin's Billions and Billions",
+      "publisher": "The New Yorker",
+      "type": "article",
+      "url": "https://www.newyorker.com/magazine/2026/06/22/ken-griffins-billions-and-billions",
+      "publishedAt": "2026-06-15",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "fortune-griffin-2026",
+      "title": "Ken Griffin wants to reshape Miami—and maybe American politics",
+      "publisher": "Fortune",
+      "type": "article",
+      "url": "https://www.citadel.com/wp-content/uploads/2026/04/137053.pdf",
+      "publishedAt": "2026-03-31",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "harvard-profile-2018",
+      "title": "Alumni Spotlight: Kenneth C. Griffin",
+      "publisher": "Harvard Department of Economics",
+      "type": "secondary",
+      "url": "https://www.economics.harvard.edu/sites/g/files/omnuum5991/files/2024-12/littlett2018_spread_1.pdf",
+      "publishedAt": "2018",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "harvard-gift-2023",
+      "title": "Exciting News",
+      "publisher": "Harvard University",
+      "author": "Lawrence S. Bacow",
+      "type": "official_statement",
+      "url": "https://www.harvard.edu/president/news-and-statements-by-president-bacow/2023/exciting-news/",
+      "publishedAt": "2023-04-11",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "harvard-pause-2024",
+      "title": "Billionaire Megadonor Ken Griffin Says He Will Stop Donations to Harvard",
+      "publisher": "The Harvard Crimson",
+      "type": "article",
+      "url": "https://www.thecrimson.com/article/2024/1/31/ken-griffin-pausing-harvard-donations/",
+      "publishedAt": "2024-01-31",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "house-testimony-2021",
+      "title": "Testimony of Kenneth C. Griffin before the House Committee on Financial Services",
+      "publisher": "U.S. House Committee on Financial Services",
+      "author": "Kenneth C. Griffin",
+      "type": "transcript",
+      "url": "https://financialservices.house.gov/uploadedfiles/hhrg-117-ba00-wstate-griffink-20210218.pdf",
+      "publishedAt": "2021-02-18",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "sec-meme-report-2021",
+      "title": "Staff Report on Equity and Options Market Structure Conditions in Early 2021",
+      "publisher": "U.S. Securities and Exchange Commission",
+      "type": "filing",
+      "url": "https://www.sec.gov/files/staff-report-equity-options-market-struction-conditions-early-2021.pdf",
+      "publishedAt": "2021-10-14",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "citadel-miami-2022",
+      "title": "Ken Griffin Moving Citadel From Chicago to Miami",
+      "publisher": "Citadel",
+      "type": "official_statement",
+      "url": "https://www.citadel.com/news/ken-griffin-moving-citadel-from-chicago-to-miami-following-crime-complaints/",
+      "publishedAt": "2022-06-23",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "citadelsecurities-miami-2022",
+      "title": "Citadel and Citadel Securities to Relocate HQ from Chicago to Miami",
+      "publisher": "Citadel Securities",
+      "type": "official_statement",
+      "url": "https://www.citadelsecurities.com/news-and-insights/citadel-to-relocate-hq-from-chicago-to-miami/",
+      "publishedAt": "2022-06-23",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "ap-haley-2024",
+      "title": "Republican megadonor Ken Griffin gave $5 million to super PAC backing Nikki Haley",
+      "publisher": "Associated Press",
+      "type": "article",
+      "url": "https://apnews.com/article/2ede4041821f4bf7cce28bca8d1b346b",
+      "publishedAt": "2024-01-30",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "opensecrets-2024",
+      "title": "Elon Musk tops list of 2024 political donors, but six others gave more than $100 million",
+      "publisher": "OpenSecrets",
+      "type": "article",
+      "url": "https://www.opensecrets.org/news/2025/03/elon-musk-tops-list-of-2024-political-donors-but-six-others-gave-more-than-100-million",
+      "publishedAt": "2025-03",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "wapo-donors-2024",
+      "title": "Meet the top 50 campaign donors pumping millions into the 2024 election",
+      "publisher": "The Washington Post",
+      "type": "article",
+      "url": "https://www.washingtonpost.com/elections/interactive/2024/biggest-campaign-donors-election-2024/",
+      "publishedAt": "2024",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "wapo-senate-2024",
+      "title": "Maryland's critical Senate race sees big money from conservative donors",
+      "publisher": "The Washington Post",
+      "type": "article",
+      "url": "https://www.washingtonpost.com/dc-md-va/2024/09/29/maryland-senate-race-hogan-alsobrooks/",
+      "publishedAt": "2024-09-29",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "fec-griffin",
+      "title": "Individual contributions by Griffin, Kenneth",
+      "publisher": "Federal Election Commission",
+      "type": "filing",
+      "url": "https://www.fec.gov/data/receipts/individual-contributions/?contributor_name=GRIFFIN%2C+KENNETH",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "ap-constitution-2025",
+      "title": "Ken Griffin will loan his copies of the Constitution and Bill of Rights so the public can see them",
+      "publisher": "Associated Press",
+      "type": "article",
+      "url": "https://apnews.com/article/33e2c20b27f96306da2e36067f224a97",
+      "publishedAt": "2025-05-13",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "milken-transcript-2025",
+      "title": "A Conversation with Citadel CEO Ken Griffin",
+      "publisher": "Milken Institute",
+      "author": "Kenneth C. Griffin",
+      "type": "transcript",
+      "url": "https://milkeninstitute.org/sites/default/files/2025-05/conversation-with-citadel-ceo-ken-griffin_Transcript_GC25.pdf",
+      "publishedAt": "2025-05",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "citadel-transcript-2025",
+      "title": "A Conversation with Ken Griffin",
+      "publisher": "Citadel Securities",
+      "author": "Kenneth C. Griffin",
+      "type": "transcript",
+      "url": "https://www.citadelsecurities.com/wp-content/uploads/sites/2/2025/11/A-Conversation-with-Ken-Griffin-Transcript.pdf",
+      "publishedAt": "2025-11",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "bloomberg-clf-2026",
+      "title": "Ken Griffin Gives $5 Million to GOP in First Midterm Donation",
+      "publisher": "Bloomberg Law",
+      "type": "article",
+      "url": "https://news.bloomberglaw.com/securities-law/ken-griffin-gives-5-million-to-gop-in-first-midterm-donation",
+      "publishedAt": "2026-05-22",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "axios-2028-2026",
+      "title": "GOP megadonor Ken Griffin says he'd back Rubio over Vance in 2028",
+      "publisher": "Axios",
+      "type": "article",
+      "url": "https://www.axios.com/2026/07/08/ken-griffin-gop-rubio-vance-2028",
+      "publishedAt": "2026-07-08",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "yahoo-debt-2026",
+      "title": "Ken Griffin says Republicans made a mistake extending Trump's tax cuts instead of reining in debt",
+      "publisher": "Fortune via Yahoo Finance",
+      "type": "article",
+      "url": "https://finance.yahoo.com/economy/policy/articles/ken-griffin-gop-megadonor-says-103000364.html",
+      "publishedAt": "2026-10-23",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "dailybeast-enrichment-2026",
+      "title": "Billionaire GOP Megadonor Rips Trump White House for 'Enriching' Their Own Families",
+      "publisher": "The Daily Beast",
+      "type": "article",
+      "url": "https://www.thedailybeast.com/billionaire-gop-megadonor-rips-trump-white-house-for-enriching-families/",
+      "publishedAt": "2026-02-04",
+      "accessedAt": "2026-10-25",
+      "notes": "Secondary account of remarks at a Wall Street Journal conference."
+    },
+    {
+      "key": "bloomberg-midterms-2026",
+      "title": "Ken Griffin Gives Millions to Back GOP in Tight Senate Races",
+      "publisher": "Bloomberg",
+      "type": "article",
+      "url": "https://www.bloomberg.com/news/articles/2026-07-15/ken-griffin-spends-millions-to-back-gop-in-tight-senate-races",
+      "publishedAt": "2026-07-15",
+      "accessedAt": "2026-10-25"
+    }
+  ],
+  "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "October 15, 1968",
+      "detail": "Daytona Beach, Florida.",
+      "featured": true,
+      "sources": ["forbes-griffin-2026", "harvard-profile-2018"]
+    },
+    { "key": "sex", "label": "Sex", "value": "Male", "sources": ["citadel-bio"] },
+    { "key": "citizenship", "label": "Citizenship", "value": "United States", "sources": ["forbes-griffin-2026"] },
+    {
+      "key": "residence",
+      "label": "Residence",
+      "value": "Miami, Florida",
+      "asOf": "2026-10-25",
+      "sources": ["fortune-griffin-2026", "citadel-miami-2022"]
+    },
+    {
+      "key": "party",
+      "label": "Political affiliation",
+      "value": "Republican",
+      "detail": "Major Republican donor; has not supported every Republican presidential nominee financially.",
+      "sources": ["fec-griffin", "opensecrets-2024"]
+    },
+    {
+      "key": "education",
+      "label": "Education",
+      "value": "Harvard College",
+      "detail": "A.B., economics, 1989.",
+      "sources": ["citadel-bio", "harvard-profile-2018"]
+    },
+    {
+      "key": "current-roles",
+      "label": "Current roles",
+      "value": "Founder and CEO, Citadel; founder and non-executive chairman, Citadel Securities",
+      "featured": true,
+      "asOf": "2026-10-25",
+      "sources": ["citadel-bio"]
+    },
+    {
+      "key": "net-worth",
+      "label": "Estimated net worth",
+      "value": "$51.2 billion",
+      "detail": "Forbes estimate reported in January 2026; the value changes with estimates of two private firms.",
+      "featured": true,
+      "asOf": "2026-01-01",
+      "sources": ["forbes-griffin-2026"]
+    },
+    {
+      "key": "philanthropy",
+      "label": "Lifetime philanthropy",
+      "value": "More than $5.7 billion",
+      "detail": "Citadel's current institutional biography total.",
+      "asOf": "2026-10-25",
+      "sources": ["citadel-bio"]
+    },
+    {
+      "key": "wealth-source",
+      "label": "Source of wealth",
+      "value": "Citadel and Citadel Securities",
+      "sources": ["forbes-griffin-2026", "newyorker-griffin-2026"]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "citadel",
+      "source": "griffin",
+      "target": "citadel",
+      "relType": "founded",
+      "role": "Founder (1990) and chief executive officer",
+      "from": "1990",
+      "prominence": 3,
+      "sources": ["citadel-bio"]
+    },
+    {
+      "key": "citadel-securities",
+      "source": "griffin",
+      "target": "citadel-securities",
+      "relType": "founded",
+      "role": "Founder (2002) and non-executive chairman",
+      "from": "2002",
+      "prominence": 3,
+      "sources": ["citadel-bio", "house-testimony-2021"]
+    },
+    {
+      "key": "republican",
+      "source": "griffin",
+      "target": "republican-party",
+      "relType": "party-member",
+      "role": "Major donor to candidates, party committees and leadership-aligned super PACs",
+      "prominence": 3,
+      "sources": ["fec-griffin", "opensecrets-2024"]
+    },
+    {
+      "key": "rubio",
+      "source": "griffin",
+      "target": "rubio",
+      "relType": "endorsed",
+      "role": "Endorsed in the 2016 presidential primary and later said he preferred Rubio for 2028",
+      "from": "2015",
+      "prominence": 1,
+      "sources": ["axios-2028-2026"]
+    },
+    {
+      "key": "desantis",
+      "source": "griffin",
+      "target": "desantis",
+      "relType": "donated-to",
+      "role": "Gave $5 million to his Florida political committee before declining to fund the launched 2024 presidential campaign",
+      "from": "2021",
+      "until": "2023",
+      "prominence": 2,
+      "sources": ["ap-haley-2024"]
+    },
+    {
+      "key": "haley",
+      "source": "griffin",
+      "target": "haley",
+      "relType": "donated-to",
+      "role": "Gave $5 million to the SFA Fund supporting her 2024 presidential campaign",
+      "from": "2023-12",
+      "until": "2024",
+      "prominence": 2,
+      "sources": ["ap-haley-2024"]
+    },
+    {
+      "key": "clf",
+      "source": "griffin",
+      "target": "clf",
+      "relType": "donated-to",
+      "role": "Major funder of the House Republican leadership-aligned super PAC",
+      "prominence": 3,
+      "sources": ["fec-griffin", "bloomberg-clf-2026"]
+    },
+    {
+      "key": "slf",
+      "source": "griffin",
+      "target": "slf",
+      "relType": "donated-to",
+      "role": "Major funder of the Senate Republican leadership-aligned super PAC",
+      "prominence": 3,
+      "sources": ["fec-griffin", "wapo-senate-2024"]
+    },
+    {
+      "key": "rga",
+      "source": "griffin",
+      "target": "rga",
+      "relType": "donated-to",
+      "role": "Longtime donor to Republican gubernatorial campaigns",
+      "prominence": 2,
+      "sources": ["fec-griffin"]
+    },
+    {
+      "key": "harvard",
+      "source": "griffin",
+      "target": "harvard",
+      "relType": "donated-to",
+      "role": "More than $500 million in gifts before pausing further support in 2024",
+      "from": "1989",
+      "until": "2024",
+      "prominence": 2,
+      "sources": ["harvard-gift-2023", "harvard-pause-2024"]
+    },
+    {
+      "key": "constitution-center",
+      "source": "griffin",
+      "target": "constitution-center",
+      "relType": "donated-to",
+      "role": "$15 million gift and long-term loans of rare Constitution and Bill of Rights printings",
+      "from": "2025",
+      "prominence": 2,
+      "sources": ["ap-constitution-2025"]
+    },
+    {
+      "key": "house-testimony",
+      "source": "griffin",
+      "target": "house-financial-services",
+      "relType": "affiliated-with",
+      "role": "Witness at the 2021 GameStop market-structure hearing",
+      "from": "2021-02-18",
+      "until": "2021-02-18",
+      "prominence": 1,
+      "sources": ["house-testimony-2021"]
+    },
+    {
+      "key": "trump",
+      "source": "griffin",
+      "target": "trump",
+      "relType": "allied-with",
+      "role": "Voted for Trump in 2024 but withheld a presidential donation and later criticized tariffs, debt policy and administration self-dealing",
+      "from": "2024",
+      "prominence": 2,
+      "notes": "This is a limited electoral alignment, not an assertion of personal alliance or agreement across policies.",
+      "sources": ["fortune-griffin-2026", "dailybeast-enrichment-2026", "yahoo-debt-2026"]
+    }
+  ],
+  "events": [
+    {
+      "key": "birth",
+      "date": "1968-10-15",
+      "title": "Born in Daytona Beach",
+      "summary": "Kenneth Cordele Griffin was born in Daytona Beach, Florida.",
+      "category": "personal",
+      "significance": 1,
+      "chapter": "formation",
+      "sources": ["forbes-griffin-2026", "harvard-profile-2018"]
+    },
+    {
+      "key": "dorm-trading",
+      "date": "1986",
+      "title": "Begins trading from Harvard",
+      "summary": "As a first-year student, Griffin began trading convertible bonds and installed communications equipment in his dormitory to receive market data.",
+      "category": "career",
+      "significance": 2,
+      "chapter": "formation",
+      "sources": ["citadel-bio", "harvard-profile-2018"]
+    },
+    {
+      "key": "harvard",
+      "date": "1989",
+      "title": "Graduates from Harvard",
+      "summary": "He completed an economics degree and continued managing investment capital.",
+      "category": "career",
+      "significance": 1,
+      "chapter": "formation",
+      "participants": [["harvard", "university"]],
+      "sources": ["citadel-bio", "harvard-profile-2018"]
+    },
+    {
+      "key": "citadel",
+      "date": "1990",
+      "title": "Founds Citadel",
+      "summary": "Griffin established the investment firm that became the primary source of his wealth and institutional power.",
+      "category": "career",
+      "significance": 3,
+      "chapter": "citadel",
+      "participants": [["citadel", "company"]],
+      "sources": ["citadel-bio"]
+    },
+    {
+      "key": "citadel-securities",
+      "date": "2002",
+      "title": "Establishes Citadel Securities",
+      "summary": "Griffin and his partners created a separate market-making business that grew into major infrastructure for U.S. securities trading.",
+      "category": "career",
+      "significance": 3,
+      "chapter": "markets",
+      "participants": [["citadel-securities", "company"]],
+      "sources": ["citadel-bio", "house-testimony-2021"]
+    },
+    {
+      "key": "financial-crisis",
+      "date": "2008",
+      "date_end": "2009",
+      "title": "Citadel survives the financial crisis",
+      "summary": "Large losses and investor redemption restrictions threatened the firm; its survival became a defining episode in Griffin's approach to liquidity and risk.",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "citadel",
+      "sources": ["newyorker-griffin-2026"]
+    },
+    {
+      "key": "harvard-2014",
+      "date": "2014",
+      "title": "Gives $150 million for Harvard financial aid",
+      "summary": "The gift was the largest in Harvard College's history at the time and expanded Griffin's role as a major education donor.",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "philanthropy",
+      "participants": [["harvard", "recipient"]],
+      "sources": ["harvard-profile-2018", "harvard-gift-2023"]
+    },
+    {
+      "key": "rubio-2016",
+      "date": "2015-12",
+      "title": "Endorses Marco Rubio for president",
+      "summary": "Griffin backed Rubio in the 2016 Republican primary while also giving smaller amounts to super PACs supporting other establishment candidates.",
+      "category": "politics",
+      "significance": 1,
+      "chapter": "politics",
+      "participants": [["rubio", "candidate"]],
+      "sources": ["axios-2028-2026"]
+    },
+    {
+      "key": "2020-cycle",
+      "date": "2020-12-31",
+      "title": "Gives about $66 million in the federal cycle",
+      "summary": "His 2020 giving placed him among the country's largest Republican donors and concentrated on outside groups and congressional power.",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "politics",
+      "sources": ["fec-griffin", "opensecrets-2024"]
+    },
+    {
+      "key": "gamestop",
+      "date": "2021-02-18",
+      "title": "Testifies at GameStop hearing",
+      "summary": "Griffin denied that Citadel Securities caused Robinhood to restrict trading in GameStop; the SEC later documented market conditions without finding that Citadel directed Robinhood's decision.",
+      "category": "legal",
+      "significance": 2,
+      "chapter": "markets",
+      "participants": [["house-financial-services", "committee"]],
+      "sources": ["house-testimony-2021", "sec-meme-report-2021"]
+    },
+    {
+      "key": "constitution-purchase",
+      "date": "2021-11",
+      "title": "Buys rare Constitution printing",
+      "summary": "He paid $43.2 million at auction for a first printing of the U.S. Constitution and said it would be made available for public viewing.",
+      "category": "finance",
+      "significance": 1,
+      "chapter": "philanthropy",
+      "sources": ["ap-constitution-2025"]
+    },
+    {
+      "key": "miami",
+      "date": "2022-06-23",
+      "title": "Moves both firms' headquarters to Miami",
+      "summary": "Citadel and Citadel Securities announced relocation from Chicago to Miami, shifting Griffin's business and civic focus to Florida.",
+      "category": "career",
+      "significance": 3,
+      "chapter": "miami",
+      "participants": [
+        ["citadel", "relocated company"],
+        ["citadel-securities", "relocated company"]
+      ],
+      "sources": ["citadel-miami-2022", "citadelsecurities-miami-2022"]
+    },
+    {
+      "key": "2022-cycle",
+      "date": "2022-12-31",
+      "title": "Gives roughly $71 million to Republican groups",
+      "summary": "Griffin ranked among the largest donors in the midterm cycle, with contributions focused on congressional and gubernatorial contests.",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "politics",
+      "sources": ["fec-griffin", "opensecrets-2024"]
+    },
+    {
+      "key": "harvard-300",
+      "date": "2023-04-11",
+      "title": "Gives Harvard $300 million",
+      "summary": "Harvard renamed its Graduate School of Arts and Sciences after Griffin and said his university giving had exceeded $500 million.",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "philanthropy",
+      "participants": [["harvard", "recipient"]],
+      "sources": ["harvard-gift-2023"]
+    },
+    {
+      "key": "haley",
+      "date": "2024-01",
+      "title": "Gives $5 million to Nikki Haley super PAC",
+      "summary": "After declining to fund DeSantis's launched campaign, Griffin supported Haley while saying his main focus would remain House and Senate candidates.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "politics",
+      "participants": [["haley", "candidate"]],
+      "sources": ["ap-haley-2024"]
+    },
+    {
+      "key": "harvard-pause",
+      "date": "2024-01-30",
+      "title": "Pauses donations to Harvard",
+      "summary": "Griffin said he would stop further gifts over the university's governance and campus response to antisemitism, less than a year after the $300 million gift.",
+      "category": "ideas",
+      "significance": 2,
+      "chapter": "philanthropy",
+      "participants": [["harvard", "institution"]],
+      "sources": ["harvard-pause-2024"]
+    },
+    {
+      "key": "2024-cycle",
+      "date": "2024-12-31",
+      "title": "Gives about $108.4 million in the 2024 cycle",
+      "summary": "OpenSecrets ranked Griffin fifth among donor households, with giving classified entirely on the Republican side and concentrated outside the presidential nominee's campaign.",
+      "category": "finance",
+      "significance": 3,
+      "chapter": "politics",
+      "sources": ["opensecrets-2024", "wapo-donors-2024"]
+    },
+    {
+      "key": "tariffs",
+      "date": "2025-05",
+      "title": "Warns tariffs foster crony capitalism",
+      "summary": "At the Milken conference, Griffin argued that tariff exemptions invite lobbying and government favoritism while weakening globally competitive firms.",
+      "category": "ideas",
+      "significance": 2,
+      "chapter": "ideas",
+      "sources": ["milken-transcript-2025", "citadel-transcript-2025"]
+    },
+    {
+      "key": "constitution-loan",
+      "date": "2025-05-13",
+      "title": "Loans founding documents and gives $15 million",
+      "summary": "Griffin committed his rare Constitution and Bill of Rights printings to a National Constitution Center exhibit and funded the gallery.",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "philanthropy",
+      "participants": [["constitution-center", "recipient"]],
+      "sources": ["ap-constitution-2025"]
+    },
+    {
+      "key": "administration-criticism",
+      "date": "2026-02",
+      "title": "Criticizes enrichment around Trump administration",
+      "summary": "Griffin questioned whether public interests were being served when administration decisions enriched officials' families and associated organizations.",
+      "category": "ideas",
+      "significance": 2,
+      "chapter": "ideas",
+      "participants": [["trump", "president"]],
+      "sources": ["dailybeast-enrichment-2026"]
+    },
+    {
+      "key": "2026-first",
+      "date": "2026-05-01",
+      "title": "Begins 2026 federal giving with $5 million House gift",
+      "summary": "He gave $5 million to Congressional Leadership Fund, his first reported federal contribution of the midterm cycle.",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "present",
+      "participants": [["clf", "recipient"]],
+      "sources": ["bloomberg-clf-2026"]
+    },
+    {
+      "key": "senate-2026",
+      "date": "2026-07",
+      "title": "Adds targeted Senate spending",
+      "summary": "Griffin funded outside groups in competitive Senate races while narrowing the set of races receiving his support.",
+      "category": "politics",
+      "significance": 1,
+      "chapter": "present",
+      "participants": [["slf", "recipient network"]],
+      "sources": ["bloomberg-midterms-2026", "newyorker-griffin-2026"]
+    },
+    {
+      "key": "debt-2026",
+      "date": "2026-10-23",
+      "title": "Faults Republicans for prioritizing tax-cut extension over debt",
+      "summary": "Days before this review, Griffin argued that extending tax cuts without stronger deficit control was a Republican policy mistake.",
+      "category": "ideas",
+      "significance": 2,
+      "chapter": "present",
+      "sources": ["yahoo-debt-2026"]
+    }
+  ],
+  "statements": [
+    {
+      "key": "gamestop-denial",
+      "date": "2021-02-18",
+      "datePrecision": "day",
+      "venue": "House Financial Services Committee",
+      "issue": "Market structure",
+      "quote": "We had no role in Robinhood's decision to limit trading in GameStop or any other of the ‘meme’ stocks.",
+      "summary": "Griffin denied directing Robinhood's trading restrictions.",
+      "source": "house-testimony-2021"
+    },
+    {
+      "key": "miami-dream",
+      "date": "2022-06-23",
+      "datePrecision": "day",
+      "venue": "Employee relocation announcement",
+      "issue": "Cities and growth",
+      "quote": "Miami is a vibrant, growing metropolis that embodies the American Dream.",
+      "summary": "He explained the decision to relocate Citadel's headquarters.",
+      "source": "citadel-miami-2022"
+    },
+    {
+      "key": "haley",
+      "date": "2024-01-30",
+      "datePrecision": "day",
+      "venue": "Statement to Associated Press",
+      "issue": "2024 presidential election",
+      "quote": "America would be well served by someone with her foreign policy credentials and policy priorities in the White House.",
+      "summary": "Griffin explained his financial support for Nikki Haley.",
+      "source": "ap-haley-2024"
+    },
+    {
+      "key": "congress-focus",
+      "date": "2024-01-30",
+      "datePrecision": "day",
+      "venue": "Statement to Associated Press",
+      "issue": "Congressional elections",
+      "quote": "I will continue my focus on actively supporting U.S. House and Senate candidates prioritizing economic freedom and a strong defense of America at home and abroad.",
+      "summary": "He identified the criteria and offices at the center of his giving.",
+      "source": "ap-haley-2024"
+    },
+    {
+      "key": "tariffs",
+      "date": "2025-05",
+      "datePrecision": "month",
+      "venue": "Milken Institute Global Conference",
+      "issue": "Tariffs",
+      "quote": "Tariffs open the doors to crony capitalism.",
+      "summary": "Griffin argued that exemptions and lobbying distort trade policy.",
+      "source": "milken-transcript-2025"
+    },
+    {
+      "key": "constitution",
+      "date": "2025-05-13",
+      "datePrecision": "day",
+      "venue": "National Constitution Center announcement",
+      "issue": "Constitutional government",
+      "quote": "The authors of the Constitution had incredible foresight in designing a system of government that has withstood the test of time.",
+      "summary": "He explained why he would loan the documents for public display.",
+      "source": "ap-constitution-2025"
+    },
+    {
+      "key": "public-interest",
+      "date": "2026-02-03",
+      "datePrecision": "day",
+      "venue": "Wall Street Journal conference",
+      "issue": "Government ethics",
+      "quote": "That calls into question: is the public interest being served?",
+      "summary": "Griffin criticized administration choices that enriched officials' families and aligned organizations.",
+      "source": "dailybeast-enrichment-2026"
+    },
+    {
+      "key": "narrower-aperture",
+      "date": "2026-06",
+      "datePrecision": "month",
+      "venue": "The New Yorker interview",
+      "issue": "Political giving",
+      "quote": "The aperture of where we're focussing our contributions is just narrower.",
+      "summary": "He said his 2026 giving might be below prior cycles because he was targeting fewer races.",
+      "source": "newyorker-griffin-2026"
+    }
+  ],
+  "finance": {
+    "fec": {
+      "contributorName": "GRIFFIN, KENNETH",
+      "namePattern": "^GRIFFIN, (KENNETH|KEN)( C\\.?| CORDELE)?$",
+      "employerPattern": "CITADEL|SELF[- ]EMPLOYED",
+      "cities": ["CHICAGO", "MIAMI", "PALM BEACH", "NEW YORK"],
+      "source": "fec-griffin"
+    },
+    "coverage": "Itemized federal contributions matched by exact name plus Citadel employment or known locations. The ledger excludes state giving, philanthropy, company activity, employee donations and independent expenditures made after recipient committees received his money. The 2026 cycle remains open."
+  },
+  "ideas": {
+    "traditions": [
+      {
+        "label": "Market liberalism",
+        "atlasId": "classical-liberalism",
+        "basis": "Repeated advocacy of competitive markets, free trade and limited government favoritism.",
+        "context": "Griffin supports regulation of markets but argues against protectionism and discretionary tariff exemptions.",
+        "sources": ["milken-transcript-2025", "citadel-transcript-2025"]
+      },
+      {
+        "label": "Constitutionalism",
+        "atlasId": "liberal-constitutionalism",
+        "basis": "Public statements and funding centered on constitutional institutions and civic education.",
+        "context": "His National Constitution Center project combines collecting, philanthropy and public display.",
+        "sources": ["ap-constitution-2025"]
+      }
+    ],
+    "influences": [
+      {
+        "name": "Ronald Reagan",
+        "note": "Griffin frequently invokes pro-growth, free-market Republican politics associated with Reagan, while criticizing protectionist departures from it.",
+        "sources": ["fortune-griffin-2026", "milken-transcript-2025"]
+      }
+    ],
+    "works": [
+      {
+        "title": "Congressional testimony on market volatility",
+        "year": "2021",
+        "kind": "Testimony",
+        "detail": "Defense of Citadel Securities' conduct and explanation of retail market structure during the GameStop episode.",
+        "source": "house-testimony-2021"
+      }
+    ],
+    "featuredQuotes": ["congress-focus", "tariffs", "public-interest", "constitution"]
+  },
+  "chapters": [
+    {
+      "key": "formation",
+      "title": "From dorm room to fund manager",
+      "dek": "An early market obsession becomes a business",
+      "body": "Kenneth Cordele Griffin was born in Daytona Beach, Florida, on October 15, 1968. He entered Harvard in 1986 and began trading convertible bonds from his dormitory, arranging real-time data access before such tools were ordinary for students [[forbes-griffin-2026, citadel-bio, harvard-profile-2018]].\n\nHe graduated in 1989 with an economics degree. The early funds he managed established the performance record and investor relationships that let him launch a separate firm the following year [[citadel-bio, harvard-profile-2018]]."
+    },
+    {
+      "key": "citadel",
+      "title": "Building Citadel",
+      "dek": "Risk-taking, crisis and a private financial empire",
+      "body": "Griffin founded Citadel in 1990. The investment firm expanded across strategies and markets, making his ownership stake the first pillar of a fortune that Forbes later measured in tens of billions of dollars [[citadel-bio, forbes-griffin-2026]].\n\nThe 2008 financial crisis nearly broke that trajectory: losses mounted and the firm restricted redemptions. Citadel survived and later grew far beyond its pre-crisis scale, an episode Griffin and outside profiles treat as formative for its emphasis on liquidity and centralized risk controls [[newyorker-griffin-2026]]."
+    },
+    {
+      "key": "markets",
+      "title": "A second Citadel at the center of markets",
+      "dek": "Market making adds reach—and scrutiny",
+      "body": "In 2002 Griffin and his partners established Citadel Securities, legally separate from the hedge fund. It became one of the largest market makers, executing a substantial share of U.S. retail equity trading and giving Griffin influence over debates about how markets are designed [[citadel-bio, house-testimony-2021]].\n\nThat role brought national scrutiny during the 2021 GameStop episode. Griffin told Congress Citadel Securities did not direct Robinhood's trading restrictions. The SEC's later staff report described extraordinary market stress but did not find that Citadel ordered the broker's decision [[house-testimony-2021, sec-meme-report-2021]]."
+    },
+    {
+      "key": "politics",
+      "title": "Financing Republican power",
+      "dek": "Congress first, presidents selectively",
+      "body": "Griffin's giving is Republican but not simply candidate-loyal. He backed Marco Rubio in 2016, gave heavily to Republican congressional and gubernatorial groups, supported Nikki Haley with $5 million in 2024 and did not donate to Trump's presidential campaign that cycle [[ap-haley-2024, fec-griffin]].\n\nOpenSecrets counted about $108.4 million in his 2024-cycle giving. Much of it went to leadership-aligned super PACs and groups supporting Senate candidates, consistent with his stated focus on economic freedom and national defense rather than personal attachment to a presidential candidate [[opensecrets-2024, wapo-senate-2024]]."
+    },
+    {
+      "key": "philanthropy",
+      "title": "Philanthropy as institution building",
+      "dek": "Education, health and civic objects",
+      "body": "Griffin's institutional biography says his lifetime philanthropy now exceeds $5.7 billion. Harvard was a central beneficiary: $150 million for undergraduate aid in 2014 and an unrestricted $300 million gift in 2023 pushed his university total above $500 million [[citadel-bio, harvard-gift-2023]].\n\nThe relationship also shows philanthropy's conditions. In early 2024 Griffin paused further Harvard giving over governance and campus antisemitism. In 2025 he committed $15 million and rare first printings of the Constitution and Bill of Rights to a new public gallery in Philadelphia [[harvard-pause-2024, ap-constitution-2025]]."
+    },
+    {
+      "key": "miami",
+      "title": "Moving the center of gravity to Miami",
+      "dek": "Corporate relocation becomes civic strategy",
+      "body": "In June 2022 Griffin announced that Citadel and Citadel Securities would move their headquarters from Chicago to Miami. The decision followed his public criticism of Chicago crime and placed both companies near his Florida residence [[citadel-miami-2022, citadelsecurities-miami-2022]].\n\nThe relocation was not only administrative. Griffin committed capital to a large headquarters project and increased his role in Florida's political, cultural and philanthropic institutions, giving him a visible stake in Miami's development [[fortune-griffin-2026, newyorker-griffin-2026]]."
+    },
+    {
+      "key": "ideas",
+      "title": "A donor willing to dissent",
+      "dek": "Free markets collide with Trump's economic nationalism",
+      "body": "Griffin voted for Trump in 2024 but became a persistent critic of tariffs. In public interviews he argued that protectionism raises prices, weakens global competitiveness and invites “crony capitalism” as businesses lobby for exemptions [[milken-transcript-2025, citadel-transcript-2025, fortune-griffin-2026]].\n\nHis criticism widened in 2026. He questioned decisions that enriched administration families and faulted Republicans for extending tax cuts without doing more to restrain debt. These statements place him inside the Republican donor coalition but outside unquestioning loyalty to its president [[dailybeast-enrichment-2026, yahoo-debt-2026]]."
+    },
+    {
+      "key": "present",
+      "title": "Present influence",
+      "dek": "Markets, money and a narrower electoral strategy",
+      "body": "Griffin began his disclosed 2026 federal giving with $5 million to Congressional Leadership Fund, then added targeted support in competitive Senate races. He told The New Yorker the “aperture” of his giving was narrower, not that he was leaving politics [[bloomberg-clf-2026, bloomberg-midterms-2026, newyorker-griffin-2026]].\n\nAs of October 2026, his influence rests on four distinct bases: control of Citadel, ownership and chairmanship at Citadel Securities, personal political giving and large institutional philanthropy. Keeping those channels separate matters—neither employee contributions nor company market activity should be counted as Griffin's personal political spending [[citadel-bio, fec-griffin]]."
+    }
+  ]
+}

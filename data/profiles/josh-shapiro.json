@@ -1,0 +1,523 @@
+{
+  "subject": "shapiro",
+  "reviewedAt": "2026-10-25",
+  "sourcesVerifiedAt": "2026-10-25",
+  "brief": {
+    "inclusion": "Democratic governor of Pennsylvania since 2023 and former state attorney general, the most popular figure in the largest swing state, seeking reelection in November 2026 and widely seen as a 2028 presidential contender.",
+    "identifiers": {
+      "wikidata": "Q6289368"
+    },
+    "namesakes": "Many FEC contributors named Josh or Joshua Shapiro (Chappaqua, Wynnewood, Los Angeles, Wayne, Fairfax and others); his personal federal giving is negligible and is not matched. Distinct from commentator Ben Shapiro.",
+    "coverage": {
+      "from": "1973",
+      "through": "2026-10-25",
+      "lags": "Pennsylvania state campaign-finance records hold his campaign money. The November 3, 2026 result is pending."
+    },
+    "openQuestions": [
+      "Update with the November 3, 2026 result.",
+      "Franklin & Marshall's October 2026 poll is reported with conflicting toplines (52–30 or 59–36); check the release."
+    ],
+    "review": []
+  },
+  "summary": "Democratic governor of Pennsylvania since January 2023, after six years as attorney general in which he released the 2018 grand-jury report finding 301 Catholic priests had abused more than 1,000 children. He beat Doug Mastriano by nearly 15 points in 2022, rebuilt a collapsed stretch of I-95 in 12 days, was a finalist to be Kamala Harris's running mate, and survived an April 2025 arson attack on the governor's residence hours after his family's Passover Seder. In October 2026 he led Republican Stacy Garrity 59–34 in a Quinnipiac poll.",
+  "roles": [
+    {
+      "label": "Governor",
+      "detail": "Governor of Pennsylvania since January 17, 2023; seeking reelection November 3, 2026",
+      "sources": ["wikipedia", "quinnipiac-2026"]
+    },
+    {
+      "label": "Former attorney general",
+      "detail": "Pennsylvania attorney general, 2017–2023",
+      "sources": ["wikipedia", "america-2018"]
+    },
+    {
+      "label": "Former county and state legislator",
+      "detail": "State representative, 2005–2012; chairman, Montgomery County Board of Commissioners, 2012–2017",
+      "sources": ["wikipedia"]
+    },
+    {
+      "label": "Author",
+      "detail": "Where We Keep the Light (2026)",
+      "sources": ["wikipedia-book"]
+    }
+  ],
+  "finance": {
+    "coverage": "Shapiro's campaign money is raised under Pennsylvania state law and is not in the federal record; his personal federal contributions are negligible and are not matched because of the many namesakes in FEC data."
+  },
+  "entities": {
+    "shapiro": {
+      "match": { "name": "Josh Shapiro", "type": "politician" }
+    },
+    "mastriano": {
+      "match": { "name": "Doug Mastriano", "type": "politician" }
+    },
+    "garrity": {
+      "match": { "name": "Stacy Garrity", "type": "politician" }
+    },
+    "harris": {
+      "match": { "identifier": ["fec_candidate", "P00009423"] }
+    },
+    "walz": {
+      "match": { "identifier": ["bioguide", "W000799"] }
+    },
+    "balmer": {
+      "create": {
+        "name": "Cody Balmer",
+        "type": "politician",
+        "description": "Pennsylvania man who set fire to the governor's residence on April 13, 2025; sentenced to 25 to 50 years after pleading guilty."
+      }
+    },
+    "catholic-dioceses": {
+      "create": {
+        "name": "Roman Catholic dioceses of Pennsylvania",
+        "type": "organization",
+        "description": "The Allentown, Erie, Greensburg, Harrisburg, Pittsburgh and Scranton dioceses covered by the 2018 statewide grand-jury report."
+      }
+    }
+  },
+  "sources": [
+    {
+      "key": "wikipedia",
+      "title": "Josh Shapiro",
+      "publisher": "Wikipedia",
+      "type": "secondary",
+      "url": "https://en.wikipedia.org/wiki/Josh_Shapiro",
+      "notes": "Reference work; cited for biography, election results, religious practice, the 2024 vice-presidential process and campus-protest handling."
+    },
+    {
+      "key": "wikipedia-book",
+      "title": "Where We Keep the Light",
+      "publisher": "Wikipedia",
+      "type": "secondary",
+      "url": "https://en.wikipedia.org/wiki/Where_We_Keep_the_Light"
+    },
+    {
+      "key": "america-2018",
+      "title": "Pennsylvania report identifies over 1,000 victims of priest abuse",
+      "publisher": "America",
+      "author": "Michael J. O'Loughlin",
+      "type": "article",
+      "publishedAt": "2018-08-14",
+      "url": "https://www.americamagazine.org/faith/2018/08/14/pennsylvania-report-identifies-over-1000-victims-priest-abuse",
+      "notes": "Includes Associated Press material."
+    },
+    {
+      "key": "pa-i95-2023",
+      "title": "Governor Shapiro Reopens I-95 in Philadelphia Twelve Days After Collapse",
+      "publisher": "Office of the Governor of Pennsylvania",
+      "type": "official_statement",
+      "publishedAt": "2023-06-23",
+      "url": "https://www.pa.gov/en/governor/newsroom/press-releases/governor-shapiro-reopens-i-95-in-philadelphia-twelve-days-after-.html"
+    },
+    {
+      "key": "spotlight-arson-2025",
+      "title": "Person arrested for allegedly setting Gov. Josh Shapiro's official Harrisburg residence on fire",
+      "publisher": "Spotlight PA",
+      "author": "Sarah Anne Hughes",
+      "type": "article",
+      "publishedAt": "2025-04-13",
+      "url": "https://www.spotlightpa.org/news/2025/04/pennsylvania-governor-mansion-arson-attack-shapiro-evacuation/"
+    },
+    {
+      "key": "ap-balmer-2025",
+      "title": "Pennsylvania man pleads guilty in arson attack at governor's mansion while Shapiro's family slept",
+      "publisher": "The Associated Press (via Spotlight PA)",
+      "type": "article",
+      "publishedAt": "2025-10-14",
+      "url": "https://www.spotlightpa.org/news/2025/10/arson-cody-balmer-plea-sentence-josh-shapiro/"
+    },
+    {
+      "key": "quinnipiac-2026",
+      "title": "PA Governor's Race: Shapiro 59%, Garrity 34%, Quinnipiac University Pennsylvania Poll Finds",
+      "publisher": "Quinnipiac University Poll",
+      "type": "primary",
+      "publishedAt": "2026-10-07",
+      "url": "https://poll.qu.edu/poll-release?releaseid=3970"
+    }
+  ],
+  "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "June 20, 1973",
+      "detail": "Kansas City, Missouri; raised in Montgomery County, Pennsylvania",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "sex",
+      "label": "Sex",
+      "value": "Male",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "religion",
+      "label": "Religion",
+      "value": "Jewish (Conservative)",
+      "detail": "An observant Conservative Jew who keeps kosher and observes Shabbat; attended Akiba Hebrew Academy.",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "spouse",
+      "label": "Spouse",
+      "value": "Lori Shapiro (née Ferrara)",
+      "detail": "Married 1997.",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "children",
+      "label": "Children",
+      "value": "Four",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "residence",
+      "label": "Residence",
+      "value": "Governor's Residence, Harrisburg",
+      "sources": ["wikipedia", "spotlight-arson-2025"]
+    },
+    {
+      "key": "party",
+      "label": "Party",
+      "value": "Democratic",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "education",
+      "label": "Education",
+      "value": "BA, political science, University of Rochester (1995); JD, Georgetown University Law Center (2002)",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "current-roles",
+      "label": "Current roles",
+      "value": "Governor of Pennsylvania; Democratic nominee for reelection (2026)",
+      "featured": true,
+      "asOf": "2026-10-25",
+      "sources": ["quinnipiac-2026"]
+    },
+    {
+      "key": "approval-2026",
+      "label": "Job approval (Quinnipiac)",
+      "value": "63% approve, 30% disapprove",
+      "detail": "Pennsylvania likely voters, October 1–5, 2026.",
+      "asOf": "2026-10-05",
+      "featured": true,
+      "sources": ["quinnipiac-2026"]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "shapiro-dioceses",
+      "source": "shapiro",
+      "target": "catholic-dioceses",
+      "relType": "opposed",
+      "role": "As attorney general, released the 2018 grand-jury report on child sexual abuse in six dioceses",
+      "from": "2016",
+      "until": "2018-08-14",
+      "prominence": 2,
+      "sources": ["america-2018"]
+    },
+    {
+      "key": "shapiro-mastriano",
+      "source": "shapiro",
+      "target": "mastriano",
+      "relType": "opposed",
+      "role": "Defeated him for governor, 56.5% to 41.7% (2022)",
+      "from": "2022",
+      "until": "2022-11-08",
+      "prominence": 2,
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "shapiro-harris",
+      "source": "shapiro",
+      "target": "harris",
+      "relType": "endorsed",
+      "role": "Endorsed her after Biden withdrew; a finalist in her running-mate search, interviewed August 4, 2024",
+      "from": "2024-07",
+      "until": "2024-11",
+      "prominence": 2,
+      "sources": ["wikipedia", "wikipedia-book"]
+    },
+    {
+      "key": "harris-walz-shapiro",
+      "source": "walz",
+      "target": "shapiro",
+      "relType": "opposed",
+      "role": "Chosen over Shapiro as Harris's running mate (2024)",
+      "from": "2024-08",
+      "until": "2024-08",
+      "prominence": 1,
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "balmer-shapiro",
+      "source": "balmer",
+      "target": "shapiro",
+      "relType": "opposed",
+      "role": "Firebombed the governor's residence on April 13, 2025; pleaded guilty to attempted murder and terrorism",
+      "from": "2025-04-13",
+      "until": "2025-10-14",
+      "prominence": 2,
+      "sources": ["spotlight-arson-2025", "ap-balmer-2025"]
+    },
+    {
+      "key": "shapiro-garrity",
+      "source": "shapiro",
+      "target": "garrity",
+      "relType": "opposed",
+      "role": "2026 general-election opponent",
+      "from": "2026",
+      "prominence": 2,
+      "sources": ["quinnipiac-2026"]
+    }
+  ],
+  "events": [
+    {
+      "key": "born",
+      "date": "1973-06-20",
+      "title": "Born in Kansas City, Missouri",
+      "summary": "Raised in a Jewish household in Montgomery County, Pennsylvania; attends Akiba Hebrew Academy.",
+      "category": "personal",
+      "significance": 1,
+      "chapter": "rise",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "rochester",
+      "date": "1995",
+      "title": "Graduates from the University of Rochester",
+      "summary": "Then works in Washington for members of Congress and at the Israeli embassy; Georgetown law degree, 2002.",
+      "category": "career",
+      "significance": 1,
+      "chapter": "rise",
+      "sources": ["wikipedia", "wikipedia-book"]
+    },
+    {
+      "key": "state-house",
+      "date": "2004-11",
+      "title": "Elected to the Pennsylvania House",
+      "summary": "Serves 2005–2012.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "rise",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "montco",
+      "date": "2012-01",
+      "title": "Becomes chairman of the Montgomery County commissioners",
+      "category": "politics",
+      "significance": 1,
+      "chapter": "rise",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "ag-2016",
+      "date": "2016-11-08",
+      "title": "Elected attorney general",
+      "summary": "Narrowly defeating John Rafferty; reelected 2020.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "ag",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "grand-jury",
+      "date": "2018-08-14",
+      "title": "Releases the grand-jury report on Catholic clergy abuse",
+      "summary": "301 priests in six dioceses identified as abusers of more than 1,000 children over seven decades.",
+      "category": "legal",
+      "significance": 3,
+      "chapter": "ag",
+      "participants": [["catholic-dioceses", "subject"]],
+      "sources": ["america-2018"]
+    },
+    {
+      "key": "opioid-settlement",
+      "date": "2021",
+      "title": "Helps secure about $1 billion for Pennsylvania in the national opioid settlement",
+      "category": "legal",
+      "significance": 2,
+      "chapter": "ag",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "governor-2022",
+      "date": "2022-11-08",
+      "title": "Elected governor over Doug Mastriano, 56.5% to 41.7%",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "governor",
+      "participants": [["mastriano", "opponent"]],
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "i95",
+      "date": "2023-06-23",
+      "title": "Reopens I-95 in Philadelphia 12 days after its collapse",
+      "summary": "Months ahead of early estimates.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "governor",
+      "sources": ["pa-i95-2023"]
+    },
+    {
+      "key": "vp-finalist",
+      "date": "2024-08-04",
+      "title": "Interviewed as a finalist to be Kamala Harris's running mate",
+      "summary": "Harris chooses Tim Walz.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "national",
+      "participants": [["harris", "nominee"], ["walz", "chosen running mate"]],
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "arson",
+      "date": "2025-04-13",
+      "title": "Survives an arson attack on the governor's residence",
+      "summary": "Hours after a Passover Seder; troopers wake and evacuate the family around 2 a.m. No one is hurt.",
+      "category": "personal",
+      "significance": 3,
+      "chapter": "national",
+      "participants": [["balmer", "attacker"]],
+      "sources": ["spotlight-arson-2025"]
+    },
+    {
+      "key": "balmer-plea",
+      "date": "2025-10-14",
+      "title": "Attacker pleads guilty and is sentenced to 25 to 50 years",
+      "category": "legal",
+      "significance": 2,
+      "chapter": "national",
+      "participants": [["balmer", "defendant"]],
+      "sources": ["ap-balmer-2025"]
+    },
+    {
+      "key": "memoir",
+      "date": "2026-01-27",
+      "title": "Publishes Where We Keep the Light",
+      "summary": "Including an account that Harris's vetting team asked whether he had been an Israeli agent.",
+      "category": "ideas",
+      "significance": 2,
+      "chapter": "national",
+      "participants": [["harris", "subject"]],
+      "sources": ["wikipedia-book"]
+    },
+    {
+      "key": "reelection-launch",
+      "date": "2026-01",
+      "title": "Announces he will seek reelection",
+      "category": "politics",
+      "significance": 1,
+      "chapter": "national",
+      "sources": ["wikipedia"]
+    },
+    {
+      "key": "quinnipiac",
+      "date": "2026-10-07",
+      "title": "Leads Stacy Garrity 59% to 34% in a Quinnipiac poll",
+      "summary": "With 63% job approval among likely voters.",
+      "category": "politics",
+      "significance": 1,
+      "chapter": "national",
+      "participants": [["garrity", "opponent"]],
+      "sources": ["quinnipiac-2026"]
+    }
+  ],
+  "statements": [
+    {
+      "key": "horseplay-2018",
+      "issue": "Clergy abuse",
+      "date": "2018-08-14",
+      "venue": "Release of the statewide grand-jury report",
+      "quote": "It was child sexual abuse, including rape, committed by grown men, priests, against children.",
+      "summary": "Responding to church officials' descriptions of abuse as \"horseplay and wrestling.\"",
+      "source": "america-2018"
+    },
+    {
+      "key": "weaponized-2018",
+      "issue": "Clergy abuse",
+      "date": "2018-08-14",
+      "venue": "Release of the statewide grand-jury report",
+      "quote": "Predators in every diocese weaponized the Catholic faith and used it as a tool of their abuse,",
+      "source": "america-2018"
+    },
+    {
+      "key": "believe-2018",
+      "issue": "Clergy abuse",
+      "date": "2018-08-14",
+      "venue": "Release of the statewide grand-jury report",
+      "quote": "Unlike the Catholic Church, and some in law enforcement, we hear you, and we believe your truth,",
+      "summary": "Addressed to survivors.",
+      "source": "america-2018"
+    },
+    {
+      "key": "big-things-2023",
+      "issue": "Government",
+      "date": "2023-06-23",
+      "venue": "Reopening of I-95, Philadelphia",
+      "quote": "Let this serve as an example to all that Pennsylvania can do big things.",
+      "source": "pa-i95-2023"
+    },
+    {
+      "key": "terrorize-2025",
+      "issue": "Antisemitism and political violence",
+      "date": "2025-04-13",
+      "venue": "News conference after the arson attack",
+      "quote": "if he was trying to terrorize our family, our friends, the Jewish community",
+      "summary": "He continued that no one would deter him, his family or any Pennsylvanian from celebrating their faith openly and proudly.",
+      "source": "spotlight-arson-2025"
+    },
+    {
+      "key": "better-2025",
+      "issue": "Antisemitism and political violence",
+      "date": "2025-04-13",
+      "venue": "News conference after the arson attack",
+      "quote": "This type of violence is not OK.",
+      "source": "spotlight-arson-2025"
+    }
+  ],
+  "ideas": {
+    "traditions": [],
+    "influences": [],
+    "works": [
+      {
+        "title": "Where We Keep the Light: Stories from a Life of Service",
+        "year": "2026",
+        "kind": "Book",
+        "detail": "Memoir, HarperCollins",
+        "source": "wikipedia-book"
+      }
+    ],
+    "featuredQuotes": ["terrorize-2025", "big-things-2023"]
+  },
+  "chapters": [
+    {
+      "key": "rise",
+      "title": "From Montgomery County to Harrisburg",
+      "dek": "A Jewish day-school graduate, congressional aide and suburban officeholder.",
+      "body": "Shapiro was born on June 20, 1973, in Kansas City, Missouri, and grew up in Montgomery County, outside Philadelphia, in an observant Jewish household; he attended Akiba Hebrew Academy [[wikipedia]]. After graduating from the University of Rochester in 1995 he worked in Washington for members of Congress and at the Israeli embassy, then earned a Georgetown law degree in 2002 [[wikipedia, wikipedia-book]].\n\nHe won a seat in the Pennsylvania House in 2004 and served until 2012, then chaired the Montgomery County Board of Commissioners from 2012 to 2017 while practicing corporate law [[wikipedia]]."
+    },
+    {
+      "key": "ag",
+      "title": "Attorney general",
+      "dek": "The clergy-abuse report that made his national name.",
+      "body": "Shapiro narrowly won the 2016 race for attorney general and was reelected in 2020 [[wikipedia]]. On August 14, 2018, he released a statewide grand-jury report, drawn from more than half a million pages of the dioceses' own records, identifying 301 priests in six Pennsylvania dioceses who had abused more than 1,000 children over seven decades. \"It was child sexual abuse, including rape, committed by grown men, priests, against children,\" he said, rejecting church officials' descriptions of it as \"horseplay and wrestling,\" and he told survivors, \"we hear you, and we believe your truth\" [[america-2018]]. In 2021 he helped secure about $1 billion for Pennsylvania from the national opioid settlement [[wikipedia]]."
+    },
+    {
+      "key": "governor",
+      "title": "Governor of the biggest swing state",
+      "dek": "A landslide over Mastriano and a 12-day highway rebuild.",
+      "body": "Shapiro beat Republican Doug Mastriano by 56.5 to 41.7 percent in 2022, and was sworn in on January 17, 2023 [[wikipedia]]. When a tanker fire collapsed an elevated section of I-95 in Philadelphia that June, the state reopened six lanes 12 days later, far ahead of early estimates; \"Let this serve as an example to all that Pennsylvania can do big things,\" he said [[pa-i95-2023]]. He dropped four-year degree requirements for most state jobs [[wikipedia]]. During the 2024 Penn encampment he called for police to clear protesters [[wikipedia]]."
+    },
+    {
+      "key": "national",
+      "title": "Running mate finalist, arson target, 2028 prospect",
+      "dek": "A national profile built across two years.",
+      "body": "After Joe Biden withdrew in July 2024, Shapiro endorsed Kamala Harris and was one of three finalists she interviewed on August 4 for running mate; she chose Tim Walz [[wikipedia]]. In his January 2026 memoir, Where We Keep the Light, he wrote that her vetting team had asked whether he had ever been an agent of the Israeli government, a question he called offensive; Harris's team said such questions were standard [[wikipedia-book, wikipedia]].\n\nIn the early hours of April 13, 2025, hours after the Shapiros hosted a Passover Seder at the governor's residence, Cody Balmer scaled the fence and set the house on fire with homemade incendiary devices. State troopers evacuated the family and no one was hurt [[spotlight-arson-2025]]. Shapiro said that \"if he was trying to terrorize our family, our friends, the Jewish community,\" no one would deter them from celebrating their faith [[spotlight-arson-2025]]. Balmer pleaded guilty to attempted murder and terrorism in October 2025 and was sentenced to 25 to 50 years [[ap-balmer-2025]].\n\nShapiro announced in January 2026 that he would seek a second term [[wikipedia]]. An October Quinnipiac poll found him leading Republican Stacy Garrity 59 to 34 percent with 63 percent approval [[quinnipiac-2026]]. He is widely discussed as a 2028 presidential candidate [[wikipedia-book]]."
+    }
+  ]
+}

@@ -6,7 +6,7 @@
 // Usage:
 //   ENV_FILE=.env.cloud node scripts/db-rebalance.mjs              # show the plan
 //   ENV_FILE=.env.cloud node scripts/db-rebalance.mjs --apply      # carry it out
-//     --target=450      Supabase size to fill up to, in MB (SUPABASE_TARGET_MB)
+//     --target=6000     Supabase size to fill up to, in MB (SUPABASE_TARGET_MB)
 //     --no-compact      skip rebuilding area_stats after moving rows out
 //   ENV_FILE=.env.cloud node scripts/db-rebalance.mjs --compact    # only reclaim dead space, in both
 //

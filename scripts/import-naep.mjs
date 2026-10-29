@@ -54,6 +54,56 @@ await runImport("naep", async (pg) => {
       }
     }
   }
+  // Subgroups (race, sex) for the nation and states, and every big-city
+  // district in the Trial Urban District Assessment (geo_level 'district').
+  const GROUPS = {
+    SDRACE: { 1: "white", 2: "black", 3: "hispanic", 4: "asian_pi", 5: "aian", 6: "multiracial" },
+    GENDER: { 1: "male", 2: "female" },
+  };
+  const DISTRICTS = [..."ABCDEFGHIJKLMNOPQRSTUVWXYZ"].map((c) => `X${c}`).join(",");
+  for (const [key, { subject, scale, years }] of Object.entries(SUBJECTS)) {
+    for (const grade of [4, 8]) {
+      for (const [stattype, [suffix, unit]] of Object.entries(STATS)) {
+        for (const year of years) {
+          const get = (variable, juris) =>
+            fetchJson(
+              `https://www.nationsreportcard.gov/DataService/GetAdhocData.aspx?type=data&subject=${subject}&grade=${grade}` +
+                `&subscale=${scale}&variable=${variable}&jurisdiction=${juris}&stattype=${stattype}&Year=${year}`,
+              {},
+              { label: `NAEP ${key} ${grade} ${variable} ${year}` },
+            );
+          for (const [variable, codes] of Object.entries(GROUPS)) {
+            const body = await get(variable, jurisdictions);
+            await sleep(150);
+            if (!Array.isArray(body.result)) continue;
+            for (const r of body.result) {
+              const group = codes[r.varValue];
+              if (!group || r.sample !== "R3" || !r.isStatDisplayable || typeof r.value !== "number") continue;
+              const nation = r.jurisdiction === "NP";
+              const geoid = nation ? "US" : STATE_FIPS[r.jurisdiction];
+              if (!geoid) continue;
+              rows.push({
+                source: slug, metric: `${key}_${grade}_${suffix}_${group}`, geo_level: nation ? "nation" : "state", geoid,
+                geo_name: nation ? "United States (public schools)" : STATE_NAMES[r.jurisdiction],
+                period: String(r.year), period_start: `${r.year}-01-01`, value: Math.round(r.value * 10) / 10, unit, metadata: null,
+              });
+            }
+          }
+          const body = await get("TOTAL", DISTRICTS);
+          await sleep(150);
+          if (!Array.isArray(body.result)) continue;
+          for (const r of body.result) {
+            if (r.sample !== "R3" || !r.isStatDisplayable || typeof r.value !== "number") continue;
+            rows.push({
+              source: slug, metric: `${key}_${grade}_${suffix}`, geo_level: "district", geoid: r.jurisdiction, geo_name: r.jurisLabel,
+              period: String(r.year), period_start: `${r.year}-01-01`, value: Math.round(r.value * 10) / 10, unit, metadata: null,
+            });
+          }
+        }
+        console.log(`  ${key} grade ${grade} ${suffix}: subgroups and districts`);
+      }
+    }
+  }
   if (!rows.some((r) => r.metric === "math_8_score" && r.period === "2024")) throw new Error("NAEP: no 2024 grade 8 math — API changed?");
   const inserted = await upsertRows(pg, "area_stats", COLUMNS, rows, KEY);
   console.log(`  ${slug}: ${rows.length} rows`);

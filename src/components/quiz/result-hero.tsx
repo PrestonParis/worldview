@@ -289,6 +289,7 @@ export function ResultHero({
             {canEdit && (
               <form action={startQuizAction}>
                 <input type="hidden" name="mode" value={mode} />
+                <input type="hidden" name="sourceQuiz" value={slug} />
                 <button type="submit" className={btnTertiary}>
                   <RotateCcw size={14} aria-hidden />
                   Retake

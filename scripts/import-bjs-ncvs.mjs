@@ -8,7 +8,8 @@
 // 2 robbery, 3 aggravated assault, 4 simple assault (NEWCRIME 1 = violent);
 // household NEWOFF 6 burglary/trespassing, 7 motor vehicle theft, 8 other
 // theft. NOTIFY 1 yes, 2 no, 3 don't know (98 = residue, excluded). DIREL
-// 1 intimate partner, 2 other relative, 4 stranger.
+// 1 intimate partner, 2 other relative, 4 stranger. Offender race shares
+// (<scope>_offender_<group>_pct) use OFFTRACENEW, below.
 //
 // Usage:
 //   node scripts/import-bjs-ncvs.mjs
@@ -21,6 +22,13 @@ const BASE = "https://api.ojp.gov/bjsdataset/v1";
 const FILES = { persons: "r4j4-fdwx", households: "ya4e-n9zp", personal: "gcuy-rt5g", household: "gkck-euys" };
 const PERSONAL = { 1: "rape_sexual_assault", 2: "robbery", 3: "aggravated_assault", 4: "simple_assault" };
 const HOUSEHOLD = { 6: "burglary", 7: "motor_vehicle_theft", 8: "other_theft" };
+// OFFTRACENEW (2012 on): perceived race/Hispanic origin of the offender, or
+// of a group of offenders who shared it; 7 = a group of mixed races; 10 and
+// 11 = victim didn't know. Checked against BJS, "Race and Hispanic Origin of
+// Victims and Offenders, 2012–15" (NCJ 250747), table 1.
+const OFFENDER_RACE = { 1: "white_nh", 2: "black_nh", 3: "aian_nh", 4: "asian_nhpi_nh", 5: "other_nh", 6: "hispanic", 7: "mixed_group", 10: "unknown", 11: "unknown" };
+// RACE_ETHNICITY of the victim: 1–5 non-Hispanic white, black, AIAN, Asian/NHPI, other; 6 Hispanic.
+const VICTIM_RACE = { 1: "white_nh", 2: "black_nh", 6: "hispanic" };
 
 const soql = (file, query) =>
   fetchJson(`${BASE}/${FILES[file]}.json?$query=${encodeURIComponent(`${query} LIMIT 50000`)}`, { timeoutMs: 300_000 }, { label: `ncvs ${file}` });
@@ -82,6 +90,32 @@ await runImport("bjs-ncvs", async (pg) => {
     push(year, "intimate_partner_rate", ((by["1"] ?? 0) / d) * 1000, "per_1000");
     push(year, "domestic_violence_rate", (((by["1"] ?? 0) + (by["2"] ?? 0)) / d) * 1000, "per_1000");
     push(year, "stranger_violence_rate", ((by["4"] ?? 0) / d) * 1000, "per_1000");
+  }
+
+  // Offender race and Hispanic origin as the victim perceived it (2012 on),
+  // as a share of violent victimizations: all, serious violent (excluding
+  // simple assault), and by the victim's race and Hispanic origin.
+  const offenders = await soql(
+    "personal",
+    "SELECT year, seriousviolent, race_ethnicity, offtracenew, sum(newwgt::number) AS w WHERE newcrime = '1' AND offtracenew != '-1' GROUP BY year, seriousviolent, race_ethnicity, offtracenew",
+  );
+  const shares = {}; // year -> scope -> group -> weight
+  for (const r of offenders) {
+    const group = OFFENDER_RACE[r.offtracenew];
+    if (!group) continue;
+    const scopes = ["violent", ...(r.seriousviolent === "1" ? ["serious_violent"] : [])];
+    const victim = VICTIM_RACE[r.race_ethnicity];
+    if (victim) scopes.push(`violent_victim_${victim}`);
+    for (const s of scopes) {
+      const t = ((shares[r.year] ??= {})[s] ??= {});
+      t[group] = (t[group] ?? 0) + Number(r.w);
+    }
+  }
+  for (const [year, scopes] of Object.entries(shares)) {
+    for (const [scope, groups] of Object.entries(scopes)) {
+      const total = Object.values(groups).reduce((a, b) => a + b, 0);
+      for (const g of new Set(Object.values(OFFENDER_RACE))) push(year, `${scope}_offender_${g}_pct`, ((groups[g] ?? 0) / total) * 100, "percent");
+    }
   }
 
   const inserted = await upsertRows(pg, "area_stats", Object.keys(rows[0]), rows, ["source", "metric", "geo_level", "geoid", "period"]);

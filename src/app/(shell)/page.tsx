@@ -4,15 +4,15 @@ import { loadImmigration } from "@/lib/immigration/data";
 import { loadCrime } from "@/lib/crime/data";
 import { listDatasets } from "@/lib/db/stats";
 import { getDemographicSeries } from "@/lib/demographics/forecast";
-import { countEntities, listRecentEntities } from "@/lib/db/entities";
+import { countEntities, listDossierProfiles } from "@/lib/db/entities";
 import { countEdges } from "@/lib/db/edges";
 import { countContributions, listContributionTotalsByCurrency } from "@/lib/db/contributions";
-import { countBills } from "@/lib/db/bills";
-import { countRollCalls } from "@/lib/db/rollCalls";
 import { listCycles } from "@/lib/db/election-overview";
 import { loadContributionSummary } from "@/lib/db/moneyOverview";
 import { getNavPreviews } from "@/lib/nav-previews";
+import { loadShowcase } from "@/lib/home/showcase";
 import { formatPeriod } from "@/lib/format";
+import { NET_MIGRATION_2026, VIOLENT_CRIME_2026 } from "@/lib/projections";
 import { loadStatePaths } from "@/lib/geo/state-paths";
 import { Hero, type SnapshotMetric } from "@/components/home/hero";
 import type { StateMeasure } from "@/components/home/state-map";
@@ -58,11 +58,9 @@ export default async function Home() {
     stateMap,
     entityCount,
     edgeCount,
-    recentEntities,
+    dossiers,
     contributionCount,
     contributionTotals,
-    billCount,
-    rollCallCount,
     cycles,
     moneySummary,
     previews,
@@ -74,11 +72,9 @@ export default async function Home() {
     settle(loadStatePaths()),
     settle(countEntities()),
     settle(countEdges()),
-    settle(listRecentEntities(4)),
+    settle(listDossierProfiles(6)),
     settle(countContributions()),
     settle(listContributionTotalsByCurrency()),
-    settle(countBills()),
-    settle(countRollCalls()),
     settle(listCycles()),
     settle(loadContributionSummary(null)),
     getNavPreviews(),
@@ -89,6 +85,14 @@ export default async function Home() {
   const encounter = immigration?.stats.encounters;
   const violentCrime = crime?.headline.violent;
   const population = statePopulations?.reduce((sum, region) => sum + region.population, 0);
+  const netMigration = immigration?.stats.netMigration;
+  const projectMigration = Boolean(netMigration?.period && netMigration.period < NET_MIGRATION_2026.year);
+  // Next year's population from its components: the latest natural increase
+  // plus the projected net international migration.
+  const naturalChange = immigration?.stats.naturalChange;
+  const projectedPopulation = population && projectMigration && naturalChange && String(race.observedThrough) < NET_MIGRATION_2026.year
+    ? population + naturalChange.value + NET_MIGRATION_2026.value
+    : null;
   const encounterStart = encounter?.period && encounter.spark?.length
     ? shiftMonth(encounter.period, -(encounter.spark.length - 1))
     : undefined;
@@ -104,27 +108,53 @@ export default async function Home() {
       spark: encounter.spark,
       href: "/immigration",
     }] : []),
-    ...(crime?.year ? [{
+    ...(crime?.year && violentCrime?.value != null ? [crime.year < VIOLENT_CRIME_2026.year ? {
       label: "Violent crime per 100,000",
-      value: violentCrime?.value ?? null,
+      value: violentCrime.value * (1 + VIOLENT_CRIME_2026.ytdChange / 100),
+      unit: "per_100k",
+      period: `${VIOLENT_CRIME_2026.year} projected · Crime Index thru ${VIOLENT_CRIME_2026.through}`,
+      change: VIOLENT_CRIME_2026.ytdChange,
+      compareLabel: `vs ${crime.year}`,
+      spark: [...numbers(violentCrime.spark ?? []), violentCrime.value * (1 + VIOLENT_CRIME_2026.ytdChange / 100)],
+      href: "/crime",
+    } : {
+      label: "Violent crime per 100,000",
+      value: violentCrime.value,
       unit: "per_100k",
       period: `FBI · ${crime.year}`,
-      change: violentCrime?.change,
+      change: violentCrime.change,
       compareLabel: crime.priorYear ? `vs ${crime.priorYear}` : undefined,
-      spark: numbers(violentCrime?.spark ?? []),
+      spark: numbers(violentCrime.spark ?? []),
       href: "/crime",
     }] : []),
-    ...(immigration?.stats.netMigration ? [{
+    ...(netMigration ? [projectMigration ? {
       label: "Net international migration",
-      value: immigration.stats.netMigration.value,
+      value: NET_MIGRATION_2026.value,
       unit: "people",
-      period: `Census · ${immigration.stats.netMigration.period ? formatPeriod(immigration.stats.netMigration.period) : "latest year"}`,
-      change: immigration.stats.netMigration.change,
-      compareLabel: immigration.stats.netMigration.compare,
-      spark: immigration.stats.netMigration.spark,
+      period: `Census · ${NET_MIGRATION_2026.year} projected`,
+      change: (NET_MIGRATION_2026.value / netMigration.value - 1) * 100,
+      compareLabel: `vs ${netMigration.period}`,
+      spark: [...(netMigration.spark ?? []), NET_MIGRATION_2026.value],
+      href: "/immigration",
+    } : {
+      label: "Net international migration",
+      value: netMigration.value,
+      unit: "people",
+      period: `Census · ${netMigration.period ? formatPeriod(netMigration.period) : "latest year"}`,
+      change: netMigration.change,
+      compareLabel: netMigration.compare,
+      spark: netMigration.spark,
       href: "/immigration",
     }] : []),
-    ...(population ? [{
+    ...(population ? [projectedPopulation ? {
+      label: "U.S. resident population",
+      value: projectedPopulation,
+      unit: "people",
+      period: `Census · ${NET_MIGRATION_2026.year} projected`,
+      change: (projectedPopulation / population - 1) * 100,
+      compareLabel: `vs ${race.observedThrough}`,
+      href: "/demographics",
+    } : {
       label: "U.S. resident population",
       value: population,
       unit: "people",
@@ -139,7 +169,7 @@ export default async function Home() {
   const crimeYear = crime?.year ? crime.states.years.indexOf(crime.year) : -1;
   const measures: StateMeasure[] = [
     ...(immigrationMetric("fb") ? [{
-      key: "fb", label: "Foreign-born share", unit: "percent", period: immigrationMetric("fb")!.period, source: "Census ACS", href: "/immigration",
+      key: "fb", label: "Foreign-born share", unit: "percent", period: immigrationMetric("fb")!.period, source: "Census ACS", href: "/immigration?node=states&metric=fb", stateLinks: true,
       values: stateValue(immigration!.states.rows, (row) => row.values.fb),
     }] : []),
     ...(crime && crimeYear >= 0 ? [{
@@ -147,7 +177,7 @@ export default async function Home() {
       values: stateValue(crime.states.rows, (row) => row.rates.violent_crime[crimeYear]),
     }] : []),
     ...(immigrationMetric("intlRate") ? [{
-      key: "intlRate", label: "Migration per 1,000", unit: "per_1000", period: immigrationMetric("intlRate")!.period, source: "Census PEP", href: "/immigration",
+      key: "intlRate", label: "Migration per 1,000", unit: "per_1000", period: immigrationMetric("intlRate")!.period, source: "Census PEP", href: "/immigration?node=states&metric=intlRate", stateLinks: true,
       values: stateValue(immigration!.states.rows, (row) => row.values.intlRate),
     }] : []),
     ...(statePopulations ? [{
@@ -159,7 +189,7 @@ export default async function Home() {
   const latestCycle = cycles?.[0];
   const facts: PlatformFacts = {
     ...(entityCount != null && edgeCount != null ? {
-      people: { entities: entityCount, relationships: edgeCount, recent: recentEntities?.map((entity) => entity.name) ?? [] },
+      people: { entities: entityCount, relationships: edgeCount, dossiers: dossiers ?? [] },
     } : {}),
     ...(contributionCount != null ? {
       money: {
@@ -169,13 +199,16 @@ export default async function Home() {
         coverage: moneySummary?.totals.lastDate,
       },
     } : {}),
-    ...(billCount != null && rollCallCount != null ? { legislation: { bills: billCount, rollCalls: rollCallCount } } : {}),
     ...(latestCycle ? {
       elections: { cycle: latestCycle.cycle, races: Object.values(latestCycle.offices).reduce((sum, count) => sum + (count ?? 0), 0) },
     } : {}),
   };
 
   const publishers = new Set(datasets?.map((dataset) => dataset.publisher)).size;
+  const showcase = await loadShowcase(datasets ?? []);
+  // IssueView's sample compares states on the Census measures the showcase
+  // loads plus the map's own, leaving out raw population.
+  const showcaseMeasures = [...showcase.issueMeasures, ...measures.filter((measure) => measure.key !== "population")];
 
   return (
     <div className="mx-auto max-w-7xl">
@@ -209,6 +242,8 @@ export default async function Home() {
         } : null}
         facts={facts}
         previews={previews}
+        showcase={showcase}
+        showcaseMeasures={showcaseMeasures}
         datasetCount={datasets?.length ?? 0}
         publisherCount={publishers}
       />

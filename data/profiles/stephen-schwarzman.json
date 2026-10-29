@@ -1,0 +1,773 @@
+{
+  "subject": "schwarzman",
+  "reviewedAt": "2026-10-25",
+  "sourcesVerifiedAt": "2026-10-25",
+  "image": "https://commons.wikimedia.org/wiki/Special:FilePath/DBT%20Magdalen%20College%2C%20Oxford%20%26%20Stephen%20Schwarzman%2019%20March%202024-5%20-%2053600715712%20(cropped).jpg?width=400",
+  "brief": {
+    "inclusion": "Blackstone co-founder whose wealth, Republican giving, White House advisory work and U.S.-China relationships create influence across finance and public policy.",
+    "identifiers": { "fec_contributor": "SCHWARZMAN, STEPHEN" },
+    "namesakes": "Matched through Blackstone employment and New York or Palm Beach addresses.",
+    "coverage": {
+      "from": "1947-02-14",
+      "through": "2026-10-25",
+      "lags": "The 2026 election cycle and Blackstone's current reporting period remain open."
+    },
+    "openQuestions": ["Private holdings and carried-interest values cause real-time wealth estimates to fluctuate."],
+    "review": [
+      { "kind": "evidence", "by": "OA", "at": "2026-10-25" },
+      { "kind": "chronology", "by": "OA", "at": "2026-10-25" },
+      { "kind": "neutrality", "by": "OA", "at": "2026-10-25" },
+      { "kind": "current", "by": "OA", "at": "2026-10-25" }
+    ]
+  },
+  "summary": "Stephen A. Schwarzman co-founded Blackstone in 1985 and remains chairman and chief executive of the alternative-asset manager. A major Republican donor, he chaired Donald Trump's first-term business forum, acted as an informal channel in U.S.-China relations and returned to supporting Trump in 2024 after publicly urging him to accept the 2020 result.",
+  "roles": [
+    {
+      "label": "Chairman, CEO and co-founder, Blackstone",
+      "detail": "Co-founded the firm in 1985; it reported more than $1.3 trillion under management in 2026.",
+      "sources": ["blackstone-bio", "blackstone-results-2026"]
+    },
+    {
+      "label": "Republican megadonor",
+      "detail": "Funds presidential, congressional and party-aligned outside groups.",
+      "sources": ["fec-schwarzman", "wapo-donors-2024"]
+    },
+    {
+      "label": "U.S.-China institution builder",
+      "detail": "Founded Schwarzman Scholars at Tsinghua and has served as an informal business intermediary.",
+      "sources": ["scholars-about", "blackstone-bio"]
+    }
+  ],
+  "entities": {
+    "schwarzman": { "match": { "name": "Stephen Schwarzman", "type": "donor" } },
+    "blackstone": {
+      "create": {
+        "name": "Blackstone",
+        "type": "company",
+        "description": "Alternative asset-management firm co-founded by Stephen Schwarzman and Peter Peterson in 1985.",
+        "websiteUrl": "https://www.blackstone.com/"
+      }
+    },
+    "peterson": {
+      "create": {
+        "name": "Peter G. Peterson",
+        "type": "donor",
+        "description": "Blackstone co-founder and former U.S. commerce secretary, who died in 2018."
+      }
+    },
+    "trump": { "match": { "name": "Donald Trump", "type": "politician" } },
+    "republican-party": { "match": { "name": "Republican Party", "type": "organization" } },
+    "slf": { "match": { "name": "Senate Leadership Fund", "type": "organization" } },
+    "america-first": { "match": { "name": "America First Action", "type": "organization" } },
+    "strategic-forum": {
+      "create": {
+        "name": "President's Strategic and Policy Forum",
+        "type": "organization",
+        "description": "Business advisory group created by President-elect Donald Trump in 2016 and dissolved in 2017."
+      }
+    },
+    "scholars": {
+      "create": {
+        "name": "Schwarzman Scholars",
+        "type": "organization",
+        "description": "International graduate scholarship program at Tsinghua University."
+      }
+    },
+    "tsinghua": {
+      "create": {
+        "name": "Tsinghua University",
+        "type": "organization",
+        "description": "University in Beijing hosting Schwarzman College."
+      }
+    },
+    "oxford": {
+      "create": {
+        "name": "University of Oxford",
+        "type": "organization",
+        "description": "University in Oxford, England."
+      }
+    },
+    "nypl": {
+      "create": {
+        "name": "New York Public Library",
+        "type": "organization",
+        "description": "Public library system serving New York City."
+      }
+    }
+  },
+  "sources": [
+    {
+      "key": "blackstone-bio",
+      "title": "Stephen A. Schwarzman",
+      "publisher": "Blackstone",
+      "type": "primary",
+      "url": "https://www.blackstone.com/people/stephen-a-schwarzman/",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "blackstone-results-2026",
+      "title": "Blackstone Second Quarter 2026 Results",
+      "publisher": "Blackstone",
+      "type": "filing",
+      "url": "https://ir.blackstone.com/investors/annual-and-quarterly-reports/default.aspx",
+      "publishedAt": "2026-07",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "britannica-schwarzman",
+      "title": "Stephen A. Schwarzman",
+      "publisher": "Encyclopaedia Britannica",
+      "type": "secondary",
+      "url": "https://www.britannica.com/biography/Stephen-A-Schwarzman",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "forbes-schwarzman-2026",
+      "title": "Stephen Schwarzman",
+      "publisher": "Forbes",
+      "type": "secondary",
+      "url": "https://www.forbes.com/profile/stephen-schwarzman/",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "bloomberg-schwarzman-2026",
+      "title": "Stephen Schwarzman",
+      "publisher": "Bloomberg Billionaires Index",
+      "type": "secondary",
+      "url": "https://www.bloomberg.com/billionaires/profiles/stephen-a-schwarzman/",
+      "publishedAt": "2026-05",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "achievement-schwarzman",
+      "title": "Stephen A. Schwarzman",
+      "publisher": "Academy of Achievement",
+      "type": "transcript",
+      "url": "https://achievement.org/achiever/stephen-schwarzman/",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "fec-schwarzman",
+      "title": "Individual contributions by Schwarzman, Stephen",
+      "publisher": "Federal Election Commission",
+      "type": "filing",
+      "url": "https://www.fec.gov/data/receipts/individual-contributions/?contributor_name=SCHWARZMAN%2C+STEPHEN",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "wapo-donors-2024",
+      "title": "Meet the top 50 campaign donors pumping millions into the 2024 election",
+      "publisher": "The Washington Post",
+      "type": "article",
+      "url": "https://www.washingtonpost.com/elections/interactive/2024/biggest-campaign-donors-election-2024/",
+      "publishedAt": "2024",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "axios-trump-2024",
+      "title": "Scoop: Blackstone's Steve Schwarzman backs Trump",
+      "publisher": "Axios",
+      "type": "article",
+      "url": "https://www.axios.com/2024/05/24/trump-2024-stephen-schwarzman-blackstone",
+      "publishedAt": "2024-05-24",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "whitehouse-forum-2016",
+      "title": "President-Elect Trump Announces President's Strategic and Policy Forum",
+      "publisher": "Trump Transition",
+      "type": "official_statement",
+      "url": "https://trumpwhitehouse.archives.gov/briefings-statements/president-elect-trump-announces-presidents-strategic-policy-forum/",
+      "publishedAt": "2016-12-02",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "nyt-forum-dissolves-2017",
+      "title": "Trump Ends Two Business Councils After C.E.O.s Quit",
+      "publisher": "The New York Times",
+      "type": "article",
+      "url": "https://www.nytimes.com/2017/08/16/business/trump-advisory-council-ceos.html",
+      "publishedAt": "2017-08-16",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "nyt-election-2020",
+      "title": "Schwarzman tells Trump the election is over",
+      "publisher": "The New York Times",
+      "type": "article",
+      "url": "https://www.nytimes.com/2020/11/23/us/politics/stephen-schwarzman-trump.html",
+      "publishedAt": "2020-11-23",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "scholars-about",
+      "title": "About Schwarzman Scholars",
+      "publisher": "Schwarzman Scholars",
+      "type": "primary",
+      "url": "https://www.schwarzmanscholars.org/about/",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "oxford-gift-2019",
+      "title": "Stephen A. Schwarzman gift to transform humanities at Oxford",
+      "publisher": "University of Oxford",
+      "type": "official_statement",
+      "url": "https://www.ox.ac.uk/news/2019-06-19-stephen-schwarzman-gift-transform-humanities-oxford",
+      "publishedAt": "2019-06-19",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "nypl-gift-2008",
+      "title": "New York Public Library Announces $100 Million Gift",
+      "publisher": "New York Public Library",
+      "type": "official_statement",
+      "url": "https://www.nypl.org/press/press-release/2008/03/11/new-york-public-library-announces-historic-100-million-gift",
+      "publishedAt": "2008-03-11",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "book-2019",
+      "title": "What It Takes",
+      "publisher": "Avid Reader Press",
+      "author": "Stephen A. Schwarzman",
+      "type": "primary",
+      "documentId": "ISBN 9781501158148",
+      "publishedAt": "2019",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "fortune-harvard-2025",
+      "title": "Stephen Schwarzman emerges as intermediary in Harvard-Trump talks",
+      "publisher": "Fortune",
+      "type": "article",
+      "url": "https://fortune.com/2025/10/15/steve-schwarzman-harvard-trump-negotiations/",
+      "publishedAt": "2025-10",
+      "accessedAt": "2026-10-25"
+    },
+    {
+      "key": "senate-china-2026",
+      "title": "China Report",
+      "publisher": "U.S. Senate Committee on Banking, Housing, and Urban Affairs",
+      "type": "filing",
+      "url": "https://www.banking.senate.gov/imo/media/doc/finalchinareportmay26.pdf",
+      "publishedAt": "2026-05",
+      "accessedAt": "2026-10-25",
+      "notes": "Partisan committee report; used for disclosed transactions and criticism with attribution."
+    }
+  ],
+  "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "February 14, 1947",
+      "detail": "Philadelphia, Pennsylvania.",
+      "featured": true,
+      "sources": ["blackstone-bio", "britannica-schwarzman"]
+    },
+    { "key": "sex", "label": "Sex", "value": "Male", "sources": ["blackstone-bio"] },
+    { "key": "citizenship", "label": "Citizenship", "value": "United States", "sources": ["britannica-schwarzman"] },
+    {
+      "key": "spouse",
+      "label": "Spouse",
+      "value": "Christine Hearst Schwarzman",
+      "sources": ["bloomberg-schwarzman-2026"]
+    },
+    { "key": "children", "label": "Children", "value": "3", "sources": ["forbes-schwarzman-2026"] },
+    {
+      "key": "residence",
+      "label": "Residence",
+      "value": "New York, New York",
+      "asOf": "2026-10-25",
+      "sources": ["forbes-schwarzman-2026"]
+    },
+    {
+      "key": "education",
+      "label": "Education",
+      "value": "Yale University; Harvard Business School",
+      "detail": "B.A. (1969); M.B.A. (1972).",
+      "sources": ["blackstone-bio", "achievement-schwarzman"]
+    },
+    {
+      "key": "party",
+      "label": "Political affiliation",
+      "value": "Republican",
+      "sources": ["fec-schwarzman", "axios-trump-2024"]
+    },
+    {
+      "key": "current-roles",
+      "label": "Current role",
+      "value": "Chairman, CEO and co-founder, Blackstone",
+      "featured": true,
+      "asOf": "2026-10-25",
+      "sources": ["blackstone-bio"]
+    },
+    {
+      "key": "net-worth",
+      "label": "Estimated net worth",
+      "value": "$49.4 billion",
+      "detail": "Forbes estimate.",
+      "featured": true,
+      "asOf": "2026-10-25",
+      "sources": ["forbes-schwarzman-2026"]
+    },
+    {
+      "key": "aum",
+      "label": "Blackstone assets under management",
+      "value": "More than $1.3 trillion",
+      "asOf": "2026-06-30",
+      "sources": ["blackstone-bio", "blackstone-results-2026"]
+    }
+  ],
+  "relationships": [
+    {
+      "key": "blackstone",
+      "source": "schwarzman",
+      "target": "blackstone",
+      "relType": "co-founded",
+      "role": "Co-founder (1985), chairman and CEO",
+      "from": "1985",
+      "prominence": 3,
+      "sources": ["blackstone-bio"]
+    },
+    {
+      "key": "peterson",
+      "source": "schwarzman",
+      "target": "peterson",
+      "relType": "collaborated-with",
+      "role": "Blackstone co-founders",
+      "from": "1985",
+      "until": "2008",
+      "prominence": 2,
+      "sources": ["britannica-schwarzman", "book-2019"]
+    },
+    {
+      "key": "party",
+      "source": "schwarzman",
+      "target": "republican-party",
+      "relType": "donated-to",
+      "role": "Major donor to party candidates and outside groups",
+      "prominence": 2,
+      "sources": ["fec-schwarzman", "wapo-donors-2024"]
+    },
+    {
+      "key": "trump",
+      "source": "schwarzman",
+      "target": "trump",
+      "relType": "allied-with",
+      "role": "Business adviser in first term; urged concession in 2020; endorsed return in 2024",
+      "from": "2016",
+      "prominence": 3,
+      "sources": ["whitehouse-forum-2016", "nyt-election-2020", "axios-trump-2024"]
+    },
+    {
+      "key": "forum",
+      "source": "schwarzman",
+      "target": "strategic-forum",
+      "relType": "chairs",
+      "role": "Chair of presidential business advisory forum",
+      "from": "2016-12",
+      "until": "2017-08",
+      "prominence": 2,
+      "sources": ["whitehouse-forum-2016", "nyt-forum-dissolves-2017"]
+    },
+    {
+      "key": "slf",
+      "source": "schwarzman",
+      "target": "slf",
+      "relType": "donated-to",
+      "role": "Major Senate Republican super-PAC donor",
+      "prominence": 2,
+      "sources": ["fec-schwarzman"]
+    },
+    {
+      "key": "america-first",
+      "source": "schwarzman",
+      "target": "america-first",
+      "relType": "donated-to",
+      "role": "Trump-aligned super-PAC donor in 2020",
+      "from": "2020",
+      "until": "2020",
+      "prominence": 1,
+      "sources": ["fec-schwarzman"]
+    },
+    {
+      "key": "scholars",
+      "source": "schwarzman",
+      "target": "scholars",
+      "relType": "founded",
+      "role": "Founder and principal donor",
+      "from": "2013",
+      "prominence": 2,
+      "sources": ["scholars-about", "blackstone-bio"]
+    },
+    {
+      "key": "tsinghua",
+      "source": "schwarzman",
+      "target": "tsinghua",
+      "relType": "affiliated-with",
+      "role": "Schwarzman College founder and advisory-board member",
+      "from": "2013",
+      "prominence": 2,
+      "sources": ["blackstone-bio", "scholars-about"]
+    },
+    {
+      "key": "oxford",
+      "source": "schwarzman",
+      "target": "oxford",
+      "relType": "donated-to",
+      "role": "£150 million humanities and AI ethics gift",
+      "from": "2019",
+      "prominence": 2,
+      "sources": ["oxford-gift-2019"]
+    },
+    {
+      "key": "nypl",
+      "source": "schwarzman",
+      "target": "nypl",
+      "relType": "donated-to",
+      "role": "$100 million central-library renovation gift",
+      "from": "2008",
+      "prominence": 1,
+      "sources": ["nypl-gift-2008"]
+    }
+  ],
+  "events": [
+    {
+      "key": "birth",
+      "date": "1947-02-14",
+      "title": "Born in Philadelphia",
+      "summary": "Stephen Allen Schwarzman was born to a family that operated a dry-goods store.",
+      "category": "personal",
+      "significance": 1,
+      "chapter": "formation",
+      "sources": ["britannica-schwarzman", "bloomberg-schwarzman-2026"]
+    },
+    {
+      "key": "yale",
+      "date": "1969",
+      "title": "Graduates from Yale",
+      "summary": "He studied social sciences and built relationships that later informed his career and philanthropy.",
+      "category": "career",
+      "significance": 1,
+      "chapter": "formation",
+      "sources": ["blackstone-bio", "achievement-schwarzman"]
+    },
+    {
+      "key": "hbs",
+      "date": "1972",
+      "title": "Earns Harvard MBA",
+      "summary": "After brief Army Reserve service, Schwarzman completed business school and entered finance.",
+      "category": "career",
+      "significance": 1,
+      "chapter": "formation",
+      "sources": ["britannica-schwarzman", "achievement-schwarzman"]
+    },
+    {
+      "key": "blackstone",
+      "date": "1985",
+      "title": "Co-founds Blackstone",
+      "summary": "Schwarzman and Peter Peterson began an advisory and investment firm that expanded into alternative assets.",
+      "category": "career",
+      "significance": 3,
+      "chapter": "blackstone",
+      "participants": [
+        ["blackstone", "company"],
+        ["peterson", "co-founder"]
+      ],
+      "sources": ["blackstone-bio", "book-2019"]
+    },
+    {
+      "key": "ipo",
+      "date": "2007-06",
+      "title": "Blackstone goes public",
+      "summary": "The initial public offering monetized part of the founders' ownership while preserving Schwarzman's leadership.",
+      "category": "finance",
+      "significance": 3,
+      "chapter": "blackstone",
+      "sources": ["britannica-schwarzman", "book-2019"]
+    },
+    {
+      "key": "nypl",
+      "date": "2008-03-11",
+      "title": "Gives $100 million to New York Public Library",
+      "summary": "The gift supported renovation of the central library, later bearing his name.",
+      "category": "finance",
+      "significance": 1,
+      "chapter": "philanthropy",
+      "participants": [["nypl", "recipient"]],
+      "sources": ["nypl-gift-2008"]
+    },
+    {
+      "key": "scholars",
+      "date": "2013",
+      "title": "Founds Schwarzman Scholars",
+      "summary": "A $100 million personal commitment launched a graduate program at Tsinghua focused on China and global leadership.",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "china",
+      "participants": [
+        ["scholars", "program"],
+        ["tsinghua", "host"]
+      ],
+      "sources": ["scholars-about", "blackstone-bio"]
+    },
+    {
+      "key": "forum",
+      "date": "2016-12-02",
+      "title": "Named chair of Trump's business forum",
+      "summary": "President-elect Trump selected Schwarzman to organize advice from major-company executives.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "washington",
+      "participants": [
+        ["trump", "president-elect"],
+        ["strategic-forum", "forum"]
+      ],
+      "sources": ["whitehouse-forum-2016"]
+    },
+    {
+      "key": "forum-end",
+      "date": "2017-08-16",
+      "title": "Business forum dissolves after Charlottesville",
+      "summary": "Executives resigned after Trump's response to white-supremacist violence, and the advisory groups ended.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "washington",
+      "participants": [["strategic-forum", "dissolved forum"]],
+      "sources": ["nyt-forum-dissolves-2017"]
+    },
+    {
+      "key": "oxford",
+      "date": "2019-06-19",
+      "title": "Gives Oxford £150 million",
+      "summary": "The gift created a humanities center and Institute for Ethics in AI.",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "philanthropy",
+      "participants": [["oxford", "recipient"]],
+      "sources": ["oxford-gift-2019"]
+    },
+    {
+      "key": "book",
+      "date": "2019-09-17",
+      "title": "Publishes What It Takes",
+      "summary": "The memoir set out his principles of scale, preparation and entrepreneurial judgment.",
+      "category": "ideas",
+      "significance": 1,
+      "chapter": "ideas",
+      "sources": ["book-2019"]
+    },
+    {
+      "key": "2020-giving",
+      "date": "2020-12-31",
+      "title": "Gives more than $30 million in federal cycle",
+      "summary": "His spending included Senate Leadership Fund and a Trump-aligned super PAC.",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "politics",
+      "sources": ["fec-schwarzman"]
+    },
+    {
+      "key": "concede",
+      "date": "2020-11-23",
+      "title": "Calls on Trump to accept election result",
+      "summary": "After initially allowing legal challenges to proceed, Schwarzman publicly said the outcome was clear and transition should begin.",
+      "category": "politics",
+      "significance": 2,
+      "chapter": "washington",
+      "participants": [["trump", "candidate"]],
+      "sources": ["nyt-election-2020"]
+    },
+    {
+      "key": "endorse",
+      "date": "2024-05-24",
+      "title": "Endorses Trump's return",
+      "summary": "Schwarzman described support as a vote for change, citing economic policy, immigration and antisemitism.",
+      "category": "politics",
+      "significance": 3,
+      "chapter": "politics",
+      "participants": [["trump", "candidate"]],
+      "sources": ["axios-trump-2024"]
+    },
+    {
+      "key": "harvard",
+      "date": "2025-10",
+      "title": "Acts as intermediary in Harvard talks",
+      "summary": "Reporting identified Schwarzman as a channel between Harvard and the Trump administration during a funding dispute.",
+      "category": "politics",
+      "significance": 1,
+      "chapter": "present",
+      "sources": ["fortune-harvard-2025"]
+    },
+    {
+      "key": "aum",
+      "date": "2026-06-30",
+      "title": "Blackstone reports more than $1.3 trillion under management",
+      "summary": "The firm's scale gives Schwarzman institutional influence beyond his personal political activity.",
+      "category": "finance",
+      "significance": 2,
+      "chapter": "present",
+      "participants": [["blackstone", "firm"]],
+      "sources": ["blackstone-bio", "blackstone-results-2026"]
+    },
+    {
+      "key": "china-scrutiny",
+      "date": "2026-05",
+      "title": "Senate report scrutinizes China ties",
+      "summary": "A partisan committee report highlighted Blackstone transactions and Schwarzman's access while alleging conflicts around Trump-linked activity; Blackstone's positions require separate assessment.",
+      "category": "politics",
+      "significance": 1,
+      "chapter": "china",
+      "status": "disputed",
+      "statusNote": "The report is a partisan committee product and includes contested inferences.",
+      "sources": ["senate-china-2026"]
+    }
+  ],
+  "statements": [
+    {
+      "key": "scale",
+      "date": "2019",
+      "datePrecision": "year",
+      "venue": "What It Takes",
+      "issue": "Leadership",
+      "verbatim": false,
+      "summary": "Schwarzman argued that sufficiently ambitious opportunities can be easier to mobilize talent and capital around than small ones.",
+      "source": "book-2019"
+    },
+    {
+      "key": "election",
+      "date": "2020-11-23",
+      "datePrecision": "day",
+      "venue": "Public statement",
+      "issue": "2020 election",
+      "verbatim": false,
+      "summary": "He said the election outcome was clear and the country should move on with a peaceful transition.",
+      "source": "nyt-election-2020"
+    },
+    {
+      "key": "trump-2024",
+      "date": "2024-05-24",
+      "datePrecision": "day",
+      "venue": "Statement to Axios",
+      "issue": "2024 election",
+      "quote": "I am planning to vote for change and support Donald Trump for President.",
+      "summary": "Schwarzman announced renewed support for Trump.",
+      "source": "axios-trump-2024"
+    },
+    {
+      "key": "china",
+      "date": "2019",
+      "datePrecision": "year",
+      "venue": "What It Takes",
+      "issue": "U.S.-China relations",
+      "verbatim": false,
+      "summary": "He described personal relationships and education as tools for managing competition and misunderstanding between the United States and China.",
+      "source": "book-2019"
+    },
+    {
+      "key": "excellence",
+      "date": "2019",
+      "datePrecision": "year",
+      "venue": "What It Takes",
+      "issue": "Organizations",
+      "verbatim": false,
+      "summary": "Schwarzman presented hiring exceptional people and setting very high standards as the basis for scaling an institution.",
+      "source": "book-2019"
+    }
+  ],
+  "finance": {
+    "fec": {
+      "contributorName": "SCHWARZMAN, STEPHEN",
+      "namePattern": "^SCHWARZMAN, STEPHEN( A\\.?| ALLEN| MR\\.?)?$",
+      "employerPattern": "BLACKSTONE|THE BLACKSTONE GROUP|SELF[- ]EMPLOYED",
+      "cities": ["NEW YORK", "PALM BEACH"],
+      "source": "fec-schwarzman"
+    },
+    "coverage": "Itemized federal contributions matched by exact name plus Blackstone employment or known locations. It excludes Blackstone corporate activity, philanthropy, state giving, inauguration gifts and spending by recipient committees. The 2026 cycle remains open."
+  },
+  "ideas": {
+    "traditions": [
+      {
+        "label": "Market liberalism",
+        "atlasId": "classical-liberalism",
+        "basis": "Career, Republican giving and public arguments for investment, growth and business-led problem solving.",
+        "context": "Schwarzman also favors active government-business consultation and strategic diplomacy.",
+        "sources": ["book-2019", "whitehouse-forum-2016"]
+      },
+      {
+        "label": "Internationalism",
+        "atlasId": "liberal-internationalism",
+        "basis": "Schwarzman Scholars and continuing U.S.-China engagement.",
+        "context": "Engagement coexists with competition and Blackstone commercial interests.",
+        "sources": ["scholars-about", "blackstone-bio"]
+      }
+    ],
+    "influences": [
+      {
+        "name": "W. Averell Harriman",
+        "note": "Schwarzman has cited the statesman-businessman model of combining finance with public service.",
+        "sources": ["book-2019"]
+      }
+    ],
+    "works": [
+      {
+        "title": "What It Takes",
+        "year": "2019",
+        "kind": "Memoir",
+        "detail": "Business memoir and statement of leadership principles.",
+        "source": "book-2019"
+      }
+    ],
+    "featuredQuotes": ["scale", "election", "trump-2024"]
+  },
+  "chapters": [
+    {
+      "key": "formation",
+      "title": "From Philadelphia to Wall Street",
+      "dek": "Retail family, elite institutions and finance",
+      "body": "Stephen Schwarzman was born in Philadelphia in 1947 to a family that ran a dry-goods store. He graduated from Yale, served in the Army Reserve and earned a Harvard MBA [[britannica-schwarzman, achievement-schwarzman]].\n\nWork at Lehman Brothers taught him mergers, client relationships and institutional finance before he left to build his own firm [[book-2019]]."
+    },
+    {
+      "key": "blackstone",
+      "title": "Building Blackstone",
+      "dek": "Advisory partnership to trillion-dollar manager",
+      "body": "Schwarzman and Peter Peterson founded Blackstone in 1985. It expanded from mergers advice into private equity, real estate, credit, infrastructure and other alternatives [[blackstone-bio, book-2019]].\n\nThe 2007 public offering made Schwarzman's wealth more visible while preserving his leadership. By June 2026 Blackstone reported more than $1.3 trillion under management [[blackstone-results-2026, forbes-schwarzman-2026]]."
+    },
+    {
+      "key": "politics",
+      "title": "A Republican donor with institutional reach",
+      "dek": "Campaign checks and business access",
+      "body": "Schwarzman gives heavily to Republican candidates and leadership super PACs. His influence also comes from convening executives and communicating directly with public officials [[fec-schwarzman, whitehouse-forum-2016]].\n\nHe broke with Trump over the 2020 transition, then endorsed him in 2024. The sequence shows conditional support, not a stable position outside the Republican coalition [[nyt-election-2020, axios-trump-2024]]."
+    },
+    {
+      "key": "washington",
+      "title": "Chairing Trump's business forum",
+      "dek": "Advice, access and rupture",
+      "body": "Trump named Schwarzman chair of the Strategic and Policy Forum after the 2016 election. The group provided a formal route for large-company leaders to advise the president [[whitehouse-forum-2016]].\n\nThe forum dissolved after executives objected to Trump's response to Charlottesville. Schwarzman remained an informal interlocutor, illustrating how personal access can persist after a formal body ends [[nyt-forum-dissolves-2017]]."
+    },
+    {
+      "key": "china",
+      "title": "China as scholarship and strategy",
+      "dek": "Education, business and diplomacy overlap",
+      "body": "Schwarzman founded a graduate scholarship at Tsinghua to train future leaders with direct China experience. He also maintained relationships useful during trade and diplomatic disputes [[scholars-about, blackstone-bio]].\n\nThose connections draw scrutiny because Blackstone has commercial interests in China. A 2026 Senate report alleged conflicts, but its partisan framing and contested inferences require attribution rather than adoption as fact [[senate-china-2026]]."
+    },
+    {
+      "key": "philanthropy",
+      "title": "Naming-scale philanthropy",
+      "dek": "Libraries, humanities and AI ethics",
+      "body": "A $100 million gift transformed the New York Public Library's central building. A later £150 million Oxford gift created a humanities center and Institute for Ethics in AI [[nypl-gift-2008, oxford-gift-2019]].\n\nThe gifts extend Schwarzman's influence into civic and academic institutions, though funding does not establish control over their research or programming [[oxford-gift-2019]]."
+    },
+    {
+      "key": "ideas",
+      "title": "Scale, preparation and access",
+      "dek": "A business method becomes a public philosophy",
+      "body": "In What It Takes, Schwarzman argues for ambitious scale, exhaustive preparation and hiring unusually capable people. The book also treats relationships with leaders as a practical asset [[book-2019]].\n\nCritics see elite access as a channel for private influence; Schwarzman presents it as problem-solving and diplomacy. The record supports both the access and the need to evaluate outcomes case by case [[book-2019, senate-china-2026]]."
+    },
+    {
+      "key": "present",
+      "title": "Present influence",
+      "dek": "Blackstone scale and renewed political engagement",
+      "body": "Schwarzman remains Blackstone's chairman and CEO as the firm manages more than $1.3 trillion. His corporate position dwarfs the scale visible in personal contribution records [[blackstone-bio, blackstone-results-2026]].\n\nHe is again aligned with Trump electorally while retaining roles as philanthropist and intermediary. Reporting on Harvard negotiations in 2025 showed that his access continues to function outside formal office [[axios-trump-2024, fortune-harvard-2025]]."
+    }
+  ]
+}

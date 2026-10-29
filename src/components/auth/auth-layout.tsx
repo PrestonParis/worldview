@@ -17,7 +17,7 @@ export function AuthLayout({
       <div className="w-full max-w-[400px]">
         <Link href="/" className="group inline-flex items-center gap-3">
           <span className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white shadow-sm ring-1 ring-slate-200/90 dark:ring-slate-700">
-            <Image src="/worldview-mark-red.png" alt="" width={40} height={40} priority className="h-full w-full object-contain" />
+            <Image src="/worldview-mark-red.svg" alt="" width={40} height={40} priority className="h-full w-full object-contain" />
           </span>
           <span className="flex flex-col">
             <span className="text-lg font-bold leading-tight tracking-tight text-slate-950 dark:text-white">Worldview</span>
