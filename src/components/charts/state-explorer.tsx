@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
 import { DemographicsMap, NEGATIVE_COLOR, divergingExtent, valueExtent } from "@/components/demographics/demographics-map";
 import { FIPS_TO_ABBR, STATE_FIPS } from "@/lib/geo/states";
 import { formatValue } from "@/lib/format";
@@ -25,6 +25,12 @@ export interface StateRow {
 
 const DEFAULT_COLOR = "#2563eb";
 
+// Pages are cached as one static render, so ?metric= and ?state= deep links
+// (e.g. from the homepage map) are read on the client, after hydration.
+const noSubscribe = () => () => {};
+const readParam = (name: string) => () => new URLSearchParams(window.location.search).get(name);
+const onServer = () => null;
+
 const ordinal = (n: number) => {
   const s = ["th", "st", "nd", "rd"];
   const v = n % 100;
@@ -40,14 +46,26 @@ export function StateExplorer({
   rows,
   color = DEFAULT_COLOR,
   initial,
+  selected: controlled,
+  onSelect,
 }: {
   metrics: StateMetric[];
   rows: StateRow[];
   color?: string;
   initial?: string; // metric key to open on
+  // Controlled selection, for a page that shares one state across views.
+  selected?: string | null;
+  onSelect?: (abbr: string | null) => void;
 }) {
-  const [active, setActive] = useState(metrics.some((m) => m.key === initial) ? initial! : metrics[0].key);
-  const [selected, setSelected] = useState<string | null>(null);
+  const urlMetric = useSyncExternalStore(noSubscribe, readParam("metric"), onServer);
+  const urlState = useSyncExternalStore(noSubscribe, readParam("state"), onServer)?.toUpperCase();
+  // undefined until the reader picks, so a deep link holds until then.
+  const [picked, setActive] = useState<string>();
+  const [chosen, setChosen] = useState<string | null>();
+  const active = [picked, urlMetric, initial].find((k) => k && metrics.some((m) => m.key === k)) ?? metrics[0].key;
+  const selected =
+    controlled !== undefined ? controlled : chosen !== undefined ? chosen : urlState && rows.some((r) => r.abbr === urlState) ? urlState : null;
+  const setSelected = (abbr: string | null) => (onSelect ? onSelect(abbr) : setChosen(abbr));
   const metric = metrics.find((m) => m.key === active)!;
   const groups = [...new Set(metrics.map((m) => m.group).filter((g): g is string => !!g))];
 
@@ -121,7 +139,7 @@ export function StateExplorer({
             color={color}
             scale={diverging ? "diverging" : "sequential"}
             formatValue={(v) => formatValue(v, metric.unit)}
-            onSelectState={(id) => setSelected((current) => (current === FIPS_TO_ABBR[id] ? null : FIPS_TO_ABBR[id]))}
+            onSelectState={(id) => setSelected(selected === FIPS_TO_ABBR[id] ? null : FIPS_TO_ABBR[id])}
             onSelectCity={() => {}}
             onBack={() => setSelected(null)}
             onNational={() => setSelected(null)}

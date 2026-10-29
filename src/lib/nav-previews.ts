@@ -6,10 +6,18 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { getSeries } from "./db/stats";
 import { getDemographicSeries } from "./demographics/forecast";
-import { US_STATE_GRID } from "./money/us-states";
 import { relationshipCategories, relationshipTypes } from "./relationships";
 import { axisById } from "./quiz/axes";
 import type { AxisId } from "./quiz/types";
+
+export type MidtermRating = "tossup" | "lean_d" | "lean_r";
+
+export interface MidtermHighlight {
+  office: "Senate" | "Governor";
+  state: string;
+  rating: MidtermRating;
+  note: string;
+}
 
 export interface NavPreviews {
   // Foreign-born share of the population: each census, then the ACS.
@@ -20,12 +28,17 @@ export interface NavPreviews {
     lines: { label: string; color: string; points: [number, number][] }[];
   } | null;
   power: { total: number; categories: { label: string; count: number }[] };
-  democracy: { year: number; states: { abbr: string; row: number; col: number; winner: "D" | "R" | null }[] } | null;
+  government: {
+    year: number;
+    electionDate: string;
+    asOf: string;
+    highlights: MidtermHighlight[];
+  } | null;
   tools: { name: string; negative: string; positive: string }[];
 }
 
 const RACE_LINES = ["nhWhite", "hispanic"];
-const RESULTS_YEAR = 2024;
+const MIDTERM_YEAR = 2026;
 const QUIZ_AXES: AxisId[] = ["federalism", "trade", "religion"];
 
 // Parsed once per server process; the series changes once a year.
@@ -70,38 +83,42 @@ function powerPreview(): NavPreviews["power"] {
   };
 }
 
-// Winner per state from the MIT Election Lab file. Parsed once per server
-// process; the file only changes with a new election.
-let democracyCache: Promise<NavPreviews["democracy"]> | null = null;
+// The most competitive Senate and governor races in the current ratings
+// snapshot. Parsed once per server process; the source file changes when the
+// ratings import is refreshed.
+let governmentCache: Promise<NavPreviews["government"]> | null = null;
 
-async function democracyPreview(): Promise<NavPreviews["democracy"]> {
-  const file = await readFile(path.join(process.cwd(), "data/elections/1976-2024-president.csv"), "utf8");
-  const best = new Map<string, { votes: number; party: string }>();
-  for (const line of file.split("\n").slice(1)) {
-    if (!line.startsWith(`${RESULTS_YEAR},`)) continue;
-    // Candidate names are quoted and may contain commas, so read state_po from
-    // the front and candidatevotes / party_simplified from the back.
-    const cols = line.trim().split(",");
-    const abbr = cols[2];
-    const party = cols.at(-1) ?? "";
-    const votes = Number(cols.at(-5));
-    if (!abbr || !Number.isFinite(votes)) continue;
-    const prev = best.get(abbr);
-    if (!prev || votes > prev.votes) best.set(abbr, { votes, party });
+async function governmentPreview(): Promise<NavPreviews["government"]> {
+  const file = await readFile(path.join(process.cwd(), `data/elections/${MIDTERM_YEAR}-ratings.csv`), "utf8");
+  const highlights: MidtermHighlight[] = [];
+  let asOf = "";
+  for (const line of file.split("\n")) {
+    if (!line || line.startsWith("#") || line.startsWith("office,")) continue;
+    const [office, rawState, rating, , date, ...note] = line.trim().split(",");
+    if (
+      (office !== "senate" && office !== "governor") ||
+      (rating !== "tossup" && rating !== "lean_d" && rating !== "lean_r")
+    ) continue;
+    highlights.push({
+      office: office === "senate" ? "Senate" : "Governor",
+      state: rawState.replace(":special", " special"),
+      rating,
+      note: note.join(",").trim(),
+    });
+    if (date > asOf) asOf = date;
   }
-  if (best.size === 0) return null;
+  if (highlights.length === 0) return null;
   return {
-    year: RESULTS_YEAR,
-    states: US_STATE_GRID.map((c) => {
-      const party = best.get(c.abbr)?.party;
-      return { abbr: c.abbr, row: c.row, col: c.col, winner: party === "DEMOCRAT" ? "D" : party === "REPUBLICAN" ? "R" : null };
-    }),
+    year: MIDTERM_YEAR,
+    electionDate: "2026-11-03",
+    asOf,
+    highlights,
   };
 }
 
 export async function getNavPreviews(): Promise<NavPreviews> {
-  democracyCache ??= democracyPreview().catch(() => {
-    democracyCache = null;
+  governmentCache ??= governmentPreview().catch(() => {
+    governmentCache = null;
     return null;
   });
   issuesCache ??= issuesPreview().catch(() => {
@@ -112,7 +129,7 @@ export async function getNavPreviews(): Promise<NavPreviews> {
     issues: await issuesCache,
     society: societyPreview(),
     power: powerPreview(),
-    democracy: await democracyCache,
+    government: await governmentCache,
     tools: QUIZ_AXES.map((id) => ({
       name: axisById[id].name,
       negative: axisById[id].negative.label,

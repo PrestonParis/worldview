@@ -8,7 +8,7 @@ import { buttonVariants } from "@/components/ui/button";
 export const metadata: Metadata = {
   title: "Tools Suite | Worldview",
   description:
-    "Analytical workspaces over public data: Subpoena (money & influence), Writ (laws & elections), IssueView (cross-topic stats), and Worldview Atlas.",
+    "Tools for working with public data: Subpoena (money & influence), Writ (laws & elections), IssueView (cross-topic stats), and Worldview Atlas.",
 };
 
 const ICONS = {
@@ -23,7 +23,7 @@ export default function ToolsHubPage() {
     <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       {/* Header section */}
       <div className="mb-10 text-center">
-        <Eyebrow className="mb-2 text-indigo-500 dark:text-indigo-400">Analytical Workspaces</Eyebrow>
+        <Eyebrow className="mb-2 text-indigo-500 dark:text-indigo-400">Tools</Eyebrow>
         <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
           The Worldview Tool Suite
         </h1>
@@ -47,7 +47,7 @@ export default function ToolsHubPage() {
             <p className="text-sm text-slate-600 dark:text-slate-400">
               <strong className="text-slate-900 dark:text-slate-200">Public Pages:</strong> Curated, source-verified articles with fixed views for reference and citation.
               <br className="hidden sm:inline" />
-              <strong className="text-slate-900 dark:text-slate-200"> Analytical Tools:</strong> Flexible workspaces allowing custom metric combinations, entity dossiers, and raw data extraction.
+              <strong className="text-slate-900 dark:text-slate-200"> Tools:</strong> Flexible views allowing custom metric combinations, entity dossiers, and raw data extraction.
             </p>
           </div>
           <div className="shrink-0">

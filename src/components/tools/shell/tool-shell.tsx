@@ -53,7 +53,7 @@ export function ToolShell({ tool, children }: { tool: SuiteToolId; children: Rea
         </nav>
       </div>
 
-      <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-8">
+      <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-[auto_minmax(0,1fr)] lg:gap-8">
         <ToolRail tool={tool} name={config.name} groups={config.rail} recentLabel={config.recentLabel} />
         <div className="min-w-0">{children}</div>
       </div>

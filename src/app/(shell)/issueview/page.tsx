@@ -7,9 +7,9 @@ import { TOOL_VIEWS } from "@/lib/tools/views";
 import type { SearchParams } from "./views";
 
 export const metadata: Metadata = {
-  title: "IssueView: Every Issue in One Workspace | Worldview",
+  title: "IssueView: Every Issue in One Tool | Worldview",
   description:
-    "Explore every Worldview issue, state profile, spending view, and cross-topic comparison from one workspace.",
+    "Explore every Worldview issue, state profile, spending view, and cross-topic comparison in one tool.",
 };
 
 export default async function IssueViewPage({ searchParams }: { searchParams: Promise<SearchParams> }) {

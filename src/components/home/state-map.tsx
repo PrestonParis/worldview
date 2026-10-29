@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import type { StatePath } from "@/lib/geo/state-paths";
 import { formatValue } from "@/lib/format";
+import styles from "./state-map.module.css";
 
 export interface StateMeasure {
   key: string;
@@ -12,22 +13,31 @@ export interface StateMeasure {
   unit: string;
   period: string;
   source: string;
-  href: string;
+  href: string; // the full map of this measure
+  stateLinks?: boolean; // href also takes &state= to open on one state
   values: Record<string, number | null>; // by state abbreviation
 }
 
 // Five quantile classes on the shared sequential scale (--viz-seq-1…7).
+// Exported so the home intro's ghost map draws the same picture.
 const STEPS = [1, 3, 4, 5, 7];
-const fill = (step: number | null) => (step === null ? "var(--viz-empty)" : `var(--viz-seq-${STEPS[step]})`);
-const ink = (step: number | null) => (step === null ? "var(--viz-muted)" : `var(--viz-seq-ink-${STEPS[step]})`);
+export const fill = (step: number | null) => (step === null ? "var(--viz-empty)" : `var(--viz-seq-${STEPS[step]})`);
+export const ink = (step: number | null) => (step === null ? "var(--viz-muted)" : `var(--viz-seq-ink-${STEPS[step]})`);
 
-function quantileBreaks(values: number[]) {
+export function quantileBreaks(values: number[]) {
   const sorted = [...values].sort((a, b) => a - b);
   return [0.2, 0.4, 0.6, 0.8].map((q) => sorted[Math.floor(q * (sorted.length - 1))]);
 }
 
+export function stepFor(value: number | null | undefined, breaks: number[]) {
+  if (value === null || value === undefined) return null;
+  const i = breaks.findIndex((b) => value <= b);
+  return i === -1 ? breaks.length : i;
+}
+
 // Homepage choropleth: one measure at a time across the 50 states and DC.
-// Hover, focus, or tap a state for its value; the side list ranks the top five.
+// Hover, focus, or tap a state for its value (a click pins it); the side list
+// ranks the top five. Measures with stateLinks link each state to the full map.
 export function StateMap({ width, height, states, measures }: {
   width: number;
   height: number;
@@ -35,7 +45,9 @@ export function StateMap({ width, height, states, measures }: {
   measures: StateMeasure[];
 }) {
   const [measureKey, setMeasureKey] = useState(measures[0]?.key);
-  const [active, setActive] = useState<string | null>(null);
+  const [hovered, setHovered] = useState<string | null>(null);
+  const [pinned, setPinned] = useState<string | null>(null);
+  const active = hovered ?? pinned;
   const measure = measures.find((m) => m.key === measureKey) ?? measures[0];
 
   const { breaks, top } = useMemo(() => {
@@ -47,14 +59,10 @@ export function StateMap({ width, height, states, measures }: {
   }, [measure]);
 
   if (!measure) return null;
-  const stepOf = (abbr: string) => {
-    const v = measure.values[abbr];
-    if (v === null || v === undefined) return null;
-    const i = breaks.findIndex((b) => v <= b);
-    return i === -1 ? breaks.length : i;
-  };
+  const stepOf = (abbr: string) => stepFor(measure.values[abbr], breaks);
   const nameOf = (abbr: string) => states.find((s) => s.abbr === abbr)?.name ?? abbr;
   const cur = active ? states.find((s) => s.abbr === active) : null;
+  const stateHref = (abbr: string) => `${measure.href}${measure.href.includes("?") ? "&" : "?"}state=${abbr}`;
 
   return (
     <figure className="min-w-0">
@@ -78,25 +86,31 @@ export function StateMap({ width, height, states, measures }: {
       </div>
 
       <div className="mt-5 sm:grid sm:grid-cols-[minmax(0,1fr)_9.5rem] sm:items-start sm:gap-4 lg:grid-cols-[minmax(0,1fr)_11rem] lg:gap-5">
-      <div className="min-w-0">
-      <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={`Map of ${measure.label.toLowerCase()} by state`} className="block h-auto w-full">
+      <div data-home-map-target className={`min-w-0 ${styles.mapFrame}`}>
+      <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={`Map of ${measure.label.toLowerCase()} by state`} className={`block h-auto w-full ${styles.mapPlane}`}>
+        <g className={styles.depth} aria-hidden="true">
+          {states.map((s) => <path key={s.abbr} d={s.d} style={{ fill: fill(stepOf(s.abbr)) }} />)}
+        </g>
         {states.map((s) => (
           <path
             key={s.abbr}
             d={s.d}
             tabIndex={0}
             aria-label={`${s.name}: ${formatValue(measure.values[s.abbr], measure.unit)}`}
-            onPointerEnter={() => setActive(s.abbr)}
-            onPointerLeave={() => setActive(null)}
-            onFocus={() => setActive(s.abbr)}
-            onBlur={() => setActive(null)}
-            onClick={() => setActive(s.abbr)}
+            onPointerEnter={() => setHovered(s.abbr)}
+            onPointerLeave={() => setHovered(null)}
+            onFocus={() => setHovered(s.abbr)}
+            onBlur={() => setHovered(null)}
+            onClick={() => setPinned((p) => (p === s.abbr ? null : s.abbr))}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && measure.stateLinks) window.location.assign(stateHref(s.abbr));
+            }}
+            className={`${styles.state} ${active === s.abbr ? styles.activeState : ""}`}
             style={{
               fill: fill(stepOf(s.abbr)),
               stroke: active === s.abbr ? "var(--viz-muted)" : "var(--viz-surface)",
               strokeWidth: active === s.abbr ? 2 : 1,
               outline: "none",
-              transition: "fill 200ms",
             }}
           />
         ))}
@@ -128,7 +142,14 @@ export function StateMap({ width, height, states, measures }: {
           </div>
           <p className="mt-3 line-clamp-2 min-h-10 text-sm text-slate-600 dark:text-slate-300" aria-live="polite">
             {cur ? (
-              <><span className="font-semibold text-slate-950 dark:text-white">{cur.name}</span> · {formatValue(measure.values[cur.abbr], measure.unit)}</>
+              <>
+                <span className="font-semibold text-slate-950 dark:text-white">{cur.name}</span> · {formatValue(measure.values[cur.abbr], measure.unit)}
+                {measure.stateLinks && (
+                  <Link href={stateHref(cur.abbr)} className="ml-2 inline-flex items-center gap-0.5 font-medium text-blue-700 hover:underline dark:text-blue-300">
+                    Full map <ArrowRight size={13} aria-hidden />
+                  </Link>
+                )}
+              </>
             ) : (
               <span className="text-slate-400">{measure.source} · {measure.period}</span>
             )}
@@ -142,7 +163,13 @@ export function StateMap({ width, height, states, measures }: {
               <li key={abbr} className="grid grid-cols-[1rem_1fr_auto] gap-2">
                 <span className="text-slate-400 tabular-nums">{i + 1}</span>
                 <span className="truncate text-slate-700 dark:text-slate-200">{nameOf(abbr)}</span>
-                <span className="font-medium text-slate-950 tabular-nums dark:text-white">{formatValue(value, measure.unit, { compact: true })}</span>
+                {measure.stateLinks ? (
+                  <Link href={stateHref(abbr)} aria-label={`${nameOf(abbr)} on the full map`} className="inline-flex items-center gap-0.5 font-medium text-blue-700 tabular-nums hover:underline dark:text-blue-300">
+                    {formatValue(value, measure.unit, { compact: true })} <ArrowRight size={12} aria-hidden />
+                  </Link>
+                ) : (
+                  <span className="font-medium text-slate-950 tabular-nums dark:text-white">{formatValue(value, measure.unit, { compact: true })}</span>
+                )}
               </li>
             ))}
           </ol>

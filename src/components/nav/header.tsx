@@ -17,6 +17,7 @@ import {
   Gavel,
   Globe2,
   GraduationCap,
+  Handshake,
   HeartPulse,
   House,
   Landmark,
@@ -41,7 +42,6 @@ import { navGroups as baseNavGroups, ownerNavItems } from "@/lib/nav";
 import { GlobalSearch } from "@/components/search/global-search";
 import { NewMenu } from "@/components/nav/new-menu";
 import { SettingsMenu } from "@/components/nav/settings-menu";
-import { HERO_SEARCH_ID } from "@/components/home/hero-search-id";
 import type { NavPreviews } from "@/lib/nav-previews";
 
 const ICONS: Record<string, LucideIcon> = {
@@ -61,6 +61,7 @@ const ICONS: Record<string, LucideIcon> = {
   "/family": Baby,
   "/people": Network,
   "/money": Banknote,
+  "/israel": Handshake,
   "/legislation": Gavel,
   "/elections": Vote,
   "/my-government": Landmark,
@@ -83,7 +84,7 @@ const GROUP_FEATURES: Record<string, { eyebrow: string; title: string; body: str
   economy: { eyebrow: "Start with jobs and prices", title: "How Americans are doing", body: "Paychecks, prices, homes, and the federal budget — official figures, updated as agencies publish them.", href: "/economy" },
   society: { eyebrow: "Explore the evidence", title: "Who we are, and where we're headed", body: "Population, schooling, belief, and family life — measured over decades and projected forward.", href: "/demographics" },
   power: { eyebrow: "Explore the network", title: "See how influence moves", body: "Connect people, institutions, money, legislation, and the relationships between them.", href: "/people" },
-  democracy: { eyebrow: "Start with your address", title: "Government, made personal", body: "Find the offices that represent you, then explore the elections and districts beneath them.", href: "/my-government" },
+  government: { eyebrow: "Midterms Nov 3", title: "Where the races are close", body: "Ratings, results, and county maps for every Senate and governor race, plus the bills and budget behind them.", href: "/elections" },
   tools: { eyebrow: "Analytical Workspaces", title: "Unconstrained tools over public data", body: "Investigate money in Subpoena, track legislation in Writ, correlate metrics in IssueView, and map ideology in Atlas.", href: "/tools" },
 };
 
@@ -102,22 +103,6 @@ export function Header({ accountLabel: knownLabel, owner, previews }: { accountL
   const [openGroup, setOpenGroup] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  // On the homepage the hero has its own search box; the header's appears
-  // only once that box has scrolled out of view.
-  const [heroInView, setHeroInView] = useState(true);
-  const heroSearchVisible = pathname === "/" && heroInView;
-
-  useEffect(() => {
-    const target = document.getElementById(HERO_SEARCH_ID);
-    if (!target) return;
-    const observer = new IntersectionObserver(([entry]) => {
-      setHeroInView(entry.isIntersecting);
-      if (entry.isIntersecting) setSearchOpen(false);
-    }, { rootMargin: "-64px 0px 0px 0px" });
-    observer.observe(target);
-    return () => observer.disconnect();
-  }, [pathname]);
-
   const activeKey = navGroups.find((g) => g.items.some((i) => isOn(pathname, i.page.href)))?.id;
 
   useLayoutEffect(() => {
@@ -178,7 +163,7 @@ export function Header({ accountLabel: knownLabel, owner, previews }: { accountL
         <Link href="/" className="flex shrink-0 items-center gap-2 justify-self-start">
           <span className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-white shadow-sm ring-1 ring-slate-200/90 dark:ring-slate-700">
             <Image
-              src="/worldview-mark-red.png"
+              src="/worldview-mark-red.svg"
               alt=""
               width={32}
               height={32}
@@ -255,10 +240,12 @@ export function Header({ accountLabel: knownLabel, owner, previews }: { accountL
         </nav>
 
         <div className="flex items-center gap-1 justify-self-end">
-          <div className={`relative shrink-0 transition-opacity ${heroSearchVisible ? "pointer-events-none opacity-0" : "opacity-100"}`} aria-hidden={heroSearchVisible || undefined}>
+          <div className="hidden w-48 shrink-0 xl:block 2xl:w-64">
+            <GlobalSearch placeholder="Search Worldview…" />
+          </div>
+          <div className="relative shrink-0 xl:hidden">
             <button
               type="button"
-              tabIndex={heroSearchVisible ? -1 : undefined}
               onClick={() => setSearchOpen((o) => !o)}
               aria-label="Search"
               className="flex h-8 w-8 items-center justify-center rounded-md text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
@@ -280,7 +267,7 @@ export function Header({ accountLabel: knownLabel, owner, previews }: { accountL
             <div className="flex shrink-0 items-center gap-1">
               <Link
                 href="/account"
-                className="hidden max-w-48 truncate rounded-md px-2.5 py-1.5 text-sm text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 sm:inline dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
+                className="hidden max-w-48 truncate rounded-md xl:max-w-32 2xl:max-w-48 px-2.5 py-1.5 text-sm text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 sm:inline dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
               >
                 {accountLabel}
               </Link>
@@ -374,7 +361,7 @@ function MegaMenuFeature({
     society: "from-blue-700 to-cyan-600",
     power: "from-violet-700 to-fuchsia-700",
     // Neutral, so the red and blue state tiles read clearly.
-    democracy: "from-slate-800 to-slate-900",
+    government: "from-slate-800 to-slate-900",
     tools: "from-teal-700 to-cyan-700",
   };
   const preview = previews ? <MegaMenuPreview groupId={groupId} previews={previews} /> : null;
@@ -412,28 +399,15 @@ function MegaMenuPreview({ groupId, previews }: { groupId: string; previews: Nav
       </figure>
     );
   }
-  if (groupId === "democracy" && previews.democracy) {
-    const { year, states } = previews.democracy;
-    const cols = Math.max(...states.map((s) => s.col)) + 1;
-    const rows = Math.max(...states.map((s) => s.row)) + 1;
+  if (groupId === "government" && previews.government) {
+    const { year, highlights } = previews.government;
+    const tossups = highlights.filter((race) => race.rating === "tossup");
     return (
       <figure aria-hidden>
-        <svg viewBox={`0 0 ${cols * 10} ${rows * 10}`} className="h-24 w-auto">
-          {states.map((s) => (
-            <rect
-              key={s.abbr}
-              x={s.col * 10 + 0.6}
-              y={s.row * 10 + 0.6}
-              width={8.8}
-              height={8.8}
-              rx={1.6}
-              fill={s.winner === "D" ? "#3b82f6" : s.winner === "R" ? "#ef4444" : "rgb(255 255 255 / 0.2)"}
-            >
-              <title>{s.abbr}</title>
-            </rect>
-          ))}
-        </svg>
-        <figcaption className="mt-2 text-[11px] text-white/65">{year} presidential winner by state</figcaption>
+        <div className="grid grid-cols-2 gap-1.5">
+          {tossups.map((race) => <div key={`${race.office}-${race.state}`} className="rounded-md bg-white/15 px-2 py-1.5"><p className="text-xs font-semibold">{race.state}</p><p className="text-[9px] text-white/60">{race.office} · toss-up</p></div>)}
+        </div>
+        <figcaption className="mt-2 text-[11px] text-white/65">{year} midterm battlegrounds · {highlights.length} competitive races</figcaption>
       </figure>
     );
   }

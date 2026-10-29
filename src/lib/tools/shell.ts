@@ -78,7 +78,7 @@ export const TOOL_SHELLS: Record<SuiteToolId, ToolShellConfig> = {
   issueview: {
     id: "issueview",
     name: "IssueView",
-    tagline: "Every issue, one workspace",
+    tagline: "Issues & places",
     home: "/issueview",
     rail: groupedViews(),
   },
