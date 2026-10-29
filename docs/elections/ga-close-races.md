@@ -85,7 +85,7 @@ New tables, independent of entities. The pattern follows `election_results`: key
 
 **`tracked_contest_areas`**
 - `contest_id`, `option_id`, `county`, `votes`: county splits for state-feed contests, taken from the county feeds' `parentId` rows.
-- Size: about 300 contests × 3 options × 159 counties ≈ 140k rows per general. Check the size before loading to cloud (the Supabase free plan caps at 500 MB). If it's tight, move this table to Neon via `datasets.storage` like `area_stats`.
+- Size: about 300 contests × 3 options × 159 counties ≈ 140k rows per general. Check the size before loading to cloud (Supabase's limit is `SUPABASE_LIMIT_MB`, 6550 MB on the Pro plan). If it's tight, move this table to Neon via `datasets.storage` like `area_stats`.
 
 **`tracked_snapshots`**
 - `contest_id`, `as_of`, leader and runner-up option ids and vote totals, `total_votes`, `margin_votes`, `margin_pct`, `reporting_units`, `total_units`, `result_status`, and `source_hash`. Written only when the source payload changes.
@@ -100,7 +100,7 @@ New tables, independent of entities. The pattern follows `election_results`: key
 **`tracked_contest_baseline`**
 - `source_election_id`, `jurisdiction_id` (county slug), `contest_key`, `name`, `captured_at`: the first copy of each county feed's contests.
 
-Precincts and raw JSON: write the raw `/data` payloads to the data lake (`src/lib/db/lake.ts`, `export-lake.yml`), not Postgres. That keeps every snapshot replayable without touching the 500 MB cap.
+Precincts and raw JSON: write the raw `/data` payloads to the data lake (`src/lib/db/lake.ts`, `export-lake.yml`), not Postgres. That keeps every snapshot replayable without growing the database.
 
 ## Margin and decision rules
 

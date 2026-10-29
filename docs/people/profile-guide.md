@@ -403,7 +403,7 @@ An importer success proves that references resolve. It does not prove that the r
 
 ### Cloud
 
-1. Check the Supabase size budget first; the free plan caps at 500 MB. A full profile with FEC data adds a few hundred rows plus any new committee entities, which is small, but check before batch imports.
+1. Check the Supabase size budget first (`SUPABASE_LIMIT_MB`, 6550 MB on the Pro plan). A full profile with FEC data adds a few hundred rows plus any new committee entities, which is small, but check before batch imports.
 2. Run `ENV_FILE=.env.cloud npm run import:profile -- --profile=<slug> --fec`.
 3. Repeat the product review on the live site.
 
