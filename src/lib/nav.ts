@@ -29,6 +29,7 @@ export const primaryPages: NavPage[] = [
   { label: "Religion", navLabel: "Religion", href: "/religion" },
   { label: "Family", navLabel: "Family", href: "/family" },
   { label: "Government Spending", navLabel: "Spending", href: "/spending" },
+  { label: "U.S.–Israel Relations", navLabel: "Israel", href: "/israel" },
   { label: "States", navLabel: "States", href: "/states" },
   { label: "Datasets", navLabel: "Datasets", href: "/datasets" },
   { label: "My Government", navLabel: "My Government", href: "/my-government" },
@@ -86,6 +87,7 @@ export const navGroups: NavGroup[] = [
     items: [
       { page: page("/people"), blurb: "Who's connected to whom, and how" },
       { page: page("/money"), blurb: "Donors, PACs, lobbying, and money flow" },
+      { page: page("/israel"), blurb: "U.S.–Israel aid, arms sales, lobbying, votes, and trade" },
       { page: page("/my-government"), blurb: "Your officials, districts, and votes" },
     ],
   },

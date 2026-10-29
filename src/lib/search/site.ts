@@ -79,7 +79,7 @@ const GROUP_TERMS: [string, GroupMatch][] = [
 
 type Topic =
   | "immigration" | "crime" | "guns" | "abortion" | "health" | "energy" | "economy" | "housing" | "demographics" | "education" | "religion"
-  | "family" | "spending" | "elections" | "money" | "legislation" | "people" | "government" | "quiz" | "datasets";
+  | "family" | "spending" | "foreign-relations" | "elections" | "money" | "legislation" | "people" | "government" | "quiz" | "datasets";
 
 const TOPICS: Record<Topic, { label: string; href: string; blurb: string; terms: string[] }> = {
   immigration: {
@@ -159,6 +159,12 @@ const TOPICS: Record<Topic, { label: string; href: string; blurb: string; terms:
     href: "/spending",
     blurb: "The budget, deficits, debt, and where federal money goes",
     terms: ["spending", "budget", "federal budget", "deficit", "deficits", "debt", "national debt", "outlays", "taxes", "revenue", "social security", "medicare", "medicaid", "snap", "food stamps", "welfare", "entitlements", "improper payments", "usaspending"],
+  },
+  "foreign-relations": {
+    label: "U.S.–Israel Relations",
+    href: "/israel",
+    blurb: "U.S.–Israel aid, arms sales, lobbying, votes, and trade",
+    terms: ["israel", "israeli", "us israel", "u.s. israel", "aipac", "united democracy project", "j street", "norpac", "foreign aid", "military aid", "arms sales", "arms sale", "iron dome", "gaza", "palestine", "palestinian", "palestinians", "hamas", "netanyahu", "zionism", "zionist", "pro-israel", "un votes", "veto", "vetoes"],
   },
   elections: {
     label: "Elections",
