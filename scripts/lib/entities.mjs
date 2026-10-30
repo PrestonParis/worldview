@@ -211,7 +211,17 @@ const MERGE_DUPLICATES = [
   ["bill_cosponsors", "from bill_cosponsors k where t.entity_id = $1 and k.entity_id = $2 and t.bill_id = k.bill_id"],
   ["candidacies", "from candidacies k where t.candidate_entity_id = $1 and k.candidate_entity_id = $2 and t.election_id = k.election_id"],
   ["entity_offices", "from entity_offices k where t.entity_id = $1 and k.entity_id = $2 and t.source = k.source"],
+  ["entity_facts", "from entity_facts k where t.entity_id = $1 and k.entity_id = $2 and t.fact_key = k.fact_key"],
+  ["entity_traits", "from entity_traits k where t.entity_id = $1 and k.entity_id = $2 and t.trait = k.trait and t.value = k.value"],
+  ["entity_event_participants", "from entity_event_participants k where t.entity_id = $1 and k.entity_id = $2 and t.event_id = k.event_id"],
 ];
+
+// Dossier records (docs/people/profile-model.md). Their foreign keys cascade,
+// so a merge that didn't move them would delete the merged entity's dossier.
+const PROFILE_REFERENCES = [
+  ["entity_facts", "entity_id"],
+  ["entity_events", "subject_entity_id"],
+].map(([table, column]) => ({ table, column }));
 
 async function ids(pg, sql, params) {
   return (await pg.query(sql, params)).rows.map((r) => r.id);
@@ -241,19 +251,25 @@ export async function mergeEntity(pg, mergedId, intoId, reason) {
       const c = clashes[0];
       throw new Error(`Different people: ${c.scheme} ${c.merged_value} vs ${c.into_value}`);
     }
+    const { rows: profiles } = await pg.query("select entity_id from entity_profiles where entity_id = any($1::uuid[])", [[mergedId, intoId]]);
+    if (profiles.length > 1) throw new Error("Both entities have a dossier; retire one before merging");
 
     const snapshot = { into: Object.fromEntries(ENTITY_TEXT_COLUMNS.map((c) => [c, into[c]])), refs: {}, deleted: {} };
     for (const [table, where] of MERGE_DUPLICATES) {
       const { rows: dropped } = await pg.query(`delete from ${table} t using ${where.replace(/^from /, "")} returning t.*`, [mergedId, intoId]);
       if (dropped.length) (snapshot.deleted[table] ??= []).push(...dropped);
     }
-    for (const { table, column } of ENTITY_REFERENCES) {
+    for (const { table, column } of [...ENTITY_REFERENCES, ...PROFILE_REFERENCES]) {
       const moved = await ids(pg, `update ${table} set ${column} = $2 where ${column} = $1 returning id`, [mergedId, intoId]);
       if (moved.length) snapshot.refs[`${table}.${column}`] = moved;
     }
     snapshot.polls = (await pg.query("update poll_results set entity_id = $2 where entity_id = $1 returning poll_id, choice", [mergedId, intoId])).rows;
     snapshot.identifiers = (await pg.query("update entity_identifiers set entity_id = $2 where entity_id = $1 returning scheme, value", [mergedId, intoId])).rows;
     snapshot.offices = (await pg.query("update entity_offices set entity_id = $2 where entity_id = $1 returning source", [mergedId, intoId])).rows.map((r) => r.source);
+    snapshot.profile = (await pg.query("update entity_profiles set entity_id = $2 where entity_id = $1 returning entity_id", [mergedId, intoId])).rows.length > 0;
+    snapshot.traits = (await pg.query("update entity_traits set entity_id = $2 where entity_id = $1 returning trait, value", [mergedId, intoId])).rows;
+    snapshot.participations = (await pg.query("update entity_event_participants set entity_id = $2 where entity_id = $1 returning event_id", [mergedId, intoId]))
+      .rows.map((r) => r.event_id);
     // Edges between the two would become self-loops.
     const { rows: loops } = await pg.query(
       `delete from entity_edges where (source_entity_id = $1 and target_entity_id = $2)
@@ -324,6 +340,11 @@ export async function unmergeEntity(pg, mergedId) {
     for (const r of snap.polls ?? []) await pg.query("update poll_results set entity_id = $1 where poll_id = $2 and choice = $3", [mergedId, r.poll_id, r.choice]);
     for (const r of snap.identifiers ?? []) await pg.query("update entity_identifiers set entity_id = $1 where scheme = $2 and value = $3", [mergedId, r.scheme, r.value]);
     if (snap.offices?.length) await pg.query("update entity_offices set entity_id = $1 where entity_id = $2 and source = any($3::text[])", [mergedId, intoId, snap.offices]);
+    if (snap.profile) await pg.query("update entity_profiles set entity_id = $1 where entity_id = $2", [mergedId, intoId]);
+    for (const r of snap.traits ?? []) await pg.query("update entity_traits set entity_id = $1 where entity_id = $2 and trait = $3 and value = $4", [mergedId, intoId, r.trait, r.value]);
+    if (snap.participations?.length) {
+      await pg.query("update entity_event_participants set entity_id = $1 where entity_id = $2 and event_id = any($3::uuid[])", [mergedId, intoId, snap.participations]);
+    }
     await pg.query("update entity_edges set source_entity_id = $1 where id = any($2::uuid[])", [mergedId, snap.edgeSources ?? []]);
     await pg.query("update entity_edges set target_entity_id = $1 where id = any($2::uuid[])", [mergedId, snap.edgeTargets ?? []]);
     for (const [table, deleted] of Object.entries(snap.deleted ?? {})) {
