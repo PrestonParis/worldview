@@ -47,6 +47,16 @@ Quotes are checked against their source before they are added. An important quot
 
 Schedule A name search is fuzzy. `finance.fec` sets `namePattern`, `employerPattern` and `cities`; a row counts only if the name matches exactly and the employer or city matches. Each row stores its basis (`Identity match: employer|city`), and the transactions table marks address-only matches. For Thiel: 544 search rows, 371 matched, 186 counted lines (excluding memos), $50,752,542.
 
+## Identity and merges
+
+The importer resolves every `entities` key before writing anything. `match` by identifier (`["fec_candidate", "P80001571"]`) is preferred, then exact name and type. It refuses to run, `--dry-run` included, when:
+
+- a `create` names an entity that already exists under another type (the same person with a guessed type);
+- a `create` has no real description;
+- a person subject lacks a `sex` fact (a missing `born` fact is only flagged, since some birth dates are not public).
+
+`npm run data:merge-entities -- --merge=<from>:<into>` moves dossier records with everything else: `entity_profiles`, `entity_facts`, `entity_events`, `entity_event_participants` and `entity_traits` follow the merge, and `--unmerge` restores them. A merge of two entities that both have a dossier is refused.
+
 ## Profiles without a dossier
 
-A profile with no dossier reads `metadata.profile` (sections, facts), Wikidata traits (birth, religion; current affiliations only), edges and highlights. Highlights become unsourced timeline entries, labelled as such. Dossiers are written as JSON in `data/profiles/` and loaded with `npm run import:profile`; there is no editor UI.
+Its hero description is `entities.description`, a one-line role that `npm run data:describe-entities` builds from office, Congress terms, candidacies or FEC ids where an importer left none. A profile with no dossier reads `metadata.profile` (sections, facts), Wikidata traits (birth, religion; current affiliations only), edges and highlights. Highlights become unsourced timeline entries, labelled as such. Dossiers are written as JSON in `data/profiles/` and loaded with `npm run import:profile`; there is no editor UI.

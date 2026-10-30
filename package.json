@@ -120,6 +120,7 @@
     "data:lake": "node scripts/export-lake.mjs",
     "data:health": "node scripts/data-health.mjs",
     "data:merge-entities": "node scripts/merge-entities.mjs",
+    "data:describe-entities": "node scripts/describe-entities.mjs",
     "data:repair-donors": "node scripts/repair-orphan-donors.mjs",
     "db:validate-fks": "node scripts/validate-entity-fks.mjs",
     "graph:import-neo4j": "node scripts/graph-to-postgres.mjs",

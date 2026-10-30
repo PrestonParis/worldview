@@ -14,6 +14,7 @@
 
 import { connectPg, fetchJson, flag, loadEnv, sleep } from "./lib/bulk.mjs";
 import { addIdentifiers, entityIdMap, upsertEntities } from "./lib/entities.mjs";
+import { describeCommittee } from "./lib/describe.mjs";
 
 const DRY_RUN = flag("dry-run");
 
@@ -100,7 +101,7 @@ try {
         name,
         description: individual
           ? [f.contributor_occupation, f.contributor_employer, f.contributor_state].filter(Boolean).join(" · ") || "Individual political donor (FEC)."
-          : "Political committee — imported from FEC Schedule A data.",
+          : describeCommittee(f.contributor_id),
         metadata: JSON.stringify({ importedFrom: "openfec-schedule_a", fecCommitteeId: f.contributor_id || undefined, restoredBy: "repair-orphan-donors" }),
       },
     ]);

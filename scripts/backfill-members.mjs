@@ -35,6 +35,7 @@ import { randomUUID } from "node:crypto";
 import { load as loadYaml } from "js-yaml";
 import { chunk, connectPg } from "./lib/bulk.mjs";
 import { addIdentifiers, describeConflict, identifierRows, upsertEntities } from "./lib/entities.mjs";
+import { describePerson } from "./lib/describe.mjs";
 import {
   servedInCongresses,
   displayName,
@@ -205,7 +206,7 @@ async function main() {
           id: newId,
           type: "politician",
           name,
-          description: "Member of the United States Congress — imported from the congress-legislators crosswalk.",
+          description: describePerson({ metadata: JSON.parse(metadata) }),
           metadata,
         }]);
       }

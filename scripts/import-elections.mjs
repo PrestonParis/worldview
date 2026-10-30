@@ -37,6 +37,7 @@ import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { Client } from "pg";
 import { upsertEntities } from "./lib/entities.mjs";
+import { describePerson } from "./lib/describe.mjs";
 
 const DATA_DIR = "data/elections";
 const CACHE_DIR = path.join(DATA_DIR, "cache");
@@ -313,7 +314,7 @@ async function main() {
 
     const decisionCache = new Map(); // raw candidate string -> id | "AMBIGUOUS"
 
-    async function resolveCandidate(parsed, raw, party, electionLabel) {
+    async function resolveCandidate(parsed, raw, party, electionLabel, candidacy) {
       if (decisionCache.has(raw)) return decisionCache.get(raw);
       let id = null;
       const exact = byKey.get(parsed.key) ?? [];
@@ -332,7 +333,7 @@ async function main() {
               id,
               type: "politician",
               name: parsed.display,
-              description: "Election candidate — imported from MIT Election Lab.",
+              description: describePerson({ candidacies: [candidacy] }),
               metadata: JSON.stringify({ source: "medsl", party }),
             },
           ]);
@@ -455,6 +456,7 @@ async function main() {
         for (const c of keep) {
           const resolved = await resolveCandidate(
             c.parsed, c.raw, c.party, e.name,
+            { office: e.office, jurisdiction: e.jurisdiction, year: e.year, party: c.party, won: c === winnerKey && e.office !== "President" },
           );
           if (resolved === "AMBIGUOUS") continue;
           if (!DRY_RUN) {

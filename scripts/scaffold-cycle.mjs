@@ -28,6 +28,7 @@ import fs from "node:fs";
 import { randomUUID } from "node:crypto";
 import { Client } from "pg";
 import { addIdentifiers, upsertEntities } from "./lib/entities.mjs";
+import { candidacyFromFecId, describePerson } from "./lib/describe.mjs";
 import { load as loadYaml } from "js-yaml";
 
 const arg = (name, def) => {
@@ -190,7 +191,7 @@ async function main() {
           id,
           type: "politician",
           name,
-          description: `${YEAR} candidate — imported by scaffold-cycle.`,
+          description: describePerson({ metadata: { party, ...meta }, candidacies: meta?.fecCandidateId ? [candidacyFromFecId(meta.fecCandidateId, YEAR, party)] : [] }),
           metadata: JSON.stringify({ source: "scaffold-cycle", party, ...meta }),
         },
       ]);
