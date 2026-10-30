@@ -12,12 +12,12 @@ export interface SubpoenaDirectory {
 
 export async function getFeaturedSubpoenaEntities(query = ""): Promise<SubpoenaDirectory> {
   if (query.trim()) {
-    const entities = await searchEntities(query, 24, true);
+    const entities = await searchEntities(query, 24);
     const dossierIds = await getDossierEntityIds(entities.map((entity) => entity.id));
     return { caseFiles: [], entities, dossierIds: [...dossierIds] };
   }
   const [caseFiles, ...groups] = await Promise.all([
-    listCaseFileEntities(12),
+    listCaseFileEntities(),
     listProfiledEntities("donor", 20),
     listProfiledEntities("politician", 20),
     listProfiledEntities("judge", 4),

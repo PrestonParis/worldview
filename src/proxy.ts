@@ -42,9 +42,23 @@ export async function proxy(request: NextRequest) {
 
   // Anonymous visitors (and crawlers) have no session to refresh, so skip
   // the Supabase round-trip entirely.
+  const gated = SIGN_IN_REQUIRED.test(request.nextUrl.pathname);
   const hasSession = request.cookies.getAll().some(({ name }) => name.startsWith("sb-"));
-  if (!hasSession) return NextResponse.next();
-  return await updateSession(request);
+  if (!hasSession) return gated ? toSignIn(request) : NextResponse.next();
+  const { response, user } = await updateSession(request);
+  return gated && !user ? toSignIn(request) : response;
+}
+
+// Subpoena is for signed-in accounts (notes/subpoena-plan.md). Gating here
+// keeps its pages statically cached; the content is not secret, the gate
+// keeps crawlers off ~26K entity pages and leaves room for paid access.
+const SIGN_IN_REQUIRED = /^\/subpoena(\/|$)/;
+
+function toSignIn(request: NextRequest) {
+  const login = request.nextUrl.clone();
+  login.pathname = "/login";
+  login.search = `?next=${encodeURIComponent(request.nextUrl.pathname + request.nextUrl.search)}`;
+  return NextResponse.redirect(login, 307);
 }
 
 export const config = {

@@ -162,11 +162,11 @@ export async function listProfiledEntities(type: EntityType, limit: number): Pro
 }
 
 // Every entity with a full dossier, most relevant first.
-export async function listCaseFileEntities(limit: number): Promise<Entity[]> {
-  const rows = await selectEntities()
+export async function listCaseFileEntities(limit?: number): Promise<Entity[]> {
+  const query = selectEntities()
     .innerJoin(entityProfiles, eq(entityProfiles.entityId, entities.id))
-    .orderBy(desc(relevance), asc(entities.name))
-    .limit(limit);
+    .orderBy(desc(relevance), asc(entities.name));
+  const rows = limit ? await query.limit(limit) : await query;
   return rows.map(toEntity);
 }
 
