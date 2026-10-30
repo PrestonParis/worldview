@@ -55,11 +55,7 @@
     "democracy-pac": { "match": { "identifier": ["fec_committee", "C00693382"] } },
     "democratic-party": { "match": { "name": "Democratic Party", "type": "organization" } },
     "biden": {
-      "create": {
-        "name": "Joe Biden",
-        "type": "politician",
-        "description": "Forty-sixth president of the United States."
-      }
+      "match": { "identifier": ["fec_candidate", "P80000722"] }
     },
     "harris": {
       "create": {

@@ -91,9 +91,7 @@
     "clinton": {
       "match": { "identifier": ["fec_candidate", "S0NY00188"] }
     },
-    "trump": {
-      "match": { "name": "Donald Trump", "type": "politician" }
-    },
+    "trump": { "match": { "identifier": ["fec_candidate", "P80001571"] } },
     "holocaust-museum": {
       "create": {
         "name": "Illinois Holocaust Museum and Education Center",

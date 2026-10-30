@@ -280,9 +280,18 @@
       "publishedAt": "2026-09-07",
       "url": "https://www.jta.org/2026/09/07/united-states/miami-dade-county-in-florida-raises-the-limit-on-investments-in-israel-bonds",
       "accessedAt": "2026-10-28"
+    },
+    {
+      "key": "wikidata-james-fishback",
+      "title": "James Fishback (Q126925038)",
+      "publisher": "Wikidata",
+      "type": "secondary",
+      "url": "https://www.wikidata.org/wiki/Q126925038",
+      "accessedAt": "2026-10-30"
     }
   ],
   "facts": [
+    { "key": "sex", "label": "Sex", "value": "Male", "sources": ["wikidata-james-fishback"] },
     {
       "key": "age",
       "label": "Age",

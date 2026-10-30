@@ -64,7 +64,7 @@
   },
   "entities": {
     "musk": { "match": { "name": "Elon Musk", "type": "donor" } },
-    "trump": { "match": { "name": "Donald Trump", "type": "politician" } },
+    "trump": { "match": { "identifier": ["fec_candidate", "P80001571"] } },
     "thiel": { "match": { "name": "Peter Thiel", "type": "donor" } },
     "tesla": {
       "create": {

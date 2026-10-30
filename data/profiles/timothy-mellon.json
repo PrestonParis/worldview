@@ -58,7 +58,7 @@
   },
   "entities": {
     "mellon": { "match": { "name": "Timothy Mellon", "type": "donor" } },
-    "trump": { "match": { "name": "Donald Trump", "type": "politician" } },
+    "trump": { "match": { "identifier": ["fec_candidate", "P80001571"] } },
     "kennedy": { "match": { "name": "Robert F. Kennedy Jr.", "type": "politician" } },
     "republican-party": { "match": { "name": "Republican Party", "type": "organization" } },
     "pan-am": {

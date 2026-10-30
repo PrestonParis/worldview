@@ -63,9 +63,7 @@
     "clinton": {
       "match": { "identifier": ["fec_candidate", "S0NY00188"] }
     },
-    "trump": {
-      "match": { "name": "Donald Trump", "type": "politician" }
-    },
+    "trump": { "match": { "identifier": ["fec_candidate", "P80001571"] } },
     "platner": {
       "match": { "identifier": ["fec_candidate", "S6ME00373"] }
     },

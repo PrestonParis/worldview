@@ -108,9 +108,7 @@
         "description": "Prime minister of Israel (1996–1999, 2009–2021 and since 2022)."
       }
     },
-    "trump": {
-      "match": { "name": "Donald Trump", "type": "politician" }
-    },
+    "trump": { "match": { "identifier": ["fec_candidate", "P80001571"] } },
     "zeldin": {
       "match": { "identifier": ["fec_candidate", "H8NY01148"] }
     },

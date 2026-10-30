@@ -62,7 +62,7 @@
   "entities": {
     "sacks": { "match": { "name": "David Sacks", "type": "donor" } },
     "thiel": { "match": { "name": "Peter Thiel", "type": "donor" } },
-    "trump": { "match": { "name": "Donald Trump", "type": "politician" } },
+    "trump": { "match": { "identifier": ["fec_candidate", "P80001571"] } },
     "musk": { "match": { "name": "Elon Musk", "type": "donor" } },
     "vance": { "match": { "name": "JD Vance", "type": "politician" } },
     "paypal": { "match": { "name": "PayPal", "type": "company" } },

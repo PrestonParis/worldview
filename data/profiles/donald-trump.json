@@ -54,10 +54,7 @@
   },
   "entities": {
     "trump": {
-      "match": {
-        "name": "Donald Trump",
-        "type": "politician"
-      }
+      "match": { "identifier": ["fec_candidate", "P80001571"] }
     },
     "trump-organization": {
       "create": {
@@ -518,9 +515,18 @@
       "type": "article",
       "url": "https://apnews.com/article/38c6e694edd13742244e23cff5f96446",
       "accessedAt": "2026-10-22"
+    },
+    {
+      "key": "wikidata-donald-trump",
+      "title": "Donald Trump (Q22686)",
+      "publisher": "Wikidata",
+      "type": "secondary",
+      "url": "https://www.wikidata.org/wiki/Q22686",
+      "accessedAt": "2026-10-30"
     }
   ],
   "facts": [
+    { "key": "sex", "label": "Sex", "value": "Male", "sources": ["wikidata-donald-trump"] },
     {
       "key": "born",
       "label": "Born",

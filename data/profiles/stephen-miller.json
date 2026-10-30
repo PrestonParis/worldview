@@ -66,7 +66,7 @@
   },
   "entities": {
     "miller": { "match": { "identifier": ["wikidata", "Q27916730"] } },
-    "trump": { "match": { "name": "Donald Trump", "type": "politician" } },
+    "trump": { "match": { "identifier": ["fec_candidate", "P80001571"] } },
     "sessions": {
       "create": {
         "name": "Jeff Sessions",
@@ -616,7 +616,7 @@
       "key": "emails-2019",
       "date": "2019-11-12",
       "title": "Breitbart emails published",
-      "summary": "SPLC published a cache showing Miller steering a Breitbart editor toward material associated with white-nationalist and anti-immigration sources; the White House attacked SPLC's credibility.",
+      "summary": "SPLC published a cache showing Miller steering a Breitbart editor toward material associated with White-nationalist and anti-immigration sources; the White House attacked SPLC's credibility.",
       "category": "politics",
       "significance": 3,
       "status": "verified",
@@ -853,7 +853,7 @@
       "key": "controversy",
       "title": "The Breitbart archive exposed the sources behind the rhetoric",
       "dek": "Leaked emails moved criticism from inference about tone to documentary evidence about reading, sourcing and media coordination.",
-      "body": "In November 2019 the Southern Poverty Law Center began publishing material from more than 900 emails Miller had sent to former Breitbart editor Katie McHugh in 2015 and 2016. The archive showed him recommending stories, supplying research and pointing to material circulated by white-nationalist and anti-immigration writers, including discussion of The Camp of the Saints. [[splc-emails-2019, washpost-emails-2019]]\n\nSPLC concluded that the emails demonstrated an affinity for white-nationalist ideas. The White House rejected that characterization and attacked SPLC as a partisan and discredited organization. Independent reporting authenticated exchanges and confirmed McHugh's account, while the precise label applied to Miller remained a matter of interpretation and political dispute. [[splc-emails-2019, washpost-emails-2019]]\n\nThe strongest documentary conclusion is narrower and still consequential: a serving Senate aide who later became a White House adviser used sources and frames associated with extremist movements to shape a national outlet's immigration coverage. His Jewish identity neither disproves that record nor determines how it should be labeled. [[splc-emails-2019, washpost-emails-2019]]"
+      "body": "In November 2019 the Southern Poverty Law Center began publishing material from more than 900 emails Miller had sent to former Breitbart editor Katie McHugh in 2015 and 2016. The archive showed him recommending stories, supplying research and pointing to material circulated by White-nationalist and anti-immigration writers, including discussion of The Camp of the Saints. [[splc-emails-2019, washpost-emails-2019]]\n\nSPLC concluded that the emails demonstrated an affinity for White-nationalist ideas. The White House rejected that characterization and attacked SPLC as a partisan and discredited organization. Independent reporting authenticated exchanges and confirmed McHugh's account, while the precise label applied to Miller remained a matter of interpretation and political dispute. [[splc-emails-2019, washpost-emails-2019]]\n\nThe strongest documentary conclusion is narrower and still consequential: a serving Senate aide who later became a White House adviser used sources and frames associated with extremist movements to shape a national outlet's immigration coverage. His Jewish identity neither disproves that record nor determines how it should be labeled. [[splc-emails-2019, washpost-emails-2019]]"
     },
     {
       "key": "between-terms",

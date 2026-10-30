@@ -55,7 +55,7 @@
         "description": "Blackstone co-founder and former U.S. commerce secretary, who died in 2018."
       }
     },
-    "trump": { "match": { "name": "Donald Trump", "type": "politician" } },
+    "trump": { "match": { "identifier": ["fec_candidate", "P80001571"] } },
     "republican-party": { "match": { "name": "Republican Party", "type": "organization" } },
     "slf": { "match": { "name": "Senate Leadership Fund", "type": "organization" } },
     "america-first": { "match": { "name": "America First Action", "type": "organization" } },
@@ -529,7 +529,7 @@
       "key": "forum-end",
       "date": "2017-08-16",
       "title": "Business forum dissolves after Charlottesville",
-      "summary": "Executives resigned after Trump's response to white-supremacist violence, and the advisory groups ended.",
+      "summary": "Executives resigned after Trump's response to White-supremacist violence, and the advisory groups ended.",
       "category": "politics",
       "significance": 2,
       "chapter": "washington",

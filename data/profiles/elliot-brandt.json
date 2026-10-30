@@ -109,66 +109,64 @@
       }
     },
     "american-israel-public-affairs-committee-aipac": {
-      "create": {
-        "name": "American Israel Public Affairs Committee (AIPAC)",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+      "match": {
+        "name": "AIPAC",
+        "type": "organization"
       }
     },
     "howard-kohr": {
       "create": {
         "name": "Howard Kohr",
-        "type": "politician",
-        "description": "Organization or person documented in a Worldview profile."
+        "type": "lobbyist",
+        "description": "Chief executive of AIPAC from 1996 until his retirement."
       }
     },
     "michael-tuchin": {
       "create": {
         "name": "Michael Tuchin",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+        "type": "donor",
+        "description": "Chair of AIPAC's board of directors."
       }
     },
     "aipac": {
-      "create": {
+      "match": {
         "name": "AIPAC",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+        "type": "organization"
       }
     },
     "bernie-kaminetsky": {
       "create": {
         "name": "Bernie Kaminetsky",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+        "type": "donor",
+        "description": "President of AIPAC's board."
       }
     },
     "rob-bassin": {
       "create": {
         "name": "Rob Bassin",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+        "type": "lobbyist",
+        "description": "Political director of AIPAC and head of its super PAC, United Democracy Project."
       }
     },
     "naomi-lauter": {
       "create": {
         "name": "Naomi Lauter",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+        "type": "lobbyist",
+        "description": "Longtime AIPAC executive."
       }
     },
     "richard-fishman": {
       "create": {
         "name": "Richard Fishman",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+        "type": "lobbyist",
+        "description": "Longtime AIPAC executive."
       }
     },
     "larry-weinberg": {
       "create": {
         "name": "Larry Weinberg",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+        "type": "donor",
+        "description": "Former president of AIPAC and Los Angeles real estate developer."
       }
     },
     "united-democracy-project": {
@@ -180,87 +178,90 @@
       }
     },
     "aipac-pac": {
-      "create": {
-        "name": "AIPAC PAC",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+      "match": {
+        "identifier": [
+          "fec_committee",
+          "C00797670"
+        ]
       }
     },
     "jamaal-bowman": {
-      "create": {
-        "name": "Jamaal Bowman",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+      "match": {
+        "identifier": [
+          "bioguide",
+          "B001223"
+        ]
       }
     },
     "george-latimer": {
-      "create": {
-        "name": "George Latimer",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+      "match": {
+        "identifier": [
+          "bioguide",
+          "L000606"
+        ]
       }
     },
     "thomas-massie": {
-      "create": {
-        "name": "Thomas Massie",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+      "match": {
+        "identifier": [
+          "bioguide",
+          "M001184"
+        ]
       }
     },
     "haley-stevens": {
-      "create": {
-        "name": "Haley Stevens",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+      "match": {
+        "identifier": [
+          "bioguide",
+          "S001215"
+        ]
       }
     },
     "abdul-el-sayed": {
-      "create": {
-        "name": "Abdul El-Sayed",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+      "match": {
+        "identifier": [
+          "fec_candidate",
+          "S6MI00418"
+        ]
       }
     },
     "paul-singer": {
-      "create": {
+      "match": {
         "name": "Paul Singer",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+        "type": "donor"
       }
     },
     "haim-saban": {
-      "create": {
+      "match": {
         "name": "Haim Saban",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+        "type": "donor"
       }
     },
     "marc-rowan": {
       "create": {
         "name": "Marc Rowan",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+        "type": "donor",
+        "description": "Chief executive of Apollo Global Management."
       }
     },
     "american-israel-education-foundation": {
       "create": {
         "name": "American Israel Education Foundation",
         "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+        "description": "Charitable affiliate of AIPAC that sponsors congressional educational trips to Israel."
       }
     },
     "yehuda-neuberger": {
       "create": {
         "name": "Yehuda Neuberger",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+        "type": "donor",
+        "description": "AIPAC lay leader."
       }
     },
     "american-israel-public-affairs-committee": {
-      "create": {
-        "name": "American Israel Public Affairs Committee",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+      "match": {
+        "name": "AIPAC",
+        "type": "organization"
       }
     },
     "aipac_pac": {
@@ -587,9 +588,25 @@
       "url": "https://chamberlight.com/money/aipac",
       "publishedAt": "2026-10-28",
       "notes": "Methodology matters and reports through Oct 14 for committee summary."
+    },
+    {
+      "key": "wikidata-elliot-brandt",
+      "title": "Elliot Brandt (Q140774400)",
+      "publisher": "Wikidata",
+      "type": "secondary",
+      "url": "https://www.wikidata.org/wiki/Q140774400",
+      "accessedAt": "2026-10-30"
     }
   ],
   "facts": [
+    {
+      "key": "sex",
+      "label": "Sex",
+      "value": "Male",
+      "sources": [
+        "wikidata-elliot-brandt"
+      ]
+    },
     {
       "key": "career-1",
       "label": "Career",

@@ -56,7 +56,7 @@
     },
     "club-growth": { "match": { "name": "Club for Growth Action", "type": "organization" } },
     "republican-party": { "match": { "name": "Republican Party", "type": "organization" } },
-    "trump": { "match": { "name": "Donald Trump", "type": "politician" } },
+    "trump": { "match": { "identifier": ["fec_candidate", "P80001571"] } },
     "maga-inc": { "match": { "name": "MAGA Inc.", "type": "organization" } },
     "protect-freedom": {
       "create": {
