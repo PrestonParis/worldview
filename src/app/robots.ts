@@ -5,7 +5,7 @@ import { SITE_URL } from "@/lib/site";
 // reach at their plain URL, and every combination is a fresh server render
 // (in Oct 2026 crawlers walking /people's filters ran the site past Vercel's
 // Hobby CPU allowance). src/proxy.ts turns away crawlers that ignore this.
-const PRIVATE = ["/data", "/account", "/api/", "/login", "/register", "/reset-password", "/auth/", "/geography", "/quiz/stats"];
+const PRIVATE = ["/data", "/account", "/api/", "/login", "/register", "/reset-password", "/auth/", "/geography", "/quiz/stats", "/subpoena"];
 
 // AI training crawlers; the project's Vercel firewall denies them as well.
 // Search and answer engines that link back (Googlebot, Bingbot,

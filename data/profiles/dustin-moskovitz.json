@@ -101,7 +101,7 @@
         "description": "Federal super PAC supporting the 2024 Democratic presidential ticket."
       }
     },
-    "biden": { "match": { "name": "Joe Biden", "type": "politician" } },
+    "biden": { "match": { "identifier": ["fec_candidate", "P80000722"] } },
     "harris": { "match": { "name": "Kamala Harris", "type": "politician" } },
     "meta": {
       "create": {

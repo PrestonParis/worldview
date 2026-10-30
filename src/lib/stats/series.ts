@@ -47,3 +47,21 @@ export function yearlyTotals(points: Point[], { partial = false } = {}): Point[]
     .filter(([, v]) => partial || v.months === 12)
     .map(([year, v]) => ({ period: year, periodStart: `${year}-01-01`, value: v.sum }));
 }
+
+// Federal fiscal-year totals (October–September) from monthly points, as
+// "FY2024"; only complete years unless `partial` is set.
+export function fiscalYearTotals(points: Point[], { partial = false } = {}): Point[] {
+  const byYear = new Map<number, { sum: number; months: number }>();
+  for (const p of points) {
+    const [y, m] = p.period.split("-").map(Number);
+    const fy = m >= 10 ? y + 1 : y;
+    const cur = byYear.get(fy) ?? { sum: 0, months: 0 };
+    cur.sum += p.value;
+    cur.months += 1;
+    byYear.set(fy, cur);
+  }
+  return [...byYear]
+    .filter(([, v]) => partial || v.months === 12)
+    .sort(([a], [b]) => a - b)
+    .map(([fy, v]) => ({ period: `FY${fy}`, periodStart: `${fy - 1}-10-01`, value: v.sum }));
+}

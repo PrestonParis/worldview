@@ -104,134 +104,137 @@
   "entities": {
     "ron-desantis": {
       "match": {
-        "name": "Ron DeSantis",
-        "type": "politician"
+        "identifier": [
+          "bioguide",
+          "D000621"
+        ]
       }
     },
     "state-of-florida": {
       "create": {
         "name": "State of Florida",
         "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+        "description": "The state government of Florida."
       }
     },
     "florida-legislature": {
       "create": {
         "name": "Florida Legislature",
         "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+        "description": "The bicameral legislature of the State of Florida."
       }
     },
     "donald-trump": {
-      "create": {
-        "name": "Donald Trump",
-        "type": "politician",
-        "description": "Organization or person documented in a Worldview profile."
+      "match": {
+        "identifier": [
+          "fec_candidate",
+          "P80001571"
+        ]
       }
     },
     "byron-donalds": {
-      "create": {
-        "name": "Byron Donalds",
-        "type": "politician",
-        "description": "Organization or person documented in a Worldview profile."
+      "match": {
+        "identifier": [
+          "bioguide",
+          "D000032"
+        ]
       }
     },
     "jay-collins": {
-      "create": {
-        "name": "Jay Collins",
-        "type": "politician",
-        "description": "Organization or person documented in a Worldview profile."
+      "match": {
+        "identifier": [
+          "fec_candidate",
+          "H2FL14251"
+        ]
       }
     },
     "paul-renner": {
       "create": {
         "name": "Paul Renner",
         "type": "politician",
-        "description": "Organization or person documented in a Worldview profile."
+        "description": "Speaker of the Florida House of Representatives from 2022 to 2024."
       }
     },
     "james-fishback": {
-      "create": {
+      "match": {
         "name": "James Fishback",
-        "type": "politician",
-        "description": "Organization or person documented in a Worldview profile."
+        "type": "politician"
       }
     },
     "republican-party-of-florida": {
-      "create": {
-        "name": "Republican Party of Florida",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+      "match": {
+        "identifier": [
+          "fec_committee",
+          "C00099259"
+        ]
       }
     },
     "walt-disney-company": {
-      "create": {
-        "name": "Walt Disney Company",
-        "type": "company",
-        "description": "Organization or person documented in a Worldview profile."
+      "match": {
+        "name": "The Walt Disney Company",
+        "type": "company"
       }
     },
     "florida-department-of-law-enforcement": {
       "create": {
         "name": "Florida Department of Law Enforcement",
         "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+        "description": "Florida's statewide law-enforcement agency."
       }
     },
     "u-s-immigration-and-customs-enforcement": {
       "create": {
         "name": "U.S. Immigration and Customs Enforcement",
         "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+        "description": "Federal immigration enforcement agency within the Department of Homeland Security."
       }
     },
     "florida-state-board-of-administration": {
       "create": {
         "name": "Florida State Board of Administration",
         "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+        "description": "State agency that invests Florida's public pension and trust funds."
       }
     },
     "miami-dade-county": {
       "create": {
         "name": "Miami-Dade County",
         "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+        "description": "County government of Miami-Dade County, Florida."
       }
     },
     "state-university-system-of-florida": {
       "create": {
         "name": "State University System of Florida",
         "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+        "description": "Florida's system of public universities, governed by the Board of Governors."
       }
     },
     "ken-griffin": {
-      "create": {
+      "match": {
         "name": "Ken Griffin",
-        "type": "politician",
-        "description": "Organization or person documented in a Worldview profile."
+        "type": "donor"
       }
     },
     "robert-bigelow": {
       "create": {
         "name": "Robert Bigelow",
-        "type": "politician",
-        "description": "Organization or person documented in a Worldview profile."
+        "type": "donor",
+        "description": "Las Vegas businessman, founder of Budget Suites of America and Bigelow Aerospace."
       }
     },
     "republican-governors-association": {
-      "create": {
+      "match": {
         "name": "Republican Governors Association",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+        "type": "organization"
       }
     },
     "david-jolly": {
-      "create": {
-        "name": "David Jolly",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+      "match": {
+        "identifier": [
+          "bioguide",
+          "J000296"
+        ]
       }
     }
   },
@@ -793,9 +796,34 @@
       "url": "https://www.wflx.com/2026/06/12/desantis-joins-calls-florida-gop-governor-debate-party-bars-fishback-june-event/?outputType=amp",
       "publishedAt": "2026-06-12",
       "notes": "Debate thresholds and party forum; based on the party-reported numbers, independent certification of campaign donors not established."
+    },
+    {
+      "key": "wikidata-ron-desantis",
+      "title": "Ron DeSantis (Q3105215)",
+      "publisher": "Wikidata",
+      "type": "secondary",
+      "url": "https://www.wikidata.org/wiki/Q3105215",
+      "accessedAt": "2026-10-30"
     }
   ],
   "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "September 14, 1978",
+      "detail": "Jacksonville, Florida",
+      "sources": [
+        "wikidata-ron-desantis"
+      ]
+    },
+    {
+      "key": "sex",
+      "label": "Sex",
+      "value": "Male",
+      "sources": [
+        "wikidata-ron-desantis"
+      ]
+    },
     {
       "key": "identity-1",
       "label": "Identity",

@@ -23,6 +23,7 @@ export function AtlasTrend({
   flagged,
   onYear,
   height = 220,
+  fromZero = true,
 }: {
   years: string[];
   lines: TrendLine[];
@@ -31,13 +32,14 @@ export function AtlasTrend({
   flagged: Set<string>;
   onYear: (y: string) => void;
   height?: number;
+  fromZero?: boolean; // false fits the axis to the data, for the compact Atlas timeline
 }) {
   const [ref, width] = useWidth<HTMLDivElement>();
   const [hover, setHover] = useState<number | null>(null);
   const values = lines.flatMap((l) => l.values.filter((v): v is number => v !== null));
   if (!values.length) return <p className="py-10 text-center text-sm text-slate-400">No data for this selection.</p>;
 
-  const ticks = niceTicks(Math.min(0, ...values), Math.max(...values));
+  const ticks = niceTicks(fromZero ? Math.min(0, ...values) : Math.min(...values), Math.max(...values));
   const [y0, y1] = [ticks[0], ticks.at(-1)!];
   const plotW = width - M.left - M.right;
   const plotH = height - M.top - M.bottom;

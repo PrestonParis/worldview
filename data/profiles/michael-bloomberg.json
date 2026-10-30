@@ -47,7 +47,7 @@
     }
   ],
   "entities": {
-    "bloomberg": { "match": { "name": "Michael Bloomberg", "type": "politician" } },
+    "bloomberg": { "match": { "identifier": ["fec_candidate", "P00014530"] } },
     "bloomberg-lp": {
       "create": {
         "name": "Bloomberg LP",

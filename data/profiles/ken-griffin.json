@@ -65,7 +65,7 @@
       }
     },
     "republican-party": { "match": { "name": "Republican Party", "type": "organization" } },
-    "trump": { "match": { "name": "Donald Trump", "type": "politician" } },
+    "trump": { "match": { "identifier": ["fec_candidate", "P80001571"] } },
     "desantis": {
       "create": {
         "name": "Ron DeSantis",

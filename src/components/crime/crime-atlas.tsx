@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, Pause, Play, RotateCcw, X } from "lucide-react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { ArrowLeft, Info, Pause, Play, RotateCcw, X } from "lucide-react";
 import type { StatePath } from "@/lib/geo/state-paths";
 import type { CrimeData } from "@/lib/crime/data";
 import { formatSigned, formatValue, pctChange } from "@/lib/format";
@@ -51,6 +51,7 @@ export function CrimeAtlas({
   map,
   cities,
   cityPoints,
+  sources,
 }: {
   data: StateCrimeData;
   offenses: OffenseTrend[];
@@ -59,6 +60,7 @@ export function CrimeAtlas({
   map: { width: number; height: number; states: StatePath[] };
   cities: CityRow[];
   cityPoints: Record<string, [number, number]>;
+  sources?: ReactNode;
 }) {
   const sel = useCrimeSelection();
   const { offense, measure, prelim: isPrelim } = sel;
@@ -223,344 +225,345 @@ export function CrimeAtlas({
   ];
 
   const label = offenseLabel(offense);
-  const sel_ = "rounded-full border border-slate-200 bg-transparent px-3 py-1.5 text-sm text-slate-800 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100";
-  const flagNote = flaggedYears.find((f) => f.year === year);
+  const sel_ = "rounded-full border border-slate-700 bg-slate-900 px-3 py-1.5 text-sm text-slate-100";
+  const [flagOpen, setFlagOpen] = useState<string | null>(null);
+  // The state's full table opens on request, so the analyses stay in view.
+  const [breakdown, setBreakdown] = useState(false);
+  const flagNote = flaggedYears.find((f) => f.year === flagOpen);
 
   return (
     <div className="space-y-6">
-      {/* Controls: offense, period, geography, measure */}
-      <div className="grid gap-3 rounded-2xl border border-slate-200 p-4 sm:grid-cols-2 xl:grid-cols-4 dark:border-slate-800">
-        <label className="grid gap-1 text-xs font-medium text-slate-500 dark:text-slate-400">
-          Offense
-          <select value={offense} onChange={(e) => sel.set({ offense: e.target.value as OffenseKey })} className={sel_}>
-            {(["violent", "property"] as const).map((g) => (
-              <optgroup key={g} label={g === "violent" ? "Violent" : "Property"}>
-                {OFFENSES.filter((o) => o.group === g).map((o) => (
-                  <option key={o.key} value={o.key}>
-                    {o.label}
-                  </option>
-                ))}
-              </optgroup>
-            ))}
-          </select>
-        </label>
-        <div className="grid gap-1 text-xs font-medium text-slate-500 dark:text-slate-400">
-          Period
-          {prelim ? (
-            <Segmented
-              label="Period"
-              value={isPrelim ? "prelim" : "annual"}
-              onChange={(v) => {
-                setPlaying(false);
-                sel.set(v === "prelim" ? { prelim: true, year: prelim.year, city: null } : { prelim: false, year: latestYear });
-              }}
-              options={[
-                { value: "annual", label: `Annual ${years[0]}–${latestYear}` },
-                { value: "prelim", label: `${prelim.year} preliminary` },
-              ]}
-            />
-          ) : (
-            <span className="py-1.5 text-sm text-slate-800 dark:text-slate-100">Annual {years[0]}–{latestYear}</span>
-          )}
-        </div>
-        <label className="grid gap-1 text-xs font-medium text-slate-500 dark:text-slate-400">
-          Geography
-          <select value={sel.state ?? ""} onChange={(e) => pickState(e.target.value || null)} className={sel_}>
-            <option value="">United States</option>
-            {data.rows.map((r) => (
-              <option key={r.abbr} value={r.abbr}>
-                {r.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <div className="grid gap-1 text-xs font-medium text-slate-500 dark:text-slate-400">
-          Measure
-          <Segmented
-            label="Measure"
-            value={measure}
-            onChange={(v) => sel.set({ measure: v })}
-            options={[
-              { value: "rate", label: "Rate" },
-              { value: "change", label: "1-yr change" },
-              { value: "coverage", label: "Coverage" },
-            ]}
-          />
-        </div>
-      </div>
-
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(17rem,21rem)]">
-        <div className="min-w-0 space-y-3">
-          <div ref={mapRef} className="relative">
-            <svg
-              viewBox={vb.join(" ")}
-              role="img"
-              aria-label={`${label}, ${MEASURE_LABEL[measure].toLowerCase()} by state, ${year}`}
-              className={`block h-auto w-full transition-opacity ${isPrelim ? "opacity-40" : ""}`}
-            >
-              {map.states.map((st) => {
-                const v = byAbbr.get(st.abbr)?.value;
-                const isSel = sel.state === st.abbr || sel.compare === st.abbr;
-                return (
-                  <path
-                    key={st.abbr}
-                    ref={(el) => void (el ? pathRefs.current.set(st.abbr, el) : pathRefs.current.delete(st.abbr))}
-                    d={st.d}
-                    tabIndex={0}
-                    role="button"
-                    aria-label={`${st.name}: ${formatValue(v, measure === "rate" ? "per_100k" : "percent")}`}
-                    aria-pressed={sel.state === st.abbr}
-                    onPointerEnter={() => setHover(st.abbr)}
-                    onPointerLeave={() => setHover(null)}
-                    onFocus={() => setHover(st.abbr)}
-                    onBlur={() => setHover(null)}
-                    onClick={() => pickState(st.abbr)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        pickState(st.abbr);
-                      }
-                    }}
-                    className="cursor-pointer"
-                    vectorEffect="non-scaling-stroke"
-                    style={{
-                      fill: fillOf(v),
-                      stroke: isSel ? "var(--viz-series-2)" : hover === st.abbr ? "var(--viz-muted)" : "var(--viz-surface)",
-                      strokeWidth: isSel ? 2.5 : hover === st.abbr ? 2 : 1,
-                      strokeLinejoin: "round",
-                      outline: "none",
-                    }}
-                  />
-                );
-              })}
-              {map.states
-                .filter((st) => st.abbr === sel.state || st.abbr === sel.compare || st.abbr === hover)
-                .map((st) => {
-                  const muted = st.abbr === hover && st.abbr !== sel.state && st.abbr !== sel.compare;
-                  return (
-                    <path
-                      key={`edge-${st.abbr}`}
-                      d={st.d}
-                      pointerEvents="none"
-                      vectorEffect="non-scaling-stroke"
-                      style={{ fill: "none", stroke: muted ? "var(--viz-muted)" : "var(--viz-series-2)", strokeWidth: muted ? 2 : 2.5, strokeLinejoin: "round" }}
-                    />
-                  );
-                })}
-              {!citiesOn &&
-                map.states.map((st) => {
-                  if (!st.label) return null;
-                  const s = stepOf(byAbbr.get(st.abbr)?.value);
-                  return (
-                    <text
-                      key={`label-${st.abbr}`}
-                      x={st.label[0]}
-                      y={st.label[1]}
-                      textAnchor="middle"
-                      dominantBaseline="central"
-                      pointerEvents="none"
-                      fontSize={13 / k}
-                      fontWeight={600}
-                      style={{ fill: s ? `var(--viz-seq-ink-${s})` : "var(--foreground)" }}
-                    >
-                      {st.abbr}
-                    </text>
-                  );
-                })}
-              {clusters.map(({ members, x, y }) => {
-                if (members.length === 1) {
-                  const c = members[0];
-                  const on = sel.city === c.ori || hoverCity === c.ori;
-                  return (
-                    <circle
-                      key={c.ori}
-                      cx={x}
-                      cy={y}
-                      r={(cityRadius(c.population) * 0.85 + (on ? 1.5 : 0)) / Math.sqrt(k)}
-                      vectorEffect="non-scaling-stroke"
-                      onPointerEnter={() => setHoverCity(c.ori)}
-                      onPointerLeave={() => setHoverCity(null)}
-                      onClick={() => pickCity(c.ori)}
-                      className="cursor-pointer"
-                      style={{
-                        fill: "var(--viz-series-2)",
-                        fillOpacity: on ? 1 : 0.8,
-                        stroke: on ? "var(--foreground)" : "var(--viz-surface)",
-                        strokeWidth: on ? 2 : 0.8,
-                      }}
-                    >
-                      <title>{`${c.name}, ${c.state} police department`}</title>
-                    </circle>
-                  );
-                }
-                const r = (8 + Math.sqrt(members.length) * 2.2) / k;
-                return (
-                  <g key={members[0].ori} className="cursor-pointer" onClick={() => zoomToCluster(members)}>
-                    <title>{`${members.length} departments: ${members.slice(0, 4).map((c) => c.name).join(", ")}${members.length > 4 ? "…" : ""} — click to zoom`}</title>
-                    <circle cx={x} cy={y} r={r} vectorEffect="non-scaling-stroke" style={{ fill: "var(--viz-series-2)", fillOpacity: 0.85, stroke: "var(--viz-surface)", strokeWidth: 1.2 }} />
-                    <text x={x} y={y} textAnchor="middle" dominantBaseline="central" fontSize={10.5 / k} fontWeight={700} pointerEvents="none" style={{ fill: "white" }}>
-                      {members.length}
-                    </text>
-                  </g>
-                );
-              })}
-            </svg>
-            {isPrelim && (
-              <p className="absolute inset-x-0 top-1/2 mx-auto w-fit -translate-y-1/2 rounded-xl bg-white/90 px-4 py-2 text-center text-sm text-slate-700 shadow-sm dark:bg-slate-900/90 dark:text-slate-200">
-                Preliminary figures are national; state rates are annual only.
-              </p>
-            )}
-            {(sel.state || zoomBox) && (
-              <button
-                type="button"
-                onClick={reset}
-                className="absolute top-2 left-2 inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white/90 px-2.5 py-1 text-xs font-medium text-slate-700 shadow-sm hover:border-slate-400 dark:border-slate-700 dark:bg-slate-900/90 dark:text-slate-200"
-              >
-                <RotateCcw className="size-3.5" /> United States
-              </button>
-            )}
+      <section
+        id="atlas"
+        aria-label="Crime Atlas"
+        className="dark viz-dark relative -mx-4 scroll-mt-14 overflow-hidden bg-slate-950 px-4 pt-5 pb-5 text-slate-100 sm:mx-0 sm:rounded-3xl sm:px-6 sm:ring-1 sm:ring-slate-800"
+      >
+        <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(60rem_30rem_at_30%_-10%,rgba(57,135,229,.16),transparent)]" />
+        <div className="relative space-y-4">
+          {/* Title and data status */}
+          <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
+            <div>
+              <p className="text-[11px] font-semibold tracking-[0.2em] text-slate-400 uppercase">Worldview / Crime</p>
+              <h1 className="mt-1 text-3xl font-semibold tracking-[-0.03em] text-white sm:text-4xl">Crime in America</h1>
+              <p className="mt-1 text-sm text-slate-400">Explore offenses across places and time.</p>
+            </div>
+            <ul className="flex flex-wrap gap-2 text-[11px] text-slate-400">
+              <li className="rounded-full px-2.5 py-1 ring-1 ring-slate-700">
+                Annual series, {years[0]}–{latestYear} · agency coverage varies
+              </li>
+              {prelim && (
+                <li className="rounded-full px-2.5 py-1 text-amber-300 ring-1 ring-amber-400/40">
+                  {prelim.year} preliminary · reported through {prelim.latestReported.label}
+                </li>
+              )}
+            </ul>
           </div>
 
-          <MapLegend measure={measure} present={present} isPrelim={isPrelim} />
+          {/* Toolbar: offense, period, geography, measure */}
+          <div className="flex flex-wrap items-center gap-2 border-y border-slate-800 py-3">
+            <select aria-label="Offense" value={offense} onChange={(e) => sel.set({ offense: e.target.value as OffenseKey })} className={`${sel_} font-medium`}>
+              {(["violent", "property"] as const).map((g) => (
+                <optgroup key={g} label={g === "violent" ? "Violent" : "Property"}>
+                  {OFFENSES.filter((o) => o.group === g).map((o) => (
+                    <option key={o.key} value={o.key}>
+                      {o.label}
+                    </option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
+            <select aria-label="Geography" value={sel.state ?? ""} onChange={(e) => pickState(e.target.value || null)} className={sel_}>
+              <option value="">United States</option>
+              {data.rows.map((r) => (
+                <option key={r.abbr} value={r.abbr}>
+                  {r.name}
+                </option>
+              ))}
+            </select>
+            {prelim && (
+              <Segmented
+                label="Period"
+                value={isPrelim ? "prelim" : "annual"}
+                onChange={(v) => {
+                  setPlaying(false);
+                  sel.set(v === "prelim" ? { prelim: true, year: prelim.year, city: null } : { prelim: false, year: latestYear });
+                }}
+                options={[
+                  { value: "annual", label: "Annual" },
+                  { value: "prelim", label: `${prelim.year} preliminary` },
+                ]}
+              />
+            )}
+            <span className="ml-auto">
+              <Segmented
+                label="Measure"
+                value={measure}
+                onChange={(v) => sel.set({ measure: v })}
+                options={[
+                  { value: "rate", label: "Rate" },
+                  { value: "change", label: "1-yr change" },
+                  { value: "coverage", label: "Coverage" },
+                ]}
+              />
+            </span>
+          </div>
 
-          {/* Year scrubber */}
-          <div className={`flex items-center gap-3 ${isPrelim ? "pointer-events-none opacity-40" : ""}`}>
+          <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(16rem,19rem)]">
+            <div className="min-w-0 space-y-3">
+              <div ref={mapRef} className="relative">
+                <svg
+                  viewBox={vb.join(" ")}
+                  role="img"
+                  aria-label={`${label}, ${MEASURE_LABEL[measure].toLowerCase()} by state, ${year}`}
+                  className={`block h-auto max-h-[calc(100svh-25rem)] min-h-56 w-full transition-opacity ${isPrelim ? "opacity-40" : ""}`}
+                >
+                  {map.states.map((st) => {
+                    const v = byAbbr.get(st.abbr)?.value;
+                    const isSel = sel.state === st.abbr || sel.compare === st.abbr;
+                    return (
+                      <path
+                        key={st.abbr}
+                        ref={(el) => void (el ? pathRefs.current.set(st.abbr, el) : pathRefs.current.delete(st.abbr))}
+                        d={st.d}
+                        tabIndex={0}
+                        role="button"
+                        aria-label={`${st.name}: ${formatValue(v, measure === "rate" ? "per_100k" : "percent")}`}
+                        aria-pressed={sel.state === st.abbr}
+                        onPointerEnter={() => setHover(st.abbr)}
+                        onPointerLeave={() => setHover(null)}
+                        onFocus={() => setHover(st.abbr)}
+                        onBlur={() => setHover(null)}
+                        onClick={() => pickState(st.abbr)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            pickState(st.abbr);
+                          }
+                        }}
+                        className="cursor-pointer"
+                        vectorEffect="non-scaling-stroke"
+                        style={{
+                          fill: fillOf(v),
+                          stroke: isSel ? "var(--viz-series-2)" : hover === st.abbr ? "var(--viz-muted)" : "var(--viz-surface)",
+                          strokeWidth: isSel ? 2.5 : hover === st.abbr ? 2 : 1,
+                          strokeLinejoin: "round",
+                          outline: "none",
+                        }}
+                      />
+                    );
+                  })}
+                  {map.states
+                    .filter((st) => st.abbr === sel.state || st.abbr === sel.compare || st.abbr === hover)
+                    .map((st) => {
+                      const muted = st.abbr === hover && st.abbr !== sel.state && st.abbr !== sel.compare;
+                      return (
+                        <path
+                          key={`edge-${st.abbr}`}
+                          d={st.d}
+                          pointerEvents="none"
+                          vectorEffect="non-scaling-stroke"
+                          style={{ fill: "none", stroke: muted ? "var(--viz-muted)" : "var(--viz-series-2)", strokeWidth: muted ? 2 : 2.5, strokeLinejoin: "round" }}
+                        />
+                      );
+                    })}
+                  {!citiesOn &&
+                    map.states.map((st) => {
+                      if (!st.label) return null;
+                      const s = stepOf(byAbbr.get(st.abbr)?.value);
+                      return (
+                        <text
+                          key={`label-${st.abbr}`}
+                          x={st.label[0]}
+                          y={st.label[1]}
+                          textAnchor="middle"
+                          dominantBaseline="central"
+                          pointerEvents="none"
+                          fontSize={13 / k}
+                          fontWeight={600}
+                          style={{ fill: s ? `var(--viz-seq-ink-${s})` : "var(--foreground)" }}
+                        >
+                          {st.abbr}
+                        </text>
+                      );
+                    })}
+                  {clusters.map(({ members, x, y }) => {
+                    if (members.length === 1) {
+                      const c = members[0];
+                      const on = sel.city === c.ori || hoverCity === c.ori;
+                      return (
+                        <circle
+                          key={c.ori}
+                          cx={x}
+                          cy={y}
+                          r={(cityRadius(c.population) * 0.85 + (on ? 1.5 : 0)) / Math.sqrt(k)}
+                          vectorEffect="non-scaling-stroke"
+                          onPointerEnter={() => setHoverCity(c.ori)}
+                          onPointerLeave={() => setHoverCity(null)}
+                          onClick={() => pickCity(c.ori)}
+                          className="cursor-pointer"
+                          style={{
+                            fill: "var(--viz-series-2)",
+                            fillOpacity: on ? 1 : 0.8,
+                            stroke: on ? "var(--foreground)" : "var(--viz-surface)",
+                            strokeWidth: on ? 2 : 0.8,
+                          }}
+                        >
+                          <title>{`${c.name}, ${c.state} police department`}</title>
+                        </circle>
+                      );
+                    }
+                    const r = (8 + Math.sqrt(members.length) * 2.2) / k;
+                    return (
+                      <g key={members[0].ori} className="cursor-pointer" onClick={() => zoomToCluster(members)}>
+                        <title>{`${members.length} departments: ${members.slice(0, 4).map((c) => c.name).join(", ")}${members.length > 4 ? "…" : ""} — click to zoom`}</title>
+                        <circle cx={x} cy={y} r={r} vectorEffect="non-scaling-stroke" style={{ fill: "var(--viz-series-2)", fillOpacity: 0.85, stroke: "var(--viz-surface)", strokeWidth: 1.2 }} />
+                        <text x={x} y={y} textAnchor="middle" dominantBaseline="central" fontSize={10.5 / k} fontWeight={700} pointerEvents="none" style={{ fill: "white" }}>
+                          {members.length}
+                        </text>
+                      </g>
+                    );
+                  })}
+                </svg>
+                {isPrelim && (
+                  <p className="absolute inset-x-0 top-1/2 mx-auto w-fit -translate-y-1/2 rounded-xl bg-slate-900/90 px-4 py-2 text-center text-sm text-slate-200 shadow-sm">
+                    Preliminary figures are national; state rates are annual only.
+                  </p>
+                )}
+                {(sel.state || zoomBox) && (
+                  <button
+                    type="button"
+                    onClick={reset}
+                    className="absolute top-2 left-2 inline-flex items-center gap-1 rounded-full border border-slate-700 bg-slate-900/90 px-2.5 py-1 text-xs font-medium text-slate-200 shadow-sm hover:border-slate-400"
+                  >
+                    <RotateCcw className="size-3.5" /> United States
+                  </button>
+                )}
+              </div>
+
+              <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+                <MapLegend measure={measure} present={present} isPrelim={isPrelim} />
+                {cities.length > 0 && (
+                  <label className="inline-flex cursor-pointer items-center gap-1.5 text-xs text-slate-400">
+                    <input type="checkbox" checked={showCities} onChange={(e) => setShowCities(e.target.checked)} className="accent-orange-600" />
+                    <span className="inline-block size-2.5 rounded-full" style={{ background: "var(--viz-series-2)" }} aria-hidden />
+                    City police departments
+                    {(year !== latestYear || isPrelim) && <span className="text-slate-500">({latestYear} only)</span>}
+                  </label>
+                )}
+              </div>
+            </div>
+
+            <aside className="h-fit rounded-2xl bg-white/[0.03] p-4 text-sm ring-1 ring-white/10" aria-live="polite">
+              {isPrelim && prelim ? (
+                <PrelimInspector p={prelim} offense={offense} latestYear={latestYear} />
+              ) : focusCity ? (
+                <CityInspector
+                  c={focusCity}
+                  cities={cities}
+                  offense={offense}
+                  year={latestYear}
+                  stateRow={data.rows.find((r) => r.abbr === focusCity.state)}
+                  us={data.us}
+                  i={years.indexOf(latestYear)}
+                  pinned={sel.city === focusCity.ori}
+                  onBack={() => sel.set({ city: null })}
+                />
+              ) : (
+                <GeoInspector
+                  name={focusRow?.name ?? "United States"}
+                  abbr={focusRow?.abbr ?? null}
+                  rates={focusRow ? focusRow.rates : data.us}
+                  coverage={focusRow ? focusRow.coverage : data.usCoverage}
+                  rank={focusRow ? (byAbbr.get(focusRow.abbr)?.rank ?? 0) : 0}
+                  ranked={rows.filter((r) => r.rank).length}
+                  usRate={data.us[offense][i]}
+                  cleared={
+                    focusRow
+                      ? year === latestYear && (CLEARED as readonly string[]).includes(offense)
+                        ? focusRow.cleared[offense as ClearedKey]
+                        : null
+                      : (offenses.find((o) => o.key === offense)?.cleared.find((p) => p.year === year)?.value ?? null)
+                  }
+                  offense={offense}
+                  years={years}
+                  i={i}
+                  preview={!!hover && hover !== sel.state}
+                  onOffense={(o) => sel.set({ offense: o })}
+                />
+              )}
+              {stateRow && !isPrelim && (
+                <button
+                  type="button"
+                  aria-expanded={breakdown}
+                  aria-controls="state-breakdown"
+                  onClick={() => setBreakdown(!breakdown)}
+                  className="mt-4 w-full rounded-full bg-white/10 px-3 py-1.5 text-xs font-medium text-white hover:bg-white/15"
+                >
+                  {breakdown ? "Hide" : "Full"} {stateRow.name} breakdown
+                </button>
+              )}
+            </aside>
+          </div>
+
+          {/* Timeline: the history of the selection; each year moves the map */}
+          <div className={`flex items-start gap-3 border-t border-slate-800 pt-3 ${isPrelim ? "opacity-40" : ""}`}>
             <button
               type="button"
               onClick={togglePlay}
+              disabled={isPrelim}
               aria-label={playing ? "Pause" : `Play ${years[0]} to ${latestYear}`}
-              className="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-slate-900 text-white hover:bg-slate-700 dark:bg-white dark:text-slate-900"
+              className="mt-6 inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-white text-slate-900 hover:bg-slate-200"
             >
               {playing ? <Pause className="size-4" /> : <Play className="size-4" />}
             </button>
             <div className="min-w-0 flex-1">
-              <input
-                type="range"
-                min={0}
-                max={years.length - 1}
-                value={i}
-                onChange={(e) => sel.set({ year: years[Number(e.target.value)], city: null })}
-                aria-label="Year"
-                aria-valuetext={years[i]}
-                className="w-full accent-slate-900 dark:accent-white"
+              <AtlasTrend
+                years={years}
+                lines={lines}
+                unit={trendUnit}
+                year={isPrelim ? null : year}
+                flagged={flagged}
+                height={96}
+                fromZero={false}
+                onYear={(y) => {
+                  setPlaying(false);
+                  sel.set({ year: y, prelim: false, city: y === latestYear ? sel.city : null });
+                }}
               />
-              <div className="relative h-4 text-[11px] text-slate-400">
-                {years.map((y, n) => (
-                  <span
-                    key={y}
-                    className={`absolute ${n === 0 ? "" : n === years.length - 1 ? "-translate-x-full" : "-translate-x-1/2"} ${flagged.has(y) ? "text-amber-600 dark:text-amber-400" : ""} ${y === year ? "font-semibold text-slate-900 dark:text-white" : ""} ${
-                      n % 2 && y !== year && !flagged.has(y) && n !== years.length - 1 ? "hidden sm:inline" : ""
-                    }`}
-                    style={{ left: n === 0 ? 0 : n === years.length - 1 ? "100%" : `calc(${(n / (years.length - 1)) * 100}% + ${8 - (n / (years.length - 1)) * 16}px)` }}
-                  >
-                    {y}
-                  </span>
-                ))}
-              </div>
             </div>
           </div>
-          {flagNote && !isPrelim && (
-            <p className="rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:bg-amber-950/40 dark:text-amber-200">
-              {year}: the FBI&apos;s switch to NIBRS left agencies covering {formatValue(flagNote.coverage, "percent")} of residents reporting, so rates read
-              low and changes into and out of {year} reflect participation as well as crime.
-            </p>
-          )}
-
-          <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400">
-            {cities.length > 0 && (
-              <label className="inline-flex cursor-pointer items-center gap-1.5">
-                <input type="checkbox" checked={showCities} onChange={(e) => setShowCities(e.target.checked)} className="accent-orange-600" />
-                <span className="inline-block size-2.5 rounded-full" style={{ background: "var(--viz-series-2)" }} aria-hidden />
-                Police departments of cities over 100,000
-                {year !== latestYear || isPrelim ? <span className="text-slate-400">({latestYear} only)</span> : <span className="text-slate-400">· numbered bubbles zoom in</span>}
-              </label>
-            )}
-          </div>
-        </div>
-
-        <aside className="h-fit rounded-2xl border border-slate-200 p-4 text-sm lg:sticky lg:top-28 dark:border-slate-800" aria-live="polite">
-          {isPrelim && prelim ? (
-            <PrelimInspector p={prelim} offense={offense} latestYear={latestYear} />
-          ) : focusCity ? (
-            <CityInspector
-              c={focusCity}
-              cities={cities}
-              offense={offense}
-              year={latestYear}
-              stateRow={data.rows.find((r) => r.abbr === focusCity.state)}
-              us={data.us}
-              i={years.indexOf(latestYear)}
-              pinned={sel.city === focusCity.ori}
-              onBack={() => sel.set({ city: null })}
-            />
-          ) : (
-            <GeoInspector
-              name={focusRow?.name ?? "United States"}
-              abbr={focusRow?.abbr ?? null}
-              rates={focusRow ? focusRow.rates : data.us}
-              coverage={focusRow ? focusRow.coverage : data.usCoverage}
-              rank={focusRow ? (byAbbr.get(focusRow.abbr)?.rank ?? 0) : 0}
-              ranked={rows.filter((r) => r.rank).length}
-              usRate={data.us[offense][i]}
-              cleared={
-                focusRow
-                  ? year === latestYear && (CLEARED as readonly string[]).includes(offense)
-                    ? focusRow.cleared[offense as ClearedKey]
-                    : null
-                  : (offenses.find((o) => o.key === offense)?.cleared.find((p) => p.year === year)?.value ?? null)
-              }
-              offense={offense}
-              years={years}
-              i={i}
-              preview={!!hover && hover !== sel.state}
-              onOffense={(o) => sel.set({ offense: o })}
-            />
-          )}
-        </aside>
-      </div>
-
-      <div className="rounded-2xl border border-slate-200 p-5 dark:border-slate-800">
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div>
-            <p className="text-base font-semibold text-slate-950 dark:text-white">
-              {label} {measure === "coverage" ? "· population covered by reporting agencies" : "rate per 100,000"}, {years[0]}–{latestYear}
-            </p>
-            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-              Select a year to move the map.
-              {flaggedYears.length > 0 && " Shaded years had partial reporting."}
-              {city && ` ${city.name}'s department has ${latestYear} figures only; the lines are its state and the nation.`}
-            </p>
-          </div>
-          <label className="text-xs text-slate-500 dark:text-slate-400">
-            Compare with{" "}
-            <select value={sel.compare} onChange={(e) => sel.set({ compare: e.target.value })} className={`ml-1 ${sel_}`}>
-              <option value="">—</option>
-              {data.rows
-                .filter((r) => r.abbr !== sel.state)
-                .map((r) => (
-                  <option key={r.abbr} value={r.abbr}>
-                    {r.name}
-                  </option>
+          {flaggedYears.length > 0 && (
+            <div className="text-xs">
+              <div className="flex flex-wrap gap-2">
+                {flaggedYears.map((f) => (
+                  <button
+                    key={f.year}
+                    type="button"
+                    aria-expanded={flagOpen === f.year}
+                    onClick={() => setFlagOpen(flagOpen === f.year ? null : f.year)}
+                    className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 ring-1 ${
+                      f.year === year && !isPrelim ? "bg-amber-400/15 text-amber-200 ring-amber-400/50" : "text-amber-300/80 ring-amber-400/30 hover:ring-amber-400/60"
+                    }`}
+                  >
+                    <Info className="size-3.5" aria-hidden />
+                    {f.year} · Partial reporting ({formatValue(f.coverage, "percent")} population coverage)
+                  </button>
                 ))}
-            </select>
-          </label>
+              </div>
+              {flagNote && (
+                <p className="mt-2 max-w-3xl leading-5 text-slate-300">
+                  In {flagNote.year} the FBI retired its summary reporting system for NIBRS, and many agencies, including some of the largest, had not
+                  yet switched. Agencies covering {formatValue(flagNote.coverage, "percent")} of residents reported, so {flagNote.year} rates read low
+                  and changes into and out of {flagNote.year} reflect participation as well as crime. The year is shaded on every chart.
+                </p>
+              )}
+            </div>
+          )}
+          {sources}
         </div>
-        <div className="mt-4">
-          <AtlasTrend
-            years={years}
-            lines={lines}
-            unit={trendUnit}
-            year={isPrelim ? null : year}
-            flagged={flagged}
-            onYear={(y) => {
-              setPlaying(false);
-              sel.set({ year: y, prelim: false, city: y === latestYear ? sel.city : null });
-            }}
-          />
-        </div>
-      </div>
+      </section>
 
-      {stateRow && (
+      {stateRow && breakdown && (
         <StateBreakdown
           data={data}
           abbr={stateRow.abbr}
@@ -572,7 +575,7 @@ export function CrimeAtlas({
             pickCity(ori);
             window.scrollTo({ top: document.getElementById("atlas")?.offsetTop ?? 0, behavior: "smooth" });
           }}
-          onClose={() => pickState(null)}
+          onClose={() => setBreakdown(false)}
         />
       )}
     </div>
@@ -649,19 +652,21 @@ function GeoInspector({
   const dd = "text-right font-medium text-slate-900 tabular-nums dark:text-white";
   return (
     <>
-      <p className="text-xs font-medium tracking-wide text-slate-400 uppercase">{preview ? "Preview" : "Selected geography"}</p>
-      <p className="mt-1 text-lg font-semibold text-slate-950 dark:text-white">{name}</p>
-      <p className="mt-2 text-4xl font-semibold tracking-tight text-slate-950 tabular-nums dark:text-white">{formatValue(rate, "per_100k")}</p>
-      <p className="text-xs text-slate-500 dark:text-slate-400">
-        {offenseLabel(offense)} per 100,000 residents, {year}
+      <p className="flex items-baseline justify-between gap-2">
+        <span className="text-lg font-semibold text-slate-950 dark:text-white">{name}</span>
+        {preview && <span className="text-[11px] tracking-wide text-slate-400 uppercase">Preview</span>}
       </p>
+      <p className="mt-3 text-[11px] font-semibold tracking-[0.14em] text-slate-400 uppercase">
+        {offenseLabel(offense)} rate · {year}
+      </p>
+      <p className="mt-0.5 text-5xl font-semibold tracking-[-0.03em] text-slate-950 tabular-nums dark:text-white">{formatValue(rate, "per_100k")}</p>
+      <p className="text-xs text-slate-500 dark:text-slate-400">Offenses per 100,000 residents</p>
+      {prior && (
+        <p className="mt-2 text-sm font-medium text-slate-800 tabular-nums dark:text-slate-100">
+          {signed(pctChange(rate, rates[offense][i - 1]))} <span className="font-normal text-slate-500 dark:text-slate-400">vs {prior}</span>
+        </p>
+      )}
       <dl className="mt-4 grid grid-cols-2 gap-x-3 gap-y-2 text-xs">
-        {prior && (
-          <>
-            <dt className="text-slate-500 dark:text-slate-400">vs {prior}</dt>
-            <dd className={dd}>{signed(pctChange(rate, rates[offense][i - 1]))}</dd>
-          </>
-        )}
         {abbr && (
           <>
             <dt className="text-slate-500 dark:text-slate-400">vs U.S. rate</dt>
@@ -705,7 +710,7 @@ function GeoInspector({
           </li>
         ))}
       </ul>
-      {!abbr && <p className="mt-4 text-xs text-slate-400">Select a state on the map for its profile; city bubbles open police departments.</p>}
+      {!abbr && <p className="mt-4 text-xs text-slate-400">Select a state or a city bubble on the map.</p>}
     </>
   );
 }

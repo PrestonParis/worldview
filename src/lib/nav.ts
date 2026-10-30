@@ -12,7 +12,7 @@ export const generalPages: NavPage[] = [
   { label: "Worldview Atlas", navLabel: "Atlas", href: "/atlas" },
   { label: "Subpoena", navLabel: "Subpoena", href: "/subpoena" },
   { label: "Writ", navLabel: "Writ", href: "/writ" },
-  { label: "IssueView", navLabel: "IssueView", href: "/issueview" },
+  { label: "Explore the Issues", navLabel: "All issues", href: "/issueview" },
 ];
 
 export const primaryPages: NavPage[] = [
@@ -29,6 +29,7 @@ export const primaryPages: NavPage[] = [
   { label: "Religion", navLabel: "Religion", href: "/religion" },
   { label: "Family", navLabel: "Family", href: "/family" },
   { label: "Government Spending", navLabel: "Spending", href: "/spending" },
+  { label: "U.S. Foreign Policy", navLabel: "Foreign Policy", href: "/foreign-policy" },
   { label: "U.S.–Israel Relations", navLabel: "Israel", href: "/israel" },
   { label: "States", navLabel: "States", href: "/states" },
   { label: "Datasets", navLabel: "Datasets", href: "/datasets" },
@@ -55,6 +56,7 @@ export const navGroups: NavGroup[] = [
     id: "issues",
     label: "Issues",
     items: [
+      { page: page("/issueview"), blurb: "Browse every issue and follow connections between topics" },
       { page: page("/immigration"), blurb: "Border encounters, green cards, refugees, detention" },
       { page: page("/crime"), blurb: "Violent and property crime, nationally and by state" },
       { page: page("/guns"), blurb: "Firearm deaths, ownership, and opinion on gun laws" },
@@ -87,6 +89,7 @@ export const navGroups: NavGroup[] = [
     items: [
       { page: page("/people"), blurb: "Who's connected to whom, and how" },
       { page: page("/money"), blurb: "Donors, PACs, lobbying, and money flow" },
+      { page: page("/foreign-policy"), blurb: "Defense, aid, trade, diplomacy, authority, and countries" },
       { page: page("/israel"), blurb: "U.S.–Israel aid, arms sales, lobbying, votes, and trade" },
       { page: page("/my-government"), blurb: "Your officials, districts, and votes" },
     ],
@@ -107,7 +110,6 @@ export const navGroups: NavGroup[] = [
     items: [
       { page: page("/subpoena"), blurb: "People, PACs, and campaign money dossiers" },
       { page: page("/writ"), blurb: "Bills, roll-call voting alignments, and election shifts" },
-      { page: page("/issueview"), blurb: "Cross-topic state & county multi-metric comparator" },
       { page: page("/atlas"), blurb: "Map your worldview and explore political philosophies" },
     ],
   },

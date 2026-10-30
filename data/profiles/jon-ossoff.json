@@ -78,9 +78,7 @@
     "ron-johnson": {
       "match": { "identifier": ["bioguide", "J000293"] }
     },
-    "trump": {
-      "match": { "name": "Donald Trump", "type": "politician" }
-    },
+    "trump": { "match": { "identifier": ["fec_candidate", "P80001571"] } },
     "insight": {
       "create": {
         "name": "Insight: The World Investigates",

@@ -59,5 +59,11 @@ describe("people attributes", () => {
     const all = buildAttributes(entities, new Map(), {}, traits);
     expect(all.facets.sex).toEqual({ female: 1, male: 1, none: 1 });
     expect(all.facets.race).toEqual({ hispanic: 1, none: 2 });
+    expect(all.facetTotals.sex).toBe(3);
+    expect(all.facetTotals.race).toBe(3);
+    // Ordinary organizations do not inflate personal-detail coverage or get
+    // described as politically unclassified.
+    expect(all.facets.side).toEqual({ liberal: 1, conservative: 1, uncharacterized: 1 });
+    expect(all.facetTotals.side).toBe(3);
   });
 });

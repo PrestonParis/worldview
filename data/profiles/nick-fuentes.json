@@ -53,7 +53,7 @@
       }
     ]
   },
-  "summary": "Nick Fuentes is an American political livestreamer and organizer associated with the Groyper movement and America First Political Action Conference. His politics combine immigration restriction, white-nationalist and antisemitic rhetoric, social authoritarianism and opposition to parts of the Republican establishment; his influence is documented through media-platform disputes, political event appearances and conflicts inside Republican institutions. He endorsed 2026 Florida gubernatorial contender James Fishback, although Fishback said he had never spoken directly with Fuentes.",
+  "summary": "Nick Fuentes is an American political livestreamer and organizer associated with the Groyper movement and America First Political Action Conference. His politics combine immigration restriction, White-nationalist and antisemitic rhetoric, social authoritarianism and opposition to parts of the Republican establishment; his influence is documented through media-platform disputes, political event appearances and conflicts inside Republican institutions. He endorsed 2026 Florida gubernatorial contender James Fishback, although Fishback said he had never spoken directly with Fuentes.",
   "roles": [
     {
       "label": "Host of America First political livestream",
@@ -106,120 +106,122 @@
   "entities": {
     "nick-fuentes": {
       "match": {
-        "name": "Nick Fuentes",
-        "type": "pundit"
+        "identifier": [
+          "wikidata",
+          "Q51120751"
+        ]
       }
     },
     "groyper-movement": {
-      "create": {
+      "match": {
         "name": "Groyper movement",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+        "type": "organization"
       }
     },
     "america-first-political-action-conference": {
-      "create": {
+      "match": {
         "name": "America First Political Action Conference",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+        "type": "organization"
       }
     },
     "america-first-foundation": {
-      "create": {
+      "match": {
         "name": "America First Foundation",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+        "type": "organization"
       }
     },
     "turning-point-usa-charlie-kirk": {
-      "create": {
-        "name": "Turning Point USA / Charlie Kirk",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+      "match": {
+        "name": "Turning Point USA",
+        "type": "organization"
       }
     },
     "donald-trump": {
-      "create": {
-        "name": "Donald Trump",
-        "type": "politician",
-        "description": "Organization or person documented in a Worldview profile."
+      "match": {
+        "identifier": [
+          "fec_candidate",
+          "P80001571"
+        ]
       }
     },
     "ye-kanye-west": {
-      "create": {
-        "name": "Ye (Kanye West)",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+      "match": {
+        "identifier": [
+          "fec_candidate",
+          "P00016741"
+        ]
       }
     },
     "tucker-carlson": {
-      "create": {
-        "name": "Tucker Carlson",
-        "type": "politician",
-        "description": "Organization or person documented in a Worldview profile."
+      "match": {
+        "identifier": [
+          "wikidata",
+          "Q743162"
+        ]
       }
     },
     "kevin-roberts-heritage-foundation": {
-      "create": {
-        "name": "Kevin Roberts / Heritage Foundation",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+      "match": {
+        "name": "Kevin Roberts",
+        "type": "pundit"
       }
     },
     "marjorie-taylor-greene": {
-      "create": {
-        "name": "Marjorie Taylor Greene",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+      "match": {
+        "identifier": [
+          "bioguide",
+          "G000596"
+        ]
       }
     },
     "paul-gosar": {
-      "create": {
-        "name": "Paul Gosar",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+      "match": {
+        "identifier": [
+          "bioguide",
+          "G000565"
+        ]
       }
     },
     "james-fishback": {
-      "create": {
+      "match": {
         "name": "James Fishback",
-        "type": "politician",
-        "description": "Organization or person documented in a Worldview profile."
+        "type": "politician"
       }
     },
     "jd-vance": {
-      "create": {
-        "name": "JD Vance",
-        "type": "politician",
-        "description": "Organization or person documented in a Worldview profile."
+      "match": {
+        "identifier": [
+          "fec_candidate",
+          "S2OH00436"
+        ]
       }
     },
     "alex-jones": {
-      "create": {
-        "name": "Alex Jones",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+      "match": {
+        "identifier": [
+          "wikidata",
+          "Q4717252"
+        ]
       }
     },
     "matt-brooks-republican-jewish-coalition": {
-      "create": {
-        "name": "Matt Brooks / Republican Jewish Coalition",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+      "match": {
+        "name": "Matt Brooks",
+        "type": "politician"
       }
     },
     "piers-morgan": {
-      "create": {
-        "name": "Piers Morgan",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+      "match": {
+        "identifier": [
+          "wikidata",
+          "Q557758"
+        ]
       }
     },
     "elon-musk-x": {
-      "create": {
-        "name": "Elon Musk / X",
-        "type": "politician",
-        "description": "Organization or person documented in a Worldview profile."
+      "match": {
+        "name": "Elon Musk",
+        "type": "donor"
       }
     }
   },
@@ -556,9 +558,34 @@
       "url": "https://www.mediamatters.org/nick-fuentes/right-wing-media-are-split-white-nationalist-nick-fuentes",
       "publishedAt": "2026-04",
       "notes": "A reported follower growth estimate not unique listeners or persuasion impact."
+    },
+    {
+      "key": "wikidata-nick-fuentes",
+      "title": "Nick Fuentes (Q51120751)",
+      "publisher": "Wikidata",
+      "type": "secondary",
+      "url": "https://www.wikidata.org/wiki/Q51120751",
+      "accessedAt": "2026-10-30"
     }
   ],
   "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "August 18, 1998",
+      "detail": "Illinois",
+      "sources": [
+        "wikidata-nick-fuentes"
+      ]
+    },
+    {
+      "key": "sex",
+      "label": "Sex",
+      "value": "Male",
+      "sources": [
+        "wikidata-nick-fuentes"
+      ]
+    },
     {
       "key": "identity-2",
       "label": "Identity",
@@ -675,7 +702,7 @@
     {
       "key": "policy-race-13",
       "label": "Policy Race",
-      "value": "His public comments advocate white political dominance and use derogatory racial generalizations; this supports reporting classifications as white nationalist or white supremacist.",
+      "value": "His public comments advocate White political dominance and use derogatory racial generalizations; this supports reporting classifications as White nationalist or White supremacist.",
       "featured": false,
       "sources": [
         "NF23",
@@ -1522,14 +1549,14 @@
     {
       "key": "origins-a-digital-nationalist-political-career",
       "title": "Origins: a digital nationalist political career",
-      "dek": "Nick Fuentes is an American political livestreamer and organizer associated with the Groyper movement and America First Political Action Conference. His politics combine immigration restriction, white-nationalist and antisemitic rhetoric, social authoritarianism and opposition to parts of the Republican establishment; his influence is documented through media-platform disputes, political event appearances and conflicts inside Republican institutions. He endorsed 2026 Florida gubernatorial contender James Fishback, although Fishback said he had never spoken directly with Fuentes.",
+      "dek": "Nick Fuentes is an American political livestreamer and organizer associated with the Groyper movement and America First Political Action Conference. His politics combine immigration restriction, White-nationalist and antisemitic rhetoric, social authoritarianism and opposition to parts of the Republican establishment; his influence is documented through media-platform disputes, political event appearances and conflicts inside Republican institutions. He endorsed 2026 Florida gubernatorial contender James Fishback, although Fishback said he had never spoken directly with Fuentes.",
       "body": "Nicholas J. Fuentes became a controversial online political commentator as a young adult. An August 2017 Associated Press interview documented his participation in the Charlottesville Unite the Right rally and his decision to withdraw from Boston University after threats. Rather than using a later self-description as the entire origin story, this contemporary reporting anchors the first public period of his career. [[NF02]]\n\nFuentes built America First as a recurring political livestream, combining nationalist policy arguments with attacks on establishment conservative organizations. Its later distribution has spanned independent channels and Rumble; this transition is central to understanding his growth outside traditional cable television. The exact original first broadcast and business continuity across platforms remain open questions. [[NF04,NF30,NF34]]"
     },
     {
       "key": "the-first-groyper-war-and-the-institutional-split",
       "title": "The first Groyper War and the institutional split",
       "dek": "",
-      "body": "In 2019, self-identified Groypers challenged Turning Point USA speakers and Charlie Kirk by posing questions about legal immigration, foreign-policy loyalties, social issues, and identity. The tactic generated attention from mainstream conservatives and reporters while creating a distinctive supporter identity around Fuentes. An online subculture is not the same thing as a formal political membership organization. [[NF03,NF04]]\n\nThe conflict was not merely about personal insults; it exposed a substantive divide between nationalism grounded partly in ethnicity and conservative leaders with a more civic or coalition-oriented model. Public characterization as white nationalist is supported not simply by critics’ labels but by his later explicit positions on demographic immigration and racial hierarchy. That difference matters for comparing his views with ordinary restrictionist positions. [[NF03,NF14,NF23]]"
+      "body": "In 2019, self-identified Groypers challenged Turning Point USA speakers and Charlie Kirk by posing questions about legal immigration, foreign-policy loyalties, social issues, and identity. The tactic generated attention from mainstream conservatives and reporters while creating a distinctive supporter identity around Fuentes. An online subculture is not the same thing as a formal political membership organization. [[NF03,NF04]]\n\nThe conflict was not merely about personal insults; it exposed a substantive divide between nationalism grounded partly in ethnicity and conservative leaders with a more civic or coalition-oriented model. Public characterization as White nationalist is supported not simply by critics’ labels but by his later explicit positions on demographic immigration and racial hierarchy. That difference matters for comparing his views with ordinary restrictionist positions. [[NF03,NF14,NF23]]"
     },
     {
       "key": "afpac-nonprofit-structure-and-the-limits-of-institutional-access",
@@ -1553,7 +1580,7 @@
       "key": "ideas-nation-state-religion-and-exclusion",
       "title": "Ideas: nation, state, religion and exclusion",
       "dek": "",
-      "body": "Fuentes’s political project combines intense immigration restriction, white identity, anti-liberal cultural politics, Catholic traditionalist language, and support for a powerful state. In a 2024 livestream he distinguished his central opposition to demographic change through legal immigration from enforcement of unauthorized entry alone. His own recorded gender and race rhetoric, rather than the Worldview quiz’s internal category labels, provides substantive grounds for describing the ideology. [[NF14,NF22,NF23,NF29]]\n\nIn a 2025 interview about a hypothetical presidency, he described exceptional National Guard deployment, pervasive law enforcement, and reducing voting eligibility—including restricting women’s suffrage and raising the voting age. Those are documented proposals or hypothetical statements, not actual powers he holds. His identity as a Catholic does not make his political statements Catholic Church teaching. [[NF20,NF22]]"
+      "body": "Fuentes’s political project combines intense immigration restriction, White identity, anti-liberal cultural politics, Catholic traditionalist language, and support for a powerful state. In a 2024 livestream he distinguished his central opposition to demographic change through legal immigration from enforcement of unauthorized entry alone. His own recorded gender and race rhetoric, rather than the Worldview quiz’s internal category labels, provides substantive grounds for describing the ideology. [[NF14,NF22,NF23,NF29]]\n\nIn a 2025 interview about a hypothetical presidency, he described exceptional National Guard deployment, pervasive law enforcement, and reducing voting eligibility—including restricting women’s suffrage and raising the voting age. Those are documented proposals or hypothetical statements, not actual powers he holds. His identity as a Catholic does not make his political statements Catholic Church teaching. [[NF20,NF22]]"
     },
     {
       "key": "israel-antisemitism-historical-denial-and-conflicting-explanations",

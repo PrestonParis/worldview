@@ -27,8 +27,8 @@ is incomplete (e.g. a pending charge), the write-up says so rather than guessing
 | [John Derbyshire](#john-derbyshire) | pundit | English-born writer and mathematician fired from National Review in 2012 over "The Talk: Nonblack Version"; later a VDARE columnist. |
 | [Peter Brimelow](#peter-brimelow) | pundit | English-born financial journalist, author of Alien Nation (1995) and founder of VDARE. |
 | [Kevin DeAnna](#kevin-deanna) | pundit | Founder of Youth for Western Civilization who writes for American Renaissance under the pen name "Gregory Hood." |
-| [David Duke](#david-duke) | politician | Former Klan leader and one-term Louisiana state representative; the best-known figure of the American white-power movement. |
-| [Don Black](#don-black) | pundit | Former Klan imperial wizard who founded Stormfront (1995), the first major white nationalist website. |
+| [David Duke](#david-duke) | politician | Former Klan leader and one-term Louisiana state representative; the best-known figure of the American White-power movement. |
+| [Don Black](#don-black) | pundit | Former Klan imperial wizard who founded Stormfront (1995), the first major White nationalist website. |
 | [Elon Musk](#elon-musk) | donor | Technology executive who leads SpaceX and Tesla and owns X; the largest disclosed individual political donor of the 2024 federal election cycle. |
 | [Peter Thiel](#peter-thiel) | donor | Co-founder of PayPal and Palantir, Founders Fund partner and Republican donor; financed the 2022 Senate campaigns of former employees JD Vance and Blake Masters. |
 | [Timothy Mellon](#timothy-mellon) | donor | Banking-family heir and transportation businessman who became one of the largest disclosed donors in the 2024 election, principally supporting Donald Trump and Robert F. Kennedy Jr. |
@@ -63,7 +63,7 @@ is incomplete (e.g. a pending charge), the write-up says so rather than guessing
 | [Joe Lonsdale](#joe-lonsdale) | donor | Palantir and 8VC co-founder who funds Republican candidates and organizations connecting Silicon Valley, defense technology and conservative policy. |
 | [Palmer Luckey](#palmer-luckey) | donor | Founder of Oculus and Anduril Industries, Republican donor, and influential advocate for defense technology and military procurement reform. |
 | [American Renaissance](#american-renaissance) | organization | White nationalist magazine, website and annual conference founded by Jared Taylor in 1990; it calls its outlook "race realism." |
-| [Patriot Front](#patriot-front) | organization | Texas-based white nationalist group founded by Thomas Rousseau in August 2017, known for masked, uniformed flash marches and mass propaganda drops. |
+| [Patriot Front](#patriot-front) | organization | Texas-based White nationalist group founded by Thomas Rousseau in August 2017, known for masked, uniformed flash marches and mass propaganda drops. |
 | [Vanguard America](#vanguard-america) | organization | Neo-fascist group founded in 2015 by Dillon Hopper; the group Patriot Front split from in 2017. |
 | [VDARE](#vdare) | organization | Immigration-restrictionist website founded by Peter Brimelow in 1999; suspended operations in 2024 under pressure from the New York attorney general. |
 | [Council of Conservative Citizens](#council-of-conservative-citizens) | organization | Segregationist group founded in 1985 as the successor to the White Citizens' Councils; its website was cited by Dylann Roof. |
@@ -79,7 +79,7 @@ is incomplete (e.g. a pending charge), the write-up says so rather than guessing
 
 Samuel Jared Taylor was born on September 15, 1951, in Kobe, Japan, to missionary parents. He grew up speaking Japanese, graduated from Yale in philosophy (1973) and earned a master's in international economics from Sciences Po in Paris (1978). He worked as an international lending officer at Manufacturers Hanover and as West Coast editor of PC Magazine. His first book, Shadows of the Rising Sun (1983), was a critique of Japanese society.
 
-In November 1990 he launched American Renaissance. Paved with Good Intentions (1992) argued that white racism does not explain Black disadvantage, and White Identity (2011) argued that racial identity is natural and inevitable. Taylor calls himself a "race realist"; civil-rights monitors and most press describe him as a white nationalist. He sets himself apart from much of the movement by speaking in a calm, academic register on mainstream TV and by not treating Jews as adversaries. That stance put him at the center of the 2006 split at his own conference.
+In November 1990 he launched American Renaissance. Paved with Good Intentions (1992) argued that White racism does not explain Black disadvantage, and White Identity (2011) argued that racial identity is natural and inevitable. Taylor calls himself a "race realist"; civil-rights monitors and most press describe him as a White nationalist. He sets himself apart from much of the movement by speaking in a calm, academic register on mainstream TV and by not treating Jews as adversaries. That stance put him at the center of the 2006 split at his own conference.
 
 He has been a director of the National Policy Institute, sat on the advisory board of The Occidental Quarterly, and served on the board of the Council of Conservative Citizens, acting as its spokesman after the 2015 Charleston massacre. In January 2016 he recorded robocalls backing Donald Trump before the Iowa caucuses and New Hampshire primary. He was among the first wave of deplatformed figures: Twitter in December 2017, a lost lawsuit over that ban in 2018, and YouTube in 2020. In 2019 he was barred from the Schengen Area for two years at Poland's request.
 
@@ -142,7 +142,7 @@ In civil court he has fared worse. He was a named defendant in the $2.75 million
 
 **Also known as:** Sam Francis, Samuel T. Francis · **Died:** 2005-02-15
 
-Samuel Todd Francis was a legislative aide to Sen. John East (R-N.C.), then an editorial writer and syndicated columnist at The Washington Times. He advised Pat Buchanan's presidential campaigns. Many on today's right use his ideas without knowing where they came from. He coined "anarcho-tyranny" (a state that fails to punish real criminals while policing law-abiding citizens) and developed the "Middle American Radicals" thesis about a disaffected white middle class, both now staples of populist-right vocabulary.
+Samuel Todd Francis was a legislative aide to Sen. John East (R-N.C.), then an editorial writer and syndicated columnist at The Washington Times. He advised Pat Buchanan's presidential campaigns. Many on today's right use his ideas without knowing where they came from. He coined "anarcho-tyranny" (a state that fails to punish real criminals while policing law-abiding citizens) and developed the "Middle American Radicals" thesis about a disaffected White middle class, both now staples of populist-right vocabulary.
 
 At the first American Renaissance conference in 1994 he attacked universalism and humanism for enabling "the war against the white race." Dinesh D'Souza quoted the speech in The Washington Post, and in September 1995 editor Wesley Pruden fired him. Francis then edited the Council of Conservative Citizens' Citizens Informer until his death on February 15, 2005.
 
@@ -187,11 +187,11 @@ Hart is Jewish. At the February 2006 AmRen conference, David Duke used a Q&A to 
 *Emeritus political scientist and longtime National Review contributor, dropped by the magazine after a 2012 American Renaissance speech.*
 
 
-Robert Weissberg, a political scientist emeritus at the University of Illinois, wrote for National Review for years. At the 2012 American Renaissance conference he gave a talk titled "A Politically Viable Alternative to White Nationalism." He argued that a movement explicitly built on white identity was "dead on arrival" and needed repackaging to win mainstream recognition. After the Institute for Research and Education on Human Rights (IREHR) publicized the talk, editor Rich Lowry cut ties with him in April 2012, days after the magazine had fired John Derbyshire.
+Robert Weissberg, a political scientist emeritus at the University of Illinois, wrote for National Review for years. At the 2012 American Renaissance conference he gave a talk titled "A Politically Viable Alternative to White Nationalism." He argued that a movement explicitly built on White identity was "dead on arrival" and needed repackaging to win mainstream recognition. After the Institute for Research and Education on Human Rights (IREHR) publicized the talk, editor Rich Lowry cut ties with him in April 2012, days after the magazine had fired John Derbyshire.
 
 **Notable events**
 
-- 2012 — Speaks at American Renaissance on repackaging white nationalism
+- 2012 — Speaks at American Renaissance on repackaging White nationalism
 - 2012 — Dropped by National Review after IREHR exposure (April)
 
 **Connections**
@@ -205,7 +205,7 @@ Robert Weissberg, a political scientist emeritus at the University of Illinois, 
 *English-born writer and mathematician fired from National Review in 2012 over "The Talk: Nonblack Version"; later a VDARE columnist.*
 
 
-John Derbyshire was born in England in 1945 and became a U.S. citizen. He was a longtime National Review writer and the author of Prime Obsession (2003), a well-regarded popular book on the Riemann hypothesis. In April 2012, after the Trayvon Martin shooting set off columns about "the talk" Black parents give their children, he published "The Talk: Nonblack Version" in Taki's Magazine. It advised white and Asian children to avoid concentrations of Black people. National Review fired him within days. He then wrote mainly for VDARE, and his book We Are Doomed (2009) had already marked his turn to pessimistic conservatism.
+John Derbyshire was born in England in 1945 and became a U.S. citizen. He was a longtime National Review writer and the author of Prime Obsession (2003), a well-regarded popular book on the Riemann hypothesis. In April 2012, after the Trayvon Martin shooting set off columns about "the talk" Black parents give their children, he published "The Talk: Nonblack Version" in Taki's Magazine. It advised White and Asian children to avoid concentrations of Black people. National Review fired him within days. He then wrote mainly for VDARE, and his book We Are Doomed (2009) had already marked his turn to pessimistic conservatism.
 
 **Notable events**
 
@@ -227,14 +227,14 @@ John Derbyshire was born in England in 1945 and became a U.S. citizen. He was a 
 
 Peter Brimelow was born on October 13, 1947, in Warrington, England. He built a mainstream career as a financial journalist at Forbes and National Review, and later as a MarketWatch columnist. His Alien Nation (1995) was one of the most influential restrictionist books of the 1990s. In 1999 he founded VDARE, which became the main home for writers pushed out of conservative outlets.
 
-In August 2018 The Washington Post reported that he had attended a birthday party at the home of White House economic adviser Larry Kudlow. Kudlow said he had not known Brimelow's views. Brimelow sued The New York Times in 2020 for calling him a white nationalist and lost. VDARE suspended operations in 2024 under investigation by the New York attorney general, who sued in 2025.
+In August 2018 The Washington Post reported that he had attended a birthday party at the home of White House economic adviser Larry Kudlow. Kudlow said he had not known Brimelow's views. Brimelow sued The New York Times in 2020 for calling him a White nationalist and lost. VDARE suspended operations in 2024 under investigation by the New York attorney general, who sued in 2025.
 
 **Notable events**
 
 - 1995 — Publishes Alien Nation
 - 1999 — Founds VDARE
 - 2018 — Reported attending Larry Kudlow's birthday party while Kudlow was in the White House (August)
-- 2020 — Sues The New York Times over the "white nationalist" label; dismissed
+- 2020 — Sues The New York Times over the "White nationalist" label; dismissed
 - 2024 — VDARE suspends operations under New York AG investigation
 - 2025 — NY AG sues VDARE over the West Virginia castle purchase
 
@@ -266,7 +266,7 @@ Kevin DeAnna founded Youth for Western Civilization, a campus group with Tom Tan
 
 ### David Duke
 
-*Former Klan leader and one-term Louisiana state representative; the best-known figure of the American white-power movement.*
+*Former Klan leader and one-term Louisiana state representative; the best-known figure of the American White-power movement.*
 
 **Born:** 1950-07-01
 
@@ -296,13 +296,13 @@ In December 2002 he pleaded guilty to mail fraud and filing a false tax return. 
 
 ### Don Black
 
-*Former Klan imperial wizard who founded Stormfront (1995), the first major white nationalist website.*
+*Former Klan imperial wizard who founded Stormfront (1995), the first major White nationalist website.*
 
 **Also known as:** Stephen Donald Black · **Born:** 1953-07-28
 
 Stephen Donald Black was born on July 28, 1953, in Athens, Alabama. At 16, on July 25, 1970, he was shot in the chest by Jerry Ray, brother of Martin Luther King Jr.'s assassin James Earl Ray. Ray claimed self-defense and was acquitted. Black joined Duke's Knights of the Ku Klux Klan in 1975 and succeeded him as imperial wizard in 1980.
 
-On April 27, 1981, he and nine others were arrested in New Orleans preparing to sail to Dominica and overthrow its government, a plot known as Operation Red Dog. He was convicted under the Neutrality Act and served until November 1984. He learned computer programming in prison and in 1995 launched Stormfront, the internet's first significant white-nationalist site. He married Duke's ex-wife, Chloê. Their child, raised as the movement's heir apparent under the name Derek Black, publicly renounced white nationalism in 2013, a story later told in Eli Saslow's Rising Out of Hatred.
+On April 27, 1981, he and nine others were arrested in New Orleans preparing to sail to Dominica and overthrow its government, a plot known as Operation Red Dog. He was convicted under the Neutrality Act and served until November 1984. He learned computer programming in prison and in 1995 launched Stormfront, the internet's first significant White-nationalist site. He married Duke's ex-wife, Chloê. Their child, raised as the movement's heir apparent under the name Derek Black, publicly renounced White nationalism in 2013, a story later told in Eli Saslow's Rising Out of Hatred.
 
 **Notable events**
 
@@ -898,7 +898,7 @@ Palmer Luckey founded the virtual-reality company Oculus and sold it to Facebook
 
 **Also known as:** AmRen, New Century Foundation · **Founded:** 1990
 
-American Renaissance (AmRen) began as a monthly print newsletter in November 1990, published by Jared Taylor's New Century Foundation. It argues that races differ in intelligence and temperament and that whites should organize around racial identity. It has generally tried to present itself as more respectable than the Klan and neo-Nazi wings of the movement.
+American Renaissance (AmRen) began as a monthly print newsletter in November 1990, published by Jared Taylor's New Century Foundation. It argues that races differ in intelligence and temperament and that Whites should organize around racial identity. It has generally tried to present itself as more respectable than the Klan and neo-Nazi wings of the movement.
 
 Since 1994 its conference has been one of the main places where academics, journalists and activists of the racialist right meet in person. Speaking at it has cost several speakers mainstream jobs: Samuel Francis lost his Washington Times column in 1995, and Robert Weissberg was dropped by National Review in 2012.
 
@@ -929,13 +929,13 @@ Hotels cancelled several of its bookings, so since 2012 the conference has met a
 
 ### Patriot Front
 
-*Texas-based white nationalist group founded by Thomas Rousseau in August 2017, known for masked, uniformed flash marches and mass propaganda drops.*
+*Texas-based White nationalist group founded by Thomas Rousseau in August 2017, known for masked, uniformed flash marches and mass propaganda drops.*
 
 **Founded:** 2017
 
-Patriot Front was formed in August 2017, in the days after the Unite the Right rally in Charlottesville. Thomas Rousseau, who had led Vanguard America's contingent there, rebranded his faction of that group. The Discord message announcing the change said the focus and goals would stay the same. The group wraps white nationalism in Revolutionary-era American iconography: fasces logos, "Reclaim America" slogans and khaki-and-navy uniforms with face coverings.
+Patriot Front was formed in August 2017, in the days after the Unite the Right rally in Charlottesville. Thomas Rousseau, who had led Vanguard America's contingent there, rebranded his faction of that group. The Discord message announcing the change said the focus and goals would stay the same. The group wraps White nationalism in Revolutionary-era American iconography: fasces logos, "Reclaim America" slogans and khaki-and-navy uniforms with face coverings.
 
-Its signature tactics are unannounced "flash marches" in city centers (Philadelphia, Boston, Washington), tightly choreographed and filmed for propaganda, plus mass stickering and flyering. Since 2019 the ADL has attributed the majority of white supremacist propaganda incidents in the U.S. to Patriot Front.
+Its signature tactics are unannounced "flash marches" in city centers (Philadelphia, Boston, Washington), tightly choreographed and filmed for propaganda, plus mass stickering and flyering. Since 2019 the ADL has attributed the majority of White supremacist propaganda incidents in the U.S. to Patriot Front.
 
 In January 2022 Unicorn Riot published roughly 400 GB of the group's internal chats, audio and documents. The leak exposed its recruitment vetting, its activity quotas and Rousseau's private statements. Civil suits brought under the 1871 Ku Klux Klan Act have since produced judgments against the group in Massachusetts and Virginia.
 
@@ -983,7 +983,7 @@ Vanguard America was founded in 2015 by Dillon Hopper, a Marine veteran. Before 
 
 **Also known as:** VDARE Foundation · **Founded:** 1999
 
-VDARE was founded in 1999 by Peter Brimelow and named for Virginia Dare, the first English child born in the Americas (1587). It was the main web home for writers such as Steve Sailer and John Derbyshire after mainstream outlets dropped them, and it blurred the line between immigration restrictionism and white nationalism.
+VDARE was founded in 1999 by Peter Brimelow and named for Virginia Dare, the first English child born in the Americas (1587). It was the main web home for writers such as Steve Sailer and John Derbyshire after mainstream outlets dropped them, and it blurred the line between immigration restrictionism and White nationalism.
 
 In 2020 the VDARE Foundation bought a castle in Berkeley Springs, West Virginia, as a venue. Venues kept cancelling on the movement, so owning one was a recurring goal. New York attorney general Letitia James opened an investigation, and VDARE suspended operations in July 2024, citing the cost of that investigation. In August 2025 her office sued, alleging misuse of about $1.4 million of charitable funds tied to the property purchase.
 

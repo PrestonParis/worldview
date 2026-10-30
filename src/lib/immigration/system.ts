@@ -17,8 +17,27 @@ export type EdgeKind = "step" | "if" | "status" | "context";
 // Chart panels the page builds server-side; nodes list the ones they show.
 export type StatKey =
   | "history"
+  | "visas"
+  | "ports"
+  | "betweenPorts"
+  | "inside"
   | "border"
   | "borderWhere"
+  | "humanitarianDemand"
+  | "overstays"
+  | "petitions"
+  | "adjustment"
+  | "changeStatus"
+  | "asylumCourt"
+  | "arrests"
+  | "courts"
+  | "lprClass"
+  | "extensions"
+  | "protectionGrants"
+  | "relief"
+  | "voluntaryDeparture"
+  | "returns"
+  | "lprPopulation"
   | "temporary"
   | "refugees"
   | "asylum"
@@ -341,13 +360,14 @@ export const NODES: Record<string, SystemNode> = {
     kind: "process",
     summary: "Visas from a U.S. consulate, or refugee processing overseas.",
     body: [
-      "Most people who come to the U.S. arrange it before travel: an immigrant visa (leading to a green card on arrival) or a nonimmigrant visa (for a temporary purpose) from a U.S. embassy or consulate, or a referral to the refugee program.",
+      "Most people who come to the U.S. arrange it before travel: an immigrant visa (leading to a green card on arrival) or a nonimmigrant visa (for a temporary purpose) from a U.S. embassy or consulate, or a referral to the refugee program, which the State Department runs abroad through Resettlement Support Centers while USCIS officers interview applicants.",
       "Travelers from Visa Waiver Program countries skip the visa but need an approved ESTA travel authorization, and most Canadians need neither.",
       "A visa only allows a person to travel to a port of entry and ask to be admitted. The admission decision belongs to CBP at the border.",
     ],
-    agency: ["State Department (consulates)", "USCIS (petitions, refugee interviews)"],
+    agency: ["State Department (consulates, refugee processing)", "USCIS (petitions, refugee interviews)"],
     law: [LAW.ina101, LAW.ina217, LAW.ina207],
     sources: [SRC.nvc, SRC.visitorVisa, SRC.usrap],
+    stats: ["visas"],
     related: ["permanent", "temporary", "humanitarian", "entry-port"],
     terms: ["visa"],
   },
@@ -356,7 +376,7 @@ export const NODES: Record<string, SystemNode> = {
     kind: "process",
     summary: "CBP officers decide whether to admit each arriving person.",
     body: [
-      "Everyone arriving at an airport, seaport, or land crossing is inspected by CBP's Office of Field Operations. Citizens are admitted once identity and citizenship are confirmed. Noncitizens must show they are admissible in the status they seek.",
+      "Everyone arriving at an airport, seaport, or land crossing is inspected by CBP's Office of Field Operations. A U.S. citizen can't be refused entry once citizenship is established. Noncitizens must show they are admissible in the status they seek.",
       "An officer can admit the person (recording the class and length of stay on Form I-94), refuse admission, allow the person to withdraw the application and return, parole them in, or — for people with false or missing documents — place them in expedited removal. A person found inadmissible at a port is counted as a CBP encounter.",
     ],
     agency: ["CBP Office of Field Operations"],
@@ -369,7 +389,7 @@ export const NODES: Record<string, SystemNode> = {
     ],
     law: [LAW.ina235, LAW.ina212, LAW.cfr235_3],
     sources: [SRC.cbpEntry, SRC.i94],
-    stats: ["border"],
+    stats: ["ports"],
     units: "Encounters at ports are inadmissibility findings — events, not people.",
     related: ["authorized-stay", "proc-expedited", "border-encounter"],
     terms: ["port-of-entry", "inadmissible", "ofo"],
@@ -380,13 +400,13 @@ export const NODES: Record<string, SystemNode> = {
     summary: "Entry without inspection; people stopped are Border Patrol apprehensions.",
     body: [
       "Crossing anywhere other than an official port is entry without inspection. It makes a person inadmissible and is a federal misdemeanor; reentering after a removal is a felony.",
-      "Border Patrol agents who stop someone between ports record an apprehension. From there the person may be placed in expedited removal, given a Notice to Appear, returned, referred for prosecution, or — under Title 42 from March 2020 to May 2023 — expelled.",
+      "Border Patrol agents who stop someone between ports record an apprehension. From there the person may be placed in expedited removal, returned, transferred to ICE custody, released with a Notice to Appear or on parole, referred for prosecution, or — under Title 42 from March 2020 to May 2023 — expelled. Unaccompanied children go to the Department of Health and Human Services.",
       "People who cross without being stopped are not counted anywhere until they are encountered later or appear in population estimates.",
     ],
     agency: ["CBP U.S. Border Patrol"],
     law: [LAW.ina212, LAW.usc1325, LAW.usc1326, LAW.ina235],
     sources: [SRC.cbpStats],
-    stats: ["border"],
+    stats: ["betweenPorts"],
     related: ["ewi", "border-encounter", "proc-expedited", "prosecution"],
     terms: ["apprehension", "usbp", "title-42"],
   },
@@ -400,6 +420,7 @@ export const NODES: Record<string, SystemNode> = {
     ],
     agency: ["USCIS", "ICE"],
     law: [LAW.ina245, LAW.ina248, LAW.ina237],
+    stats: ["inside"],
     related: ["adjustment", "change-status", "overstay", "aff-filing"],
     terms: ["adjustment-of-status", "overstay"],
   },
@@ -529,6 +550,7 @@ export const NODES: Record<string, SystemNode> = {
     ],
     law: [LAW.ina204, LAW.ina203, LAW.ina212],
     sources: [SRC.visaBulletin, SRC.uscisEligibility],
+    stats: ["petitions"],
     related: ["consular-processing", "adjustment"],
   },
   "consular-processing": {
@@ -568,7 +590,7 @@ export const NODES: Record<string, SystemNode> = {
     ],
     law: [LAW.ina245, LAW.ina209, LAW.cfr245],
     sources: [SRC.uscisAos],
-    stats: ["greenCards"],
+    stats: ["adjustment", "inside"],
     related: ["lpr", "enforcement-referral"],
     terms: ["adjustment-of-status"],
   },
@@ -584,7 +606,7 @@ export const NODES: Record<string, SystemNode> = {
     agency: ["USCIS"],
     law: [LAW.ina245, LAW.ina216, LAW.ina237],
     sources: [SRC.uscisGreenCard],
-    stats: ["greenCards", "states:lpr"],
+    stats: ["lprClass", "greenCards", "states:lpr"],
     units: "Green cards count grants of permanent residence per fiscal year.",
     related: ["naturalization", "lpr-population", "proc-240"],
     terms: ["lpr", "green-card", "adjustment-of-status", "new-arrival"],
@@ -693,6 +715,7 @@ export const NODES: Record<string, SystemNode> = {
     agency: ["USCIS"],
     law: [LAW.ina248, LAW.cfr248],
     sources: [SRC.uscisChange],
+    stats: ["changeStatus"],
     related: ["out-temporary-stay"],
   },
   "depart-on-time": {
@@ -706,6 +729,7 @@ export const NODES: Record<string, SystemNode> = {
     title: "Continued temporary stay",
     kind: "outcome",
     summary: "Remaining lawfully in the same or a new nonimmigrant status.",
+    stats: ["extensions"],
     related: ["extend-stay", "change-status"],
   },
   overstay: {
@@ -724,6 +748,7 @@ export const NODES: Record<string, SystemNode> = {
     ],
     law: [LAW.ina222g, LAW.ina212, LAW.ina237],
     sources: [SRC.ohssOverstay],
+    stats: ["overstays"],
     related: ["unlawful-presence", "enforcement-referral", "unauthorized-population"],
     terms: ["overstay"],
   },
@@ -740,7 +765,7 @@ export const NODES: Record<string, SystemNode> = {
     ],
     law: [LAW.ina207, LAW.ina208, LAW.ina212],
     sources: [SRC.uscisRefugees, SRC.uscisAsylum],
-    stats: ["refugees", "asylum"],
+    stats: ["humanitarianDemand", "refugees", "asylum"],
     units: "Refugees: arrivals per fiscal year. Asylum: grants per fiscal year, not applications.",
     related: ["out-protection", "credible-fear"],
     terms: ["refugee", "asylum", "parole"],
@@ -810,7 +835,7 @@ export const NODES: Record<string, SystemNode> = {
     agency: ["USCIS Asylum Division", "EOIR immigration courts"],
     law: [LAW.ina208, LAW.cfr208],
     sources: [SRC.uscisAsylum, SRC.eoir],
-    stats: ["asylum"],
+    stats: ["asylumCourt", "asylum"],
     units: "Asylum grants per fiscal year.",
     related: ["aff-filing", "def-filing", "out-protection"],
     terms: ["asylum", "affirmative-asylum", "defensive-asylum"],
@@ -945,6 +970,7 @@ export const NODES: Record<string, SystemNode> = {
     ],
     law: [LAW.ina235, LAW.cfr208_30, LAW.cfr1208_30],
     sources: [SRC.uscisCredibleFear],
+    stats: ["asylumCourt"],
     related: ["cf-review", "er-protection", "proc-expedited"],
   },
   "reasonable-fear": {
@@ -985,7 +1011,7 @@ export const NODES: Record<string, SystemNode> = {
     ],
     law: [LAW.ina212, LAW.ina237, LAW.ina244],
     sources: [SRC.ohssUnauthorized, SRC.ohssOverstay],
-    stats: ["unauthorized"],
+    stats: ["overstays", "unauthorized"],
     units: "The population is an estimate as of January 1; it is not measured by border encounters.",
     related: ["unauthorized-population", "enforcement"],
     terms: ["unauthorized", "overstay"],
@@ -1060,7 +1086,7 @@ export const NODES: Record<string, SystemNode> = {
     agency: ["CBP", "ICE", "EOIR", "federal courts"],
     law: [LAW.ina235, LAW.ina236, LAW.ina238, LAW.ina240, LAW.ina241, LAW.ina242],
     sources: [SRC.iceEro, SRC.eoir],
-    stats: ["removals", "detention"],
+    stats: ["arrests", "removals", "detention"],
     units: "Removals and returns count events; detention is an average daily population.",
     related: ["proc-240", "proc-expedited", "detention"],
     terms: ["removal", "deportation", "return"],
@@ -1080,6 +1106,7 @@ export const NODES: Record<string, SystemNode> = {
     ],
     law: [LAW.ina236, LAW.ina287, LAW.cfr287_7],
     sources: [SRC.iceEro, SRC.ice287g],
+    stats: ["arrests"],
     related: ["initial-processing", "custody-decision"],
     terms: ["ice"],
   },
@@ -1127,6 +1154,7 @@ export const NODES: Record<string, SystemNode> = {
     ],
     law: [LAW.ina240, LAW.cfr1240, LAW.cfr1003_14],
     sources: [SRC.eoir, SRC.eoirManual],
+    stats: ["courts"],
     related: ["p240-nta", "bia-appeal", "petition-for-review"],
     opens: { tracks: "procedure", flow: "flow-240" },
   },
@@ -1284,6 +1312,7 @@ export const NODES: Record<string, SystemNode> = {
     ],
     agency: ["ICE", "EOIR"],
     law: [LAW.ina240b, LAW.cfr1240_26],
+    stats: ["voluntaryDeparture"],
     related: ["out-other-departure"],
     terms: ["return"],
   },
@@ -1542,7 +1571,7 @@ export const NODES: Record<string, SystemNode> = {
       "Asylees and refugees can work, petition for spouses and children, and apply for a green card after a year. Withholding and CAT protection only bar removal to a specific country.",
     ],
     law: [LAW.ina207, LAW.ina208, LAW.ina241],
-    stats: ["refugees", "asylum"],
+    stats: ["protectionGrants", "refugees", "asylum"],
     units: "Grants and arrivals per fiscal year.",
     related: ["refugee-green-card", "withholding-cat"],
     terms: ["asylum", "refugee"],
@@ -1555,6 +1584,7 @@ export const NODES: Record<string, SystemNode> = {
       "Relief includes asylum, cancellation of removal (which grants a green card), adjustment of status, and waivers of removability.",
     ],
     law: [LAW.ina240a, LAW.ina208, LAW.ina245],
+    stats: ["relief"],
     related: ["lpr", "out-protection"],
   },
   "out-termination": {
@@ -1562,6 +1592,7 @@ export const NODES: Record<string, SystemNode> = {
     kind: "outcome",
     summary: "The case ends without a removal order — e.g., charges not proved.",
     law: [LAW.cfr1240],
+    stats: ["relief"],
     related: ["proc-240"],
   },
   "out-removal": {
@@ -1588,7 +1619,7 @@ export const NODES: Record<string, SystemNode> = {
     ],
     earlier: ["From 2020 to 2023, Title 42 public-health expulsions were a separate, third category of departure."],
     law: [LAW.ina240b, LAW.ina235],
-    stats: ["removals"],
+    stats: ["returns"],
     units: "Returns count events.",
     related: ["voluntary-departure"],
     terms: ["return", "title-42"],
@@ -1617,6 +1648,7 @@ export const NODES: Record<string, SystemNode> = {
       "DHS estimates how many permanent residents live in the U.S. and how many are eligible to naturalize. Worldview does not yet import these estimates; the yearly green-card grants are under Lawful permanent residence.",
     ],
     sources: [SRC.ohssLpr],
+    stats: ["lprPopulation"],
     related: ["lpr", "naturalization"],
     terms: ["lpr"],
   },
@@ -1946,14 +1978,69 @@ export const STAGES: Stage[] = [
   },
 ];
 
-// The chart each stage column leads with.
-export const STAGE_LEAD: Record<string, StatKey> = {
-  entry: "border",
-  pathways: "greenCards",
-  processing: "removals",
-  outcomes: "asylum",
-  population: "population",
+// The figures each stage column opens with: one per process, each with its
+// own chart. Picking a pathway figure also shows that track.
+export interface StageFigure {
+  node: string;
+  stat: StatKey;
+  track?: { tracks: string; flow: string };
+}
+
+const track = (flow: string) => ({ tracks: "pathway", flow });
+
+export const STAGE_FIGURES: Record<string, StageFigure[]> = {
+  entry: [
+    { node: "entry-abroad", stat: "visas" },
+    { node: "entry-port", stat: "ports" },
+    { node: "entry-between", stat: "betweenPorts" },
+    { node: "entry-inside", stat: "inside" },
+    { node: "border-encounter", stat: "border" },
+  ],
+  pathways: [
+    { node: "permanent", stat: "greenCards", track: track("permanent") },
+    { node: "temporary", stat: "temporary", track: track("temporary") },
+    { node: "humanitarian", stat: "humanitarianDemand", track: track("humanitarian") },
+    { node: "unauthorized", stat: "overstays", track: track("unauthorized") },
+  ],
+  processing: [
+    { node: "petition", stat: "petitions" },
+    { node: "adjustment", stat: "adjustment" },
+    { node: "change-status", stat: "changeStatus" },
+    { node: "asylum-adjudication", stat: "asylumCourt" },
+    { node: "ice-arrest", stat: "arrests" },
+    { node: "proc-240", stat: "courts" },
+    { node: "detention", stat: "detention" },
+  ],
+  outcomes: [
+    { node: "lpr", stat: "lprClass" },
+    { node: "out-temporary-stay", stat: "extensions" },
+    { node: "out-protection", stat: "protectionGrants" },
+    { node: "out-relief", stat: "relief" },
+    { node: "voluntary-departure", stat: "voluntaryDeparture" },
+    { node: "out-other-departure", stat: "returns" },
+    { node: "out-removal", stat: "removals" },
+  ],
+  population: [
+    { node: "naturalization", stat: "naturalization" },
+    { node: "foreign-born", stat: "population" },
+    { node: "lpr-population", stat: "lprPopulation" },
+    { node: "unauthorized-population", stat: "unauthorized" },
+    { node: "net-migration", stat: "netMigration" },
+    { node: "states", stat: "states:fb" },
+    { node: "history", stat: "history" },
+    { node: "related-migration", stat: "domestic" },
+  ],
 };
+
+// Every figure shows its own chart, so no stat key leads two figures.
+{
+  const seen = new Set<StatKey>();
+  for (const f of Object.values(STAGE_FIGURES).flat()) {
+    if (!NODES[f.node]) console.warn(`immigration system: figure node "${f.node}" doesn't exist`);
+    if (seen.has(f.stat)) console.warn(`immigration system: stat "${f.stat}" leads more than one figure`);
+    seen.add(f.stat);
+  }
+}
 
 // --------------------------------------------------------------- Locating
 
@@ -1966,12 +2053,8 @@ export interface NodeHome {
   loc: string;
 }
 
-// Every card the chart can draw, in stage order — a node can have several.
-export const CARDS: { id: string; stage: string; loc: string }[] = [];
-
 // First appearance wins, except a node with a `home` waits for that stage.
 function claim(out: Record<string, NodeHome>, id: string, home: NodeHome) {
-  CARDS.push({ id, stage: home.stage, loc: home.loc });
   if (out[id]) return;
   if (NODES[id].home && NODES[id].home !== home.stage) return;
   out[id] = home;

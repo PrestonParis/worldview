@@ -61,6 +61,8 @@ const IMPORTERS = {
   naep: ["scripts/import-naep.mjs"],
   "owid-energy": ["scripts/import-climate.mjs", "--only=owid"],
   "noaa-climate": ["scripts/import-climate.mjs", "--only=noaa"],
+  "foreign-assistance": ["scripts/import-foreign-assistance.mjs"],
+  "census-trade": ["scripts/import-census-trade.mjs"],
 };
 
 // Importers that exit on a missing or rejected CENSUS_API_KEY.

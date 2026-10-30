@@ -44,6 +44,8 @@ export interface ProfileBundle {
   statements: StatementRecord[];
   given: ContributionRecord[];
   received: EntityContributionSummary;
+  /** For candidates: their campaign committees' reported receipts per cycle (FEC weball). */
+  campaign: CampaignTotal[];
   flows: FlowRecord[];
   /** For candidates: independent expenditures in their races, and who funded those committees. */
   outside: OutsideSpending[];
@@ -54,6 +56,12 @@ export interface ProfileBundle {
   sourceIdByKey: Map<string, string>;
   entities: Map<string, EntitySummary>;
   freshness: { editorialReviewedAt: string; sourcesVerifiedAt: string; financeSyncedAt: string };
+}
+
+export interface CampaignTotal {
+  cycle: number;
+  office: string;
+  totalReceipts: number;
 }
 
 type Row = Record<string, unknown>;
@@ -296,7 +304,7 @@ function editorialSourceKeys(editorial: ProfileEditorial | null): string[] {
 
 export const loadProfileBundle = cache(async (entity: Entity): Promise<ProfileBundle> => {
   const id = entity.id;
-  const [profileRows, factRows, events, statements, giving, received, traits, outside, lobbying] = await Promise.all([
+  const [profileRows, factRows, events, statements, giving, received, traits, outside, lobbying, campaignRows] = await Promise.all([
     run(sql`select * from entity_profiles where entity_id = ${id}`),
     run(sql`select * from entity_facts where entity_id = ${id} order by sort`),
     loadEvents(id),
@@ -306,7 +314,11 @@ export const loadProfileBundle = cache(async (entity: Entity): Promise<ProfileBu
     listEntityTraits(id).catch(() => []),
     entity.type === "politician" ? loadOutsideSpending(id) : Promise.resolve([]),
     listLobbyingForEntity(id).catch(() => []),
+    entity.type === "politician"
+      ? run(sql`select cycle, office, total_receipts from candidate_finance where entity_id = ${id} and total_receipts > 0 order by cycle`)
+      : Promise.resolve([]),
   ]);
+  const campaign: CampaignTotal[] = campaignRows.map((r) => ({ cycle: n(r.cycle), office: s(r.office), totalReceipts: n(r.total_receipts) }));
   const p = profileRows[0];
   const editorial = p
     ? parseEditorial({
@@ -385,6 +397,7 @@ export const loadProfileBundle = cache(async (entity: Entity): Promise<ProfileBu
     statements,
     given: giving.given,
     received,
+    campaign,
     flows: giving.flows,
     outside,
     lobbying,

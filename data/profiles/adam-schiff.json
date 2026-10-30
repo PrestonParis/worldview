@@ -57,9 +57,7 @@
     "schiff": {
       "match": { "identifier": ["bioguide", "S001150"] }
     },
-    "trump": {
-      "match": { "name": "Donald Trump", "type": "politician" }
-    },
+    "trump": { "match": { "identifier": ["fec_candidate", "P80001571"] } },
     "rogan": {
       "match": { "identifier": ["bioguide", "R000386"] }
     },

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { findState, normalizeQuery, searchSite, significantWords } from "./site";
+import { findState, normalizeQuery, resultOrder, searchSite, significantWords } from "./site";
 
 describe("searchSite", () => {
   it("links a group + state query to the filtered demographics view", () => {
@@ -20,6 +20,10 @@ describe("searchSite", () => {
 
   it("sends budget terms to the spending page", () => {
     expect(searchSite("national debt").map((r) => r.href)).toContain("/spending");
+  });
+
+  it("sends diplomacy and sanctions terms to foreign policy", () => {
+    expect(searchSite("diplomacy and sanctions").map((r) => r.href)).toContain("/foreign-policy");
   });
 
   it("reads an election year and office", () => {
@@ -65,5 +69,23 @@ describe("findState", () => {
 describe("significantWords", () => {
   it("drops filler words", () => {
     expect(significantWords("Hispanic population in Texas")).toEqual(["hispanic", "population", "texas"]);
+  });
+});
+
+describe("resultOrder", () => {
+  it("puts people first for a bare name", () => {
+    expect(resultOrder("nick", searchSite("nick"), ["Nick Fuentes"])[0]).toBe("entities");
+  });
+
+  it("puts people first for an exact name even when a topic matches", () => {
+    expect(resultOrder("Ice Cube", searchSite("Ice Cube"), ["Ice Cube"])[0]).toBe("entities");
+  });
+
+  it("keeps pages first for topic queries", () => {
+    expect(resultOrder("immigration", searchSite("immigration"), ["Immigration Reform Law Institute"])[0]).toBe("pages");
+  });
+
+  it("keeps pages first when nothing matched", () => {
+    expect(resultOrder("zzz", [], [])[0]).toBe("pages");
   });
 });

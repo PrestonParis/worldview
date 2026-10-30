@@ -30,6 +30,7 @@ import { randomUUID } from "node:crypto";
 import { Client } from "pg";
 import { addIdentifiers, entityIdMap, upsertEntities } from "./lib/entities.mjs";
 import { load as loadYaml } from "js-yaml";
+import { describeCommittee } from "./lib/describe.mjs";
 import {
   classifyCommitteeName,
   contributionTypeFromFec,
@@ -314,7 +315,7 @@ async function main() {
           id,
           type: "company",
           name,
-          description: "Political committee — imported from FEC Schedule A data.",
+          description: describeCommittee(c.contributor_id),
           metadata: JSON.stringify({ fecCommitteeId: c.contributor_id || null, importedFrom: "openfec-schedule_a" }),
         },
       ]);

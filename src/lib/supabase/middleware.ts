@@ -1,7 +1,8 @@
 import { createServerClient } from "@supabase/ssr";
+import type { User } from "@supabase/supabase-js";
 import { NextResponse, type NextRequest } from "next/server";
 
-export async function updateSession(request: NextRequest) {
+export async function updateSession(request: NextRequest): Promise<{ response: NextResponse; user: User | null }> {
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -23,11 +24,13 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  // Worldview doesn't require sign-in to browse. This just refreshes an
-  // existing session's cookies (do not add logic between createServerClient
-  // and getUser() — it needs to run on every request for token refresh to
-  // work correctly) so signed-in contributors don't get logged out mid-visit.
-  await supabase.auth.getUser();
+  // Refreshes an existing session's cookies (do not add logic between
+  // createServerClient and getUser() — it needs to run on every request for
+  // token refresh to work correctly) so signed-in visitors don't get logged
+  // out mid-visit. The verified user lets the proxy gate Subpoena.
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  return supabaseResponse;
+  return { response: supabaseResponse, user };
 }

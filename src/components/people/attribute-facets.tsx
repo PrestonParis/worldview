@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import { sideLabels, type GraphSide } from "@/lib/graph/lean";
 import { US_STATE_GRID, US_STATE_GRID_COLS, US_STATE_GRID_ROWS, usStateName } from "@/lib/money/us-states";
-import { tieBands, type AttributeFacets, type AttributeParams } from "@/lib/people/attributes";
+import { tieBands, type AttributeFacets, type AttributeFacetTotals, type AttributeParams } from "@/lib/people/attributes";
 import { FAMILY_FILL } from "@/lib/people/family-colors";
 import { roleGroups } from "@/lib/people/public";
 import { NOT_RECORDED, bornLabels, generations, raceLabels, religionLabels, sexLabels } from "@/lib/people/traits";
@@ -44,6 +44,7 @@ function BarList({
   set,
   labels,
   limit,
+  total,
 }: {
   title: string;
   facet: Record<string, number>;
@@ -52,6 +53,7 @@ function BarList({
   set: SetFilter;
   labels?: Record<string, string>;
   limit?: number;
+  total?: number;
 }) {
   const recorded = Object.entries(facet)
     .filter(([key, n]) => key !== NOT_RECORDED && n > 0)
@@ -62,6 +64,7 @@ function BarList({
   if (active && !shown.some(([key]) => key === active) && active !== NOT_RECORDED) shown.push([active, facet[active] ?? 0]);
   const max = Math.max(1, ...shown.map(([, n]) => n));
   const none = facet[NOT_RECORDED] ?? 0;
+  const documented = total === undefined ? undefined : Math.max(0, total - none);
   const toggle = (value: string) => set(param, active === value ? undefined : value);
 
   return (
@@ -85,10 +88,10 @@ function BarList({
           ))}
         </ul>
       )}
-      {none ? (
-        <button type="button" onClick={() => toggle(NOT_RECORDED)} aria-pressed={active === NOT_RECORDED} className={`mt-2 inline-block text-xs text-slate-500 hover:text-slate-950 dark:hover:text-white ${dim(active, NOT_RECORDED)}`}>
-          Not recorded <span className="tabular-nums">{fmt(none)}</span>
-        </button>
+      {documented !== undefined && total ? (
+        <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+          Documented for <span className="tabular-nums">{fmt(documented)}</span> of {fmt(total)} ({Math.round((documented / total) * 100)}%)
+        </p>
       ) : null}
     </Panel>
   );
@@ -126,28 +129,28 @@ function Columns({ facet, keys, labels, active, onToggle, height }: {
 }
 
 // Who they are: sex, birthplace, race, religion, generation, ancestry.
-export function TraitFacets({ facets, params, set }: { facets: AttributeFacets; params: AttributeParams; set: SetFilter }) {
+export function TraitFacets({ facets, facetTotals, params, set }: { facets: AttributeFacets; facetTotals: AttributeFacetTotals; params: AttributeParams; set: SetFilter }) {
   const genNone = facets.gen[NOT_RECORDED] ?? 0;
   const toggleGen = (value: string) => set("gen", params.gen === value ? undefined : value);
 
   return (
     <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
       <div className="space-y-7">
-        <BarList title="Sex" facet={facets.sex} param="sex" params={params} set={set} labels={sexLabels} />
-        <BarList title="Birthplace" facet={facets.born} param="born" params={params} set={set} labels={bornLabels} />
+        <BarList title="Sex" facet={facets.sex} param="sex" params={params} set={set} labels={sexLabels} total={facetTotals.sex} />
+        <BarList title="Birthplace" facet={facets.born} param="born" params={params} set={set} labels={bornLabels} total={facetTotals.born} />
       </div>
-      <BarList title="Race & ethnicity" facet={facets.race} param="race" params={params} set={set} labels={raceLabels} />
-      <BarList title="Religion" facet={facets.religion} param="religion" params={params} set={set} labels={religionLabels} />
+      <BarList title="Documented race & ethnicity" facet={facets.race} param="race" params={params} set={set} labels={raceLabels} total={facetTotals.race} />
+      <BarList title="Documented religion" facet={facets.religion} param="religion" params={params} set={set} labels={religionLabels} total={facetTotals.religion} />
       <div className="space-y-7">
         <Panel title="Generation" onClear={params.gen ? () => set("gen", undefined) : undefined}>
           <Columns facet={facets.gen} keys={generations} active={params.gen} onToggle={toggleGen} height="h-28" />
-          {genNone ? (
-            <button type="button" onClick={() => toggleGen(NOT_RECORDED)} aria-pressed={params.gen === NOT_RECORDED} className={`mt-2 inline-block text-xs text-slate-500 hover:text-slate-950 dark:hover:text-white ${dim(params.gen, NOT_RECORDED)}`}>
-              Not recorded <span className="tabular-nums">{fmt(genNone)}</span>
-            </button>
+          {facetTotals.gen ? (
+            <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+              Documented for <span className="tabular-nums">{fmt(Math.max(0, facetTotals.gen - genNone))}</span> of {fmt(facetTotals.gen)} ({Math.round(((facetTotals.gen - genNone) / facetTotals.gen) * 100)}%)
+            </p>
           ) : null}
         </Panel>
-        <BarList title="Ancestry" facet={facets.ancestry} param="ancestry" params={params} set={set} limit={10} />
+        <BarList title="Documented ancestry" facet={facets.ancestry} param="ancestry" params={params} set={set} limit={10} total={facetTotals.ancestry} />
       </div>
     </div>
   );

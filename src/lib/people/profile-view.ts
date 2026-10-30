@@ -73,6 +73,14 @@ export function keyFacts(bundle: ProfileBundle, base: string): KeyFact[] {
     if (peak && giving.byCycle.length > 1) {
       facts.push({ label: "Largest cycle", value: formatUsd(peak.total), note: `${peak.cycle - 1}–${String(peak.cycle).slice(2)} election cycle`, href: `${base}/money` });
     }
+  } else if (bundle.campaign.length) {
+    // The campaign's own reported receipts, not just the itemized rows held
+    // here, which are a fraction of what a candidate raises.
+    const total = bundle.campaign.reduce((sum, c) => sum + c.totalReceipts, 0);
+    const first = bundle.campaign[0].cycle;
+    const last = bundle.campaign.at(-1)!.cycle;
+    const cycles = first === last ? `${first - 1}–${String(first).slice(2)} cycle` : `${first - 1}–${String(last).slice(2)} cycles`;
+    facts.push({ label: "Campaign fundraising", value: formatUsd(total), note: `Reported to the FEC, ${cycles}`, href: `${base}/money` });
   } else {
     const raised = bundle.received.raised.find((r) => r.currency === "USD");
     if (raised?.count) facts.push({ label: "Contributions received", value: formatUsd(raised.total), note: `${raised.count} recorded contributions`, href: `${base}/money` });

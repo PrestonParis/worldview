@@ -304,13 +304,13 @@ const FURTHER = [
     href: "/atlas/economy",
     icon: ChartNoAxesCombined,
     title: "Economic Foundations",
-    body: "Ownership, firms, labor, land, money, trade, and growth.",
+    body: "An adaptive deep dive into ownership, firms, labor, markets, money, public finance, trade, and growth.",
   },
   {
     href: "/atlas/authority",
     icon: Scale,
-    title: "Government & Authority",
-    body: "Legitimacy, participation, constitutional restraint, federalism, and change.",
+    title: "Power & Democracy",
+    body: "An adaptive constitutional deep dive into consent, representation, courts, expertise, rights, and crisis power.",
   },
   {
     href: "/atlas/foreign-policy",
@@ -332,7 +332,7 @@ function GoFurther() {
       <div className="mb-4 flex flex-wrap items-end justify-between gap-x-12 gap-y-2">
         <h2 className="text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">Go further</h2>
         <p className="max-w-xl text-sm leading-6 text-slate-600 dark:text-slate-300">
-          Shorter specialist assessments, and the traditions behind every result.
+          Adaptive specialist deep dives, and the traditions behind every result.
         </p>
       </div>
       <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">

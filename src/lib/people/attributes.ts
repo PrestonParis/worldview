@@ -73,6 +73,7 @@ type TraitKey = (typeof TRAIT_KEYS)[number];
 type FacetKey = "group" | "side" | "state" | "ties" | TraitKey;
 
 export type AttributeFacets = Record<FacetKey, Record<string, number>>;
+export type AttributeFacetTotals = Record<FacetKey, number>;
 
 // A person's value(s) for each trait facet; "none" when nothing is recorded.
 function traitValues(traits: PersonTraits | undefined): Record<TraitKey, string[]> {
@@ -108,6 +109,7 @@ export function buildAttributes(
   };
   const keys = Object.keys(active) as FacetKey[];
   const facets = Object.fromEntries(keys.map((key) => [key, {}])) as AttributeFacets;
+  const facetTotals = Object.fromEntries(keys.map((key) => [key, 0])) as AttributeFacetTotals;
   const rows: Entity[] = [];
 
   for (const entity of entities) {
@@ -118,7 +120,15 @@ export function buildAttributes(
     const state = stateAbbrOf(entity);
     const values: Record<FacetKey, string[]> = {
       group: [GROUP_BY_TYPE.get(entity.type)].filter((v): v is string => Boolean(v)),
-      side: [sideOf(entity)],
+      // A missing political classification is meaningful for political
+      // people, but not for an ordinary company, PAC or institution. Those
+      // entities simply do not belong in this facet's denominator.
+      side: (() => {
+        const side = sideOf(entity);
+        return side !== "uncharacterized" || ["politician", "judge", "pundit", "journalist"].includes(entity.type)
+          ? [side]
+          : [];
+      })(),
       state: state ? [state] : [],
       ties: [bandOf(degree.get(entity.id) ?? 0)],
       ...(person ? traitValues(traits.get(entity.id)) : NO_TRAITS),
@@ -131,6 +141,7 @@ export function buildAttributes(
     // An entity counts toward a facet when it passes every other filter.
     for (const key of keys) {
       if (misses.length === 0 || (misses.length === 1 && misses[0] === key)) {
+        if (values[key].length) facetTotals[key]++;
         for (const value of values[key]) facets[key][value] = (facets[key][value] ?? 0) + 1;
       }
     }
@@ -138,7 +149,7 @@ export function buildAttributes(
 
   rows.sort((a, b) => (degree.get(b.id) ?? 0) - (degree.get(a.id) ?? 0) || a.name.localeCompare(b.name));
 
-  return { rows, facets };
+  return { rows, facets, facetTotals };
 }
 
 export const ATTRIBUTE_KEYS = ["q", "group", "type", "row", "side", "state", "ties", ...TRAIT_KEYS] as const;

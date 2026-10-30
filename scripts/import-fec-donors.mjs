@@ -27,6 +27,7 @@ import { randomUUID } from "node:crypto";
 import { Client } from "pg";
 import { addIdentifiers, upsertEntities } from "./lib/entities.mjs";
 import { load as loadYaml } from "js-yaml";
+import { describeCommittee } from "./lib/describe.mjs";
 import {
   classifyCommitteeName,
   contributionTypeFromFec,
@@ -231,7 +232,7 @@ async function main() {
               id: donorEntityId,
               type: "company",
               name: donorName,
-              description: "Political committee — imported from FEC Schedule A data.",
+              description: describeCommittee(c.contributor_id),
               metadata,
             },
           ]);

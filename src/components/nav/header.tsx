@@ -21,6 +21,7 @@ import {
   HeartPulse,
   House,
   Landmark,
+  LayoutGrid,
   Map as MapIcon,
   Menu,
   Network,
@@ -29,7 +30,6 @@ import {
   Scroll,
   Search,
   ShieldAlert,
-  SlidersHorizontal,
   Stethoscope,
   TrendingUp,
   Users,
@@ -61,6 +61,7 @@ const ICONS: Record<string, LucideIcon> = {
   "/family": Baby,
   "/people": Network,
   "/money": Banknote,
+  "/foreign-policy": Globe2,
   "/israel": Handshake,
   "/legislation": Gavel,
   "/elections": Vote,
@@ -69,7 +70,7 @@ const ICONS: Record<string, LucideIcon> = {
   "/geography": Globe2,
   "/subpoena": Briefcase,
   "/writ": Scroll,
-  "/issueview": SlidersHorizontal,
+  "/issueview": LayoutGrid,
 };
 
 interface PillRect {
@@ -85,7 +86,7 @@ const GROUP_FEATURES: Record<string, { eyebrow: string; title: string; body: str
   society: { eyebrow: "Explore the evidence", title: "Who we are, and where we're headed", body: "Population, schooling, belief, and family life — measured over decades and projected forward.", href: "/demographics" },
   power: { eyebrow: "Explore the network", title: "See how influence moves", body: "Connect people, institutions, money, legislation, and the relationships between them.", href: "/people" },
   government: { eyebrow: "Midterms Nov 3", title: "Where the races are close", body: "Ratings, results, and county maps for every Senate and governor race, plus the bills and budget behind them.", href: "/elections" },
-  tools: { eyebrow: "Analytical Workspaces", title: "Unconstrained tools over public data", body: "Investigate money in Subpoena, track legislation in Writ, correlate metrics in IssueView, and map ideology in Atlas.", href: "/tools" },
+  tools: { eyebrow: "Analytical Workspaces", title: "Unconstrained tools over public data", body: "Investigate money in Subpoena, track government action in Writ, and map ideology in Atlas.", href: "/tools" },
 };
 
 // accountLabel overrides the client session for pages outside the shell that
@@ -380,7 +381,15 @@ function MegaMenuFeature({
 
 // A real glimpse of each section, with a one-line caption saying what it is.
 function MegaMenuPreview({ groupId, previews }: { groupId: string; previews: NavPreviews }) {
-  if (groupId === "issues" && previews.issues) return <ForeignBornChart points={previews.issues.points} />;
+  if (groupId === "issues" && previews.issues) {
+    const { points } = previews.issues;
+    return <LineChart points={points} caption={`Foreign-born share of the U.S. population, ${points[0][0]}–${points.at(-1)![0]}: ${points.at(-1)![1].toFixed(1)}% today`} />;
+  }
+  if (groupId === "economy" && previews.economy) {
+    const { points } = previews.economy;
+    const [lastYear, lastValue] = points.at(-1)!;
+    return <LineChart points={points} caption={`Real median household income, ${points[0][0]}–${lastYear}: $${Math.round(lastValue).toLocaleString("en-US")} in ${lastYear}`} />;
+  }
   if (groupId === "society" && previews.society) return <ShareChart data={previews.society} />;
   if (groupId === "power") {
     const { total, categories } = previews.power;
@@ -432,14 +441,17 @@ function MegaMenuPreview({ groupId, previews }: { groupId: string; previews: Nav
   return null;
 }
 
-function ForeignBornChart({ points }: { points: [number, number][] }) {
+function LineChart({ points, caption }: { points: [number, number][]; caption: string }) {
   const W = 260;
   const H = 72;
   const [x0, x1] = [points[0][0], points.at(-1)![0]];
-  const max = Math.max(...points.map(([, v]) => v));
+  const values = points.map(([, v]) => v);
+  // Income starts far from zero, so scale to the series' own range.
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const lo = min > 0 && min / max > 0.4 ? min : 0;
   const x = (year: number) => ((year - x0) / (x1 - x0)) * W;
-  const y = (v: number) => H - (v / max) * (H - 6);
-  const [lastYear, lastValue] = points.at(-1)!;
+  const y = (v: number) => H - ((v - lo) / (max - lo)) * (H - 6);
   return (
     <figure aria-hidden>
       <svg viewBox={`0 0 ${W} ${H + 2}`} className="h-20 w-full overflow-visible" preserveAspectRatio="none">
@@ -451,9 +463,7 @@ function ForeignBornChart({ points }: { points: [number, number][] }) {
           vectorEffect="non-scaling-stroke"
         />
       </svg>
-      <figcaption className="mt-2 text-[11px] text-white/65">
-        Foreign-born share of the U.S. population, {x0}–{lastYear}: {lastValue.toFixed(1)}% today
-      </figcaption>
+      <figcaption className="mt-2 text-[11px] text-white/65">{caption}</figcaption>
     </figure>
   );
 }

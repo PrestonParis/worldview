@@ -33,7 +33,7 @@ A finished profile must be:
 - **Explicit about uncertainty.** Conflicting dates and accounts are shown as unresolved or disputed instead of silently picking the convenient version.
 - **Neutral in voice, not empty of context.** Consequences and criticism are described with attribution, never with praise, insinuation or rhetorical labels.
 
-The page must not infer race, religion, sexuality, ideology or ancestry from a name, photograph, birthplace, spouse, associates or donations. Religion appears only when it is self-described or independently documented and bears on public ideas or conduct. Sex and race are not profile facts. Ideology comes from first-person statements or the Atlas, never from the candidates a person funds.
+The page must not infer race, religion, sexuality, ideology or ancestry from a name, photograph, birthplace, spouse, associates or donations. Religion appears only when it is self-described or independently documented and bears on public ideas or conduct. Sex, race and the other core attributes are recorded from documented evidence, with the basis in `detail` (§7, Core attributes). Ideology comes from first-person statements or the Atlas, never from the candidates a person funds.
 
 ## 2. Every profile is a full profile
 

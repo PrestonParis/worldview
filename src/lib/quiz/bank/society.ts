@@ -139,7 +139,7 @@ export const societyStatements: Statement[] = [
   st("race.15", 0.5, "Each racial community should build and control its own businesses, schools, and institutions rather than pursue integration."),
   st("race.24", 0.75, "Racial groups are distinct peoples whose political interests cannot be reduced to individual rights."),
   st("race.17", 0.75, "Races would be better off living in separate nations or territories."),
-  st("race.18", 0.75, "Immigration is being deliberately used to replace America's white population.", on("immigration", 1, 0.4)),
+  st("race.18", 0.75, "Immigration is being deliberately used to replace America's White population.", on("immigration", 1, 0.4)),
   st("race.19", 1, "Some races are superior to others."),
   st("race.20", 1, "Citizenship should be limited to people of one race."),
 ];

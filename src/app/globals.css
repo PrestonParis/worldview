@@ -30,6 +30,10 @@
   --foreground: #f1f5f9;
 }
 
+.viz-dark {
+  --foreground: #f1f5f9;
+}
+
 @keyframes chapter-in {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
@@ -335,7 +339,9 @@ body {
   --viz-rep: #b2182b;
 }
 
-:root.dark {
+/* .viz-dark puts a dark chart surface inside a light page (the /crime Atlas). */
+:root.dark,
+.viz-dark {
   --viz-surface: #020617;
   --viz-series-1: #3987e5;
   --viz-series-2: #d95926;
@@ -392,7 +398,8 @@ body {
   --viz-seq-ink-1: #0f172a; --viz-seq-ink-2: #0f172a; --viz-seq-ink-3: #0f172a;
   --viz-seq-ink-4: #ffffff; --viz-seq-ink-5: #ffffff; --viz-seq-ink-6: #ffffff; --viz-seq-ink-7: #ffffff;
 }
-:root.dark {
+:root.dark,
+.viz-dark {
   --viz-seq-ink-1: #ffffff; --viz-seq-ink-2: #ffffff; --viz-seq-ink-3: #ffffff; --viz-seq-ink-4: #ffffff;
   --viz-seq-ink-5: #0f172a; --viz-seq-ink-6: #0f172a; --viz-seq-ink-7: #0f172a;
 }
@@ -409,4 +416,16 @@ body {
 :root.dark {
   --limit-1: #dff0ff; --limit-2: #95c4ff; --limit-3: #4c94ec; --limit-4: #1b65b9; --limit-5: #003977;
   --limit-ink-1: #0f172a; --limit-ink-2: #0f172a; --limit-ink-3: #0f172a; --limit-ink-4: #ffffff; --limit-ink-5: #ffffff;
+}
+
+/* RAND evidence strength (src/components/guns/): S supportive … I
+   inconclusive, one orange hue darkening with strength; inconclusive is
+   neutral so it never reads as a finding. */
+:root {
+  --evidence-S: #9a3412; --evidence-M: #ea580c; --evidence-L: #fdba74; --evidence-I: #e2e8f0;
+  --evidence-ink-S: #ffffff; --evidence-ink-M: #ffffff; --evidence-ink-L: #0f172a; --evidence-ink-I: #334155;
+}
+:root.dark {
+  --evidence-S: #fed7aa; --evidence-M: #fb923c; --evidence-L: #9a3412; --evidence-I: #1e293b;
+  --evidence-ink-S: #0f172a; --evidence-ink-M: #0f172a; --evidence-ink-L: #ffffff; --evidence-ink-I: #cbd5e1;
 }

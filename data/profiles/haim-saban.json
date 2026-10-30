@@ -166,9 +166,7 @@
     "harris": {
       "match": { "identifier": ["fec_candidate", "P00009423"] }
     },
-    "trump": {
-      "match": { "name": "Donald Trump", "type": "politician" }
-    },
+    "trump": { "match": { "identifier": ["fec_candidate", "P80001571"] } },
     "kushner": {
       "match": { "name": "Jared Kushner", "type": "politician" }
     },

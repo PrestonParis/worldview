@@ -190,7 +190,7 @@ export function CrimeGroupSections({ g }: { g: CrimeGroups }) {
           {g.ncvsRows.length > 0 && (
             <ChartCard
               title={`Offenders as victims described them, ${g.ncvsYear}`}
-              subtitle="Share of violent victimizations, excluding homicide · white, black, and other exclude Hispanics"
+              subtitle="Share of violent victimizations, excluding homicide · White, Black, and other exclude Hispanics"
               source={NCVS}
               table={shareTableView("Victimizations", g.ncvsGroups, g.ncvsRows)}
             >

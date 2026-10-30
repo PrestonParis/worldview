@@ -9,7 +9,8 @@ import styles from "./state-map.module.css";
 
 export interface StateMeasure {
   key: string;
-  label: string;
+  label: string; // short pill label
+  description?: string; // one line on what is measured, shown above the map
   unit: string;
   period: string;
   source: string;
@@ -66,7 +67,9 @@ export function StateMap({ width, height, states, measures }: {
 
   return (
     <figure className="min-w-0">
-      <div role="tablist" aria-label="Map measure" className="flex flex-wrap gap-1.5">
+      {/* Phones scroll the pills sideways; wider screens center and wrap them. */}
+      <div className="-mx-4 overflow-x-auto px-4 pb-1 sm:mx-0 sm:overflow-visible sm:px-0 sm:pb-0">
+      <div role="tablist" aria-label="Map measure" className="mx-auto flex w-max items-center gap-2 sm:w-auto sm:flex-wrap sm:justify-center">
         {measures.map((m) => (
           <button
             key={m.key}
@@ -76,17 +79,23 @@ export function StateMap({ width, height, states, measures }: {
             onClick={() => setMeasureKey(m.key)}
             className={
               m.key === measure.key
-                ? "rounded-full bg-slate-950 px-3 py-1.5 text-sm font-medium text-white dark:bg-white dark:text-slate-950"
-                : "rounded-full border border-slate-300 px-3 py-1.5 text-sm text-slate-600 hover:border-slate-400 hover:text-slate-950 dark:border-slate-700 dark:text-slate-300 dark:hover:text-white"
+                ? "shrink-0 whitespace-nowrap rounded-full border border-slate-950 bg-slate-950 px-3 py-1.5 text-sm font-medium text-white dark:border-white dark:bg-white dark:text-slate-950"
+                : "shrink-0 whitespace-nowrap rounded-full border border-slate-300 px-3 py-1.5 text-sm text-slate-600 hover:border-slate-400 hover:text-slate-950 dark:border-slate-700 dark:text-slate-300 dark:hover:text-white"
             }
           >
             {m.label}
           </button>
         ))}
       </div>
+      </div>
 
-      <div className="mt-5 sm:grid sm:grid-cols-[minmax(0,1fr)_9.5rem] sm:items-start sm:gap-4 lg:grid-cols-[minmax(0,1fr)_11rem] lg:gap-5">
-      <div data-home-map-target className={`min-w-0 ${styles.mapFrame}`}>
+      <div className="mt-4 grid gap-5 md:grid-cols-[minmax(0,1fr)_12rem] md:items-start lg:grid-cols-[minmax(0,1fr)_13rem] lg:gap-6">
+      <div className="min-w-0">
+      <figcaption className="text-sm text-slate-500 dark:text-slate-400">
+        <span className="font-semibold text-slate-950 dark:text-white">{measure.label}</span>
+        {measure.description ? <> · {measure.description}</> : null}
+      </figcaption>
+      <div data-home-map-target className={`mt-3 min-w-0 ${styles.mapFrame}`}>
       <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={`Map of ${measure.label.toLowerCase()} by state`} className={`block h-auto w-full ${styles.mapPlane}`}>
         <g className={styles.depth} aria-hidden="true">
           {states.map((s) => <path key={s.abbr} d={s.d} style={{ fill: fill(stepOf(s.abbr)) }} />)}
@@ -156,13 +165,14 @@ export function StateMap({ width, height, states, measures }: {
           </p>
         </div>
       </div>
-        <div className="mt-4 hidden min-w-0 border-slate-200 sm:mt-0 sm:block sm:border-l sm:pl-4 lg:pl-5 dark:border-slate-800">
+      </div>
+        <div className="min-w-0 border-t border-slate-200 pt-4 md:border-l md:border-t-0 md:pl-5 md:pt-0 lg:pl-6 dark:border-slate-800">
           <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">Highest</p>
           <ol className="mt-1.5 space-y-1 text-sm">
             {top.map(([abbr, value], i) => (
-              <li key={abbr} className="grid grid-cols-[1rem_1fr_auto] gap-2">
+              <li key={abbr} className="grid grid-cols-[1rem_minmax(0,1fr)_auto] gap-2">
                 <span className="text-slate-400 tabular-nums">{i + 1}</span>
-                <span className="truncate text-slate-700 dark:text-slate-200">{nameOf(abbr)}</span>
+                <span className="text-slate-700 dark:text-slate-200">{nameOf(abbr)}</span>
                 {measure.stateLinks ? (
                   <Link href={stateHref(abbr)} aria-label={`${nameOf(abbr)} on the full map`} className="inline-flex items-center gap-0.5 font-medium text-blue-700 tabular-nums hover:underline dark:text-blue-300">
                     {formatValue(value, measure.unit, { compact: true })} <ArrowRight size={12} aria-hidden />

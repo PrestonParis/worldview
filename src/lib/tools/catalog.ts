@@ -73,35 +73,6 @@ export const SUITE_TOOLS: ToolMetadata[] = [
     primaryDatasets: ["congress-bills", "congress-votes", "voteview", "scdb", "election-returns"],
   },
   {
-    id: "issueview",
-    name: "IssueView",
-    tagline: "Issues & Places",
-    badge: "Analytics",
-    description:
-      "Every Worldview issue, state profile, and spending view in one tool, plus a cross-topic comparator for state and county metrics.",
-    href: "/issueview",
-    iconName: "SlidersHorizontal",
-    capabilities: [
-      {
-        title: "Unconstrained Metric Selection",
-        description: "Combine metrics from different agencies (e.g., FBI crime vs. Census median income) side by side.",
-      },
-      {
-        title: "Bivariate Correlations",
-        description: "Scatter analysis to examine relationships between socioeconomic indicators.",
-      },
-      {
-        title: "Geographic Rankings",
-        description: "Sort and rank all 50 states or thousands of counties on any metric or calculated difference.",
-      },
-      {
-        title: "Clean Data Export",
-        description: "One-click CSV and JSON data export for independent research and reporting.",
-      },
-    ],
-    primaryDatasets: ["census-acs", "fbi-crime", "fred-economy", "cdc-health", "bls-jobs"],
-  },
-  {
     id: "atlas",
     name: "Worldview Atlas",
     tagline: "Ideology & Traditions",

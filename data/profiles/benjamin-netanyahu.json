@@ -57,45 +57,46 @@
   ],
   "entities": {
     "benjamin-netanyahu": {
-      "create": {
+      "match": {
         "name": "Benjamin Netanyahu",
-        "type": "politician",
-        "description": "Prime Minister of Israel, profiled only for U.S.-facing political significance."
+        "type": "politician"
       }
     },
     "united-states-congress": {
       "create": {
         "name": "United States Congress",
         "type": "organization",
-        "description": "The legislative branch of the United States."
+        "description": "The legislative branch of the U.S. federal government."
       }
     },
     "barack-obama": {
-      "create": {
-        "name": "Barack Obama",
-        "type": "politician",
-        "description": "Former president of the United States."
+      "match": {
+        "identifier": [
+          "bioguide",
+          "O000167"
+        ]
       }
     },
     "donald-trump": {
-      "create": {
-        "name": "Donald Trump",
-        "type": "politician",
-        "description": "President of the United States."
+      "match": {
+        "identifier": [
+          "fec_candidate",
+          "P80001571"
+        ]
       }
     },
     "joe-biden": {
-      "create": {
-        "name": "Joe Biden",
-        "type": "politician",
-        "description": "Former president of the United States."
+      "match": {
+        "identifier": [
+          "fec_candidate",
+          "P80000722"
+        ]
       }
     },
     "aipac": {
-      "create": {
+      "match": {
         "name": "AIPAC",
-        "type": "organization",
-        "description": "American Israel Public Affairs Committee, a U.S. pro-Israel advocacy organization."
+        "type": "organization"
       }
     }
   },
@@ -214,9 +215,34 @@
       "type": "article",
       "publishedAt": "2026-10-18",
       "url": "https://apnews.com/article/ba88cdd728422d51e837231b2efbea81"
+    },
+    {
+      "key": "wikidata-benjamin-netanyahu",
+      "title": "Benjamin Netanyahu (Q43723)",
+      "publisher": "Wikidata",
+      "type": "secondary",
+      "url": "https://www.wikidata.org/wiki/Q43723",
+      "accessedAt": "2026-10-30"
     }
   ],
   "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "October 21, 1949",
+      "detail": "Tel Aviv",
+      "sources": [
+        "wikidata-benjamin-netanyahu"
+      ]
+    },
+    {
+      "key": "sex",
+      "label": "Sex",
+      "value": "Male",
+      "sources": [
+        "wikidata-benjamin-netanyahu"
+      ]
+    },
     {
       "key": "congress-addresses",
       "label": "Addresses to Congress",

@@ -16,13 +16,12 @@ import { flushSync } from "react-dom";
 import { Sparkline } from "@/components/charts/stat-tile";
 import { ExplainTerms } from "@/components/ui/term";
 import {
-  CARDS,
   DEFAULT_CHOICES,
   FLOWS,
   HOMES,
   LEGACY_LINKS,
   NODES,
-  STAGE_LEAD,
+  STAGE_FIGURES,
   STAGES,
   type Block,
   type EdgeKind,
@@ -177,7 +176,7 @@ function nextIds(loc: string | null): string[] | undefined {
 
 interface State {
   collapsed: string[]; // condensed stages
-  charts: string[]; // card locations with their chart open inline
+  figures: Record<string, StatKey | null>; // stage -> the figure whose chart is open
   choices: Record<string, string>; // track selector id -> flow id
   node: string | null;
   at: string | null; // the card the node was opened from, if not its home
@@ -187,7 +186,6 @@ interface Ctx extends State {
   anchor: string | null;
   stats: StatSlots;
   headlines: Headlines;
-  strips: Set<string>; // card locations that show their headline number
   faq: Faq[];
   notes: Map<string, Notes>;
   query: string;
@@ -196,7 +194,7 @@ interface Ctx extends State {
   choose: (tracks: string, flow: string) => void;
   toggleStage: (id: string) => void;
   goToStage: (id: string) => void;
-  toggleChart: (loc: string) => void;
+  pickFigure: (stage: string, stat: StatKey) => void;
 }
 
 const SystemContext = createContext<Ctx | null>(null);
@@ -281,48 +279,14 @@ function HConnector() {
   );
 }
 
-const STAT_LABEL: Partial<Record<StatKey, string>> = {
-  history: "Since 1850",
-  border: "Over time",
-  borderWhere: "Where and who",
-  temporary: "Temporary admissions",
-  refugees: "Refugees",
-  asylum: "Asylum",
-  greenCards: "Green cards",
-  naturalization: "Naturalization",
-  unauthorized: "Unauthorized population",
-  removals: "Removals",
-  detention: "Detention",
-  population: "Foreign-born population",
-  netMigration: "Net migration",
-  domestic: "Moves between states",
-  abroad: "Americans abroad",
-};
-const statLabel = (k: StatKey) => (k.startsWith("states:") ? "By state" : (STAT_LABEL[k] ?? k));
-
-function DataStrip({ h, compact, tone }: { h: Headline; compact: boolean; tone: string }) {
-  return (
-    <span className={`mt-2 flex items-center justify-between gap-3 rounded-xl px-3 py-2 ${tone}`}>
-      <span className="min-w-0">
-        <span className={`block font-semibold tracking-tight tabular-nums ${compact ? "text-xl" : "text-2xl"}`}>
-          {h.value}
-        </span>
-        <span className="block text-[11px] leading-tight opacity-70">{h.label}</span>
-      </span>
-      {h.spark && <Sparkline values={h.spark} />}
-    </span>
-  );
-}
-
 function NodeCard({ id, loc, compact = false }: { id: string; loc: string; compact?: boolean }) {
-  const { node, anchor, select, close, query, headlines, strips } = useSystem();
+  const { node, anchor, select, close, query } = useSystem();
   const n = NODES[id];
   const style = KIND_STYLE[n.kind];
   const accent = KIND_ACCENT[n.kind];
   const Icon = accent.icon;
   const active = node === id && anchor === loc;
   const hit = query ? matches(query, n.title, n.summary) : null;
-  const h = strips.has(loc) ? (n.stats ?? []).map((k) => headlines[k]).find(Boolean) : undefined;
   const details = () => (active ? close() : select(id, loc));
   return (
     <article
@@ -353,57 +317,86 @@ function NodeCard({ id, loc, compact = false }: { id: string; loc: string; compa
             />
           </span>
         </button>
-        {!(compact && h) && (
-          <span className={`mt-1 block leading-snug opacity-75 ${compact ? "text-xs" : "text-sm"}`}>
-            <ExplainTerms ids={n.terms}>{n.teaser ?? n.summary}</ExplainTerms>
-          </span>
-        )}
-        {h && <DataStrip h={h} compact={compact} tone={accent.data} />}
+        <span className={`mt-1 block leading-snug opacity-75 ${compact ? "text-xs" : "text-sm"}`}>
+          <ExplainTerms ids={n.terms}>{n.teaser ?? n.summary}</ExplainTerms>
+        </span>
       </div>
     </article>
   );
 }
 
-function InlineChart({ loc, title, keys }: { loc: string; title: string; keys: StatKey[] }) {
-  const { stats, toggleChart } = useSystem();
-  const [tab, setTab] = useState(0);
-  const k = keys[Math.min(tab, keys.length - 1)];
+// A stage's figures, one per process. Each tile is a tab: picking it opens
+// that process's chart below the row; picking it again closes it.
+function FigureTabs({ stage }: { stage: string }) {
+  const { stats, headlines, figures, pickFigure } = useSystem();
+  const shown = STAGE_FIGURES[stage].filter((f) => headlines[f.stat] && stats[f.stat]);
+  const open = shown.find((f) => f.stat === figures[stage]);
+  const tabs = useRef<(HTMLButtonElement | null)[]>([]);
+  if (!shown.length) return null;
+  const style = STAGE_STYLE[stage];
+  const panelId = `figure-panel-${stage}`;
+  const onKey = (e: React.KeyboardEvent, i: number) => {
+    const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+    if (!step) return;
+    e.preventDefault();
+    tabs.current[(i + step + shown.length) % shown.length]?.focus();
+  };
   return (
-    <div
-      className={`mt-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-lg dark:border-slate-800 dark:bg-slate-950 ${enter}`}
-    >
-      <div className="mb-2 flex items-center gap-2">
-        <ChartColumn aria-hidden className="size-4 text-blue-600 dark:text-blue-400" />
-        <p className="min-w-0 flex-1 truncate text-sm font-semibold text-slate-950 dark:text-white">{title}</p>
-        <button
-          type="button"
-          onClick={() => toggleChart(loc)}
-          className={`rounded-lg px-2 py-0.5 text-xs text-slate-500 hover:bg-slate-100 hover:text-slate-950 dark:hover:bg-slate-800 dark:hover:text-white ${focusRing}`}
-        >
-          Close ✕
-        </button>
-      </div>
-      {keys.length > 1 && (
-        <div role="tablist" aria-label={`${title} charts`} className="mb-3 flex flex-wrap gap-1">
-          {keys.map((key, i) => (
+    <div className="mx-3 mb-4 sm:mx-5">
+      <div role="tablist" aria-label={`${NODES[stage].title} figures`} className="grid grid-cols-2 gap-2 @lg:grid-cols-3">
+        {shown.map((f, i) => {
+          const h = headlines[f.stat]!;
+          const on = open?.stat === f.stat;
+          return (
             <button
-              key={key}
+              key={f.stat}
+              ref={(el) => {
+                tabs.current[i] = el;
+              }}
               type="button"
               role="tab"
-              aria-selected={k === key}
-              onClick={() => setTab(i)}
-              className={`rounded-full px-3 py-1 text-xs font-medium transition ${focusRing} ${
-                k === key
-                  ? "bg-slate-900 text-white dark:bg-white dark:text-slate-950"
-                  : "bg-slate-100 text-slate-600 hover:text-slate-950 dark:bg-slate-900 dark:text-slate-300"
+              id={`figure-${stage}-${f.stat}`}
+              aria-selected={on}
+              aria-controls={on ? panelId : undefined}
+              tabIndex={on || (!open && i === 0) ? 0 : -1}
+              onClick={() => pickFigure(stage, f.stat)}
+              onKeyDown={(e) => onKey(e, i)}
+              className={`group flex min-w-0 flex-col rounded-2xl border px-3 py-2.5 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md motion-reduce:transform-none ${focusRing} ${
+                on
+                  ? "border-slate-900 bg-slate-900 text-white dark:border-white dark:bg-white dark:text-slate-950"
+                  : "border-white/0 bg-white/85 text-slate-950 dark:bg-slate-900/70 dark:text-white"
               }`}
             >
-              {statLabel(key)}
+              <span className="flex items-center gap-1.5">
+                <span aria-hidden className={`size-2 shrink-0 self-start rounded-full mt-1 ${style.stripe}`} />
+                <span className={`line-clamp-2 text-[11px] leading-tight font-semibold tracking-wide uppercase ${on ? "opacity-80" : "text-slate-500 dark:text-slate-400"}`}>
+                  {NODES[f.node].title}
+                </span>
+              </span>
+              <span className="mt-1 flex flex-wrap items-end justify-between gap-x-2">
+                <span className="text-2xl font-semibold tracking-tight tabular-nums">{h.value}</span>
+                {h.spark && (
+                  <span className={on ? "opacity-80" : ""}>
+                    <Sparkline values={h.spark} />
+                  </span>
+                )}
+              </span>
+              <span className={`mt-0.5 text-xs leading-snug text-pretty ${on ? "opacity-80" : "text-slate-600 dark:text-slate-300"}`}>{h.label}</span>
             </button>
-          ))}
+          );
+        })}
+      </div>
+      {open && (
+        <div
+          key={open.stat}
+          id={panelId}
+          role="tabpanel"
+          aria-labelledby={`figure-${stage}-${open.stat}`}
+          className={`mt-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-lg dark:border-slate-800 dark:bg-slate-950 ${enter}`}
+        >
+          {stats[open.stat]}
         </div>
       )}
-      <div>{stats[k]}</div>
     </div>
   );
 }
@@ -588,13 +581,10 @@ function Blocks({ blocks, path }: { blocks: Block[]; path: string }) {
 }
 
 function StageColumn({ index, id }: { index: number; id: string }) {
-  const { collapsed, toggleStage, stats, headlines, charts, toggleChart } = useSystem();
+  const { collapsed, toggleStage, stats, headlines, pickFigure, figures: open } = useSystem();
   const n = NODES[id];
   const style = STAGE_STYLE[id];
-  const lead = STAGE_LEAD[id];
-  const h = headlines[lead];
-  const leadLoc = `lead/${id}`;
-  const leadOpen = charts.includes(leadLoc);
+  const figures = STAGE_FIGURES[id].filter((f) => headlines[f.stat] && stats[f.stat]);
   const condensed = collapsed.includes(id);
   const body = useRef<HTMLDivElement>(null);
 
@@ -615,7 +605,6 @@ function StageColumn({ index, id }: { index: number; id: string }) {
   const content = (
     // Keyed so React keeps these nodes when the stage opens around a find match.
     <div key="body" ref={body} hidden={condensed} className={`space-y-8 px-3 pb-6 sm:px-5 ${enter}`}>
-      {leadOpen && <InlineChart loc={leadLoc} title={statLabel(lead)} keys={[lead]} />}
       <NotesSlot locs={[`stage/${id}`]} />
       <Blocks blocks={STAGES[index].blocks} path={`stage/${id}`} />
     </div>
@@ -624,15 +613,17 @@ function StageColumn({ index, id }: { index: number; id: string }) {
   if (condensed)
     return (
       <section id={`stage-${id}`} className="contents">
-        <button
-          type="button"
-          onClick={() => toggleStage(id)}
-          aria-expanded={false}
-          aria-label={`${index + 1}. ${n.title} — expand stage`}
-          className={`group flex h-full w-full snap-start flex-col overflow-hidden rounded-3xl border text-left transition hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 active:shadow-sm motion-reduce:transform-none ${style.column} ${focusRing}`}
+        <div
+          className={`group flex h-full w-full snap-start flex-col overflow-hidden rounded-3xl border transition hover:-translate-y-0.5 hover:shadow-md motion-reduce:transform-none ${style.column}`}
         >
           <span aria-hidden className={`block h-1.5 w-full shrink-0 ${style.stripe}`} />
-          <span className="flex flex-1 flex-col p-4">
+          <button
+            type="button"
+            onClick={() => toggleStage(id)}
+            aria-expanded={false}
+            aria-label={`${index + 1}. ${n.title} — expand stage`}
+            className={`flex flex-col rounded-t-3xl p-4 pb-3 text-left ${focusRing}`}
+          >
             <span className="flex items-center gap-2">
               <span
                 className={`flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${style.badge}`}
@@ -647,26 +638,40 @@ function StageColumn({ index, id }: { index: number; id: string }) {
               {n.title}
             </span>
             <span className="mt-1.5 text-sm leading-snug text-slate-600 dark:text-slate-300">{n.summary}</span>
-            {h && (
-              <span className="mt-auto block pt-4">
-                <span className="block rounded-2xl bg-white/85 px-3 py-2.5 shadow-sm dark:bg-slate-900/70">
-                  <span className="block text-2xl font-semibold tracking-tight text-slate-950 tabular-nums dark:text-white">
-                    {h.value}
-                  </span>
-                  <span className="mt-0.5 block text-xs leading-snug text-slate-600 dark:text-slate-300">
-                    {h.label}
-                  </span>
-                </span>
-              </span>
-            )}
-            <span
-              className={`${h ? "mt-3" : "mt-auto pt-4"} inline-flex items-center gap-1 self-start rounded-full border border-slate-300 bg-white/70 px-2.5 py-1 text-xs font-semibold text-slate-700 transition group-hover:border-slate-400 group-hover:bg-white group-hover:text-slate-950 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-200 dark:group-hover:bg-slate-900 dark:group-hover:text-white`}
-            >
+          </button>
+          {figures.length > 0 && (
+            <ul className="mx-3 space-y-1">
+              {figures.map((f) => {
+                const h = headlines[f.stat]!;
+                return (
+                  <li key={f.stat}>
+                    <button
+                      type="button"
+                      onClick={() => pickFigure(id, f.stat)}
+                      title={`${NODES[f.node].title}: ${h.value} ${h.label}`}
+                      className={`flex w-full flex-col rounded-xl bg-white/85 px-2.5 py-1.5 text-left shadow-sm transition hover:bg-white hover:shadow dark:bg-slate-900/70 dark:hover:bg-slate-900 ${focusRing}`}
+                    >
+                      <span className="text-sm font-semibold text-slate-950 tabular-nums dark:text-white">{h.value}</span>
+                      <span className="text-[11px] leading-tight text-slate-600 dark:text-slate-300">{NODES[f.node].title}</span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+          <button
+            type="button"
+            onClick={() => toggleStage(id)}
+            tabIndex={-1}
+            aria-hidden
+            className="mt-auto self-start p-4 pt-3"
+          >
+            <span className="inline-flex items-center gap-1 rounded-full border border-slate-300 bg-white/70 px-2.5 py-1 text-xs font-semibold text-slate-700 transition group-hover:border-slate-400 group-hover:bg-white group-hover:text-slate-950 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-200 dark:group-hover:bg-slate-900 dark:group-hover:text-white">
               Expand stage
               <ChevronRight aria-hidden className="size-3.5 transition group-hover:translate-x-0.5" />
             </span>
-          </span>
-        </button>
+          </button>
+        </div>
         {content}
       </section>
     );
@@ -674,7 +679,8 @@ function StageColumn({ index, id }: { index: number; id: string }) {
     <section
       id={`stage-${id}`}
       aria-labelledby={`stage-title-${id}`}
-      className={`@container w-[88vw] shrink-0 snap-start overflow-hidden rounded-3xl border ${style.width} ${style.column}`}
+      // An open figure's chart needs room for its explorer's side-by-side views.
+      className={`@container w-[88vw] shrink-0 snap-start overflow-hidden rounded-3xl border transition-[width] ${open[id] ? "sm:w-[min(64rem,calc(100vw-4rem))]" : style.width} ${style.column}`}
     >
       <span aria-hidden className={`block h-1.5 ${style.stripe}`} />
       <header className="flex items-start gap-3 px-4 pt-4 pb-3 sm:px-5">
@@ -701,28 +707,7 @@ function StageColumn({ index, id }: { index: number; id: string }) {
           − Condense
         </button>
       </header>
-      {h && (
-        <div className="mx-3 mb-4 flex items-center gap-3 rounded-2xl bg-white/85 px-4 py-3 shadow-sm sm:mx-5 dark:bg-slate-900/70">
-          <div className="min-w-0 flex-1">
-            <p className="text-3xl font-semibold tracking-tight text-slate-950 tabular-nums dark:text-white">
-              {h.value}
-            </p>
-            <p className="text-xs leading-snug text-slate-600 dark:text-slate-300">{h.label}</p>
-          </div>
-          {h.spark && <Sparkline values={h.spark} />}
-          {stats[lead] && (
-            <button
-              type="button"
-              onClick={() => toggleChart(leadLoc)}
-              aria-expanded={leadOpen}
-              className={`inline-flex shrink-0 items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-semibold text-white transition ${leadOpen ? "bg-blue-600" : `${style.stripe} hover:brightness-110`} ${focusRing}`}
-            >
-              <ChartColumn aria-hidden className="size-3.5" />
-              {leadOpen ? "Hide" : "Chart"}
-            </button>
-          )}
-        </div>
-      )}
+      <FigureTabs stage={id} />
       {content}
     </section>
   );
@@ -992,7 +977,7 @@ export function ImmigrationSystemExplorer({
 }) {
   const [state, setState] = useState<State>({
     collapsed: STAGES.map((x) => x.id),
-    charts: [],
+    figures: {},
     choices: { ...DEFAULT_CHOICES },
     node: null,
     at: null,
@@ -1004,18 +989,6 @@ export function ImmigrationSystemExplorer({
   const scrollTo = useRef<"card" | null>(null);
   const anchor = state.node ? (state.at ?? HOMES[state.node]?.loc ?? null) : null;
   const notes = useMemo(() => placeNotes(faq), [faq]);
-  // A number shows once per column: on the first card that has it, unless the column header already leads with it.
-  const strips = useMemo(() => {
-    const seen = new Set<string>();
-    const out = new Set<string>();
-    for (const card of CARDS) {
-      const key = NODES[card.id].stats?.find((k) => headlines[k]);
-      if (!key || key === STAGE_LEAD[card.stage] || seen.has(`${card.stage}:${key}`)) continue;
-      seen.add(`${card.stage}:${key}`);
-      out.add(card.loc);
-    }
-    return out;
-  }, [headlines]);
   const q = query.trim().toLowerCase();
 
   // The page is one cached static render, so the URL is read after hydration.
@@ -1092,7 +1065,6 @@ export function ImmigrationSystemExplorer({
     anchor,
     stats,
     headlines,
-    strips,
     faq,
     notes,
     query: q,
@@ -1107,11 +1079,23 @@ export function ImmigrationSystemExplorer({
       writeUrl(null, "push");
     },
     choose: (tracks, flow) => setState((s) => ({ ...s, choices: { ...s.choices, [tracks]: flow } })),
-    toggleChart: (loc) =>
-      setState((s) => ({
-        ...s,
-        charts: s.charts.includes(loc) ? s.charts.filter((x) => x !== loc) : [...s.charts, loc],
-      })),
+    pickFigure: (stage, stat) => {
+      const fig = STAGE_FIGURES[stage].find((f) => f.stat === stat);
+      setState((s) => {
+        const opening = s.figures[stage] !== stat || s.collapsed.includes(stage);
+        return {
+          ...s,
+          collapsed: s.collapsed.filter((x) => x !== stage),
+          figures: { ...s.figures, [stage]: opening ? stat : null },
+          choices: opening && fig?.track ? { ...s.choices, [fig.track.tracks]: fig.track.flow } : s.choices,
+        };
+      });
+      // Picked from a condensed card, the stage opens wider; bring it into view.
+      if (state.collapsed.includes(stage))
+        requestAnimationFrame(() =>
+          document.getElementById(`stage-${stage}`)?.scrollIntoView({ behavior: smooth(), block: "nearest", inline: "start" }),
+        );
+    },
     toggleStage: (id) => {
       const closing = !state.collapsed.includes(id);
       const loseNode = closing && state.node && HOMES[state.node]?.stage === id;
@@ -1268,8 +1252,8 @@ export function ImmigrationSystemExplorer({
         </div>
 
         <p className="-mt-2 px-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
-          Open a stage to see its steps, or any card for details, data, and the law. Each stage&apos;s figure counts
-          something different.
+          Click a figure to see its chart, or any card for details, data, and the law. Each figure counts something
+          different: events, grants, or people.
         </p>
 
       </div>

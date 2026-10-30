@@ -79,7 +79,7 @@
       }
     },
     "democratic-party": { "match": { "name": "Democratic Party", "type": "organization" } },
-    "biden": { "match": { "name": "Joe Biden", "type": "politician" } },
+    "biden": { "match": { "identifier": ["fec_candidate", "P80000722"] } },
     "harris": { "match": { "name": "Kamala Harris", "type": "politician" } },
     "haley": {
       "create": {
@@ -109,7 +109,7 @@
         "description": "Writer whose civil litigation against Donald Trump received support from a nonprofit backed by Reid Hoffman."
       }
     },
-    "trump": { "match": { "name": "Donald Trump", "type": "politician" } }
+    "trump": { "match": { "identifier": ["fec_candidate", "P80001571"] } }
   },
   "sources": [
     {

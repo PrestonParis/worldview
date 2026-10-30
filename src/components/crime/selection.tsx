@@ -5,7 +5,7 @@ import { OFFENSES, type OffenseKey } from "@/lib/crime/offenses";
 
 // The Crime Atlas selection, shared by every /crime section that follows the
 // chosen offense. Mirrored to the URL (?offense=&year=&state=&city=&measure=
-// &compare=) so a view can be linked. Read from the URL after mount rather
+// &compare=&view=) so a view can be linked. Read from the URL after mount rather
 // than with useSearchParams, so the page still renders on the server.
 
 export type Measure = "rate" | "change" | "coverage";
@@ -18,6 +18,7 @@ export interface CrimeSelection {
   city: string | null; // agency ORI
   measure: Measure;
   compare: string;
+  view: string | null; // the open analysis below the Atlas
 }
 
 type Ctx = CrimeSelection & { set: (patch: Partial<CrimeSelection>) => void };
@@ -55,6 +56,7 @@ export function CrimeSelectionProvider({
     city: null,
     measure: "rate",
     compare: "",
+    view: null,
   });
   useEffect(() => {
     const q = new URLSearchParams(window.location.search);
@@ -77,6 +79,7 @@ export function CrimeSelectionProvider({
       city: q.get("city") || null,
       measure: measure && MEASURES.includes(measure) ? measure : cur.measure,
       compare: states.includes(compare) ? compare : "",
+      view: q.get("view") || null,
     }));
   }, [years, prelimYear, states]);
 
@@ -90,6 +93,7 @@ export function CrimeSelectionProvider({
     put("city", sel.city);
     put("measure", sel.measure, "rate");
     put("compare", sel.compare);
+    put("view", sel.view);
     const qs = q.toString();
     window.history.replaceState(window.history.state, "", `${window.location.pathname}${qs ? `?${qs}` : ""}${window.location.hash}`);
   }, [sel, latest]);

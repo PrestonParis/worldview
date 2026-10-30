@@ -41,6 +41,9 @@ const SOURCE_TYPES = new Set([
 ]);
 const CATEGORIES = new Set(["career", "finance", "politics", "ideas", "legal", "personal"]);
 const DATE_RE = /^\d{4}(-\d{2}(-\d{2})?)?$/;
+const ORG_TYPES = new Set(["organization", "company"]);
+// The filler a generated dossier once gave every counterpart it created.
+const PLACEHOLDER_DESCRIPTION = "Organization or person documented in a Worldview profile.";
 
 function sourcePublishedAt(value) {
   if (!value) return null;
@@ -68,6 +71,21 @@ function validate(slug, d) {
     for (const key of keys ?? []) if (!sourceKeys.has(key)) errors.push(`${where}: unknown source "${key}"`);
   };
   if (!entityKeys.has(d.subject)) errors.push(`subject "${d.subject}" is not in entities`);
+  // A person's reference facts feed the attributes panel and set the
+  // pronouns, so sex is required (docs/people/profile-guide.md). A birth
+  // date some people never made public, so its absence is only flagged.
+  const subject = d.entities[d.subject] ?? {};
+  if (!ORG_TYPES.has(subject.match?.type ?? subject.create?.type)) {
+    const factKeys = new Set((d.facts ?? []).map((f) => f.key));
+    if (!factKeys.has("sex")) errors.push('facts: the subject needs a "sex" fact');
+    if (!factKeys.has("born")) console.warn(`  ${slug}: no "born" fact; record the omission in brief.openQuestions`);
+  }
+  for (const [key, spec] of Object.entries(d.entities)) {
+    if (!spec.create) continue;
+    const description = spec.create.description?.trim() ?? "";
+    if (!description || description === PLACEHOLDER_DESCRIPTION)
+      errors.push(`entity ${key}: a created entity needs a real description`);
+  }
   for (const s of d.sources) {
     if (!SOURCE_TYPES.has(s.type)) errors.push(`source ${s.key}: bad type ${s.type}`);
     if (!s.url && !s.documentId) errors.push(`source ${s.key}: needs a url or documentId`);
@@ -117,6 +135,17 @@ function validate(slug, d) {
 async function resolveEntities(pg, d) {
   const ids = {};
   const created = [];
+  // Checked before anything is written. The same name under another type is
+  // almost always the same person or group with a guessed type; creating it
+  // would split their records.
+  const clashes = [];
+  for (const [key, spec] of Object.entries(d.entities)) {
+    if (!spec.create || spec.match) continue;
+    const { rows } = await pg.query("select type, id from entities where lower(name) = lower($1)", [spec.create.name]);
+    if (rows.length && !rows.some((r) => r.type === spec.create.type))
+      clashes.push(`entity ${key}: "${spec.create.name}" exists as ${rows.map((r) => `${r.type} ${r.id}`).join(", ")}; match it instead`);
+  }
+  if (clashes.length) throw new Error(`${clashes.length} entity clash(es)\n  ${clashes.join("\n  ")}`);
   for (const [key, spec] of Object.entries(d.entities)) {
     if (spec.match?.identifier) {
       const [scheme, value] = spec.match.identifier;

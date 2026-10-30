@@ -116,8 +116,10 @@
     },
     "trump": {
       "match": {
-        "name": "Donald Trump",
-        "type": "politician"
+        "identifier": [
+          "fec_candidate",
+          "P80001571"
+        ]
       }
     },
     "sheldon-adelson": {
@@ -1873,7 +1875,7 @@
       "key": "lines",
       "title": "Drawing lines inside the party",
       "dek": "Zero tolerance for antisemites, without breaking with Trump.",
-      "body": "Brooks's defense of Trump has coexisted with public breaks from other Republicans. In the 2022 midterms the RJC refused to support Pennsylvania gubernatorial nominee Doug Mastriano and worked to defeat Marjorie Taylor Greene; Brooks described the policy as \"zero tolerance for antisemitism.\" [[brandeis-brooks-2022]]\n\nThe limit of that policy showed in November 2022, when Trump hosted Ye and the white nationalist Nick Fuentes at Mar-a-Lago. The coalition condemned the two guests as \"virulent\" antisemites and urged leaders to refuse such meetings, but did not name Trump. [[algemeiner-fuentes-2022, cbs-fuentes-2022]]\n\nHis sharpest break came in October 2025, after Heritage Foundation president Kevin Roberts defended Tucker Carlson's friendly interview with Fuentes. Brooks said he was \"appalled, offended and disgusted,\" called the defense \"a total abrogation\" of Heritage's mission, and said the RJC would reassess a relationship that had included work with Heritage's foreign-policy team. He cast the dispute as factional: Heritage was becoming \"more like Tucker Carlson and less like Ronald Reagan.\" [[ji-heritage-2025]]"
+      "body": "Brooks's defense of Trump has coexisted with public breaks from other Republicans. In the 2022 midterms the RJC refused to support Pennsylvania gubernatorial nominee Doug Mastriano and worked to defeat Marjorie Taylor Greene; Brooks described the policy as \"zero tolerance for antisemitism.\" [[brandeis-brooks-2022]]\n\nThe limit of that policy showed in November 2022, when Trump hosted Ye and the White nationalist Nick Fuentes at Mar-a-Lago. The coalition condemned the two guests as \"virulent\" antisemites and urged leaders to refuse such meetings, but did not name Trump. [[algemeiner-fuentes-2022, cbs-fuentes-2022]]\n\nHis sharpest break came in October 2025, after Heritage Foundation president Kevin Roberts defended Tucker Carlson's friendly interview with Fuentes. Brooks said he was \"appalled, offended and disgusted,\" called the defense \"a total abrogation\" of Heritage's mission, and said the RJC would reassess a relationship that had included work with Heritage's foreign-policy team. He cast the dispute as factional: Heritage was becoming \"more like Tucker Carlson and less like Ronald Reagan.\" [[ji-heritage-2025]]"
     },
     {
       "key": "2024",

@@ -1,37 +1,28 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Church, Crosshair, Database, GraduationCap, HeartPulse, Home, MapPin, Stethoscope, TrendingUp, Users, Vote, Zap } from "lucide-react";
+import { ArrowRight, Database, MapPin, Vote } from "lucide-react";
 import { ShowcaseSection } from "@/components/home/showcase/showcase";
-import type { StateMeasure } from "@/components/home/state-map";
 import { formatValue } from "@/lib/format";
 import { CATALOG } from "@/lib/quiz/catalog";
 import type { Showcase } from "@/lib/home/showcase";
 import type { MidtermHighlight, MidtermRating, NavPreviews } from "@/lib/nav-previews";
 import type { DossierProfile } from "@/lib/db/entities";
 
-export interface TrendSample {
-  label: string; value: number | null; unit: string; period: string; source: string; values: number[];
-  firstPeriod?: string; lastPeriod?: string; events?: TrendEvent[];
-}
-export interface TrendEvent { position: number; label: string }
-export interface DemographicSample { period: string; source: string; categories: { label: string; value: number; color: string }[] }
 export interface PlatformFacts {
   people?: { entities: number; relationships: number; dossiers: DossierProfile[] };
   money?: { contributions: number; usdTotal: number; topRecipients?: { name: string; total: number }[]; coverage?: string };
   elections?: { cycle: number; races: number };
 }
 
-export function ToolModules({ immigration, crime, demographics, facts, previews, showcase, showcaseMeasures, datasetCount, publisherCount }: {
-  immigration: TrendSample | null; crime: TrendSample | null; demographics: DemographicSample | null;
-  facts: PlatformFacts; previews: NavPreviews; showcase: Showcase; showcaseMeasures: StateMeasure[];
+export function ToolModules({ facts, previews, showcase, datasetCount, publisherCount }: {
+  facts: PlatformFacts; previews: NavPreviews; showcase: Showcase;
   datasetCount: number; publisherCount: number;
 }) {
   return (
     <div className="space-y-12 pb-12 pt-4 lg:space-y-14 lg:pb-14">
-      <SignalsSection immigration={immigration} crime={crime} demographics={demographics} />
       <PowerSection facts={facts} />
       <DemocracySection facts={facts} preview={previews.government} />
-      <ShowcaseSection showcase={showcase} measures={showcaseMeasures} axisCount={CATALOG.axes} traditionCount={CATALOG.traditions} />
+      <ShowcaseSection showcase={showcase} axisCount={CATALOG.axes} traditionCount={CATALOG.traditions} />
       <TrustSection datasetCount={datasetCount} publisherCount={publisherCount} />
     </div>
   );
@@ -44,45 +35,6 @@ function SectionHeading({ title, action, href }: { title: string; action?: strin
       {action && href ? <Link href={href} className="inline-flex items-center gap-1 text-sm font-semibold text-blue-700 hover:underline dark:text-blue-300">{action} <ArrowRight size={14} aria-hidden /></Link> : null}
     </div>
   );
-}
-
-function SignalsSection({ immigration, crime, demographics }: { immigration: TrendSample | null; crime: TrendSample | null; demographics: DemographicSample | null }) {
-  const topics = [
-    { label: "Guns", href: "/guns", icon: Crosshair, blurb: "Gun deaths and ownership" },
-    { label: "Abortion", href: "/abortion", icon: HeartPulse, blurb: "Abortions by state, method, and residence" },
-    { label: "Economy", href: "/economy", icon: TrendingUp, blurb: "Jobs, prices, wages, and growth" },
-    { label: "Housing", href: "/housing", icon: Home, blurb: "Home prices, rents, and affordability" },
-    { label: "Healthcare", href: "/healthcare", icon: Stethoscope, blurb: "Coverage, costs, and outcomes" },
-    { label: "Energy & climate", href: "/energy", icon: Zap, blurb: "Generation, prices, and emissions" },
-    { label: "Education", href: "/education", icon: GraduationCap, blurb: "Test scores, spending, and attainment" },
-    { label: "Religion", href: "/religion", icon: Church, blurb: "Affiliation, attendance, and belief" },
-    { label: "Family", href: "/family", icon: Users, blurb: "Marriage, births, and households" },
-  ];
-  return (
-    <section id="issues" className="scroll-mt-24">
-      <SectionHeading title="Issues and society" action="Browse every issue" href="/issueview" />
-      <div className="mt-5 grid overflow-hidden rounded-xl border border-slate-200 bg-white md:grid-cols-[1.2fr_.8fr] dark:border-slate-800 dark:bg-slate-950">
-        <Link href="/immigration" className="group p-5 sm:p-7 lg:border-r lg:border-slate-200 dark:lg:border-slate-800"><PreviewHeader title="Immigration" action="Explore immigration" />{immigration ? <TrendChart sample={immigration} color="#2563eb" large /> : <NoPreview />}</Link>
-        <div className="grid border-t border-slate-200 sm:grid-cols-2 md:grid-cols-1 md:border-t-0 dark:border-slate-800">
-          <Link href="/crime" className="group p-5 sm:border-r sm:p-6 md:border-r-0 md:border-b dark:border-slate-800"><PreviewHeader title="Crime" action="Explore crime" />{crime ? <TrendChart sample={crime} color="#c2410c" /> : <NoPreview />}</Link>
-          <Link href="/demographics" className="group p-5 sm:p-6"><PreviewHeader title="Demographics" action="Explore demographics" />{demographics ? <Composition sample={demographics} /> : <NoPreview />}</Link>
-        </div>
-      </div>
-      <nav aria-label="More topics" className="mt-4 grid gap-px overflow-hidden rounded-xl border border-slate-200 bg-slate-200 sm:grid-cols-2 lg:grid-cols-3 dark:border-slate-800 dark:bg-slate-800">
-        {topics.map(({ label, href, icon: Icon, blurb }) => (
-          <Link key={href} href={href} className="group flex items-center gap-3.5 bg-white px-4 py-3.5 transition-colors hover:bg-slate-50 dark:bg-slate-950 dark:hover:bg-slate-900">
-            <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600 transition-colors group-hover:bg-blue-50 group-hover:text-blue-700 dark:bg-slate-900 dark:text-slate-300 dark:group-hover:bg-blue-950 dark:group-hover:text-blue-300"><Icon size={17} aria-hidden /></span>
-            <span className="min-w-0 flex-1"><span className="block text-sm font-semibold text-slate-950 dark:text-white">{label}</span><span className="block truncate text-xs text-slate-500 dark:text-slate-400">{blurb}</span></span>
-            <ArrowRight size={14} className="shrink-0 text-slate-300 transition-transform group-hover:translate-x-0.5 group-hover:text-blue-700 dark:text-slate-600 dark:group-hover:text-blue-300" aria-hidden />
-          </Link>
-        ))}
-      </nav>
-    </section>
-  );
-}
-
-function PreviewHeader({ title, action }: { title: string; action: string }) {
-  return <div className="mb-5 flex items-center justify-between gap-4"><h3 className="text-lg font-semibold text-slate-950 dark:text-white">{title}</h3><span className="inline-flex items-center gap-1 text-xs font-semibold text-blue-700 group-hover:underline dark:text-blue-300">{action} <ArrowRight size={12} /></span></div>;
 }
 
 function PowerSection({ facts }: { facts: PlatformFacts }) {
@@ -182,13 +134,4 @@ function TrustSection({ datasetCount, publisherCount }: { datasetCount: number; 
   return <section className="grid items-center gap-4 border-t border-slate-300 py-5 sm:grid-cols-[auto_1fr_auto] dark:border-slate-700"><Database size={19} className="text-slate-500" /><div><h2 className="font-semibold text-slate-950 dark:text-white">Every figure stays attached to its source.</h2><p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{datasetCount || "Public"} datasets from {publisherCount || "government and research"} publishers, with definitions, coverage, update dates, and original records.</p></div><Link href="/datasets" className="inline-flex items-center gap-1 text-sm font-semibold text-blue-700 hover:underline dark:text-blue-300">Review the dataset catalog <ArrowRight size={14} /></Link></section>;
 }
 
-function TrendChart({ sample, color, large = false }: { sample: TrendSample; color: string; large?: boolean }) {
-  const width = large ? 620 : 340; const height = large ? 190 : 124; const margin = { top: 22, right: 8, bottom: 24, left: 48 };
-  const min = Math.min(...sample.values); const max = Math.max(...sample.values); const range = max - min || 1; const yTicks = [max, min + range / 2, min];
-  const y = (value: number) => margin.top + (max - value) / range * (height - margin.top - margin.bottom); const points = linePoints(sample.values, width, height, margin, min, max);
-  return <div><div className="flex items-end justify-between gap-4"><div><p className="text-xs text-slate-500 dark:text-slate-400">{sample.label}</p><p className="mt-1 text-2xl font-semibold text-slate-950 dark:text-white">{formatValue(sample.value, sample.unit, { compact: true })}</p></div><p className="text-right text-xs text-slate-500">{sample.period}</p></div><svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={`${sample.label} from ${sample.firstPeriod ?? "the first observation"} to ${sample.lastPeriod ?? sample.period}`} className={`${large ? "h-52" : "h-36"} mt-3 w-full overflow-visible`}>{yTicks.map((tick) => <g key={tick}><line x1={margin.left} x2={width - margin.right} y1={y(tick)} y2={y(tick)} stroke="currentColor" className="text-slate-200 dark:text-slate-800" /><text x={margin.left - 7} y={y(tick)} dy="0.32em" textAnchor="end" className="fill-slate-400 text-[10px] tabular-nums">{formatValue(tick, sample.unit, { compact: true })}</text></g>)}{sample.events?.map((event) => { const x = margin.left + event.position * (width - margin.left - margin.right); const flip = x > width - 110; return <g key={`${event.position}-${event.label}`}><line x1={x} x2={x} y1={margin.top} y2={height - margin.bottom} stroke="currentColor" strokeDasharray="3 3" className="text-slate-400" /><text x={x + (flip ? -4 : 4)} y={12} textAnchor={flip ? "end" : "start"} className="fill-slate-500 text-[9px] font-medium dark:fill-slate-400">{event.label}</text></g>; })}<polyline points={points} fill="none" stroke={color} strokeWidth="2.5" vectorEffect="non-scaling-stroke" /><circle cx={width - margin.right} cy={y(sample.values.at(-1) ?? 0)} r="3.5" fill={color} stroke="var(--viz-surface)" strokeWidth="2" /><text x={margin.left} y={height - 6} className="fill-slate-400 text-[10px] tabular-nums">{sample.firstPeriod}</text><text x={width - margin.right} y={height - 6} textAnchor="end" className="fill-slate-400 text-[10px] tabular-nums">{sample.lastPeriod ?? sample.period}</text></svg><p className="mt-1 text-right text-[11px] text-slate-500">Source: {sample.source}</p></div>;
-}
-
-function Composition({ sample }: { sample: DemographicSample }) { return <div><div className="flex items-baseline justify-between gap-4"><p className="text-xs text-slate-500">Race and ethnicity</p><p className="text-xs text-slate-500">{sample.period}</p></div><div className="mt-5 flex h-4 overflow-hidden rounded-full" aria-label="Population share by race and ethnicity">{sample.categories.map((category) => <span key={category.label} style={{ width: `${category.value}%`, backgroundColor: category.color }} title={`${category.label}: ${category.value.toFixed(1)}%`} />)}</div><div className="mt-4 space-y-2">{sample.categories.slice(0, 4).map((category) => <div key={category.label} className="grid grid-cols-[auto_1fr_auto] items-center gap-2 text-xs"><span className="size-2 rounded-sm" style={{ backgroundColor: category.color }} /><span className="truncate text-slate-600 dark:text-slate-300">{category.label}</span><span className="font-medium text-slate-900 dark:text-white">{category.value.toFixed(1)}%</span></div>)}</div><p className="mt-4 text-[11px] text-slate-500">Source: {sample.source}</p></div>; }
 function NoPreview() { return <div className="flex h-32 items-center justify-center text-sm text-slate-500">Open the topic to view its data.</div>; }
-function linePoints(values: number[], width: number, height: number, margin: { top: number; right: number; bottom: number; left: number }, min: number, max: number) { if (values.length < 2) return ""; const range = max - min || 1; return values.map((value, index) => `${margin.left + index / (values.length - 1) * (width - margin.left - margin.right)},${margin.top + (max - value) / range * (height - margin.top - margin.bottom)}`).join(" "); }

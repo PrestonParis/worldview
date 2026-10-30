@@ -162,11 +162,11 @@ export async function listProfiledEntities(type: EntityType, limit: number): Pro
 }
 
 // Every entity with a full dossier, most relevant first.
-export async function listCaseFileEntities(limit: number): Promise<Entity[]> {
-  const rows = await selectEntities()
+export async function listCaseFileEntities(limit?: number): Promise<Entity[]> {
+  const query = selectEntities()
     .innerJoin(entityProfiles, eq(entityProfiles.entityId, entities.id))
-    .orderBy(desc(relevance), asc(entities.name))
-    .limit(limit);
+    .orderBy(desc(relevance), asc(entities.name));
+  const rows = limit ? await query.limit(limit) : await query;
   return rows.map(toEntity);
 }
 
@@ -193,6 +193,25 @@ export async function getEntityNames(ids: string[]): Promise<Map<string, string>
   return new Map(rows.map((r) => [r.id, r.name]));
 }
 
+// name -> profile path for the given names (matched case-insensitively), so
+// tradition pages can link their key figures. A name shared by several
+// entities (Adam Smith the economist vs. two legislators) stays unlinked.
+export async function getProfilePathsByName(names: string[]): Promise<Map<string, string>> {
+  const unique = [...new Set(names.map((n) => n.trim()).filter(Boolean))];
+  if (unique.length === 0) return new Map();
+  const rows = await db
+    .select({ id: entities.id, name: entities.name })
+    .from(entities)
+    .where(and(inArray(sql`lower(${entities.name})`, unique.map((n) => n.toLowerCase())), notContributorStub));
+  const byName = Map.groupBy(rows, (r) => r.name.toLowerCase());
+  return new Map(
+    unique.flatMap((name) => {
+      const matches = byName.get(name.toLowerCase());
+      return matches?.length === 1 ? [[name, publicEntityPath(matches[0])] as const] : [];
+    }),
+  );
+}
+
 // Full records for just the given entities, for pages that reference a subset
 // of the graph (money breakdowns, lobbying) rather than all of it.
 export async function getEntitiesByIds(ids: string[]): Promise<Entity[]> {
@@ -211,21 +230,28 @@ export async function getIdentifierMap(scheme: IdentifierScheme): Promise<Map<st
   return new Map(rows.map((r) => [r.value, r.entityId]));
 }
 
-// Entities whose name contains `query`, case-insensitive, best matches
-// first: names starting with the query, then a word starting with it.
-// `byRelevance` breaks ties within each name-match tier by public relevance;
-// it costs a few subqueries per match, so keystroke search leaves it off.
-export async function searchEntities(query: string, limit: number, byRelevance = false): Promise<Entity[]> {
-  const q = query.trim().toLowerCase();
+// Entities matching `query`, case-insensitive, most relevant first. A name
+// matches when it contains the whole query, or when every word of the query
+// starts a word of the name ("fuentes nick"). An exact name always leads;
+// otherwise public relevance decides, nudged by how well the name matches, so
+// a full dossier outranks an alphabetical run of state legislators.
+export async function searchEntities(query: string, limit: number): Promise<Entity[]> {
+  const q = query.trim().toLowerCase().replace(/\s+/g, " ");
   if (!q) return [];
-  const pattern = `%${escapeLike(q)}%`;
-  const rank = sql`case
-    when lower(${entities.name}) like ${`${escapeLike(q)}%`} then 0
-    when lower(${entities.name}) like ${`% ${escapeLike(q)}%`} then 1
-    else 2 end`;
+  const name = sql`lower(${entities.name})`;
+  const startsWord = (word: string) =>
+    sql`(${name} like ${`${escapeLike(word)}%`} or ${name} like ${`% ${escapeLike(word)}%`} or ${name} like ${`%-${escapeLike(word)}%`})`;
+  const words = q.split(" ");
+  const everyWord = sql.join(words.map(startsWord), sql` and `);
+  const match = sql<number>`case
+    when ${name} = ${q} then 2000000
+    when ${name} like ${`${escapeLike(q)}%`} then 400
+    when ${name} like ${`% ${escapeLike(q)}%`} then 250
+    when ${everyWord} then 150
+    else -500 end`;
   const rows = await selectEntities()
-    .where(ilike(entities.name, pattern))
-    .orderBy(...(byRelevance ? [rank, desc(relevance)] : [rank]), asc(entities.name))
+    .where(and(sql`(${ilike(entities.name, `%${escapeLike(q)}%`)} or ${everyWord})`, notContributorStub))
+    .orderBy(desc(sql`${match} + ${relevance}`), asc(entities.name))
     .limit(limit);
   return rows.map(toEntity);
 }

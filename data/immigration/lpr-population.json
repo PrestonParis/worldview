@@ -1,0 +1,125 @@
+{
+  "_note": "OHSS estimates of the LPR population on January 1 (eligible = meets age and residence requirements). Each year is taken from the latest report that publishes it; 'report' is that report.",
+  "estimates": [
+    {
+      "year": 2006,
+      "population": 12110000,
+      "eligible": 8250000,
+      "report": "https://ohss.dhs.gov/sites/default/files/2023-12/LPR%2520Population%2520Estimates%2520January%25202014.pdf"
+    },
+    {
+      "year": 2007,
+      "population": 12780000,
+      "eligible": 8150000,
+      "report": "https://ohss.dhs.gov/sites/default/files/2023-12/LPR%2520Population%2520Estimates%2520January%25202014.pdf"
+    },
+    {
+      "year": 2008,
+      "population": 12600000,
+      "eligible": 8160000,
+      "report": "https://ohss.dhs.gov/sites/default/files/2023-12/LPR%2520Population%2520Estimates%2520January%25202014.pdf"
+    },
+    {
+      "year": 2009,
+      "population": 12450000,
+      "eligible": 7870000,
+      "report": "https://ohss.dhs.gov/sites/default/files/2023-12/LPR%2520Population%2520Estimates%2520January%25202014.pdf"
+    },
+    {
+      "year": 2010,
+      "population": 12650000,
+      "eligible": 8070000,
+      "report": "https://ohss.dhs.gov/sites/default/files/2023-12/LPR%2520Population%2520Estimates%2520January%25202014.pdf"
+    },
+    {
+      "year": 2011,
+      "population": 13070000,
+      "eligible": 8530000,
+      "report": "https://ohss.dhs.gov/sites/default/files/2023-12/LPR%2520Population%2520Estimates%2520January%25202014.pdf"
+    },
+    {
+      "year": 2012,
+      "population": 13300000,
+      "eligible": 8770000,
+      "report": "https://ohss.dhs.gov/sites/default/files/2023-12/LPR%2520Population%2520Estimates%2520January%25202014.pdf"
+    },
+    {
+      "year": 2013,
+      "population": 13140000,
+      "eligible": 8790000,
+      "report": "https://ohss.dhs.gov/sites/default/files/2023-12/LPR%2520Population%2520Estimates%2520January%25202014.pdf"
+    },
+    {
+      "year": 2014,
+      "population": 13180000,
+      "eligible": 8880000,
+      "report": "https://ohss.dhs.gov/sites/default/files/2023-12/LPR%2520Population%2520Estimates%2520January%25202014.pdf"
+    },
+    {
+      "year": 2015,
+      "population": 12990000,
+      "eligible": 8850000,
+      "report": "https://ohss.dhs.gov/sites/default/files/2023-12/lpr_population_estimates_2015_-_2019.pdf.pdf"
+    },
+    {
+      "year": 2016,
+      "population": 13080000,
+      "eligible": 8880000,
+      "report": "https://ohss.dhs.gov/sites/default/files/2023-12/lpr_population_estimates_2015_-_2019.pdf.pdf"
+    },
+    {
+      "year": 2017,
+      "population": 13300000,
+      "eligible": 8920000,
+      "report": "https://ohss.dhs.gov/sites/default/files/2023-12/lpr_population_estimates_2015_-_2019.pdf.pdf"
+    },
+    {
+      "year": 2018,
+      "population": 13410000,
+      "eligible": 8950000,
+      "report": "https://ohss.dhs.gov/sites/default/files/2023-12/lpr_population_estimates_2015_-_2019.pdf.pdf"
+    },
+    {
+      "year": 2019,
+      "population": 13460000,
+      "eligible": 9000000,
+      "report": "https://ohss.dhs.gov/sites/default/files/2023-12/22_0405_plcy_lpr_population_estimates_2019_-_2021.pdf"
+    },
+    {
+      "year": 2020,
+      "population": 13350000,
+      "eligible": 8940000,
+      "report": "https://ohss.dhs.gov/sites/default/files/2023-12/22_0405_plcy_lpr_population_estimates_2019_-_2021.pdf"
+    },
+    {
+      "year": 2021,
+      "population": 13110000,
+      "eligible": 9210000,
+      "report": "https://ohss.dhs.gov/sites/default/files/2023-12/22_0405_plcy_lpr_population_estimates_2019_-_2021.pdf"
+    },
+    {
+      "year": 2022,
+      "population": 12880000,
+      "eligible": 9240000,
+      "report": "https://ohss.dhs.gov/sites/default/files/2023-12/2022_0920_plcy_lawful_permenent_resident_population_estimate_2022_0.pdf"
+    },
+    {
+      "year": 2023,
+      "population": 12750000,
+      "eligible": 8890000,
+      "report": "https://ohss.dhs.gov/sites/default/files/2024-11/2024_1108_ohss_lawful_permenent_resident_population_estimate_2024_and_revised_2023.pdf"
+    },
+    {
+      "year": 2024,
+      "population": 12700000,
+      "eligible": 8600000,
+      "report": "https://ohss.dhs.gov/topics/immigration/lawful-permanent-residents/population-estimates/fy-25-lpr-pop-estimates"
+    },
+    {
+      "year": 2025,
+      "population": 13050000,
+      "eligible": 8490000,
+      "report": "https://ohss.dhs.gov/topics/immigration/lawful-permanent-residents/population-estimates/fy-25-lpr-pop-estimates"
+    }
+  ]
+}

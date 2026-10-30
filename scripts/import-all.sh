@@ -39,9 +39,13 @@ step node scripts/import-census-race.mjs
 step node scripts/import-census-projections.mjs
 step node scripts/import-acs-ancestry.mjs
 step node scripts/import-gallup-lgbt.mjs
+step node scripts/import-gss.mjs
+step node scripts/import-gallup-confidence.mjs
 step node scripts/import-state-migration.mjs
 step node scripts/import-un-migrant-stock.mjs
 step node scripts/import-eavs.mjs
+for y in 2016 2018 2020 2022; do step node scripts/import-eavs.mjs --year=$y; done
+step node scripts/import-eavs-policy.mjs
 step node scripts/import-cps-voting.mjs
 step node scripts/import-acs.mjs
 step node scripts/import-acs-immigration.mjs
@@ -54,12 +58,27 @@ step node scripts/import-texas-dps.mjs
 step node scripts/import-bjs-prisoners.mjs
 step node scripts/import-bjs-recidivism.mjs
 step node scripts/import-fbi-leoka.mjs
+step node scripts/import-police-violence.mjs
+step node scripts/import-bjs-ppcs.mjs
+step node scripts/import-death-penalty.mjs
 step node scripts/import-bls-cps.mjs
+step node scripts/import-labor.mjs
 step node scripts/import-world-bank-remittances.mjs
 step node scripts/import-irs-migration.mjs
 step node scripts/import-irs-tax-shares.mjs
+step node scripts/import-ukraine-support.mjs
+step node scripts/import-fed-dfa.mjs
+step node scripts/import-hud-pit.mjs
+step node scripts/import-cbo.mjs
+step node scripts/import-medicare-trustees.mjs
+step node scripts/import-census-stc.mjs
+step node scripts/import-state-taxes.mjs
 step node scripts/import-ohss-monthly.mjs
 step node scripts/import-eoir.mjs
+step node scripts/import-uscis-forms.mjs
+step node scripts/import-refugee-admissions.mjs
+step node scripts/import-lpr-population.mjs
+step node scripts/import-dhs-overstays.mjs
 step node scripts/import-unauthorized-estimates.mjs
 step node scripts/import-acs-pums-nativity.mjs
 step node scripts/import-acs-family-groups.mjs
@@ -69,6 +88,7 @@ step node scripts/import-acs-social.mjs
 step node scripts/import-fertility.mjs
 step node scripts/import-religion.mjs
 step node scripts/import-federal-budget.mjs
+step node scripts/import-foreign-assistance.mjs
 step node scripts/import-crs-israel-aid.mjs
 step node scripts/import-census-trade.mjs
 step node scripts/import-un-votes.mjs
@@ -78,6 +98,7 @@ step node scripts/import-health.mjs
 step node scripts/import-guns.mjs
 step node scripts/import-naep.mjs
 step node scripts/import-climate.mjs
+step node scripts/import-emissions.mjs
 
 # Rate-limited API sweeps (slow).
 step node scripts/import-congress-bills.mjs --congress=119

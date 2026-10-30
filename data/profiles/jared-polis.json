@@ -65,9 +65,7 @@
     "polis": {
       "match": { "identifier": ["bioguide", "P000598"] }
     },
-    "trump": {
-      "match": { "name": "Donald Trump", "type": "politician" }
-    },
+    "trump": { "match": { "identifier": ["fec_candidate", "P80001571"] } },
     "rfk": {
       "match": { "name": "Robert F. Kennedy Jr.", "type": "politician" }
     },

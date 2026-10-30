@@ -9,6 +9,8 @@
 //   asylum_grant_rate_all grants / all asylum decisions, percent
 //   asylum_filed_affirmative, asylum_filed_defensive, asylum_filed, asylum_pending
 //   removal_orders, removal_orders_in_absentia                current FY only
+//   decisions_relief, decisions_voluntary_departure,
+//   decisions_termination                                     current FY only
 //
 // Source: https://www.justice.gov/eoir/workload-and-adjudication-statistics
 // (PDFs read with scripts/lib/pdf.mjs; media ids below change when EOIR
@@ -89,6 +91,24 @@ await runImport(SOURCE, async (pg) => {
     add("removal_orders", fy, num(removal.split("\t")[1]), true, outcomesUrl);
     add("removal_orders_in_absentia", fy, num(absentia.split("\t")[1]), true, outcomesUrl);
   }
+  // The rest of the I-862 (removal case) outcomes. The chart's legend and
+  // table run together in the text, so values are taken from lines ending in
+  // a tab and a number, in table order: relief granted comes right before
+  // voluntary departure / withdrawal ("Withdrawal of"), then termination.
+  const i862 = outcomes.slice(
+    outcomes.findIndex((l) => /I-862 Initial Case Decisions/.test(l)),
+    outcomes.findIndex((l) => /I-863 Initial Case Decisions/.test(l)),
+  );
+  const valued = i862.filter((l) => /\t\(?[\d,]+\)?$/.test(l));
+  const vd = valued.findIndex((l) => /^Withdrawal of\t/.test(l));
+  const relief = valued[vd - 1];
+  const termination = valued.find((l) => /^Terminate\/Dismissal\t[\d,]+$/.test(l));
+  if (fy && vd > 0 && /Relief Granted\t[\d,]+$/.test(relief) && termination) {
+    const value = (l) => num(l.split("\t").at(-1));
+    add("decisions_relief", fy, value(relief), true, outcomesUrl);
+    add("decisions_voluntary_departure", fy, value(valued[vd]), true, outcomesUrl);
+    add("decisions_termination", fy, value(termination), true, outcomesUrl);
+  } else console.warn("  decision outcomes: relief, voluntary departure, or termination not found");
   const out = [...values.values()];
   const inserted = await upsertRows(pg, "area_stats", Object.keys(out[0]), out, ["source", "metric", "geo_level", "geoid", "period"]);
   console.log(`  ${out.length} rows`);

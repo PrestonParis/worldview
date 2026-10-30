@@ -96,4 +96,4 @@ function groupedViews(): RailGroup[] {
   return [...groups.entries()].map(([label, links]) => ({ label, links }));
 }
 
-export const SUITE_ORDER: SuiteToolId[] = ["subpoena", "writ", "issueview"];
+export const SUITE_ORDER: SuiteToolId[] = ["subpoena", "writ"];

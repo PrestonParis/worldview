@@ -77,8 +77,10 @@
     },
     "trump": {
       "match": {
-        "name": "Donald Trump",
-        "type": "politician"
+        "identifier": [
+          "fec_candidate",
+          "P80001571"
+        ]
       }
     },
     "nadler": {

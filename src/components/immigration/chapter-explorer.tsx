@@ -96,6 +96,7 @@ function LivingTimeline({ view }: { view: Extract<ExplorerView, { kind: "time" }
 
   const shown = view.series.map((series) => ({ ...series, points: series.points.filter((point) => point.x <= (xs[cursor] ?? Infinity)) }));
   const point = shown.flatMap((series) => series.points).findLast((item) => item.x === xs[cursor]);
+  const labelAt = (x: number | undefined) => view.series.flatMap((series) => series.points).find((item) => item.x === x)?.label ?? x;
 
   return (
     <>
@@ -129,7 +130,7 @@ function LivingTimeline({ view }: { view: Extract<ExplorerView, { kind: "time" }
             aria-label={`Year shown for ${view.title}`}
             className="w-full accent-blue-600"
           />
-          <div className="flex justify-between text-[11px] text-slate-400"><span>{xs[0]}</span><span>{xs.at(-1)}</span></div>
+          <div className="flex justify-between text-[11px] text-slate-400"><span>{labelAt(xs[0])}</span><span>{labelAt(xs.at(-1))}</span></div>
         </div>
       )}
     </>

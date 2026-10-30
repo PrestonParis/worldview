@@ -59,7 +59,7 @@
   },
   "entities": {
     "kushner": { "match": { "name": "Jared Kushner", "type": "politician" } },
-    "trump": { "match": { "name": "Donald Trump", "type": "politician" } },
+    "trump": { "match": { "identifier": ["fec_candidate", "P80001571"] } },
     "ivanka": { "match": { "name": "Ivanka Trump", "type": "politician" } },
     "charles": {
       "create": {

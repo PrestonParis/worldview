@@ -66,7 +66,7 @@
         "description": "Founder of Las Vegas Sands and major Republican donor; husband of Miriam Adelson until his death in 2021."
       }
     },
-    "trump": { "match": { "name": "Donald Trump", "type": "politician" } },
+    "trump": { "match": { "identifier": ["fec_candidate", "P80001571"] } },
     "lvs": {
       "create": {
         "name": "Las Vegas Sands",

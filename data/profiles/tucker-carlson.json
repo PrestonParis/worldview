@@ -96,134 +96,134 @@
   "entities": {
     "tucker-carlson": {
       "match": {
-        "name": "Tucker Carlson",
-        "type": "pundit"
+        "identifier": [
+          "wikidata",
+          "Q743162"
+        ]
       }
     },
     "neil-patel": {
       "create": {
         "name": "Neil Patel",
-        "type": "politician",
-        "description": "Organization or person documented in a Worldview profile."
+        "type": "journalist",
+        "description": "Co-founder and publisher of The Daily Caller."
       }
     },
     "fox-news": {
-      "create": {
+      "match": {
         "name": "Fox News",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+        "type": "organization"
       }
     },
     "tucker-carlson-network": {
-      "create": {
+      "match": {
         "name": "Tucker Carlson Network",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+        "type": "organization"
       }
     },
     "the-daily-caller": {
-      "create": {
+      "match": {
         "name": "The Daily Caller",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+        "type": "organization"
       }
     },
     "1789-capital": {
       "create": {
         "name": "1789 Capital",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+        "type": "company",
+        "description": "Venture capital firm founded by Omeed Malik; Donald Trump Jr. became a partner in 2024."
       }
     },
     "red-seat-ventures": {
       "create": {
         "name": "Red Seat Ventures",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+        "type": "company",
+        "description": "Media company that builds subscription businesses for commentators, including Tucker Carlson Network."
       }
     },
     "fox-corp": {
-      "create": {
-        "name": "Fox Corp",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+      "match": {
+        "name": "Fox Corporation",
+        "type": "organization"
       }
     },
     "donald-trump": {
-      "create": {
-        "name": "Donald Trump",
-        "type": "politician",
-        "description": "Organization or person documented in a Worldview profile."
+      "match": {
+        "identifier": [
+          "fec_candidate",
+          "P80001571"
+        ]
       }
     },
     "jd-vance": {
-      "create": {
-        "name": "JD Vance",
-        "type": "politician",
-        "description": "Organization or person documented in a Worldview profile."
+      "match": {
+        "identifier": [
+          "fec_candidate",
+          "S2OH00436"
+        ]
       }
     },
     "nick-fuentes": {
-      "create": {
-        "name": "Nick Fuentes",
-        "type": "politician",
-        "description": "Organization or person documented in a Worldview profile."
+      "match": {
+        "identifier": [
+          "wikidata",
+          "Q51120751"
+        ]
       }
     },
     "kevin-roberts": {
-      "create": {
+      "match": {
         "name": "Kevin Roberts",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+        "type": "pundit"
       }
     },
     "james-fishback": {
-      "create": {
+      "match": {
         "name": "James Fishback",
-        "type": "politician",
-        "description": "Organization or person documented in a Worldview profile."
+        "type": "politician"
       }
     },
     "byron-donalds": {
-      "create": {
-        "name": "Byron Donalds",
-        "type": "politician",
-        "description": "Organization or person documented in a Worldview profile."
+      "match": {
+        "identifier": [
+          "bioguide",
+          "D000032"
+        ]
       }
     },
     "mike-huckabee": {
       "create": {
         "name": "Mike Huckabee",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+        "type": "politician",
+        "description": "U.S. ambassador to Israel since 2025; governor of Arkansas from 1996 to 2007."
       }
     },
     "jonathan-greenblatt": {
-      "create": {
+      "match": {
         "name": "Jonathan Greenblatt",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+        "type": "pundit"
       }
     },
     "vladimir-putin": {
-      "create": {
+      "match": {
         "name": "Vladimir Putin",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+        "type": "politician"
       }
     },
     "megyn-kelly": {
-      "create": {
-        "name": "Megyn Kelly",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+      "match": {
+        "identifier": [
+          "wikidata",
+          "Q293260"
+        ]
       }
     },
     "ben-shapiro": {
-      "create": {
-        "name": "Ben Shapiro",
-        "type": "organization",
-        "description": "Organization or person documented in a Worldview profile."
+      "match": {
+        "identifier": [
+          "wikidata",
+          "Q4886439"
+        ]
       }
     }
   },
@@ -578,9 +578,34 @@
       "url": "https://www.fec.gov/data/receipts/individual-contributions/",
       "publishedAt": "2026",
       "notes": "General methodology only; does not establish that Carlson contributed"
+    },
+    {
+      "key": "wikidata-tucker-carlson",
+      "title": "Tucker Carlson (Q743162)",
+      "publisher": "Wikidata",
+      "type": "secondary",
+      "url": "https://www.wikidata.org/wiki/Q743162",
+      "accessedAt": "2026-10-30"
     }
   ],
   "facts": [
+    {
+      "key": "born",
+      "label": "Born",
+      "value": "May 16, 1969",
+      "detail": "San Francisco, California",
+      "sources": [
+        "wikidata-tucker-carlson"
+      ]
+    },
+    {
+      "key": "sex",
+      "label": "Sex",
+      "value": "Male",
+      "sources": [
+        "wikidata-tucker-carlson"
+      ]
+    },
     {
       "key": "identity-1",
       "label": "Identity",
@@ -1292,7 +1317,7 @@
       "key": "2025-10-27-interviews-nick-fuentes",
       "date": "2025-10-27",
       "title": "Interviews Nick Fuentes",
-      "summary": "Long-form platform interview causes criticism of perceived normalization of white nationalist antisemitism and disputes within Heritage.",
+      "summary": "Long-form platform interview causes criticism of perceived normalization of White nationalist antisemitism and disputes within Heritage.",
       "category": "career",
       "significance": 2,
       "status": "verified",
@@ -1540,7 +1565,7 @@
       "key": "fox-era-persuasion-immigration-and-january-6",
       "title": "Fox-era persuasion, immigration and January 6",
       "dek": "",
-      "body": "On April 8, 2021, Carlson asserted that Democrats sought to change the electorate through immigration. He framed the issue as dilution of existing voters’ political influence and rejected the description of his claim as explicitly racial. ADL chief Jonathan Greenblatt argued that the rhetoric drew on the white-supremacist “great replacement” idea. Record the statement and the criticism separately; a warning by an advocacy organization is evidence of its response, not evidence of the speaker’s private intent. [[TC06,TC07]]\n\nIn March 2023 Carlson aired selected January 6 surveillance footage and argued the total record challenged the characterization of the riot. FactCheck.org and Capitol Police noted his selective framing did not account for documented violence and officer assaults. Fox’s $787.5m settlement with Dominion in April 2023 settled the company’s defamation case; it was not a personal judicial finding against Carlson. [[TC05,TC04,TC34]]"
+      "body": "On April 8, 2021, Carlson asserted that Democrats sought to change the electorate through immigration. He framed the issue as dilution of existing voters’ political influence and rejected the description of his claim as explicitly racial. ADL chief Jonathan Greenblatt argued that the rhetoric drew on the White-supremacist “great replacement” idea. Record the statement and the criticism separately; a warning by an advocacy organization is evidence of its response, not evidence of the speaker’s private intent. [[TC06,TC07]]\n\nIn March 2023 Carlson aired selected January 6 surveillance footage and argued the total record challenged the characterization of the riot. FactCheck.org and Capitol Police noted his selective framing did not account for documented violence and officer assaults. Fox’s $787.5m settlement with Dominion in April 2023 settled the company’s defamation case; it was not a personal judicial finding against Carlson. [[TC05,TC04,TC34]]"
     },
     {
       "key": "a-new-media-company-and-the-limits-of-audience-statistics",
@@ -1570,7 +1595,7 @@
       "key": "nick-fuentes-institutional-gatekeeping-and-antisemitism-disputes",
       "title": "Nick Fuentes, institutional gatekeeping and antisemitism disputes",
       "dek": "",
-      "body": "Carlson interviewed Nick Fuentes on October 27, 2025, for more than two hours. Fuentes has publicly espoused white-nationalist and antisemitic positions; his access to Carlson’s audience produced criticism about normalization and how aggressively the host challenged him. Kevin Roberts of the Heritage Foundation defended Carlson’s right to conduct the interview, setting off a broader dispute inside and around Heritage. The interview is a clear documented platform relationship; reciprocal ideological endorsement requires its own evidence. [[TC15,TC16,TC17]]\n\nIn May and September 2026 interviews Carlson rejected the charge that criticism of Israel is intrinsically antisemitic and denied antisemitism himself. At the same time, critics argued that some of his rhetoric and guest selections trafficked in historically antisemitic conspiratorial motifs. A careful dossier retains his self-description, specific remarks, and critics’ objections, rather than giving either side sole interpretive authority. [[TC28,TC31,TC33]]"
+      "body": "Carlson interviewed Nick Fuentes on October 27, 2025, for more than two hours. Fuentes has publicly espoused White-nationalist and antisemitic positions; his access to Carlson’s audience produced criticism about normalization and how aggressively the host challenged him. Kevin Roberts of the Heritage Foundation defended Carlson’s right to conduct the interview, setting off a broader dispute inside and around Heritage. The interview is a clear documented platform relationship; reciprocal ideological endorsement requires its own evidence. [[TC15,TC16,TC17]]\n\nIn May and September 2026 interviews Carlson rejected the charge that criticism of Israel is intrinsically antisemitic and denied antisemitism himself. At the same time, critics argued that some of his rhetoric and guest selections trafficked in historically antisemitic conspiratorial motifs. A careful dossier retains his self-description, specific remarks, and critics’ objections, rather than giving either side sole interpretive authority. [[TC28,TC31,TC33]]"
     },
     {
       "key": "james-fishback-direct-amplification-rather-than-proven-campaign-coordination",

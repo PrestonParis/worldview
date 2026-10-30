@@ -1,6 +1,6 @@
 import { familyOf, type NodeFamily } from "../graph/lean";
 import { degreeById, withoutStructuralEdges } from "../graph/scope";
-import { ATTRIBUTE_RESULT_LIMIT, buildAttributes, stateAbbrOf, type AttributeFacets, type AttributeParams } from "../people/attributes";
+import { ATTRIBUTE_RESULT_LIMIT, buildAttributes, stateAbbrOf, type AttributeFacets, type AttributeFacetTotals, type AttributeParams } from "../people/attributes";
 import { entityPartyAndPlace, entityRole, publicEntityPath } from "../people/public";
 import { listEdges } from "./edges";
 import { listEntities } from "./entities";
@@ -23,6 +23,7 @@ export interface AttributeMatch {
 export interface AttributeResult {
   total: number;
   facets: AttributeFacets;
+  facetTotals: AttributeFacetTotals;
   matches: AttributeMatch[];
 }
 
@@ -51,10 +52,11 @@ const PARTY_SHORT: Record<string, string> = { D: "Democrat", R: "Republican", I:
 
 export async function queryAttributes(params: AttributeParams): Promise<AttributeResult> {
   const { entities, degree, traits } = await loadGraph();
-  const { rows, facets } = buildAttributes(entities, degree, params, traits);
+  const { rows, facets, facetTotals } = buildAttributes(entities, degree, params, traits);
   return {
     total: rows.length,
     facets,
+    facetTotals,
     matches: rows.slice(0, ATTRIBUTE_RESULT_LIMIT).map((entity) => {
       const { party, place } = entityPartyAndPlace(entity);
       return {

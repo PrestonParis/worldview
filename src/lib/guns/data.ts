@@ -1,7 +1,8 @@
 // Everything /guns shows: firearm deaths by intent (CDC final and provisional
-// sources), deaths by age, gun ownership and policy opinion (Gallup), and the
-// states — all from area_stats, with the two missing bridge years supplied
-// from CDC's final annual mortality tables.
+// sources), deaths by age and sex, gun ownership and policy opinion (Gallup),
+// who owns guns and why (Pew), background checks (FBI NICS), and the states —
+// all from area_stats, with the two missing bridge years supplied from CDC's
+// final annual mortality tables.
 
 import { getCrossSection, getSeriesMany, type Point } from "@/lib/db/stats";
 import { datasetsFor, last, stateTable, toPoints } from "@/lib/issues/series";
@@ -11,6 +12,9 @@ import type { Series } from "@/components/charts/time-series-chart";
 const OLD = "cdc-injury-mortality";
 const NEW = "cdc-violent-deaths";
 const GALLUP = "gallup-guns";
+const NICS = "fbi-nics";
+const CDCQ = "cdc-quarterly-mortality";
+const PEW = "pew-guns";
 
 const INTENTS = [
   "firearm_deaths",
@@ -21,6 +25,8 @@ const INTENTS = [
   "firearm_homicide_rate",
 ] as const;
 const AGE_ORDER = ["< 15", "15–24", "25–44", "45–64", "65–74", "75+"];
+const AGE_ORDER_NEW = ["1–4", "5–14", "15–24", "25–34", "35–44", "45–54", "55–64", "65–74", "75–84", "85+"];
+const PEW_GROUPS = ["all", "men", "women", "rural", "suburban", "urban", "white", "black", "hispanic", "asian", "rep", "dem"];
 
 const joined = (a: Point[], b: Point[]) => [...a, ...b.filter((p) => !a.some((q) => q.period === p.period))];
 
@@ -91,11 +97,50 @@ export async function loadGuns() {
     { id: "homicide", label: "Homicides", slot: 3, points: toPoints(s.firearm_homicide_rate) },
   ];
 
-  const ages = await getCrossSection(OLD, "firearm_deaths_rate_by_age", "age_group");
-  const byAge: RankedItem[] = AGE_ORDER.flatMap((g) => {
+  // Age: NCHS's provisional rates for the latest full year, else the
+  // discontinued injury table (through 2016).
+  const [agesNew, sexNew, agesOld] = await Promise.all([
+    getCrossSection(CDCQ, "firearm_deaths_rate_by_age", "age_group"),
+    getCrossSection(CDCQ, "firearm_deaths_rate_by_sex", "sex"),
+    getCrossSection(OLD, "firearm_deaths_rate_by_age", "age_group"),
+  ]);
+  const useNew = agesNew.values.length > 0;
+  const ages = useNew ? agesNew : agesOld;
+  const byAge: RankedItem[] = (useNew ? AGE_ORDER_NEW : AGE_ORDER).flatMap((g) => {
     const v = ages.values.find((a) => a.geoid === g);
     return v ? [{ label: g === "< 15" ? "Under 15" : g, value: v.value }] : [];
   });
+  const bySex: RankedItem[] = sexNew.values.map((v) => ({ label: v.geoName ?? v.geoid, value: v.value }));
+
+  // ---- Who owns guns, and why (Pew) ----
+  const [pewOwn, pewWhy] = await Promise.all([
+    getCrossSection(PEW, "personally_own_gun", "group"),
+    getCrossSection(PEW, "major_reason_to_own", "reason"),
+  ]);
+  const owners: RankedItem[] = PEW_GROUPS.flatMap((g) => {
+    const v = pewOwn.values.find((a) => a.geoid === g);
+    return v ? [{ label: v.geoName ?? g, value: v.value }] : [];
+  });
+  const reasons: RankedItem[] = pewWhy.values
+    .map((v) => ({ label: v.geoName ?? v.geoid, value: v.value }))
+    .sort((a, b) => b.value - a.value);
+
+  // ---- Background checks (FBI NICS) ----
+  const nics = await getSeriesMany(NICS, [
+    "nics_checks",
+    "nics_checks_handgun",
+    "nics_checks_long_gun",
+    "nics_checks_permit",
+    "nics_checks_private_sale",
+    "nics_checks_monthly",
+  ]);
+  const checksMonthly: Series[] = [{ id: "monthly", label: "Background checks", slot: 1, points: toPoints(nics.nics_checks_monthly) }];
+  const checksByType: Series[] = [
+    { id: "handgun", label: "Handgun", slot: 1, points: toPoints(nics.nics_checks_handgun) },
+    { id: "long", label: "Long gun", slot: 2, points: toPoints(nics.nics_checks_long_gun) },
+    { id: "permit", label: "Permit and recheck", slot: 3, points: toPoints(nics.nics_checks_permit) },
+    { id: "private", label: "Private sale", slot: 4, points: toPoints(nics.nics_checks_private_sale) },
+  ];
 
   // Share of all homicides committed with a gun (2019 on).
   const share = now.firearm_homicide_deaths.flatMap((p) => {
@@ -125,6 +170,13 @@ export async function loadGuns() {
     { id: "same", label: "Kept as now", slot: 2, points: toPoints(gallup.laws_kept_as_now) },
     { id: "less", label: "Less strict", slot: 3, points: toPoints(gallup.laws_less_strict) },
   ];
+  // Support for two specific proposals Gallup asks about in its trend series.
+  const proposals = (
+    [
+      { id: "handguns", label: "Ban handguns except for police", slot: 1, points: toPoints(gallup.ban_handguns) },
+      { id: "assault", label: "Ban semi-automatic assault rifles", slot: 2, points: toPoints(gallup.ban_assault_rifles) },
+    ] satisfies Series[]
+  ).filter((s) => s.points.length);
 
   // ---- States ----
   const states = await stateTable([
@@ -161,6 +213,22 @@ export async function loadGuns() {
       sourceLabel: "CDC NCHS",
     },
     {
+      source: NICS,
+      metric: "nics_checks",
+      label: "Firearm background checks",
+      unit: "checks",
+      group: "Background checks",
+      sourceLabel: "FBI NICS",
+    },
+    {
+      source: NICS,
+      metric: "nics_checks_handgun",
+      label: "Handgun background checks",
+      unit: "checks",
+      group: "Background checks",
+      sourceLabel: "FBI NICS",
+    },
+    {
       source: NEW,
       metric: "firearm_deaths_rate_ttm",
       label: "Firearm deaths per 100,000, last 12 months",
@@ -176,6 +244,7 @@ export async function loadGuns() {
   const home = last(gallup.gun_in_home);
   const own = last(gallup.personally_own_gun);
   const strict = last(gallup.laws_more_strict);
+  const checks = last(nics.nics_checks);
   const headline = {
     deaths: { point: total, spark: s.firearm_deaths.map((p) => p.value) },
     suicideShare:
@@ -185,6 +254,7 @@ export async function loadGuns() {
     home: { point: home, spark: gallup.gun_in_home.slice(-20).map((p) => p.value) },
     own: { point: own, spark: gallup.personally_own_gun.slice(-20).map((p) => p.value) },
     strict: { point: strict, spark: gallup.laws_more_strict.slice(-20).map((p) => p.value) },
+    checks: { point: checks, spark: nics.nics_checks.map((p) => p.value) },
   };
 
   return {
@@ -193,11 +263,19 @@ export async function loadGuns() {
     rates,
     byAge,
     ageYear: ages.period,
+    ageSource: useNew ? CDCQ : OLD,
+    bySex,
+    owners,
+    reasons,
+    pewYear: pewOwn.period,
+    checksMonthly,
+    checksByType,
     gunShare,
     intentBreakdown,
     ownership,
     opinion,
+    proposals,
     states,
-    datasets: await datasetsFor([NEW, OLD, GALLUP]),
+    datasets: await datasetsFor([NEW, OLD, GALLUP, NICS, CDCQ, PEW]),
   };
 }

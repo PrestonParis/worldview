@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { AbortionSources } from "@/components/abortion/data-inventory";
 import { LimitsMap } from "@/components/abortion/limits-map";
 import { PregnancyTimeline, lawAt, type TimelineState } from "@/components/abortion/pregnancy-timeline";
@@ -89,16 +89,25 @@ export function AbortionExplorer({
   const urlWeek = Number(params.get("week"));
   const week = picked.week ?? (params.get("week") && Number.isFinite(urlWeek) ? Math.min(40, Math.max(0, Math.round(urlWeek))) : 8);
 
+  // Dragging the week fires on every pointer move; Safari throws after 100
+  // replaceState calls in 10 seconds, so the URL write is debounced.
+  const urlTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  useEffect(() => () => clearTimeout(urlTimer.current), []);
+
   const update = (patch: { view?: View; state?: string; week?: number }) => {
     const next = { view, state: abbr, week, ...patch };
+    if (next.view === view && next.state === abbr && next.week === week) return;
     setPicked(next);
-    const p = new URLSearchParams(window.location.search);
-    p.set("view", next.view);
-    if (next.state) p.set("state", next.state);
-    else p.delete("state");
-    if (next.view === "pregnancy") p.set("week", String(next.week));
-    else p.delete("week");
-    window.history.replaceState(null, "", `${window.location.pathname}?${p.toString()}`);
+    clearTimeout(urlTimer.current);
+    urlTimer.current = setTimeout(() => {
+      const p = new URLSearchParams(window.location.search);
+      p.set("view", next.view);
+      if (next.state) p.set("state", next.state);
+      else p.delete("state");
+      if (next.view === "pregnancy") p.set("week", String(next.week));
+      else p.delete("week");
+      window.history.replaceState(null, "", `${window.location.pathname}?${p.toString()}`);
+    }, 200);
   };
   const pickState = (next: string | null) => update({ state: next && next !== abbr ? next : "" });
 

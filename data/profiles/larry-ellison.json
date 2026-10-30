@@ -51,7 +51,7 @@
         "websiteUrl": "https://www.oracle.com/"
       }
     },
-    "trump": { "match": { "name": "Donald Trump", "type": "politician" } },
+    "trump": { "match": { "identifier": ["fec_candidate", "P80001571"] } },
     "graham": {
       "create": {
         "name": "Lindsey Graham",

@@ -65,37 +65,38 @@
     "byron-donalds": {
       "match": {
         "identifier": [
-          "fec_candidate",
-          "H2FL14186"
+          "bioguide",
+          "D000032"
         ]
       }
     },
     "donald-trump": {
-      "create": {
-        "name": "Donald Trump",
-        "type": "politician",
-        "description": "President of the United States."
+      "match": {
+        "identifier": [
+          "fec_candidate",
+          "P80001571"
+        ]
       }
     },
     "james-fishback": {
-      "create": {
+      "match": {
         "name": "James Fishback",
-        "type": "politician",
-        "description": "Florida political candidate and investment executive."
+        "type": "politician"
       }
     },
     "ron-desantis": {
-      "create": {
-        "name": "Ron DeSantis",
-        "type": "politician",
-        "description": "Governor of Florida."
+      "match": {
+        "identifier": [
+          "bioguide",
+          "D000621"
+        ]
       }
     },
     "friends-of-byron-donalds": {
       "create": {
         "name": "Friends of Byron Donalds PAC",
         "type": "organization",
-        "description": "Florida political committee associated in reporting with Byron Donalds."
+        "description": "Political committee supporting Byron Donalds."
       }
     }
   },
@@ -307,9 +308,25 @@
       "type": "secondary",
       "url": "https://politifact.com/article/2025/aug/27/byron-donalds-history-youth-offender-laws-dc/",
       "notes": "independent researched narrative incorporating court records and comparison of juvenile justice policy. Need original court and legislative records for final consequential entries."
+    },
+    {
+      "key": "wikidata-byron-donalds",
+      "title": "Byron Donalds (Q59726216)",
+      "publisher": "Wikidata",
+      "type": "secondary",
+      "url": "https://www.wikidata.org/wiki/Q59726216",
+      "accessedAt": "2026-10-30"
     }
   ],
   "facts": [
+    {
+      "key": "sex",
+      "label": "Sex",
+      "value": "Male",
+      "sources": [
+        "wikidata-byron-donalds"
+      ]
+    },
     {
       "key": "born",
       "label": "Born",
