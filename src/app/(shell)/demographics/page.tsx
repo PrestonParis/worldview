@@ -59,7 +59,7 @@ function RaceSection({ race }: { race: NonNullable<Awaited<ReturnType<typeof loa
         />
         <StatTile label="Hispanic" unit="percent" value={r.hispanic?.value ?? null} period={r.hispanic?.period} note="Of any race" />
         <StatTile
-          label="Projected year non-Hispanic whites fall under 50%"
+          label="Projected year non-Hispanic Whites fall under 50%"
           unit="year"
           value={r.crossover?.value ?? null}
           period="Census 2023 projections, main series"
@@ -90,7 +90,7 @@ function RaceSection({ race }: { race: NonNullable<Awaited<ReturnType<typeof loa
           <TimeSeriesChart series={race.projected} unit="percent" height={280} reference={{ value: 50, label: "50%" }} />
         </ChartCard>
         <ChartCard
-          title="Non-Hispanic white share under each immigration scenario"
+          title="Non-Hispanic White share under each immigration scenario"
           subtitle="Share of the population · scenarios differ only in net immigration"
           source={PROJECTIONS}
           table={seriesTable(race.scenarios, "percent")}

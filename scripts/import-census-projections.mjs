@@ -5,7 +5,7 @@
 //                                            race detail ends in 2060
 //   pop_total_<s>, share_white_nh_<s>        s = low | high | zero immigration
 //   majority_minority_year[_<s>]             first year the non-Hispanic
-//                                            white share is under 50%,
+//                                            White share is under 50%,
 //                                            period = projection vintage
 //
 // Groups match census-pep-race: hispanic and the non-Hispanic single races.
@@ -71,7 +71,7 @@ await runImport(SOURCE, async (pg) => {
       if (!suffix) row("median_age", y, medianAge(all), "years", meta);
     }
     if (crossover !== null) row(`majority_minority_year${tag}`, VINTAGE, crossover, "year", meta);
-    console.log(`  ${file}: ${years[0]}–${years.at(-1)}, white non-Hispanic under 50% from ${crossover ?? "never"}`);
+    console.log(`  ${file}: ${years[0]}–${years.at(-1)}, White non-Hispanic under 50% from ${crossover ?? "never"}`);
   }
   const columns = ["source", "metric", "geo_level", "geoid", "geo_name", "period", "period_start", "value", "unit", "metadata"];
   const inserted = await upsertRows(pg, "area_stats", columns, out, ["source", "metric", "geo_level", "geoid", "period"]);

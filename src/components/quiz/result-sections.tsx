@@ -2,7 +2,7 @@
 // result, then the map, positions, comparison and history, each a preview
 // with a way into its full drill-down view.
 
-import type { ReactNode } from "react";
+import { Fragment, type ReactNode } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -55,12 +55,15 @@ export function QuizResults({
   canEdit,
   mode,
   ownership,
+  figureLinks = {},
 }: {
   slug: string;
   result: QuizResult;
   canEdit: boolean;
   mode: QuizModeId;
   ownership?: ReactNode;
+  /** Key figure name -> profile path, for the figures that have one. */
+  figureLinks?: Record<string, string>;
 }) {
   const top = result.ideologies[0];
   const accent = familyColor(top.ideology.family);
@@ -81,7 +84,7 @@ export function QuizResults({
       {mode === "deep" && <MapPreview slug={slug} result={result} canEdit={canEdit} accent={accent} />}
       <PositionsPreview slug={slug} result={result} canEdit={canEdit} accent={accent} quick={quick} />
       {!quick && <CompareSection slug={slug} result={result} canEdit={canEdit} />}
-      {!quick && history && <LearnSection slug={slug} result={result} />}
+      {!quick && history && <LearnSection slug={slug} result={result} figureLinks={figureLinks} />}
       <More slug={slug} result={result} canEdit={canEdit} mode={mode} ownership={ownership} />
     </div>
   );
@@ -489,7 +492,15 @@ function CompareSection({ slug, result, canEdit }: { slug: string; result: QuizR
 
 // ── History and reading ──
 
-function LearnSection({ slug, result }: { slug: string; result: QuizResult }) {
+function LearnSection({
+  slug,
+  result,
+  figureLinks,
+}: {
+  slug: string;
+  result: QuizResult;
+  figureLinks: Record<string, string>;
+}) {
   const top = result.ideologies[0].ideology;
   const history = HISTORY[top.id];
   const color = familyColor(top.family);
@@ -519,7 +530,20 @@ function LearnSection({ slug, result }: { slug: string; result: QuizResult }) {
           <dt className={`inline-flex items-center gap-1 ${metaText}`}>
             <UserRound size={13} aria-hidden /> Key figures
           </dt>
-          <dd className="font-semibold text-slate-950 dark:text-white">{history.figures.join(", ")}</dd>
+          <dd className="font-semibold text-slate-950 dark:text-white">
+            {history.figures.map((f, i) => (
+              <Fragment key={f}>
+                {i > 0 && ", "}
+                {figureLinks[f] ? (
+                  <Link href={figureLinks[f]} className={textLink}>
+                    {f}
+                  </Link>
+                ) : (
+                  f
+                )}
+              </Fragment>
+            ))}
+          </dd>
         </div>
       </dl>
       <div className="grid gap-x-10 gap-y-8 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">

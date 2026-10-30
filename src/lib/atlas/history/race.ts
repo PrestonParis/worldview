@@ -21,7 +21,7 @@ export const RACE: Record<string, TraditionCore> = {
       ["1924", "The Immigration Act sets national-origin quotas drawn partly from Grant's ideas."],
       ["1974", "Pierce founds the National Alliance."],
       ["1990", "Taylor launches American Renaissance."],
-      ["2016", "The \"alt-right\" brings white nationalism to national attention."],
+      ["2016", "The \"alt-right\" brings White nationalism to national attention."],
       ["2017", "The Unite the Right rally in Charlottesville ends in a fatal car attack."],
     ],
     practice: [
@@ -70,7 +70,7 @@ export const RACE: Record<string, TraditionCore> = {
       ["Inaugural address (\"segregation forever\")", "George Wallace", "1963"],
     ],
     timeline: [
-      ["1877", "Reconstruction ends and white Democrats retake Southern governments."],
+      ["1877", "Reconstruction ends and White Democrats retake Southern governments."],
       ["1890", "Mississippi's new constitution disenfranchises Black voters; other states copy it."],
       ["1896", "Plessy v. Ferguson upholds \"separate but equal\"."],
       ["1948", "Thurmond runs for president as a States' Rights Democrat (Dixiecrat)."],
@@ -98,7 +98,7 @@ export const RACE: Record<string, TraditionCore> = {
     ],
     timeline: [
       ["1937", "The Pioneer Fund is founded to fund research on heredity and race."],
-      ["1969", "Jensen argues the Black–white IQ gap is partly genetic."],
+      ["1969", "Jensen argues the Black–White IQ gap is partly genetic."],
       ["1994", "The Bell Curve becomes a bestseller."],
       ["2014", "Wade's A Troublesome Inheritance argues for recent genetic divergence between races."],
       ["2021", "Murray's Facing Reality argues policy should start from group differences in ability and crime."],

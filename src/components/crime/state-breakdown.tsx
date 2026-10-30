@@ -38,7 +38,7 @@ export function StateBreakdown({
   const latest = year === latestYear;
 
   return (
-    <section className="rounded-2xl border border-slate-300 p-5 dark:border-slate-700" aria-label={`${row.name} breakdown`}>
+    <section id="state-breakdown" className="rounded-2xl border border-slate-300 p-5 dark:border-slate-700" aria-label={`${row.name} breakdown`}>
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="text-xs font-medium tracking-wide text-slate-400 uppercase">Breakdown · {year}</p>

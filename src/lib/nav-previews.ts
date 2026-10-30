@@ -22,6 +22,8 @@ export interface MidtermHighlight {
 export interface NavPreviews {
   // Foreign-born share of the population: each census, then the ACS.
   issues: { points: [number, number][] } | null;
+  // Real median household income, in today's dollars.
+  economy: { points: [number, number][] } | null;
   society: {
     years: [number, number];
     observedThrough: number;
@@ -51,6 +53,14 @@ async function issuesPreview(): Promise<NavPreviews["issues"]> {
   ]);
   const lastCensus = census.at(-1)?.period ?? "";
   const points = [...census, ...acs.filter((p) => p.period > lastCensus)].map((p) => [Number(p.period), p.value] as [number, number]);
+  return points.length > 1 ? { points } : null;
+}
+
+let economyCache: Promise<NavPreviews["economy"]> | null = null;
+
+async function economyPreview(): Promise<NavPreviews["economy"]> {
+  const series = await getSeries("fred-economy", "real_median_household_income");
+  const points = series.map((p) => [Number(p.period.slice(0, 4)), p.value] as [number, number]);
   return points.length > 1 ? { points } : null;
 }
 
@@ -125,8 +135,13 @@ export async function getNavPreviews(): Promise<NavPreviews> {
     issuesCache = null;
     return null;
   });
+  economyCache ??= economyPreview().catch(() => {
+    economyCache = null;
+    return null;
+  });
   return {
     issues: await issuesCache,
+    economy: await economyCache,
     society: societyPreview(),
     power: powerPreview(),
     government: await governmentCache,

@@ -21,7 +21,7 @@ import { initials } from "@/lib/format";
 // counts and the best-connected matches.
 
 const TRAIT_NOTE =
-  "Traits come from Wikidata statements, Wikipedia's categories and Open States; people with no such record count as not recorded.";
+  "These are documented source records, not population estimates. Race, ancestry and religion are recorded selectively by Wikidata and Wikipedia, so their bars support finding people but should not be read as demographic distributions.";
 
 const fmt = (n: number) => n.toLocaleString("en-US");
 
@@ -147,7 +147,7 @@ export function PeopleAttributes({
         <div>
           <h2 id="attributes-title" className="text-2xl font-semibold tracking-tight">Attributes</h2>
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400" aria-live="polite">
-            {filtered ? `${fmt(result.total)} match` : `${fmt(result.total)} people and organizations. Pick any attribute to see who fits.`}
+            {filtered ? `${fmt(result.total)} match` : `${fmt(result.total)} people and organizations. Personal details use the people-only denominator shown below.`}
           </p>
         </div>
         <label className="relative w-full sm:w-96">
@@ -198,7 +198,13 @@ export function PeopleAttributes({
         ) : null}
 
         <div className="rounded-2xl border border-slate-200 p-5 dark:border-slate-800">
-          <TraitFacets facets={result.facets} params={params} set={set} />
+          <div className="mb-5">
+            <h3 className="text-sm font-semibold text-slate-950 dark:text-white">Personal details</h3>
+            <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+              {fmt(result.facetTotals.sex)} people; organizations and companies are excluded.
+            </p>
+          </div>
+          <TraitFacets facets={result.facets} facetTotals={result.facetTotals} params={params} set={set} />
           <p className="mt-5 text-xs text-slate-400">{TRAIT_NOTE}</p>
         </div>
         <div className="rounded-2xl border border-slate-200 p-5 dark:border-slate-800">

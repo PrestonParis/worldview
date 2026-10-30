@@ -32,6 +32,7 @@ const TOPICS: Record<string, string> = {
   legislation: "Congress",
   courts: "Courts",
   executive: "Executive branch",
+  opinion: "Public opinion",
 };
 
 export default async function DatasetsPage() {

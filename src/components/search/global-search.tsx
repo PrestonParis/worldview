@@ -6,13 +6,30 @@ import { Search } from "lucide-react";
 import { typeColorFor } from "@/lib/type-colors";
 import type { SearchResponse, SearchResult } from "@/app/api/search/route";
 
-const GROUPS: { key: keyof SearchResponse; label: string }[] = [
-  { key: "pages", label: "Pages & data" },
-  { key: "datasets", label: "Datasets" },
-  { key: "entities", label: "People & organizations" },
-];
+type Group = SearchResponse["order"][number];
 
-const EMPTY: SearchResponse = { pages: [], datasets: [], entities: [] };
+const GROUP_LABELS: Record<Group, string> = {
+  pages: "Pages & data",
+  datasets: "Datasets",
+  entities: "People & organizations",
+};
+
+const PEOPLE_TYPES = new Set(["politician", "judge", "pundit", "journalist", "donor", "lobbyist"]);
+
+const EMPTY: SearchResponse = { pages: [], datasets: [], entities: [], order: [] };
+
+const ALL_PEOPLE_ID = "all-people";
+
+/** Each group's rows; people end with a link to the full directory search. */
+function groupItems(results: SearchResponse, group: Group, query: string): SearchResult[] {
+  const items = results[group];
+  if (group !== "entities" || items.length === 0) return items;
+  const q = query.trim();
+  return [
+    ...items,
+    { id: ALL_PEOPLE_ID, label: `All people matching “${q}”`, meta: "", href: `/subpoena?q=${encodeURIComponent(q)}` },
+  ];
+}
 
 export function GlobalSearch({
   placeholder = "Search…",
@@ -70,8 +87,8 @@ export function GlobalSearch({
   }, []);
 
   const flat = useMemo(
-    () => GROUPS.flatMap(({ key }) => results[key].map((r) => ({ ...r, group: key }))),
-    [results],
+    () => results.order.flatMap((key) => groupItems(results, key, query).map((r) => ({ ...r, group: key }))),
+    [results, query],
   );
 
   function select(result: SearchResult) {
@@ -145,22 +162,35 @@ export function GlobalSearch({
           ) : flat.length === 0 ? (
             <p className="px-4 py-3 text-sm text-slate-400">No matches for &ldquo;{query}&rdquo;.</p>
           ) : (
-            GROUPS.map(({ key, label }) => {
-              const items = results[key];
+            results.order.map((key) => {
+              const items = groupItems(results, key, query);
               if (items.length === 0) return null;
               return (
                 <div key={key} className="border-b border-slate-100 py-1.5 last:border-0 dark:border-slate-800">
                   <p className="px-4 pt-1 pb-1 text-xs font-semibold tracking-wider text-slate-400 uppercase">
-                    {label}
+                    {GROUP_LABELS[key]}
                   </p>
                   <ul>
                     {items.map((item) => {
                       const flatIndex = flat.findIndex((f) => f.group === key && f.id === item.id);
-                      const color = typeColorFor(
-                        ["politician", "judge", "pundit", "journalist"].includes(item.type ?? "")
-                          ? "people"
-                          : key,
-                      );
+                      const color = typeColorFor(PEOPLE_TYPES.has(item.type ?? "") ? "people" : key);
+                      const active = flatIndex === highlighted;
+                      if (item.id === ALL_PEOPLE_ID) {
+                        return (
+                          <li key={item.id}>
+                            <button
+                              type="button"
+                              onMouseEnter={() => setHighlighted(flatIndex)}
+                              onClick={() => select(item)}
+                              className={`flex w-full items-center px-4 py-2 text-left text-xs font-medium text-slate-500 transition-colors dark:text-slate-400 ${
+                                active ? "bg-slate-100 dark:bg-slate-800" : "hover:bg-slate-50 dark:hover:bg-slate-800/60"
+                              }`}
+                            >
+                              <span className="truncate">{item.label} →</span>
+                            </button>
+                          </li>
+                        );
+                      }
                       return (
                         <li key={item.id}>
                           <button
@@ -168,16 +198,21 @@ export function GlobalSearch({
                             onMouseEnter={() => setHighlighted(flatIndex)}
                             onClick={() => select(item)}
                             className={`flex w-full items-center gap-2.5 px-4 py-2 text-left text-sm transition-colors ${
-                              flatIndex === highlighted
+                              active
                                 ? "bg-slate-100 dark:bg-slate-800"
                                 : "hover:bg-slate-50 dark:hover:bg-slate-800/60"
                             }`}
                           >
                             <span
                               className="h-2 w-2 shrink-0 rounded-full border-2"
-                              style={{ background: color.bg, borderColor: color.border }}
+                              style={{ background: item.dossier ? color.border : color.bg, borderColor: color.border }}
                             />
                             <span className="truncate text-slate-800 dark:text-slate-200">{item.label}</span>
+                            {item.dossier ? (
+                              <span className="shrink-0 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-slate-500 uppercase dark:bg-slate-800 dark:text-slate-400">
+                                Dossier
+                              </span>
+                            ) : null}
                             <span className="ml-auto shrink-0 truncate pl-2 text-xs text-slate-400">
                               {item.meta}
                             </span>

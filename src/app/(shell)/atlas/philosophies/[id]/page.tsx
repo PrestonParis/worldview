@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getProfilePathsByName } from "@/lib/db/entities";
 import { notFound } from "next/navigation";
 import {
   ArrowLeft,
@@ -146,6 +147,7 @@ export default async function PhilosophyPage({ params }: { params: Promise<{ id:
   const people = [
     ...new Set([...history.origins.founders.map((f) => f.replace(/\s*\(.*\)$/, "")), ...history.figures]),
   ];
+  const profilePaths = await getProfilePathsByName(people);
   const compareIds = [ideology.id, ...nearest.slice(0, 2).map((x) => x.id)].join(",");
 
   const sections: [string, string, SectionIconId][] = [
@@ -368,11 +370,11 @@ export default async function PhilosophyPage({ params }: { params: Promise<{ id:
             <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
               {people.map((p) => {
                 const founder = history.origins.founders.some((f) => f.startsWith(p));
-                return (
-                  <li
-                    key={p}
-                    className="flex items-center gap-3 rounded-xl border border-slate-200 px-3 py-2.5 dark:border-slate-800"
-                  >
+                const path = profilePaths.get(p);
+                const card =
+                  "flex items-center gap-3 rounded-xl border border-slate-200 px-3 py-2.5 dark:border-slate-800";
+                const body = (
+                  <>
                     <span
                       aria-hidden
                       className="flex size-9 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white"
@@ -389,6 +391,20 @@ export default async function PhilosophyPage({ params }: { params: Promise<{ id:
                       <span className="block truncate font-medium text-slate-950 dark:text-white">{p}</span>
                       <span className={`block ${metaText}`}>{founder ? "Founder" : "Key figure"}</span>
                     </span>
+                  </>
+                );
+                return (
+                  <li key={p}>
+                    {path ? (
+                      <Link
+                        href={path}
+                        className={`${card} transition-colors hover:border-slate-400 dark:hover:border-slate-600 ${focusRing}`}
+                      >
+                        {body}
+                      </Link>
+                    ) : (
+                      <div className={card}>{body}</div>
+                    )}
                   </li>
                 );
               })}

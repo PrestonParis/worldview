@@ -79,7 +79,7 @@ const GROUP_TERMS: [string, GroupMatch][] = [
 
 type Topic =
   | "immigration" | "crime" | "guns" | "abortion" | "health" | "energy" | "economy" | "housing" | "demographics" | "education" | "religion"
-  | "family" | "spending" | "foreign-relations" | "elections" | "money" | "legislation" | "people" | "government" | "quiz" | "datasets";
+  | "family" | "spending" | "foreign-policy" | "foreign-relations" | "elections" | "money" | "legislation" | "people" | "government" | "quiz" | "datasets";
 
 const TOPICS: Record<Topic, { label: string; href: string; blurb: string; terms: string[] }> = {
   immigration: {
@@ -159,6 +159,12 @@ const TOPICS: Record<Topic, { label: string; href: string; blurb: string; terms:
     href: "/spending",
     blurb: "The budget, deficits, debt, and where federal money goes",
     terms: ["spending", "budget", "federal budget", "deficit", "deficits", "debt", "national debt", "outlays", "taxes", "revenue", "social security", "medicare", "medicaid", "snap", "food stamps", "welfare", "entitlements", "improper payments", "usaspending"],
+  },
+  "foreign-policy": {
+    label: "U.S. Foreign Policy",
+    href: "/foreign-policy",
+    blurb: "Defense, aid, trade, diplomacy, legal authority, and country relationships",
+    terms: ["foreign policy", "international relations", "diplomacy", "diplomatic", "national security", "defense policy", "foreign assistance", "foreign aid", "military aid", "security assistance", "alliance", "alliances", "ally", "allies", "treaty", "treaties", "sanctions", "export controls", "arms sales", "trade policy", "war powers", "state department", "foreign relations"],
   },
   "foreign-relations": {
     label: "U.S.–Israel Relations",
@@ -366,4 +372,18 @@ export function significantWords(query: string): string[] {
     .trim()
     .split(" ")
     .filter((word) => word.length > 1 && !STOP_WORDS.has(word));
+}
+
+export type ResultGroup = "pages" | "datasets" | "entities";
+
+/**
+ * Which result group leads. An exact name ("Peter Thiel") puts people first;
+ * so does a query that names no topic, state, or group ("nick"). Otherwise the
+ * pages that answer the query lead, then people, then datasets.
+ */
+export function resultOrder(query: string, siteResults: SiteResult[], entityNames: string[]): ResultGroup[] {
+  const q = normalizeQuery(query).trim();
+  const exactName = entityNames.some((name) => normalizeQuery(name).trim() === q);
+  if (exactName || (siteResults.length === 0 && entityNames.length > 0)) return ["entities", "pages", "datasets"];
+  return ["pages", "entities", "datasets"];
 }

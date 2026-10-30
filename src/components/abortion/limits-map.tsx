@@ -30,6 +30,8 @@ export function LimitsMap({
   categories,
   selected = null,
   onSelect,
+  label: mapLabel = "Map of abortion gestational limits by state",
+  hint = "Hover or tap a state for its law.",
 }: {
   width: number;
   height: number;
@@ -38,6 +40,8 @@ export function LimitsMap({
   categories: LimitCategory[];
   selected?: string | null;
   onSelect?: (abbr: string) => void;
+  label?: string;
+  hint?: string;
 }) {
   const [hovered, setActive] = useState<string | null>(null);
   const [highlight, setHighlight] = useState<number | null>(null);
@@ -67,7 +71,7 @@ export function LimitsMap({
         ))}
       </ul>
 
-      <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Map of abortion gestational limits by state" className="block h-auto w-full text-slate-950 dark:text-white">
+      <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={mapLabel} className="block h-auto w-full text-slate-950 dark:text-white">
         {states.map((s) => {
           const c = limits[s.abbr]?.category;
           const dim = highlight !== null && c !== highlight;
@@ -125,7 +129,7 @@ export function LimitsMap({
             {curLimit?.detail && <span className="block text-slate-500 dark:text-slate-400">{curLimit.detail}.</span>}
           </>
         ) : (
-          <span className="text-slate-400">Hover or tap a state for its law.</span>
+          <span className="text-slate-400">{hint}</span>
         )}
       </p>
     </figure>

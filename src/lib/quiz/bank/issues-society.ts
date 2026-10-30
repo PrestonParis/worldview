@@ -315,7 +315,7 @@ export const societyIssues: IssueModule[] = [
         prompt: "Should the interests of a particular racial or ethnic people come first in your politics?",
         options: [
           o("none", "No: policy should serve all Americans alike", "no racial group first", L(["race", -0.6, 0.3]), { people: "none" }),
-          o("white", "Yes: white Americans", "white Americans first", L(["race", 0.7, 0.3]), { people: "white" }),
+          o("white", "Yes: White Americans", "White Americans first", L(["race", 0.7, 0.3]), { people: "white" }),
           o("black", "Yes: Black Americans", "Black Americans first", L(["race", 0.6, 0.3]), { people: "black" }),
           o("indigenous", "Yes: Native American nations", "Native nations first", L(["race", 0.5, 0.3]), { people: "indigenous" }),
           o("hispanic", "Yes: Chicano and Hispanic Americans", "Chicano and Hispanic Americans first", L(["race", 0.6, 0.3]), { people: "hispanic" }),
@@ -382,7 +382,7 @@ export const societyIssues: IssueModule[] = [
           o("culture", "Not race, but language, skills, and cultural fit should count", "language, skills, and fit, not race", L(["race", -0.2, 0.4], ["immigration", 0.4, 0.2])),
           o("halt", "Immigration should be close to zero, whatever the origin", "near-zero immigration from anywhere", L(["race", 0.2, 0.2], ["immigration", 1, 0.3])),
           o("european", "Yes: favor immigrants from Europe, as the 1924–1965 quota system did", "national-origin quotas favoring Europe", L(["race", 0.7, 0.4], ["immigration", 0.8, 0.2])),
-          o("white-only", "Only white immigrants should be admitted", "white immigrants only", L(["race", 1, 0.4], ["immigration", 1, 0.2])),
+          o("white-only", "Only White immigrants should be admitted", "White immigrants only", L(["race", 1, 0.4], ["immigration", 1, 0.2])),
         ],
       },
       {
@@ -406,7 +406,7 @@ export const societyIssues: IssueModule[] = [
         options: [
           item("land-back", "Native American tribes, through the return of federally held land (Land Back)", "Land Back for Native tribes", L(["identity", -0.7, 0.3]), "no Land Back", L(["identity", 0.4, 0.3])),
           item("black", "Black Americans, in a separate self-governing homeland", "a separate Black homeland", L(["race", 0.85, 0.3]), "no separate Black homeland", L(["race", 0.1, 0.3])),
-          item("white", "White Americans, in a separate self-governing homeland", "a separate white homeland", L(["race", 0.9, 0.3]), "no separate white homeland", L(["race", 0.1, 0.3])),
+          item("white", "White Americans, in a separate self-governing homeland", "a separate White homeland", L(["race", 0.9, 0.3]), "no separate White homeland", L(["race", 0.1, 0.3])),
           item("aztlan", "Chicanos, in a homeland in the Southwest (Aztlán)", "a Chicano homeland", L(["race", 0.75, 0.3], ["immigration", -0.6, 0.2]), "no Chicano homeland", L(["race", 0.1, 0.3], ["immigration", 0.1, 0.2])),
           noneOfThese,
         ],

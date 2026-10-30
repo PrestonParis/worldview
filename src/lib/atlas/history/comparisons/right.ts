@@ -20,7 +20,7 @@ export const RIGHT = cmp({
   ],
   "christian-right": [
     ["Commonwealth of England", "1649–1660", "precursor", "After Parliament won the Civil War and executed Charles I, Puritans governed England as a republic. They kept the theaters shut, suppressed Christmas festivities, and made adultery a capital crime under the 1650 Adultery Act. Oliver Cromwell ruled as Lord Protector from 1653. The monarchy returned in 1660."],
-    ["First Trump administration", "2017–2021", "analogue", "Donald Trump won 81% of white evangelical voters in 2016 and governed closely with Christian-right leaders. He appointed the three Supreme Court justices who formed the majority that overturned Roe v. Wade in 2022, expanded the ban on foreign aid to groups that provide abortions, and created a conscience and religious-freedom division at HHS. He lost re-election in 2020."],
+    ["First Trump administration", "2017–2021", "analogue", "Donald Trump won 81% of White evangelical voters in 2016 and governed closely with Christian-right leaders. He appointed the three Supreme Court justices who formed the majority that overturned Roe v. Wade in 2022, expanded the ban on foreign aid to groups that provide abortions, and created a conscience and religious-freedom division at HHS. He lost re-election in 2020."],
     ["Brazil under Bolsonaro", "2019–2022", "analogue", "Jair Bolsonaro, a former army captain, won the presidency in 2018 with the backing of Brazil's fast-growing evangelical churches. He governed with the evangelical caucus in Congress, ran a family ministry that campaigned against abortion and \"gender ideology\", and used the slogan \"Brazil above everything, God above all\". He lost to Lula in 2022."],
   ],
   "compassionate-conservatism": [

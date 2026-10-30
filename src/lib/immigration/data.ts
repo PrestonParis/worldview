@@ -12,14 +12,16 @@ import {
   type AreaValue,
   type Point,
 } from "@/lib/db/stats";
+import type { SeriesSlot } from "@/components/charts/time-series-chart";
 import { FIPS_TO_ABBR, STATES_51, stateName } from "@/lib/geo/states";
-import { formatPeriod, pctChange, tidyLabel } from "@/lib/format";
-import { shiftMonth, toChartPoints, trailingSum, valueAt, type ChartPoint } from "@/lib/stats/series";
+import { formatPeriod, pctChange, periodToX, tidyLabel } from "@/lib/format";
+import { fiscalYearTotals, shiftMonth, toChartPoints, trailingSum, valueAt, type ChartPoint } from "@/lib/stats/series";
 
 const last = (p: Point[]) => p.at(-1) ?? null;
 const prev = (p: Point[]) => p.at(-2) ?? null;
 const named = (values: AreaValue[]) => values.map((r) => ({ label: r.geoName ?? r.geoid, value: r.value }));
 const byPeriod = (p: Point[]) => new Map(p.map((x) => [x.period, x.value]));
+const isPartial = (p: Point) => p.metadata?.partial === true;
 // Sum several series period by period (over the union of their periods).
 function addSeries(...series: Point[][]): Point[] {
   const out = new Map<string, Point>();
@@ -31,6 +33,14 @@ function addSeries(...series: Point[][]): Point[] {
     }
   return [...out.values()].sort((a, b) => (a.periodStart ?? a.period).localeCompare(b.periodStart ?? b.period));
 }
+
+const OVERSTAY_TYPES: Record<string, string> = {
+  vwp: "Visa Waiver Program visitors",
+  "non-vwp-visitors": "Other business and tourist visitors",
+  students: "Students and exchange visitors",
+  other: "All other temporary visitors",
+  "canada-mexico": "Canadian and Mexican visitors",
+};
 
 // CBP land-border regions as stored by import-cbp-encounters.mjs.
 const REGIONS = [
@@ -131,7 +141,7 @@ export async function loadImmigration() {
   );
 
   // ------------------------------------------------------- Legal permanent
-  const [lpr, lprComponents, naturalizations, natzApps, natzShare, lprByClass, lprByCountry, natzByCountry, lprByState, natzByState] =
+  const [lpr, lprComponents, naturalizations, natzApps, natzShare, lprByClass, lprByCountry, natzByCountry, lprByState, natzByState, lprClassSeries] =
     await Promise.all([
       getSeries("dhs-yearbook", "lpr_total"),
       getSeriesMany("dhs-yearbook", ["lpr_adjustments", "lpr_new_arrivals"]),
@@ -143,6 +153,7 @@ export async function loadImmigration() {
       getCrossSection("dhs-yearbook", "naturalizations_by_country", "country"),
       getCrossSection("dhs-yearbook", "lpr_total", "state"),
       getCrossSection("dhs-yearbook", "naturalizations_total", "state"),
+      getSeriesByGeo("dhs-yearbook", "lpr_by_class", "class"),
     ]);
   // Pathways: the seven largest classes, the rest folded into "All other".
   const classes = named(lprByClass.values).map((c) =>
@@ -152,6 +163,18 @@ export async function loadImmigration() {
     ...classes.slice(0, 7),
     ...(classes.length > 7 ? [{ label: "All other classes", value: classes.slice(7).reduce((t, c) => t + c.value, 0) }] : []),
   ];
+
+  // Classes of admission grouped the way DHS summarizes them.
+  const LPR_GROUPS: [string, string, string[]][] = [
+    ["family", "Family", ["immediate-relatives-of-u-s-citizens", "family-sponsored-preferences"]],
+    ["employment", "Employment", ["employment-based-preferences"]],
+    ["humanitarian", "Refugees, asylees, and parolees", ["refugees", "asylees", "parolees"]],
+    ["diversity", "Diversity lottery", ["diversity"]],
+    ["other", "All other", ["cancellation-of-removal", "certain-iraqis-and-afghans-employed-by-u-s-government-and-their-spouses-and-children", "children-born-abroad-to-noncitizen-residents", "other", "victims-of-crimes-and-their-immediate-relatives", "victims-of-human-trafficking"]],
+  ];
+  const lprGroupSeries = (codes: string[]) => addSeries(...codes.map((c) => lprClassSeries[c] ?? []));
+  const lprGroups = (period: string) =>
+    Object.fromEntries(LPR_GROUPS.map(([key, , codes]) => [key, lprGroupSeries(codes).find((p) => p.period === period)?.value ?? 0]));
 
   // ------------------------------------------------------------ Temporary
   const [i94, allAdmissions, nonimmByClassAll] = await Promise.all([
@@ -216,6 +239,83 @@ export async function loadImmigration() {
     getCrossSection("ice-detention", "facility_alos", "facility"),
   ]);
   const alos = new Map(facilityAlos.values.map((v) => [v.geoid, v.value]));
+
+  // ------------------------------------------- OHSS monthly and EOIR courts
+  // OHSS monthly tables, rolled up to fiscal years. A year counts only when
+  // the tables cover all of it; series that start or stop mid-year (Title 42,
+  // MPP) keep their partial years inside that window.
+  const OHSS = {
+    bookouts: [
+      "swb_bookouts_usbp_t8_repatriations",
+      "swb_bookouts_usbp_t42_expulsions",
+      "swb_bookouts_usbp_transfers_to_ice",
+      "swb_bookouts_usbp_transfers_to_hhs",
+      "swb_bookouts_usbp_usbp_releases",
+      "swb_bookouts_usbp_migrant_protection_protocols",
+      "swb_bookouts_usbp_other_outcomes",
+    ],
+    ports: ["swb_bookouts_ofo_paroles", "cbp_one_total", "chnv_paroles_total"],
+    cbpOne: ["cbp_one_colombia", "cbp_one_cuba", "cbp_one_ecuador", "cbp_one_el_salvador", "cbp_one_guatemala", "cbp_one_haiti", "cbp_one_honduras", "cbp_one_mexico", "cbp_one_russia", "cbp_one_venezuela", "cbp_one_other"],
+    fear: ["credible_fear_positive_fear", "credible_fear_negative_fear", "credible_fear_administrative_closure"],
+    arrests: ["ero_arrests_convicted_criminals_total_convicted", "ero_arrests_pending_criminal_charges", "ero_arrests_other_immigration_violators", "ero_arrests_non_criminal_total_non_criminal", "ero_arrests_total"],
+    bookins: ["ice_bookins_by_arrester_border", "ice_bookins_by_arrester_interior"],
+    repatriations: [
+      "dhs_repatriations_dhs_removals_expedited_removals",
+      "dhs_repatriations_dhs_removals_reinstatements_of_removal_orders",
+      "dhs_repatriations_dhs_removals_other_removals",
+      "dhs_repatriations_dhs_enforcement_returns_voluntary_departures",
+      "dhs_repatriations_dhs_enforcement_returns_voluntary_returns",
+      "dhs_repatriations_dhs_enforcement_returns_withdrawals",
+      "dhs_repatriations_dhs_enforcement_returns_other_enforcement_returns",
+      "dhs_repatriations_dhs_administrative_returns_total_administrative_returns",
+      "dhs_repatriations_total_repatriations_title_42_expulsions",
+    ],
+  };
+  const [ohss, eoir] = await Promise.all([
+    getSeriesMany("ohss-enforcement", Object.values(OHSS).flat()),
+    getSeriesMany("eoir", [
+      "pending_cases",
+      "initial_receipts",
+      "total_completions",
+      "asylum_grants",
+      "asylum_denials",
+      "asylum_abandoned",
+      "asylum_withdrawn",
+      "asylum_admin_closure",
+      "asylum_not_adjudicated",
+      "asylum_grant_rate",
+      "asylum_grant_rate_all",
+      "asylum_filed",
+      "asylum_filed_affirmative",
+      "asylum_filed_defensive",
+    ]),
+  ]);
+  // USCIS workloads, refugee ceilings, overstays, LPR population, court outcomes.
+  const USCIS_FORMS = ["i129", "i130", "i140", "i485", "i539"];
+  const [uscis, i485ByCategory, wraps, overstays, overstaysByType, lprPop, lprPopByCountry, lprPopByState, lprPopByClass, outcomes] =
+    await Promise.all([
+      getSeriesMany("uscis-forms", USCIS_FORMS.flatMap((f) => ["received", "approved", "denied", "pending"].map((st) => `uscis_${f}_${st}`))),
+      getCrossSection("uscis-forms", "uscis_i485_pending", "category"),
+      getSeriesMany("wraps-refugees", ["refugee_ceiling", "refugee_admissions"]),
+      getSeriesMany("dhs-overstays", ["overstay_in_country", "overstay_in_country_rate", "overstay_expected_departures"]),
+      getSeriesByGeo("dhs-overstays", "overstay_in_country", "admission_type"),
+      getSeriesMany("ohss-lpr-population", ["lpr_population", "lpr_eligible_to_naturalize"]),
+      getCrossSection("ohss-lpr-population", "lpr_population", "country"),
+      getCrossSection("ohss-lpr-population", "lpr_population", "state"),
+      getCrossSection("ohss-lpr-population", "lpr_population", "class"),
+      getSeriesMany("eoir", ["removal_orders", "removal_orders_in_absentia", "decisions_relief", "decisions_voluntary_departure", "decisions_termination"]),
+    ]);
+  const fyOnly = (points: Point[]) => points.filter((p) => p.period.startsWith("FY"));
+  // "Other" and "Unknown" rows go last, not by rank.
+  const rankedLast = (values: AreaValue[]) =>
+    [...named(values)].sort((a, b) => Number(/^(Other|Unknown|ACS- Unknown)$/.test(a.label)) - Number(/^(Other|Unknown|ACS- Unknown)$/.test(b.label)) || b.value - a.value);
+
+  const ohssYears = new Set(fiscalYearTotals(ohss.ero_arrests_total ?? []).map((p) => p.period));
+  const fy = (metric: string) => fiscalYearTotals(ohss[metric] ?? [], { partial: true }).filter((p) => ohssYears.has(p.period));
+  const fyPoints = (metric: string) => toChartPoints(fy(metric));
+  const sumAll = (metric: string) => (ohss[metric] ?? []).reduce((t, p) => t + p.value, 0);
+  // EOIR's current fiscal year is partial; charts of yearly counts stop at the last full year.
+  const eoirFull = (metric: string) => eoir[metric]?.filter((p) => !isPartial(p)) ?? [];
 
   // ---------------------------------------------------------------- States
   const [pepByState, pepRateByState, fbShareByState, fbByState, detentionByState] = await Promise.all([
@@ -308,6 +408,7 @@ export async function loadImmigration() {
       change: pctChange(last(netMigration)!.value, prev(netMigration)?.value),
       compare: `vs ${prev(netMigration)?.period ?? ""}`,
       spark: netMigration.map((p) => p.value),
+      periods: netMigration.map((p) => p.period),
     },
     naturalChange: last(naturalChange) && {
       value: last(naturalChange)!.value,
@@ -370,6 +471,96 @@ export async function loadImmigration() {
     },
   };
 
+  const lastFull = (points: Point[]) => {
+    const full = points.filter((p) => !isPartial(p));
+    const cur = last(full);
+    const before = prev(full);
+    return cur && { value: cur.value, period: cur.period, change: pctChange(cur.value, before?.value), compare: `vs ${before ? formatPeriod(before.period) : ""}` };
+  };
+  // A partial year's stock is "as of" its last reported month.
+  const asOf = (p: Point) => ({ period: p.period, through: typeof p.metadata?.through === "string" ? p.metadata.through : null });
+  const lastFy = (metric: string) => {
+    const p = fy(metric);
+    return last(p) && { value: last(p)!.value, period: last(p)!.period, change: pctChange(last(p)!.value, prev(p)?.value), compare: `vs ${prev(p) ? formatPeriod(prev(p)!.period) : ""}` };
+  };
+  const fearFy = OHSS.fear.map(fy);
+  const lastFear = fearFy.map((p) => last(p)?.value ?? 0);
+  const lastAff = last(asylum.asylum_grants_affirmative);
+  const lastDef = last(asylum.asylum_grants_defensive);
+  const lastRef = last(refugees);
+  const protectionPeriod = [lastAff, lastDef, lastRef].every((p) => p && p.period === lastRef!.period) ? lastRef!.period : null;
+  const repatFy = (metrics: string[]) => metrics.map(lastFy).reduce((t, x) => t + (x?.value ?? 0), 0);
+  const extra = {
+    usbp12: enc12 && usbp12[0] ? { value: usbp12[0].value, share: (usbp12[0].value / enc12) * 100 } : null,
+    ofo12: enc12 && ofo12[0] ? { value: ofo12[0].value, share: (ofo12[0].value / enc12) * 100 } : null,
+    adjustments: lastAdj && lastLpr && lastAdj.period === lastLpr.period ? { value: lastAdj.value, period: lastAdj.period, share: (lastAdj.value / lastLpr.value) * 100 } : null,
+    courts: lastFull(eoir.pending_cases) && { ...lastFull(eoir.pending_cases)!, latest: last(eoir.pending_cases) },
+    asylumCourt: lastFull(eoir.asylum_grant_rate) && {
+      ...lastFull(eoir.asylum_grant_rate)!,
+      grants: eoir.asylum_grants.find((p) => p.period === lastFull(eoir.asylum_grant_rate)!.period)?.value ?? null,
+      latest: last(eoir.asylum_grant_rate),
+    },
+    credibleFear: last(fearFy[0]) && {
+      period: last(fearFy[0])!.period,
+      total: lastFear.reduce((a, b) => a + b, 0),
+      positiveShare: lastFear[0] + lastFear[1] ? (lastFear[0] / (lastFear[0] + lastFear[1])) * 100 : null,
+    },
+    asylumFiled: lastFull(eoir.asylum_filed),
+    arrests: lastFy("ero_arrests_total"),
+    voluntaryDeparture: lastFy("dhs_repatriations_dhs_enforcement_returns_voluntary_departures"),
+    returns: lastFy("dhs_repatriations_dhs_enforcement_returns_voluntary_returns") && {
+      period: lastFy("dhs_repatriations_dhs_enforcement_returns_voluntary_returns")!.period,
+      value: repatFy([
+        "dhs_repatriations_dhs_enforcement_returns_voluntary_returns",
+        "dhs_repatriations_dhs_enforcement_returns_withdrawals",
+        "dhs_repatriations_dhs_enforcement_returns_other_enforcement_returns",
+        "dhs_repatriations_dhs_administrative_returns_total_administrative_returns",
+        "dhs_repatriations_total_repatriations_title_42_expulsions",
+      ]),
+    },
+    protection: protectionPeriod ? { period: protectionPeriod, value: lastRef!.value + lastAff!.value + lastDef!.value } : null,
+    petitions: last(uscis.uscis_i130_pending) && {
+      value: last(uscis.uscis_i130_pending)!.value + (last(uscis.uscis_i140_pending)?.value ?? 0),
+      family: last(uscis.uscis_i130_pending)!.value,
+      employment: last(uscis.uscis_i140_pending)?.value ?? null,
+      ...asOf(last(uscis.uscis_i130_pending)!),
+    },
+    adjustment: last(uscis.uscis_i485_pending) && { value: last(uscis.uscis_i485_pending)!.value, ...asOf(last(uscis.uscis_i485_pending)!) },
+    changeStatus: lastFull(uscis.uscis_i539_received),
+    extensions: lastFull(uscis.uscis_i539_approved) && {
+      ...lastFull(uscis.uscis_i539_approved)!,
+      denied: uscis.uscis_i539_denied.find((p) => p.period === lastFull(uscis.uscis_i539_approved)!.period)?.value ?? null,
+    },
+    newArrivals: last(lprComponents.lpr_new_arrivals) && {
+      value: last(lprComponents.lpr_new_arrivals)!.value,
+      period: last(lprComponents.lpr_new_arrivals)!.period,
+      change: pctChange(last(lprComponents.lpr_new_arrivals)!.value, prev(lprComponents.lpr_new_arrivals)?.value),
+      compare: `vs ${prev(lprComponents.lpr_new_arrivals) ? formatPeriod(prev(lprComponents.lpr_new_arrivals)!.period) : ""}`,
+    },
+    refugeeCeiling: last(wraps.refugee_ceiling) && {
+      period: last(wraps.refugee_ceiling)!.period,
+      ceiling: last(wraps.refugee_ceiling)!.value,
+      admitted: fyOnly(wraps.refugee_admissions).find((p) => p.period === last(wraps.refugee_ceiling)!.period)?.value ?? null,
+    },
+    overstays: last(overstays.overstay_in_country) && {
+      ...lastFull(overstays.overstay_in_country)!,
+      rate: last(overstays.overstay_in_country_rate)?.value ?? null,
+      expected: last(overstays.overstay_expected_departures)?.value ?? null,
+    },
+    lprPopulation: last(lprPop.lpr_population) && {
+      value: last(lprPop.lpr_population)!.value,
+      period: last(lprPop.lpr_population)!.period,
+      eligible: last(lprPop.lpr_eligible_to_naturalize)?.value ?? null,
+    },
+    courtOutcomes: last(outcomes.decisions_relief) && {
+      period: last(outcomes.decisions_relief)!.period,
+      relief: last(outcomes.decisions_relief)!.value,
+      voluntaryDeparture: last(outcomes.decisions_voluntary_departure)?.value ?? null,
+      termination: last(outcomes.decisions_termination)?.value ?? null,
+    },
+    lprClass: lprByClass.period ? { period: lprByClass.period, family: lprGroups(lprByClass.period).family, total: lastLpr?.period === lprByClass.period ? lastLpr.value : null } : null,
+  };
+
   // --------------------------------------------------------- State explorer
   const byGeo = (values: { geoid: string; value: number }[]) => new Map(values.map((v) => [v.geoid, v.value]));
   const maps: Record<string, Map<string, number>> = {
@@ -425,8 +616,17 @@ export async function loadImmigration() {
 
   const single = (id: string, label: string, points: ChartPoint[], slot: 1 | 2 | 3 = 1) => [{ id, label, slot, points }];
 
+  const office = (sector: boolean) =>
+    encountersByAor
+      .filter((r) => /Sector$/.test(r.geoName ?? r.geoid) === sector)
+      .map((r) => ({ label: r.geoName ?? r.geoid, value: r.value }));
+  const regionAgency = (agency: "usbp" | "ofo") =>
+    Object.fromEntries(Object.entries(borderSeries).map(([key, v]) => [key, v.agency.filter((x) => x.id === agency)]));
+  const ohssSeries = (rows: [string, string, number][]) =>
+    rows.map(([metric, label, slot]) => ({ id: metric, label, slot: slot as SeriesSlot, points: fyPoints(metric) })).filter((x) => x.points.some((p) => p.value));
+
   return {
-    stats,
+    stats: { ...stats, ...extra },
     border: {
       lastMonth,
       regions: REGIONS.map(({ key, label, subtitle }) => ({ key, label, subtitle })),
@@ -535,6 +735,192 @@ export async function loadImmigration() {
           };
         }),
       },
+    },
+    ports: {
+      byRegion: regionAgency("ofo"),
+      offices: office(false),
+      paroles: ohssSeries([["swb_bookouts_ofo_paroles", "Paroled at southwest border ports", 3]]),
+      cbpOne: single("cbp1", "CBP One appointments", toChartPoints(ohss.cbp_one_total)),
+      cbpOneByCountry: OHSS.cbpOne
+        .map((m) => ({ label: m === "cbp_one_other" ? "All other nationalities" : tidyLabel(m.replace("cbp_one_", "").replace(/_/g, " ")), value: sumAll(m), other: m === "cbp_one_other" }))
+        .filter((x) => x.value)
+        .sort((a, b) => Number(a.other) - Number(b.other) || b.value - a.value)
+        .map(({ label, value }) => ({ label, value })),
+      cbpOneRange: ohss.cbp_one_total.length ? `${formatPeriod(ohss.cbp_one_total[0].period)} – ${formatPeriod(ohss.cbp_one_total.at(-1)!.period)}` : "",
+    },
+    between: {
+      byRegion: regionAgency("usbp"),
+      sectors: office(true),
+      bookouts: ohssSeries([
+        ["swb_bookouts_usbp_t8_repatriations", "Returned or removed (Title 8)", 1],
+        ["swb_bookouts_usbp_t42_expulsions", "Expelled (Title 42)", 2],
+        ["swb_bookouts_usbp_transfers_to_ice", "Transferred to ICE custody", 5],
+        ["swb_bookouts_usbp_transfers_to_hhs", "Unaccompanied children to HHS", 4],
+        ["swb_bookouts_usbp_usbp_releases", "Released by Border Patrol", 3],
+        ["swb_bookouts_usbp_migrant_protection_protocols", "Returned to Mexico to await court (MPP)", 6],
+        ["swb_bookouts_usbp_other_outcomes", "Other outcomes", 7],
+      ]),
+    },
+    courts: {
+      caseload: [
+        { id: "pending", label: "Cases pending (end of year)", slot: 1 as const, points: toChartPoints(eoir.pending_cases.filter((p) => !isPartial(p))) },
+      ],
+      flow: [
+        { id: "receipts", label: "New cases received", slot: 2 as const, points: toChartPoints(eoirFull("initial_receipts")) },
+        { id: "completions", label: "Cases completed", slot: 3 as const, points: toChartPoints(eoirFull("total_completions")) },
+      ],
+      asylumDecisions: [
+        { id: "grants", label: "Granted", slot: 1 as const, points: toChartPoints(eoirFull("asylum_grants")) },
+        { id: "denials", label: "Denied", slot: 2 as const, points: toChartPoints(eoirFull("asylum_denials")) },
+        { id: "abandoned", label: "Abandoned", slot: 4 as const, points: toChartPoints(eoirFull("asylum_abandoned")) },
+        { id: "withdrawn", label: "Withdrawn", slot: 5 as const, points: toChartPoints(eoirFull("asylum_withdrawn")) },
+        { id: "closed", label: "Administratively closed", slot: 6 as const, points: toChartPoints(eoirFull("asylum_admin_closure")) },
+        { id: "other", label: "Closed without a decision on the application", slot: 7 as const, points: toChartPoints(eoirFull("asylum_not_adjudicated")) },
+      ],
+      grantRates: [
+        { id: "decided", label: "Of grants and denials", slot: 1 as const, points: toChartPoints(eoirFull("asylum_grant_rate")) },
+        { id: "all", label: "Of every asylum completion", slot: 3 as const, points: toChartPoints(eoirFull("asylum_grant_rate_all")) },
+      ],
+      asylumFiled: [
+        { id: "aff", label: "Referred by USCIS (affirmative)", slot: 1 as const, points: toChartPoints(eoirFull("asylum_filed_affirmative")) },
+        { id: "def", label: "Filed in removal proceedings (defensive)", slot: 2 as const, points: toChartPoints(eoirFull("asylum_filed_defensive")) },
+      ],
+    },
+    chnv: single("chnv", "Paroled through the CHNV process", toChartPoints(ohss.chnv_paroles_total)),
+    fear: ohssSeries([
+      ["credible_fear_positive_fear", "Fear found", 1],
+      ["credible_fear_negative_fear", "No fear found", 2],
+      ["credible_fear_administrative_closure", "Closed", 4],
+    ]),
+    arrests: {
+      // OHSS split arrests without a conviction into pending charges and
+      // neither from FY 2018; earlier years have only the combined count.
+      byCriminality: [
+        ...ohssSeries([
+          ["ero_arrests_convicted_criminals_total_convicted", "Criminal conviction", 2],
+          ["ero_arrests_pending_criminal_charges", "Pending criminal charges", 5],
+          ["ero_arrests_other_immigration_violators", "No conviction or pending charges", 1],
+        ]),
+        {
+          id: "nonCriminalEarly",
+          label: "No conviction (not split before FY 2018)",
+          slot: 9 as const,
+          points: fyPoints("ero_arrests_non_criminal_total_non_criminal").filter((p) => !fy("ero_arrests_pending_criminal_charges").some((q) => periodToX(q.period) === p.x)),
+        },
+      ],
+      bookins: ohssSeries([
+        ["ice_bookins_by_arrester_border", "Arrested by CBP at the border", 3],
+        ["ice_bookins_by_arrester_interior", "Arrested by ICE in the interior", 1],
+      ]),
+    },
+    departures: {
+      removalsByType: ohssSeries([
+        ["dhs_repatriations_dhs_removals_expedited_removals", "Expedited removal", 1],
+        ["dhs_repatriations_dhs_removals_reinstatements_of_removal_orders", "Reinstated prior order", 2],
+        ["dhs_repatriations_dhs_removals_other_removals", "Other removals, mostly judge-ordered", 3],
+      ]),
+      returnsByType: ohssSeries([
+        ["dhs_repatriations_dhs_enforcement_returns_voluntary_returns", "Voluntary returns", 1],
+        ["dhs_repatriations_dhs_enforcement_returns_withdrawals", "Withdrew application at a port", 3],
+        ["dhs_repatriations_dhs_enforcement_returns_other_enforcement_returns", "Other enforcement returns", 4],
+        ["dhs_repatriations_dhs_administrative_returns_total_administrative_returns", "Administrative returns", 5],
+        ["dhs_repatriations_total_repatriations_title_42_expulsions", "Title 42 expulsions", 2],
+      ]),
+      returnsHistory: [
+        { id: "returns", label: "Returns", slot: 1 as const, points: toChartPoints(addSeries(repatriations.returns_administrative, repatriations.returns_enforcement)) },
+        { id: "t42", label: "Title 42 expulsions", slot: 2 as const, points: toChartPoints(repatriations.expulsions_title_42) },
+      ],
+      voluntaryDeparture: ohssSeries([["dhs_repatriations_dhs_enforcement_returns_voluntary_departures", "Voluntary departures carried out", 1]]),
+    },
+    uscis: {
+      petitionsPending: [
+        { id: "i130", label: "Relative petitions (I-130)", slot: 1 as const, points: toChartPoints(uscis.uscis_i130_pending) },
+        { id: "i140", label: "Employer petitions for permanent workers (I-140)", slot: 2 as const, points: toChartPoints(uscis.uscis_i140_pending) },
+      ],
+      petitionsReceived: [
+        { id: "i130", label: "Relative petitions (I-130)", slot: 1 as const, points: toChartPoints(uscis.uscis_i130_received.filter((p) => !isPartial(p))) },
+        { id: "i140", label: "Employer petitions (I-140)", slot: 2 as const, points: toChartPoints(uscis.uscis_i140_received.filter((p) => !isPartial(p))) },
+      ],
+      i485: [
+        { id: "received", label: "Received", slot: 1 as const, points: toChartPoints(uscis.uscis_i485_received.filter((p) => !isPartial(p))) },
+        { id: "approved", label: "Approved", slot: 3 as const, points: toChartPoints(uscis.uscis_i485_approved.filter((p) => !isPartial(p))) },
+        { id: "denied", label: "Denied", slot: 2 as const, points: toChartPoints(uscis.uscis_i485_denied.filter((p) => !isPartial(p))) },
+      ],
+      i485Pending: single("i485p", "Green-card applications pending", toChartPoints(uscis.uscis_i485_pending)),
+      i485ByCategory: { period: i485ByCategory.period ?? "", items: named(i485ByCategory.values) },
+      changeStatus: [
+        { id: "i539", label: "Extensions and changes of status (I-539)", slot: 1 as const, points: toChartPoints(uscis.uscis_i539_received.filter((p) => !isPartial(p))) },
+        { id: "i129", label: "Worker petitions (I-129)", slot: 2 as const, points: toChartPoints(uscis.uscis_i129_received.filter((p) => !isPartial(p))) },
+      ],
+      i539Pending: single("i539p", "I-539 applications pending", toChartPoints(uscis.uscis_i539_pending)),
+      i539Decisions: [
+        { id: "approved", label: "Approved", slot: 3 as const, points: toChartPoints(uscis.uscis_i539_approved.filter((p) => !isPartial(p))) },
+        { id: "denied", label: "Denied", slot: 2 as const, points: toChartPoints(uscis.uscis_i539_denied.filter((p) => !isPartial(p))) },
+      ],
+      i129Decisions: [
+        { id: "approved", label: "Approved", slot: 3 as const, points: toChartPoints(uscis.uscis_i129_approved.filter((p) => !isPartial(p))) },
+        { id: "denied", label: "Denied", slot: 2 as const, points: toChartPoints(uscis.uscis_i129_denied.filter((p) => !isPartial(p))) },
+      ],
+    },
+    fromAbroad: {
+      // Arrangements made before travel: an immigrant visa, refugee processing, or Visa Waiver travel authorization.
+      arrivals: [
+        { id: "iv", label: "Arrived with an immigrant visa", slot: 1 as const, points: toChartPoints(lprComponents.lpr_new_arrivals) },
+        // Same source and years as the immigrant-visa count.
+        {
+          id: "ref",
+          label: "Refugees admitted after processing abroad",
+          slot: 3 as const,
+          points: toChartPoints(refugees.filter((p) => lprComponents.lpr_new_arrivals.some((q) => q.period === p.period))),
+        },
+      ],
+      visaWaiver: single(
+        "vwp",
+        "Visa Waiver Program admissions",
+        toChartPoints(i94.map((p) => ({ ...p, value: classAt("wt", p.period) + classAt("wb", p.period) }))),
+      ),
+    },
+    refugeeCeilings: [
+      { id: "ceiling", label: "Ceiling set by the President", slot: 9 as const, points: toChartPoints(wraps.refugee_ceiling) },
+      { id: "admitted", label: "Refugees admitted", slot: 3 as const, points: toChartPoints(fyOnly(wraps.refugee_admissions)) },
+    ],
+    overstays: {
+      byType: Object.entries(overstaysByType).map(([geoid, points], i) => ({
+        id: geoid,
+        label: OVERSTAY_TYPES[geoid] ?? geoid,
+        slot: (i + 1) as SeriesSlot,
+        points: toChartPoints(points),
+      })),
+      rate: single("rate", "Suspected in-country overstay rate", toChartPoints(overstays.overstay_in_country_rate)),
+    },
+    lprPopulation: {
+      series: [
+        { id: "lpr", label: "Permanent residents", slot: 1 as const, points: toChartPoints(lprPop.lpr_population) },
+        { id: "eligible", label: "Of them, eligible to naturalize", slot: 3 as const, points: toChartPoints(lprPop.lpr_eligible_to_naturalize) },
+      ],
+      byCountry: { period: lprPopByCountry.period ?? "", items: rankedLast(lprPopByCountry.values) },
+      byState: { period: lprPopByState.period ?? "", items: rankedLast(lprPopByState.values) },
+      byClass: { period: lprPopByClass.period ?? "", items: rankedLast(lprPopByClass.values) },
+    },
+    courtOutcomes: (() => {
+      const v = (m: string) => last(outcomes[m])?.value ?? 0;
+      const period = last(outcomes.decisions_relief)?.period ?? "";
+      const items = [
+        { label: "Removal ordered, person present", value: v("removal_orders") - v("removal_orders_in_absentia") },
+        { label: "Removal ordered in absentia", value: v("removal_orders_in_absentia") },
+        { label: "Case terminated or dismissed", value: v("decisions_termination") },
+        { label: "Voluntary departure or withdrawal of application", value: v("decisions_voluntary_departure") },
+        { label: "Relief granted", value: v("decisions_relief") },
+      ];
+      return { period, items: period ? items.filter((x) => x.value > 0) : [] };
+    })(),
+    outcomes: {
+      protection: [
+        { id: "ref", label: "Refugees admitted (approved abroad)", slot: 3 as const, points: toChartPoints(refugees) },
+        { id: "aff", label: "Asylum granted by USCIS (affirmative)", slot: 1 as const, points: toChartPoints(asylum.asylum_grants_affirmative) },
+        { id: "def", label: "Asylum granted by judges (defensive)", slot: 2 as const, points: toChartPoints(asylum.asylum_grants_defensive) },
+      ],
+      lprGroups: LPR_GROUPS.map(([key, label, codes], i) => ({ id: key, label, slot: (i + 1) as SeriesSlot, points: toChartPoints(lprGroupSeries(codes)) })),
     },
     states: { metrics: stateMetrics, rows: stateRows },
     domestic: {

@@ -240,7 +240,7 @@ export const CATALOG = {
     description:
       "July 1 population by race and Hispanic origin for the nation and states from 1990 and for every county from 2010, with median age (overall and by group) and the shares under 18 and 65 and over.",
     methodology:
-      "Hispanic origin is asked separately from race, so Hispanics may be of any race; the non-Hispanic groups (white_nh, black_nh, …) plus Hispanic add up to the total from 2000 on. The 1990s estimates use the 1977 race standard — four races, no multiracial option, Asians and Pacific Islanders combined — so for 1990–1999 only non-Hispanic white, Hispanic, and the single-race groups of any origin (white, black, aian, asian_pi) are published. The 1990s figures are postcensal estimates based on the 1990 census that the Census Bureau never revised to the 2000 count, so 1999 to 2000 shows a step (the 2000 census found about 7 million more people than estimated). From 2000 those single-race groups mean 'alone' (one race only). 2000–2009 are intercensal estimates; 2010–2019 come from Vintage 2020 and 2020 on from the latest vintage. State and national counts from 2010 are sums of the county files. Median ages for the nation and states are computed from single-year-of-age estimates (85 and over is the top age); county medians are as published by the Census Bureau.",
+      "Hispanic origin is asked separately from race, so Hispanics may be of any race; the non-Hispanic groups (white_nh, black_nh, …) plus Hispanic add up to the total from 2000 on. The 1990s estimates use the 1977 race standard — four races, no multiracial option, Asians and Pacific Islanders combined — so for 1990–1999 only non-Hispanic White, Hispanic, and the single-race groups of any origin (white, black, aian, asian_pi) are published. The 1990s figures are postcensal estimates based on the 1990 census that the Census Bureau never revised to the 2000 count, so 1999 to 2000 shows a step (the 2000 census found about 7 million more people than estimated). From 2000 those single-race groups mean 'alone' (one race only). 2000–2009 are intercensal estimates; 2010–2019 come from Vintage 2020 and 2020 on from the latest vintage. State and national counts from 2010 are sums of the county files. Median ages for the nation and states are computed from single-year-of-age estimates (85 and over is the top age); county medians are as published by the Census Bureau.",
     metrics: {
       pop_total: m("Population", "people"),
       pop_hispanic: m("Hispanic or Latino", "people"),
@@ -267,7 +267,7 @@ export const CATALOG = {
       share_asian_pi: m("Asian and Pacific Islander (any origin) share", "percent"),
       median_age: m("Median age", "years"),
       median_age_hispanic: m("Median age, Hispanic", "years"),
-      median_age_white_nh: m("Median age, white non-Hispanic", "years"),
+      median_age_white_nh: m("Median age, White non-Hispanic", "years"),
       median_age_black_nh: m("Median age, Black non-Hispanic", "years"),
       median_age_asian_nh: m("Median age, Asian non-Hispanic", "years"),
       share_under_18: m("Under 18", "percent"),
@@ -408,12 +408,12 @@ export const CATALOG = {
       "Imprisonment rates count sentenced prisoners (sentences over a year) under state or federal jurisdiction per 100,000 U.S. residents of each group. White, black, Asian, and American Indian groups exclude Hispanics. Counts by race are prisoners under each jurisdiction on December 31; states differ in how they record race and ethnicity, and some report few or no Hispanic prisoners. Citizenship counts prisoners in state or federal prisons (not local jails) and depend on what each state records; California and some others do not report it. Local jails are not included anywhere in this dataset.",
     metrics: {
       ...Object.fromEntries(
-        Object.entries({ total: "all", federal: "federal", state: "state", male: "male", female: "female", white_nh: "white non-Hispanic", black_nh: "black non-Hispanic", hispanic: "Hispanic", aian_nh: "American Indian or Alaska Native", asian_nh: "Asian" }).map(
+        Object.entries({ total: "all", federal: "federal", state: "state", male: "male", female: "female", white_nh: "White non-Hispanic", black_nh: "Black non-Hispanic", hispanic: "Hispanic", aian_nh: "American Indian or Alaska Native", asian_nh: "Asian" }).map(
           ([g, l]) => [`imprisonment_rate_${g}`, m(`Imprisonment rate, ${l}`, "per_100k")],
         ),
       ),
       ...Object.fromEntries(
-        Object.entries({ total: "all", white_nh: "white non-Hispanic", black_nh: "black non-Hispanic", hispanic: "Hispanic", aian_nh: "American Indian or Alaska Native", asian_nh: "Asian", nhpi_nh: "Native Hawaiian or Pacific Islander", multiracial_nh: "two or more races", other: "other race", race_unknown: "race unknown", race_not_reported: "race not reported" }).map(
+        Object.entries({ total: "all", white_nh: "White non-Hispanic", black_nh: "Black non-Hispanic", hispanic: "Hispanic", aian_nh: "American Indian or Alaska Native", asian_nh: "Asian", nhpi_nh: "Native Hawaiian or Pacific Islander", multiracial_nh: "two or more races", other: "other race", race_unknown: "race unknown", race_not_reported: "race not reported" }).map(
           ([g, l]) => [`prisoners_${g}`, m(`Prisoners, ${l}`, "people")],
         ),
       ),
@@ -432,7 +432,7 @@ export const CATALOG = {
     description:
       "Share of state prisoners released in 2012 who were arrested again, convicted again, or returned to prison within one to five years, by sex, race and Hispanic origin, age at release, and the offense they had served time for.",
     methodology:
-      "A sample of about 92,100 prisoners representing the 408,300 released from state prisons in 34 states in 2012, followed through criminal-history records for five years. Shares are cumulative: 'year 3' is arrested at least once within three years. Arrests anywhere in the U.S. count, including in other states. Conviction data cover 31 states and return-to-prison data 21 states. Groups are rows of the report's tables (geo_level 'group'); white, black, and other groups exclude Hispanics.",
+      "A sample of about 92,100 prisoners representing the 408,300 released from state prisons in 34 states in 2012, followed through criminal-history records for five years. Shares are cumulative: 'year 3' is arrested at least once within three years. Arrests anywhere in the U.S. count, including in other states. Conviction data cover 31 states and return-to-prison data 21 states. Groups are rows of the report's tables (geo_level 'group'); White, Black, and other groups exclude Hispanics.",
     metrics: {
       released: m("Prisoners released (study population)", "people"),
       ...Object.fromEntries(
@@ -472,9 +472,9 @@ export const CATALOG = {
     cadence: "Irregular (latest 2023)",
     license: "Public domain (U.S. government work)",
     description:
-      "Projected U.S. population to 2100 (by race and Hispanic origin to 2060), with median age and the year the non-Hispanic white share falls below half, under the main series and low-, high-, and zero-immigration scenarios.",
+      "Projected U.S. population to 2100 (by race and Hispanic origin to 2060), with median age and the year the non-Hispanic White share falls below half, under the main series and low-, high-, and zero-immigration scenarios.",
     methodology:
-      "The 2023 projections start from the Vintage 2022 estimates and carry forward assumed fertility, mortality, and net international migration; the scenarios change only the immigration assumption. Groups are non-Hispanic single races plus Hispanics of any race. The majority-minority year is the first projected year in which non-Hispanic whites (white alone) are under 50% of the population.",
+      "The 2023 projections start from the Vintage 2022 estimates and carry forward assumed fertility, mortality, and net international migration; the scenarios change only the immigration assumption. Groups are non-Hispanic single races plus Hispanics of any race. The majority-minority year is the first projected year in which non-Hispanic Whites (White alone) are under 50% of the population.",
     metrics: {
       pop_total: m("Projected population", "people"),
       share_hispanic: m("Hispanic share", "percent"),
@@ -485,7 +485,7 @@ export const CATALOG = {
       share_nhpi_nh: m("Native Hawaiian and Pacific Islander, non-Hispanic share", "percent"),
       share_multiracial_nh: m("Two or more races, non-Hispanic share", "percent"),
       median_age: m("Projected median age", "years"),
-      majority_minority_year: m("Year non-Hispanic whites fall under 50%", "year"),
+      majority_minority_year: m("Year non-Hispanic Whites fall under 50%", "year"),
       pop_total_low: m("Projected population, low immigration", "people"),
       pop_total_high: m("Projected population, high immigration", "people"),
       pop_total_zero: m("Projected population, zero immigration", "people"),
@@ -615,6 +615,24 @@ export const CATALOG = {
       md_iron_beam: m("Iron Beam", "usd"),
     },
   },
+  "foreign-assistance": {
+    title: "U.S. Foreign Assistance by Country",
+    topic: "foreign-relations",
+    publisher: "U.S. Department of State, ForeignAssistance.gov",
+    sourceUrl: "https://foreignassistance.gov/data",
+    cadence: "Regularly updated",
+    license: "Open Data License",
+    description:
+      "U.S. foreign-assistance obligations and disbursements by recipient country and fiscal year, in current and constant dollars, from 1946 onward.",
+    methodology:
+      "Country-summary data from the official ForeignAssistance.gov API. Country rows use ISO alpha-3 codes. National totals sum every geographic recipient reported by the API, including regional programs; the country ranking excludes regional and world aggregates. Values are stored by fiscal year.",
+    metrics: {
+      obligations: m("Obligations", "usd", "Current dollars legally committed by an agency."),
+      disbursements: m("Disbursements", "usd", "Current dollars actually paid out."),
+      obligations_constant: m("Obligations, constant dollars", "usd"),
+      disbursements_constant: m("Disbursements, constant dollars", "usd"),
+    },
+  },
   "census-trade": {
     title: "U.S. Trade in Goods by Country",
     topic: "foreign-relations",
@@ -623,7 +641,7 @@ export const CATALOG = {
     cadence: "Monthly",
     license: "Public domain (U.S. government work)",
     description:
-      "Monthly and annual U.S. goods exports to, imports from, and trade balance with Israel, Egypt, Jordan, Saudi Arabia, Ukraine and Taiwan since 1985.",
+      "Monthly and annual U.S. goods exports to, imports from, and trade balance with partner countries since 1985.",
     methodology:
       "Census basis, goods only (services are not included), nominal dollars, not seasonally adjusted. Exports are valued free alongside ship; imports at customs value. Country rows use geo_level 'country' and the ISO alpha-3 code as geoid. Annual rows are calendar years; the current year is partial and metadata.months says how many months it covers.",
     metrics: {
@@ -796,11 +814,11 @@ export const CATALOG = {
       ...Object.fromEntries(
         Object.entries({
           violent: "violent victimizations", serious_violent: "serious violent victimizations",
-          violent_victim_white_nh: "violence against white non-Hispanic victims", violent_victim_black_nh: "violence against black non-Hispanic victims",
+          violent_victim_white_nh: "violence against White non-Hispanic victims", violent_victim_black_nh: "violence against Black non-Hispanic victims",
           violent_victim_hispanic: "violence against Hispanic victims",
         }).flatMap(([scope, sl]) =>
           Object.entries({
-            white_nh: "white non-Hispanic", black_nh: "black non-Hispanic", hispanic: "Hispanic", asian_nhpi_nh: "Asian or Pacific Islander",
+            white_nh: "White non-Hispanic", black_nh: "Black non-Hispanic", hispanic: "Hispanic", asian_nhpi_nh: "Asian or Pacific Islander",
             aian_nh: "American Indian or Alaska Native", other_nh: "other or two or more races", mixed_group: "a group of mixed races", unknown: "unknown",
           }).map(([g, gl]) => [`${scope}_offender_${g}_pct`, m(`Offender perceived as ${gl}, share of ${sl}`, "percent")]),
         ),
@@ -1278,8 +1296,8 @@ export const CATALOG = {
     sourceUrl: "https://www.eac.gov/research-and-data/datasets-codebooks-and-surveys",
     cadence: "Biennial",
     license: "Public domain (U.S. government work)",
-    description: "Voter registration, list maintenance, mail and provisional ballots, and turnout by voting method for every election jurisdiction.",
-    methodology: "Aggregates count only jurisdictions that reported each item (metadata.reporting).",
+    description: "Voter registration, list maintenance, mail and provisional ballots, and turnout by voting method for every election jurisdiction, each federal election from 2016 to 2024.",
+    methodology: "Aggregates count only jurisdictions that reported each item (metadata.reporting). Item numbers change between surveys; each year's items were matched by their question wording. Removals for duplicate records are reported from 2024 only; 2016 has no UOCAVA registration count. Mail-ballot rejection reasons cover late arrival, missing voter signature, and missing witness signature.",
     metrics: {},
   },
 
@@ -1619,6 +1637,56 @@ export const CATALOG = {
       laws_kept_as_now: m("Gun sale laws should be kept as now", "percent"),
       ban_handguns: m("Favor banning handgun possession except by police", "percent"),
       ban_assault_rifles: m("Favor a ban on semi-automatic \"assault rifles\"", "percent"),
+    },
+  },
+  "fbi-nics": {
+    title: "FBI NICS Firearm Background Checks",
+    topic: "guns",
+    publisher: "Federal Bureau of Investigation",
+    sourceUrl: "https://www.fbi.gov/how-we-can-help-you/more-fbi-services-and-information/nics",
+    cadence: "Monthly",
+    license: "Public domain (U.S. government work)",
+    description:
+      "Firearm background checks run through the National Instant Criminal Background Check System, nationally by month since December 1998 and by state and transaction type by year since 1999.",
+    methodology:
+      "Counts of checks initiated through NICS, not firearms sold: one check can cover several guns, permit checks replace point-of-sale checks in some states, and some states run periodic rechecks of permit holders. Annual state figures from 2016 come from FBI's Year by State and Type tables; 1999–2015 are sums of the monthly state tables as transcribed by BuzzFeed News from the same FBI PDFs. National monthly totals come from that transcription through 2021 and from FBI's Month/Year table from 2022. Permit checks include permit rechecks. Private-sale checks are those a licensed dealer runs for a transfer between private parties. The nation includes U.S. territories; years still in progress are left out of the annual series.",
+    metrics: {
+      nics_checks: m("Firearm background checks", "checks"),
+      nics_checks_handgun: m("Background checks, handgun", "checks"),
+      nics_checks_long_gun: m("Background checks, long gun", "checks"),
+      nics_checks_permit: m("Background checks for permits (including rechecks)", "checks"),
+      nics_checks_private_sale: m("Background checks for private sales", "checks"),
+      nics_checks_monthly: m("Firearm background checks, monthly", "checks"),
+    },
+  },
+  "cdc-quarterly-mortality": {
+    title: "Firearm Death Rates by Age and Sex (Provisional)",
+    topic: "guns",
+    publisher: "CDC National Center for Health Statistics",
+    sourceUrl: "https://data.cdc.gov/NCHS/NCHS-VSRR-Quarterly-provisional-estimates-for-selected-indicators-of-mortality/489q-934x",
+    cadence: "Quarterly",
+    license: "Public domain (U.S. government work)",
+    description: "Firearm-related injury death rates for each calendar year by age group and by sex, from NCHS's quarterly provisional mortality estimates.",
+    methodology:
+      "Crude death rates per 100,000 people in each group for the 12 months ending in the fourth quarter (the calendar year), from provisional death certificate data. NCHS leaves out rates it considers unreliable, so some age groups can be missing in a year.",
+    metrics: {
+      firearm_deaths_rate_by_age: m("Firearm death rate by age group", "per_100k"),
+      firearm_deaths_rate_by_sex: m("Firearm death rate by sex", "per_100k"),
+    },
+  },
+  "pew-guns": {
+    title: "Pew Research Center Survey of Gun Owners",
+    topic: "guns",
+    publisher: "Pew Research Center",
+    sourceUrl: "https://www.pewresearch.org/short-reads/2024/07/24/key-facts-about-americans-and-guns/",
+    cadence: "Occasional",
+    license: "Published figures, © Pew Research Center",
+    description: "Who personally owns a gun, by sex, community type, race and ethnicity, and party, and the reasons owners give for having one.",
+    methodology:
+      "American Trends Panel survey of 5,115 U.S. adults, June 5–11, 2023. Figures are Pew's published, rounded percentages. Reasons are the share of gun owners who call each a major reason they own a gun; owners could name several. White, Black, and Asian adults are non-Hispanic.",
+    metrics: {
+      personally_own_gun: m("Personally own a gun", "percent"),
+      major_reason_to_own: m("Gun owners citing a major reason for owning", "percent"),
     },
   },
   // ---- Education ----

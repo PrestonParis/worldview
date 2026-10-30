@@ -14,6 +14,8 @@ import { QuizCheckpoint, QuizHero, QuizResults, QuizResultView, resultViews, sha
 import { ResultsViewHeader } from "@/components/quiz/results-nav";
 import { FAMILIES, familyColor } from "@/lib/quiz/families";
 import { QuizClaimBanner, QuizOwnership } from "@/components/quiz/quiz-ownership";
+import { HISTORY } from "@/lib/atlas/history";
+import { getProfilePathsByName } from "@/lib/db/entities";
 
 export const dynamic = "force-dynamic";
 
@@ -124,6 +126,8 @@ export default async function QuizSessionPage({
     );
   }
 
+  const figureLinks = Object.fromEntries(await getProfilePathsByName(HISTORY[top.ideology.id]?.figures ?? []));
+
   return (
     <div className="mx-auto max-w-7xl space-y-4">
       {unclaimedEditable && <QuizClaimBanner slug={slug} access={access} />}
@@ -147,6 +151,7 @@ export default async function QuizSessionPage({
         result={result}
         canEdit={access.canEdit}
         mode={session.targetMode}
+        figureLinks={figureLinks}
         ownership={(access.isOwner || !access.canEdit) && <QuizOwnership slug={slug} access={access} visibility={session.visibility} />}
       />
     </div>

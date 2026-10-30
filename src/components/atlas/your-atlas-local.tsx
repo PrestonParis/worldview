@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { economicSchools } from "@/lib/atlas/economics";
+import { authoritySchools } from "@/lib/atlas/authority";
 import type { EconomicProfileResult, SpecialistProfileResult } from "@/lib/atlas/profile";
 import { economicProfileSchema, savedPhilosophiesSchema, specialistProfileSchema } from "@/lib/atlas/profile-schema";
 import { readStoredJson } from "@/lib/browser/storage";
@@ -67,16 +68,17 @@ export function YourAtlasLocal({
         </div>
         {economic && (
           <div className="mt-5 flex flex-wrap gap-2">
-            {economic.matches.slice(0, 3).map((m) => (
+            {economic.matches.slice(0, 3).map((m, index) => (
               <span key={m.id} className="rounded-full bg-slate-100 px-3 py-1 text-xs dark:bg-slate-900">
-                {economicSchools.find((x) => x.id === m.id)?.name ?? m.id} · {m.score}%
+                {index === 0 ? "Closest" : `Nearby ${index}`} ·{" "}
+                {economicSchools.find((x) => x.id === m.id)?.name ?? m.id}
               </span>
             ))}
           </div>
         )}
       </section>
       <div className="grid gap-6 md:grid-cols-2">
-        <SpecialistCard assessment={authorityAssessment} result={authority} href="/atlas/authority" />
+        <AuthorityCard result={authority} />
         <SpecialistCard assessment={foreignPolicyAssessment} result={foreignPolicy} href="/atlas/foreign-policy" />
       </div>
       <section className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 dark:border-slate-800 dark:bg-slate-950">
@@ -113,6 +115,40 @@ export function YourAtlasLocal({
         )}
       </section>
     </>
+  );
+}
+
+function AuthorityCard({ result }: { result: SpecialistProfileResult | null }) {
+  const top = result && authoritySchools.find((school) => school.id === result.matches[0]?.id);
+  const legacyTop = result && authorityAssessment.schools.find((school) => school.id === result.matches[0]?.id);
+  return (
+    <section className="rounded-3xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-950">
+      <p className="text-xs font-semibold tracking-[.16em] text-slate-400 uppercase">Power &amp; Democracy</p>
+      <h2 className="mt-2 text-2xl font-semibold">{top?.name ?? legacyTop?.name ?? "Not taken"}</h2>
+      {(top || legacyTop) && (
+        <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
+          {top?.summary ?? legacyTop?.summary}
+        </p>
+      )}
+      <Link
+        href="/atlas/authority"
+        className="mt-5 inline-block rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold dark:border-slate-700"
+      >
+        {top || legacyTop ? "Retake" : "Take assessment"}
+      </Link>
+      {result && (
+        <div className="mt-4 flex flex-wrap gap-1.5">
+          {result.matches.slice(0, 3).map((match, index) => (
+            <span key={match.id} className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] dark:bg-slate-900">
+              {index === 0 ? "Closest" : `Nearby ${index}`} ·{" "}
+              {authoritySchools.find((school) => school.id === match.id)?.name ??
+                authorityAssessment.schools.find((school) => school.id === match.id)?.name ??
+                match.id}
+            </span>
+          ))}
+        </div>
+      )}
+    </section>
   );
 }
 

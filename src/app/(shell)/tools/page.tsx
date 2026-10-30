@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Briefcase, Compass, Scroll, SlidersHorizontal, Sparkles, Database, ShieldCheck, CheckCircle2 } from "lucide-react";
+import { ArrowRight, Briefcase, Compass, Scroll, Sparkles, Database, ShieldCheck, CheckCircle2 } from "lucide-react";
 import { SUITE_TOOLS } from "@/lib/tools/catalog";
 import { Surface, Eyebrow } from "@/components/ui/surface";
 import { buttonVariants } from "@/components/ui/button";
@@ -8,13 +8,12 @@ import { buttonVariants } from "@/components/ui/button";
 export const metadata: Metadata = {
   title: "Tools Suite | Worldview",
   description:
-    "Tools for working with public data: Subpoena (money & influence), Writ (laws & elections), IssueView (cross-topic stats), and Worldview Atlas.",
+    "Tools for working with public data: Subpoena for money and influence, Writ for laws and elections, and Worldview Atlas for political ideas.",
 };
 
 const ICONS = {
   subpoena: Briefcase,
   writ: Scroll,
-  issueview: SlidersHorizontal,
   atlas: Compass,
 };
 

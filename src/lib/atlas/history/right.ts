@@ -92,7 +92,7 @@ export const RIGHT: Record<string, TraditionCore> = {
       ["1980", "White evangelicals vote heavily for Reagan."],
       ["1988", "Pat Robertson runs for president."],
       ["1989", "Robertson and Reed found the Christian Coalition."],
-      ["2016", "About 80% of white evangelicals vote for Trump."],
+      ["2016", "About 80% of White evangelicals vote for Trump."],
       ["2022", "Dobbs v. Jackson overturns Roe."],
     ],
     practice: [
