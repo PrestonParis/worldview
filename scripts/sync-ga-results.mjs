@@ -57,6 +57,7 @@ import { CLOSE_RACE_ROWS_SQL, filterReport, toReportRow } from "../src/lib/elect
 import { closeRacesCsv, closeRacesFilename } from "../src/lib/elections/close-races/csv.ts";
 import { coverageRecords, feedContests, newBaselineContests } from "../src/lib/elections/close-races/coverage.ts";
 import { etDate, parseSchedule, scheduledOn } from "../src/lib/elections/close-races/schedule.ts";
+import { pushesAtOnce } from "../src/lib/elections/close-races/sentinel.ts";
 
 loadEnv();
 
@@ -74,6 +75,7 @@ const STATE_STALE_MS = 10 * MIN;
 const COUNTY_STALE_MS = 15 * MIN;
 const FULL_SWEEP_MS = 15 * MIN;
 const CITY_EVERY_MS = 10 * MIN;
+const CONNECTION_LOST = /timeout|terminat|not queryable|connection|ECONNRESET|EPIPE/i;
 
 const client = sosClient({
   base: BASE,
@@ -336,13 +338,15 @@ async function persist(ctx, mode) {
   const result = await writeContests(pg, { electionId: id, header, kind, evaluated, complete, link: ctx.links });
 
   for (const e of result.events) {
+    const severity = e.kind === "vote_decrease" || e.kind === "certification_regressed" ? "critical" : "warning";
     await raiseAlert(pg, {
       election: id,
       key: `${e.kind}:${e.contestId}:${e.kind === "leader_change" ? e.ev.margin.leader?.name : e.ev.margin.totalVotes}`,
       kind: e.kind,
-      severity: e.kind === "vote_decrease" || e.kind === "certification_regressed" ? "critical" : "warning",
+      severity,
       contestId: e.contestId,
       message: e.message,
+      push: pushesAtOnce({ kind: e.kind, level: e.ev.level, severity }),
     });
   }
   for (const w of warnings.filter((w) => w.startsWith("merged") || w.startsWith("ballot question"))) {
@@ -377,6 +381,7 @@ async function persist(ctx, mode) {
       key: `coverage:${stableHash(short.map((r) => `${r.jurisdiction_name}:${r.notes}`).sort().join("|"))}`,
       kind: "coverage",
       message: `Coverage below 100%: ${names.slice(0, 12).join(", ")}${names.length > 12 ? ` and ${names.length - 12} more` : ""}`,
+      push: pushesAtOnce({ kind: "coverage", shortCount: short.length }),
       payload: { jurisdictions: short.map((r) => ({ name: r.jurisdiction_name, status: r.status, notes: r.notes })) },
     });
   }
@@ -400,6 +405,14 @@ async function persist(ctx, mode) {
     ...(ctx.replaces ? { replaces: ctx.replaces } : {}),
   });
   if (result.inserted || result.updated || result.removed) await revalidate();
+  // The one push that says the real election is loading (not a rehearsal).
+  await raiseAlert(pg, {
+    election: id,
+    key: "first-load",
+    kind: "first_load",
+    severity: "ready",
+    message: `Tracking ${header.name || ctx.election.name} live: ${evaluated.length} contests from ${observations.filter((c) => c.contests).length}/${observations.length} county feeds. Digests start when polls close.`,
+  });
   console.log(
     `  wrote ${result.inserted} new, ${result.updated} changed, ${result.unchanged} unchanged, ${result.removed} removed ` +
       `(${evaluated.length} contests, ${observations.filter((c) => c.contests).length}/${observations.length} counties, ${ctx.fetchSource})`,
@@ -545,6 +558,12 @@ async function watchRound(ctx, { archiveEveryMs, webhook }) {
   } catch (err) {
     console.error(`  write failed: ${err.message}`);
     await webhook(`🚨 [${ctx.election.id}] database write failed: ${err.message}`);
+    // A timed-out query leaves this connection unusable. Exit so the hand-off
+    // starts a new run on a new connection, rather than polling without writes.
+    if (CONNECTION_LOST.test(err.message)) {
+      console.error("  database connection lost; exiting for the hand-off");
+      process.exit(1);
+    }
     await noteError(ctx, `write: ${err.message}`);
     return;
   }
@@ -608,6 +627,7 @@ async function staleChecks(ctx) {
         key: `stale-county:${c.slug}:${bucket(15)}`,
         kind: "stale_county",
         message: `${c.name} is reporting but our copy is ${cached?.fetchedAt ? `${Math.round(since(cached.fetchedAt) / MIN)} min` : "never"} old${ctx.countyErrors.has(c.slug) ? ` (${ctx.countyErrors.get(c.slug)})` : ""}`,
+        push: pushesAtOnce({ kind: "stale_county" }),
       });
     }
   }
@@ -629,6 +649,7 @@ async function snapshot(pg, id) {
     const objectPath = `writ/close-races/${id}/${file}`;
     await upload("lake", objectPath, Buffer.from(body), "text/csv; charset=utf-8");
     console.log(`  published: ${lakeUrl(objectPath)}`);
+    await sendWebhook(`📄 [${id}] Closest-races CSV (${ranked.length} ranked contests): ${lakeUrl(objectPath)}`);
   }
 }
 
@@ -712,7 +733,7 @@ async function main() {
     return void (await cities(ctx));
   }
 
-  const pg = await connectPg();
+  const pg = await connectPg({ timeouts: flag("watch") });
   const runId = DRY_RUN ? null : await startRun(pg, "ga-sos-results");
   try {
     if (flag("snapshot")) await snapshot(pg, election.id);

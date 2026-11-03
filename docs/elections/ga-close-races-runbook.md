@@ -9,11 +9,14 @@ command at production; leave it off to work against the local stack.
 
 | Workflow | When | Does |
 |---|---|---|
-| `GA results watch` | 4:17 pm ET on each date in `data/elections/ga/schedule.json` (Nov 3, Dec 1) | Finds the election, waits while its feed is missing, polls every 3 min, loads every county feed and every city-run election, and writes. Each run lasts 5h45m, then starts the next one, even after a failure, until results are official or the entry's `stopAfter` date passes. |
+| `GA results watch` | 3:17 pm ET (20:17 UTC) on each date in `data/elections/ga/schedule.json` (Nov 3, Dec 1) | Finds the election, waits while its feed is missing, polls every 3 min, loads every county feed and every city-run election, and writes. Each run lasts 5h45m, then starts the next one, even after a failure, until results are official or the entry's `stopAfter` date passes. |
 | `GA results health` | Every 10 min, Nov 3–30 and Dec 1–20 | When no worker is alive for a scheduled election and no watch run is queued or running, starts the watch again. This covers a dropped scheduled start, a broken hand-off, and a crashed or timed-out run. |
+| `GA results health` with `loop=true` (the sentinel) | Every 5 min, from the watch start to 17:00 UTC two days after the election | The same check, in a run that repeats itself and hands off, because GitHub's cron is too sparse to rely on (3 firings of `*/10` in the 20 hours before the Nov 3 watch). Cancels a hung watch run and starts a new one. Sends the digest, checks database size and writability, and starts the morning load at 7 am ET. Every watch run restarts it if it's missing. |
 | `GA results daily` | 13:00 UTC, Nov 4–30 and Dec 1–20 | Full load of every unofficial election (one failure doesn't stop the rest), then the morning CSV snapshot. When an election turns official, it is reconciled once against the SOS media export. |
 
-All three post to `ALERT_WEBHOOK_URL`. Alerts are informational: each says what already happened, and none needs a reply.
+All of them post to `ALERT_WEBHOOK_URL`. Alerts are informational: each says what already happened, and none needs a reply.
+
+**What reaches the phone:** one push when the election first loads; federal and statewide lead changes, ties and corrections; system failures; coverage short by 16 or more jurisdictions; and a digest every 30 minutes from poll close (hourly from 1 to 7 am ET). Everything else is stored in `tracked_alerts` for the operator panel and counted in the next digest.
 
 ## 2. Election ids
 
@@ -98,7 +101,11 @@ The replay lists its election under 2026-11-03, so this also exercises the sched
 ENV_FILE=.env.cloud npm run sync:ga-results -- --election=<id> --snapshot [--sort=percent]
 ```
 
-## 10. One-time setup (before Nov 3)
+## 10. Before an election night
+
+Start the chains by hand rather than waiting for cron: `gh workflow run ga-results-watch.yml -f election=auto -f date=<date> -f chain=true`. The watch starts the sentinel. Avoid production deploys during a count: `post-deploy.yml` applies migrations and loads empty datasets into the same database.
+
+## 11. One-time setup (before Nov 3)
 
 1. Deploy, which applies the migrations, including `2026-10-28-tracked-baseline.sql`.
 2. Set the repo secrets: `DATABASE_URL`, `ALERT_WEBHOOK_URL`, `SITE_URL`, `REVALIDATE_SECRET`, `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`. Set `REVALIDATE_SECRET` in the site's env too.

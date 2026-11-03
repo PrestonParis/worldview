@@ -5,9 +5,11 @@
 //   node scripts/ga-results-schedule.mjs --for-date=2026-11-03   → GITHUB_OUTPUT lines: active, election, date, kind
 //   node scripts/ga-results-schedule.mjs --handoff --date=2026-11-03   → "continue" or "stop"
 //   node scripts/ga-results-schedule.mjs --daily   → one "<election> <date> <kind>" line per election to load
+//   node scripts/ga-results-schedule.mjs --sentinel   → "yes" while the sentinel should be running, else "no"
 
 import fs from "node:fs";
 import { etDate, parseSchedule, scheduledOn } from "../src/lib/elections/close-races/schedule.ts";
+import { sentinelActive } from "../src/lib/elections/close-races/sentinel.ts";
 
 // --for-date runs before `npm ci`, so the database helpers load only when needed.
 const arg = (name) => process.argv.find((a) => a.startsWith(`--${name}=`))?.slice(name.length + 3);
@@ -20,7 +22,9 @@ async function connect() {
 
 const schedule = parseSchedule(JSON.parse(fs.readFileSync("data/elections/ga/schedule.json", "utf8")));
 
-if (arg("for-date")) {
+if (flag("sentinel")) {
+  console.log(sentinelActive(schedule) ? "yes" : "no");
+} else if (arg("for-date")) {
   const entry = scheduledOn(schedule, arg("for-date"));
   console.log(`active=${Boolean(entry)}`);
   console.log(`election=${entry?.id ?? "auto"}`);
@@ -61,6 +65,6 @@ if (arg("for-date")) {
     await pg.end();
   }
 } else {
-  console.error("usage: --for-date=YYYY-MM-DD | --handoff --date=YYYY-MM-DD | --daily");
+  console.error("usage: --for-date=YYYY-MM-DD | --handoff --date=YYYY-MM-DD | --daily | --sentinel");
   process.exitCode = 1;
 }

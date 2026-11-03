@@ -27,11 +27,13 @@ export async function sendWebhook(message, url = process.env.ALERT_WEBHOOK_URL) 
   }
 }
 
-const ICON = { info: "ℹ️", warning: "⚠️", critical: "🚨" };
+const ICON = { info: "ℹ️", warning: "⚠️", critical: "🚨", progress: "📊", ready: "✅" };
 
-// Returns true when the alert is new. Info alerts (merge checks, ~20 on a
-// first load) stay in tracked_alerts for the operator panel and aren't pushed.
-export async function raiseAlert(pg, { election, key, kind, severity = "warning", contestId = null, message, payload = {} }, { dryRun = false } = {}) {
+// Returns true when the alert is new. Every alert is stored in tracked_alerts
+// for the operator panel. Info alerts (merge checks, ~20 on a first load)
+// aren't pushed, nor is anything with push: false, which the sentinel's
+// digest counts instead (pushesAtOnce in close-races/sentinel.ts).
+export async function raiseAlert(pg, { election, key, kind, severity = "warning", contestId = null, message, payload = {}, push = severity !== "info" }, { dryRun = false } = {}) {
   const line = `${ICON[severity] ?? ""} [${election}] ${message}`;
   if (dryRun) {
     console.log(`  alert (dry run): ${line}`);
@@ -44,7 +46,7 @@ export async function raiseAlert(pg, { election, key, kind, severity = "warning"
   );
   if (!rows.length) return false;
   console.log(`  alert: ${line}`);
-  if (severity !== "info" && (await sendWebhook(line))) await pg.query("update tracked_alerts set sent_at = now() where id = $1", [rows[0].id]);
+  if (push && (await sendWebhook(line))) await pg.query("update tracked_alerts set sent_at = now() where id = $1", [rows[0].id]);
   return true;
 }
 
