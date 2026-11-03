@@ -116,8 +116,14 @@ export const int = (v) => {
 };
 export const str = (v) => (v === null || v === undefined || v === "" ? null : String(v));
 
-export async function connectPg() {
-  const pg = new Client({ connectionString: process.env.DATABASE_URL });
+// `timeouts` is for long-running workers, where a hung query must fail rather
+// than wait forever. Client-side only: connection poolers reject a
+// statement_timeout startup parameter.
+export async function connectPg({ timeouts = false } = {}) {
+  const pg = new Client({
+    connectionString: process.env.DATABASE_URL,
+    ...(timeouts ? { keepAlive: true, query_timeout: 120_000, connectionTimeoutMillis: 30_000 } : {}),
+  });
   await pg.connect();
   return pg;
 }

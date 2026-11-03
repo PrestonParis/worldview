@@ -93,6 +93,19 @@ jobs:
 
       - run: npm ci
 
+      # The sentinel guards this run; this guards the sentinel.
+      - name: Make sure the sentinel is running
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          state=$(node scripts/ga-results-schedule.mjs --sentinel)
+          running=$(gh run list --workflow ga-results-health.yml --event workflow_dispatch --limit 10 --json status -q '[.[] | select(.status != "completed")] | length')
+          echo "Sentinel needed: $state; dispatched runs active: $running"
+          if [ "$state" = yes ] && [ "$running" = 0 ]; then
+            gh workflow run ga-results-health.yml --ref "${{ github.ref_name }}" -f loop=true
+          fi
+
       - name: Write .env.local
         run: |
           {
