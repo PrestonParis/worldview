@@ -200,7 +200,7 @@ export default async function StatePage({ params }: Props) {
           </div>
           <div className="rounded-2xl border border-slate-200 p-4 dark:border-slate-800">
             <h3 className="text-sm font-semibold text-slate-950 dark:text-white">
-              On the ballot{politics.cycle ? ` in ${politics.cycle}` : ""}
+              {politics.upcoming.some((r) => r.callStatus) ? `${politics.cycle} results` : <>On the ballot{politics.cycle ? ` in ${politics.cycle}` : ""}</>}
             </h3>
             {politics.upcoming.length ? (
               <ul className="mt-3 space-y-2">
@@ -212,12 +212,18 @@ export default async function StatePage({ params }: Props) {
                     >
                       {r.name}
                     </Link>
-                    {r.rating && (
+                    {r.callStatus && r.result ? (
+                      <span className="text-xs text-slate-600 dark:text-slate-300">
+                        {r.result.winnerName} {r.result.called ? "won" : "leading"}
+                        {r.result.marginPct != null ? ` by ${r.result.marginPct.toFixed(1)} pts` : ""}
+                        {r.flipped ? " · seat flipped" : ""}
+                      </span>
+                    ) : r.rating ? (
                       <span className="rounded bg-slate-100 px-2 py-0.5 text-xs text-slate-600 dark:bg-slate-800 dark:text-slate-300">
                         {ratingLabel(r.rating)}
                       </span>
-                    )}
-                    {r.incumbent && (
+                    ) : null}
+                    {!r.callStatus && r.incumbent && (
                       <span className="text-xs text-slate-500">
                         Held by {r.incumbent.name}
                         {r.incumbent.party ? ` (${r.incumbent.party})` : ""}
@@ -228,7 +234,7 @@ export default async function StatePage({ params }: Props) {
                 ))}
               </ul>
             ) : (
-              <p className="mt-3 text-sm text-slate-500">No Senate or governor&apos;s race scheduled.</p>
+              <p className="mt-3 text-sm text-slate-500">No Senate or governor&apos;s race this cycle.</p>
             )}
           </div>
         </div>

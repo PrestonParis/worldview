@@ -35,7 +35,7 @@ import { StatusPill } from "@/components/legislation/bill-status";
 import { ElectionStatusPill } from "@/components/elections/election-status";
 import { formatAmount } from "@/lib/money";
 import { partyColorFor } from "@/lib/party-colors";
-import { HANDICAPPERS, RATING_STYLE, partyLetter } from "@/lib/elections/overview";
+import { HANDICAPPERS, RATING_STYLE, partyLetter, resultStyle } from "@/lib/elections/overview";
 import { normalizePartyName } from "@/lib/elections/display";
 import { ratingLabel } from "@/lib/validation/raceRating";
 import { entityPartyAndPlace, publicEntityPath, typeLabels } from "@/lib/people/public";
@@ -194,8 +194,8 @@ function WritDiscoveryView({ discovery }: { discovery: WritDiscovery }) {
         <DiscoverySection
           id="races"
           eyebrow={`Elections · ${discovery.cycle ?? ""}`}
-          title="The closest races on the ballot"
-          description="Scheduled Senate, governor, and House races, nearest to a toss-up first."
+          title={discovery.races.some((race) => race.callStatus) ? "The closest races" : "The closest races on the ballot"}
+          description={discovery.races.some((race) => race.callStatus) ? "Senate, governor, and House races with the smallest margins, called or still counting." : "Scheduled Senate, governor, and House races, nearest to a toss-up first."}
         >
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {discovery.races.map((race) => {
@@ -204,7 +204,15 @@ function WritDiscoveryView({ discovery }: { discovery: WritDiscovery }) {
                 <DiscoveryCard key={race.id} href={writHref("race", race.id)} cta="Open race docket">
                   <div className="flex items-start justify-between gap-3">
                     <span className="text-xs font-bold tracking-wide text-slate-500 uppercase">{race.code}</span>
-                    {style && race.rating ? (
+                    {race.callStatus && race.result ? (
+                      <span
+                        className="rounded-full px-2 py-0.5 text-[11px] font-semibold"
+                        style={race.result.called ? { background: resultStyle(race.result.winnerParty, race.result.marginPct).fill, color: resultStyle(race.result.winnerParty, race.result.marginPct).text } : { background: RATING_STYLE.tossup.fill, color: RATING_STYLE.tossup.text }}
+                      >
+                        {race.result.called ? "Called" : race.callStatus === "runoff" ? "Runoff" : "Counting"}
+                        {race.result.marginPct != null ? ` · ${race.result.marginPct.toFixed(1)} pts` : ""}
+                      </span>
+                    ) : style && race.rating ? (
                       <span
                         className="rounded-full px-2 py-0.5 text-[11px] font-semibold"
                         style={{ background: style.fill, color: style.text }}
@@ -218,7 +226,9 @@ function WritDiscoveryView({ discovery }: { discovery: WritDiscovery }) {
                     {race.special ? " (special)" : ""}
                   </h3>
                   <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
-                    {race.nominees.length
+                    {race.callStatus && race.result
+                      ? `${race.result.winnerName} ${race.result.called ? "won" : "leading"}${race.flipped ? ", flipping the seat" : ""}`
+                      : race.nominees.length
                       ? race.nominees.map((n) => `${n.name}${n.party ? ` (${n.party})` : ""}`).join(" vs. ")
                       : race.incumbent
                         ? `Incumbent: ${race.incumbent.name}`
@@ -946,7 +956,9 @@ function MemberDocketView({ docket, onExport }: { docket: MemberDocket; onExport
                       ? "Won"
                       : candidacy.withdrew
                         ? "Withdrew"
-                        : candidacy.status
+                        : candidacy.status === "nominee" && candidacy.election.callStatus
+                          ? candidacy.election.callStatus === "called" ? "Lost" : "Counting"
+                          : candidacy.status
                           ? candidacy.status.replaceAll("_", " ")
                           : candidacy.election.status === "scheduled"
                             ? "On the ballot"

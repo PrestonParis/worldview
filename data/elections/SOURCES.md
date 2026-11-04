@@ -41,6 +41,29 @@ FeatureCollection with each feature's `id` set to the 5-digit FIPS — the same 
 the result rows use, so the choropleth joins with no lookup table. ~3 MB,
 committed (comparable to the existing `public/data/countries.geojson`).
 
+### 2026 results while the count runs — `scripts/sync-race-results.mjs`
+
+Fetched live, nothing committed. Run `npm run sync:wiki-races` first so the
+nominee rows are current, then `npm run sync:race-results`.
+
+| Source | Supplies | Notes |
+|---|---|---|
+| New York Times results JSON, `static01.nyt.com/elections-assets/pages/data/2026-11-03/results-{senate,governor,house}.json` | Votes, percent counted, race calls, flips | Undocumented. Votes are AP's; most calls are AP's and a few are the NYT's own (`outcome.called_by`). Credited on the page. |
+| Wikipedia overview pages | Winner marks (`{{aye}}`), "gain"/"hold" wording, candidate lists | Vote boxes were empty when this was built. |
+
+**Call rule.** Only the feed can call a race. Wikipedia naming another winner
+blocks the call, and a Wikipedia-only call is logged but not shown.
+
+**Flips.** The feed's `gained` is null in states with redrawn maps (CA, FL, NC,
+OH, TX and others), so its flip count runs low; the sync falls back to
+Wikipedia's wording for those seats.
+
+**Party totals.** The feed credits a party with uncalled seats where only that
+party is left, such as California's same-party generals. The site counts called
+races only, so its House totals can sit a few below the feed's.
+
+Certified state or MEDSL returns replace these rows when they are published.
+
 ## Not committed — download by hand
 
 **U.S. House 1976–2024** — [10.7910/DVN/IG0UN2](https://doi.org/10.7910/DVN/IG0UN2),

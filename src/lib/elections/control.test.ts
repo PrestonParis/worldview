@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { projectChamber, type RatedRace } from "./control";
+import { projectChamber, tallyChamber, type RatedRace } from "./control";
 
 const race = (over: Partial<RatedRace> = {}): RatedRace => ({
   heldParty: "R",
@@ -62,5 +62,35 @@ describe("projectChamber (Senate 2026 shape)", () => {
     // an open seat only becomes a tossup when a rating says so.
     expect(p.projected.R).toBe(1);
     expect(p.current.R).toBe(1);
+  });
+});
+
+describe("tallyChamber", () => {
+  const baseline = { D: 32, R: 31, I: 2 };
+  const called = (winnerParty: "D" | "R" | "I" | null, flipped = false) => ({ winnerParty, called: true, flipped });
+  const open = { winnerParty: null, called: false, flipped: null };
+
+  it("adds called races to the seats not up and leaves the rest uncalled", () => {
+    const result = tallyChamber("senate", [called("D"), called("D", true), called("R"), open], baseline, 51);
+    expect(result.seats).toEqual({ D: 34, R: 32, I: 2 });
+    expect(result.uncalled).toBe(1);
+    expect(result.flips).toEqual({ D: 1, R: 0, I: 0 });
+    expect(result.seatsUp).toBe(4);
+  });
+
+  it("counts caucusing independents toward control only", () => {
+    const races = Array.from({ length: 18 }, () => called("D"));
+    expect(tallyChamber("senate", races, baseline, 51).control).toBeNull();
+    const result = tallyChamber("senate", races, baseline, 51, { caucusing: 2 });
+    expect(result.control).toBe("D");
+    expect(result.seats.D).toBe(50);
+  });
+
+  it("does not call control on an uncalled race", () => {
+    expect(tallyChamber("house", [open, open], { D: 217, R: 0, I: 0 }, 218).control).toBeNull();
+  });
+
+  it("files winners outside the major parties under I", () => {
+    expect(tallyChamber("governor", [called(null)], { D: 0, R: 0, I: 0 }, 26).seats.I).toBe(1);
   });
 });

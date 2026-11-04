@@ -71,7 +71,7 @@ export function dedupeCandidacies(candidacies: Candidacy[], nameFor: (entityId: 
   for (const candidacy of candidacies) {
     const key = candidateIdentityKey(nameFor(candidacy.candidateEntityId));
     const existing = unique.get(key);
-    if (!existing || candidateStage(candidacy) > candidateStage(existing) || (candidacy.incumbent && !existing.incumbent)) unique.set(key, candidacy);
+    if (!existing || (candidacy.votes != null && existing.votes == null) || (candidacy.votes == null) === (existing.votes == null) && (candidateStage(candidacy) > candidateStage(existing) || (candidacy.incumbent && !existing.incumbent))) unique.set(key, candidacy);
   }
   return [...unique.values()];
 }

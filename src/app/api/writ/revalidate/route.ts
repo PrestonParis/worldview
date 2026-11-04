@@ -1,4 +1,4 @@
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { timingSafeEqual } from "node:crypto";
 import { CLOSE_RACES_TAG } from "@/lib/db/closeRaces";
 import { enforceRateLimits, rateLimitResponse } from "@/lib/security/rate-limit";
@@ -16,6 +16,13 @@ export async function POST(req: Request) {
     request: req,
   });
   if (limited) return rateLimitResponse(limited);
+  // scripts/sync-race-results.mjs names the race pages it changed.
+  const body = (await req.json().catch(() => null)) as { paths?: unknown } | null;
+  if (Array.isArray(body?.paths)) {
+    const paths = body.paths.filter((path): path is string => typeof path === "string" && /^\/elections\/[\w-]+$/.test(path)).slice(0, 1000);
+    for (const path of paths) revalidatePath(path);
+    return Response.json({ ok: true, paths: paths.length });
+  }
   revalidateTag(CLOSE_RACES_TAG, { expire: 0 });
   return Response.json({ ok: true, tag: CLOSE_RACES_TAG });
 }

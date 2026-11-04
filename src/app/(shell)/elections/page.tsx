@@ -7,7 +7,7 @@ import { EmptyState } from "@/components/empty-state";
 import { MyRaces } from "@/components/my-government/highlights";
 import { listCycles, listRaces, listSearchEntries } from "@/lib/db/election-overview";
 import { loadElectorate } from "@/lib/db/electorate";
-import { chamberProjections } from "@/lib/elections/cycle-control";
+import { chamberProjections, chamberResults } from "@/lib/elections/cycle-control";
 import { OFFICES, type OfficeKey } from "@/lib/elections/overview";
 
 export const metadata: Metadata = {
@@ -32,24 +32,25 @@ export default async function Page({ searchParams }: PageProps<"/elections">) {
       ? requestedOffice
       : (OFFICES.find((item) => summary?.offices[item.key])?.key ?? "senate");
 
-  const [races, searchEntries, projections] = summary
+  const [races, searchEntries, projections, results] = summary
     ? await Promise.all([
         listRaces(summary.cycle, office),
         listSearchEntries(),
         summary.upcoming ? chamberProjections(summary.cycle) : Promise.resolve([]),
+        summary.upcoming ? Promise.resolve([]) : chamberResults(summary.cycle),
       ])
-    : [[], [], []];
+    : [[], [], [], []];
 
   return (
     <div className="mx-auto max-w-7xl">
-      {summary ? <ElectionCycleHero summary={summary} projections={projections} /> : (
+      {summary ? <ElectionCycleHero summary={summary} projections={projections} results={results} /> : (
         <div><h1 className="text-3xl font-semibold tracking-tight">Elections</h1><p className="mt-2 text-slate-500">Races, results, and voting information.</p></div>
       )}
 
       <nav aria-label="Election page sections" className="sticky top-0 z-20 -mx-4 sm:-mx-8 mt-0 flex gap-6 overflow-x-auto border-b border-slate-200 bg-[var(--background)] px-4 sm:px-8 py-3 text-sm font-medium dark:border-slate-800">
         <a href="#races" className="whitespace-nowrap hover:text-blue-700 dark:hover:text-blue-300">Races and maps</a>
         <a href="#electorate" className="whitespace-nowrap hover:text-blue-700 dark:hover:text-blue-300">Electorate</a>
-        <a href="#voting" className="whitespace-nowrap hover:text-blue-700 dark:hover:text-blue-300">Voting calendar</a>
+        <a href="#voting" className="whitespace-nowrap hover:text-blue-700 dark:hover:text-blue-300">{results.length ? "What's next" : "Voting calendar"}</a>
       </nav>
 
       <div id="races" className="scroll-mt-24 pt-8">
@@ -70,7 +71,7 @@ export default async function Page({ searchParams }: PageProps<"/elections">) {
               projection={projections.find((item) => item.chamber === CHAMBER[office]) ?? null}
               searchEntries={searchEntries}
             />
-            <DataSourceNote className="mt-8" />
+            <DataSourceNote className="mt-8" liveCount={results.length > 0} />
           </>
         )}
       </div>
@@ -81,7 +82,7 @@ export default async function Page({ searchParams }: PageProps<"/elections">) {
         </div>
       ) : null}
 
-      <div className="mt-16"><ElectionCalendar /></div>
+      <div className="mt-16"><ElectionCalendar afterElection={results.length > 0} /></div>
     </div>
   );
 }

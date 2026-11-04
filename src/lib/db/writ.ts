@@ -295,11 +295,12 @@ export async function loadRaceDocket(electionId: string): Promise<RaceDocket | n
   const candidacies = dedupeCandidacies(candidacyRows, nameFor);
 
   const upcomingGeneral = election.status === "scheduled" && election.electionType === "general";
+  const onBallot = upcomingGeneral || election.callStatus != null;
   const nominees = candidacies.filter(
     (c) => !c.withdrew && (c.status === "nominee" || c.status === "primary_winner"),
   );
-  const active = upcomingGeneral
-    ? nominees
+  const active = onBallot
+    ? [...nominees].sort((a, b) => (b.votes ?? -1) - (a.votes ?? -1))
     : candidacies.filter((c) => !c.withdrew && c.status !== "lost_primary");
   const others = candidacies.filter((c) => !active.includes(c));
   const cycle = election.cycle ?? new Date(election.electionDate).getUTCFullYear();
@@ -352,14 +353,21 @@ export async function getWritDiscovery(): Promise<WritDiscovery> {
     countRollCalls(),
   ]);
 
-  // Closest contests first: scheduled races ordered by how near the
-  // consensus rating sits to a toss-up.
+  // Closest contests first. Before the election, scheduled races by how near
+  // the consensus rating sits to a toss-up; once the count starts, races by
+  // how near the votes are, called or not.
+  const allRaces = raceGroups.flat();
+  const counting = allRaces.some((race) => race.callStatus != null);
   const closeness = (race: RaceSummary) => (race.rating ? Math.abs(ratingLean(race.rating)) : 4);
-  const races = raceGroups
-    .flat()
-    .filter((race) => race.status === "scheduled")
-    .sort((a, b) => closeness(a) - closeness(b) || a.code.localeCompare(b.code))
-    .slice(0, 12);
+  const races = counting
+    ? allRaces
+        .filter((race) => race.result?.marginPct != null)
+        .sort((a, b) => a.result!.marginPct! - b.result!.marginPct! || a.code.localeCompare(b.code))
+        .slice(0, 12)
+    : allRaces
+        .filter((race) => race.status === "scheduled")
+        .sort((a, b) => closeness(a) - closeness(b) || a.code.localeCompare(b.code))
+        .slice(0, 12);
 
   const memberEntities = toRecord(await getEntitiesByIds(voterRows.map((row) => row.id)));
   return {

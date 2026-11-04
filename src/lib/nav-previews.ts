@@ -1,21 +1,22 @@
-// Real data behind the header's mega-menu feature cards: one small, cheap,
-// file-backed glimpse of each section. Server-only (reads the repo's data
-// files); the shell layout computes it and hands it to the client header.
+// Real data behind the header's mega-menu feature cards: one small, cheap
+// glimpse of each section. Server-only (reads the repo's data files and the
+// DB); the shell layout computes it and hands it to the client header.
 
-import { readFile } from "node:fs/promises";
-import path from "node:path";
+import { listRaces } from "./db/election-overview";
 import { getSeries } from "./db/stats";
+import type { PartyLetter, RaceSummary } from "./elections/overview";
 import { getDemographicSeries } from "./demographics/forecast";
 import { relationshipCategories, relationshipTypes } from "./relationships";
 import { axisById } from "./quiz/axes";
 import type { AxisId } from "./quiz/types";
 
-export type MidtermRating = "tossup" | "lean_d" | "lean_r";
-
 export interface MidtermHighlight {
   office: "Senate" | "Governor";
   state: string;
-  rating: MidtermRating;
+  // The winner's party, or the leader's when the race is not called.
+  party: PartyLetter | null;
+  marginPct: number;
+  called: boolean;
   note: string;
 }
 
@@ -93,44 +94,42 @@ function powerPreview(): NavPreviews["power"] {
   };
 }
 
-// The most competitive Senate and governor races in the current ratings
-// snapshot. Parsed once per server process; the source file changes when the
-// ratings import is refreshed.
+// The closest Senate and governor races in the midterm, called or not. One
+// query per server process, refreshed hourly so new calls reach the menu.
+const GOVERNMENT_TTL_MS = 60 * 60 * 1000;
+const HIGHLIGHTS_PER_OFFICE = 4;
 let governmentCache: Promise<NavPreviews["government"]> | null = null;
+let governmentCachedAt = 0;
 
 async function governmentPreview(): Promise<NavPreviews["government"]> {
-  const file = await readFile(path.join(process.cwd(), `data/elections/${MIDTERM_YEAR}-ratings.csv`), "utf8");
-  const highlights: MidtermHighlight[] = [];
-  let asOf = "";
-  for (const line of file.split("\n")) {
-    if (!line || line.startsWith("#") || line.startsWith("office,")) continue;
-    const [office, rawState, rating, , date, ...note] = line.trim().split(",");
-    if (
-      (office !== "senate" && office !== "governor") ||
-      (rating !== "tossup" && rating !== "lean_d" && rating !== "lean_r")
-    ) continue;
-    highlights.push({
-      office: office === "senate" ? "Senate" : "Governor",
-      state: rawState.replace(":special", " special"),
-      rating,
-      note: note.join(",").trim(),
-    });
-    if (date > asOf) asOf = date;
-  }
+  const [senate, governor] = await Promise.all([listRaces(MIDTERM_YEAR, "senate"), listRaces(MIDTERM_YEAR, "governor")]);
+  const closest = (races: RaceSummary[], office: MidtermHighlight["office"]): MidtermHighlight[] =>
+    races
+      .filter((race) => race.result?.marginPct != null)
+      .sort((a, b) => a.result!.marginPct! - b.result!.marginPct!)
+      .slice(0, HIGHLIGHTS_PER_OFFICE)
+      .map((race) => ({
+        office,
+        state: race.code + (race.special ? " special" : ""),
+        party: race.result!.winnerParty,
+        marginPct: race.result!.marginPct!,
+        called: race.result!.called,
+        note: `${race.result!.winnerName} ${race.result!.called ? "won" : "leading"}`,
+      }));
+  const highlights = [...closest(senate, "Senate"), ...closest(governor, "Governor")];
   if (highlights.length === 0) return null;
-  return {
-    year: MIDTERM_YEAR,
-    electionDate: "2026-11-03",
-    asOf,
-    highlights,
-  };
+  const asOf = [...senate, ...governor].map((race) => race.resultsAsOf ?? "").sort().at(-1) ?? "";
+  return { year: MIDTERM_YEAR, electionDate: "2026-11-03", asOf: asOf.slice(0, 10), highlights };
 }
 
 export async function getNavPreviews(): Promise<NavPreviews> {
-  governmentCache ??= governmentPreview().catch(() => {
-    governmentCache = null;
-    return null;
-  });
+  if (!governmentCache || Date.now() - governmentCachedAt > GOVERNMENT_TTL_MS) {
+    governmentCachedAt = Date.now();
+    governmentCache = governmentPreview().catch(() => {
+      governmentCache = null;
+      return null;
+    });
+  }
   issuesCache ??= issuesPreview().catch(() => {
     issuesCache = null;
     return null;

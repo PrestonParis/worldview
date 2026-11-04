@@ -11,6 +11,8 @@ import { US_STATE_GRID, US_STATE_GRID_COLS, US_STATE_GRID_ROWS, US_STATE_NAMES }
 import {
   HANDICAPPERS,
   OFFICES,
+  formatMargin,
+  isRankedChoice,
   RATING_ORDER,
   RATING_STYLE,
   partyName,
@@ -423,7 +425,7 @@ function StateTiles({
   );
 }
 
-function ResultsLegend() {
+function ResultsLegend({ showOpen = false }: { showOpen?: boolean }) {
   const rows: Array<[string, PartyLetter]> = [["Democrat", "D"], ["Republican", "R"]];
   return (
     <div className="flex flex-wrap gap-x-5 gap-y-1 text-xs text-slate-600 dark:text-slate-300">
@@ -436,6 +438,12 @@ function ResultsLegend() {
           <span className="text-slate-400">&lt;5 · 5–15 · 15+ pts</span>
         </span>
       ))}
+      {showOpen ? (
+        <span className="inline-flex items-center gap-1.5">
+          <span className="h-3 w-4 rounded-sm" style={{ background: RATING_STYLE.tossup.fill }} />
+          Not yet called
+        </span>
+      ) : null}
     </div>
   );
 }
@@ -456,11 +464,21 @@ function RatingLegend({ races }: { races: RaceSummary[] }) {
 
 // ------------------------------------------------------------ results
 
+// A race still being counted, or held over for a runoff, has no winner yet.
+const isOpen = (race: RaceSummary) => race.callStatus != null && !race.result?.called;
+
+function callLabel(race: RaceSummary): string {
+  if (race.callStatus === "runoff") return "Runoff";
+  if (race.callStatus === "called") return "Called";
+  return race.reportingPct != null ? `Counting · ${Math.round(race.reportingPct)}% in` : "Counting";
+}
+
 function ResultsTable({ races }: { races: RaceSummary[] }) {
-  // Closest races first.
+  const live = races.some((race) => race.callStatus != null);
+  // Races without a winner first, then the closest.
   const { sorted, sort, toggle } = useTableSort(
     races,
-    (race, col) => [race.code.toLowerCase(), race.result?.winnerName.toLowerCase() ?? null, race.result?.marginPct ?? null][col],
+    (race, col) => [race.code.toLowerCase(), race.result?.winnerName.toLowerCase() ?? null, isOpen(race) ? -1 : (race.result?.marginPct ?? null)][col],
     { col: 2, dir: 1 },
   );
   return (
@@ -468,7 +486,8 @@ function ResultsTable({ races }: { races: RaceSummary[] }) {
       <thead className="border-b border-slate-200 text-left text-xs text-slate-500 dark:border-slate-800 dark:text-slate-400">
         <tr>
           <SortTh col={0} sort={sort} onSort={toggle} className="py-2 pr-3 font-medium">Race</SortTh>
-          <SortTh col={1} sort={sort} onSort={toggle} className="py-2 pr-3 font-medium">Winner</SortTh>
+          <SortTh col={1} sort={sort} onSort={toggle} className="py-2 pr-3 font-medium">{live ? "Winner or leader" : "Winner"}</SortTh>
+          {live ? <th scope="col" className="py-2 pr-3 font-medium">Status</th> : null}
           <SortTh col={2} sort={sort} onSort={toggle} align="right" className="py-2 font-medium">Margin</SortTh>
         </tr>
       </thead>
@@ -487,13 +506,16 @@ function ResultsTable({ races }: { races: RaceSummary[] }) {
                 <span className="flex items-center gap-1.5">
                   <PartyDot party={race.result.winnerParty} />
                   <span className="truncate text-slate-800 dark:text-slate-200">{race.result.winnerName}</span>
+                  {isOpen(race) ? <span className="shrink-0 text-xs text-slate-500 dark:text-slate-400">{race.callStatus === "runoff" ? "advanced" : "leading"}</span> : null}
+                  {race.flipped ? <span className="shrink-0 rounded bg-slate-100 px-1.5 text-[10px] font-semibold uppercase tracking-wide text-slate-700 dark:bg-slate-800 dark:text-slate-200">Flip</span> : null}
                 </span>
               ) : (
                 <span className="text-xs text-slate-400">No results recorded</span>
               )}
             </td>
+            {live ? <td className="whitespace-nowrap py-2 pr-3 text-xs text-slate-600 dark:text-slate-400">{callLabel(race)}{race.stateAbbr && isRankedChoice(race.stateAbbr, race.office) ? " · ranked choice" : ""}</td> : null}
             <td className="py-2 text-right font-mono text-xs tabular-nums text-slate-700 dark:text-slate-300">
-              {race.result?.marginPct != null ? `+${race.result.marginPct.toFixed(1)}` : "—"}
+              {race.result?.marginPct != null ? formatMargin(race.result.marginPct) : "—"}
             </td>
           </tr>
         ))}
@@ -507,10 +529,13 @@ function ResultsSummary({ races, office }: { races: RaceSummary[]; office: Offic
   const states = races.filter((race) => race.code !== "US");
   const wins: Record<string, number> = {};
   for (const race of states) {
+    if (isOpen(race)) continue;
     const party = race.result?.winnerParty ?? "?";
     wins[party] = (wins[party] ?? 0) + 1;
   }
-  const unit = office === "president" ? "states" : "seats";
+  const open = states.filter(isOpen).length;
+  const flipped = states.filter((race) => race.flipped).length;
+  const unit = office === "president" ? "states" : office === "governor" ? "races" : "seats";
   return (
     <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
       {national?.result ? (
@@ -530,6 +555,8 @@ function ResultsSummary({ races, office }: { races: RaceSummary[]; office: Offic
           {partyName(party)}s won <span className="font-mono font-semibold tabular-nums">{wins[party]}</span> {unit}
         </span>
       ))}
+      {open ? <span className="text-sm text-slate-600 dark:text-slate-300"><span className="font-mono font-semibold tabular-nums">{open}</span> not yet called</span> : null}
+      {flipped ? <span className="text-sm text-slate-600 dark:text-slate-300"><span className="font-mono font-semibold tabular-nums">{flipped}</span> flipped</span> : null}
     </div>
   );
 }
@@ -588,6 +615,12 @@ export function ElectionsExplorer({
   const [seatFilter, setSeatFilter] = useState("all");
   const summary = cycles.find((item) => item.cycle === cycle) ?? cycles[0];
   const upcoming = races.some((race) => race.status === "scheduled");
+  const live = races.some((race) => race.callStatus != null);
+  const hasOpen = races.some(isOpen);
+  const [callFilter, setCallFilter] = useState("all");
+  const tableRaces = races
+    .filter((race) => race.code !== "US")
+    .filter((race) => (callFilter === "open" ? isOpen(race) : callFilter === "flipped" ? race.flipped === true : true));
   const officeLabel = OFFICES.find((item) => item.key === office)?.label ?? "";
   const mapped = office !== "house";
   const visibleRaces = races.filter((race) => {
@@ -650,23 +683,50 @@ export function ElectionsExplorer({
                   <div className="mx-auto w-full max-w-3xl space-y-3 lg:col-span-2">
                     <StateTiles
                       races={races}
-                      styleFor={(race) => (race.result ? resultStyle(race.result.winnerParty, race.result.marginPct) : null)}
+                      styleFor={(race) =>
+                        isOpen(race)
+                          ? RATING_STYLE.tossup
+                          : race.result
+                            ? resultStyle(race.result.winnerParty, race.result.marginPct)
+                            : null
+                      }
                       describe={(race) =>
-                        race.result
-                          ? `${race.name} · ${race.result.winnerName} +${race.result.marginPct?.toFixed(1) ?? "?"} pts`
-                          : `${race.name} · no results recorded`
+                        !race.result
+                          ? `${race.name} · no results recorded`
+                          : isOpen(race)
+                            ? `${race.name} · ${race.result.winnerName} ${race.callStatus === "runoff" ? "advanced to a runoff" : "leading"}${race.reportingPct != null ? `, ${Math.round(race.reportingPct)}% counted` : ""}`
+                            : `${race.name} · ${race.result.winnerName} +${race.result.marginPct?.toFixed(1) ?? "?"} pts${race.flipped ? " · flipped" : ""}`
                       }
                     />
-                    <ResultsLegend />
+                    <ResultsLegend showOpen={hasOpen} />
                   </div>
                 ) : null}
-                {mapped ? null : (
-                  <div className="lg:col-span-2">
-                    <h2 className="mb-1 text-base font-semibold text-slate-950 dark:text-white">
-                      {cycle} {officeLabel} results
-                    </h2>
-                    <p className="mb-2 text-xs text-slate-500 dark:text-slate-400">Closest races first · margin in percentage points</p>
-                    <ResultsTable races={races.filter((race) => race.code !== "US")} />
+                {mapped && !live ? null : (
+                  <div className="min-w-0 lg:col-span-2">
+                    <div className="mb-2 flex flex-wrap items-end justify-between gap-3">
+                      <div>
+                        <h2 className="mb-1 text-base font-semibold text-slate-950 dark:text-white">
+                          {cycle} {officeLabel} results
+                        </h2>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">
+                          {hasOpen ? "Races not yet called first, then the closest" : "Closest races first"} · margin in percentage points
+                          {races.some((race) => race.stateAbbr && isRankedChoice(race.stateAbbr, race.office)) ? " · ranked-choice counts are first-round" : ""}
+                        </p>
+                      </div>
+                      {live ? (
+                        <label className="text-sm text-slate-600 dark:text-slate-300">
+                          Show
+                          <select value={callFilter} onChange={(event) => setCallFilter(event.target.value)} className="ml-2 rounded-md border border-slate-300 bg-white px-2 py-1.5 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-950 dark:text-white">
+                            <option value="all">All races</option>
+                            <option value="open">Not yet called</option>
+                            <option value="flipped">Flipped seats</option>
+                          </select>
+                        </label>
+                      ) : null}
+                    </div>
+                    <div className="overflow-x-auto">
+                      <ResultsTable races={tableRaces} />
+                    </div>
                   </div>
                 )}
               </section>
