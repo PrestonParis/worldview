@@ -36,7 +36,7 @@ export function contestHash(ev) {
   const shape = {
     n: ev.name,
     o: [...ev.options].map((o) => [o.name, o.votes, o.votesByMethod, o.party, o.incumbent]).sort((a, b) => String(a[0]).localeCompare(String(b[0]))),
-    u: [ev.reportingUnits, ev.totalUnits, ev.isOfficial],
+    u: [ev.reportingUnits, ev.totalUnits, ev.isOfficial, ev.unitStatus ?? null],
     s: ev.status,
     r: [ev.rule, ev.threshold],
     f: ev.flags,
@@ -110,6 +110,10 @@ function contestRow(ev, { source, electionId, header, kind, hash, link, now }) {
     total_votes: m.totalVotes,
     reporting_units: ev.reportingUnits,
     total_units: ev.totalUnits,
+    units_fully_reported: ev.unitStatus?.fully ?? null,
+    units_night_complete: ev.unitStatus?.nightComplete ?? null,
+    units_partial: ev.unitStatus?.partial ?? null,
+    units_not_reported: ev.unitStatus?.notReported ?? null,
     decision_rule: ev.rule,
     rule_source: ev.ruleSource,
     threshold: ev.threshold,
@@ -341,6 +345,13 @@ export async function addBaseline(pg, electionId, rows) {
       params,
     );
   }
+}
+
+// One row per county: turnout, how far its count has got, and whether it has
+// certified. Written whole each round; it is small and only changes with the feed.
+export async function writeCountyStatus(pg, rows) {
+  if (!rows.length) return;
+  await upsertReturning(pg, "tracked_county_status", Object.keys(rows[0]), rows, ["source_election_id", "county_slug"], "county_slug");
 }
 
 export async function writeCoverage(pg, rows) {

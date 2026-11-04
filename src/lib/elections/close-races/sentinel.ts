@@ -22,9 +22,11 @@ export const COVERAGE_PUSH_AT = 16;
 const TOP_LEVELS = new Set(["federal", "statewide"]);
 const CONTEST_EVENTS = new Set(["leader_change", "tie", "vote_decrease", "certification_regressed"]);
 
-export function pushesAtOnce({ kind, level, severity, shortCount = 0 }: { kind: string; level?: string | null; severity?: string; shortCount?: number }): boolean {
+export function pushesAtOnce({ kind, level, severity, shortCount = 0, settled = false }: { kind: string; level?: string | null; severity?: string; shortCount?: number; settled?: boolean }): boolean {
   if (severity === "info") return false;
-  if (CONTEST_EVENTS.has(kind)) return TOP_LEVELS.has(level ?? "");
+  // Once the night's churn has passed, a lead changing or a total going down
+  // is news at any level: few contests still move, and those that do are close.
+  if (CONTEST_EVENTS.has(kind)) return settled || TOP_LEVELS.has(level ?? "");
   if (kind === "stale_county") return false;
   if (kind === "coverage") return shortCount >= COVERAGE_PUSH_AT;
   return true;

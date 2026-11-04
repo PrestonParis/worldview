@@ -14,7 +14,7 @@ command at production; leave it off to work against the local stack.
 | `GA results health` with `loop=true` (the sentinel) | Every 5 min, from the watch start to 17:00 UTC two days after the election | The same check, in a run that repeats itself and hands off, because GitHub's cron is too sparse to rely on (3 firings of `*/10` in the 20 hours before the Nov 3 watch). Cancels a hung watch run and starts a new one. Sends the digest, checks database size and writability, and starts the morning load at 7 am ET. Every watch run restarts it if it's missing. |
 | `GA results daily` | 13:00 UTC, Nov 4–30 and Dec 1–20 | Full load of every unofficial election (one failure doesn't stop the rest), then the morning CSV snapshot. When an election turns official, it is reconciled once against the SOS media export. |
 
-All of them post to `ALERT_WEBHOOK_URL`. Alerts are informational: each says what already happened, and none needs a reply.
+All of them post to `ALERT_WEBHOOK_URL`. Alerts are informational: each says what already happened, and none needs a reply. Outside an election's sentinel window, a lead change, tie or correction pushes at once at every level, since few contests still move by then.
 
 **What reaches the phone:** one push when the election first loads; federal and statewide lead changes, ties and corrections; system failures; coverage short by 16 or more jurisdictions; and a digest every 30 minutes from poll close (hourly from 1 to 7 am ET). Everything else is stored in `tracked_alerts` for the operator panel and counted in the next digest.
 
@@ -66,6 +66,7 @@ Coverage is measured, not hand-counted.
 | Check merge (panel only) | A cross-county race merged under different names, or a same-named question didn't merge. `split` / `merge` in `overrides-<id>.json`. |
 | Watch restarted automatically | The watchdog found no live worker and started the watch. |
 | Watch run failed | One Actions run failed. The next run or the watchdog picks it up. |
+| No votes posted | A contest reports every unit with every candidate at zero. It stays out of the ranking until votes post. |
 | Certified results differ from the media export | Reconcile found mismatches (listed in the alert payload). |
 
 ## 7. Commands (optional)
@@ -105,7 +106,11 @@ ENV_FILE=.env.cloud npm run sync:ga-results -- --election=<id> --snapshot [--sor
 
 Start the chains by hand rather than waiting for cron: `gh workflow run ga-results-watch.yml -f election=auto -f date=<date> -f chain=true`. The watch starts the sentinel. Avoid production deploys during a count: `post-deploy.yml` applies migrations and loads empty datasets into the same database.
 
-## 11. One-time setup (before Nov 3)
+## 11. Prior seat holders
+
+`data/elections/ga/seat-holders-2026.json` is built, not edited: `node --experimental-strip-types scripts/build-ga-seat-holders.mjs [--dry-run]`. It fails when a 2026 incumbent disagrees with the replayed results; record the sourced reason in `seat-holder-overrides.json`.
+
+## 12. One-time setup (before Nov 3)
 
 1. Deploy, which applies the migrations, including `2026-10-28-tracked-baseline.sql`.
 2. Set the repo secrets: `DATABASE_URL`, `ALERT_WEBHOOK_URL`, `SITE_URL`, `REVALIDATE_SECRET`, `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`. Set `REVALIDATE_SECRET` in the site's env too.

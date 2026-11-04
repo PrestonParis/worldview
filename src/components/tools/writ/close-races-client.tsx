@@ -26,14 +26,14 @@ export function AutoRefresh({ seconds = 60 }: { seconds?: number }) {
   return null;
 }
 
-export function ElectionPicker({ current, elections, query }: { current: string; elections: { id: string; label: string }[]; query: string }) {
+export function ElectionPicker({ current, elections, query, base = "/writ/close-races" }: { current: string; elections: { id: string; label: string }[]; query: string; base?: string }) {
   const router = useRouter();
   return (
     <label className="flex min-w-0 items-center gap-2 text-sm">
       <span className="shrink-0 text-slate-500 dark:text-slate-400">Election</span>
       <select
         value={current}
-        onChange={(event) => router.push(`/writ/close-races/${encodeURIComponent(event.target.value)}${query}`)}
+        onChange={(event) => router.push(`${base}/${encodeURIComponent(event.target.value)}${query}`)}
         className="min-w-0 flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
       >
         {elections.map((e) => (
@@ -47,6 +47,9 @@ export function ElectionPicker({ current, elections, query }: { current: string;
 }
 
 const fmt = (n: number) => n.toLocaleString("en-US");
+
+const METHOD_ORDER = ["Election Day", "Advance Voting", "Absentee by Mail", "Provisional"];
+const methodRank = (method: string) => METHOD_ORDER.indexOf(method) + 1 || METHOD_ORDER.length + 1;
 
 export function ContestDetailToggle({ contestId }: { contestId: string }) {
   const [open, setOpen] = useState(false);
@@ -89,8 +92,9 @@ export function ContestDetailToggle({ contestId }: { contestId: string }) {
   );
 }
 
-function DetailBody({ detail }: { detail: ContestDetail }) {
-  const methods = [...new Set(detail.options.flatMap((o) => Object.keys(o.votesByMethod)))];
+export function DetailBody({ detail }: { detail: ContestDetail }) {
+  // Stored as JSONB, which reorders keys; keep the order the state reports them in.
+  const methods = [...new Set(detail.options.flatMap((o) => Object.keys(o.votesByMethod)))].sort((a, b) => methodRank(a) - methodRank(b) || a.localeCompare(b));
   return (
     <>
       <div className="overflow-x-auto">

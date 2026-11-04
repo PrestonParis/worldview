@@ -1739,6 +1739,10 @@ export const trackedContests = pgTable(
     totalVotes: integer("total_votes").notNull().default(0),
     reportingUnits: integer("reporting_units").notNull().default(0),
     totalUnits: integer("total_units").notNull().default(0),
+    unitsFullyReported: integer("units_fully_reported"),
+    unitsNightComplete: integer("units_night_complete"),
+    unitsPartial: integer("units_partial"),
+    unitsNotReported: integer("units_not_reported"),
     decisionRule: text("decision_rule").notNull(),
     ruleSource: text("rule_source"),
     threshold: doublePrecision("threshold"),
@@ -1891,6 +1895,25 @@ export const trackedIngestStatus = pgTable("tracked_ingest_status", {
   replaces: text("replaces"),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
+
+export const trackedCountyStatus = pgTable(
+  "tracked_county_status",
+  {
+    sourceElectionId: text("source_election_id").notNull(),
+    countySlug: text("county_slug").notNull(),
+    county: text("county").notNull(),
+    registered: integer("registered"),
+    ballotsCast: integer("ballots_cast"),
+    unitsFullyReported: integer("units_fully_reported"),
+    unitsNightComplete: integer("units_night_complete"),
+    unitsPartial: integer("units_partial"),
+    unitsNotReported: integer("units_not_reported"),
+    isOfficial: boolean("is_official").notNull().default(false),
+    sourceUpdatedAt: timestamp("source_updated_at", { withTimezone: true }),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [primaryKey({ columns: [table.sourceElectionId, table.countySlug] })],
+);
 
 export const trackedAlerts = pgTable(
   "tracked_alerts",

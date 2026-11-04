@@ -2,7 +2,7 @@
 // §4). The canonical ranking is the raw vote margin; percentage-point margin
 // is the alternate sort.
 
-import type { CloseRaceSort, ContestFlag, DecisionRule, MarginResult, ParsedOption, ResultStatus } from "./types.ts";
+import type { CloseRaceSort, ContestFlag, DecisionRule, MarginResult, ParsedOption, ResultStatus, UnitStatus } from "./types.ts";
 
 /** Margin at or under this many points is in recount-request range (O.C.G.A. § 21-2-495(c)). */
 export const RECOUNT_REQUEST_PCT = 0.5;
@@ -14,11 +14,14 @@ export function computeMargin({
   voteFor,
   rule,
   threshold,
+  complete = false,
 }: {
   options: ParsedOption[];
   voteFor: number;
   rule: DecisionRule;
   threshold: number | null;
+  /** Every reporting unit is in, so an option at zero votes really has none. */
+  complete?: boolean;
 }): MarginResult {
   const totalVotes = options.reduce((sum, o) => sum + o.votes, 0);
   const sorted = [...options].sort((a, b) => b.votes - a.votes || a.name.localeCompare(b.name));
@@ -35,7 +38,10 @@ export function computeMargin({
   const leaderShare = leader && totalVotes > 0 ? leader.votes / totalVotes : null;
   const tie = marginVotes === 0 && totalVotes > 0;
   const withVotes = options.filter((o) => o.votes > 0).length;
-  const rankable = !uncontested && marginVotes != null && totalVotes > 0 && withVotes >= 2;
+  const rankable = !uncontested && marginVotes != null && totalVotes > 0 && (withVotes >= 2 || complete);
+  // With two options one has a majority unless they tie, so only a field of
+  // three or more (write-ins count) can fall short of the line.
+  const canMissLine = options.length >= 3;
 
   const flags: ContestFlag[] = [];
   if (rankable && tie) flags.push("tie");
@@ -48,11 +54,13 @@ export function computeMargin({
     if (rule === "majority") {
       // A majority means more than half: exactly 50% still goes to a runoff.
       if (leader!.votes * 2 <= totalVotes) flags.push("runoff_required");
-      else if (share - line <= NEAR_RUNOFF_PTS) flags.push("near_runoff");
-    } else if (rule === "unknown" && share - line <= NEAR_RUNOFF_PTS) {
+      else if (canMissLine && share - line <= NEAR_RUNOFF_PTS) flags.push("near_runoff");
+    } else if (rule === "unknown" && canMissLine && share - line <= NEAR_RUNOFF_PTS) {
       flags.push("runoff_rule_unverified");
     }
   }
+
+  if (complete && !uncontested && totalVotes === 0) flags.push("no_votes_reported");
 
   const ranked = sorted.map((option, i) => ({
     ...option,
@@ -86,6 +94,7 @@ export function resultStatus({
   isOfficial,
   scope,
   override,
+  units,
 }: {
   totalVotes: number;
   reportingUnits: number;
@@ -93,11 +102,15 @@ export function resultStatus({
   isOfficial: boolean;
   scope: "state" | "county";
   override?: ResultStatus | null;
+  units?: UnitStatus | null;
 }): ResultStatus {
   if (override) return override;
   if (isOfficial) return scope === "state" ? "state_certified" : "county_certified";
   if (totalVotes === 0 && reportingUnits === 0) return "no_results";
-  if (totalUnits > 0 && reportingUnits >= totalUnits) return "unofficial_complete";
+  if (totalUnits > 0 && reportingUnits >= totalUnits) {
+    const unfinished = units ? units.nightComplete + units.partial + units.notReported : 0;
+    return unfinished > 0 ? "election_night_complete" : "unofficial_complete";
+  }
   return "reporting";
 }
 

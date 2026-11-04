@@ -45,13 +45,15 @@ export function evaluateContest(
     municipality: cls.municipality,
     municipalRules: { ...municipalRules, ...(overrides.municipalRules ?? {}) },
   });
-  const margin = computeMargin({ options: contest.options, voteFor: contest.voteFor, rule: rule.rule, threshold: rule.threshold });
+  const complete = contest.totalUnits > 0 && contest.reportingUnits >= contest.totalUnits;
+  const margin = computeMargin({ options: contest.options, voteFor: contest.voteFor, rule: rule.rule, threshold: rule.threshold, complete });
   const status = resultStatus({
     totalVotes: margin.totalVotes,
     reportingUnits: contest.reportingUnits,
     totalUnits: contest.totalUnits,
     isOfficial: contest.isOfficial,
     scope: contest.scope === "state" ? "state" : "county",
+    units: contest.unitStatus,
     override: overrides.status?.[contest.key] ?? overrides.status?.[contest.name] ?? null,
   });
   const flags: ContestFlag[] = [...margin.flags];

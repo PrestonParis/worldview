@@ -29,6 +29,7 @@ export type DecisionRule = "majority" | "plurality" | "top_n" | "referendum" | "
 export type ResultStatus =
   | "no_results"
   | "reporting"
+  | "election_night_complete"
   | "unofficial_complete"
   | "county_certified"
   | "state_certified"
@@ -38,6 +39,7 @@ export type ResultStatus =
 export const RESULT_STATUSES: ResultStatus[] = [
   "no_results",
   "reporting",
+  "election_night_complete",
   "unofficial_complete",
   "county_certified",
   "state_certified",
@@ -54,7 +56,8 @@ export type ContestFlag =
   | "near_runoff"
   | "runoff_rule_unverified"
   | "merged"
-  | "unlinked_counties";
+  | "unlinked_counties"
+  | "no_votes_reported";
 
 export type CloseRaceSort = "votes" | "percent";
 
@@ -66,6 +69,18 @@ export interface ParsedOption {
   isWriteIn: boolean;
   votes: number;
   votesByMethod: Record<string, number>;
+}
+
+/**
+ * SOS's own reporting state for a contest's precincts. "Election night
+ * complete" counts toward reportingUnits, but later ballots can still arrive;
+ * only "fully reported" means a unit is finished.
+ */
+export interface UnitStatus {
+  fully: number;
+  nightComplete: number;
+  partial: number;
+  notReported: number;
 }
 
 export interface ParsedContest {
@@ -81,6 +96,7 @@ export interface ParsedContest {
   reportingUnits: number;
   totalUnits: number;
   asOf: string | null;
+  unitStatus?: UnitStatus | null;
   options: ParsedOption[];
 }
 
@@ -89,6 +105,7 @@ export interface ParsedLocality {
   shortName: string;
   name: string;
   percentReporting: number | null;
+  turnoutPercent?: number | null;
 }
 
 export interface ParsedElectionHeader {
@@ -110,6 +127,10 @@ export interface ParsedFeed {
   /** One per county: lets the watcher fetch only counties that changed. */
   localityElections: ParsedElectionHeader[];
   contests: ParsedContest[];
+  /** Registered voters by lowercased locality id (the state feed lists them). */
+  registration?: Record<string, number>;
+  /** Sum of the feed's per-precinct ballots cast; null when it lists none. */
+  ballotsCast?: number | null;
 }
 
 export interface MarginResult {
@@ -163,4 +184,7 @@ export interface CloseRaceRow {
   sourceUpdatedAt: string | null;
   ingestedAt: string | null;
   electionId: string | null;
+  /** Filled for the results hub; absent on rows built elsewhere. */
+  outcome?: { label: string; advancing: string[] };
+  seat?: { priorParty: string | null; change: string | null } | null;
 }
