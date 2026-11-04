@@ -9,7 +9,10 @@ import { db } from "./client";
 import { CLOSE_RACE_ROWS_SQL, filterReport, toReportRow, withSeats, type CloseRaceFilters, type DbCloseRaceRow, type FilteredReport, type ReportRow } from "../elections/close-races/rows";
 import { pairRunoffs, summarizeResults, type ResultsSummary } from "../elections/close-races/results";
 import type { SeatHolders } from "../elections/close-races/seats";
+import { votedIn } from "../elections/close-races/precincts";
+import { etDate } from "../elections/close-races/schedule";
 import seatHolderFile from "../../../data/elections/ga/seat-holders-2026.json";
+import scheduleFile from "../../../data/elections/ga/schedule.json";
 import type { ContestLevel, ElectionKind, ResultStatus } from "../elections/close-races/types";
 
 export const CLOSE_RACES_TAG = "tracked-contests";
@@ -79,8 +82,18 @@ export function defaultElection(elections: TrackedElection[]): TrackedElection |
 const SEAT_HOLDERS = seatHolderFile.seats as SeatHolders;
 
 const loadRows = cached("rows", async (election: string): Promise<ReportRow[]> => {
-  const { rows } = await db.$client.query<DbCloseRaceRow>(CLOSE_RACE_ROWS_SQL, [election]);
-  return withSeats(rows.map(toReportRow), SEAT_HOLDERS);
+  const [{ rows }, { rows: places }] = await Promise.all([
+    db.$client.query<DbCloseRaceRow>(CLOSE_RACE_ROWS_SQL, [election]),
+    db.$client.query(
+      `select p.contest_id, p.precinct, p.total_votes from tracked_contest_precincts p
+         join tracked_contests c on c.id = p.contest_id
+        where c.source_election_id = $1 and c.municipality is null and c.level in ('municipal', 'referendum')`,
+      [election],
+    ),
+  ]);
+  const byContest = new Map<string, { precinct: string; totalVotes: number }[]>();
+  for (const p of places) byContest.set(p.contest_id, [...(byContest.get(p.contest_id) ?? []), { precinct: p.precinct, totalVotes: p.total_votes }]);
+  return withSeats(rows.map(toReportRow), SEAT_HOLDERS).map((r) => (byContest.has(r.id) ? { ...r, votedIn: votedIn(byContest.get(r.id)!) } : r));
 });
 
 export interface CoverageRow {
@@ -202,6 +215,8 @@ export interface CountyStatusRow {
   unitsNight: number;
   unitsPartial: number;
   unitsNotReported: number;
+  percentReporting: number | null;
+  groupsUnreported: string[];
   isOfficial: boolean;
   sourceUpdatedAt: string | null;
 }
@@ -217,7 +232,7 @@ export interface CountyStatusSummary {
 
 export const loadCountyStatus = cached("county-status", async (election: string): Promise<CountyStatusSummary> => {
   const { rows } = await db.$client.query(
-    `select county_slug, county, registered, ballots_cast, units_fully_reported, units_night_complete, units_partial, units_not_reported, is_official, source_updated_at
+    `select county_slug, county, registered, ballots_cast, units_fully_reported, units_night_complete, units_partial, units_not_reported, percent_reporting, groups_unreported, is_official, source_updated_at
        from tracked_county_status where source_election_id = $1 order by county`,
     [election],
   );
@@ -230,6 +245,8 @@ export const loadCountyStatus = cached("county-status", async (election: string)
     unitsNight: r.units_night_complete ?? 0,
     unitsPartial: r.units_partial ?? 0,
     unitsNotReported: r.units_not_reported ?? 0,
+    percentReporting: r.percent_reporting,
+    groupsUnreported: r.groups_unreported ?? [],
     isOfficial: r.is_official,
     sourceUpdatedAt: iso(r.source_updated_at),
   }));
@@ -273,6 +290,9 @@ export interface ResultsData {
   mapContests: { id: string; name: string }[];
   /** The election date of the runoff round, once it is on the schedule. */
   runoffDate: string | null;
+  calendar: { date: string; label: string; meaning?: string; signal?: string; source: string }[];
+  /** Today in Georgia, for the timeline. */
+  today: string;
 }
 
 /** The runoff round that follows a general: SOS lists it near the day. */
@@ -294,7 +314,7 @@ export async function loadResults(electionId: string): Promise<ResultsData | nul
   const [rows, counties] = await Promise.all([loadRows(electionId), loadCountyStatus(electionId)]);
   const pairs = await runoffPairs(elections, election, rows);
   const summary = summarizeResults(rows, { kind: election.kind, holders: SEAT_HOLDERS, pairs });
-  const watched = [...summary.recountRange].map((r) => ({ id: r.id, margin: r.marginVotes }));
+  const watched = [...summary.recountRange, ...summary.runoffs.map((r) => r.row)].map((r) => ({ id: r.id, margin: r.marginVotes }));
   const moves = await loadMarginMoves(election.date, watched);
   return {
     election,
@@ -305,6 +325,8 @@ export async function loadResults(electionId: string): Promise<ResultsData | nul
     totalContests: rows.length,
     mapContests: [...summary.statewide, ...summary.statewideQuestions].map((r) => ({ id: r.id, name: r.name })),
     runoffDate: runoffAfter(elections, election)?.date ?? null,
+    calendar: (scheduleFile.elections as { date: string; calendar?: ResultsData["calendar"] }[]).find((e) => e.date === election.date)?.calendar ?? [],
+    today: etDate(),
   };
 }
 
@@ -314,6 +336,7 @@ export interface RaceData {
   detail: ContestDetail;
   /** The other round of this contest: its runoff, or the general it came from. */
   otherRound: ReportRow | null;
+  precincts: { county: string; precinct: string; totalVotes: number; votes: Record<string, number> }[];
 }
 
 export async function loadRace(electionId: string, key: string): Promise<RaceData | null> {
@@ -335,7 +358,11 @@ export async function loadRace(electionId: string, key: string): Promise<RaceDat
       otherRound = generalRows.find((r) => r.id === match) ?? null;
     }
   }
-  return { election, row, detail, otherRound };
+  const { rows: precincts } = await db.$client.query(
+    "select county_slug, precinct, total_votes, votes from tracked_contest_precincts where contest_id = $1 order by county_slug, precinct",
+    [row.id],
+  );
+  return { election, row, detail, otherRound, precincts: precincts.map((p) => ({ county: p.county_slug, precinct: p.precinct, totalVotes: p.total_votes, votes: p.votes ?? {} })) };
 }
 
 /** A county's own numbers for each contest it votes on. */

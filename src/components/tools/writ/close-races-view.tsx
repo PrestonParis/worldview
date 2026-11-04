@@ -313,7 +313,7 @@ export function Flags({ row }: { row: ReportRow }) {
   );
 }
 
-function RaceName({ row }: { row: ReportRow }) {
+export function RaceName({ row }: { row: ReportRow }) {
   const place =
     row.county ??
     (row.counties.length === 1 ? countyNameFromSlug(row.counties[0]) : row.counties.length > 1 ? `${row.counties.length} counties` : null);
@@ -335,6 +335,7 @@ function RaceName({ row }: { row: ReportRow }) {
         {place ? ` · ${place}` : ""}
         {row.municipality && row.level !== "municipal" ? ` · ${row.municipality}` : ""}
         {row.voteFor > 1 ? ` · ${row.voteFor} seats (last winner vs first loser)` : ""}
+        {row.votedIn?.length ? ` · Voted in ${row.votedIn.join(", ")} ${row.votedIn.length === 1 ? "precinct" : "precincts"}` : ""}
       </span>
     </span>
   );

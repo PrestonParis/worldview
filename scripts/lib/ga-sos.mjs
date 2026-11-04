@@ -60,6 +60,7 @@ export function sosClient({ base = SOS_BASE, concurrency = 4, maxRequests = 20_0
     header: (id) => get(api(`/elections/Georgia/${encodeURIComponent(id)}`)),
     state: (id) => get(api(`/elections/Georgia/${encodeURIComponent(id)}/data`)),
     county: (slug, id) => get(api(`/elections/${encodeURIComponent(slug)}/${encodeURIComponent(id)}/data`)),
+    ballotItem: (slug, id, contestId) => get(api(`/elections/${encodeURIComponent(slug)}/${encodeURIComponent(id)}/ballot-items/${encodeURIComponent(contestId)}`)),
     mediaExport: (id) => get(`${base}/cdn/results/Georgia/export-${encodeURIComponent(id)}.json`),
     pool,
   };

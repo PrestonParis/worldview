@@ -179,6 +179,10 @@ export function parseElectionHeader(raw: Raw): ParsedElectionHeader {
     isPrimary: Boolean(raw?.isPrimary),
     asOf: raw?.asOf ?? null,
     lastUpdated: raw?.lastUpdated ?? null,
+    groupsUnreported: (raw?.groupReportingStatus ?? [])
+      .filter((g: Raw) => g?.reportingStatusClientTextKey === "reporting-status-not-reported")
+      .map((g: Raw) => text(g.groupName))
+      .filter(Boolean),
   };
 }
 

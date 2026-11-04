@@ -13,7 +13,7 @@ name: GA results health
 on:
   schedule:
     - cron: "*/10 * 3-30 11 *"
-    - cron: "*/10 * 1-20 12 *"
+    - cron: "*/10 * 1-31 12 *"
   workflow_dispatch:
     inputs:
       loop:

@@ -20,7 +20,7 @@ export const COVERAGE_PUSH_AT = 16;
 // Only these races push a lead change, tie or correction at once; hundreds of
 // local races flip during the first hour and go into the digest.
 const TOP_LEVELS = new Set(["federal", "statewide"]);
-const CONTEST_EVENTS = new Set(["leader_change", "tie", "vote_decrease", "certification_regressed"]);
+const CONTEST_EVENTS = new Set(["leader_change", "outcome_change", "tie", "vote_decrease", "certification_regressed"]);
 
 export function pushesAtOnce({ kind, level, severity, shortCount = 0, settled = false }: { kind: string; level?: string | null; severity?: string; shortCount?: number; settled?: boolean }): boolean {
   if (severity === "info") return false;

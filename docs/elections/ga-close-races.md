@@ -202,6 +202,17 @@ Alerts report what already happened; none asks for a reply.
   - A history view of the closest GA races across every cycle since 2012.
   - Alerts when a followed race enters recount or runoff range.
 
+### Keeping the count right
+
+The Secretary of State is the source, so accuracy means reading it completely and noticing every change.
+
+- **Reporting state:** `tracked_county_status` records each county's vote groups not yet reported and SOS's `percentReporting`, which averages four vote groups (fully reported 1, election night complete 0.5, not reported 0).
+- **Outcome changes:** `outcome_change` alerts when a settled contest crosses a line (winner to runoff, passing to failing, entering or leaving recount range), which a late batch can do without changing the leader.
+- **Daily reconcile:** `GA results daily` compares the database with the media export every day, not only once official. Before certification a difference is an alert, not a failed run, because the export can trail the API by minutes.
+- **State vs counties:** outside the sentinel window, a state total that differs from a complete set of county slices raises an alert.
+- **Precincts:** `scripts/lib/close-races-precincts.mjs` reads `/elections/{county}/{id}/ballot-items/{contest}` for close contests and unplaced city contests into `tracked_contest_precincts`, only when a county's feed changed. It alerts when precincts don't add up to the contest, and archives a raw copy to the lake when numbers move. A contest the feed leaves unnamed ("Mayor (Special)") shows the precincts it was voted in.
+- **Fallback:** the media export carries reporting state per county rather than per contest, and no turnout. A fallback round derives contest status from the county's groups and leaves `tracked_county_status` alone.
+
 ### Results hub
 
 The ranked report above is the **Closest races** tab of a hub, and keeps its URL.
