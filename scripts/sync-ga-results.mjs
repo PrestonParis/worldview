@@ -55,8 +55,9 @@ import { assembleContests, normalizeName, stableHash } from "../src/lib/election
 import { evaluateContest } from "../src/lib/elections/close-races/evaluate.ts";
 import { compareByPercent, compareByVotes } from "../src/lib/elections/close-races/margin.ts";
 import { parseMediaExport } from "../src/lib/elections/close-races/media-export.ts";
-import { CLOSE_RACE_ROWS_SQL, filterReport, toReportRow, withSeats } from "../src/lib/elections/close-races/rows.ts";
-import { closeRacesCsv, closeRacesFilename } from "../src/lib/elections/close-races/csv.ts";
+import { CLOSE_RACE_ROWS_SQL, everyContest, filterReport, toReportRow, withSeats } from "../src/lib/elections/close-races/rows.ts";
+import { runoffMismatches } from "../src/lib/elections/close-races/results.ts";
+import { allResultsFilename, closeRacesCsv, closeRacesFilename } from "../src/lib/elections/close-races/csv.ts";
 import { coverageRecords, feedContests, newBaselineContests } from "../src/lib/elections/close-races/coverage.ts";
 import { etDate, parseSchedule, scheduledOn } from "../src/lib/elections/close-races/schedule.ts";
 import { pushesAtOnce, sentinelActive } from "../src/lib/elections/close-races/sentinel.ts";
@@ -318,6 +319,34 @@ async function revalidate() {
   }
 }
 
+// A runoff round against the general it follows: an expected runoff SOS doesn't
+// list, or a listed one with no contest that needed it. Compared on the stored
+// rows, so the runoff's own contests are in place.
+async function checkRunoffRound(pg, id, date) {
+  const { rows: general } = await pg.query(
+    "select source_election_id from tracked_ingest_status where election_kind = 'general' and election_date < $1 and source = 'ga-sos' order by election_date desc limit 1",
+    [date],
+  );
+  if (!general.length) return;
+  const load = async (election) => (await pg.query(CLOSE_RACE_ROWS_SQL, [election])).rows.map(toReportRow);
+  const { noRunoff, noParent } = runoffMismatches(await load(general[0].source_election_id), await load(id));
+  if (!noRunoff.length && !noParent.length) return;
+  const name = (r) => `${r.name}${r.county ? ` (${r.county})` : ""}`;
+  const parts = [
+    noRunoff.length ? `${noRunoff.length} expected with no runoff listed: ${noRunoff.slice(0, 5).map(name).join("; ")}` : null,
+    noParent.length ? `${noParent.length} listed with no matching contest: ${noParent.slice(0, 5).map(name).join("; ")}` : null,
+  ].filter(Boolean);
+  await raiseAlert(pg, {
+    election: id,
+    key: `runoff_mismatch:${stableHash(parts.join("|"))}`,
+    kind: "runoff_mismatch",
+    severity: "warning",
+    message: `Runoff contests don't line up with the general: ${parts.join(". ")}`,
+    payload: { noRunoff: noRunoff.map(name), noParent: noParent.map(name) },
+    push: !sentinelActive(SCHEDULE),
+  });
+}
+
 // Turnout and count progress per county, from the feeds already in hand.
 function countyStatusRows(ctx, id, counties, header) {
   const localities = new Map(ctx.state.feed.localities.map((l) => [l.shortName, l]));
@@ -406,6 +435,20 @@ async function persist(ctx, mode) {
     });
     if (precincts?.read) console.log(`  precincts: read ${precincts.read} contest slices, ${precincts.changed} precinct rows changed`);
   }
+
+  for (const e of evaluated.filter((c) => c.flags.includes("no_votes_reported") && c.isOfficial)) {
+    await raiseAlert(pg, {
+      election: id,
+      key: `no_votes_certified:${stableHash(e.key)}`,
+      kind: "no_votes_certified",
+      severity: "warning",
+      message: `${e.name}${e.county ? ` (${e.county})` : ""} is certified with no votes posted. Its numbers need the county's records: add them to overrides-${id}.json with a source.`,
+      push: true,
+    });
+  }
+
+  // A check, so a failure here must not stop the count being written.
+  if (kind === "runoff" && evaluated.length) await checkRunoffRound(pg, id, header.electionDate).catch((err) => console.warn(`  runoff check failed: ${err.message}`));
 
   const offTotals = stateCountyMismatches(evaluated);
   if (offTotals.length && !sentinelActive(SCHEDULE)) {
@@ -554,7 +597,8 @@ async function discover(ctxs, date) {
     }
     ctxs[i] = newContext({ ...next, replaces: from }, ctx.pg);
   }
-  for (const e of list.filter((e) => e.date === date && !ctxs.some((c) => c.election.id === e.id))) {
+  // A recount can carry its own later date (2024's HD 105 was dated Dec 3).
+  for (const e of list.filter((e) => (e.date === date || (e.kind === "recount" && e.date > date)) && !ctxs.some((c) => c.election.id === e.id))) {
     console.log(`  also following ${e.id} (${e.name}), listed for ${date}`);
     ctxs.push(newContext(e, ctxs[0].pg));
   }
@@ -703,6 +747,26 @@ async function snapshot(pg, id) {
   const { rows } = await pg.query(CLOSE_RACE_ROWS_SQL, [id]);
   const { ranked } = filterReport(withSeats(rows.map(toReportRow), readJson(path.join(DATA_DIR, "seat-holders-2026.json"), { seats: {} }).seats), { sort });
   if (!ranked.length) throw new Error(`no ranked contests for ${id}; load it first`);
+  const { rows: status } = await pg.query("select is_official from tracked_ingest_status where source_election_id = $1", [id]);
+  if (status[0]?.is_official) {
+    // Certified: one file per version of the data, every contest, not one a day.
+    const seats = readJson(path.join(DATA_DIR, "seat-holders-2026.json"), { seats: {} }).seats;
+    const all = closeRacesCsv(everyContest(withSeats(rows.map(toReportRow), seats)));
+    const isNew = await raiseAlert(pg, { election: id, key: `certified_csv:${stableHash(all)}`, kind: "certified_csv", severity: "info", message: "Certified results file written", push: false });
+    if (!isNew) {
+      console.log("  certified file already published for this data");
+      return;
+    }
+    const name = allResultsFilename(id, new Date(), { certified: true });
+    fs.mkdirSync(EXPORT_DIR, { recursive: true });
+    fs.writeFileSync(path.join(EXPORT_DIR, name), all);
+    console.log(`  certified results → ${path.join(EXPORT_DIR, name)}`);
+    if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      const objectPath = `writ/close-races/${id}/${name}`;
+      await upload("lake", objectPath, Buffer.from(all), "text/csv; charset=utf-8");
+      await sendWebhook(`📄 [${id}] Certified results, every contest: ${lakeUrl(objectPath)}`);
+    }
+  }
   const file = closeRacesFilename(id, sort, new Date());
   const body = closeRacesCsv(ranked);
   fs.mkdirSync(EXPORT_DIR, { recursive: true });
@@ -737,6 +801,8 @@ async function reconcile(pg, id, { certified = true } = {}) {
       continue;
     }
     db.delete(`ga-sos:${id}:${c.key}`);
+    // Numbers from a county's records, because SOS has none to compare.
+    if (overrides.votes?.[c.key] ?? overrides.votes?.[c.name]) continue;
     const label = `${c.name}${c.county ? ` (${c.county})` : ""}`;
     const total = c.options.reduce((s, o) => s + o.votes, 0);
     if (total !== row.total_votes) problems.push(`${label}: export ${total} vs DB ${row.total_votes}`);

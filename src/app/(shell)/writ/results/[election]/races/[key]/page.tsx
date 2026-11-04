@@ -62,6 +62,7 @@ export default async function RacePage({ params }: Props) {
           <div className="mt-2">
             <Flags row={row} />
           </div>
+          {row.recount ? <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">{row.recount.final ? "These figures are the recount's. The tables below are the original count." : "A recount is under way. These figures are the original count."}</p> : null}
           <dl className="mt-5 grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
             <Fact label="Margin" value={row.marginVotes == null ? "—" : `${fmt(row.marginVotes)} votes`} note={row.marginPct != null ? `${row.marginPct.toFixed(2)} pts` : undefined} />
             <Fact label="Total votes" value={fmt(row.totalVotes)} />
@@ -73,7 +74,7 @@ export default async function RacePage({ params }: Props) {
           <div className="mt-4 flex flex-wrap gap-4 text-sm font-semibold text-rose-600 dark:text-rose-400">
             {otherRound ? (
               <Link href={`/writ/results/${encodeURIComponent(otherRound.sourceElectionId)}/races/${encodeURIComponent(otherRound.key)}`} className="hover:underline">
-                {election.kind === "runoff" ? "The general election" : "The runoff"}
+                {otherRound.label}
               </Link>
             ) : null}
             {row.electionId ? (

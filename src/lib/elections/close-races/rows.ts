@@ -107,6 +107,8 @@ export interface ReportRow extends CloseRaceRow {
   seat: { key: string; priorParty: string | null; priorName: string | null; change: SeatChange | null } | null;
   /** Where an unnamed city contest was voted, from its precinct results. */
   votedIn?: string[];
+  /** A recount SOS listed for this contest. `final`: its result has replaced the original count here. */
+  recount?: { key: string; sourceElectionId: string; final: boolean };
 }
 
 const iso = (v: Date | string | null) => (v == null ? null : v instanceof Date ? v.toISOString() : new Date(v).toISOString());
@@ -200,6 +202,12 @@ export interface CloseRaceFilters {
   maxVotes?: number | null;
   status?: ResultStatus | null;
   flag?: ContestFlag | null;
+}
+
+/** Every contest in one list: ranked ones in order, then those with no margin to rank (rank 0). */
+export function everyContest(rows: ReportRow[]): ReportRow[] {
+  const { ranked, uncontested, waiting } = filterReport(rows, { sort: "votes" });
+  return [...ranked, ...uncontested, ...waiting];
 }
 
 export interface FilteredReport {

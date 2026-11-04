@@ -24,6 +24,7 @@ export interface ResultsSummary {
   usHouse: ReportRow[];
   runoffs: { row: ReportRow; pair: ReportRow | null }[];
   recountRange: ReportRow[];
+  recounts: ReportRow[];
   tied: ReportRow[];
   ruleUnverified: ReportRow[];
   noVotes: ReportRow[];
@@ -42,19 +43,90 @@ const couple = (row: Pick<ReportRow, "leaderName" | "runnerUpName" | "county">) 
  * ballot doesn't change.
  */
 export function pairRunoffs(general: ReportRow[], runoff: ReportRow[]): Map<string, ReportRow> {
+  return pairRounds(general.filter((r) => r.outcome.kind === "advancing_to_runoff" || r.outcome.kind === "rule_unverified"), runoff);
+}
+
+/** Recount contests carry a different name ("… Recount"), so they match the same way. */
+export function pairRecounts(original: ReportRow[], recount: ReportRow[]): Map<string, ReportRow> {
+  return pairRounds(original, recount);
+}
+
+function pairRounds(earlier: ReportRow[], later: ReportRow[]): Map<string, ReportRow> {
   const byCouple = new Map<string, ReportRow>();
-  for (const row of runoff) {
+  for (const row of later) {
     const key = couple(row);
     if (key) byCouple.set(key, row);
   }
   const pairs = new Map<string, ReportRow>();
-  for (const row of general) {
-    if (row.outcome.kind !== "advancing_to_runoff") continue;
+  for (const row of earlier) {
     const key = couple(row);
     const pair = key ? byCouple.get(key) : undefined;
     if (pair) pairs.set(row.id, pair);
   }
   return pairs;
+}
+
+/**
+ * A recount's result in place of the original count, everywhere the row is
+ * used: seats, flips, the CSV. Until the recount has an outcome the original
+ * stands and the row only says one is under way.
+ */
+export function applyRecounts(rows: ReportRow[], recount: ReportRow[]): ReportRow[] {
+  const pairs = pairRecounts(rows, recount);
+  return rows.map((row) => {
+    const r = pairs.get(row.id);
+    if (!r) return row;
+    const link = { key: r.key, sourceElectionId: r.sourceElectionId };
+    if (r.outcome.kind === "counting") return { ...row, recount: { ...link, final: false } };
+    const sameLeader = r.leaderName === row.leaderName;
+    return {
+      ...row,
+      leaderName: r.leaderName,
+      leaderParty: r.leaderParty ?? (sameLeader ? row.leaderParty : row.runnerUpParty),
+      leaderIncumbent: sameLeader ? row.leaderIncumbent : row.runnerUpIncumbent,
+      leaderVotes: r.leaderVotes,
+      runnerUpName: r.runnerUpName,
+      runnerUpParty: r.runnerUpParty ?? (sameLeader ? row.runnerUpParty : row.leaderParty),
+      runnerUpIncumbent: sameLeader ? row.runnerUpIncumbent : row.leaderIncumbent,
+      runnerUpVotes: r.runnerUpVotes,
+      thirdVotes: r.thirdVotes,
+      totalVotes: r.totalVotes,
+      marginVotes: r.marginVotes,
+      marginPct: r.marginPct,
+      leaderShare: r.leaderShare,
+      flags: r.flags,
+      resultStatus: r.resultStatus,
+      outcome: r.outcome,
+      // The incumbent can only trail the recount's leader if they aren't it.
+      trailingIncumbent: sameLeader ? row.trailingIncumbent : row.leaderIncumbent && row.leaderName ? { name: row.leaderName, party: row.leaderParty } : null,
+      recount: { ...link, final: true },
+    };
+  });
+}
+
+/**
+ * City contests below 50% whose runoff rule isn't sourced. SOS's runoff feed
+ * answers it: a contest with a runoff listed goes to one; once the feed has
+ * contests, one without is decided by its leader.
+ */
+export function settleUnverified(rows: ReportRow[], runoff: ReportRow[]): ReportRow[] {
+  if (!runoff.length) return rows;
+  const pairs = pairRunoffs(rows, runoff);
+  return rows.map((row) => {
+    if (row.outcome.kind !== "rule_unverified") return row;
+    if (pairs.has(row.id)) return { ...row, outcome: { kind: "advancing_to_runoff", label: "Runoff", advancing: [row.leaderName, row.runnerUpName].filter((n): n is string => Boolean(n)), secondSlotTied: false } };
+    return { ...row, outcome: { kind: "elected", label: "Apparent winner, no runoff listed", advancing: [], secondSlotTied: false } };
+  });
+}
+
+/** What the two rounds disagree on: an expected runoff SOS doesn't list, and a listed one nobody expected. */
+export function runoffMismatches(general: ReportRow[], runoff: ReportRow[]): { noRunoff: ReportRow[]; noParent: ReportRow[] } {
+  const pairs = pairRunoffs(general, runoff);
+  const paired = new Set([...pairs.values()].map((r) => r.id));
+  return {
+    noRunoff: general.filter((r) => r.outcome.kind === "advancing_to_runoff" && !pairs.has(r.id)),
+    noParent: runoff.filter((r) => !paired.has(r.id)),
+  };
 }
 
 /** Seats a later round has settled, by seat key. */
@@ -86,6 +158,15 @@ function bySeat(a: ReportRow, b: ReportRow): number {
   return Number(seatA) - Number(seatB);
 }
 
+/** Seats a runoff has moved, shown with the runoff's winner: they count in the chamber totals too. */
+function runoffFlips(rows: ReportRow[], pairs: Map<string, ReportRow>): ReportRow[] {
+  return rows.flatMap((row) => {
+    const pair = pairs.get(row.id);
+    if (!row.seat?.priorParty || !pair?.leaderParty || !seatIsDecided(pair.outcome.kind) || pair.leaderParty === row.seat.priorParty) return [];
+    return [{ ...row, leaderName: pair.leaderName, leaderParty: pair.leaderParty, marginPct: pair.marginPct }];
+  });
+}
+
 export function summarizeResults(rows: ReportRow[], { kind, holders, pairs = new Map() }: { kind: ElectionKind; holders: SeatHolders; pairs?: Map<string, ReportRow> }): ResultsSummary {
   const fillsSeats = rows.some((r) => r.seat) && (kind === "general" || kind === "special");
   const levels = CONTEST_LEVELS.map((level) => {
@@ -105,10 +186,11 @@ export function summarizeResults(rows: ReportRow[], { kind, holders, pairs = new
       .sort(byMargin)
       .map((row) => ({ row, pair: pairs.get(row.id) ?? null })),
     recountRange: rows.filter((r) => r.flags.includes("recount_request_range")).sort(byMargin),
+    recounts: rows.filter((r) => r.recount).sort(byMargin),
     tied: rows.filter((r) => r.outcome.kind === "tied"),
     ruleUnverified: rows.filter((r) => r.outcome.kind === "rule_unverified").sort(byMargin),
     noVotes: rows.filter((r) => r.outcome.kind === "no_votes"),
-    flips: rows.filter((r) => r.seat?.change === "gained").sort(bySeat),
+    flips: [...rows.filter((r) => r.seat?.change === "gained"), ...runoffFlips(rows, pairs)].sort(bySeat),
     defeatedIncumbents: rows.filter((r) => r.trailingIncumbent && r.outcome.kind === "elected" && !r.leaderIncumbent).sort(byMargin),
     questions: {
       passed: questions.filter((r) => r.outcome.kind === "passed").length,

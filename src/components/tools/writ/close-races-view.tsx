@@ -290,6 +290,7 @@ const FLAG_STYLE: Record<ContestFlag, string> = {
   merged: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300",
   unlinked_counties: "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-200",
   no_votes_reported: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300",
+  votes_from_county: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300",
 };
 
 function flagLabel(flag: ContestFlag, row: ReportRow) {

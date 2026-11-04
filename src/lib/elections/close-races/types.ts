@@ -57,7 +57,8 @@ export type ContestFlag =
   | "runoff_rule_unverified"
   | "merged"
   | "unlinked_counties"
-  | "no_votes_reported";
+  | "no_votes_reported"
+  | "votes_from_county";
 
 export type CloseRaceSort = "votes" | "percent";
 

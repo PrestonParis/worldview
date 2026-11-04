@@ -9,6 +9,7 @@
 
 import fs from "node:fs";
 import { etDate, parseSchedule, scheduledOn } from "../src/lib/elections/close-races/schedule.ts";
+import { parseElectionList } from "../src/lib/elections/close-races/parse.ts";
 import { sentinelActive } from "../src/lib/elections/close-races/sentinel.ts";
 
 // --for-date runs before `npm ci`, so the database helpers load only when needed.
@@ -54,6 +55,18 @@ if (flag("sentinel")) {
       "select source_election_id, to_char(election_date, 'YYYY-MM-DD') as date, election_kind from tracked_ingest_status where not is_official and election_date >= current_date - 60 and source = 'ga-sos'",
     );
     const lines = rows.map((r) => `${r.source_election_id} ${r.date} ${r.election_kind}`);
+    // Certified but still in its window: a recertification or a local recount
+    // changes the same election, after the watch chain has stopped.
+    const { rows: official } = await pg.query("select source_election_id, to_char(election_date, 'YYYY-MM-DD') as date, election_kind from tracked_ingest_status where is_official and source = 'ga-sos'");
+    const inWindow = (date) => schedule.some((e) => e.date === date && etDate() <= e.stopAfter);
+    for (const r of official.filter((r) => inWindow(r.date))) lines.push(`${r.source_election_id} ${r.date} ${r.election_kind}`);
+    // A recount SOS has listed, whatever its date. A failed list is not fatal:
+    // the scheduled elections still load.
+    const { sosClient } = await import("./lib/ga-sos.mjs");
+    const known = new Set([...rows, ...official].map((r) => r.source_election_id));
+    const from = schedule.map((e) => e.date).sort()[0];
+    const listed = await sosClient().list().then((res) => parseElectionList(res.json), () => []);
+    for (const e of listed.filter((e) => e.kind === "recount" && e.date >= from && !known.has(e.id))) lines.push(`${e.id} ${e.date} ${e.kind}`);
     // A scheduled election past its day with no status row yet (its watch
     // never saw a feed): load it by date so it isn't skipped.
     const today = etDate();

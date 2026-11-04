@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, BarChart3 } from "lucide-react";
+import { ArrowRight, BarChart3, Download } from "lucide-react";
 import { Surface } from "@/components/ui/surface";
 import type { CountyStatusSummary, ResultsData } from "@/lib/db/closeRaces";
 import { FLAG_LABELS, LEVEL_LABELS } from "@/lib/elections/close-races/filters";
@@ -33,7 +33,7 @@ export function countyLine(c: CountyStatusSummary) {
 export function ResultsView({ data }: { data: ResultsData }) {
   const { election, summary, counties } = data;
   const base = "/writ/results";
-  const open = summary.runoffs.length + summary.recountRange.length + summary.tied.length + summary.ruleUnverified.length + summary.noVotes.length;
+  const open = summary.recounts.length + summary.runoffs.length + summary.recountRange.length + summary.tied.length + summary.ruleUnverified.length + summary.noVotes.length;
   const certified = counties.rows.filter((c) => c.isOfficial).length;
   const owing = counties.rows.filter((c) => c.groupsUnreported.includes("Provisional")).length;
 
@@ -134,6 +134,15 @@ export function ResultsView({ data }: { data: ResultsData }) {
               ))}
             </OpenGroup>
           ) : null}
+          {summary.recounts.length ? (
+            <OpenGroup title={`${summary.recounts.length} ${summary.recounts.length === 1 ? "recount" : "recounts"}`}>
+              {summary.recounts.map((row) => (
+                <OpenRow key={row.id} row={row}>
+                  <span className="text-slate-700 dark:text-slate-300">{row.recount?.final ? `Recount: ${row.outcome.label}, ${row.leaderName}` : "Under way"}</span>
+                </OpenRow>
+              ))}
+            </OpenGroup>
+          ) : null}
           {summary.recountRange.length ? (
             <OpenGroup title={`${summary.recountRange.length} ${FLAG_LABELS.recount_request_range.toLowerCase()}`}>
               {summary.recountRange.map((row) => (
@@ -189,7 +198,7 @@ export function ResultsView({ data }: { data: ResultsData }) {
             </Section>
           ) : null}
           {summary.defeatedIncumbents.length ? (
-            <Section title={`${summary.defeatedIncumbents.length} incumbents trailing, every level`}>
+            <Section title={`${summary.defeatedIncumbents.length} ${election.isOfficial ? "incumbents defeated" : "incumbents trailing"}, every level`}>
               <ul className="grid gap-x-6 gap-y-1 text-sm sm:grid-cols-2">
                 {summary.defeatedIncumbents.map((row) => (
                   <li key={row.id} className="min-w-0 truncate">
@@ -220,10 +229,16 @@ export function ResultsView({ data }: { data: ResultsData }) {
           <h2 id="levels" className="text-lg font-bold text-slate-950 dark:text-white">
             Every contest
           </h2>
-          <Link href={`/writ/close-races/${encodeURIComponent(election.id)}`} className="flex items-center gap-1.5 text-sm font-bold text-rose-600 dark:text-rose-400">
-            Closest races and CSV
-            <ArrowRight aria-hidden className="h-4 w-4" />
-          </Link>
+          <div className="flex flex-wrap items-center gap-4">
+            <a href={`/api/writ/results/${encodeURIComponent(election.id)}`} className="flex items-center gap-1.5 text-sm font-bold text-rose-600 dark:text-rose-400">
+              <Download aria-hidden className="h-4 w-4" />
+              All {fmt(data.totalContests)} contests (CSV)
+            </a>
+            <Link href={`/writ/close-races/${encodeURIComponent(election.id)}`} className="flex items-center gap-1.5 text-sm font-bold text-rose-600 dark:text-rose-400">
+              Closest races
+              <ArrowRight aria-hidden className="h-4 w-4" />
+            </Link>
+          </div>
         </div>
         <div className="overflow-x-auto rounded-3xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
           <table className="w-full min-w-[30rem] text-left text-sm">
@@ -255,7 +270,7 @@ export function ResultsView({ data }: { data: ResultsData }) {
         </div>
         {summary.questions.passed + summary.questions.failed + summary.questions.tied ? (
           <p className="text-sm text-slate-600 dark:text-slate-400">
-            Ballot questions: {fmt(summary.questions.passed)} passing, {fmt(summary.questions.failed)} failing
+            Ballot questions: {fmt(summary.questions.passed)} {election.isOfficial ? "passed" : "passing"}, {fmt(summary.questions.failed)} {election.isOfficial ? "failed" : "failing"}
             {summary.questions.tied ? `, ${fmt(summary.questions.tied)} tied` : ""}.
           </p>
         ) : null}

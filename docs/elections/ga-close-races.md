@@ -211,6 +211,10 @@ The Secretary of State is the source, so accuracy means reading it completely an
 - **Daily reconcile:** `GA results daily` compares the database with the media export every day, not only once official. Before certification a difference is an alert, not a failed run, because the export can trail the API by minutes.
 - **State vs counties:** outside the sentinel window, a state total that differs from a complete set of county slices raises an alert.
 - **Precincts:** `scripts/lib/close-races-precincts.mjs` reads `/elections/{county}/{id}/ballot-items/{contest}` for close contests and unplaced city contests into `tracked_contest_precincts`, only when a county's feed changed. It alerts when precincts don't add up to the contest, and archives a raw copy to the lake when numbers move. A contest the feed leaves unnamed ("Mayor (Special)") shows the precincts it was voted in.
+- **Recounts:** followed as their own elections, even under a later date. Paired on county and the same two candidates; once one has an outcome its result replaces the original everywhere (`applyRecounts`). Certified elections stay in the daily load through `stopAfter`, so a recertification is caught too.
+- **Runoff round:** `runoffMismatches` alerts when the two rounds disagree, and `settleUnverified` lets the runoff feed answer a city rule nobody could source: a contest with a runoff listed goes to one, and once the feed has contests, one without is decided. Those answers aren't written back to `municipal-rules.json`; record them there before a future cycle.
+- **County numbers:** `votes` in `overrides-<id>.json` fills a contest SOS shows at zero, with a cited source. SOS's numbers win as soon as they post.
+- **Final files:** `/api/writ/results/[election]` serves every contest as CSV. When an election turns official, the snapshot writes `ga-results-<id>-certified-<timestamp>.csv` once per version of the data.
 - **Fallback:** the media export carries reporting state per county rather than per contest, and no turnout. A fallback round derives contest status from the county's groups and leaves `tracked_county_status` alone.
 
 ### Results hub
