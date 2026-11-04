@@ -1,14 +1,15 @@
 import Link from "next/link";
 import { ArrowRight, ListOrdered } from "lucide-react";
 import { Surface } from "@/components/ui/surface";
-import { defaultElection, listTrackedElections, loadCloseRaces } from "@/lib/db/closeRaces";
+import { defaultElection, listTrackedElections, loadCloseRaces, loadResults } from "@/lib/db/closeRaces";
 
-// Writ home: the five closest contests in the default tracked election (latest general, else latest full slate).
+// Writ home: seats and the five closest contests in the default tracked election (latest general, else latest full slate).
 export async function CloseRacesTeaser() {
   const latest = defaultElection(await listTrackedElections());
   if (!latest) return null;
   const data = await loadCloseRaces(latest.id, { sort: "votes" });
   if (!data) return null;
+  const results = await loadResults(latest.id);
   const top = data.report.ranked.slice(0, 5);
   return (
     <Surface className="mt-7 p-5 sm:p-6">
@@ -16,19 +17,33 @@ export async function CloseRacesTeaser() {
         <div>
           <p className="flex items-center gap-2 text-xs font-bold tracking-[0.14em] text-rose-600 uppercase dark:text-rose-400">
             <ListOrdered aria-hidden className="h-4 w-4" />
-            Close races · Georgia
+            Results · Georgia
           </p>
           <h2 className="mt-1 text-xl font-bold tracking-tight text-slate-950 dark:text-white">{latest.name}</h2>
           <p className="text-sm text-slate-500">
-            {data.totalContests.toLocaleString("en-US")} contests, federal to school board, ranked by vote margin.
+            {data.totalContests.toLocaleString("en-US")} contests, federal to school board.
           </p>
         </div>
-        <Link href={`/writ/close-races/${encodeURIComponent(latest.id)}`} className="flex items-center gap-1.5 text-sm font-bold text-rose-600 dark:text-rose-400">
-          Open the full report
+        <Link href={`/writ/results/${encodeURIComponent(latest.id)}`} className="flex items-center gap-1.5 text-sm font-bold text-rose-600 dark:text-rose-400">
+          Open the results
           <ArrowRight aria-hidden className="h-4 w-4" />
         </Link>
       </div>
-      <ol className="mt-4 divide-y divide-slate-100 text-sm dark:divide-slate-800">
+      {results?.summary.chambers.length ? (
+        <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-3">
+          {results.summary.chambers.map((c) => (
+            <div key={c.id} className="rounded-2xl bg-slate-50 p-3 dark:bg-slate-900">
+              <dt className="text-[10px] font-bold tracking-[0.12em] text-slate-400 uppercase">{c.label}</dt>
+              <dd className="mt-1 font-semibold tabular-nums text-slate-950 dark:text-white">
+                {c.parties.map((p) => `${p.party} ${p.seats}`).join(", ")}
+                {c.undecided ? `, ${c.undecided} open` : ""}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      ) : null}
+      <p className="mt-4 text-xs font-bold tracking-[0.12em] text-slate-400 uppercase">Closest</p>
+      <ol className="mt-1 divide-y divide-slate-100 text-sm dark:divide-slate-800">
         {top.map((row) => (
           <li key={row.id} className="flex items-baseline gap-3 py-2">
             <span className="w-5 shrink-0 font-bold text-slate-400 tabular-nums">{row.rank}</span>

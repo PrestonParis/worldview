@@ -46,18 +46,18 @@ import { arg, connectPg, finishRun, flag, loadEnv, sleep, startRun } from "./lib
 import { archiveRaw, lakeUrl, upload } from "./lib/lake.mjs";
 import { sosClient, SOS_BASE } from "./lib/ga-sos.mjs";
 import { bucket, raiseAlert, sendWebhook } from "./lib/alerts.mjs";
-import { addBaseline, bumpError, dropEmptyStatus, electionLinks, ensureStatus, loadBaseline, updateStatus, writeContests, writeCoverage } from "./lib/close-races-store.mjs";
+import { addBaseline, bumpError, dropEmptyStatus, electionLinks, ensureStatus, loadBaseline, updateStatus, writeContests, writeCountyStatus, writeCoverage } from "./lib/close-races-store.mjs";
 import { syncCities } from "./lib/city-results.mjs";
 import { electionKind, parseElectionList, parseFeed, replacementElection } from "../src/lib/elections/close-races/parse.ts";
 import { assembleContests, normalizeName, stableHash } from "../src/lib/elections/close-races/merge.ts";
 import { evaluateContest } from "../src/lib/elections/close-races/evaluate.ts";
 import { compareByPercent, compareByVotes } from "../src/lib/elections/close-races/margin.ts";
 import { parseMediaExport } from "../src/lib/elections/close-races/media-export.ts";
-import { CLOSE_RACE_ROWS_SQL, filterReport, toReportRow } from "../src/lib/elections/close-races/rows.ts";
+import { CLOSE_RACE_ROWS_SQL, filterReport, toReportRow, withSeats } from "../src/lib/elections/close-races/rows.ts";
 import { closeRacesCsv, closeRacesFilename } from "../src/lib/elections/close-races/csv.ts";
 import { coverageRecords, feedContests, newBaselineContests } from "../src/lib/elections/close-races/coverage.ts";
 import { etDate, parseSchedule, scheduledOn } from "../src/lib/elections/close-races/schedule.ts";
-import { pushesAtOnce } from "../src/lib/elections/close-races/sentinel.ts";
+import { pushesAtOnce, sentinelActive } from "../src/lib/elections/close-races/sentinel.ts";
 
 loadEnv();
 
@@ -316,6 +316,31 @@ async function revalidate() {
   }
 }
 
+// Turnout and count progress per county, from the feeds already in hand.
+function countyStatusRows(ctx, id, counties, header) {
+  const localities = new Map(ctx.state.feed.localities.map((l) => [l.shortName, l]));
+  const registration = ctx.state.feed.registration ?? {};
+  return counties.map((c) => {
+    const locality = localities.get(c.slug);
+    // The contest covering the most units speaks for the county's count.
+    const widest = [...c.feed.contests].sort((a, b) => b.totalUnits - a.totalUnits)[0];
+    const units = widest?.unitStatus ?? null;
+    return {
+      source_election_id: id,
+      county_slug: c.slug,
+      county: c.name,
+      registered: locality ? (registration[locality.id] ?? null) : null,
+      ballots_cast: c.feed.ballotsCast ?? null,
+      units_fully_reported: units?.fully ?? null,
+      units_night_complete: units?.nightComplete ?? null,
+      units_partial: units?.partial ?? null,
+      units_not_reported: units?.notReported ?? null,
+      is_official: Boolean(c.feed.election.isOfficialResults),
+      source_updated_at: c.feed.election.lastUpdated ?? header.lastUpdated,
+    };
+  });
+}
+
 async function persist(ctx, mode) {
   const { evaluated, warnings, counties, kind } = evaluate(ctx);
   const header = ctx.state.feed.election;
@@ -346,7 +371,7 @@ async function persist(ctx, mode) {
       severity,
       contestId: e.contestId,
       message: e.message,
-      push: pushesAtOnce({ kind: e.kind, level: e.ev.level, severity }),
+      push: pushesAtOnce({ kind: e.kind, level: e.ev.level, severity, settled: !sentinelActive(SCHEDULE) }),
     });
   }
   for (const w of warnings.filter((w) => w.startsWith("merged") || w.startsWith("ballot question"))) {
@@ -355,6 +380,19 @@ async function persist(ctx, mode) {
   for (const w of warnings.filter((w) => w.startsWith("unlinked"))) {
     await raiseAlert(pg, { election: id, key: `unlinked:${stableHash(w)}`, kind: "unlinked", severity: "warning", message: `Statewide total may be incomplete — ${w.replace(/^unlinked: /, "")}` });
   }
+
+  for (const e of evaluated.filter((c) => c.flags.includes("no_votes_reported"))) {
+    await raiseAlert(pg, {
+      election: id,
+      key: `no_votes:${stableHash(e.key)}`,
+      kind: "no_votes",
+      severity: "warning",
+      message: `No votes posted in ${e.name}${e.county ? ` (${e.county})` : ""}: every unit reports, every candidate at zero`,
+      push: false,
+    });
+  }
+
+  await writeCountyStatus(pg, countyStatusRows(ctx, id, counties, header));
 
   // Coverage: each county feed against its first copy (the ballot definition).
   if (!ctx.baseline) ctx.baseline = await loadBaseline(pg, id);
@@ -638,7 +676,7 @@ async function staleChecks(ctx) {
 async function snapshot(pg, id) {
   const sort = arg("sort", "votes") === "percent" ? "percent" : "votes";
   const { rows } = await pg.query(CLOSE_RACE_ROWS_SQL, [id]);
-  const { ranked } = filterReport(rows.map(toReportRow), { sort });
+  const { ranked } = filterReport(withSeats(rows.map(toReportRow), readJson(path.join(DATA_DIR, "seat-holders-2026.json"), { seats: {} }).seats), { sort });
   if (!ranked.length) throw new Error(`no ranked contests for ${id}; load it first`);
   const file = closeRacesFilename(id, sort, new Date());
   const body = closeRacesCsv(ranked);

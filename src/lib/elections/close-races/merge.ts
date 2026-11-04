@@ -14,7 +14,7 @@
 //   reported, so an operator can decide.
 
 import { municipalityOf, placeSuffix } from "./level.ts";
-import type { ParsedContest, ParsedFeed, ParsedOption } from "./types.ts";
+import type { ParsedContest, ParsedFeed, ParsedOption, UnitStatus } from "./types.ts";
 
 export interface CountyFeed {
   slug: string;
@@ -28,6 +28,7 @@ export interface AreaRow {
   reportingUnits: number;
   totalUnits: number;
   options: { name: string; votes: number }[];
+  unitStatus?: UnitStatus | null;
   /**
    * False for a county's copy of a state contest that the county feed
    * doesn't link to it (parentId null). SOS may leave it out of the state
@@ -57,6 +58,8 @@ export interface AssembledContest {
   totalUnits: number;
   asOf: string | null;
   isOfficial: boolean;
+  /** SOS's reporting state, in precincts; null when the feed doesn't give one. */
+  unitStatus?: UnitStatus | null;
   options: ParsedOption[];
   areas: AreaRow[];
   merged: boolean;
@@ -129,6 +132,24 @@ const candidateSet = (contest: ParsedContest) =>
     .sort()
     .join("|");
 
+/**
+ * County reporting states added up. `expected` counties without a feed count
+ * as not reported, so a statewide contest can't read as finished while a
+ * county is missing.
+ */
+export function sumUnitStatus(parts: (UnitStatus | null | undefined)[], expected = 0): UnitStatus | null {
+  const known = parts.filter((p): p is UnitStatus => Boolean(p));
+  if (!known.length) return null;
+  const out: UnitStatus = { fully: 0, nightComplete: 0, partial: 0, notReported: Math.max(0, expected - parts.length) };
+  for (const p of known) {
+    out.fully += p.fully;
+    out.nightComplete += p.nightComplete;
+    out.partial += p.partial;
+    out.notReported += p.notReported;
+  }
+  return out;
+}
+
 const total = (options: ParsedOption[]) => options.reduce((s, o) => s + o.votes, 0);
 
 function areaRow(county: CountyFeed, contest: ParsedContest): AreaRow {
@@ -138,6 +159,7 @@ function areaRow(county: CountyFeed, contest: ParsedContest): AreaRow {
     reportingUnits: contest.reportingUnits,
     totalUnits: contest.totalUnits,
     options: contest.options.map((o) => ({ name: o.name, votes: o.votes })),
+    unitStatus: contest.unitStatus ?? null,
   };
 }
 
@@ -202,6 +224,7 @@ export function assembleContests(
       totalUnits: contest.totalUnits,
       asOf: contest.asOf,
       isOfficial: state.election.isOfficialResults,
+      unitStatus: contest.unitStatus ?? sumUnitStatus(areas.map((a) => a.unitStatus), contest.totalUnits),
       options: contest.options,
       areas,
       merged: false,
@@ -253,6 +276,7 @@ export function assembleContests(
       totalUnits: ordered.reduce((s, m) => s + m.contest.totalUnits, 0),
       asOf: latest(ordered.map((m) => m.contest.asOf)),
       isOfficial: ordered.every((m) => m.county.feed.election.isOfficialResults),
+      unitStatus: sumUnitStatus(ordered.map((m) => m.contest.unitStatus)),
       options: sumOptions(ordered.map((m) => m.contest.options)),
       areas: ordered.map((m) => areaRow(m.county, m.contest)),
       merged: true,
@@ -289,6 +313,7 @@ export function assembleContests(
       totalUnits: contest.totalUnits,
       asOf: contest.asOf,
       isOfficial: county.feed.election.isOfficialResults,
+      unitStatus: contest.unitStatus ?? null,
       options: contest.options,
       areas: [],
       merged: false,

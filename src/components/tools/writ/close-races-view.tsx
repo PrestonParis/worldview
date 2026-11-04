@@ -11,11 +11,12 @@ import { countyNameFromSlug } from "@/lib/elections/close-races/csv";
 import { closeRaceQuery, FILTER_FLAGS, FLAG_LABELS, LEVEL_LABELS, STATUS_LABELS } from "@/lib/elections/close-races/filters";
 import { CONTEST_LEVELS, RESULT_STATUSES, type ContestFlag, type ResultStatus } from "@/lib/elections/close-races/types";
 import { AutoRefresh, ContestDetailToggle, ElectionPicker } from "./close-races-client";
+import { ResultsTabs } from "./results-tabs";
 
 // Writ's close-races report: every contest in the state's official results
 // feed, ranked by the votes separating the last winner from the first loser.
 
-const PARTY_NAMES: Record<string, string> = { R: "republican", D: "democratic", L: "libertarian", G: "green", I: "independent", NP: "nonpartisan" };
+export const PARTY_NAMES: Record<string, string> = { R: "republican", D: "democratic", L: "libertarian", G: "green", I: "independent", NP: "nonpartisan" };
 const STALE_MS = 10 * 60_000;
 const SHOWN_UNCONTESTED = 120;
 export const PAGE = 100;
@@ -26,8 +27,8 @@ function pageQuery(query: string, limit: number | "all") {
   return `?${q}`;
 }
 
-const fmt = (n: number | null | undefined) => (n == null ? "—" : n.toLocaleString("en-US"));
-const et = (iso: string | null) =>
+export const fmt = (n: number | null | undefined) => (n == null ? "—" : n.toLocaleString("en-US"));
+export const et = (iso: string | null) =>
   iso
     ? new Date(iso).toLocaleString("en-US", { timeZone: "America/New_York", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }) + " ET"
     : "—";
@@ -62,6 +63,7 @@ export function CloseRacesView({
   return (
     <div className="space-y-6">
       {election.isOfficial ? null : <AutoRefresh />}
+      <ResultsTabs election={election.id} active="closest" />
       <Surface className="p-5 sm:p-6">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="min-w-0">
@@ -185,12 +187,12 @@ export function CloseRacesView({
 }
 
 function resultSummary(counts: Partial<Record<ResultStatus, number>>) {
-  const order: ResultStatus[] = ["reporting", "unofficial_complete", "county_certified", "state_certified", "no_results", "recount_pending", "contested"];
+  const order: ResultStatus[] = ["reporting", "election_night_complete", "unofficial_complete", "county_certified", "state_certified", "no_results", "recount_pending", "contested"];
   const parts = order.filter((s) => counts[s]).map((s) => `${fmt(counts[s])} ${STATUS_LABELS[s].toLowerCase()}`);
   return parts.slice(0, 2).join(", ") || "—";
 }
 
-function Fact({ label, value, note, tone, href }: { label: string; value: string; note?: string; tone?: "warn"; href?: string }) {
+export function Fact({ label, value, note, tone, href }: { label: string; value: string; note?: string; tone?: "warn"; href?: string }) {
   const body = (
     <>
       <dt className="text-[10px] font-bold tracking-[0.12em] text-slate-400 uppercase">{label}</dt>
@@ -243,7 +245,7 @@ function Input({ name, label, value, inputMode }: { name: string; label: string;
   );
 }
 
-function Section({ title, children, open = false }: { title: string; children: ReactNode; open?: boolean }) {
+export function Section({ title, children, open = false }: { title: string; children: ReactNode; open?: boolean }) {
   return (
     <details open={open} className="group rounded-3xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
       <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-sm font-semibold text-slate-900 dark:text-white">
@@ -257,7 +259,7 @@ function Section({ title, children, open = false }: { title: string; children: R
   );
 }
 
-function Party({ party }: { party: string | null }) {
+export function Party({ party }: { party: string | null }) {
   if (!party) return null;
   const color = partyColorFor(PARTY_NAMES[party] ?? party);
   return (
@@ -287,6 +289,7 @@ const FLAG_STYLE: Record<ContestFlag, string> = {
   runoff_rule_unverified: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300",
   merged: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300",
   unlinked_counties: "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-200",
+  no_votes_reported: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300",
 };
 
 function flagLabel(flag: ContestFlag, row: ReportRow) {
@@ -297,7 +300,7 @@ function flagLabel(flag: ContestFlag, row: ReportRow) {
   return FLAG_LABELS[flag];
 }
 
-function Flags({ row }: { row: ReportRow }) {
+export function Flags({ row }: { row: ReportRow }) {
   if (!row.flags.length) return null;
   return (
     <span className="flex flex-wrap gap-1">
@@ -324,6 +327,9 @@ function RaceName({ row }: { row: ReportRow }) {
   return (
     <span className="block min-w-0">
       {title}
+      <Link href={`/writ/results/${encodeURIComponent(row.sourceElectionId)}/races/${encodeURIComponent(row.key)}`} className="ml-2 text-xs font-semibold whitespace-nowrap text-rose-600 hover:underline dark:text-rose-400">
+        Race page
+      </Link>
       <span className="mt-0.5 block text-xs text-slate-500">
         {LEVEL_LABELS[row.level]}
         {place ? ` · ${place}` : ""}
@@ -463,7 +469,7 @@ function NameList({ rows }: { rows: ReportRow[] }) {
         <li key={r.id} className="min-w-0 truncate text-slate-700 dark:text-slate-300">
           {r.name}
           {r.county ? <span className="text-slate-400"> · {r.county}</span> : null}
-          {r.leaderName ? <span className="text-slate-400"> · {r.leaderName}</span> : null}
+          {r.flags.includes("no_votes_reported") ? <span className="text-slate-400"> · no votes posted</span> : r.leaderName ? <span className="text-slate-400"> · {r.leaderName}</span> : null}
         </li>
       ))}
     </ul>

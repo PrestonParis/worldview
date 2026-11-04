@@ -2,7 +2,7 @@
 // normalized contests. The payload shape is documented in
 // docs/elections/ga-close-races.md, "Source"; fixtures live in ./fixtures.
 
-import type { ElectionKind, ParsedContest, ParsedElectionHeader, ParsedFeed, ParsedLocality, ParsedOption } from "./types.ts";
+import type { ElectionKind, ParsedContest, ParsedElectionHeader, ParsedFeed, ParsedLocality, ParsedOption, UnitStatus } from "./types.ts";
 
 type LangText = { languageId?: string; text?: string }[] | string | null | undefined;
 
@@ -53,6 +53,12 @@ export function parseCandidateName(raw: string): { name: string; incumbent: bool
   let name = raw.replace(/\s+/g, " ").trim();
   let incumbent = false;
   let party: string | null = null;
+  // Spring 2026 special feeds write it "Clay Fuller - Rep".
+  const suffix = name.match(/\s+-\s+(Rep|Dem|Lib|Grn|Ind)$/i);
+  if (suffix) {
+    party = partyCode(suffix[1]);
+    name = name.slice(0, suffix.index).trim();
+  }
   for (;;) {
     const match = name.match(/\s*\(([^()]+)\)\s*$/);
     if (!match) break;
@@ -121,6 +127,24 @@ export function sharedParty(options: ParsedOption[]): string | null {
   return parties.size === 1 && only && only !== "NP" ? only : null;
 }
 
+const UNIT_KEYS: Record<string, keyof UnitStatus> = {
+  "reporting-status-fully-reported": "fully",
+  "reporting-status-election-night-complete": "nightComplete",
+  "reporting-status-partially-reported": "partial",
+  "reporting-status-not-reported": "notReported",
+};
+
+/** `reportingStatusDetails` → unit counts. State-feed contests carry none (null). */
+export function parseUnitStatus(details: Raw): UnitStatus | null {
+  if (!Array.isArray(details) || !details.length) return null;
+  const out: UnitStatus = { fully: 0, nightComplete: 0, partial: 0, notReported: 0 };
+  for (const d of details) {
+    const key = UNIT_KEYS[d?.reportingStatusClientTextKey];
+    if (key) out[key] += Number(d.value) || 0;
+  }
+  return out;
+}
+
 export function parseContest(raw: Raw, isPrimary = false): ParsedContest {
   const rawName = text(raw.name);
   const name = englishName(rawName);
@@ -140,6 +164,7 @@ export function parseContest(raw: Raw, isPrimary = false): ParsedContest {
     reportingUnits: Number(raw.reportingStatus?.reportingUnits) || 0,
     totalUnits: Number(raw.reportingStatus?.totalUnits) || 0,
     asOf: raw.reportingStatus?.asOf ?? null,
+    unitStatus: parseUnitStatus(raw.reportingStatus?.reportingStatusDetails),
     options,
   };
 }
@@ -164,7 +189,11 @@ export function parseFeed(raw: Raw): ParsedFeed {
     shortName: String(c.shortName),
     name: text(c.name),
     percentReporting: c.percentReporting == null ? null : Number(c.percentReporting),
+    turnoutPercent: c.turnoutPercent == null ? null : Number(c.turnoutPercent),
   }));
+  const registration: Record<string, number> = {};
+  for (const r of raw.voterRegistration ?? []) if (r?.id) registration[String(r.id).toLowerCase()] = Number(r.total) || 0;
+  const turnoutRows: Raw[] = raw.voterTurnout ?? [];
   return {
     jurisdiction: String(raw.jurisdiction?.shortName ?? ""),
     jurisdictionName: text(raw.jurisdiction?.name),
@@ -172,6 +201,8 @@ export function parseFeed(raw: Raw): ParsedFeed {
     localities,
     localityElections: (raw.localityElections ?? []).map(parseElectionHeader),
     contests: (raw.ballotItems ?? []).map((item: Raw) => parseContest(item, election.isPrimary)),
+    registration,
+    ballotsCast: turnoutRows.length ? turnoutRows.reduce((sum, p) => sum + (Number(p?.ballotsCast) || 0), 0) : null,
   };
 }
 

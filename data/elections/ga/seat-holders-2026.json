@@ -1,0 +1,1310 @@
+{
+  "_comment": "Built by scripts/build-ga-seat-holders.mjs from SOS results; see that file. Don't edit by hand; add to seat-holder-overrides.json.",
+  "seats": {
+    "ga_house:1": {
+      "party": "R",
+      "name": "Mike Cameron",
+      "source": "2024NovGen"
+    },
+    "ga_house:10": {
+      "party": "R",
+      "name": "Victor Anderson",
+      "source": "2024NovGen"
+    },
+    "ga_house:100": {
+      "party": "R",
+      "name": "David Clark",
+      "source": "2024NovGen"
+    },
+    "ga_house:101": {
+      "party": "D",
+      "name": "Scott Holcomb",
+      "source": "2024NovGen"
+    },
+    "ga_house:102": {
+      "party": "D",
+      "name": "Gabe Okoye",
+      "source": "2024NovGen"
+    },
+    "ga_house:103": {
+      "party": "R",
+      "name": "Soo Hong",
+      "source": "2024NovGen"
+    },
+    "ga_house:104": {
+      "party": "R",
+      "name": "Chuck Efstration",
+      "source": "2024NovGen"
+    },
+    "ga_house:105": {
+      "party": "R",
+      "name": "Sandy Donatucci",
+      "source": "2024HD105Recount"
+    },
+    "ga_house:106": {
+      "party": "D",
+      "name": "Akbar Ali",
+      "source": "December2nd2025Runoffs"
+    },
+    "ga_house:107": {
+      "party": "D",
+      "name": "Sam Park",
+      "source": "2024NovGen"
+    },
+    "ga_house:108": {
+      "party": "D",
+      "name": "Jasmine Clark",
+      "source": "2024NovGen"
+    },
+    "ga_house:109": {
+      "party": "D",
+      "name": "Dewey L. McClain",
+      "source": "2024NovGen"
+    },
+    "ga_house:11": {
+      "party": "R",
+      "name": "Rick Jasperse",
+      "source": "2024NovGen"
+    },
+    "ga_house:110": {
+      "party": "D",
+      "name": "Segun Adeyina",
+      "source": "2024NovGen"
+    },
+    "ga_house:111": {
+      "party": "R",
+      "name": "Reynaldo \"Rey\" Martinez",
+      "source": "2024NovGen"
+    },
+    "ga_house:112": {
+      "party": "R",
+      "name": "Bruce Williamson",
+      "source": "2024NovGen"
+    },
+    "ga_house:113": {
+      "party": "D",
+      "name": "Sharon Henderson",
+      "source": "2024NovGen"
+    },
+    "ga_house:114": {
+      "party": "R",
+      "name": "Tim Fleming",
+      "source": "2024NovGen"
+    },
+    "ga_house:115": {
+      "party": "D",
+      "name": "Regina Lewis-Ward",
+      "source": "2024NovGen"
+    },
+    "ga_house:116": {
+      "party": "D",
+      "name": "El-Mahdi Holly",
+      "source": "2024NovGen"
+    },
+    "ga_house:117": {
+      "party": "D",
+      "name": "Mary Ann Santos",
+      "source": "2024NovGen"
+    },
+    "ga_house:118": {
+      "party": "R",
+      "name": "Clint Crowe",
+      "source": "2024NovGen"
+    },
+    "ga_house:119": {
+      "party": "R",
+      "name": "Holt Persinger",
+      "source": "2024NovGen"
+    },
+    "ga_house:12": {
+      "party": "R",
+      "name": "Eddie Lumsden",
+      "source": "2024NovGen"
+    },
+    "ga_house:120": {
+      "party": "R",
+      "name": "Houston Gaines",
+      "source": "2024NovGen"
+    },
+    "ga_house:121": {
+      "party": "D",
+      "name": "Eric Gisler",
+      "source": "December9th2025SpecialElectoinStateHouse23and121"
+    },
+    "ga_house:122": {
+      "party": "D",
+      "name": "Spencer Frye",
+      "source": "2024NovGen"
+    },
+    "ga_house:123": {
+      "party": "R",
+      "name": "Rob Leverett",
+      "source": "2024NovGen"
+    },
+    "ga_house:124": {
+      "party": "R",
+      "name": "Trey Rhodes",
+      "source": "2024NovGen"
+    },
+    "ga_house:125": {
+      "party": "R",
+      "name": "Gary Richardson",
+      "source": "2024NovGen"
+    },
+    "ga_house:126": {
+      "party": "D",
+      "name": "L.C. Myles Jr.",
+      "source": "2024NovGen"
+    },
+    "ga_house:127": {
+      "party": "R",
+      "name": "Mark Newton",
+      "source": "2024NovGen"
+    },
+    "ga_house:128": {
+      "party": "D",
+      "name": "Mack Jackson",
+      "source": "2024NovGen"
+    },
+    "ga_house:129": {
+      "party": "D",
+      "name": "Karlton L. Howard",
+      "source": "2024NovGen"
+    },
+    "ga_house:13": {
+      "party": "R",
+      "name": "Katie Dempsey",
+      "source": "2024NovGen"
+    },
+    "ga_house:130": {
+      "party": "D",
+      "name": "Sheila Clark Nelson",
+      "source": "40726SpecialElection"
+    },
+    "ga_house:131": {
+      "party": "R",
+      "name": "Rob Clifton",
+      "source": "2024NovGen"
+    },
+    "ga_house:132": {
+      "party": "D",
+      "name": "Brian L. Prince",
+      "source": "2024NovGen"
+    },
+    "ga_house:133": {
+      "party": "R",
+      "name": "Danny Mathis",
+      "source": "2024NovGen"
+    },
+    "ga_house:134": {
+      "party": "R",
+      "name": "Robert Dickey",
+      "source": "2024NovGen"
+    },
+    "ga_house:135": {
+      "party": "R",
+      "name": "Beth Camp",
+      "source": "2024NovGen"
+    },
+    "ga_house:136": {
+      "party": "R",
+      "name": "David Jenkins",
+      "source": "2024NovGen"
+    },
+    "ga_house:137": {
+      "party": "D",
+      "name": "Debbie G. Buckner",
+      "source": "2024NovGen"
+    },
+    "ga_house:138": {
+      "party": "R",
+      "name": "Vance Smith",
+      "source": "2024NovGen"
+    },
+    "ga_house:139": {
+      "party": "R",
+      "name": "Carmen Rice",
+      "source": "2024NovGen"
+    },
+    "ga_house:14": {
+      "party": "R",
+      "name": "Mitchell Scoggins",
+      "source": "2024NovGen"
+    },
+    "ga_house:140": {
+      "party": "D",
+      "name": "Tremaine Teddy Reese",
+      "source": "2024NovGen"
+    },
+    "ga_house:141": {
+      "party": "D",
+      "name": "Carolyn F. Hugley",
+      "source": "2024NovGen"
+    },
+    "ga_house:142": {
+      "party": "D",
+      "name": "Miriam Paris",
+      "source": "2024NovGen"
+    },
+    "ga_house:143": {
+      "party": "D",
+      "name": "Anissa M. Jones",
+      "source": "2024NovGen"
+    },
+    "ga_house:144": {
+      "party": "R",
+      "name": "Dale Washburn",
+      "source": "2024NovGen"
+    },
+    "ga_house:145": {
+      "party": "D",
+      "name": "Tangie Herring",
+      "source": "2024NovGen"
+    },
+    "ga_house:146": {
+      "party": "R",
+      "name": "Shaw Blackmon",
+      "source": "2024NovGen"
+    },
+    "ga_house:147": {
+      "party": "R",
+      "name": "Bethany Ballard",
+      "source": "2024NovGen"
+    },
+    "ga_house:148": {
+      "party": "R",
+      "name": "Noel W. Williams Jr.",
+      "source": "2024NovGen"
+    },
+    "ga_house:149": {
+      "party": "D",
+      "name": "Floyd Griffin",
+      "source": "2024NovGen"
+    },
+    "ga_house:15": {
+      "party": "R",
+      "name": "Matthew Gambill",
+      "source": "2024NovGen"
+    },
+    "ga_house:150": {
+      "party": "D",
+      "name": "Patty Bentley Stinson",
+      "source": "2024NovGen"
+    },
+    "ga_house:151": {
+      "party": "R",
+      "name": "Mike Cheokas",
+      "source": "2024NovGen"
+    },
+    "ga_house:152": {
+      "party": "R",
+      "name": "William J. \"Bill\" Yearta",
+      "source": "2024NovGen"
+    },
+    "ga_house:153": {
+      "party": "D",
+      "name": "David Lee Sampson",
+      "source": "2024NovGen"
+    },
+    "ga_house:154": {
+      "party": "R",
+      "name": "Gerald E. Greene",
+      "source": "2024NovGen"
+    },
+    "ga_house:155": {
+      "party": "R",
+      "name": "Matt Hatchett",
+      "source": "2024NovGen"
+    },
+    "ga_house:156": {
+      "party": "R",
+      "name": "Leesa Hagan",
+      "source": "2024NovGen"
+    },
+    "ga_house:157": {
+      "party": "R",
+      "name": "William 'Bill' Werkheiser",
+      "source": "2024NovGen"
+    },
+    "ga_house:158": {
+      "party": "R",
+      "name": "Butch Parrish",
+      "source": "2024NovGen"
+    },
+    "ga_house:159": {
+      "party": "R",
+      "name": "Jon G. Burns",
+      "source": "2024NovGen"
+    },
+    "ga_house:16": {
+      "party": "R",
+      "name": "Trey Kelley",
+      "source": "2024NovGen"
+    },
+    "ga_house:160": {
+      "party": "R",
+      "name": "Lehman Franklin",
+      "source": "2024NovGen"
+    },
+    "ga_house:161": {
+      "party": "R",
+      "name": "Bill Hitchens",
+      "source": "2024NovGen"
+    },
+    "ga_house:162": {
+      "party": "D",
+      "name": "Carl W. Gilliard",
+      "source": "2024NovGen"
+    },
+    "ga_house:163": {
+      "party": "D",
+      "name": "Anne Allen Westbrook",
+      "source": "2024NovGen"
+    },
+    "ga_house:164": {
+      "party": "R",
+      "name": "Ron Stephens",
+      "source": "2024NovGen"
+    },
+    "ga_house:165": {
+      "party": "D",
+      "name": "Edna Jackson",
+      "source": "2024NovGen"
+    },
+    "ga_house:166": {
+      "party": "R",
+      "name": "Jesse Petrea",
+      "source": "2024NovGen"
+    },
+    "ga_house:167": {
+      "party": "R",
+      "name": "Buddy DeLoach",
+      "source": "2024NovGen"
+    },
+    "ga_house:168": {
+      "party": "D",
+      "name": "Al Williams",
+      "source": "2024NovGen"
+    },
+    "ga_house:169": {
+      "party": "R",
+      "name": "Angie O'Steen",
+      "source": "2024NovGen"
+    },
+    "ga_house:17": {
+      "party": "R",
+      "name": "Martin Momtahan",
+      "source": "2024NovGen"
+    },
+    "ga_house:170": {
+      "party": "R",
+      "name": "Jaclyn Dixon Ford",
+      "source": "2024NovGen"
+    },
+    "ga_house:171": {
+      "party": "R",
+      "name": "Joseph M. Campbell",
+      "source": "2024NovGen"
+    },
+    "ga_house:172": {
+      "party": "R",
+      "name": "Charles \"Chas\" Cannon",
+      "source": "2024NovGen"
+    },
+    "ga_house:173": {
+      "party": "R",
+      "name": "Darlene Taylor",
+      "source": "2024NovGen"
+    },
+    "ga_house:174": {
+      "party": "R",
+      "name": "John L. Corbett",
+      "source": "2024NovGen"
+    },
+    "ga_house:175": {
+      "party": "R",
+      "name": "John LaHood",
+      "source": "2024NovGen"
+    },
+    "ga_house:176": {
+      "party": "R",
+      "name": "James Burchett",
+      "source": "2024NovGen"
+    },
+    "ga_house:177": {
+      "party": "D",
+      "name": "Alvin Payton, Jr.",
+      "source": "06092026SpecialElectionRunoff (feed lists no party; party from 2024NovGen)"
+    },
+    "ga_house:178": {
+      "party": "R",
+      "name": "Steven Meeks",
+      "source": "2024NovGen"
+    },
+    "ga_house:179": {
+      "party": "R",
+      "name": "Rick Townsend",
+      "source": "2024NovGen"
+    },
+    "ga_house:18": {
+      "party": "R",
+      "name": "Tyler Paul Smith",
+      "source": "2024NovGen"
+    },
+    "ga_house:180": {
+      "party": "R",
+      "name": "Steven Sainz",
+      "source": "2024NovGen"
+    },
+    "ga_house:19": {
+      "party": "R",
+      "name": "Joseph Gullett",
+      "source": "2024NovGen"
+    },
+    "ga_house:2": {
+      "party": "R",
+      "name": "Steve Tarvin",
+      "source": "2024NovGen"
+    },
+    "ga_house:20": {
+      "party": "R",
+      "name": "Charlice Byrd",
+      "source": "2024NovGen"
+    },
+    "ga_house:21": {
+      "party": "R",
+      "name": "Brad Thomas",
+      "source": "2024NovGen"
+    },
+    "ga_house:22": {
+      "party": "R",
+      "name": "Jordan Ridley",
+      "source": "2024NovGen"
+    },
+    "ga_house:23": {
+      "party": "R",
+      "name": "Bill Fincher",
+      "source": "Jan6HD23SERunoff"
+    },
+    "ga_house:24": {
+      "party": "R",
+      "name": "Carter Barrett",
+      "source": "2024NovGen"
+    },
+    "ga_house:25": {
+      "party": "R",
+      "name": "Todd Jones",
+      "source": "2024NovGen"
+    },
+    "ga_house:26": {
+      "party": "R",
+      "name": "Lauren W. McDonald III",
+      "source": "2024NovGen"
+    },
+    "ga_house:27": {
+      "party": "R",
+      "name": "Lee Hawkins",
+      "source": "2024NovGen"
+    },
+    "ga_house:28": {
+      "party": "R",
+      "name": "Brent Cox",
+      "source": "2024NovGen"
+    },
+    "ga_house:29": {
+      "party": "R",
+      "name": "Matt Dubnik",
+      "source": "2024NovGen"
+    },
+    "ga_house:3": {
+      "party": "R",
+      "name": "Mitchell Horner",
+      "source": "2024NovGen"
+    },
+    "ga_house:30": {
+      "party": "R",
+      "name": "Derrick McCollum",
+      "source": "2024NovGen"
+    },
+    "ga_house:31": {
+      "party": "R",
+      "name": "Emory West Dunahoo, Jr.",
+      "source": "2024NovGen"
+    },
+    "ga_house:32": {
+      "party": "R",
+      "name": "Chris Erwin",
+      "source": "2024NovGen"
+    },
+    "ga_house:33": {
+      "party": "R",
+      "name": "Alan Powell",
+      "source": "2024NovGen"
+    },
+    "ga_house:34": {
+      "party": "R",
+      "name": "Devan Seabaugh",
+      "source": "2024NovGen"
+    },
+    "ga_house:35": {
+      "party": "D",
+      "name": "Lisa Gayle Campbell",
+      "source": "2024NovGen"
+    },
+    "ga_house:36": {
+      "party": "R",
+      "name": "Ginny Ehrhart",
+      "source": "2024NovGen"
+    },
+    "ga_house:37": {
+      "party": "D",
+      "name": "Mary Frances Williams",
+      "source": "2024NovGen"
+    },
+    "ga_house:38": {
+      "party": "D",
+      "name": "David Wilkerson",
+      "source": "2024NovGen"
+    },
+    "ga_house:39": {
+      "party": "D",
+      "name": "Terry Cummings",
+      "source": "2024NovGen"
+    },
+    "ga_house:4": {
+      "party": "R",
+      "name": "Kasey Carpenter",
+      "source": "2024NovGen"
+    },
+    "ga_house:40": {
+      "party": "R",
+      "name": "Kimberly R. New",
+      "source": "2024NovGen"
+    },
+    "ga_house:41": {
+      "party": "D",
+      "name": "Michael Smith",
+      "source": "2024NovGen"
+    },
+    "ga_house:42": {
+      "party": "D",
+      "name": "Gabriel Sanchez",
+      "source": "2024NovGen"
+    },
+    "ga_house:43": {
+      "party": "D",
+      "name": "Solomon Adesanya",
+      "source": "2024NovGen"
+    },
+    "ga_house:44": {
+      "party": "R",
+      "name": "Don L. Parsons",
+      "source": "2024NovGen"
+    },
+    "ga_house:45": {
+      "party": "R",
+      "name": "Sharon Cooper",
+      "source": "2024NovGen"
+    },
+    "ga_house:46": {
+      "party": "R",
+      "name": "John Carson",
+      "source": "2024NovGen"
+    },
+    "ga_house:47": {
+      "party": "R",
+      "name": "Jan Jones",
+      "source": "2024NovGen"
+    },
+    "ga_house:48": {
+      "party": "R",
+      "name": "Scott Hilton",
+      "source": "2024NovGen"
+    },
+    "ga_house:49": {
+      "party": "R",
+      "name": "Charles E. \"Chuck\" Martin",
+      "source": "2024NovGen"
+    },
+    "ga_house:5": {
+      "party": "R",
+      "name": "Matt Barton",
+      "source": "2024NovGen"
+    },
+    "ga_house:50": {
+      "party": "D",
+      "name": "Michelle Au",
+      "source": "2024NovGen"
+    },
+    "ga_house:51": {
+      "party": "D",
+      "name": "Esther Panitch",
+      "source": "2024NovGen"
+    },
+    "ga_house:52": {
+      "party": "D",
+      "name": "Shea Roberts",
+      "source": "2024NovGen"
+    },
+    "ga_house:53": {
+      "party": "R",
+      "name": "Deborah Silcox",
+      "source": "2024NovGen"
+    },
+    "ga_house:54": {
+      "party": "D",
+      "name": "Betsy Holland",
+      "source": "2024NovGen"
+    },
+    "ga_house:55": {
+      "party": "D",
+      "name": "Inga S. Willis",
+      "source": "2024NovGen"
+    },
+    "ga_house:56": {
+      "party": "D",
+      "name": "Bryce Berry",
+      "source": "2024NovGen"
+    },
+    "ga_house:57": {
+      "party": "D",
+      "name": "Stacey Evans",
+      "source": "2024NovGen"
+    },
+    "ga_house:58": {
+      "party": "D",
+      "name": "Park Elizabeth Cannon",
+      "source": "2024NovGen"
+    },
+    "ga_house:59": {
+      "party": "D",
+      "name": "Phil A. Olaleye",
+      "source": "2024NovGen"
+    },
+    "ga_house:6": {
+      "party": "R",
+      "name": "Jason T. Ridley",
+      "source": "2024NovGen"
+    },
+    "ga_house:60": {
+      "party": "D",
+      "name": "Sheila Jones",
+      "source": "2024NovGen"
+    },
+    "ga_house:61": {
+      "party": "D",
+      "name": "Mekyah McQueen",
+      "source": "2024NovGen"
+    },
+    "ga_house:62": {
+      "party": "D",
+      "name": "Tanya F. Miller",
+      "source": "2024NovGen"
+    },
+    "ga_house:63": {
+      "party": "D",
+      "name": "Kim Schofield",
+      "source": "2024NovGen"
+    },
+    "ga_house:64": {
+      "party": "D",
+      "name": "Sylvia Wayfer Baker",
+      "source": "2024NovGen"
+    },
+    "ga_house:65": {
+      "party": "D",
+      "name": "Robert Dawson",
+      "source": "2024NovGen"
+    },
+    "ga_house:66": {
+      "party": "D",
+      "name": "Kimberly Alexander",
+      "source": "2024NovGen"
+    },
+    "ga_house:67": {
+      "party": "D",
+      "name": "Lydia Glaize",
+      "source": "2024NovGen"
+    },
+    "ga_house:68": {
+      "party": "D",
+      "name": "Derrick L. Jackson",
+      "source": "2024NovGen"
+    },
+    "ga_house:69": {
+      "party": "D",
+      "name": "Debra Bazemore",
+      "source": "2024NovGen"
+    },
+    "ga_house:7": {
+      "party": "R",
+      "name": "Johnny Chastain",
+      "source": "2024NovGen"
+    },
+    "ga_house:70": {
+      "party": "R",
+      "name": "Lynn Smith",
+      "source": "2024NovGen"
+    },
+    "ga_house:71": {
+      "party": "R",
+      "name": "Justin \"Jutt\" Howard",
+      "source": "2024NovGen"
+    },
+    "ga_house:72": {
+      "party": "R",
+      "name": "David Huddleston",
+      "source": "2024NovGen"
+    },
+    "ga_house:73": {
+      "party": "R",
+      "name": "Josh Bonner",
+      "source": "2024NovGen"
+    },
+    "ga_house:74": {
+      "party": "D",
+      "name": "Robert Flournoy, Jr.",
+      "source": "2024NovGen"
+    },
+    "ga_house:75": {
+      "party": "D",
+      "name": "Eric W. Bell II",
+      "source": "2024NovGen"
+    },
+    "ga_house:76": {
+      "party": "D",
+      "name": "Sandra G. Scott",
+      "source": "2024NovGen"
+    },
+    "ga_house:77": {
+      "party": "D",
+      "name": "Rhonda Burnough",
+      "source": "2024NovGen"
+    },
+    "ga_house:78": {
+      "party": "D",
+      "name": "Demetrius Douglas",
+      "source": "2024NovGen"
+    },
+    "ga_house:79": {
+      "party": "D",
+      "name": "Yasmin Neal",
+      "source": "2024NovGen"
+    },
+    "ga_house:8": {
+      "party": "R",
+      "name": "Stan Gunter",
+      "source": "2024NovGen"
+    },
+    "ga_house:80": {
+      "party": "D",
+      "name": "Long Tran",
+      "source": "2024NovGen"
+    },
+    "ga_house:81": {
+      "party": "R",
+      "name": "Noelle Kahaian",
+      "source": "2024NovGen"
+    },
+    "ga_house:82": {
+      "party": "R",
+      "name": "Karen I. Mathiak",
+      "source": "2024NovGen"
+    },
+    "ga_house:83": {
+      "party": "D",
+      "name": "Karen Lupton",
+      "source": "2024NovGen"
+    },
+    "ga_house:84": {
+      "party": "D",
+      "name": "Mary Margaret Oliver",
+      "source": "2024NovGen"
+    },
+    "ga_house:85": {
+      "party": "D",
+      "name": "Karla L. Drenner",
+      "source": "2024NovGen"
+    },
+    "ga_house:86": {
+      "party": "D",
+      "name": "Imani Barnes",
+      "source": "2024NovGen"
+    },
+    "ga_house:87": {
+      "party": "D",
+      "name": "Viola Davis",
+      "source": "2024NovGen"
+    },
+    "ga_house:88": {
+      "party": "D",
+      "name": "Billy Mitchell",
+      "source": "2024NovGen"
+    },
+    "ga_house:89": {
+      "party": "D",
+      "name": "Omari Crawford",
+      "source": "2024NovGen"
+    },
+    "ga_house:9": {
+      "party": "R",
+      "name": "William S. Wade",
+      "source": "2024NovGen"
+    },
+    "ga_house:90": {
+      "party": "D",
+      "name": "Saira Draper",
+      "source": "2024NovGen"
+    },
+    "ga_house:91": {
+      "party": "D",
+      "name": "Angela Moore",
+      "source": "2024NovGen"
+    },
+    "ga_house:92": {
+      "party": "D",
+      "name": "Rhonda Taylor",
+      "source": "2024NovGen"
+    },
+    "ga_house:93": {
+      "party": "D",
+      "name": "Doreen Carter",
+      "source": "2024NovGen"
+    },
+    "ga_house:94": {
+      "party": "D",
+      "name": "Venola Mason",
+      "source": "40726SpecialElection"
+    },
+    "ga_house:95": {
+      "party": "D",
+      "name": "Darshun Nicole Kendrick",
+      "source": "2024NovGen"
+    },
+    "ga_house:96": {
+      "party": "D",
+      "name": "Arlene Beckles",
+      "source": "2024NovGen"
+    },
+    "ga_house:97": {
+      "party": "D",
+      "name": "Ruwa Romman",
+      "source": "2024NovGen"
+    },
+    "ga_house:98": {
+      "party": "D",
+      "name": "Marvin Lim",
+      "source": "2024NovGen"
+    },
+    "ga_house:99": {
+      "party": "R",
+      "name": "Matt Reeves",
+      "source": "2024NovGen"
+    },
+    "ga_senate:1": {
+      "party": "R",
+      "name": "Ben Watson",
+      "source": "2024NovGen"
+    },
+    "ga_senate:10": {
+      "party": "D",
+      "name": "Emanuel D. Jones",
+      "source": "2024NovGen"
+    },
+    "ga_senate:11": {
+      "party": "R",
+      "name": "Sam Watson",
+      "source": "2024NovGen"
+    },
+    "ga_senate:12": {
+      "party": "D",
+      "name": "Freddie Powell Sims",
+      "source": "2024NovGen"
+    },
+    "ga_senate:13": {
+      "party": "R",
+      "name": "Carden H. Summers",
+      "source": "2024NovGen"
+    },
+    "ga_senate:14": {
+      "party": "D",
+      "name": "Josh McLaurin",
+      "source": "2024NovGen"
+    },
+    "ga_senate:15": {
+      "party": "D",
+      "name": "Ed Harbison",
+      "source": "2024NovGen"
+    },
+    "ga_senate:16": {
+      "party": "R",
+      "name": "Marty Harbin",
+      "source": "2024NovGen"
+    },
+    "ga_senate:17": {
+      "party": "D",
+      "name": "Gail Davenport",
+      "source": "2024NovGen"
+    },
+    "ga_senate:18": {
+      "party": "R",
+      "name": "Steven McNeel",
+      "source": "Feb1726StateSenateDistrict18"
+    },
+    "ga_senate:19": {
+      "party": "R",
+      "name": "Blake Tillery",
+      "source": "2024NovGen"
+    },
+    "ga_senate:2": {
+      "party": "D",
+      "name": "Derek J. Mallow",
+      "source": "2024NovGen"
+    },
+    "ga_senate:20": {
+      "party": "R",
+      "name": "Larry Walker",
+      "source": "2024NovGen"
+    },
+    "ga_senate:21": {
+      "party": "R",
+      "name": "Jason T. Dickerson",
+      "source": "SpecialElectionDistrict21Runoff92325"
+    },
+    "ga_senate:22": {
+      "party": "D",
+      "name": "Harold V. Jones II",
+      "source": "2024NovGen"
+    },
+    "ga_senate:23": {
+      "party": "R",
+      "name": "Max Burns",
+      "source": "2024NovGen"
+    },
+    "ga_senate:24": {
+      "party": "R",
+      "name": "Lee Anderson",
+      "source": "2024NovGen"
+    },
+    "ga_senate:25": {
+      "party": "R",
+      "name": "Rick A. Williams",
+      "source": "2024NovGen"
+    },
+    "ga_senate:26": {
+      "party": "D",
+      "name": "David E. Lucas",
+      "source": "2024NovGen"
+    },
+    "ga_senate:27": {
+      "party": "R",
+      "name": "Greg Dolezal",
+      "source": "2024NovGen"
+    },
+    "ga_senate:28": {
+      "party": "D",
+      "name": "Donzella James",
+      "source": "2024NovGen"
+    },
+    "ga_senate:29": {
+      "party": "R",
+      "name": "Randy Robertson",
+      "source": "2024NovGen"
+    },
+    "ga_senate:3": {
+      "party": "R",
+      "name": "Mike Hodges",
+      "source": "2024NovGen"
+    },
+    "ga_senate:30": {
+      "party": "R",
+      "name": "Timothy J. Bearden",
+      "source": "2024NovGen"
+    },
+    "ga_senate:31": {
+      "party": "R",
+      "name": "Jason R. Anavitarte",
+      "source": "2024NovGen"
+    },
+    "ga_senate:32": {
+      "party": "R",
+      "name": "Kay Kirkpatrick",
+      "source": "2024NovGen"
+    },
+    "ga_senate:33": {
+      "party": "D",
+      "name": "Michael Doc Rhett",
+      "source": "2024NovGen"
+    },
+    "ga_senate:34": {
+      "party": "D",
+      "name": "Kenya Wicks",
+      "source": "2024NovGen"
+    },
+    "ga_senate:35": {
+      "party": "D",
+      "name": "Jaha V. Howard",
+      "source": "12162025SD35SpecialElectionRunoff"
+    },
+    "ga_senate:36": {
+      "party": "D",
+      "name": "Nan Grogan Orrock",
+      "source": "2024NovGen"
+    },
+    "ga_senate:37": {
+      "party": "R",
+      "name": "Ed Setzler",
+      "source": "2024NovGen"
+    },
+    "ga_senate:38": {
+      "party": "D",
+      "name": "Rashaun Kemp",
+      "source": "2024NovGen"
+    },
+    "ga_senate:39": {
+      "party": "D",
+      "name": "Sonya Halpern",
+      "source": "2024NovGen"
+    },
+    "ga_senate:4": {
+      "party": "R",
+      "name": "Billy Hickman",
+      "source": "2024NovGen"
+    },
+    "ga_senate:40": {
+      "party": "D",
+      "name": "Sally Harrell",
+      "source": "2024NovGen"
+    },
+    "ga_senate:41": {
+      "party": "D",
+      "name": "Kim Jackson",
+      "source": "2024NovGen"
+    },
+    "ga_senate:42": {
+      "party": "R",
+      "name": "Brian Strickland",
+      "source": "2024NovGen"
+    },
+    "ga_senate:43": {
+      "party": "D",
+      "name": "Tonya P. Anderson",
+      "source": "2024NovGen"
+    },
+    "ga_senate:44": {
+      "party": "D",
+      "name": "Elena Parent",
+      "source": "2024NovGen"
+    },
+    "ga_senate:45": {
+      "party": "R",
+      "name": "Clint Dixon",
+      "source": "2024NovGen"
+    },
+    "ga_senate:46": {
+      "party": "R",
+      "name": "Bill Cowsert",
+      "source": "2024NovGen"
+    },
+    "ga_senate:47": {
+      "party": "R",
+      "name": "Frank Ginn",
+      "source": "2024NovGen"
+    },
+    "ga_senate:48": {
+      "party": "R",
+      "name": "Shawn Still",
+      "source": "2024NovGen"
+    },
+    "ga_senate:49": {
+      "party": "R",
+      "name": "Drew Echols",
+      "source": "2024NovGen"
+    },
+    "ga_senate:5": {
+      "party": "D",
+      "name": "Sheikh Rahman",
+      "source": "2024NovGen"
+    },
+    "ga_senate:50": {
+      "party": "R",
+      "name": "Bo Hatchett",
+      "source": "2024NovGen"
+    },
+    "ga_senate:51": {
+      "party": "R",
+      "name": "Steve Gooch",
+      "source": "2024NovGen"
+    },
+    "ga_senate:52": {
+      "party": "R",
+      "name": "Chuck Hufstetler",
+      "source": "2024NovGen"
+    },
+    "ga_senate:53": {
+      "party": "R",
+      "name": "Lanny Thomas",
+      "source": "40726SpecialElection"
+    },
+    "ga_senate:54": {
+      "party": "R",
+      "name": "Chuck Payne",
+      "source": "2024NovGen"
+    },
+    "ga_senate:55": {
+      "party": "D",
+      "name": "Randal Mangham",
+      "source": "2024NovGen"
+    },
+    "ga_senate:56": {
+      "party": "R",
+      "name": "John Albers",
+      "source": "2024NovGen"
+    },
+    "ga_senate:6": {
+      "party": "R",
+      "name": "Matt Brass",
+      "source": "2024NovGen"
+    },
+    "ga_senate:7": {
+      "party": "D",
+      "name": "Nabilah Islam Parkes",
+      "source": "2024NovGen"
+    },
+    "ga_senate:8": {
+      "party": "R",
+      "name": "Russ Goodman",
+      "source": "2024NovGen"
+    },
+    "ga_senate:9": {
+      "party": "D",
+      "name": "Nikki Merritt",
+      "source": "2024NovGen"
+    },
+    "statewide:agriculture": {
+      "party": "R",
+      "name": "Tyler Harper",
+      "source": "2022NovGen"
+    },
+    "statewide:attorney-general": {
+      "party": "R",
+      "name": "Chris Carr",
+      "source": "2022NovGen"
+    },
+    "statewide:governor": {
+      "party": "R",
+      "name": "Brian Kemp",
+      "source": "2022NovGen"
+    },
+    "statewide:insurance": {
+      "party": "R",
+      "name": "John King",
+      "source": "2022NovGen"
+    },
+    "statewide:labor": {
+      "party": "R",
+      "name": "Bárbara Rivera Holmes",
+      "source": "2022NovGen"
+    },
+    "statewide:lieutenant-governor": {
+      "party": "R",
+      "name": "Burt Jones",
+      "source": "2022NovGen"
+    },
+    "statewide:psc-3": {
+      "party": "D",
+      "name": "Peter Hubbard",
+      "source": "MunicipalGeneralSpecialElectionPSC11042025"
+    },
+    "statewide:psc-5": {
+      "party": "R",
+      "name": "Tricia Pridemore",
+      "source": "Last elected before the feeds the build replays; not seeking another term. https://www.ajc.com/news/2026/02/republican-wont-seek-reelection-to-georgia-public-service-commission/"
+    },
+    "statewide:school-superintendent": {
+      "party": "R",
+      "name": "Richard Woods",
+      "source": "2022NovGen"
+    },
+    "statewide:secretary-of-state": {
+      "party": "R",
+      "name": "Brad Raffensperger",
+      "source": "2022NovGen"
+    },
+    "statewide:us-senate": {
+      "party": "D",
+      "name": "Jon Ossoff",
+      "source": "2022DecGenRun"
+    },
+    "us_house:1": {
+      "party": "R",
+      "name": "Earl L. \"Buddy\" Carter",
+      "source": "2024NovGen"
+    },
+    "us_house:10": {
+      "party": "R",
+      "name": "Mike Collins",
+      "source": "2024NovGen"
+    },
+    "us_house:11": {
+      "party": "R",
+      "name": "Barry Loudermilk",
+      "source": "2024NovGen"
+    },
+    "us_house:12": {
+      "party": "R",
+      "name": "Rick W. Allen",
+      "source": "2024NovGen"
+    },
+    "us_house:13": {
+      "party": "D",
+      "name": "Everton \"EJ\" Blair",
+      "source": "08252026SpecialElectionRunoff"
+    },
+    "us_house:14": {
+      "party": "R",
+      "name": "Clay Fuller",
+      "source": "40726SpecialElection"
+    },
+    "us_house:2": {
+      "party": "D",
+      "name": "Sanford Bishop",
+      "source": "2024NovGen"
+    },
+    "us_house:3": {
+      "party": "R",
+      "name": "Brian Jack",
+      "source": "2024NovGen"
+    },
+    "us_house:4": {
+      "party": "D",
+      "name": "Henry \"Hank\" Johnson Jr.",
+      "source": "2024NovGen"
+    },
+    "us_house:5": {
+      "party": "D",
+      "name": "Nikema Williams",
+      "source": "2024NovGen"
+    },
+    "us_house:6": {
+      "party": "D",
+      "name": "Lucy McBath",
+      "source": "2024NovGen"
+    },
+    "us_house:7": {
+      "party": "R",
+      "name": "Rich McCormick",
+      "source": "2024NovGen"
+    },
+    "us_house:8": {
+      "party": "R",
+      "name": "Austin Scott",
+      "source": "2024NovGen"
+    },
+    "us_house:9": {
+      "party": "R",
+      "name": "Andrew Clyde",
+      "source": "2024NovGen"
+    }
+  }
+}

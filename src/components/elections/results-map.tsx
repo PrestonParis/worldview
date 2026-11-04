@@ -40,11 +40,13 @@ export function ResultsMap({
   dataUrl = "/data/us-counties.geojson",
   onSelectArea,
   className = "h-[440px]",
+  bounds = US_BOUNDS,
 }: {
   areas: Record<string, AreaDatum>;
   dataUrl?: string;
   onSelectArea?: (areaId: string | null) => void;
   className?: string;
+  bounds?: [number, number, number, number];
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
@@ -71,7 +73,7 @@ export function ResultsMap({
     const map = new MapLibreGlMap({
       container: containerRef.current,
       style: STYLE_URL,
-      bounds: US_BOUNDS,
+      bounds,
       fitBoundsOptions: { padding: 16 },
       attributionControl: { compact: true },
       dragRotate: false,

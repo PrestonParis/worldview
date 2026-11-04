@@ -12,11 +12,11 @@ import muniDekalb from "./fixtures/2025-muni-dekalb.json";
 import muniClayton from "./fixtures/2025-muni-clayton.json";
 import mediaExport2024 from "./fixtures/2024-media-export.json";
 import { parseMediaExport } from "./media-export";
-import { electionKind, englishName, parseCandidateName, parseFeed, replacementElection } from "./parse";
+import { electionKind, englishName, parseCandidateName, parseFeed, parseUnitStatus, replacementElection } from "./parse";
 import { classifyContest, municipalityOf } from "./level";
 import { decisionRule } from "./rules";
 import { compareByPercent, compareByVotes, computeMargin, resultStatus } from "./margin";
-import { assembleContests, type CountyFeed } from "./merge";
+import { assembleContests, sumUnitStatus, type CountyFeed } from "./merge";
 import { evaluateContest, type EvaluatedContest } from "./evaluate";
 import { closeRacesCsv, CLOSE_RACE_COLUMNS } from "./csv";
 import type { ElectionKind, ParsedOption } from "./types";
@@ -174,7 +174,8 @@ describe("margin", () => {
     const hd128 = byName(contests, "State House of Representatives - District 128");
     expect(hd128.margin.marginVotes).toBe(48);
     expect(hd128.flags).toContain("recount_request_range");
-    expect(hd128.flags).toContain("near_runoff");
+    // Two candidates: one has a majority unless they tie.
+    expect(hd128.flags).not.toContain("near_runoff");
     expect(hd128.status).toBe("state_certified");
   });
 
@@ -252,6 +253,54 @@ describe("margin", () => {
     const empty = computeMargin({ options: [opt("A", 0), opt("B", 0)], voteFor: 1, rule: "majority", threshold: 0.5 });
     expect(empty.rankable).toBe(false);
     expect(empty.flags).toEqual([]);
+  });
+
+  it("only raises the runoff line for a field that can miss it", () => {
+    const close = { voteFor: 1, rule: "majority" as const, threshold: 0.5 };
+    const twoWay = computeMargin({ ...close, options: [opt("Luchey", 12004), opt("Hong", 11977)] });
+    expect(twoWay.flags).not.toContain("near_runoff");
+    expect(twoWay.flags).toContain("recount_request_range");
+    const threeWay = computeMargin({ ...close, options: [opt("A", 505), opt("B", 480), opt("C", 15)] });
+    expect(threeWay.flags).toContain("near_runoff");
+    const writeIn = computeMargin({ ...close, options: [opt("A", 505), opt("B", 490), opt("Write-in", 5, { isWriteIn: true })] });
+    expect(writeIn.flags).toContain("near_runoff");
+    const unknown = computeMargin({ voteFor: 1, rule: "unknown", threshold: null, options: [opt("Holland", 33), opt("Teague", 32)] });
+    expect(unknown.flags).not.toContain("runoff_rule_unverified");
+  });
+
+  it("ranks a finished race with a candidate at zero, and names a finished race with no votes", () => {
+    const options = [opt("McDowell", 102), opt("Huddleston", 0)];
+    const rule = { voteFor: 1, rule: "unknown" as const, threshold: null };
+    expect(computeMargin({ ...rule, options }).rankable).toBe(false);
+    expect(computeMargin({ ...rule, options, complete: true })).toMatchObject({ rankable: true, marginVotes: 102 });
+    const empty = computeMargin({ ...rule, options: [opt("A", 0), opt("B", 0), opt("C", 0)], complete: true });
+    expect(empty.rankable).toBe(false);
+    expect(empty.flags).toEqual(["no_votes_reported"]);
+  });
+
+  it("separates election night complete from fully reported", () => {
+    const base = { totalVotes: 100, reportingUnits: 14, totalUnits: 14, isOfficial: false, scope: "county" as const };
+    expect(resultStatus({ ...base, units: { fully: 0, nightComplete: 14, partial: 0, notReported: 0 } })).toBe("election_night_complete");
+    expect(resultStatus({ ...base, units: { fully: 14, nightComplete: 0, partial: 0, notReported: 0 } })).toBe("unofficial_complete");
+    expect(resultStatus({ ...base, units: null })).toBe("unofficial_complete");
+    expect(resultStatus({ ...base, reportingUnits: 9, units: { fully: 0, nightComplete: 9, partial: 0, notReported: 5 } })).toBe("reporting");
+    expect(resultStatus({ ...base, isOfficial: true, units: { fully: 0, nightComplete: 14, partial: 0, notReported: 0 } })).toBe("county_certified");
+  });
+
+  it("reads SOS reporting details and adds them up across counties", () => {
+    const details = [
+      { reportingStatusClientTextKey: "reporting-status-fully-reported", value: 2 },
+      { reportingStatusClientTextKey: "reporting-status-election-night-complete", value: 12 },
+      { reportingStatusClientTextKey: "reporting-status-partially-reported", value: 0 },
+      { reportingStatusClientTextKey: "reporting-status-not-reported", value: 1 },
+    ];
+    expect(parseUnitStatus(details)).toEqual({ fully: 2, nightComplete: 12, partial: 0, notReported: 1 });
+    expect(parseUnitStatus(null)).toBeNull();
+    const county = { fully: 3, nightComplete: 0, partial: 0, notReported: 0 };
+    expect(sumUnitStatus([county, county])).toEqual({ fully: 6, nightComplete: 0, partial: 0, notReported: 0 });
+    // A county with no feed yet keeps a statewide contest from reading as finished.
+    expect(sumUnitStatus([county, county], 3)).toEqual({ fully: 6, nightComplete: 0, partial: 0, notReported: 1 });
+    expect(sumUnitStatus([null])).toBeNull();
   });
 
   it("counts write-ins in the total but not as candidates", () => {

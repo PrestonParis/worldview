@@ -62,6 +62,7 @@ export const TOOL_SHELLS: Record<SuiteToolId, ToolShellConfig> = {
         label: "Writ",
         links: [
           { label: "Search", href: "/writ", exact: true },
+          { label: "Results", href: "/writ/results" },
           { label: "Close races", href: "/writ/close-races" },
         ],
       },

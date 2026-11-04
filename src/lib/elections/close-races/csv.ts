@@ -49,6 +49,11 @@ export const CLOSE_RACE_COLUMNS: { header: string; value: (row: CloseRaceRow) =>
   { header: "margin_change_votes", value: (r) => r.marginChange },
   { header: "source_updated_at", value: (r) => r.sourceUpdatedAt },
   { header: "worldview_updated_at", value: (r) => r.ingestedAt },
+  // Added after the count; new columns go last so existing files keep their shape.
+  { header: "outcome", value: (r) => r.outcome?.label ?? null },
+  { header: "advancing", value: (r) => r.outcome?.advancing.join("; ") || null },
+  { header: "prior_party", value: (r) => r.seat?.priorParty ?? null },
+  { header: "seat_change", value: (r) => r.seat?.change ?? null },
 ];
 
 function cell(value: string | number | null): string {

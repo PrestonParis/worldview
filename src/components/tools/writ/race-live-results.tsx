@@ -22,8 +22,8 @@ export async function RaceLiveResults({ electionId }: { electionId: string }) {
             {live.flags.length ? ` · ${live.flags.map((f) => FLAG_LABELS[f as ContestFlag] ?? f).join(", ")}` : ""}
           </p>
         </div>
-        <Link href={`/writ/close-races/${encodeURIComponent(live.sourceElectionId)}`} className="text-sm font-bold text-rose-600 dark:text-rose-400">
-          All close races →
+        <Link href={`/writ/results/${encodeURIComponent(live.sourceElectionId)}`} className="text-sm font-bold text-rose-600 dark:text-rose-400">
+          Georgia results →
         </Link>
       </div>
       <ul className="mt-4 space-y-2 text-sm">

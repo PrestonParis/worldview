@@ -5,6 +5,15 @@ import { digestEveryMinutes, digestMessage, digestStarted, morningDueMs, pollsCl
 
 const schedule = parseSchedule(schedulePath);
 
+describe("pushes after election night", () => {
+  it("sends any contest event once the night has passed, and only top races before", () => {
+    const local = { kind: "leader_change", level: "county", severity: "warning" };
+    expect(pushesAtOnce(local)).toBe(false);
+    expect(pushesAtOnce({ ...local, settled: true })).toBe(true);
+    expect(pushesAtOnce({ ...local, severity: "info", settled: true })).toBe(false);
+  });
+});
+
 describe("what pushes at once", () => {
   it("holds local contest events for the digest", () => {
     expect(pushesAtOnce({ kind: "leader_change", level: "county" })).toBe(false);
