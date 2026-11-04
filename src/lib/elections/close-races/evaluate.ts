@@ -16,6 +16,21 @@ export interface Overrides {
   merge?: string[];
   /** Municipal rules that apply to this election only. */
   municipalRules?: MunicipalRules;
+  /**
+   * Counts from a county's certified records, by contest key or exact name, for
+   * a contest SOS shows at zero. Every entry cites its source, and it applies
+   * only while the feed's total is zero: SOS's own numbers win once posted.
+   */
+  votes?: Record<string, { source: string; options: Record<string, number> }>;
+}
+
+function withCountyVotes(contest: AssembledContest, overrides: Overrides): { contest: AssembledContest; source: string | null } {
+  const sourced = overrides.votes?.[contest.key] ?? overrides.votes?.[contest.name];
+  if (!sourced || contest.options.some((o) => o.votes > 0)) return { contest, source: null };
+  return {
+    contest: { ...contest, options: contest.options.map((o) => ({ ...o, votes: sourced.options[o.name] ?? 0 })) },
+    source: sourced.source,
+  };
 }
 
 export interface EvaluatedContest extends AssembledContest {
@@ -32,9 +47,10 @@ export interface EvaluatedContest extends AssembledContest {
 }
 
 export function evaluateContest(
-  contest: AssembledContest,
+  fromFeed: AssembledContest,
   { electionKind, municipalRules = {}, overrides = {} }: { electionKind: ElectionKind; municipalRules?: MunicipalRules; overrides?: Overrides },
 ): EvaluatedContest {
+  const { contest, source: votesSource } = withCountyVotes(fromFeed, overrides);
   const cls = classifyContest(contest.name, { fromCounty: contest.scope !== "state", isReferendum: contest.isReferendum });
   const rule = decisionRule({
     name: contest.name,
@@ -59,11 +75,12 @@ export function evaluateContest(
   const flags: ContestFlag[] = [...margin.flags];
   if (contest.merged) flags.push("merged");
   if (contest.unlinkedCounties.length) flags.push("unlinked_counties");
+  if (votesSource) flags.push("votes_from_county");
   return {
     ...contest,
     ...cls,
     rule: rule.rule,
-    ruleSource: rule.source,
+    ruleSource: votesSource ? `${rule.source}. Votes from the county's records: ${votesSource}` : rule.source,
     threshold: rule.threshold,
     margin,
     status,

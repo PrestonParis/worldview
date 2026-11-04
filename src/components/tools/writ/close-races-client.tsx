@@ -48,6 +48,9 @@ export function ElectionPicker({ current, elections, query, base = "/writ/close-
 
 const fmt = (n: number) => n.toLocaleString("en-US");
 
+/** Votes on the option but none under any method: Miller County's feed, for one. */
+const noMethodSplit = (o: { votes: number; votesByMethod: Record<string, number> }) => o.votes > 0 && Object.values(o.votesByMethod).every((v) => !v);
+
 const METHOD_ORDER = ["Election Day", "Advance Voting", "Absentee by Mail", "Provisional"];
 const methodRank = (method: string) => METHOD_ORDER.indexOf(method) + 1 || METHOD_ORDER.length + 1;
 
@@ -122,7 +125,7 @@ export function DetailBody({ detail }: { detail: ContestDetail }) {
                 <td className="py-1 pr-3 text-right tabular-nums">{fmt(o.votes)}</td>
                 {methods.map((m) => (
                   <td key={m} className="py-1 pr-3 text-right tabular-nums">
-                    {o.votesByMethod[m] != null ? fmt(o.votesByMethod[m]) : "—"}
+                    {o.votesByMethod[m] != null && !noMethodSplit(o) ? fmt(o.votesByMethod[m]) : "—"}
                   </td>
                 ))}
               </tr>
@@ -130,6 +133,8 @@ export function DetailBody({ detail }: { detail: ContestDetail }) {
           </tbody>
         </table>
       </div>
+
+      {detail.options.some(noMethodSplit) ? <p className="text-slate-500">The county reported this contest&apos;s totals with no split by vote method.</p> : null}
 
       {detail.areas.length > 1 ? (
         <div className="overflow-x-auto">

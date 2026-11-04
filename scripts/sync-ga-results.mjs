@@ -48,13 +48,16 @@ import { sosClient, SOS_BASE } from "./lib/ga-sos.mjs";
 import { bucket, raiseAlert, sendWebhook } from "./lib/alerts.mjs";
 import { addBaseline, bumpError, dropEmptyStatus, electionLinks, ensureStatus, loadBaseline, updateStatus, writeContests, writeCountyStatus, writeCoverage } from "./lib/close-races-store.mjs";
 import { syncCities } from "./lib/city-results.mjs";
+import { syncPrecincts } from "./lib/close-races-precincts.mjs";
+import { stateCountyMismatches } from "../src/lib/elections/close-races/precincts.ts";
 import { electionKind, parseElectionList, parseFeed, replacementElection } from "../src/lib/elections/close-races/parse.ts";
 import { assembleContests, normalizeName, stableHash } from "../src/lib/elections/close-races/merge.ts";
 import { evaluateContest } from "../src/lib/elections/close-races/evaluate.ts";
 import { compareByPercent, compareByVotes } from "../src/lib/elections/close-races/margin.ts";
 import { parseMediaExport } from "../src/lib/elections/close-races/media-export.ts";
-import { CLOSE_RACE_ROWS_SQL, filterReport, toReportRow, withSeats } from "../src/lib/elections/close-races/rows.ts";
-import { closeRacesCsv, closeRacesFilename } from "../src/lib/elections/close-races/csv.ts";
+import { CLOSE_RACE_ROWS_SQL, everyContest, filterReport, toReportRow, withSeats } from "../src/lib/elections/close-races/rows.ts";
+import { runoffMismatches } from "../src/lib/elections/close-races/results.ts";
+import { allResultsFilename, closeRacesCsv, closeRacesFilename } from "../src/lib/elections/close-races/csv.ts";
 import { coverageRecords, feedContests, newBaselineContests } from "../src/lib/elections/close-races/coverage.ts";
 import { etDate, parseSchedule, scheduledOn } from "../src/lib/elections/close-races/schedule.ts";
 import { pushesAtOnce, sentinelActive } from "../src/lib/elections/close-races/sentinel.ts";
@@ -316,6 +319,34 @@ async function revalidate() {
   }
 }
 
+// A runoff round against the general it follows: an expected runoff SOS doesn't
+// list, or a listed one with no contest that needed it. Compared on the stored
+// rows, so the runoff's own contests are in place.
+async function checkRunoffRound(pg, id, date) {
+  const { rows: general } = await pg.query(
+    "select source_election_id from tracked_ingest_status where election_kind = 'general' and election_date < $1 and source = 'ga-sos' order by election_date desc limit 1",
+    [date],
+  );
+  if (!general.length) return;
+  const load = async (election) => (await pg.query(CLOSE_RACE_ROWS_SQL, [election])).rows.map(toReportRow);
+  const { noRunoff, noParent } = runoffMismatches(await load(general[0].source_election_id), await load(id));
+  if (!noRunoff.length && !noParent.length) return;
+  const name = (r) => `${r.name}${r.county ? ` (${r.county})` : ""}`;
+  const parts = [
+    noRunoff.length ? `${noRunoff.length} expected with no runoff listed: ${noRunoff.slice(0, 5).map(name).join("; ")}` : null,
+    noParent.length ? `${noParent.length} listed with no matching contest: ${noParent.slice(0, 5).map(name).join("; ")}` : null,
+  ].filter(Boolean);
+  await raiseAlert(pg, {
+    election: id,
+    key: `runoff_mismatch:${stableHash(parts.join("|"))}`,
+    kind: "runoff_mismatch",
+    severity: "warning",
+    message: `Runoff contests don't line up with the general: ${parts.join(". ")}`,
+    payload: { noRunoff: noRunoff.map(name), noParent: noParent.map(name) },
+    push: !sentinelActive(SCHEDULE),
+  });
+}
+
 // Turnout and count progress per county, from the feeds already in hand.
 function countyStatusRows(ctx, id, counties, header) {
   const localities = new Map(ctx.state.feed.localities.map((l) => [l.shortName, l]));
@@ -335,6 +366,8 @@ function countyStatusRows(ctx, id, counties, header) {
       units_night_complete: units?.nightComplete ?? null,
       units_partial: units?.partial ?? null,
       units_not_reported: units?.notReported ?? null,
+      percent_reporting: locality?.percentReporting ?? null,
+      groups_unreported: c.feed.election.groupsUnreported ?? [],
       is_official: Boolean(c.feed.election.isOfficialResults),
       source_updated_at: c.feed.election.lastUpdated ?? header.lastUpdated,
     };
@@ -392,7 +425,42 @@ async function persist(ctx, mode) {
     });
   }
 
-  await writeCountyStatus(pg, countyStatusRows(ctx, id, counties, header));
+  // The export carries no turnout, so a fallback round keeps what's there.
+  if (!ctx.exportCounties) {
+    await writeCountyStatus(pg, countyStatusRows(ctx, id, counties, header));
+    ctx.precinctsSeen ??= new Map();
+    const precincts = await syncPrecincts(pg, client, { electionId: id, evaluated, counties, seen: ctx.precinctsSeen }).catch((err) => {
+      console.warn(`  precinct sync failed: ${err.message}`);
+      return null;
+    });
+    if (precincts?.read) console.log(`  precincts: read ${precincts.read} contest slices, ${precincts.changed} precinct rows changed`);
+  }
+
+  for (const e of evaluated.filter((c) => c.flags.includes("no_votes_reported") && c.isOfficial)) {
+    await raiseAlert(pg, {
+      election: id,
+      key: `no_votes_certified:${stableHash(e.key)}`,
+      kind: "no_votes_certified",
+      severity: "warning",
+      message: `${e.name}${e.county ? ` (${e.county})` : ""} is certified with no votes posted. Its numbers need the county's records: add them to overrides-${id}.json with a source.`,
+      push: true,
+    });
+  }
+
+  // A check, so a failure here must not stop the count being written.
+  if (kind === "runoff" && evaluated.length) await checkRunoffRound(pg, id, header.electionDate).catch((err) => console.warn(`  runoff check failed: ${err.message}`));
+
+  const offTotals = stateCountyMismatches(evaluated);
+  if (offTotals.length && !sentinelActive(SCHEDULE)) {
+    await raiseAlert(pg, {
+      election: id,
+      key: `state_county:${stableHash(offTotals.join("|"))}`,
+      kind: "state_county_mismatch",
+      severity: "warning",
+      message: `State totals differ from their counties in ${offTotals.length} place(s), e.g. ${offTotals.slice(0, 3).join("; ")}`,
+      payload: { mismatches: offTotals.slice(0, 200) },
+    });
+  }
 
   // Coverage: each county feed against its first copy (the ballot definition).
   if (!ctx.baseline) ctx.baseline = await loadBaseline(pg, id);
@@ -529,7 +597,8 @@ async function discover(ctxs, date) {
     }
     ctxs[i] = newContext({ ...next, replaces: from }, ctx.pg);
   }
-  for (const e of list.filter((e) => e.date === date && !ctxs.some((c) => c.election.id === e.id))) {
+  // A recount can carry its own later date (2024's HD 105 was dated Dec 3).
+  for (const e of list.filter((e) => (e.date === date || (e.kind === "recount" && e.date > date)) && !ctxs.some((c) => c.election.id === e.id))) {
     console.log(`  also following ${e.id} (${e.name}), listed for ${date}`);
     ctxs.push(newContext(e, ctxs[0].pg));
   }
@@ -678,6 +747,26 @@ async function snapshot(pg, id) {
   const { rows } = await pg.query(CLOSE_RACE_ROWS_SQL, [id]);
   const { ranked } = filterReport(withSeats(rows.map(toReportRow), readJson(path.join(DATA_DIR, "seat-holders-2026.json"), { seats: {} }).seats), { sort });
   if (!ranked.length) throw new Error(`no ranked contests for ${id}; load it first`);
+  const { rows: status } = await pg.query("select is_official from tracked_ingest_status where source_election_id = $1", [id]);
+  if (status[0]?.is_official) {
+    // Certified: one file per version of the data, every contest, not one a day.
+    const seats = readJson(path.join(DATA_DIR, "seat-holders-2026.json"), { seats: {} }).seats;
+    const all = closeRacesCsv(everyContest(withSeats(rows.map(toReportRow), seats)));
+    const isNew = await raiseAlert(pg, { election: id, key: `certified_csv:${stableHash(all)}`, kind: "certified_csv", severity: "info", message: "Certified results file written", push: false });
+    if (!isNew) {
+      console.log("  certified file already published for this data");
+      return;
+    }
+    const name = allResultsFilename(id, new Date(), { certified: true });
+    fs.mkdirSync(EXPORT_DIR, { recursive: true });
+    fs.writeFileSync(path.join(EXPORT_DIR, name), all);
+    console.log(`  certified results → ${path.join(EXPORT_DIR, name)}`);
+    if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      const objectPath = `writ/close-races/${id}/${name}`;
+      await upload("lake", objectPath, Buffer.from(all), "text/csv; charset=utf-8");
+      await sendWebhook(`📄 [${id}] Certified results, every contest: ${lakeUrl(objectPath)}`);
+    }
+  }
   const file = closeRacesFilename(id, sort, new Date());
   const body = closeRacesCsv(ranked);
   fs.mkdirSync(EXPORT_DIR, { recursive: true });
@@ -691,7 +780,7 @@ async function snapshot(pg, id) {
   }
 }
 
-async function reconcile(pg, id) {
+async function reconcile(pg, id, { certified = true } = {}) {
   const res = await client.mediaExport(id);
   const header = parseFeed((await client.state(id)).json).election;
   const { state, counties } = parseMediaExport(res.json, { isPrimary: header.isPrimary });
@@ -700,7 +789,7 @@ async function reconcile(pg, id) {
   const { rows } = await pg.query(
     `select c.external_id, c.total_votes, coalesce(json_object_agg(o.name_key, o.votes) filter (where o.id is not null), '{}') as votes
        from tracked_contests c left join tracked_contest_options o on o.contest_id = c.id
-      where c.source_election_id = $1 and c.removed_at is null group by c.id`,
+      where c.source_election_id = $1 and c.source = 'ga-sos' and c.removed_at is null group by c.id`,
     [id],
   );
   const db = new Map(rows.map((r) => [r.external_id, r]));
@@ -712,6 +801,8 @@ async function reconcile(pg, id) {
       continue;
     }
     db.delete(`ga-sos:${id}:${c.key}`);
+    // Numbers from a county's records, because SOS has none to compare.
+    if (overrides.votes?.[c.key] ?? overrides.votes?.[c.name]) continue;
     const label = `${c.name}${c.county ? ` (${c.county})` : ""}`;
     const total = c.options.reduce((s, o) => s + o.votes, 0);
     if (total !== row.total_votes) problems.push(`${label}: export ${total} vs DB ${row.total_votes}`);
@@ -737,11 +828,12 @@ async function reconcile(pg, id) {
     kind: "reconcile",
     severity: problems.length ? "warning" : "info",
     message: problems.length
-      ? `Certified results differ from the SOS media export in ${problems.length} place(s), e.g. ${problems.slice(0, 3).join("; ")}`
-      : `Certified results match the SOS media export (${contests.length} contests)`,
+      ? `${certified ? "Certified results differ" : "Results differ"} from the SOS media export in ${problems.length} place(s), e.g. ${problems.slice(0, 3).join("; ")}`
+      : `${certified ? "Certified results match" : "Results match"} the SOS media export (${contests.length} contests)`,
     payload: { problems: problems.slice(0, 200) },
   });
-  if (problems.length) process.exitCode = 1;
+  // Before certification the export can trail the API by minutes: worth an alert, not a failed run.
+  if (problems.length && certified) process.exitCode = 1;
 }
 
 // ── main ────────────────────────────────────────────────────────────────
@@ -782,6 +874,8 @@ async function main() {
       const result = await loadOnce(ctx);
       await cities(ctx);
       if (flag("reconcile-when-official") && official(ctx)) await reconcile(pg, election.id);
+      // Every day, not only once certified, so a difference shows while it can still be chased.
+      else if (flag("reconcile-daily") && ctx.state?.source === "api") await reconcile(pg, election.id, { certified: false });
       if (runId) await finishRun(pg, runId, { inserted: result.inserted, updated: result.updated, skipped: result.unchanged, cursor: election.id });
       console.log(`  ${client.requests} requests`);
       return;

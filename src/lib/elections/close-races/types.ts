@@ -57,7 +57,8 @@ export type ContestFlag =
   | "runoff_rule_unverified"
   | "merged"
   | "unlinked_counties"
-  | "no_votes_reported";
+  | "no_votes_reported"
+  | "votes_from_county";
 
 export type CloseRaceSort = "votes" | "percent";
 
@@ -117,6 +118,8 @@ export interface ParsedElectionHeader {
   isPrimary: boolean;
   asOf: string | null;
   lastUpdated: string | null;
+  /** Vote groups (Provisional, …) this feed hasn't reported at all. */
+  groupsUnreported?: string[];
 }
 
 export interface ParsedFeed {

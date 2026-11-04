@@ -290,6 +290,7 @@ const FLAG_STYLE: Record<ContestFlag, string> = {
   merged: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300",
   unlinked_counties: "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-200",
   no_votes_reported: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300",
+  votes_from_county: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300",
 };
 
 function flagLabel(flag: ContestFlag, row: ReportRow) {
@@ -313,7 +314,7 @@ export function Flags({ row }: { row: ReportRow }) {
   );
 }
 
-function RaceName({ row }: { row: ReportRow }) {
+export function RaceName({ row }: { row: ReportRow }) {
   const place =
     row.county ??
     (row.counties.length === 1 ? countyNameFromSlug(row.counties[0]) : row.counties.length > 1 ? `${row.counties.length} counties` : null);
@@ -335,6 +336,7 @@ function RaceName({ row }: { row: ReportRow }) {
         {place ? ` · ${place}` : ""}
         {row.municipality && row.level !== "municipal" ? ` · ${row.municipality}` : ""}
         {row.voteFor > 1 ? ` · ${row.voteFor} seats (last winner vs first loser)` : ""}
+        {row.votedIn?.length ? ` · Voted in ${row.votedIn.join(", ")} ${row.votedIn.length === 1 ? "precinct" : "precincts"}` : ""}
       </span>
     </span>
   );

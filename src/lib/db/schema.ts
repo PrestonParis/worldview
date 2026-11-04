@@ -1908,11 +1908,28 @@ export const trackedCountyStatus = pgTable(
     unitsNightComplete: integer("units_night_complete"),
     unitsPartial: integer("units_partial"),
     unitsNotReported: integer("units_not_reported"),
+    percentReporting: doublePrecision("percent_reporting"),
+    groupsUnreported: text("groups_unreported").array().notNull().default(sql`'{}'`),
     isOfficial: boolean("is_official").notNull().default(false),
     sourceUpdatedAt: timestamp("source_updated_at", { withTimezone: true }),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [primaryKey({ columns: [table.sourceElectionId, table.countySlug] })],
+);
+
+export const trackedContestPrecincts = pgTable(
+  "tracked_contest_precincts",
+  {
+    contestId: uuid("contest_id")
+      .notNull()
+      .references(() => trackedContests.id, { onDelete: "cascade" }),
+    countySlug: text("county_slug").notNull(),
+    precinct: text("precinct").notNull(),
+    totalVotes: integer("total_votes").notNull().default(0),
+    votes: jsonb("votes").notNull().default({}),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [primaryKey({ columns: [table.contestId, table.countySlug, table.precinct] })],
 );
 
 export const trackedAlerts = pgTable(
