@@ -1,5 +1,6 @@
 "use client";
 
+import { formatMargin } from "@/lib/elections/overview";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -85,7 +86,7 @@ const GROUP_FEATURES: Record<string, { eyebrow: string; title: string; body: str
   economy: { eyebrow: "Start with jobs and prices", title: "How Americans are doing", body: "Paychecks, prices, homes, and the federal budget — official figures, updated as agencies publish them.", href: "/economy" },
   society: { eyebrow: "Explore the evidence", title: "Who we are, and where we're headed", body: "Population, schooling, belief, and family life — measured over decades and projected forward.", href: "/demographics" },
   power: { eyebrow: "Explore the network", title: "See how influence moves", body: "Connect people, institutions, money, legislation, and the relationships between them.", href: "/people" },
-  government: { eyebrow: "Midterms Nov 3", title: "Where the races are close", body: "Ratings, results, and county maps for every Senate and governor race, plus the bills and budget behind them.", href: "/elections" },
+  government: { eyebrow: "2026 midterm results", title: "Where the races were closest", body: "Results, ratings, and county maps for every Senate and governor race, plus the bills and budget behind them.", href: "/elections" },
   tools: { eyebrow: "Analytical Workspaces", title: "Unconstrained tools over public data", body: "Investigate money in Subpoena, track government action in Writ, and map ideology in Atlas.", href: "/tools" },
 };
 
@@ -410,13 +411,13 @@ function MegaMenuPreview({ groupId, previews }: { groupId: string; previews: Nav
   }
   if (groupId === "government" && previews.government) {
     const { year, highlights } = previews.government;
-    const tossups = highlights.filter((race) => race.rating === "tossup");
+    const closest = highlights.slice().sort((a, b) => a.marginPct - b.marginPct).slice(0, 6);
     return (
       <figure aria-hidden>
         <div className="grid grid-cols-2 gap-1.5">
-          {tossups.map((race) => <div key={`${race.office}-${race.state}`} className="rounded-md bg-white/15 px-2 py-1.5"><p className="text-xs font-semibold">{race.state}</p><p className="text-[9px] text-white/60">{race.office} · toss-up</p></div>)}
+          {closest.map((race) => <div key={`${race.office}-${race.state}`} className="rounded-md bg-white/15 px-2 py-1.5"><p className="text-xs font-semibold">{race.state} <span className="font-normal text-white/70">{race.office}</span></p><p className="text-[10px] text-white/70">{race.party ?? "Other"} {formatMargin(race.marginPct)}{race.called ? "" : " · counting"}</p></div>)}
         </div>
-        <figcaption className="mt-2 text-[11px] text-white/65">{year} midterm battlegrounds · {highlights.length} competitive races</figcaption>
+        <figcaption className="mt-2 text-[11px] text-white/65">{year} midterm · closest Senate and governor races</figcaption>
       </figure>
     );
   }

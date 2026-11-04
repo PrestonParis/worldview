@@ -110,7 +110,8 @@ export function parseCandidates(raw) {
     const text = stripMarkup(body);
     const party = text.match(PARTY_NAMES)?.[1]?.trim() ?? "";
     const name = text.replace(PARTY_NAMES, "").replace(/\s*\(write-in\)\s*$/i, "").trim();
-    if (name) out.push({ name, party, link });
+    // {{aye}} marks the winner once a race is decided.
+    if (name) out.push({ name, party, link, ...(/\{\{aye\}\}/i.test(body) ? { won: true } : {}) });
   }
   return out;
 }
@@ -140,12 +141,44 @@ export function parseRaceRow(cells, stateAbbr) {
   const incumbentCell =
     cells.find((cell) => /\{\{sortname/i.test(cell.raw)) ??
     cells.find((cell) => !cell.header && /^\s*\[\[[^\]]+\]\]\s*$/.test(cell.raw));
-  const statusCell = cells.find((cell) => /incumbent|new seat|vacant|open seat/i.test(cell.text) && cell !== incumbentCell);
+  const statusCell = cells.find((cell) => /incumbent|new seat|vacant|open seat|\bgain\b|\bhold\b/i.test(cell.text) && cell !== incumbentCell && cell !== candidatesCell);
   return {
     key,
     incumbent: incumbentCell ? parseIncumbent(incumbentCell.raw) : null,
     status: statusCell?.text ?? "",
     candidates: parseCandidates(candidatesCell.raw),
+  };
+}
+
+// Every race in one table, or none.
+export function racesInTable(table, stateAbbr) {
+  return table ? tableRows(table).map((cells) => parseRaceRow(cells, stateAbbr)).filter(Boolean) : [];
+}
+
+// Every table from `marker` on (the House page has one per state).
+export function racesFrom(text, marker, stateAbbr) {
+  const out = [];
+  let from = text.indexOf(marker);
+  while (from !== -1) {
+    const table = tableAfter(text, "{|", from);
+    if (!table) break;
+    out.push(...racesInTable(table, stateAbbr));
+    from = text.indexOf(table, from) + table.length;
+  }
+  return out;
+}
+
+// The race lists on the three overview pages, by key-prefix.
+export function overviewRaces({ senate, governors, house }, stateAbbr) {
+  return {
+    senate: [
+      ...racesInTable(tableAfter(senate, "=== Elections leading to the next Congress ==="), stateAbbr),
+      ...racesInTable(tableAfter(senate, "=== Special elections during the preceding Congress ==="), stateAbbr),
+    ],
+    governor: racesInTable(tableAfter(governors, "=== States ==="), stateAbbr),
+    // State sections only: the "Special elections" table above them lists
+    // 2025–26 specials, not this cycle's general.
+    house: racesFrom(house, "\n==Alabama==", stateAbbr),
   };
 }
 

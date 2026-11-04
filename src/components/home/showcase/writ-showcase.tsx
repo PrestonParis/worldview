@@ -144,7 +144,13 @@ function RacePanel({ race }: { race: RaceSample }) {
       </p>
       <p className="mt-1 text-lg leading-snug font-semibold text-slate-950 dark:text-white">{race.title}</p>
       <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">
-        {race.status === "scheduled" ? "Scheduled. No votes have been reported yet." : hasVotes ? "Results reported." : "No results recorded."}
+        {race.status === "scheduled"
+          ? "Scheduled. No votes have been reported yet."
+          : race.callStatus === "called" && race.candidates.some((c) => c.won)
+            ? `Called for ${race.candidates.find((c) => c.won)!.name}.`
+            : hasVotes
+              ? "Results reported."
+              : "No results recorded."}
       </p>
 
       <ul className="mt-4 space-y-2">
@@ -169,7 +175,7 @@ function RacePanel({ race }: { race: RaceSample }) {
       {race.ratings.length ? (
         <div className="mt-4">
           <p className="text-sm text-slate-800 dark:text-slate-200">
-            Forecasters&rsquo; consensus: <strong className="font-semibold text-slate-950 dark:text-white">{race.consensus?.label ?? "—"}</strong>
+            {race.callStatus ? "Final forecasters\u2019 consensus" : "Forecasters\u2019 consensus"}: <strong className="font-semibold text-slate-950 dark:text-white">{race.consensus?.label ?? "—"}</strong>
           </p>
           <ul className="mt-2 grid grid-cols-3 gap-1.5">
             {race.ratings.map((r) => (

@@ -5,7 +5,8 @@ import { ShowcaseSection } from "@/components/home/showcase/showcase";
 import { formatValue } from "@/lib/format";
 import { CATALOG } from "@/lib/quiz/catalog";
 import type { Showcase } from "@/lib/home/showcase";
-import type { MidtermHighlight, MidtermRating, NavPreviews } from "@/lib/nav-previews";
+import { formatMargin } from "@/lib/elections/overview";
+import type { MidtermHighlight, NavPreviews } from "@/lib/nav-previews";
 import type { DossierProfile } from "@/lib/db/entities";
 
 export interface PlatformFacts {
@@ -89,7 +90,7 @@ function DemocracySection({ facts, preview }: { facts: PlatformFacts; preview: N
       <SectionHeading title="Elections and representation" action="Explore election results" href="/elections" />
       <div className="mt-5 grid gap-4 sm:grid-cols-[1.08fr_.92fr]">
         <Link href="/elections" className="group rounded-xl border border-slate-200 bg-white p-5 sm:p-6 dark:border-slate-800 dark:bg-slate-950">
-          <div className="flex items-start justify-between gap-4"><div><p className="text-sm font-semibold text-slate-950 dark:text-white">{preview?.year ?? "Current"} midterm watch</p><p className="mt-1 text-xs text-slate-500">Senate and governor battleground ratings{preview?.asOf ? ` · updated ${formatShortDate(preview.asOf)}` : ""}</p></div><Vote size={20} className="text-slate-400" /></div>
+          <div className="flex items-start justify-between gap-4"><div><p className="text-sm font-semibold text-slate-950 dark:text-white">{preview?.year ?? "Current"} midterm results</p><p className="mt-1 text-xs text-slate-500">Closest Senate and governor races{preview?.asOf ? ` · updated ${formatShortDate(preview.asOf)}` : ""}</p></div><Vote size={20} className="text-slate-400" /></div>
           {preview ? <MidtermHighlights preview={preview} /> : <NoPreview />}
           <div className="mt-4 flex items-end justify-between gap-4 border-t border-slate-200 pt-4 dark:border-slate-800"><div><p className="text-2xl font-semibold text-slate-950 dark:text-white">{facts.elections?.races.toLocaleString() ?? "—"}</p><p className="text-xs text-slate-500">races indexed for {facts.elections?.cycle ?? "the latest cycle"}</p></div><span className="text-sm font-semibold text-blue-700 group-hover:underline dark:text-blue-300">Results, ratings, and maps <ArrowRight size={13} className="inline" /></span></div>
         </Link>
@@ -99,11 +100,10 @@ function DemocracySection({ facts, preview }: { facts: PlatformFacts; preview: N
   );
 }
 
-const MIDTERM_RATING_LABEL: Record<MidtermRating, string> = { tossup: "Toss-up", lean_d: "Lean D", lean_r: "Lean R" };
-const MIDTERM_RATING_STYLE: Record<MidtermRating, string> = {
-  tossup: "border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200",
-  lean_d: "border-blue-200 bg-blue-50 text-blue-800 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-200",
-  lean_r: "border-red-200 bg-red-50 text-red-800 dark:border-red-900 dark:bg-red-950 dark:text-red-200",
+const MIDTERM_PARTY_STYLE: Record<"D" | "R" | "other", string> = {
+  D: "border-blue-200 bg-blue-50 text-blue-800 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-200",
+  R: "border-red-200 bg-red-50 text-red-800 dark:border-red-900 dark:bg-red-950 dark:text-red-200",
+  other: "border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200",
 };
 
 function formatShortDate(value: string) {
@@ -111,11 +111,11 @@ function formatShortDate(value: string) {
 }
 
 function MidtermRace({ race }: { race: MidtermHighlight }) {
-  return <li title={race.note} className={`flex items-center justify-between gap-2 rounded-md border px-2.5 py-2 ${MIDTERM_RATING_STYLE[race.rating]}`}><span className="text-xs font-semibold">{race.state}</span><span className="text-[10px] font-medium uppercase tracking-wide opacity-80">{MIDTERM_RATING_LABEL[race.rating]}</span></li>;
+  return <li title={race.note} className={`flex items-center justify-between gap-2 rounded-md border px-2.5 py-2 ${MIDTERM_PARTY_STYLE[race.called && (race.party === "D" || race.party === "R") ? race.party : "other"]}`}><span className="text-xs font-semibold">{race.state}</span><span className="text-[10px] font-medium uppercase tracking-wide opacity-80">{race.party ?? "Other"} {formatMargin(race.marginPct)}</span></li>;
 }
 
 function MidtermHighlights({ preview }: { preview: NonNullable<NavPreviews["government"]> }) {
-  return <div className="mt-5 grid gap-4 sm:grid-cols-2" aria-label={`${preview.year} midterm battlegrounds`}>{(["Senate", "Governor"] as const).map((office) => { const races = preview.highlights.filter((race) => race.office === office); return <div key={office}><div className="mb-2 flex items-center justify-between"><p className="text-xs font-semibold text-slate-700 dark:text-slate-200">{office}</p><span className="text-[10px] text-slate-400">{races.length} competitive</span></div><ul className="grid grid-cols-2 gap-1.5">{races.map((race) => <MidtermRace key={`${race.office}-${race.state}`} race={race} />)}</ul></div>; })}</div>;
+  return <div className="mt-5 grid gap-4 sm:grid-cols-2" aria-label={`${preview.year} midterm closest races`}>{(["Senate", "Governor"] as const).map((office) => { const races = preview.highlights.filter((race) => race.office === office); return <div key={office}><div className="mb-2 flex items-center justify-between"><p className="text-xs font-semibold text-slate-700 dark:text-slate-200">{office}</p><span className="text-[10px] text-slate-400">points · gray not called</span></div><ul className="grid grid-cols-2 gap-1.5">{races.map((race) => <MidtermRace key={`${race.office}-${race.state}`} race={race} />)}</ul></div>; })}</div>;
 }
 
 function AddressLookup() {

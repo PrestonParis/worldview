@@ -23,7 +23,8 @@
 import { randomUUID } from "node:crypto";
 import { arg, fetchJson, flag, runImport, STATE_NAME_TO_ABBR } from "./lib/bulk.mjs";
 import { upsertEntities } from "./lib/entities.mjs";
-import { parseRaceRow, parseRatingsTable, tableAfter, tableRows } from "./lib/wiki-races.mjs";
+import { nameParts, samePerson as sameperson } from "./lib/race-results.mjs";
+import { overviewRaces, parseRatingsTable, tableAfter } from "./lib/wiki-races.mjs";
 
 const YEAR = Number(arg("year", "2026"));
 const DRY_RUN = flag("dry-run");
@@ -41,48 +42,6 @@ async function wikitext(page) {
   return data.parse.wikitext;
 }
 
-const races = (table) =>
-  table ? tableRows(table).map((cells) => parseRaceRow(cells, STATE_NAME_TO_ABBR)).filter(Boolean) : [];
-
-// Every table from `marker` on (the House page has one per state).
-function racesFrom(text, marker) {
-  const out = [];
-  let from = text.indexOf(marker);
-  while (from !== -1) {
-    const table = tableAfter(text, "{|", from);
-    if (!table) break;
-    out.push(...races(table));
-    from = text.indexOf(table, from) + table.length;
-  }
-  return out;
-}
-
-// "Dan J. Sullivan Jr." -> { first: "dan", last: "sullivan", key: "dan sullivan" }
-function nameParts(name) {
-  const tokens = name
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .replace(/\([^)]*\)/g, " ")
-    .replace(/[^a-z\s'-]/g, " ")
-    .split(/\s+/)
-    .filter((token) => token && !/^(jr|sr|ii|iii|iv)$/.test(token));
-  // FEC-style "LAST, FIRST" was already flipped on import, so first/last
-  // are the outer tokens. `full` keeps middle names and initials: a match
-  // across the whole graph must not merge namesakes (Dan J. vs Dan S.
-  // Sullivan); within one race, `first`/`last` are enough.
-  const first = tokens[0] ?? "";
-  const last = tokens.at(-1) ?? "";
-  return { first, last, full: tokens.join(" ") };
-}
-
-function sameperson(a, b) {
-  const x = nameParts(a);
-  const y = nameParts(b);
-  if (!x.last || x.last !== y.last) return false;
-  return x.first.startsWith(y.first.slice(0, 3)) || y.first.startsWith(x.first.slice(0, 3));
-}
-
 // Raw FEC names ("OSSOFF, T. JONATHAN") read badly; Wikipedia's is better.
 const looksRaw = (name) => Boolean(name) && (name.includes(",") || name === name.toUpperCase());
 
@@ -95,25 +54,21 @@ await runImport("wikipedia-races", async (pg) => {
     wikitext(`${YEAR} United States House of Representatives election ratings`),
   ]);
 
+  const pageRaces = overviewRaces({ senate, governors, house }, STATE_NAME_TO_ABBR);
   const offices = [
     {
       prefix: "senate",
-      races: [
-        ...races(tableAfter(senate, "=== Elections leading to the next Congress ===")),
-        ...races(tableAfter(senate, "=== Special elections during the preceding Congress ===")),
-      ],
+      races: pageRaces.senate,
       ratings: parseRatingsTable(tableAfter(senate, "== Predictions =="), STATE_NAME_TO_ABBR),
     },
     {
       prefix: "governor",
-      races: races(tableAfter(governors, "=== States ===")),
+      races: pageRaces.governor,
       ratings: parseRatingsTable(tableAfter(governors, "== Predictions =="), STATE_NAME_TO_ABBR),
     },
     {
       prefix: "house",
-      // State sections only — the "Special elections" table above them lists
-      // 2025–26 specials, not this cycle's general.
-      races: racesFrom(house, "\n==Alabama=="),
+      races: pageRaces.house,
       ratings: parseRatingsTable(tableAfter(houseRatings, "===Latest published ratings"), STATE_NAME_TO_ABBR),
     },
   ];
@@ -278,6 +233,8 @@ await runImport("wikipedia-races", async (pg) => {
           continue;
         }
         if (!["nominee", "primary_winner"].includes(row.status)) continue;
+        // Added from the results feed: on the ballot, whatever this page lists.
+        if (row.external_id?.startsWith("nyt:")) continue;
         const status = row.incumbent ? "not_running" : "withdrew";
         if (row.incumbent) counts.retired += 1;
         if (!DRY_RUN) await pg.query("UPDATE candidacies SET status = $1 WHERE id = $2", [status, row.id]);

@@ -240,8 +240,10 @@ export interface RaceSample {
   title: string;
   date: string;
   status: string;
+  // "called" | "counting" | "runoff" while the count runs, else null.
+  callStatus: string | null;
   href: string;
-  candidates: { name: string; party: string; incumbent: boolean; votes: number | null }[];
+  candidates: { name: string; party: string; incumbent: boolean; votes: number | null; won: boolean }[];
   ratings: { source: string; rating: Rating; label: string; asOf: string }[];
   consensus: { rating: Rating; label: string } | null;
 }
@@ -358,12 +360,14 @@ async function raceSample(): Promise<RaceSample | null> {
     title: `${docket.election.jurisdiction} ${docket.election.office}`,
     date: docket.election.electionDate.slice(0, 10),
     status: docket.election.status,
+    callStatus: docket.election.callStatus,
     href: writDocketHref("race", docket.election.id),
     candidates: docket.candidates.slice(0, 4).map((c) => ({
       name: c.name,
       party: normalizeParty(c.candidacy.party),
       incumbent: Boolean(c.candidacy.incumbent),
       votes: c.candidacy.votes ?? null,
+      won: Boolean(c.candidacy.won),
     })),
     ratings: (consensus?.ratings ?? []).map((r) => ({ source: sourceLabel.get(r.source) ?? r.source, rating: r.rating, label: ratingLabel(r.rating), asOf: r.asOf })),
     consensus: consensus?.published ? { rating: consensus.rating, label: ratingLabel(consensus.rating) } : null,

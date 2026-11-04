@@ -50,6 +50,7 @@ export interface EntityCandidacy extends Candidacy {
     jurisdiction: string;
     electionType: string;
     status: string;
+    callStatus: string | null;
     electionDate: string;
     cycle: number | null;
   };
@@ -72,6 +73,7 @@ export async function listCandidaciesForEntity(entityId: string): Promise<Entity
       jurisdiction: election.jurisdiction,
       electionType: election.electionType,
       status: election.status,
+      callStatus: election.callStatus,
       electionDate: election.electionDate.toISOString(),
       cycle: election.cycle,
     },

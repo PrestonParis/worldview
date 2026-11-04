@@ -81,3 +81,60 @@ export function projectChamber(
     currentControl: control(current, majority),
   };
 }
+
+export interface ResultRace {
+  // Winner's party; null for a called race won outside D, R and I.
+  winnerParty: Party | null;
+  called: boolean;
+  flipped: boolean | null;
+}
+
+export interface ChamberResult {
+  chamber: Chamber;
+  seatsUp: number;
+  majority: number;
+  // Seats not up plus called races. `I` also holds winners from other parties.
+  seats: PartyCount;
+  uncalled: number;
+  // Called races where the seat changed party, by the party that gained it.
+  flips: PartyCount;
+  control: Party | null;
+  asOf: string | null;
+}
+
+/**
+ * Seats won so far: the baseline plus called races only. Pure. `caucusing` is
+ * how many independents sit with Democrats, which counts toward control while
+ * the display keeps them apart. Control is null until a party reaches
+ * `majority` on called races alone.
+ */
+export function tallyChamber(
+  chamber: Chamber,
+  races: ResultRace[],
+  baseline: PartyCount,
+  majority: number,
+  { caucusing = 0, asOf = null }: { caucusing?: number; asOf?: string | null } = {},
+): ChamberResult {
+  const seats: PartyCount = { D: baseline.D, R: baseline.R, I: baseline.I };
+  const flips: PartyCount = { D: 0, R: 0, I: 0 };
+  let uncalled = 0;
+  for (const race of races) {
+    if (!race.called) {
+      uncalled += 1;
+      continue;
+    }
+    const party = race.winnerParty ?? "I";
+    seats[party] += 1;
+    if (race.flipped) flips[party] += 1;
+  }
+  return {
+    chamber,
+    seatsUp: races.length,
+    majority,
+    seats,
+    uncalled,
+    flips,
+    control: control({ ...seats, D: seats.D + caucusing }, majority),
+    asOf,
+  };
+}

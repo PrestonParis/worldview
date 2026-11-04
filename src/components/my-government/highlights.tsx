@@ -71,6 +71,7 @@ function raceLabel(race: RaceSummary): string {
 }
 
 function raceLine(race: RaceSummary): string {
+  if (race.result && !race.result.called) return `${race.result.winnerName} leading${race.reportingPct != null ? `, ${Math.round(race.reportingPct)}% counted` : ""}`;
   if (race.result) return `${race.result.winnerName} won${race.result.marginPct != null ? ` by ${race.result.marginPct.toFixed(1)} pts` : ""}`;
   const major = race.nominees.filter((nominee) => nominee.party);
   if (major.length) return major.map((nominee) => `${nominee.name} (${nominee.party})`).join(" vs. ");
@@ -139,7 +140,9 @@ export function MyRaces({ cycle, showPrompt = false, className = "" }: { cycle?:
                 <p className={`mt-1 text-sm font-medium ${party ? PARTY_TEXT[party] : "text-slate-900 dark:text-white"}`} title={party ? partyName(party) : undefined}>
                   {raceLine(race)}
                 </p>
-                {race.rating || race.openSeat ? (
+                {race.callStatus ? (
+                  race.flipped ? <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">Seat flipped</p> : null
+                ) : race.rating || race.openSeat ? (
                   <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
                     {[race.rating ? ratingLabel(race.rating) : "", race.openSeat ? "Open seat" : ""].filter(Boolean).join(" · ")}
                   </p>

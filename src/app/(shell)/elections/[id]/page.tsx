@@ -11,7 +11,7 @@ import { summarizeCandidacies, type Candidacy } from "@/lib/validation/candidacy
 import { partyColorFor } from "@/lib/party-colors";
 import { formatAmount } from "@/lib/money";
 import { dedupeCandidacies, normalizeCandidateName, normalizePartyName } from "@/lib/elections/display";
-import { consensusRating, HANDICAPPERS, partyLetter } from "@/lib/elections/overview";
+import { consensusRating, HANDICAPPERS, isRankedChoice, partyLetter, raceCode } from "@/lib/elections/overview";
 import { ratingLabel } from "@/lib/validation/raceRating";
 import { ElectionStatusPill } from "@/components/elections/election-status";
 import { OnYourBallot } from "@/components/my-government/highlights";
@@ -54,8 +54,13 @@ export default async function ElectionDetailPage({ params }: PageProps<"/electio
   const candidacies = dedupeCandidacies(candidacyRows, (entityId) => entityById.get(entityId)?.name ?? "Unknown");
   const upcomingGeneral = election.status === "scheduled" && election.electionType === "general";
   const nominees = candidacies.filter((candidate) => !candidate.withdrew && (candidate.status === "nominee" || candidate.status === "primary_winner"));
-  const active = upcomingGeneral ? nominees : candidacies.filter((candidate) => !candidate.withdrew && candidate.status !== "lost_primary");
-  const historical = upcomingGeneral ? candidacies.filter((candidate) => !active.includes(candidate)) : [];
+  // A live count shows who was on the ballot, most votes first; filed
+  // candidates who never reached it go in the list below.
+  const onBallot = upcomingGeneral || election.callStatus != null;
+  const active = onBallot
+    ? [...nominees].sort((a, b) => (b.votes ?? -1) - (a.votes ?? -1))
+    : candidacies.filter((candidate) => !candidate.withdrew && candidate.status !== "lost_primary");
+  const historical = onBallot ? candidacies.filter((candidate) => !active.includes(candidate)) : [];
   const cycle = election.cycle ?? new Date(election.electionDate).getUTCFullYear();
 
   const [financeRows, outsideSpending] = await Promise.all([
@@ -73,6 +78,16 @@ export default async function ElectionDetailPage({ params }: PageProps<"/electio
   const denom = election.totalVotes ?? summary.totalVotes;
   const marginPct = summary.margin != null && denom > 0 ? (summary.margin / denom) * 100 : null;
   const isGeorgia = election.jurisdiction.toLowerCase() === "georgia";
+  const rankedChoice = election.callStatus != null && isRankedChoice(raceCode(election.jurisdiction).stateAbbr, election.office);
+  const winnerName = candidacies.find((candidate) => candidate.won);
+  const callLine =
+    election.callStatus === "called" && winnerName
+      ? `Called for ${normalizeCandidateName(entityById.get(winnerName.candidateEntityId)?.name ?? "Unknown")}${election.flipped ? ". The seat changed party." : "."}`
+      : election.callStatus === "runoff"
+        ? "Headed to a runoff."
+        : election.callStatus
+          ? "Not yet called."
+          : null;
 
   return (
     <div className="mx-auto max-w-6xl pb-16">
@@ -91,9 +106,10 @@ export default async function ElectionDetailPage({ params }: PageProps<"/electio
         <dl className="mt-7 grid gap-5 border-t border-slate-200 pt-5 sm:grid-cols-2 lg:grid-cols-4 dark:border-slate-800">
           <Meta label="Incumbent" value={incumbentName ? `${incumbentName} (${partyLetter(incumbent?.party) ?? "Other"})` : election.openSeat ? "Open seat" : "Not identified"} />
           <Meta label="Seat" value={election.seatClass ? `Class ${election.seatClass} · 6-year term` : election.openSeat ? "Open seat" : election.office} />
-          <Meta label="Race rating" value={consensus ? ratingLabel(consensus.rating) : "No published consensus"} />
+          <Meta label={election.callStatus ? "Final rating" : "Race rating"} value={consensus ? ratingLabel(consensus.rating) : "No published consensus"} />
           <Meta label="Last updated" value={shortDate(election.updatedAt)} />
         </dl>
+        {callLine ? <p className="mt-5 text-lg font-semibold text-slate-950 dark:text-white">{callLine}{election.reportingPct != null ? <span className="ml-2 text-sm font-normal text-slate-600 dark:text-slate-400">About {Math.round(election.reportingPct)}% of the expected vote counted</span> : null}</p> : null}
         {isGeorgia ? (
           <p className="mt-5 text-sm text-slate-600 dark:text-slate-400">Georgia schedules a general-election runoff for December 1, 2026 when required. <a href="https://sos.ga.gov/2026-elections-calendar" className="underline underline-offset-2">Official calendar</a></p>
         ) : null}
@@ -118,7 +134,7 @@ export default async function ElectionDetailPage({ params }: PageProps<"/electio
       ) : (
         <section className="mt-10">
           <h2 className="text-2xl font-semibold text-slate-950 dark:text-white">Candidates and results</h2>
-          {summary.margin != null ? <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">Margin: {summary.margin.toLocaleString()} votes{marginPct != null ? ` (${marginPct.toFixed(1)} points)` : ""}</p> : null}
+          {summary.margin != null ? <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">{rankedChoice ? "First-round gap" : election.callStatus && !summary.winnerEntityId ? "Current margin" : "Margin"}: {summary.margin.toLocaleString()} votes{marginPct != null ? ` (${marginPct < 0.05 ? "under 0.1" : marginPct.toFixed(1)} points)` : ""}</p> : null}
           <div className="mt-5 grid gap-4 md:grid-cols-2">{active.map((candidate) => <ResultCandidate key={candidate.id} candidate={candidate} entity={entityById.get(candidate.candidateEntityId)} total={denom} />)}</div>
         </section>
       )}
@@ -126,7 +142,7 @@ export default async function ElectionDetailPage({ params }: PageProps<"/electio
       {consensus || ratings.length ? (
         <section className="mt-12 border-t border-slate-300 pt-6 dark:border-slate-700">
           <div className="grid gap-6 md:grid-cols-[12rem_1fr]">
-            <h2 className="text-sm font-semibold text-slate-500 dark:text-slate-400">Race status</h2>
+            <h2 className="text-sm font-semibold text-slate-500 dark:text-slate-400">{election.callStatus ? "Final pre-election rating" : "Race status"}</h2>
             <div>
               <p className="text-3xl font-semibold text-slate-950 dark:text-white">{consensus ? ratingLabel(consensus.rating) : "No consensus"}</p>
               <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">Race ratings describe which party is more likely to win, not the expected vote margin. Worldview uses the median of the latest available major forecaster ratings.</p>
@@ -165,7 +181,7 @@ export default async function ElectionDetailPage({ params }: PageProps<"/electio
       ) : null}
 
       {election.notes ? <p className="mt-10 text-sm text-slate-600 dark:text-slate-400">{election.notes}</p> : null}
-      <DataSourceNote className="mt-8" />
+      <DataSourceNote className="mt-8" liveCount={election.callStatus != null} />
     </div>
   );
 }
