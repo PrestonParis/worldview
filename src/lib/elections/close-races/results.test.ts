@@ -3,7 +3,14 @@ import { contestOutcome, outcomeChange, type OutcomeInput } from "./outcome";
 import { breakdownMismatches, parseBreakdown, stateCountyMismatches, votedIn, watchesPrecincts } from "./precincts";
 import { evaluateContest } from "./evaluate";
 import type { AssembledContest } from "./merge";
-import { applyRecounts, pairRunoffs, runoffMismatches, settledSeats, settleUnverified, summarizeResults } from "./results";
+import {
+  applyRecounts,
+  pairRunoffs,
+  runoffMismatches,
+  settledSeats,
+  settleUnverified,
+  summarizeResults,
+} from "./results";
 import { closeRacesCsv } from "./csv";
 import { everyContest, SEAT_HOLDERS_FROM, withSeats, type ReportRow } from "./rows";
 import { chamberSummaries, seatChange, seatKey } from "./seats";
@@ -42,21 +49,34 @@ describe("outcome", () => {
 
   it("names both runoff candidates, unless second place is tied", () => {
     const runoff = { ...base, flags: ["runoff_required"], leaderShare: 0.45, thirdVotes: 10 };
-    expect(contestOutcome(runoff)).toMatchObject({ kind: "advancing_to_runoff", advancing: ["A", "B"], secondSlotTied: false });
-    expect(contestOutcome({ ...runoff, thirdVotes: 45 })).toMatchObject({ kind: "advancing_to_runoff", advancing: ["A"], secondSlotTied: true });
+    expect(contestOutcome(runoff)).toMatchObject({
+      kind: "advancing_to_runoff",
+      advancing: ["A", "B"],
+      secondSlotTied: false,
+    });
+    expect(contestOutcome({ ...runoff, thirdVotes: 45 })).toMatchObject({
+      kind: "advancing_to_runoff",
+      advancing: ["A"],
+      secondSlotTied: true,
+    });
   });
 
   it("calls an exact tie a tie", () => {
     expect(kind({ marginVotes: 0 })).toBe("tied");
     expect(kind({ marginVotes: 0, flags: ["runoff_required"], runnerUpVotes: 40, thirdVotes: 40 })).toBe("tied");
     // Tied for first with a third candidate behind: both advance.
-    expect(kind({ marginVotes: 0, flags: ["runoff_required"], runnerUpVotes: 45, thirdVotes: 10 })).toBe("advancing_to_runoff");
+    expect(kind({ marginVotes: 0, flags: ["runoff_required"], runnerUpVotes: 45, thirdVotes: 10 })).toBe(
+      "advancing_to_runoff",
+    );
   });
 
   it("reads ballot questions by the leading choice", () => {
     const q = { ...base, decisionRule: "referendum" as const };
     expect(contestOutcome({ ...q, leaderName: "Yes" })).toMatchObject({ kind: "passed", label: "Passing" });
-    expect(contestOutcome({ ...q, leaderName: "No", resultStatus: "state_certified" })).toMatchObject({ kind: "failed", label: "Failed" });
+    expect(contestOutcome({ ...q, leaderName: "No", resultStatus: "state_certified" })).toMatchObject({
+      kind: "failed",
+      label: "Failed",
+    });
     expect(kind({ ...q, marginVotes: 0 })).toBe("tied");
   });
 
@@ -88,10 +108,29 @@ describe("outcome changes", () => {
 
 describe("precincts", () => {
   const raw = {
-    summaryResults: { ballotOptions: [{ name: [{ text: "Soo Hong (I) (Rep)" }], voteCount: 30 }, { name: [{ text: "Chris Luchey (Dem)" }], voteCount: 40 }] },
+    summaryResults: {
+      ballotOptions: [
+        { name: [{ text: "Soo Hong (I) (Rep)" }], voteCount: 30 },
+        { name: [{ text: "Chris Luchey (Dem)" }], voteCount: 40 },
+      ],
+    },
     breakdownResults: [
-      { precinct: { name: [{ text: "Duluth G" }] }, voteTotal: 30, ballotOptions: [{ name: [{ text: "Soo Hong (I) (Rep)" }], voteCount: 10 }, { name: [{ text: "Chris Luchey (Dem)" }], voteCount: 20 }] },
-      { precinct: { name: [{ text: "Berkeley A" }] }, voteTotal: 40, ballotOptions: [{ name: [{ text: "Soo Hong (I) (Rep)" }], voteCount: 20 }, { name: [{ text: "Chris Luchey (Dem)" }], voteCount: 20 }] },
+      {
+        precinct: { name: [{ text: "Duluth G" }] },
+        voteTotal: 30,
+        ballotOptions: [
+          { name: [{ text: "Soo Hong (I) (Rep)" }], voteCount: 10 },
+          { name: [{ text: "Chris Luchey (Dem)" }], voteCount: 20 },
+        ],
+      },
+      {
+        precinct: { name: [{ text: "Berkeley A" }] },
+        voteTotal: 40,
+        ballotOptions: [
+          { name: [{ text: "Soo Hong (I) (Rep)" }], voteCount: 20 },
+          { name: [{ text: "Chris Luchey (Dem)" }], voteCount: 20 },
+        ],
+      },
     ],
   };
   it("reads rows under clean candidate names and checks they add up", () => {
@@ -103,7 +142,12 @@ describe("precincts", () => {
     expect(breakdownMismatches({}, [])).toEqual([]);
   });
   it("places a contest only when few precincts voted on it", () => {
-    expect(votedIn([{ precinct: "Byromville", totalVotes: 20 }, { precinct: "Vienna", totalVotes: 0 }])).toEqual(["Byromville"]);
+    expect(
+      votedIn([
+        { precinct: "Byromville", totalVotes: 20 },
+        { precinct: "Vienna", totalVotes: 0 },
+      ]),
+    ).toEqual(["Byromville"]);
     expect(votedIn([1, 2, 3, 4].map((n) => ({ precinct: `P${n}`, totalVotes: 5 })))).toEqual([]);
     expect(votedIn([{ precinct: "Georgetown", totalVotes: 0 }])).toEqual([]);
   });
@@ -118,9 +162,17 @@ describe("precincts", () => {
     expect(watchesPrecincts({ ...base, level: "municipal", municipality: "Ashburn", rule: "majority" })).toBe(false);
   });
   it("flags state totals that don't equal a complete set of counties", () => {
-    const c = { name: "US Senate", scope: "state", totalUnits: 2, options: [{ name: "A", votes: 10 }], areas: [{ options: [{ name: "A", votes: 4 }] }, { options: [{ name: "A", votes: 6 }] }] };
+    const c = {
+      name: "US Senate",
+      scope: "state",
+      totalUnits: 2,
+      options: [{ name: "A", votes: 10 }],
+      areas: [{ options: [{ name: "A", votes: 4 }] }, { options: [{ name: "A", votes: 6 }] }],
+    };
     expect(stateCountyMismatches([c])).toEqual([]);
-    expect(stateCountyMismatches([{ ...c, options: [{ name: "A", votes: 11 }] }])).toEqual(["US Senate — A: state 11, counties 10"]);
+    expect(stateCountyMismatches([{ ...c, options: [{ name: "A", votes: 11 }] }])).toEqual([
+      "US Senate — A: state 11, counties 10",
+    ]);
     // Counties still missing: nothing to compare yet.
     expect(stateCountyMismatches([{ ...c, totalUnits: 3, options: [{ name: "A", votes: 99 }] }])).toEqual([]);
   });
@@ -185,11 +237,20 @@ const row = (name: string, over: Partial<ReportRow> = {}): ReportRow =>
   }) as ReportRow;
 
 const H = (d: number) => `State House of Representatives - District ${d}`;
-const runoffOutcome = { kind: "advancing_to_runoff" as const, label: "Runoff", advancing: ["A", "B"], secondSlotTied: false };
+const runoffOutcome = {
+  kind: "advancing_to_runoff" as const,
+  label: "Runoff",
+  advancing: ["A", "B"],
+  secondSlotTied: false,
+};
 
 describe("chamber totals", () => {
   it("leaves a runoff out of both columns and nets flips against prior holders", () => {
-    const holders = { "ga_house:1": { party: "R", name: "x", source: "s" }, "ga_house:2": { party: "D", name: "y", source: "s" }, "ga_house:3": { party: "R", name: "z", source: "s" } };
+    const holders = {
+      "ga_house:1": { party: "R", name: "x", source: "s" },
+      "ga_house:2": { party: "D", name: "y", source: "s" },
+      "ga_house:3": { party: "R", name: "z", source: "s" },
+    };
     const rows = [
       row(H(1)),
       row(H(2), { flags: ["recount_request_range"] }),
@@ -219,7 +280,12 @@ describe("chamber totals", () => {
 describe("withSeats", () => {
   const holders = { "ga_house:1": { party: "R", name: "x", source: "s" } };
   it("records a flip for a decided seat", () => {
-    expect(withSeats([row(H(1))], holders)[0].seat).toEqual({ key: "ga_house:1", priorParty: "R", priorName: "x", change: "gained" });
+    expect(withSeats([row(H(1))], holders)[0].seat).toEqual({
+      key: "ga_house:1",
+      priorParty: "R",
+      priorName: "x",
+      change: "gained",
+    });
   });
   it("skips primaries and earlier elections, which fill no seat in the file", () => {
     expect(withSeats([row(H(1), { primaryParty: "R" })], holders)[0].seat).toBeNull();
@@ -228,10 +294,19 @@ describe("withSeats", () => {
 });
 
 describe("runoff pairing", () => {
-  const general = row(H(151), { leaderName: "Mike Cheokas", runnerUpName: "Ethan Wolfe", outcome: runoffOutcome, seat: { key: "ga_house:151", priorParty: "R", priorName: "x", change: null } });
+  const general = row(H(151), {
+    leaderName: "Mike Cheokas",
+    runnerUpName: "Ethan Wolfe",
+    outcome: runoffOutcome,
+    seat: { key: "ga_house:151", priorParty: "R", priorName: "x", change: null },
+  });
 
   it("matches the two candidates in either order, whatever the contest is called", () => {
-    const runoff = row("House Dist 151 Runoff", { leaderName: "Ethan Wolfe", runnerUpName: "Mike Cheokas", leaderParty: "D" });
+    const runoff = row("House Dist 151 Runoff", {
+      leaderName: "Ethan Wolfe",
+      runnerUpName: "Mike Cheokas",
+      leaderParty: "D",
+    });
     const pairs = pairRunoffs([general], [runoff]);
     expect(pairs.get(general.id)?.id).toBe(runoff.id);
     expect(settledSeats([general], pairs).get("ga_house:151")).toBe("D");
@@ -239,55 +314,132 @@ describe("runoff pairing", () => {
 
   it("doesn't pair other candidates, or another county's race", () => {
     expect(pairRunoffs([general], [row("x", { leaderName: "Mike Cheokas", runnerUpName: "Someone" })]).size).toBe(0);
-    expect(pairRunoffs([general], [row("x", { leaderName: "Mike Cheokas", runnerUpName: "Ethan Wolfe", county: "Bibb County" })]).size).toBe(0);
+    expect(
+      pairRunoffs(
+        [general],
+        [row("x", { leaderName: "Mike Cheokas", runnerUpName: "Ethan Wolfe", county: "Bibb County" })],
+      ).size,
+    ).toBe(0);
   });
 
   it("leaves a seat unsettled while its runoff is still counting", () => {
-    const counting = row("r", { leaderName: "Ethan Wolfe", runnerUpName: "Mike Cheokas", outcome: { kind: "counting", label: "Counting", advancing: [], secondSlotTied: false } });
+    const counting = row("r", {
+      leaderName: "Ethan Wolfe",
+      runnerUpName: "Mike Cheokas",
+      outcome: { kind: "counting", label: "Counting", advancing: [], secondSlotTied: false },
+    });
     expect(settledSeats([general], pairRunoffs([general], [counting])).size).toBe(0);
   });
 });
 
 describe("flips from a runoff", () => {
   it("lists a seat the runoff moved, with the runoff's winner", () => {
-    const general = withSeats([row(H(151), { leaderName: "Mike Cheokas", leaderParty: "R", runnerUpName: "Ethan Wolfe", outcome: runoffOutcome })], { "ga_house:151": { party: "R", name: "x", source: "s" } });
+    const general = withSeats(
+      [
+        row(H(151), {
+          leaderName: "Mike Cheokas",
+          leaderParty: "R",
+          runnerUpName: "Ethan Wolfe",
+          outcome: runoffOutcome,
+        }),
+      ],
+      { "ga_house:151": { party: "R", name: "x", source: "s" } },
+    );
     const won = row("r", { leaderName: "Ethan Wolfe", leaderParty: "D", runnerUpName: "Mike Cheokas", marginPct: 3.3 });
     const s = summarizeResults(general, { kind: "general", holders: {}, pairs: pairRunoffs(general, [won]) });
     expect(s.flips).toHaveLength(1);
     expect(s.flips[0]).toMatchObject({ name: H(151), leaderName: "Ethan Wolfe", leaderParty: "D", marginPct: 3.3 });
     const held = row("r", { leaderName: "Mike Cheokas", leaderParty: "R", runnerUpName: "Ethan Wolfe" });
-    expect(summarizeResults(general, { kind: "general", holders: {}, pairs: pairRunoffs(general, [held]) }).flips).toEqual([]);
+    expect(
+      summarizeResults(general, { kind: "general", holders: {}, pairs: pairRunoffs(general, [held]) }).flips,
+    ).toEqual([]);
   });
 });
 
 describe("recounts", () => {
   const elected = { kind: "elected" as const, label: "Apparent winner", advancing: [], secondSlotTied: false };
-  const original = row(H(103), { leaderName: "Chris Luchey", leaderParty: "D", runnerUpName: "Soo Hong", runnerUpParty: "R", runnerUpIncumbent: true, marginVotes: 27, flags: ["recount_request_range"], trailingIncumbent: { name: "Soo Hong", party: "R" } });
-  const counted = (over: Partial<ReportRow>) => row("State House of Representatives District 103 Recount", { id: "rc", key: "rc-key", sourceElectionId: "rc-election", outcome: elected, ...over });
+  const original = row(H(103), {
+    leaderName: "Chris Luchey",
+    leaderParty: "D",
+    runnerUpName: "Soo Hong",
+    runnerUpParty: "R",
+    runnerUpIncumbent: true,
+    marginVotes: 27,
+    flags: ["recount_request_range"],
+    trailingIncumbent: { name: "Soo Hong", party: "R" },
+  });
+  const counted = (over: Partial<ReportRow>) =>
+    row("State House of Representatives District 103 Recount", {
+      id: "rc",
+      key: "rc-key",
+      sourceElectionId: "rc-election",
+      outcome: elected,
+      ...over,
+    });
 
   it("flips the seat when the recount changes the winner, whatever the contest is called", () => {
-    const [after] = applyRecounts([original], [counted({ leaderName: "Soo Hong", leaderParty: "R", runnerUpName: "Chris Luchey", runnerUpParty: "D", marginVotes: 12 })]);
-    expect(after).toMatchObject({ leaderName: "Soo Hong", leaderParty: "R", leaderIncumbent: true, marginVotes: 12, trailingIncumbent: null, recount: { key: "rc-key", final: true } });
+    const [after] = applyRecounts(
+      [original],
+      [
+        counted({
+          leaderName: "Soo Hong",
+          leaderParty: "R",
+          runnerUpName: "Chris Luchey",
+          runnerUpParty: "D",
+          marginVotes: 12,
+        }),
+      ],
+    );
+    expect(after).toMatchObject({
+      leaderName: "Soo Hong",
+      leaderParty: "R",
+      leaderIncumbent: true,
+      marginVotes: 12,
+      trailingIncumbent: null,
+      recount: { key: "rc-key", final: true },
+    });
     const [seated] = withSeats([after], { "ga_house:103": { party: "R", name: "Soo Hong", source: "s" } });
     expect(seated.seat?.change).toBe("held");
   });
 
   it("keeps the original while the recount counts", () => {
-    const [after] = applyRecounts([original], [counted({ leaderName: "Soo Hong", runnerUpName: "Chris Luchey", marginVotes: 12, outcome: { kind: "counting", label: "Counting", advancing: [], secondSlotTied: false } })]);
+    const [after] = applyRecounts(
+      [original],
+      [
+        counted({
+          leaderName: "Soo Hong",
+          runnerUpName: "Chris Luchey",
+          marginVotes: 12,
+          outcome: { kind: "counting", label: "Counting", advancing: [], secondSlotTied: false },
+        }),
+      ],
+    );
     expect(after).toMatchObject({ leaderName: "Chris Luchey", marginVotes: 27, recount: { final: false } });
   });
 
   it("leaves other contests alone", () => {
-    expect(applyRecounts([original], [counted({ leaderName: "Someone", runnerUpName: "Else" })])[0].recount).toBeUndefined();
+    expect(
+      applyRecounts([original], [counted({ leaderName: "Someone", runnerUpName: "Else" })])[0].recount,
+    ).toBeUndefined();
   });
 });
 
 describe("runoff round", () => {
-  const unverifiedOutcome = { kind: "rule_unverified" as const, label: "Runoff rule unverified", advancing: [], secondSlotTied: false };
-  const city = (name: string, leaderName: string, runnerUpName: string) => row(name, { leaderName, runnerUpName, county: "Coweta County", outcome: unverifiedOutcome });
+  const unverifiedOutcome = {
+    kind: "rule_unverified" as const,
+    label: "Runoff rule unverified",
+    advancing: [],
+    secondSlotTied: false,
+  };
+  const city = (name: string, leaderName: string, runnerUpName: string) =>
+    row(name, { leaderName, runnerUpName, county: "Coweta County", outcome: unverifiedOutcome });
   const grantville = city("Mayor - Grantville", "Richard Proctor", "Mark Bynum");
   const ballGround = city("City Council - Post 2 - Ball Ground", "Dan Homiller", "Jimmy Gale");
-  const listed = row("Mayor - Grantville Runoff", { leaderName: "Mark Bynum", runnerUpName: "Richard Proctor", county: "Coweta County" });
+  const listed = row("Mayor - Grantville Runoff", {
+    leaderName: "Mark Bynum",
+    runnerUpName: "Richard Proctor",
+    county: "Coweta County",
+  });
 
   it("reads an unverified city rule from the feed", () => {
     const [g, b] = settleUnverified([grantville, ballGround], [listed]);
@@ -301,7 +453,10 @@ describe("runoff round", () => {
 
   it("names what the rounds disagree on", () => {
     const expected = row(H(151), { leaderName: "Mike Cheokas", runnerUpName: "Ethan Wolfe", outcome: runoffOutcome });
-    const { noRunoff, noParent } = runoffMismatches([expected, grantville], [listed, row("Stray", { leaderName: "P", runnerUpName: "Q" })]);
+    const { noRunoff, noParent } = runoffMismatches(
+      [expected, grantville],
+      [listed, row("Stray", { leaderName: "P", runnerUpName: "Q" })],
+    );
     expect(noRunoff.map((r) => r.name)).toEqual([H(151)]);
     expect(noParent.map((r) => r.name)).toEqual(["Stray"]);
   });
@@ -324,12 +479,25 @@ describe("county numbers", () => {
     totalUnits: 2,
     asOf: null,
     isOfficial: false,
-    options: ["Terry B. Batton", "Julie Floyd"].map((name) => ({ sourceId: name, name, party: null, incumbent: false, isWriteIn: false, votes: 0, votesByMethod: {} })),
+    options: ["Terry B. Batton", "Julie Floyd"].map((name) => ({
+      sourceId: name,
+      name,
+      party: null,
+      incumbent: false,
+      isWriteIn: false,
+      votes: 0,
+      votesByMethod: {},
+    })),
     areas: [],
     merged: false,
     unlinkedCounties: [],
   };
-  const votes = { "Spec BOE District 1": { source: "County certified results, https://example.gov", options: { "Terry B. Batton": 300, "Julie Floyd": 200 } } };
+  const votes = {
+    "Spec BOE District 1": {
+      source: "County certified results, https://example.gov",
+      options: { "Terry B. Batton": 300, "Julie Floyd": 200 },
+    },
+  };
 
   it("fills a contest SOS shows at zero, and says where the numbers came from", () => {
     const e = evaluateContest(empty, { electionKind: "general", overrides: { votes } });
@@ -353,9 +521,19 @@ describe("county numbers", () => {
 
 describe("every-contest file", () => {
   it("lists ranked contests in order, then the rest with no rank", () => {
-    const rows = [row("Wide", { ranked: true, marginVotes: 50 }), row("Close", { ranked: true, marginVotes: 5 }), row("Alone", { uncontested: true, ranked: false }), row("Empty", { ranked: false })] as ReportRow[];
+    const rows = [
+      row("Wide", { ranked: true, marginVotes: 50 }),
+      row("Close", { ranked: true, marginVotes: 5 }),
+      row("Alone", { uncontested: true, ranked: false }),
+      row("Empty", { ranked: false }),
+    ] as ReportRow[];
     const all = everyContest(rows);
-    expect(all.map((r) => [r.name, r.rank])).toEqual([["Close", 1], ["Wide", 2], ["Alone", 0], ["Empty", 0]]);
+    expect(all.map((r) => [r.name, r.rank])).toEqual([
+      ["Close", 1],
+      ["Wide", 2],
+      ["Alone", 0],
+      ["Empty", 0],
+    ]);
     const csv = closeRacesCsv(all).trim().split("\n");
     expect(csv).toHaveLength(5);
     expect(csv[1].startsWith("1,Close,")).toBe(true);
@@ -368,10 +546,18 @@ describe("summary", () => {
     const rows = withSeats(
       [
         row(H(1)),
-        row(H(2), { flags: ["recount_request_range"], marginVotes: 27, trailingIncumbent: { name: "Inc", party: "R" } }),
+        row(H(2), {
+          flags: ["recount_request_range"],
+          marginVotes: 27,
+          trailingIncumbent: { name: "Inc", party: "R" },
+        }),
         row(H(3), { outcome: runoffOutcome, flags: ["runoff_required"] }),
       ],
-      { "ga_house:1": { party: "D", name: "x", source: "s" }, "ga_house:2": { party: "R", name: "y", source: "s" }, "ga_house:3": { party: "R", name: "z", source: "s" } },
+      {
+        "ga_house:1": { party: "D", name: "x", source: "s" },
+        "ga_house:2": { party: "R", name: "y", source: "s" },
+        "ga_house:3": { party: "R", name: "z", source: "s" },
+      },
     );
     const s = summarizeResults(rows, { kind: "general", holders: {} });
     expect(s.runoffs.map((r) => r.row.name)).toEqual([H(3)]);
