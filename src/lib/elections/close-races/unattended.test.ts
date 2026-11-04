@@ -19,8 +19,10 @@ describe("schedule", () => {
   it("is active from the watch start to stopAfter", () => {
     expect(activeElections(schedule, new Date("2026-11-03T20:00:00Z"))).toHaveLength(0);
     expect(activeElections(schedule, new Date("2026-11-03T20:20:00Z")).map((e) => e.date)).toEqual(["2026-11-03"]);
-    expect(activeElections(schedule, new Date("2026-12-02T03:00:00Z")).map((e) => e.date)).toEqual(["2026-12-01"]);
-    expect(activeElections(schedule, new Date("2026-12-21T17:00:00Z"))).toHaveLength(0);
+    // Nov 3 stays in the window for a late recount; the watchdog skips it once official.
+    expect(activeElections(schedule, new Date("2026-12-02T03:00:00Z")).map((e) => e.date)).toEqual(["2026-11-03", "2026-12-01"]);
+    expect(activeElections(schedule, new Date("2026-12-21T17:00:00Z")).map((e) => e.date)).toEqual(["2026-12-01"]);
+    expect(activeElections(schedule, new Date("2027-01-01T17:00:00Z"))).toHaveLength(0);
   });
 
   it("reads SOS id abbreviations for runoffs", () => {
@@ -122,7 +124,7 @@ describe("city results", () => {
     const before = evaluateContest(cityContest(norcross, contest, null, null), { electionKind: "general" });
     expect(before).toMatchObject({ level: "municipal", municipality: "Norcross", status: "no_results", countySlug: "gwinnett-county-ga" });
     const after = evaluateContest(cityContest(norcross, contest, new Map([["Jeffrey Allen", 1204], ["Bucky Johnson", 1143]]), "2026-11-04T01:00:00Z"), { electionKind: "general" });
-    expect(after.status).toBe("reporting");
+    expect(after.status).toBe("unofficial_complete");
     expect(after.margin).toMatchObject({ rankable: true, marginVotes: 61 });
   });
 });

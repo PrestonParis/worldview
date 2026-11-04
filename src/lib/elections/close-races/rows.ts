@@ -105,6 +105,8 @@ export interface ReportRow extends CloseRaceRow {
   /** An incumbent outside the winning places. */
   trailingIncumbent: { name: string; party: string | null } | null;
   seat: { key: string; priorParty: string | null; priorName: string | null; change: SeatChange | null } | null;
+  /** Where an unnamed city contest was voted, from its precinct results. */
+  votedIn?: string[];
 }
 
 const iso = (v: Date | string | null) => (v == null ? null : v instanceof Date ? v.toISOString() : new Date(v).toISOString());

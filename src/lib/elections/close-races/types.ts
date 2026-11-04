@@ -117,6 +117,8 @@ export interface ParsedElectionHeader {
   isPrimary: boolean;
   asOf: string | null;
   lastUpdated: string | null;
+  /** Vote groups (Provisional, …) this feed hasn't reported at all. */
+  groupsUnreported?: string[];
 }
 
 export interface ParsedFeed {

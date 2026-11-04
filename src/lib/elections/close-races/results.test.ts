@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { contestOutcome, type OutcomeInput } from "./outcome";
+import { contestOutcome, outcomeChange, type OutcomeInput } from "./outcome";
+import { breakdownMismatches, parseBreakdown, stateCountyMismatches, votedIn, watchesPrecincts } from "./precincts";
 import { pairRunoffs, settledSeats, summarizeResults } from "./results";
 import { SEAT_HOLDERS_FROM, withSeats, type ReportRow } from "./rows";
 import { chamberSummaries, seatChange, seatKey } from "./seats";
@@ -65,6 +66,60 @@ describe("outcome", () => {
   it("recognises unopposed and empty contests", () => {
     expect(kind({ uncontested: true, marginVotes: null, runnerUpName: null })).toBe("unopposed");
     expect(kind({ flags: ["no_votes_reported"], totalVotes: 0, marginVotes: 0 })).toBe("no_votes");
+  });
+});
+
+describe("outcome changes", () => {
+  const was = (kind: Parameters<typeof outcomeChange>[0]["kind"], inRecountRange = false) => ({ kind, inRecountRange });
+  it("reports a settled contest crossing a line", () => {
+    expect(outcomeChange(was("elected"), was("advancing_to_runoff"))).toBe("winner → runoff");
+    expect(outcomeChange(was("passed"), was("failed"))).toBe("passing → failing");
+    expect(outcomeChange(was("elected"), was("elected", true))).toBe("entered recount-request range");
+    expect(outcomeChange(was("elected", true), was("elected"))).toBe("left recount-request range");
+  });
+  it("stays quiet about first results and no change", () => {
+    expect(outcomeChange(was("counting"), was("elected"))).toBeNull();
+    expect(outcomeChange(was("elected"), was("elected"))).toBeNull();
+  });
+});
+
+describe("precincts", () => {
+  const raw = {
+    summaryResults: { ballotOptions: [{ name: [{ text: "Soo Hong (I) (Rep)" }], voteCount: 30 }, { name: [{ text: "Chris Luchey (Dem)" }], voteCount: 40 }] },
+    breakdownResults: [
+      { precinct: { name: [{ text: "Duluth G" }] }, voteTotal: 30, ballotOptions: [{ name: [{ text: "Soo Hong (I) (Rep)" }], voteCount: 10 }, { name: [{ text: "Chris Luchey (Dem)" }], voteCount: 20 }] },
+      { precinct: { name: [{ text: "Berkeley A" }] }, voteTotal: 40, ballotOptions: [{ name: [{ text: "Soo Hong (I) (Rep)" }], voteCount: 20 }, { name: [{ text: "Chris Luchey (Dem)" }], voteCount: 20 }] },
+    ],
+  };
+  it("reads rows under clean candidate names and checks they add up", () => {
+    const rows = parseBreakdown(raw);
+    expect(rows[0]).toEqual({ precinct: "Duluth G", totalVotes: 30, votes: { "Soo Hong": 10, "Chris Luchey": 20 } });
+    expect(breakdownMismatches(raw, rows)).toEqual([]);
+    rows[0].votes["Soo Hong"] = 9;
+    expect(breakdownMismatches(raw, rows)).toEqual(["Soo Hong: contest 30, precincts 29"]);
+    expect(breakdownMismatches({}, [])).toEqual([]);
+  });
+  it("places a contest only when few precincts voted on it", () => {
+    expect(votedIn([{ precinct: "Byromville", totalVotes: 20 }, { precinct: "Vienna", totalVotes: 0 }])).toEqual(["Byromville"]);
+    expect(votedIn([1, 2, 3, 4].map((n) => ({ precinct: `P${n}`, totalVotes: 5 })))).toEqual([]);
+    expect(votedIn([{ precinct: "Georgetown", totalVotes: 0 }])).toEqual([]);
+  });
+  it("watches close and unplaced contests, not comfortable named ones", () => {
+    const base = { flags: [], level: "county", scope: "county", municipality: null, rule: "majority", marginPct: 20 };
+    expect(watchesPrecincts({ ...base, level: "referendum", scope: "state" })).toBe(false);
+    expect(watchesPrecincts({ ...base, level: "referendum" })).toBe(true);
+    expect(watchesPrecincts(base)).toBe(false);
+    expect(watchesPrecincts({ ...base, marginPct: 0.8 })).toBe(true);
+    expect(watchesPrecincts({ ...base, flags: ["runoff_required"] })).toBe(true);
+    expect(watchesPrecincts({ ...base, level: "municipal" })).toBe(true);
+    expect(watchesPrecincts({ ...base, level: "municipal", municipality: "Ashburn", rule: "majority" })).toBe(false);
+  });
+  it("flags state totals that don't equal a complete set of counties", () => {
+    const c = { name: "US Senate", scope: "state", totalUnits: 2, options: [{ name: "A", votes: 10 }], areas: [{ options: [{ name: "A", votes: 4 }] }, { options: [{ name: "A", votes: 6 }] }] };
+    expect(stateCountyMismatches([c])).toEqual([]);
+    expect(stateCountyMismatches([{ ...c, options: [{ name: "A", votes: 11 }] }])).toEqual(["US Senate — A: state 11, counties 10"]);
+    // Counties still missing: nothing to compare yet.
+    expect(stateCountyMismatches([{ ...c, totalUnits: 3, options: [{ name: "A", votes: 99 }] }])).toEqual([]);
   });
 });
 

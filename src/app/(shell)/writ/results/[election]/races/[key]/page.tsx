@@ -8,6 +8,7 @@ import { RaceMap } from "@/components/tools/writ/results-map";
 import { ResultsTabs } from "@/components/tools/writ/results-tabs";
 import { Surface } from "@/components/ui/surface";
 import { loadRace } from "@/lib/db/closeRaces";
+import { countyNameFromSlug } from "@/lib/elections/close-races/csv";
 import { LEVEL_LABELS, STATUS_LABELS } from "@/lib/elections/close-races/filters";
 import { writDocketHref } from "@/lib/tools/writ";
 
@@ -30,7 +31,8 @@ export default async function RacePage({ params }: Props) {
   const { id, key } = await decode(params);
   const race = await loadRace(id, key);
   if (!race) notFound();
-  const { row, election, detail, otherRound } = race;
+  const { row, election, detail, otherRound, precincts } = race;
+  const precinctColumns = detail.options.filter((o) => !o.isWriteIn).slice(0, 4);
   const results = `/writ/results/${encodeURIComponent(id)}`;
   const place = row.county ?? (row.counties.length > 1 ? `${row.counties.length} counties` : null);
   return (
@@ -42,6 +44,7 @@ export default async function RacePage({ params }: Props) {
           <p className="text-xs font-bold tracking-[0.14em] text-rose-600 uppercase dark:text-rose-400">
             {LEVEL_LABELS[row.level]}
             {place ? ` · ${place}` : ""}
+            {row.votedIn?.length ? ` · Voted in ${row.votedIn.join(", ")}` : ""}
           </p>
           <h1 className="mt-2 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl dark:text-white">{row.name}</h1>
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{election.name}</p>
@@ -88,6 +91,39 @@ export default async function RacePage({ params }: Props) {
         <Surface className="space-y-4 p-4 text-xs text-slate-700 sm:p-5 dark:text-slate-300">
           <DetailBody detail={detail} />
         </Surface>
+        {precincts.length ? (
+          <Surface className="overflow-x-auto p-4 text-xs text-slate-700 sm:p-5 dark:text-slate-300">
+            <h2 className="mb-2 text-sm font-bold text-slate-950 dark:text-white">By precinct</h2>
+            <table className="w-full min-w-[28rem] text-left">
+              <thead className="text-[10px] tracking-wide text-slate-400 uppercase">
+                <tr>
+                  <th className="py-1 pr-3 font-semibold">Precinct</th>
+                  {row.counties.length > 1 ? <th className="py-1 pr-3 font-semibold">County</th> : null}
+                  {precinctColumns.map((o) => (
+                    <th key={o.id} className="py-1 pr-3 text-right font-semibold">
+                      {o.name}
+                    </th>
+                  ))}
+                  <th className="py-1 pr-3 text-right font-semibold">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {precincts.map((p) => (
+                  <tr key={`${p.county}-${p.precinct}`} className="border-t border-slate-200 dark:border-slate-800">
+                    <td className="py-1 pr-3">{p.precinct}</td>
+                    {row.counties.length > 1 ? <td className="py-1 pr-3">{countyNameFromSlug(p.county)}</td> : null}
+                    {precinctColumns.map((o) => (
+                      <td key={o.id} className="py-1 pr-3 text-right tabular-nums">
+                        {p.votes[o.name] != null ? fmt(p.votes[o.name]) : "—"}
+                      </td>
+                    ))}
+                    <td className="py-1 pr-3 text-right tabular-nums">{fmt(p.totalVotes)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Surface>
+        ) : null}
       </div>
     </>
   );

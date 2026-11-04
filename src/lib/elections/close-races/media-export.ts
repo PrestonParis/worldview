@@ -19,7 +19,23 @@ function slugFor(name: string): string {
   return `${name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")}-ga`;
 }
 
-function item(raw: Raw, { parentIds, idPrefix, units }: { parentIds: Set<string>; idPrefix: string; units?: { reporting: number; total: number } }) {
+/**
+ * The export gives reporting state per county and vote group, not per contest.
+ * A county counts as fully reported only when every group says so, the same
+ * test the API's per-contest details pass; without this, a fallback round would
+ * read every finished contest as fully reported.
+ */
+function reportingDetails(county: Raw, reporting: number, total: number) {
+  const groups: Raw[] = county.reportingStatuses ?? [];
+  const fully = groups.length > 0 && groups.every((g) => /^fully reported$/i.test(String(g.status)));
+  return [
+    { reportingStatusClientTextKey: "reporting-status-fully-reported", value: fully ? reporting : 0 },
+    { reportingStatusClientTextKey: "reporting-status-election-night-complete", value: fully ? 0 : reporting },
+    { reportingStatusClientTextKey: "reporting-status-not-reported", value: Math.max(0, total - reporting) },
+  ];
+}
+
+function item(raw: Raw, { parentIds, idPrefix, units, county }: { parentIds: Set<string>; idPrefix: string; units?: { reporting: number; total: number }; county?: Raw }) {
   const id = String(raw.id);
   return {
     id: `${idPrefix}${id}`,
@@ -31,6 +47,7 @@ function item(raw: Raw, { parentIds, idPrefix, units }: { parentIds: Set<string>
       reportingUnits: units?.reporting ?? (Number(raw.precinctsReporting) || 0),
       totalUnits: units?.total ?? (Number(raw.precinctsParticipating) || 0),
       asOf: null,
+      reportingStatusDetails: county ? reportingDetails(county, Number(raw.precinctsReporting) || 0, Number(raw.precinctsParticipating) || 0) : null,
     },
     summaryResults: {
       ballotOptions: (raw.ballotOptions ?? []).map((o: Raw) => ({
@@ -76,7 +93,7 @@ export function parseMediaExport(raw: Raw, { isOfficial = false, isPrimary = fal
     feed: parseFeed({
       jurisdiction: { shortName: slugFor(county.name), name: lang(county.name) },
       election: { ...header(raw.electionName), id: `media-export:${county.id}`, jurisdictionId: county.id },
-      ballotItems: (county.ballotItems ?? []).map((b: Raw) => item(b, { parentIds: stateIds, idPrefix: `${county.id}:` })),
+      ballotItems: (county.ballotItems ?? []).map((b: Raw) => item(b, { parentIds: stateIds, idPrefix: `${county.id}:`, county })),
     }),
   }));
   return { state, counties };

@@ -35,6 +35,7 @@ export function ResultsView({ data }: { data: ResultsData }) {
   const base = "/writ/results";
   const open = summary.runoffs.length + summary.recountRange.length + summary.tied.length + summary.ruleUnverified.length + summary.noVotes.length;
   const certified = counties.rows.filter((c) => c.isOfficial).length;
+  const owing = counties.rows.filter((c) => c.groupsUnreported.includes("Provisional")).length;
 
   return (
     <div className="space-y-6">
@@ -63,12 +64,18 @@ export function ResultsView({ data }: { data: ResultsData }) {
           <Fact
             label="Precincts fully reported"
             value={counties.unitsTotal ? `${fmt(counties.unitsFully)} of ${fmt(counties.unitsTotal)}` : "—"}
-            note={counties.unitsNight ? `${fmt(counties.unitsNight)} complete on election night, later ballots can still post` : undefined}
+            note={[counties.unitsNight ? `${fmt(counties.unitsNight)} complete on election night, later ballots can still post` : null, owing ? `${owing} ${owing === 1 ? "county hasn't" : "counties haven't"} reported provisionals` : null].filter(Boolean).join(". ") || undefined}
           />
           <Fact label="Counties certified" value={counties.rows.length ? `${certified} of ${counties.rows.length}` : "—"} note={election.isOfficial ? "State certified" : undefined} href={`${base}/${encodeURIComponent(election.id)}/counties`} />
           <Fact label="Source updated" value={et(election.sourceUpdatedAt)} note={`Worldview ${et(election.lastWriteAt)}`} />
         </dl>
       </Surface>
+
+      <ResultsTimeline
+        steps={data.calendar}
+        today={data.today}
+        signals={{ counties_certified: counties.rows.length > 0 && certified === counties.rows.length, state_certified: election.isOfficial }}
+      />
 
       {summary.chambers.length ? (
         <section aria-labelledby="chambers" className="space-y-3">
@@ -117,6 +124,7 @@ export function ResultsView({ data }: { data: ResultsData }) {
                     {row.outcome.advancing.join(" vs ")}
                     {row.outcome.secondSlotTied ? " vs tied for second" : ""}
                   </span>
+                  {data.moves[row.id] ? <span className="ml-2 text-slate-500 tabular-nums">{data.moves[row.id] > 0 ? "+" : ""}{fmt(data.moves[row.id])} since election night</span> : null}
                   {pair ? (
                     <Link href={raceHref(pair)} className="ml-2 font-semibold whitespace-nowrap text-rose-600 hover:underline dark:text-rose-400">
                       {pair.leaderName ? `Runoff: ${pair.outcome.label}, ${pair.leaderName}` : "Runoff"}
@@ -256,6 +264,49 @@ export function ResultsView({ data }: { data: ResultsData }) {
   );
 }
 
+// The path to final numbers. A step tied to a feed signal reads as done when the
+// feed says so; one without a signal reads as passed once its date has.
+function ResultsTimeline({ steps, today, signals }: { steps: ResultsData["calendar"]; today: string; signals: Record<string, boolean> }) {
+  if (!steps.length) return null;
+  const label = (date: string) => new Date(`${date}T12:00:00Z`).toLocaleDateString("en-US", { timeZone: "UTC", weekday: "short", month: "short", day: "numeric" });
+  const source = steps.find((s) => s.source.startsWith("http"))?.source;
+  return (
+    <section aria-labelledby="timeline" className="space-y-3">
+      <h2 id="timeline" className="text-lg font-bold text-slate-950 dark:text-white">
+        Path to final results
+      </h2>
+      <Surface className="p-4 sm:p-5">
+        <ol className="divide-y divide-slate-100 text-sm dark:divide-slate-800">
+          {steps.map((step) => {
+            const signalled = step.signal ? signals[step.signal] : null;
+            const passed = step.date < today;
+            const state = signalled ? "Done" : step.signal ? (passed ? "Past deadline, not yet in the feed" : "Ahead") : passed ? "Passed" : "Ahead";
+            return (
+              <li key={`${step.date}-${step.label}`} className="grid gap-x-4 gap-y-0.5 py-2 sm:grid-cols-[6.5rem_minmax(0,1fr)_auto] sm:items-baseline">
+                <span className="font-semibold text-slate-950 tabular-nums dark:text-white">{label(step.date)}</span>
+                <span className="min-w-0 text-slate-700 dark:text-slate-300">
+                  {step.label}
+                  {step.meaning ? <span className="text-slate-500"> · {step.meaning}</span> : null}
+                </span>
+                <span className={`text-xs ${signalled ? "font-semibold text-slate-950 dark:text-white" : "text-slate-500"}`}>{state}</span>
+              </li>
+            );
+          })}
+        </ol>
+        {source ? (
+          <p className="mt-2 text-xs text-slate-500">
+            Deadlines from the{" "}
+            <a href={source} className="underline" rel="noreferrer" target="_blank">
+              Brennan Center
+            </a>{" "}
+            and the Georgia Secretary of State&apos;s calendar.
+          </p>
+        ) : null}
+      </Surface>
+    </section>
+  );
+}
+
 function partyColor(party: string) {
   return partyColorFor(PARTY_NAMES[party] ?? party);
 }
@@ -358,6 +409,7 @@ function OpenRow({ row, children }: { row: ReportRow; children?: React.ReactNode
           {short(row.name)}
         </Link>
         {place(row) ? <span className="text-xs text-slate-500"> · {place(row)}</span> : null}
+        {row.votedIn?.length ? <span className="text-xs text-slate-500"> · {row.votedIn.join(", ")}</span> : null}
       </span>
       <span className="min-w-0 text-xs">{children}</span>
       <span className="text-xs text-slate-500 tabular-nums">{margin(row)}</span>
