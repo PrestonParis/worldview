@@ -16,10 +16,11 @@ export async function POST(req: Request) {
     request: req,
   });
   if (limited) return rateLimitResponse(limited);
-  // scripts/sync-race-results.mjs names the race pages it changed.
+  // scripts/sync-race-results.mjs names the home page and the race pages it
+  // changed.
   const body = (await req.json().catch(() => null)) as { paths?: unknown } | null;
   if (Array.isArray(body?.paths)) {
-    const paths = body.paths.filter((path): path is string => typeof path === "string" && /^\/elections\/[\w-]+$/.test(path)).slice(0, 1000);
+    const paths = body.paths.filter((path): path is string => typeof path === "string" && /^\/(elections\/[\w-]+)?$/.test(path)).slice(0, 1000);
     for (const path of paths) revalidatePath(path);
     return Response.json({ ok: true, paths: paths.length });
   }
