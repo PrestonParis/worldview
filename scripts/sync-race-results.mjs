@@ -53,8 +53,8 @@ async function wikitext(page) {
   return data.parse.wikitext;
 }
 
-// Tells the site to re-render the race pages that changed. Pages are cached
-// for a week otherwise.
+// Tells the site to re-render the race pages that changed and the home page,
+// which shows the closest races. They are cached for a week and a day otherwise.
 async function revalidate(ids) {
   const site = process.env.SITE_URL;
   const secret = process.env.REVALIDATE_SECRET;
@@ -63,7 +63,7 @@ async function revalidate(ids) {
     const res = await fetch(`${site.replace(/\/$/, "")}/api/writ/revalidate`, {
       method: "POST",
       headers: { authorization: `Bearer ${secret}`, "content-type": "application/json" },
-      body: JSON.stringify({ paths: ids.map((id) => `/elections/${id}`) }),
+      body: JSON.stringify({ paths: ["/", ...ids.map((id) => `/elections/${id}`)] }),
       signal: AbortSignal.timeout(30_000),
     });
     if (!res.ok) console.warn(`  revalidate -> ${res.status}`);
