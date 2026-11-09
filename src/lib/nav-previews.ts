@@ -125,10 +125,14 @@ async function governmentPreview(): Promise<NavPreviews["government"]> {
 export async function getNavPreviews(): Promise<NavPreviews> {
   if (!governmentCache || Date.now() - governmentCachedAt > GOVERNMENT_TTL_MS) {
     governmentCachedAt = Date.now();
-    governmentCache = governmentPreview().catch(() => {
-      governmentCache = null;
-      return null;
-    });
+    // An empty result (no votes loaded yet) is not kept, so results appear on
+    // the next render rather than an hour later.
+    governmentCache = governmentPreview()
+      .catch(() => null)
+      .then((preview) => {
+        if (!preview) governmentCache = null;
+        return preview;
+      });
   }
   issuesCache ??= issuesPreview().catch(() => {
     issuesCache = null;

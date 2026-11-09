@@ -35,7 +35,7 @@ import { StatusPill } from "@/components/legislation/bill-status";
 import { ElectionStatusPill } from "@/components/elections/election-status";
 import { formatAmount } from "@/lib/money";
 import { partyColorFor } from "@/lib/party-colors";
-import { HANDICAPPERS, RATING_STYLE, partyLetter, resultStyle } from "@/lib/elections/overview";
+import { HANDICAPPERS, RATING_STYLE, formatMargin, partyLetter, resultStyle } from "@/lib/elections/overview";
 import { normalizePartyName } from "@/lib/elections/display";
 import { ratingLabel } from "@/lib/validation/raceRating";
 import { entityPartyAndPlace, publicEntityPath, typeLabels } from "@/lib/people/public";
@@ -210,7 +210,7 @@ function WritDiscoveryView({ discovery }: { discovery: WritDiscovery }) {
                         style={race.result.called ? { background: resultStyle(race.result.winnerParty, race.result.marginPct).fill, color: resultStyle(race.result.winnerParty, race.result.marginPct).text } : { background: RATING_STYLE.tossup.fill, color: RATING_STYLE.tossup.text }}
                       >
                         {race.result.called ? "Called" : race.callStatus === "runoff" ? "Runoff" : "Counting"}
-                        {race.result.marginPct != null ? ` · ${race.result.marginPct.toFixed(1)} pts` : ""}
+                        {race.result.marginPct != null ? ` · ${formatMargin(race.result.marginPct)} pts` : ""}
                       </span>
                     ) : style && race.rating ? (
                       <span
