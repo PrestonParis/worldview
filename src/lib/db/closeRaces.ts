@@ -9,7 +9,7 @@ import { db } from "./client";
 import { CLOSE_RACE_ROWS_SQL, everyContest, filterReport, toReportRow, withSeats, type CloseRaceFilters, type DbCloseRaceRow, type FilteredReport, type ReportRow } from "../elections/close-races/rows";
 import { applyRecounts, pairRecounts, pairRunoffs, settleUnverified, summarizeResults, type ResultsSummary } from "../elections/close-races/results";
 import type { SeatHolders } from "../elections/close-races/seats";
-import { votedIn } from "../elections/close-races/precincts";
+import { UNPLACED_PRECINCTS_SQL, withVotedIn } from "../elections/close-races/precincts";
 import { etDate } from "../elections/close-races/schedule";
 import seatHolderFile from "../../../data/elections/ga/seat-holders-2026.json";
 import scheduleFile from "../../../data/elections/ga/schedule.json";
@@ -84,16 +84,9 @@ const SEAT_HOLDERS = seatHolderFile.seats as SeatHolders;
 const loadBaseRows = cached("rows", async (election: string): Promise<ReportRow[]> => {
   const [{ rows }, { rows: places }] = await Promise.all([
     db.$client.query<DbCloseRaceRow>(CLOSE_RACE_ROWS_SQL, [election]),
-    db.$client.query(
-      `select p.contest_id, p.precinct, p.total_votes from tracked_contest_precincts p
-         join tracked_contests c on c.id = p.contest_id
-        where c.source_election_id = $1 and c.municipality is null and c.level in ('municipal', 'referendum')`,
-      [election],
-    ),
+    db.$client.query(UNPLACED_PRECINCTS_SQL, [election]),
   ]);
-  const byContest = new Map<string, { precinct: string; totalVotes: number }[]>();
-  for (const p of places) byContest.set(p.contest_id, [...(byContest.get(p.contest_id) ?? []), { precinct: p.precinct, totalVotes: p.total_votes }]);
-  return rows.map(toReportRow).map((r) => (byContest.has(r.id) ? { ...r, votedIn: votedIn(byContest.get(r.id)!) } : r));
+  return withVotedIn(rows.map(toReportRow), places);
 });
 
 // One election as the hub reports it: later rounds applied first, so seats,

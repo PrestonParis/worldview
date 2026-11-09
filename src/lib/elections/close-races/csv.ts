@@ -54,6 +54,7 @@ export const CLOSE_RACE_COLUMNS: { header: string; value: (row: CloseRaceRow) =>
   { header: "advancing", value: (r) => r.outcome?.advancing.join("; ") || null },
   { header: "prior_party", value: (r) => r.seat?.priorParty ?? null },
   { header: "seat_change", value: (r) => r.seat?.change ?? null },
+  { header: "voted_in", value: (r) => r.votedIn?.join("; ") || null },
 ];
 
 function cell(value: string | number | null): string {

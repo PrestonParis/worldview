@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { contestOutcome, outcomeChange, type OutcomeInput } from "./outcome";
-import { breakdownMismatches, parseBreakdown, stateCountyMismatches, votedIn, watchesPrecincts } from "./precincts";
+import { breakdownMismatches, parseBreakdown, stateCountyMismatches, votedIn, watchesPrecincts, withVotedIn } from "./precincts";
 import { evaluateContest } from "./evaluate";
 import type { AssembledContest } from "./merge";
 import {
@@ -150,6 +150,10 @@ describe("precincts", () => {
     ).toEqual(["Byromville"]);
     expect(votedIn([1, 2, 3, 4].map((n) => ({ precinct: `P${n}`, totalVotes: 5 })))).toEqual([]);
     expect(votedIn([{ precinct: "Georgetown", totalVotes: 0 }])).toEqual([]);
+  });
+  it("adds the place to the rows it can place and leaves the others alone", () => {
+    const rows = withVotedIn([{ id: "a" }, { id: "b" }], [{ contest_id: "a", precinct: "Byromville", total_votes: 20 }]);
+    expect(rows).toEqual([{ id: "a", votedIn: ["Byromville"] }, { id: "b" }]);
   });
   it("watches close and unplaced contests, not comfortable named ones", () => {
     const base = { flags: [], level: "county", scope: "county", municipality: null, rule: "majority", marginPct: 20 };

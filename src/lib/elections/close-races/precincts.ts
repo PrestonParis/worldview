@@ -61,6 +61,18 @@ export function votedIn(precincts: { precinct: string; totalVotes: number }[]): 
   return used.length && used.length <= PLACE_PRECINCTS ? used.sort() : [];
 }
 
+/** Precinct results of an election's contests the feed doesn't place in a town. */
+export const UNPLACED_PRECINCTS_SQL = `select p.contest_id, p.precinct, p.total_votes from tracked_contest_precincts p
+   join tracked_contests c on c.id = p.contest_id
+  where c.source_election_id = $1 and c.municipality is null and c.level in ('municipal', 'referendum')`;
+
+/** Adds where each unplaced contest was voted, from UNPLACED_PRECINCTS_SQL's rows. */
+export function withVotedIn<T extends { id: string }>(rows: T[], places: { contest_id: string; precinct: string; total_votes: number }[]): (T & { votedIn?: string[] })[] {
+  const byContest = new Map<string, { precinct: string; totalVotes: number }[]>();
+  for (const p of places) byContest.set(p.contest_id, [...(byContest.get(p.contest_id) ?? []), { precinct: p.precinct, totalVotes: p.total_votes }]);
+  return rows.map((r) => (byContest.has(r.id) ? { ...r, votedIn: votedIn(byContest.get(r.id)!) } : r));
+}
+
 /** State totals that differ from the sum of a complete set of county slices. */
 export function stateCountyMismatches(contests: { name: string; scope: string; totalUnits: number; options: { name: string; votes: number }[]; areas: { options: { name: string; votes: number }[] }[] }[]): string[] {
   const out: string[] = [];

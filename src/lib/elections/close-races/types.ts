@@ -187,6 +187,8 @@ export interface CloseRaceRow {
   sourceUpdatedAt: string | null;
   ingestedAt: string | null;
   electionId: string | null;
+  /** Where an unnamed city contest was voted, from its precinct results. */
+  votedIn?: string[];
   /** Filled for the results hub; absent on rows built elsewhere. */
   outcome?: { label: string; advancing: string[] };
   seat?: { priorParty: string | null; change: string | null } | null;

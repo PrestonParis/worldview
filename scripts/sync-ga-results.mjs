@@ -49,7 +49,7 @@ import { bucket, raiseAlert, sendWebhook } from "./lib/alerts.mjs";
 import { addBaseline, bumpError, dropEmptyStatus, electionLinks, ensureStatus, loadBaseline, updateStatus, writeContests, writeCountyStatus, writeCoverage } from "./lib/close-races-store.mjs";
 import { syncCities } from "./lib/city-results.mjs";
 import { syncPrecincts } from "./lib/close-races-precincts.mjs";
-import { stateCountyMismatches } from "../src/lib/elections/close-races/precincts.ts";
+import { UNPLACED_PRECINCTS_SQL, stateCountyMismatches, withVotedIn } from "../src/lib/elections/close-races/precincts.ts";
 import { electionKind, parseElectionList, parseFeed, replacementElection } from "../src/lib/elections/close-races/parse.ts";
 import { assembleContests, normalizeName, stableHash } from "../src/lib/elections/close-races/merge.ts";
 import { evaluateContest } from "../src/lib/elections/close-races/evaluate.ts";
@@ -745,13 +745,15 @@ async function staleChecks(ctx) {
 async function snapshot(pg, id) {
   const sort = arg("sort", "votes") === "percent" ? "percent" : "votes";
   const { rows } = await pg.query(CLOSE_RACE_ROWS_SQL, [id]);
-  const { ranked } = filterReport(withSeats(rows.map(toReportRow), readJson(path.join(DATA_DIR, "seat-holders-2026.json"), { seats: {} }).seats), { sort });
+  const { rows: places } = await pg.query(UNPLACED_PRECINCTS_SQL, [id]);
+  const reportRows = withVotedIn(rows.map(toReportRow), places);
+  const { ranked } = filterReport(withSeats(reportRows, readJson(path.join(DATA_DIR, "seat-holders-2026.json"), { seats: {} }).seats), { sort });
   if (!ranked.length) throw new Error(`no ranked contests for ${id}; load it first`);
   const { rows: status } = await pg.query("select is_official from tracked_ingest_status where source_election_id = $1", [id]);
   if (status[0]?.is_official) {
     // Certified: one file per version of the data, every contest, not one a day.
     const seats = readJson(path.join(DATA_DIR, "seat-holders-2026.json"), { seats: {} }).seats;
-    const all = closeRacesCsv(everyContest(withSeats(rows.map(toReportRow), seats)));
+    const all = closeRacesCsv(everyContest(withSeats(reportRows, seats)));
     const isNew = await raiseAlert(pg, { election: id, key: `certified_csv:${stableHash(all)}`, kind: "certified_csv", severity: "info", message: "Certified results file written", push: false });
     if (!isNew) {
       console.log("  certified file already published for this data");
