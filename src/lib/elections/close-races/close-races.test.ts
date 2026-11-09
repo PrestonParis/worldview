@@ -368,6 +368,49 @@ describe("contest keys", () => {
   });
 });
 
+describe("state contests when SOS blanks the county rollup", () => {
+  const item = (id: string, parentId: string | null, reportingUnits: number, totalUnits: number) => ({
+    id,
+    parentId,
+    name: [{ text: "US Senate" }],
+    voteFor: [{ text: "Vote for 1" }],
+    reportingStatus: { reportingUnits, totalUnits },
+    summaryResults: {
+      ballotOptions: [
+        { id: `${id}-a`, name: [{ text: "Ann Lee" }], voteCount: 300 },
+        { id: `${id}-b`, name: [{ text: "Bo Diaz" }], voteCount: 200 },
+      ],
+    },
+  });
+  const feed = (...ballotItems: unknown[]) => ({ election: {}, ballotItems });
+
+  it("counts the counties that have finished", () => {
+    const list = evaluateAll(feed(item("s", null, 0, 0)), [
+      county("a-county-ga", "A County", feed(item("a", "s", 4, 4))),
+      county("b-county-ga", "B County", feed(item("b", "s", 7, 7))),
+    ]);
+    const senate = byName(list, "US Senate");
+    expect([senate.reportingUnits, senate.totalUnits]).toEqual([2, 2]);
+    expect(senate.status).toBe("unofficial_complete");
+  });
+
+  it("leaves a county still counting out of the finished ones", () => {
+    const list = evaluateAll(feed(item("s", null, 0, 0)), [
+      county("a-county-ga", "A County", feed(item("a", "s", 4, 4))),
+      county("b-county-ga", "B County", feed(item("b", "s", 6, 7))),
+    ]);
+    const senate = byName(list, "US Senate");
+    expect([senate.reportingUnits, senate.totalUnits]).toEqual([1, 2]);
+    expect(senate.status).toBe("reporting");
+  });
+
+  it("prefers the rollup whenever SOS gives one", () => {
+    const list = evaluateAll(feed(item("s", null, 158, 159)), [county("a-county-ga", "A County", feed(item("a", "s", 4, 4)))]);
+    const senate = byName(list, "US Senate");
+    expect([senate.reportingUnits, senate.totalUnits]).toEqual([158, 159]);
+  });
+});
+
 describe("merge", () => {
   const assembled = () =>
     assembleContests(parseFeed({ election: {}, ballotItems: [] }), [
