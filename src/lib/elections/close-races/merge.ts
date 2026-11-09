@@ -208,6 +208,10 @@ export function assembleContests(
 
   const contests: AssembledContest[] = state.contests.map((contest) => {
     const areas = (areasByState.get(contest.sourceId) ?? []).sort((a, b) => a.county.localeCompare(b.county));
+    // Some SOS publishes blank the rollup: 0 of 0, votes still on the contest.
+    const rolledUp = contest.totalUnits > 0;
+    const totalUnits = rolledUp ? contest.totalUnits : areas.length;
+    const reportingUnits = rolledUp ? contest.reportingUnits : areas.filter((a) => a.totalUnits > 0 && a.reportingUnits >= a.totalUnits).length;
     return {
       key: slugify(contest.name),
       scope: "state",
@@ -220,11 +224,11 @@ export function assembleContests(
       countySlug: null,
       county: null,
       counties: areas.map((a) => a.countySlug),
-      reportingUnits: contest.reportingUnits,
-      totalUnits: contest.totalUnits,
+      reportingUnits,
+      totalUnits,
       asOf: contest.asOf,
       isOfficial: state.election.isOfficialResults,
-      unitStatus: contest.unitStatus ?? sumUnitStatus(areas.map((a) => a.unitStatus), contest.totalUnits),
+      unitStatus: contest.unitStatus ?? sumUnitStatus(areas.map((a) => a.unitStatus), totalUnits),
       options: contest.options,
       areas,
       merged: false,
