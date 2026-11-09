@@ -1,0 +1,47 @@
+name: Sync race results
+
+# Keeps /elections current while the 2026 count runs: votes and race calls from
+# the results feed, cross-checked against Wikipedia (scripts/sync-race-results.mjs,
+# data/elections/SOURCES.md). GitHub's cron can run late or skip; the next run
+# catches up, because each one loads the full current state. Remove after the
+# states certify.
+on:
+  schedule:
+    - cron: "23 */3 5-30 11 *"
+    - cron: "23 */3 * 12 *"
+  workflow_dispatch:
+
+concurrency:
+  group: sync-race-results
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Write .env.local
+        run: |
+          {
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}"
+            echo "NEON_DATABASE_URL=${{ secrets.NEON_DATABASE_URL }}"
+            echo "NEO4J_URI=${{ secrets.NEO4J_URI }}"
+            echo "NEO4J_USER=${{ secrets.NEO4J_USER }}"
+            echo "NEO4J_PASSWORD=${{ secrets.NEO4J_PASSWORD }}"
+            echo "SITE_URL=${{ secrets.SITE_URL }}"
+            echo "REVALIDATE_SECRET=${{ secrets.REVALIDATE_SECRET }}"
+          } > .env.local
+
+      - run: npm run sync:race-results

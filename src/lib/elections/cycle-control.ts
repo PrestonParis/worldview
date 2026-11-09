@@ -1,10 +1,13 @@
-import { and, eq, inArray } from "drizzle-orm";
+import { and, eq, inArray, isNotNull } from "drizzle-orm";
 import { db } from "../db/client";
 import { elections, candidacies, raceRatings } from "../db/schema";
 import {
   projectChamber,
+  tallyChamber,
   type Chamber,
   type ChamberProjection,
+  type ChamberResult,
+  type ResultRace,
   type PartyCount,
   type Party,
   type RatedRace,
@@ -20,6 +23,53 @@ function officeToChamber(office: string): Chamber | null {
   return null;
 }
 
+
+/**
+ * Seats won in a cycle being counted: called races plus the seats not up, from
+ * data/elections/2026-context.json. Empty for a cycle with no calls recorded,
+ * so past cycles keep their own results view.
+ */
+export async function chamberResults(cycle: number): Promise<ChamberResult[]> {
+  const races = await db
+    .select({ id: elections.id, office: elections.office, callStatus: elections.callStatus, flipped: elections.flipped, asOf: elections.resultsAsOf })
+    .from(elections)
+    .where(and(eq(elections.cycle, cycle), isNotNull(elections.callStatus)));
+  if (races.length === 0) return [];
+
+  const winners = await db
+    .select({ electionId: candidacies.electionId, party: candidacies.party })
+    .from(candidacies)
+    .where(and(inArray(candidacies.electionId, races.map((race) => race.id)), eq(candidacies.won, true)));
+  const winnerParty = new Map(winners.map((row) => [row.electionId, partyLetter(row.party)]));
+
+  const byChamber = new Map<Chamber, ResultRace[]>();
+  let latest: Date | null = null;
+  for (const race of races) {
+    const chamber = officeToChamber(race.office);
+    if (!chamber) continue;
+    if (race.asOf && (!latest || race.asOf > latest)) latest = race.asOf;
+    byChamber.set(chamber, [
+      ...(byChamber.get(chamber) ?? []),
+      { winnerParty: winnerParty.get(race.id) ?? null, called: race.callStatus === "called" && winnerParty.has(race.id), flipped: race.flipped },
+    ]);
+  }
+
+  const baseline: Record<Chamber, PartyCount> = {
+    senate: { D: context.senateBaseline.D, R: context.senateBaseline.R, I: context.senateBaseline.I },
+    house: context.houseBaseline,
+    governor: { D: context.governorBaseline.D, R: context.governorBaseline.R, I: context.governorBaseline.I },
+  };
+  const order: Chamber[] = ["senate", "house", "governor"];
+  const asOf = (latest as Date | null)?.toISOString() ?? null;
+  return order
+    .filter((chamber) => byChamber.has(chamber))
+    .map((chamber) =>
+      tallyChamber(chamber, byChamber.get(chamber)!, baseline[chamber], context.majorities[chamber], {
+        caucusing: chamber === "senate" ? context.independentsCaucusingWithDemocrats : 0,
+        asOf,
+      }),
+    );
+}
 
 /**
  * Chamber-control projections for a cycle: pulls every scaffolded race, its

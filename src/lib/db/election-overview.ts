@@ -143,6 +143,19 @@ async function summarizeRaces(races: Array<typeof elections.$inferSelect>): Prom
       const summary = list.length ? summarizeCandidacies(list) : null;
       const winnerId = summary?.winnerEntityId ?? (summary?.reporting ? summary.leaderEntityId : null);
       const winnerParty = summary?.winnerEntityId ? summary.winnerParty : summary?.leaderParty;
+      // Past cycles have no call to wait for. In a live count only a marked
+      // winner is called; anyone else is just ahead.
+      const called = race.callStatus ? race.callStatus === "called" && Boolean(summary?.winnerEntityId) : true;
+      // A ranked-choice winner can trail in the counted round; that gap is not
+      // their margin. Live counts divide by the race total, since small ballot
+      // lines have no row of their own.
+      const trailing = Boolean(summary?.winnerEntityId && summary.leaderEntityId && summary.winnerEntityId !== summary.leaderEntityId);
+      const marginPct =
+        trailing && race.callStatus
+          ? null
+          : race.callStatus && race.totalVotes && summary?.margin != null
+            ? (summary.margin / race.totalVotes) * 100
+            : (summary?.marginPct ?? null);
       const rating = consensusRating(ratingsByRace.get(race.id) ?? []);
       const nomineeMap = new Map<string, { name: string; party: ReturnType<typeof partyLetter>; partyLabel: string; incumbent: boolean }>();
       for (const candidacy of list.filter((item) => item.status === "nominee" && !item.withdrew)) {
@@ -175,12 +188,17 @@ async function summarizeRaces(races: Array<typeof elections.$inferSelect>): Prom
           : null,
         nominees: [...nomineeMap.values()]
           .sort((a, b) => NOMINEE_ORDER(a.party) - NOMINEE_ORDER(b.party) || a.name.localeCompare(b.name)),
+        callStatus: race.callStatus,
+        reportingPct: race.reportingPct,
+        flipped: race.flipped,
+        resultsAsOf: race.resultsAsOf?.toISOString() ?? null,
         result:
           winnerId && race.status !== "scheduled"
             ? {
                 winnerName: normalizeCandidateName(names.get(winnerId) ?? "Unknown"),
                 winnerParty: partyLetter(winnerParty ?? null),
-                marginPct: summary?.marginPct ?? null,
+                marginPct,
+                called,
               }
             : null,
       };

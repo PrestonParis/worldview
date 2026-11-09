@@ -49,6 +49,10 @@ export interface Election extends Omit<ElectionInput, "totalVotes"> {
   openSeat: boolean;
   // U.S. Senate class (1/2/3); null for other offices.
   seatClass: number | null;
+  // While a race is being counted; null for past cycles.
+  callStatus: string | null;
+  reportingPct: number | null;
+  flipped: boolean | null;
   createdAt: string;
   updatedAt: string;
 }

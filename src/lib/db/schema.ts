@@ -1,6 +1,7 @@
 import { relations, sql } from "drizzle-orm";
 import {
   pgTable,
+  real,
   uuid,
   text,
   timestamp,
@@ -988,6 +989,13 @@ export const elections = pgTable(
     openSeat: boolean("open_seat").notNull().default(false),
     // U.S. Senate class (1/2/3); null for every other office.
     seatClass: integer("seat_class"),
+    // While a race is being counted (scripts/sync-race-results.mjs); all four
+    // are null for past cycles. callStatus: "called" | "counting" | "runoff".
+    callStatus: text("call_status"),
+    reportingPct: real("reporting_pct"),
+    // The seat changed party; null when the source does not say.
+    flipped: boolean("flipped"),
+    resultsAsOf: timestamp("results_as_of", { withTimezone: true }),
     notes: text("notes"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()

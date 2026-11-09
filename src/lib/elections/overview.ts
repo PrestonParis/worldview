@@ -54,12 +54,33 @@ export interface RaceSummary {
   incumbent: { name: string; party: PartyLetter | null } | null;
   // General-election candidates; empty for past cycles and unsynced races.
   nominees: Array<{ name: string; party: PartyLetter | null; partyLabel: string; incumbent: boolean }>;
+  // While a race is being counted: "called" | "counting" | "runoff". Null for
+  // past cycles, whose results are final.
+  callStatus: string | null;
+  // Estimated share of the expected vote counted.
+  reportingPct: number | null;
+  // The seat changed party; null when the source does not say.
+  flipped: boolean | null;
+  resultsAsOf: string | null;
   result: {
+    // When `called` is false these name the current leader, not a winner.
     winnerName: string;
     winnerParty: PartyLetter | null;
-    // Winner minus runner-up, percent of the total vote.
+    // Winner minus runner-up, percent of the total vote. Null when the winner
+    // trailed in the counted round (ranked-choice) or no count was reported.
     marginPct: number | null;
+    called: boolean;
   } | null;
+}
+
+// "+5.2", or "<0.1" when rounding would read as a tie.
+export function formatMargin(marginPct: number): string {
+  return marginPct < 0.05 ? "<0.1" : `+${marginPct.toFixed(1)}`;
+}
+
+// Ranked-choice states for these offices; the counts shown are first-round.
+export function isRankedChoice(stateAbbr: string | null, office: string): boolean {
+  return stateAbbr === "AK" || (stateAbbr === "ME" && office !== "Governor");
 }
 
 export interface CycleSummary {

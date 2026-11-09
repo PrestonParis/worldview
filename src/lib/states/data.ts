@@ -332,7 +332,7 @@ async function loadPolitics(state: StateInfo) {
     const upcoming: RaceSummary[] = [];
     if (current) {
       for (const office of ["senate", "governor"] as const) {
-        upcoming.push(...(await listRaces(current, office)).filter((r) => r.stateAbbr === state.abbr && r.status === "scheduled"));
+        upcoming.push(...(await listRaces(current, office)).filter((r) => r.stateAbbr === state.abbr && (r.status === "scheduled" || r.callStatus != null)));
       }
     }
     return { presidential, upcoming, cycle: current };
