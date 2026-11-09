@@ -127,13 +127,13 @@ export function cityContest(city: CityConfig, contest: CityContestConfig, votes:
     countySlug: city.countySlug,
     county: city.county,
     counties: [city.county],
-    // A hand count posts no precinct progress: "reporting" once numbers appear.
-    reportingUnits: 0,
+    // A hand count posts no precinct progress: the city's posted numbers are the whole count.
+    reportingUnits: votes ? 1 : 0,
     totalUnits: 1,
     asOf: votes ? asOf : null,
     isOfficial: false,
     options,
-    areas: [{ countySlug: city.countySlug, county: city.county, reportingUnits: 0, totalUnits: 1, options: options.map((o) => ({ name: o.name, votes: o.votes })) }],
+    areas: [{ countySlug: city.countySlug, county: city.county, reportingUnits: votes ? 1 : 0, totalUnits: 1, options: options.map((o) => ({ name: o.name, votes: o.votes })) }],
     merged: false,
     unlinkedCounties: [],
   };

@@ -85,10 +85,10 @@ node scripts/ga-results-health.mjs --dry-run --at=2026-11-03T21:00:00Z
 
 ## 8. Rehearsal
 
-Play a past election back as election night, with a leader flip, a downward correction and a feed outage:
+Play a past election back as election night, with a leader flip, a downward correction, a feed outage answered by the media export, a recount under a later date, and the road to certification (election night complete, then fully reported with a contest pushed under 50%, then official):
 
 ```sh
-node scripts/ga-results-replay.mjs --election=GeneralPrimary51926 --frames=8 --step=20
+node scripts/ga-results-replay.mjs --election=11032026GeneralAndSpecialElection --frames=12 --step=15
 npm run sync:ga-results -- --base-url=http://localhost:4319 --election=auto --date=2026-11-03 --watch --every=5 --until=4m
 ```
 
@@ -106,11 +106,31 @@ ENV_FILE=.env.cloud npm run sync:ga-results -- --election=<id> --snapshot [--sor
 
 Start the chains by hand rather than waiting for cron: `gh workflow run ga-results-watch.yml -f election=auto -f date=<date> -f chain=true`. The watch starts the sentinel. Avoid production deploys during a count: `post-deploy.yml` applies migrations and loads empty datasets into the same database.
 
-## 11. Prior seat holders
+## 11. Runoff night (Dec 1)
+
+GitHub's cron is too sparse to trust with the start, so start both by hand before polls close at 7 pm ET:
+
+```sh
+gh workflow run ga-results-watch.yml --ref main -f election=auto -f date=2026-12-01 -f kind=runoff -f every=180 -f until=5h45m -f chain=true
+gh workflow run ga-results-health.yml --ref main -f loop=true
+```
+
+The watch waits while SOS hasn't listed the election and switches when it does. Once the feed loads, a `runoff_mismatch` alert names any contest expected to go to a runoff that SOS doesn't list, and any it lists with no matching contest. A city running its own runoff would appear as the first kind.
+
+## 12. Recounts and county numbers
+
+- **Recounts:** SOS lists one as its own election. The watch and `GA results daily` follow it automatically, it pairs to its contest on the same two candidates, and once it has an outcome its result replaces the original across seats, flips and CSVs.
+- **A certified contest with no votes:** a `no_votes_certified` alert means SOS has no numbers for it. Add the county's certified numbers to `data/elections/ga/overrides-<id>.json`, with the source, and reload. They apply only while SOS shows zero:
+
+```json
+{ "votes": { "<contest key or exact name>": { "source": "<citation and URL>", "options": { "<candidate>": 123 } } } }
+```
+
+## 13. Prior seat holders
 
 `data/elections/ga/seat-holders-2026.json` is built, not edited: `node --experimental-strip-types scripts/build-ga-seat-holders.mjs [--dry-run]`. It fails when a 2026 incumbent disagrees with the replayed results; record the sourced reason in `seat-holder-overrides.json`.
 
-## 12. One-time setup (before Nov 3)
+## 14. One-time setup (before Nov 3)
 
 1. Deploy, which applies the migrations, including `2026-10-28-tracked-baseline.sql`.
 2. Set the repo secrets: `DATABASE_URL`, `ALERT_WEBHOOK_URL`, `SITE_URL`, `REVALIDATE_SECRET`, `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`. Set `REVALIDATE_SECRET` in the site's env too.

@@ -6,10 +6,13 @@
 
 import { unstable_cache } from "next/cache";
 import { db } from "./client";
-import { CLOSE_RACE_ROWS_SQL, filterReport, toReportRow, withSeats, type CloseRaceFilters, type DbCloseRaceRow, type FilteredReport, type ReportRow } from "../elections/close-races/rows";
-import { pairRunoffs, summarizeResults, type ResultsSummary } from "../elections/close-races/results";
+import { CLOSE_RACE_ROWS_SQL, everyContest, filterReport, toReportRow, withSeats, type CloseRaceFilters, type DbCloseRaceRow, type FilteredReport, type ReportRow } from "../elections/close-races/rows";
+import { applyRecounts, pairRecounts, pairRunoffs, settleUnverified, summarizeResults, type ResultsSummary } from "../elections/close-races/results";
 import type { SeatHolders } from "../elections/close-races/seats";
+import { UNPLACED_PRECINCTS_SQL, withVotedIn } from "../elections/close-races/precincts";
+import { etDate } from "../elections/close-races/schedule";
 import seatHolderFile from "../../../data/elections/ga/seat-holders-2026.json";
+import scheduleFile from "../../../data/elections/ga/schedule.json";
 import type { ContestLevel, ElectionKind, ResultStatus } from "../elections/close-races/types";
 
 export const CLOSE_RACES_TAG = "tracked-contests";
@@ -78,10 +81,27 @@ export function defaultElection(elections: TrackedElection[]): TrackedElection |
 
 const SEAT_HOLDERS = seatHolderFile.seats as SeatHolders;
 
-const loadRows = cached("rows", async (election: string): Promise<ReportRow[]> => {
-  const { rows } = await db.$client.query<DbCloseRaceRow>(CLOSE_RACE_ROWS_SQL, [election]);
-  return withSeats(rows.map(toReportRow), SEAT_HOLDERS);
+const loadBaseRows = cached("rows", async (election: string): Promise<ReportRow[]> => {
+  const [{ rows }, { rows: places }] = await Promise.all([
+    db.$client.query<DbCloseRaceRow>(CLOSE_RACE_ROWS_SQL, [election]),
+    db.$client.query(UNPLACED_PRECINCTS_SQL, [election]),
+  ]);
+  return withVotedIn(rows.map(toReportRow), places);
 });
+
+// One election as the hub reports it: later rounds applied first, so seats,
+// flips and every CSV follow a recount's result or a runoff's answer.
+async function loadRows(election: string): Promise<ReportRow[]> {
+  const [base, elections] = await Promise.all([loadBaseRows(election), listTrackedElections()]);
+  const me = elections.find((e) => e.id === election);
+  let rows = base;
+  if (me && me.kind !== "recount" && me.kind !== "primary") {
+    for (const later of elections.filter((e) => e.kind === "recount" && e.date >= me.date)) rows = applyRecounts(rows, await loadBaseRows(later.id));
+    const round = runoffAfter(elections, me);
+    if (round) rows = settleUnverified(rows, await loadBaseRows(round.id));
+  }
+  return withSeats(rows, SEAT_HOLDERS);
+}
 
 export interface CoverageRow {
   id: string;
@@ -202,6 +222,8 @@ export interface CountyStatusRow {
   unitsNight: number;
   unitsPartial: number;
   unitsNotReported: number;
+  percentReporting: number | null;
+  groupsUnreported: string[];
   isOfficial: boolean;
   sourceUpdatedAt: string | null;
 }
@@ -217,7 +239,7 @@ export interface CountyStatusSummary {
 
 export const loadCountyStatus = cached("county-status", async (election: string): Promise<CountyStatusSummary> => {
   const { rows } = await db.$client.query(
-    `select county_slug, county, registered, ballots_cast, units_fully_reported, units_night_complete, units_partial, units_not_reported, is_official, source_updated_at
+    `select county_slug, county, registered, ballots_cast, units_fully_reported, units_night_complete, units_partial, units_not_reported, percent_reporting, groups_unreported, is_official, source_updated_at
        from tracked_county_status where source_election_id = $1 order by county`,
     [election],
   );
@@ -230,6 +252,8 @@ export const loadCountyStatus = cached("county-status", async (election: string)
     unitsNight: r.units_night_complete ?? 0,
     unitsPartial: r.units_partial ?? 0,
     unitsNotReported: r.units_not_reported ?? 0,
+    percentReporting: r.percent_reporting,
+    groupsUnreported: r.groups_unreported ?? [],
     isOfficial: r.is_official,
     sourceUpdatedAt: iso(r.source_updated_at),
   }));
@@ -273,6 +297,9 @@ export interface ResultsData {
   mapContests: { id: string; name: string }[];
   /** The election date of the runoff round, once it is on the schedule. */
   runoffDate: string | null;
+  calendar: { date: string; label: string; meaning?: string; signal?: string; source: string }[];
+  /** Today in Georgia, for the timeline. */
+  today: string;
 }
 
 /** The runoff round that follows a general: SOS lists it near the day. */
@@ -294,7 +321,7 @@ export async function loadResults(electionId: string): Promise<ResultsData | nul
   const [rows, counties] = await Promise.all([loadRows(electionId), loadCountyStatus(electionId)]);
   const pairs = await runoffPairs(elections, election, rows);
   const summary = summarizeResults(rows, { kind: election.kind, holders: SEAT_HOLDERS, pairs });
-  const watched = [...summary.recountRange].map((r) => ({ id: r.id, margin: r.marginVotes }));
+  const watched = [...summary.recountRange, ...summary.runoffs.map((r) => r.row)].map((r) => ({ id: r.id, margin: r.marginVotes }));
   const moves = await loadMarginMoves(election.date, watched);
   return {
     election,
@@ -305,6 +332,8 @@ export async function loadResults(electionId: string): Promise<ResultsData | nul
     totalContests: rows.length,
     mapContests: [...summary.statewide, ...summary.statewideQuestions].map((r) => ({ id: r.id, name: r.name })),
     runoffDate: runoffAfter(elections, election)?.date ?? null,
+    calendar: (scheduleFile.elections as { date: string; calendar?: ResultsData["calendar"] }[]).find((e) => e.date === election.date)?.calendar ?? [],
+    today: etDate(),
   };
 }
 
@@ -312,8 +341,9 @@ export interface RaceData {
   election: TrackedElection;
   row: ReportRow;
   detail: ContestDetail;
-  /** The other round of this contest: its runoff, or the general it came from. */
-  otherRound: ReportRow | null;
+  /** The other round of this contest: its runoff or recount, or the count it came from. */
+  otherRound: { sourceElectionId: string; key: string; label: string } | null;
+  precincts: { county: string; precinct: string; totalVotes: number; votes: Record<string, number> }[];
 }
 
 export async function loadRace(electionId: string, key: string): Promise<RaceData | null> {
@@ -325,17 +355,25 @@ export async function loadRace(electionId: string, key: string): Promise<RaceDat
   if (!row) return null;
   const detail = await loadContestDetail(row.id);
   if (!detail) return null;
-  let otherRound: ReportRow | null = null;
-  if (election.kind === "general") otherRound = (await runoffPairs(elections, election, rows)).get(row.id) ?? null;
-  else if (election.kind === "runoff") {
-    const general = elections.find((e) => e.kind === "general" && e.date < election.date);
-    if (general) {
-      const generalRows = await loadRows(general.id);
-      const match = [...pairRunoffs(generalRows, [row]).keys()][0];
-      otherRound = generalRows.find((r) => r.id === match) ?? null;
+  let otherRound: RaceData["otherRound"] = null;
+  if (row.recount) otherRound = { sourceElectionId: row.recount.sourceElectionId, key: row.recount.key, label: "The recount" };
+  else if (election.kind === "general") {
+    const pair = (await runoffPairs(elections, election, rows)).get(row.id);
+    if (pair) otherRound = { sourceElectionId: pair.sourceElectionId, key: pair.key, label: "The runoff" };
+  } else if (election.kind === "runoff" || election.kind === "recount") {
+    const original = [...elections].filter((e) => e.kind !== "recount" && e.kind !== "primary" && e.date <= election.date && e.id !== election.id).sort((a, b) => b.date.localeCompare(a.date))[0];
+    if (original) {
+      const earlier = await loadBaseRows(original.id);
+      const match = [...(election.kind === "recount" ? pairRecounts(earlier, [row]) : pairRunoffs(earlier, [row])).keys()][0];
+      const found = earlier.find((r) => r.id === match);
+      if (found) otherRound = { sourceElectionId: found.sourceElectionId, key: found.key, label: election.kind === "recount" ? "The original count" : "The general election" };
     }
   }
-  return { election, row, detail, otherRound };
+  const { rows: precincts } = await db.$client.query(
+    "select county_slug, precinct, total_votes, votes from tracked_contest_precincts where contest_id = $1 order by county_slug, precinct",
+    [row.id],
+  );
+  return { election, row, detail, otherRound, precincts: precincts.map((p) => ({ county: p.county_slug, precinct: p.precinct, totalVotes: p.total_votes, votes: p.votes ?? {} })) };
 }
 
 /** A county's own numbers for each contest it votes on. */
@@ -390,6 +428,13 @@ export async function loadCountyIndex(electionId: string): Promise<CountyIndexDa
 export function movedElection(elections: TrackedElection[], id: string): TrackedElection | null {
   if (elections.some((e) => e.id === id)) return null;
   return elections.find((e) => e.replaces === id) ?? null;
+}
+
+/** Every contest, ranked or not, for the full-results CSV. */
+export async function loadAllResultRows(electionId: string): Promise<ReportRow[] | null> {
+  const elections = await listTrackedElections();
+  if (!elections.some((e) => e.id === electionId)) return null;
+  return everyContest(await loadRows(electionId));
 }
 
 /** The ranked rows only, for the CSV route. */

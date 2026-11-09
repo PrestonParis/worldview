@@ -73,6 +73,33 @@ export function contestOutcome(c: OutcomeInput): Outcome {
   return plain("elected", certified ? "Winner" : "Apparent winner");
 }
 
+/**
+ * A settled contest's outcome changing: what a late batch of ballots can do
+ * without changing the leader, like falling under 50%. Once a contest has an
+ * outcome only; the first results coming in aren't news.
+ */
+export function outcomeChange(
+  before: { kind: OutcomeKind; inRecountRange: boolean },
+  after: { kind: OutcomeKind; inRecountRange: boolean },
+): string | null {
+  if (before.kind === "counting" || after.kind === "counting") return null;
+  if (before.kind !== after.kind) return `${KIND_WORDS[before.kind]} → ${KIND_WORDS[after.kind]}`;
+  if (before.inRecountRange !== after.inRecountRange) return after.inRecountRange ? "entered recount-request range" : "left recount-request range";
+  return null;
+}
+
+const KIND_WORDS: Record<OutcomeKind, string> = {
+  counting: "counting",
+  elected: "winner",
+  unopposed: "unopposed",
+  advancing_to_runoff: "runoff",
+  tied: "tied",
+  passed: "passing",
+  failed: "failing",
+  rule_unverified: "below 50%, rule unverified",
+  no_votes: "no votes posted",
+};
+
 /** True when the outcome names a winner a seat count can credit. */
 export function seatIsDecided(kind: OutcomeKind): boolean {
   return kind === "elected" || kind === "unopposed";

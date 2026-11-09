@@ -30,6 +30,8 @@ export default async function CountiesPage({ params }: Props) {
                 <th className="px-4 py-2.5 text-right font-bold">Ballots cast</th>
                 <th className="px-4 py-2.5 text-right font-bold">Turnout</th>
                 <th className="px-4 py-2.5 text-right font-bold">Precincts fully reported</th>
+                <th className="px-4 py-2.5 text-right font-bold">SOS % reporting</th>
+                <th className="px-4 py-2.5 font-bold">Not reported yet</th>
                 <th className="px-4 py-2.5 font-bold">Certified</th>
               </tr>
             </thead>
@@ -46,6 +48,8 @@ export default async function CountiesPage({ params }: Props) {
                     <td className="px-4 py-2 text-right tabular-nums">{fmt(c.ballotsCast)}</td>
                     <td className="px-4 py-2 text-right tabular-nums">{c.registered && c.ballotsCast != null ? `${((c.ballotsCast / c.registered) * 100).toFixed(1)}%` : "—"}</td>
                     <td className="px-4 py-2 text-right tabular-nums">{units ? `${fmt(c.unitsFully)} of ${fmt(units)}` : "—"}</td>
+                    <td className="px-4 py-2 text-right tabular-nums">{c.percentReporting != null ? `${(c.percentReporting * 100).toFixed(1)}%` : "—"}</td>
+                    <td className="px-4 py-2">{c.groupsUnreported.join(", ") || "—"}</td>
                     <td className="px-4 py-2">{c.isOfficial ? "Yes" : "Not yet"}</td>
                   </tr>
                 );

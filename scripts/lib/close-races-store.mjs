@@ -7,6 +7,7 @@
 import { createHash } from "node:crypto";
 import { chunk } from "./bulk.mjs";
 import { normalizeName } from "../../src/lib/elections/close-races/merge.ts";
+import { contestOutcome, outcomeChange } from "../../src/lib/elections/close-races/outcome.ts";
 
 const CERTIFIED = new Set(["county_certified", "state_certified"]);
 
@@ -53,6 +54,10 @@ export const externalId = (electionId, key, source = "ga-sos") => `${source}:${e
 export async function loadExisting(pg, electionId, source = "ga-sos") {
   const { rows } = await pg.query(
     `select c.id, c.external_id, c.source_hash, c.result_status, c.total_votes, c.margin_votes, c.ranked, c.removed_at,
+            c.flags, c.decision_rule, c.vote_for, c.leader_share, c.uncontested,
+            (select o.name from tracked_contest_options o where o.contest_id = c.id and o.rank = 1 limit 1) as leader_name,
+            (select o.votes from tracked_contest_options o where o.contest_id = c.id and o.rank = 2 limit 1) as second_votes,
+            (select o.votes from tracked_contest_options o where o.contest_id = c.id and o.rank = 3 limit 1) as third_votes,
             (select o.name_key from tracked_contest_options o where o.contest_id = c.id and o.is_current_leader limit 1) as leader_key
        from tracked_contests c where c.source_election_id = $1 and c.source = $2`,
     [electionId, source],
@@ -247,6 +252,8 @@ export async function writeContests(pg, { source = "ga-sos", electionId, header,
       if (prev.ranked && m.rankable && prev.leader_key && leaderKey && prev.leader_key !== normalizeName(leaderKey)) {
         events.push({ kind: "leader_change", contestId, ev, message: `Leader changed in ${label(ev)}: now ${leaderKey}, margin ${m.marginVotes} votes` });
       }
+      const change = outcomeChange(storedOutcome(prev), newOutcome(ev));
+      if (change) events.push({ kind: "outcome_change", contestId, ev, message: `Outcome changed in ${label(ev)}: ${change} (margin ${m.marginVotes} votes)` });
       if (m.totalVotes < prev.total_votes) {
         events.push({ kind: "vote_decrease", contestId, ev, message: `Vote total went down in ${label(ev)}: ${prev.total_votes} → ${m.totalVotes}` });
       }
@@ -278,6 +285,45 @@ export async function writeContests(pg, { source = "ga-sos", electionId, header,
 }
 
 const label = (ev) => (ev.county ? `${ev.name} (${ev.county})` : ev.name);
+
+const inRecountRange = (flags) => (flags ?? []).includes("recount_request_range");
+
+function storedOutcome(r) {
+  const { kind } = contestOutcome({
+    resultStatus: r.result_status,
+    decisionRule: r.decision_rule,
+    voteFor: r.vote_for,
+    totalVotes: r.total_votes,
+    marginVotes: r.margin_votes,
+    leaderShare: r.leader_share,
+    uncontested: r.uncontested,
+    flags: r.flags ?? [],
+    leaderName: r.leader_name,
+    runnerUpName: null,
+    runnerUpVotes: r.second_votes,
+    thirdVotes: r.third_votes,
+  });
+  return { kind, inRecountRange: inRecountRange(r.flags) };
+}
+
+function newOutcome(ev) {
+  const m = ev.margin;
+  const { kind } = contestOutcome({
+    resultStatus: ev.status,
+    decisionRule: ev.rule,
+    voteFor: ev.voteFor,
+    totalVotes: m.totalVotes,
+    marginVotes: m.marginVotes,
+    leaderShare: m.leaderShare,
+    uncontested: m.uncontested,
+    flags: ev.flags,
+    leaderName: m.ranked[0]?.name ?? null,
+    runnerUpName: null,
+    runnerUpVotes: m.ranked[1]?.votes ?? null,
+    thirdVotes: m.ranked[2]?.votes ?? null,
+  });
+  return { kind, inRecountRange: inRecountRange(ev.flags) };
+}
 
 // Full rows (from a write) upsert; heartbeat-only calls update the existing
 // row, since an insert would fail the NOT NULL columns before ON CONFLICT.

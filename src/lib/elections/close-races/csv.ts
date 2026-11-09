@@ -22,7 +22,7 @@ export function countiesLabel(row: Pick<CloseRaceRow, "county" | "counties">): s
 }
 
 export const CLOSE_RACE_COLUMNS: { header: string; value: (row: CloseRaceRow) => string | number | null }[] = [
-  { header: "rank", value: (r) => r.rank },
+  { header: "rank", value: (r) => r.rank || null },
   { header: "race", value: (r) => r.name },
   { header: "level", value: (r) => r.level },
   { header: "county", value: (r) => countiesLabel(r) },
@@ -54,6 +54,7 @@ export const CLOSE_RACE_COLUMNS: { header: string; value: (row: CloseRaceRow) =>
   { header: "advancing", value: (r) => r.outcome?.advancing.join("; ") || null },
   { header: "prior_party", value: (r) => r.seat?.priorParty ?? null },
   { header: "seat_change", value: (r) => r.seat?.change ?? null },
+  { header: "voted_in", value: (r) => r.votedIn?.join("; ") || null },
 ];
 
 function cell(value: string | number | null): string {
@@ -66,6 +67,12 @@ export function closeRacesCsv(rows: CloseRaceRow[]): string {
   const lines = [CLOSE_RACE_COLUMNS.map((c) => c.header).join(",")];
   for (const row of rows) lines.push(CLOSE_RACE_COLUMNS.map((c) => cell(c.value(row))).join(","));
   return lines.join("\n") + "\n";
+}
+
+/** The every-contest file; `certified` once the state has certified the results. */
+export function allResultsFilename(electionId: string, at: Date, { certified = false } = {}): string {
+  const stamp = at.toISOString().replace(/[:]/g, "").replace(/\..+$/, "Z");
+  return `ga-results-${electionId}${certified ? "-certified" : ""}-${stamp}.csv`;
 }
 
 export function closeRacesFilename(electionId: string, sort: CloseRaceSort, at: Date): string {

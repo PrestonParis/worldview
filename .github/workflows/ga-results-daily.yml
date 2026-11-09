@@ -9,7 +9,7 @@ name: GA results daily
 on:
   schedule:
     - cron: "0 13 4-30 11 *"
-    - cron: "0 13 1-20 12 *"
+    - cron: "0 13 1-31 12 *"
   workflow_dispatch:
     inputs:
       election:
@@ -61,7 +61,7 @@ jobs:
             opts=()
             [ "$date" != - ] && opts+=(--date="$date")
             [ "$kind" != - ] && opts+=(--kind="$kind")
-            npm run sync:ga-results -- --election="$id" "${opts[@]}" --reconcile-when-official || failed=1
+            npm run sync:ga-results -- --election="$id" "${opts[@]}" --reconcile-when-official --reconcile-daily || failed=1
             npm run sync:ga-results -- --election="$id" "${opts[@]}" --snapshot || failed=1
           done <<< "$due"
           exit $failed
